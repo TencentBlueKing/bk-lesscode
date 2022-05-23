@@ -35,6 +35,7 @@ import dataSource from './modules/data-source'
 import api from './modules/api'
 
 import nocode from './modules/nocode'
+import file from './modules/file'
 import http from '@/api'
 import router from '../router'
 import { unifyObjectStyle, json2Query, circleJSON } from '@/common/util'
@@ -68,7 +69,8 @@ const store = new Vuex.Store({
         projectVersion,
         dataSource,
         api,
-        nocode
+        nocode,
+        file
     },
     // 公共 store
     state: {

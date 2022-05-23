@@ -148,6 +148,13 @@
                                 toPath: {
                                     name: 'variableManage'
                                 }
+                            },
+                            {
+                                title: '文件库',
+                                url: 'fileManage',
+                                toPath: {
+                                    name: 'fileManage'
+                                }
                             }
                         ]
                     },
@@ -206,7 +213,7 @@
                             }
                         ]
                     },
-                    
+
                     {
                         title: '操作审计',
                         icon: 'audit',
@@ -215,7 +222,7 @@
                             name: 'logs'
                         }
                     }
-                    
+
                 ],
                 projectList: [],
                 countdown: 3,
@@ -234,7 +241,7 @@
                     'item-child-icon-default-color': '#63656e',
                     'item-child-icon-hover-color': '#63656e',
                     'item-child-icon-active-color': '#3A84FF'
-                    
+
                 },
                 defaultOpen: true
             }
