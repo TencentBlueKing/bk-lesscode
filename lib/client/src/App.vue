@@ -51,7 +51,7 @@
                         icon: 'bk-drag-icon bk-drag-comment-fill',
                         text: '反馈',
                         action: () => {
-                            window.open('https://github.com/Tencent/bk-PaaS/labels/lesscode')
+                            window.open('https://github.com/TencentBlueKing/bk-lesscode/issues')
                         }
                     }
                 ],

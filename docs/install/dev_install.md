@@ -2,29 +2,29 @@
 
 ## 分支管理说明
 
-可视化开发平台使用 [lesscode-develop](https://github.com/Tencent/bk-PaaS/tree/lesscode-develop), [lesscode-master](https://github.com/Tencent/bk-PaaS/tree/lesscode-master) 两个分支进行迭代。其中 lesscode-master 为稳定版分支，每次 release 都会基于这个分支；lesscode-develop 为日常开发的分支，给可视化开发平台贡献代码统一向 lesscode-develop 分支提 pr。
+可视化开发平台使用 [lesscode-develop](https://github.com/TencentBlueKing/bk-lesscode/tree/lesscode-develop), [lesscode-master](https://github.com/TencentBlueKing/bk-lesscode/tree/lesscode-master) 两个分支进行迭代。其中 lesscode-master 为稳定版分支，每次 release 都会基于这个分支；lesscode-develop 为日常开发的分支，给可视化开发平台贡献代码统一向 lesscode-develop 分支提 pr。
 
 ## 本地开发环境搭建以及开发流程
 
-> 主库：指 https://github.com/Tencent/bk-PaaS
+> 主库：指 https://github.com/TencentBlueKing/bk-lesscode/
 >
-> fork 仓库：指 https://github.com/{YourName}/bk-PaaS
+> fork 仓库：指 https://github.com/{YourName}/bk-lesscode
 >
 > 本地仓库：指从 fork 仓库 clone 到本地的仓库
 
-1. fork 主库 [bk-PaaS](https://github.com/Tencent/bk-PaaS) 到你自己的 github 仓库
+1. fork 主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode) 到你自己的 github 仓库
 2. 把 fork 的仓库 clone 到本地仓库
     ```bash
-    git clone https://github.com/{YourName}/bk-PaaS.git
+    git clone https://github.com/{YourName}/bk-lesscode.git
     ```
-3. 进入 bk-PaaS/paas-ce/lesscode 目录
+3. 进入 bk-lesscode 目录
     ```bash
-    cd bk-PaaS/paas-ce/lesscode
+    cd bk-lesscode
     ```
 4. remote 添加主库
     ```bash
     # base 为给主库设置的别名
-    git remote add base https://github.com/Tencent/bk-PaaS.git
+    git remote add base https://github.com/TencentBlueKing/bk-lesscode.git
     ```
 5. 本地仓库切换分支（以主库 lesscode-develop 分支为准，lesscode-develop 为日常开发的分支，每次均向 lesscode-develop 分支提 pr）
     ```bash
@@ -60,8 +60,8 @@
     # 本地启动，开始开发
     npm run dev
     ```
-9. 开发完成后，本地仓库推往 fork 仓库 lesscode-develop 分支 **（自己 fork 的仓库，https://github.com/{YourName}/bk-PaaS.git）**
+9. 开发完成后，本地仓库推往 fork 仓库 lesscode-develop 分支 **（自己 fork 的仓库，https://github.com/{YourName}/bk-lesscode.git）**
     ```bash
     git push origin lesscode-develop
     ```
-10. 推往自己 fork 仓库的 lesscode-develop 分支后，可以向 bk-PaaS 主库的 lesscode-develop 提 pr。 **（给可视化开发平台贡献代码，统一向 lesscode-develop 分支提 pr）**
+10. 推往自己 fork 仓库的 lesscode-develop 分支后，可以向 bk-lesscode 主库的 lesscode-develop 提 pr。 **（给可视化开发平台贡献代码，统一向 lesscode-develop 分支提 pr）**

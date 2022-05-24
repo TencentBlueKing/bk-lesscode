@@ -61,7 +61,7 @@
         },
         methods: {
             goGithub () {
-                window.open('https://github.com/Tencent/bk-PaaS/blob/lesscode-master/paas-ce/lesscode/README.md')
+                window.open('https://github.com/TencentBlueKing/bk-lesscode/blob/lesscode-master/README.md')
             },
             handleCreateForm () {
                 bus.$emit('openCreatPageFrom')

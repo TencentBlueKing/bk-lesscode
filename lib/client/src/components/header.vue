@@ -54,7 +54,7 @@
                                     <a :href="`${host}/${path}/index.html#build/show`">jQuery组件</a>
                                 </dd>
                                 <dd>
-                                    <a class="active" target="_blank" href="https://github.com/Tencent/bk-PaaS/blob/lesscode-master/paas-ce/lesscode/README.md">Vue组件</a>
+                                    <a class="active" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/blob/lesscode-master/README.md">Vue组件</a>
                                 </dd>
                             </ol>
                             <ol>
