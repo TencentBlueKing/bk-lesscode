@@ -4,19 +4,19 @@
 
 <!-- 前面几步与[本地开发部署](./dev_install.md)一致，把代码 clone 到生产环境服务器，然后安装前端依赖。之后执行 `npm run build && npm run online` 即可启动系统。 -->
 
-在[本地开发部署](./dev_install.md)里我们介绍过，需要 fork [bk-PaaS](https://github.com/Tencent/bk-PaaS) 到自己的 github 仓库，之后任何的开发工作都在这个 fork 的仓库进行。
+在[本地开发部署](./dev_install.md)里我们介绍过，需要 fork [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode) 到自己的 github 仓库，之后任何的开发工作都在这个 fork 的仓库进行。
 
 功能开发完成，需要部署到线上环境，这里我们提供单机部署示例，具体分为如下几步：（**下列步骤均在服务器上进行**）
 
 > 假设在服务器上操作的目录是 `/data/`，服务器的 ip 是 `xxx.xxx.xxx.xxx`
 
 ```bash
-# 1. 把之前 fork 的仓库 clone 到服务器上。（ clone 之后，可视化开发平台的目录结构应该是 `/data/bk-PaaS/paas-ce/lesscode`）
+# 1. 把之前 fork 的仓库 clone 到服务器上。（ clone 之后，可视化开发平台的目录结构应该是 `/data/bk-lesscode`）
 cd /data/
-git clone https://github.com/{YOUR NAME}/bk-PaaS.git
+git clone https://github.com/{YOUR NAME}/bk-lesscode.git
 
-# 2. 进入 `/data/bk-PaaS/paas-ce/lesscode` 目录
-cd /data/bk-PaaS/paas-ce/lesscode
+# 2. 进入 `/data/bk-lesscode` 目录
+cd /data/bk-lesscode
 
 # 3. 运行 `npm install .` 安装前端依赖
 npm install .
@@ -33,7 +33,7 @@ info:    Forever processing file: lib/server/app.browser.js
 
 之后就可以通过 `http://xxx.xxx.xxx.xxx:5000` 的形式来访问服务。
 
-服务启动之后，我们提供下面几条命令对进程进行管理（**均在项目根目录即 `/data/bk-PaaS/paas-ce/lesscode` 下执行**）
+服务启动之后，我们提供下面几条命令对进程进行管理（**均在项目根目录即 `/data/bk-lesscode` 下执行**）
 
 ```bash
 # 查看当前运行的服务进程

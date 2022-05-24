@@ -8,11 +8,11 @@
 
 可视化开发平台我们采用常规的 github 开源项目的协作方式进行迭代。自定义组件的开发完成后需要集成到平台主代码仓库中，并重新发布平台方可在平台产品上正常拖拽使用。
 
-在[本地开发环境搭建](../install/dev_install.md)中介绍过要把 [bk-PaaS](https://github.com/Tencent/bk-PaaS) fork 到自己的 github 仓库。之后所有的开发工作都在 fork 的这个仓库进行，包括系统的优化、bug 修复以及自定义组件的开发。
+在[本地开发环境搭建](../install/dev_install.md)中介绍过要把 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/) fork 到自己的 github 仓库。之后所有的开发工作都在 fork 的这个仓库进行，包括系统的优化、bug 修复以及自定义组件的开发。
 
 在主代码库中，只做三件事，issue 的提出及讨论、pull request 的 review、pull request 的 merge。
 
-自定义组件开发完成后，需要把组件源码放在平台代码库`/lib/client/src/custom` 目录中，同时在 `/lib/client/src/custom/index.js` 中注册该自定义组件（参考[自定义组件开发](./dev_com.md#自定义组件开发-1)），开发完成后，往主库 [bk-PaaS](https://github.com/Tencent/bk-PaaS) 发 pr，code review 之后如果没问题，就会 merge 到主库。
+自定义组件开发完成后，需要把组件源码放在平台代码库`/lib/client/src/custom` 目录中，同时在 `/lib/client/src/custom/index.js` 中注册该自定义组件（参考[自定义组件开发](./dev_com.md#自定义组件开发-1)），开发完成后，往主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/) 发 pr，code review 之后如果没问题，就会 merge 到主库。
 
 ### 上传到 npm
 
