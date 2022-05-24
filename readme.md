@@ -1,87 +1,108 @@
-![](docs/resource/img/bk_paas_zh.png)
----
+# 蓝鲸智云PaaS平台社区版之可视化开发平台
 
-[![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/Tencent/bk-PaaS/blob/master/LICENSE) [![Release Version](https://img.shields.io/badge/release-3.2.2-brightgreen.svg)](https://github.com/Tencent/bk-PaaS/releases) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Tencent/bk-PaaS/pulls) [![](https://travis-ci.com/Tencent/bk-PaaS.svg?token=ypkHQqxUR3Y3ctuD7qFS&branch=master)](https://travis-ci.com/Tencent/bk-PaaS)
+## 简介
+蓝鲸智云可视化开发平台提供了前端页面在线可视化拖拽组装、配置编辑、源码生成、二次开发等能力。旨在帮助用户通过尽量少的手写代码的方式快速设计和开发SaaS。本次平台开源部分支持基于Vuejs的UI组件拖拽及源码生成，未来我们将持续更新扩充平台能力。
 
+## 功能特性
+- 可视化拖拽布局：集成蓝鲸MagicBox Vue通用组件，支持在线画布拖拽组件进行页面布局编辑、在线预览、查看及下载源码
+- 在线函数库管理：支持在线灵活编写管理事件函数及远程接口返回数据清洗函数
+- 在线组件配置：支持组件样式、属性、事件在线配置
+- 布局模板：提供多种导航布局模板
+- 支持自定义组件开发：提供自定义组件开发规范及示例，开放自定义组件开发能力，满足业务场景组件集成需求
+- 二次开发能力：生成的Vue源码文件支持无缝集成到蓝鲸前端开发框架([BKUI-CLI](https://bk.tencent.com/docs/document/5.1/19/583))进行二次开发
 
-[(English Documents Available)](readme_en.md)
+## 代码目录
 
-> **社区版**
+可视化开发平台源代码目录结构如下：
 
-蓝鲸智云PaaS平台是一个开放式的开发平台，让开发者可以方便快捷地创建、开发、部署和管理SaaS应用。
+```bash
+├── README.md
+├── docs/                   # 文档目录
+│   ......
+├── lib/                    # 源码目录
+│   ├── client/             # 前端源码目录
+│   │   ├── build/          # 前端构建脚本目录
+│   │       ......
+│   │   ├── index-dev.html  # 本地开发使用的 html
+│   │   ├── index.html      # 生产环境使用的 html
+│   │   ├── preview.html    # 预览模块使用的 html
+│   │   ├── require-monaco.html # 辅助引入 monaco 编辑器的 html
+│   │   ├── src/            # 前端源码目录
+│   │   │   ├── App.vue     # App 组件
+│   │   │   ├── main.js     # 主入口
+│   │   │   ├── api/        # 前端 ajax 目录
+│   │   │       ......
+│   │   │   ├── common/     # 常用前端模块目录
+│   │   │       ......
+│   │   │   ├── components/ # 前端组件目录
+│   │   │       ......
+│   │   │   ├── css/        # 前端 css 目录
+│   │   │       ......
+│   │   │   ├── element-materials/  # 基础组件的配置以及修改配置和页面渲染的逻辑
+│   │   │   │       ......
+│   │   │   ├── images/     # 前端使用的图片存放目录
+│   │   │       .....
+│   │   │   ├── preview/    # 前端预览模块 目录
+│   │   │       ......
+│   │   │   ├── router/     # 前端 router 目录
+│   │   │       ......
+│   │   │   ├── store/      # 前端 store 目录
+│   │   │       ......
+│   │   │   ├── views/      # 前端页面目录
+│   │   │       ......
+│   │   └── static/         # 前端静态资源目录
+│   │       ......
+│   └── server/             # 后端源码目录
+│       ├── app.browser.js  # 服务器启动文件
+│       ├── logger.js       # 后端日志组件
+│       ├── util.js         # 后端工具方法
+│       ├── conf/           # 后端配置文件目录
+│       │   ......
+│       ├── controller/     # 后端 controller 目录
+│       │   ......
+│       ├── middleware/     # 后端中间件目录
+│       │   ......
+│       ├── model/          # 后端实体目录
+│       │   ......
+│       ├── project-template/  # 后端生成项目源码模板
+│       │   ......
+│       ├── router/         # 后端路由目录
+│       │   ......
+│       ├── service/        # 后端服务目录
+│       │   ......
+│       ├── utils/          # 后端utils 目录
+│       │   ......
+├── nodemon.json            # nodemon 配置文件
+├── package.json            # 项目描述文件
+├── forever.json            # forever 配置文件
+```
 
-本次开源的是蓝鲸智云PaaS平台社区版(BlueKing PaaS Community Edition)，它提供了应用引擎、前后台开发框架、API网关、调度引擎、统一登录、公共组件等模块，帮助用户快速、低成本、免运维地构建支撑工具和运营系统（统称为SaaS应用），它为一个SaaS应用从创建到部署，再到后续的维护管理提供了完善的自动化和自助化服务，从而使开发者可以集中精力关注SaaS应用的逻辑开发。
+## 技术栈
 
-蓝鲸智云PaaS平台社区版源码包含:
+可视化开发平台采用的主要技术如下：
 
-- PaaS（paas-ce/paas）: 包含4大服务（python [[Django](https://www.djangoproject.com/)]）
-    - login: 蓝鲸统一登录服务
-    - paas: 蓝鲸开发者中心&web工作台
-    - esb: 蓝鲸API网关
-    - appengine: 蓝鲸应用引擎
-- PaaSAgent（paas-ce/paasagent）: 蓝鲸应用引擎Agent（golang [[labstack/echo](https://github.com/labstack/echo)]）
-- LessCode（paas-ce/lesscode）: 蓝鲸可视化开发平台，提供了前端页面在线可视化拖拽组装、配置编辑、源码生成、二次开发等能力，[详细介绍](https://github.com/Tencent/bk-PaaS/blob/lesscode-master/paas-ce/lesscode/README.md)
+1. 前端：主要是 Vue 全家桶，包括 vue, vue-router, vuex，使用 vuedraggable 来实现拖拽，前端工程化采用的是常用的 webpack 方案。
+2. 后端：使用 koa@2 为服务器，mysql 为数据库。本地开发时使用 nodemon 作为进程管理，生产环境使用 forever 作为进程守护。
 
-## Overview
+## 依赖说明
 
-- [架构设计](docs/overview/architecture.md)
-- [代码目录](docs/overview/project_codes.md)
-- [部署拓扑](docs/overview/project_deploy.md)
+#### 环境依赖
+项目主要的依赖是目前常用的比较新的模块，webpack@4，babel@7，vue@2，koa@2 等。**运行的 nodejs 要求为 >= 8.9.0**。
 
+> 安装 Node.js 参见[官方文档](https://nodejs.org/)。安装完成后，注意设置 node 到 PATH 中
 
-## Features
+#### 服务依赖
+- 蓝鲸社区版登录（必须）：可视化平台的登录服务对接的是蓝鲸社区版登录，请事先搭建蓝鲸社区版环境
+- 蓝鲸制品库服务（非必须）： 若需要使用到平台的自定义组件功能开发模块，请事先搭建 [蓝鲸制品库服务](https://github.com/Tencent/bk-ci/tree/master/src/backend/storage/core)， **搭建时并开启npm-registry**
 
-- 开发者中心：提供自助化、自动化服务，支持快速、低成本、免运维地构建SaaS应用
-- 统一用户登录体系：支持用户及角色管理，支持对接企业内部登录体系（[对接说明](http://docs.bk.tencent.com/develop_center/enterprise_login/)）
-- 开发框架：提供统一的SaaS应用开发框架, 提升开发效率
-- API网关：支持两种接入模式（在线自助接入和组件编码接入）的企业级服务总线，方便开发者对接企业内已有系统的API服务
-- 多环境部署：支持多环境部署SaaS应用, 方便开发者进行测试验证及生产环境发布
-- 可插拔式应用：支持蓝鲸S-mart应用上传部署, 方便蓝鲸S-mart应用部署移植 [更多应用](http://bk.tencent.com/s-mart)
-- 可视化开发平台：支持前端页面在线可视化拖拽组装、配置编辑、源码生成、二次开发等能力（[详细介绍](https://github.com/Tencent/bk-PaaS/blob/lesscode-master/paas-ce/lesscode/README.md)）
+## 分支说明
+可视化开发平台使用 lesscode-develop, lesscode-master 两个分支进行迭代。其中 lesscode-master 为稳定版分支，每次 release 都会基于这个分支；lesscode-develop 为日常开发的分支，给可视化开发平台贡献代码统一向主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/tree/lesscode-master) 的  [lesscode-develop](https://github.com/TencentBlueKing/bk-lesscode/tree/lesscode-develop) 分支提 pr。
 
-## Experience
+## 安装部署
+- [本地开发部署](./docs/install/dev_install.md)
+- [生产环境部署](./docs/install/prod_install.md)
+- [数据库说明](./docs/install/database.md)
+- [配置文件说明](./docs/install/conf.md)
 
-- [极速体验容器化部署蓝鲸智云PaaS平台](docs/wiki/container-support.md)
-
-## Getting started
-
-- [安装部署PaaS](docs/install/ce_paas_install.md)
-- [安装部署PaaSAgent](docs/install/ce_paas_agent_install.md)
-- [替换已安装的蓝鲸社区版指引](https://docs.bk.tencent.com/bk_osed/guide.html#osed)
-
-
-## Roadmap
-
-- [PaaS 版本日志](paas-ce/paas/release.md)
-- [PaaSAgent 版本日志](paas-ce/paasagent/release.md)
-
-## Support
-
-- [wiki](https://github.com/Tencent/bk-PaaS/wiki)
-- [FAQ](https://github.com/Tencent/bk-PaaS/wiki/FAQ)
-- [白皮书](http://docs.bk.tencent.com/product_white_paper/paas/)
-- [蓝鲸论坛](https://bk.tencent.com/s-mart/community)
-- [蓝鲸 DevOps 在线视频教程](https://cloud.tencent.com/developer/edu/major-100008)
-- 联系我们，技术交流QQ群：
-
-
-<img src="docs/resource/img/bk_qq_group.png" width="250" hegiht="250" align=center />
-
-## BlueKing Community
-
-- [BK-CI](https://github.com/Tencent/bk-ci)：蓝鲸持续集成平台是一个开源的持续集成和持续交付系统，可以轻松将你的研发流程呈现到你面前。
-- [BK-BCS](https://github.com/Tencent/bk-bcs)：蓝鲸容器管理平台是以容器技术为基础，为微服务业务提供编排管理的基础服务平台。
-- [BK-BCS-SaaS](https://github.com/Tencent/bk-bcs-saas)：蓝鲸容器管理平台SaaS基于原生Kubernetes和Mesos自研的两种模式，提供给用户高度可扩展、灵活易用的容器产品服务。
-- [BK-PaaS](https://github.com/Tencent/bk-PaaS)：蓝鲸PaaS平台是一个开放式的开发平台，让开发者可以方便快捷地创建、开发、部署和管理SaaS应用。
-- [BK-SOPS](https://github.com/Tencent/bk-sops)：标准运维（SOPS）是通过可视化的图形界面进行任务流程编排和执行的系统，是蓝鲸体系中一款轻量级的调度编排类SaaS产品。
-- [BK-CMDB](https://github.com/Tencent/bk-cmdb)：蓝鲸配置平台是一个面向资产及应用的企业级配置管理平台。
-
-## Contributing
-
-如果你有好的意见或建议，欢迎给我们提 Issues 或 Pull Requests，为蓝鲸开源社区贡献力量。关于分支/issue及PR, 请查看 [CONTRIBUTING](docs/CONTRIBUTING.md)
-
-[腾讯开源激励计划](https://opensource.tencent.com/contribution) 鼓励开发者的参与和贡献，期待你的加入。
-
-## License
-
-基于 MIT 协议， 详细请参考[LICENSE](LICENSE.txt)
+## 开发文档
+- [自定义组件开发和管理文档](./lib/client/src/views/help/docs/custom.md)
