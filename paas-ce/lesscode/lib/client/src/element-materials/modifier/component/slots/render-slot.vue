@@ -17,6 +17,14 @@
                         ({{ formData.valueType | capFirstLetter }})
                     </span>
                 </span>
+                <i
+                    v-bk-tooltips="{
+                        content: innerVariableTips,
+                        width: '300'
+                    }"
+                    v-if="showInnerVariable"
+                    class="bk-drag-icon bk-drag-page-variable"
+                ></i>
                 <template v-if="describe.name && describe.name.length > 1">
                     <span class="slot-label">组件标签</span>
                     <bk-radio-group
@@ -60,6 +68,9 @@
 <script>
     import { transformTipsWidth } from '@/common/util'
     import variableSelect from '@/components/variable/variable-select'
+    import {
+        determineShowSlotInnerVariable
+    } from 'shared/variable'
 
     import {
         getDefaultValueByType,
@@ -114,6 +125,9 @@
         },
 
         props: {
+            componentId: {
+                type: String
+            },
             name: {
                 type: String
             },
@@ -171,6 +185,16 @@
                     show: false,
                     value: ''
                 }
+            },
+            /**
+             * @desc 是否展示内置变量
+             * @returns { Boolean }
+             */
+            showInnerVariable () {
+                return determineShowSlotInnerVariable(this.describe.type)
+            },
+            innerVariableTips () {
+                return `${this.describe.displayName}有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.name}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
             }
         },
         watch: {
@@ -366,5 +390,10 @@
         font-size: 12px;
         font-weight: bold;
         color: #63656E;
+    }
+    .bk-drag-page-variable {
+        margin-left: 3px;
+        color: #C4C6CC;
+        cursor: pointer;
     }
 </style>

@@ -15,13 +15,9 @@ const variablePerfix = '/variable'
 export default {
     namespaced: true,
     state: {
-        variableList: [],
-        variableFormData: {}
+        variableList: []
     },
     mutations: {
-        setVariableFormData (state, data) {
-            state.variableFormData = data
-        },
         setVariableList (state, variableList) {
             state.variableList = variableList
         },
@@ -38,14 +34,9 @@ export default {
         }
     },
     getters: {
-        variableList: state => state.variableList,
-        variableFormData: state => state.variableFormData
+        variableList: state => state.variableList
     },
     actions: {
-        setVariableFormData ({ commit }, data) {
-            commit('setVariableFormData', data)
-        },
-
         getAllProjectVariable ({ commit }, params) {
             return http.get(`${variablePerfix}/getAllVariable`, { params }).then(response => {
                 const data = response.data || []
