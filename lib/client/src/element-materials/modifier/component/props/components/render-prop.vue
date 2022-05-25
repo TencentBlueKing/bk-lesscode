@@ -23,14 +23,18 @@
                         v-bk-tooltips="introTips">
                         {{ displayName }}
                     </span>
-                    <i
+                    <div
+                        v-if="showInnerVariable"
                         v-bk-tooltips="{
                             content: innerVariableTips,
-                            width: '300'
+                            width: '300',
+                            placements: ['left-start'],
+                            boundary: 'window'
                         }"
-                        v-if="showInnerVariable"
-                        class="bk-drag-icon bk-drag-page-variable"
-                    ></i>
+                        class="inner-variable"
+                    >
+                        内置变量：{{innerVariableCode}}
+                    </div>
                 </div>
             </template>
             <bk-radio-group
@@ -67,6 +71,7 @@
     </div>
 </template>
 <script>
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
     import variableSelect from '@/components/variable/variable-select'
@@ -297,12 +302,18 @@
              */
             introTips () {
                 const tip = transformTipsWidth(this.describe.tips)
-                const disabled = !tip
-                return typeof tip === 'string' ? {
-                    disabled,
-                    content: tip,
-                    interactive: false
-                } : Object.assign(tip, { disabled, interactive: false })
+                const commonOptions = {
+                    disabled: !tip,
+                    interactive: false,
+                    placements: ['left-start'],
+                    boundary: 'window'
+                }
+                return typeof tip === 'string'
+                    ? {
+                        ...commonOptions,
+                        content: tip
+                    }
+                    : Object.assign(tip, commonOptions)
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量
@@ -318,8 +329,25 @@
             showInnerVariable () {
                 return determineShowPropInnerVariable(this.describe.type, this.name, this.componentType)
             },
+            /**
+             * 内置变量提示
+             */
             innerVariableTips () {
                 return `${this.name} 属性有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.name}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
+            },
+            /**
+             * 内置变量名
+             */
+            innerVariableCode () {
+                const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
+                const isChart = this.componentType === 'chart'
+                let innerVariableCode
+                if (isChart) {
+                    innerVariableCode = perVariableName
+                } else {
+                    innerVariableCode = `${perVariableName}${camelCase(this.name, { transform: camelCaseTransformMerge })}`
+                }
+                return innerVariableCode
             }
         },
         watch: {
@@ -544,9 +572,7 @@
     .modifier-prop {
         margin: 0 10px;
         .prop-name {
-            display: flex;
-            align-items: center;
-            height: 32px;
+            line-height: 30px;
             font-size: 14px;
             color: #63656E;
             word-break: keep-all;
@@ -560,9 +586,12 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            .bk-drag-page-variable {
-                margin-left: 3px;
-                color: #C4C6CC;
+            .inner-variable {
+                line-height: 19px;
+                font-size: 12px;
+                margin-bottom: 6px;
+                border-bottom: 1px dashed #979ba5;
+                display: block;
                 cursor: pointer;
             }
             /* .icon-info-circle {

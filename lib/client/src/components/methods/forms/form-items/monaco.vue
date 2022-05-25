@@ -123,7 +123,6 @@
                     const material = node.material
                     const perVariableName = camelCase(node.componentId, { transform: camelCaseTransformMerge })
                     // 属性中需要展示内置变量
-                    console.log(node)
                     Object.keys(material.props || {}).forEach(propKey => {
                         const prop = material.props[propKey]
                         const needShowInnerVariable = determineShowPropInnerVariable(prop.type, propKey, node.type)
@@ -152,7 +151,7 @@
                         const needShowInnerVariable = determineShowSlotInnerVariable(config.type)
                         if (needShowInnerVariable) {
                             this.proposals.push({
-                                label: `lesscode.${node.componentId}.${slotKey}`,
+                                label: `lesscode.${node.componentId}.${config.displayName}`,
                                 kind: window.monaco.languages.CompletionItemKind.Property,
                                 documentation: `组件【${node.componentId}】的【${config.displayName}】的内置变量`,
                                 insertText: `this.${perVariableName}Slot${slotKey}`
