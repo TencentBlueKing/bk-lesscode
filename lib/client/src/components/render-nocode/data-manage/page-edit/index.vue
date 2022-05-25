@@ -1,5 +1,5 @@
 <template>
-    <div class="data-manage-content">
+    <div class="data-manage-content" v-bkloading="{ tableLoading }">
         <!--        顶部按钮区-->
         <div class="operating-buttons">
             <button-group />
@@ -113,9 +113,9 @@
     import hoverDiretive from './hover-directive.js'
     import ButtonGroup from './buttonGroup'
     import TableActionGroup from './tableActionGroup'
-    import mockData from '../../common/mockFormData.json'
     import cloneDeep from 'lodash.clonedeep'
     import { SYS_FIELD } from '../../common/field'
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'DataPage',
@@ -136,8 +136,8 @@
                     data: {}
                 },
                 localFieldList: [],
-                fieldList: cloneDeep(mockData),
-                selectList: this.getSelectList(mockData),
+                fieldList: [],
+                selectList: [],
                 htmlConfig: {
                     allowHtml: true,
                     width: 500,
@@ -147,6 +147,7 @@
                     placement: 'bottom-end',
                     extCls: 'custom-tip'
                 },
+                tableLoading: false,
                 selectAll: false,
                 sysFieldList: SYS_FIELD,
                 sysSelectFields: [],
@@ -154,15 +155,39 @@
                 selectionFields: []
             }
         },
+        computed: {
+            ...mapGetters('page', ['pageDetail']),
+            formId () {
+                // todo 先验证一下接口后面把2去除
+                return this.pageDetail.formId || 2
+            }
+        },
         created () {
-            this.getFormList()
+            this.getFieldList()
         },
         methods: {
-            getFormList () {
+            getFormList (val = []) {
                 // 关联的表单
-                this.localFieldList = cloneDeep(mockData)
-                this.selectionFields = cloneDeep(mockData)
+                this.localFieldList = cloneDeep(val)
+                this.selectionFields = cloneDeep(val)
+                this.selectList = cloneDeep(val)
                 this.customFields = this.selectionFields.map(i => i.key)
+            },
+            async getFieldList () {
+                try {
+                    if (this.formId) {
+                        this.tableLoading = true
+                        const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
+                        console.log(JSON.parse(form.content))
+                        this.fieldList = JSON.parse(form.content) || []
+                        this.getFormList(JSON.parse(form.content))
+                        this.change()
+                    }
+                } catch (err) {
+
+                } finally {
+                    this.tableLoading = false
+                }
             },
             getTableConfig () {
             // TODO 获取表单配置项
@@ -178,6 +203,7 @@
                 const { index } = data
                 this.selectList.push(this.filters[index])
                 this.filters.splice(index, 1)
+                this.change()
                 // console.log('delete', data)
             },
             dropdownShow () {
@@ -197,7 +223,7 @@
                 const curSelectSysFields = SYS_FIELD.filter(item => this.sysSelectFields.includes(item.key))
                 this.fieldList = curSelectFields.concat(curSelectSysFields)
                 this.selectList = this.getSelectList(curSelectFields).concat(curSelectSysFields)
-                console.log(this.selectList)
+                this.change()
                 this.$refs.settingTooltips._tippy.hide()
             },
             onCancel () {
@@ -223,6 +249,12 @@
             },
             inputComType (type) {
                 return type === 'INT' ? 'number' : 'text'
+            },
+            change () {
+                const filters = this.filters.map(i => i.id)
+                const tableConfig = this.fieldList.map(i => i.id)
+                const tableConfigOption = Object.assign({}, { filters }, { tableConfig })
+                this.$store.commit('nocode/formSetting/setTableFields', tableConfigOption)
             }
         }
     }
