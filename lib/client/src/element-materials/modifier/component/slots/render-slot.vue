@@ -49,7 +49,9 @@
             </bk-radio-group>
         </template>
         <component
+            v-if="isRenderValueCom"
             :is="renderValueComponent"
+            :key="renderValueComponentRefreshKey"
             :remote-validate="describe.remoteValidate"
             :slot-val="slotTypeValueMemo[formData.valueType]"
             :slot-config="describe"
@@ -129,8 +131,8 @@
 
         data () {
             return {
-                mutlTypeVal: {},
-                formData: {}
+                formData: {},
+                isRenderValueCom: false
             }
         },
 
@@ -191,11 +193,12 @@
                                 payload: lastValue.payload || {},
                                 valueType: lastValue.valueType
                             })
-                            this.slotTypeValueMemo[this.formData.valueType] = {
-                                val: this.formData.code,
-                                payload: this.formData.payload,
-                                component: this.formData.component
+                            this.slotTypeValueMemo[lastValue.valueType] = {
+                                val: lastValue.code,
+                                payload: lastValue.payload,
+                                component: lastValue.component
                             }
+                            this.isRenderValueCom = true
                         })
                     }
                 },

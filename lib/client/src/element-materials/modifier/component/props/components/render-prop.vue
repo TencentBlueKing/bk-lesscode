@@ -37,7 +37,9 @@
                     {{ item.type | valueTypeTextFormat }}
                 </bk-radio-button>
             </bk-radio-group>
-            <div class="prop-action">
+            <div
+                v-if="isRenderValueCom"
+                class="prop-action">
                 <template v-for="(renderCom, index) in renderComponentList">
                     <!-- 控件类型或者值的类型匹配都将展示，如：控制类型为 src 值的类型为 string(支持src输入加选择模式之前) 都需展示 -->
                     <template v-if="selectValueType === renderCom.type || selectValueType === renderCom.valueType">
@@ -144,7 +146,8 @@
         data () {
             return {
                 selectValueType: '',
-                formData: {}
+                formData: {},
+                isRenderValueCom: false
             }
         },
         computed: {
@@ -321,6 +324,7 @@
                             }
                         }
                         this.selectValueType = this.formData.valueType
+                        this.isRenderValueCom = true
                     })
                 },
                 immediate: true
