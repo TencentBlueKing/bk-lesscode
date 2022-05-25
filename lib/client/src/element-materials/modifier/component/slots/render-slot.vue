@@ -64,7 +64,6 @@
         <component
             v-if="isRenderValueCom"
             :is="renderValueComponent"
-            :key="renderValueComponentRefreshKey"
             :remote-validate="describe.remoteValidate"
             :slot-val="slotTypeValueMemo[formData.valueType]"
             :slot-config="describe"
