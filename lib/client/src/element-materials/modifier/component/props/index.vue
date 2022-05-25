@@ -15,6 +15,7 @@
             <render-prop
                 v-if="item.type !== 'hidden'"
                 :component-type="componentType"
+                :component-id="componentId"
                 :describe="item"
                 :last-value="lastProps[key]"
                 :name="key"
@@ -56,10 +57,12 @@
             if (this.componentNode) {
                 const {
                     type,
+                    componentId,
                     material,
                     renderProps
                 } = this.componentNode
                 this.componentType = type
+                this.componentId = componentId
                 this.propsConfig = Object.freeze(material.props)
                 this.lastProps = Object.freeze(_.cloneDeep(renderProps))
                 this.material = material
