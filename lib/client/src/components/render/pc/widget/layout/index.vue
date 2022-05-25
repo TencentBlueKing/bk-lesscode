@@ -99,8 +99,8 @@
         transform: translate(0, 0);
         
         .bk-navigation {
-            width: auto;
-            height: auto;
+            width: 100%;
+            height: 100%;
             .bk-navigation-wrapper {
                 flex: initial;
                 .nav-slider {
@@ -112,7 +112,6 @@
                 .navigation-container {
                     .container-content {
                         flex: unset;
-                        height: auto !important;
                         max-height: unset !important;
                         overflow: unset !important
                     }
