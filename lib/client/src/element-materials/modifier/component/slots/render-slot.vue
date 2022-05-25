@@ -28,6 +28,7 @@
                     }"
                     class="inner-variable"
                 >
+                    <i class="bk-icon icon-info"></i>
                     内置变量：{{innerVariableCode}}
                 </div>
                 <template v-if="describe.name && describe.name.length > 1">
@@ -395,6 +396,9 @@
 </script>
 
 <style lang="postcss" scoped>
+    .slot-title-wrapper {
+        width: 100%;
+    }
     .slot-name {
         line-height: 32px;
     }
@@ -416,11 +420,13 @@
         color: #63656E;
     }
     .inner-variable {
-        line-height: 19px;
         font-size: 12px;
-        margin-bottom: 6px;
-        border-bottom: 1px dashed #979ba5;
+        line-height: 30px;
         display: block;
         cursor: pointer;
+        width: 100%;
+        background: #F5F7FA;
+        padding: 0 6px;
+        margin-bottom: 5px;
     }
 </style>
