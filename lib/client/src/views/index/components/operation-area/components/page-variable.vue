@@ -16,21 +16,32 @@
         </header>
 
         <variable-table simple-display />
+
+        <variable-form
+            :is-show.sync="variableFormData.isShow"
+            :form-data="variableFormData.formData"
+        />
     </article>
 </template>
 
 <script>
     import { mapActions, mapGetters } from 'vuex'
     import variableTable from '@/components/variable/variable-table.vue'
+    import VariableForm from '@/components/variable/variable-form/index.vue'
 
     export default {
         components: {
-            variableTable
+            variableTable,
+            VariableForm
         },
 
         data () {
             return {
-                isLoading: false
+                isLoading: false,
+                variableFormData: {
+                    isShow: false,
+                    formData: {}
+                }
             }
         },
 
@@ -50,7 +61,7 @@
         },
 
         methods: {
-            ...mapActions('variable', ['getAllVariable', 'setVariableFormData']),
+            ...mapActions('variable', ['getAllVariable']),
 
             getList () {
                 this.isLoading = true
@@ -68,8 +79,10 @@
             },
 
             showVariableForm () {
-                const data = { show: true, form: {} }
-                this.setVariableFormData(data)
+                this.variableFormData = {
+                    isShow: true,
+                    formData: {}
+                }
             }
         }
     }

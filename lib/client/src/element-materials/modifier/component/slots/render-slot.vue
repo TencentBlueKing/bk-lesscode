@@ -3,6 +3,7 @@
         :options="variableSelectOptions"
         :value="formData"
         :remote-config="remoteConfig"
+        :show="variableSelectEnable"
         @change="handleVariableFormatChange">
         <template v-slot:title>
             <section class="slot-title-wrapper">
@@ -17,6 +18,18 @@
                         ({{ formData.valueType | capFirstLetter }})
                     </span>
                 </span>
+                <div
+                    v-if="showInnerVariable"
+                    v-bk-tooltips="{
+                        content: innerVariableTips,
+                        width: '300',
+                        placements: ['left-start'],
+                        boundary: 'window'
+                    }"
+                    class="inner-variable"
+                >
+                    内置变量：{{innerVariableCode}}
+                </div>
                 <template v-if="describe.name && describe.name.length > 1">
                     <span class="slot-label">组件标签</span>
                     <bk-radio-group
@@ -60,8 +73,12 @@
 </template>
 
 <script>
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import variableSelect from '@/components/variable/variable-select'
+    import {
+        determineShowSlotInnerVariable
+    } from 'shared/variable'
 
     import {
         getDefaultValueByType,
@@ -116,6 +133,9 @@
         },
 
         props: {
+            componentId: {
+                type: String
+            },
             name: {
                 type: String
             },
@@ -173,6 +193,34 @@
                     show: false,
                     value: ''
                 }
+            },
+            /**
+             * @desc type 支持 remote 类型的不支持配置变量
+             * @returns { Boolean }
+             */
+            variableSelectEnable () {
+                // 远程函数不使用变量，只使用内置变量
+                const noRemote = !this.describe.type.includes('remote')
+                // 已启用的依然启用
+                const hasEnable = ['expression', 'variable'].includes(this.formData.format)
+                return noRemote || hasEnable
+            },
+            /**
+             * @desc 是否展示内置变量
+             * @returns { Boolean }
+             */
+            showInnerVariable () {
+                return determineShowSlotInnerVariable(this.describe.type)
+            },
+            innerVariableTips () {
+                return `${this.describe.displayName}有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.describe.displayName}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
+            },
+            /**
+             * 内置变量名
+             */
+            innerVariableCode () {
+                const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
+                return `${perVariableName}Slot${this.name}`
             }
         },
         watch: {
@@ -383,5 +431,13 @@
         font-size: 12px;
         font-weight: bold;
         color: #63656E;
+    }
+    .inner-variable {
+        line-height: 19px;
+        font-size: 12px;
+        margin-bottom: 6px;
+        border-bottom: 1px dashed #979ba5;
+        display: block;
+        cursor: pointer;
     }
 </style>

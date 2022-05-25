@@ -23,6 +23,18 @@
                         v-bk-tooltips="introTips">
                         {{ displayName }}
                     </span>
+                    <div
+                        v-if="showInnerVariable"
+                        v-bk-tooltips="{
+                            content: innerVariableTips,
+                            width: '300',
+                            placements: ['left-start'],
+                            boundary: 'window'
+                        }"
+                        class="inner-variable"
+                    >
+                        内置变量：{{innerVariableCode}}
+                    </div>
                 </div>
             </template>
             <bk-radio-group
@@ -61,9 +73,13 @@
     </div>
 </template>
 <script>
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
     import variableSelect from '@/components/variable/variable-select'
+    import {
+        determineShowPropInnerVariable
+    } from 'shared/variable'
 
     import {
         getDefaultValueByType,
@@ -104,6 +120,24 @@
         return target
     }
 
+    // 属性类型转为该变量接受的值类型
+    const getPropValueType = (type) => {
+        const valueMap = {
+            'size': 'string',
+            'text': 'string',
+            'paragraph': 'string',
+            'html': 'string',
+            'json': 'object',
+            'icon': 'string',
+            'van-icon': 'string',
+            'float': 'number',
+            'src': 'string',
+            'srcset': 'array',
+            'object': 'hidden'
+        }
+        return valueMap[type] || type
+    }
+
     export default {
         name: 'render-prop-modifier',
         components: {
@@ -127,6 +161,9 @@
         },
         props: {
             componentType: String,
+            componentId: {
+                type: String
+            },
             // prop 的 name
             name: {
                 type: String,
@@ -226,20 +263,6 @@
                     'srcset': 'srcset'
                 }
 
-                // 属性“值”的类型映射
-                const valueMap = {
-                    'text': 'string',
-                    'paragraph': 'string',
-                    'html': 'string',
-                    'json': 'object',
-                    'icon': 'string',
-                    'van-icon': 'string',
-                    'float': 'number',
-                    'src': 'string',
-                    'srcset': 'array',
-                    'object': 'hidden'
-                }
-
                 let realType = config.type
                 // 属性type支持配置数组，内部逻辑全部按数组处理
                 if (typeof config.type === 'string') {
@@ -252,7 +275,7 @@
                         res.push({
                             type: propType,
                             component: comMap[renderType],
-                            valueType: valueMap[propType] || propType
+                            valueType: getPropValueType(propType)
                         })
                     }
                     return res
@@ -282,12 +305,18 @@
              */
             introTips () {
                 const tip = transformTipsWidth(this.describe.tips)
-                const disabled = !tip
-                return typeof tip === 'string' ? {
-                    disabled,
-                    content: tip,
-                    interactive: false
-                } : Object.assign(tip, { disabled, interactive: false })
+                const commonOptions = {
+                    disabled: !tip,
+                    interactive: false,
+                    placements: ['left-start'],
+                    boundary: 'window'
+                }
+                return typeof tip === 'string'
+                    ? {
+                        ...commonOptions,
+                        content: tip
+                    }
+                    : Object.assign(tip, commonOptions)
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量
@@ -295,6 +324,33 @@
              */
             variableSelectEnable () {
                 return !this.renderComponentList.some(com => com.type === 'remote')
+            },
+            /**
+             * @desc 是否展示内置变量
+             * @returns { Boolean }
+             */
+            showInnerVariable () {
+                return determineShowPropInnerVariable(this.describe.type, this.name, this.componentType)
+            },
+            /**
+             * 内置变量提示
+             */
+            innerVariableTips () {
+                return `${this.name} 属性有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.name}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
+            },
+            /**
+             * 内置变量名
+             */
+            innerVariableCode () {
+                const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
+                const isChart = this.componentType === 'chart'
+                let innerVariableCode
+                if (isChart) {
+                    innerVariableCode = perVariableName
+                } else {
+                    innerVariableCode = `${perVariableName}${camelCase(this.name, { transform: camelCaseTransformMerge })}`
+                }
+                return innerVariableCode
             }
         },
         watch: {
@@ -338,7 +394,7 @@
             } = this.describe
 
             const defaultValue = val !== undefined ? val : getDefaultValueByType(type)
-            const valueTypeInclude = Array.isArray(type) ? type : [type]
+            const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
 
             // 构造 variable-select 的配置
             this.variableSelectOptions = {
@@ -347,18 +403,19 @@
                 format: 'value',
                 formatInclude: ['value', 'variable', 'expression'],
                 code: defaultValue,
-                valueTypeInclude: valueTypeInclude
+                valueTypeInclude: valueTypes,
+                limitTypes: valueTypes
             }
 
             // prop 的初始值
             this.formData = Object.freeze({
                 format: 'value',
                 code: defaultValue,
-                valueType: valueTypeInclude[0],
+                valueType: valueTypes[0],
                 renderValue: defaultValue,
                 payload: this.lastValue.payload || {}
             })
-
+            
             // 编辑状态缓存
             this.propTypeValueMemo = {
                 [this.formData.valueType]: {
@@ -530,9 +587,7 @@
     .modifier-prop {
         margin: 0 10px;
         .prop-name {
-            display: flex;
-            align-items: center;
-            height: 32px;
+            line-height: 30px;
             font-size: 14px;
             color: #63656E;
             word-break: keep-all;
@@ -545,6 +600,14 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+            }
+            .inner-variable {
+                line-height: 19px;
+                font-size: 12px;
+                margin-bottom: 6px;
+                border-bottom: 1px dashed #979ba5;
+                display: block;
+                cursor: pointer;
             }
             /* .icon-info-circle {
                 padding: 4px;
