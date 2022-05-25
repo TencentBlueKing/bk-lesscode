@@ -89,7 +89,7 @@
     "@babel/register": "~7.6.2",
     "@babel/runtime": "~7.6.3",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
-    "@blueking/bkui-vue-complex": "0.0.6",
+    "@blueking/bkui-vue-complex": "0.0.7",
     "@blueking/bundless": "0.0.8",
     "@blueking/bundless-plugin-vue2": "0.0.5",
     "@blueking/magicbox-header": "~1.1.30",
