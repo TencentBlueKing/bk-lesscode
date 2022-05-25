@@ -1,10 +1,9 @@
 <template>
     <div class="render-content">
         <render-flow v-if="nocodeType === 'FLOW'" />
-        <!--        <render-form v-else-if="nocodeType === 'FORM'" @update="$emit('update', $event)" />-->
+        <render-form v-else-if="nocodeType === 'FORM'" @update="$emit('update', $event)" />
         <render-data-manage v-else-if="nocodeType"></render-data-manage>
-        <render-form v-else />
-        <!--        <div>empty</div>-->
+        <div v-else>empty</div>
     </div>
 </template>
 

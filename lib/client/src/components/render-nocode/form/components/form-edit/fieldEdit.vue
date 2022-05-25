@@ -403,6 +403,7 @@
                     .join('_')
                     .toUpperCase()
                 this.fieldData.key = key
+                this.change()
             },
             handleAddFiles (e) {
                 const fileInfo = e.target.files[0]

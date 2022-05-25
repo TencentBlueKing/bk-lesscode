@@ -92,12 +92,7 @@
                     is_readonly: false, // 只读
                     show_type: 0, // 显隐
                     fileTemplate: [], // 存储文件类型组件模板的值
-                    imageRange: { // 上传图片的范围
-                        isMin: false,
-                        minNum: 1,
-                        isMax: false,
-                        maxNum: 1
-                    },
+                    imageRange: this.getDefaultImageRange(type),
                     deviderAttr: { // 下划线属性
                         align: 'center',
                         color: '#787A7F'
@@ -152,6 +147,14 @@
                     ]
                 }
                 return []
+            },
+            getDefaultImageRange (type) {
+                return type === 'IMAGE' ? {
+                    isMin: false,
+                    minNum: 1,
+                    isMax: false,
+                    maxNum: 1
+                } : ''
             }
         }
     }
