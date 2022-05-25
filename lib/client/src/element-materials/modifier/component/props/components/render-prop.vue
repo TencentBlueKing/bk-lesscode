@@ -33,6 +33,7 @@
                         }"
                         class="inner-variable"
                     >
+                        <i class="bk-icon icon-info"></i>
                         内置变量：{{innerVariableCode}}
                     </div>
                 </div>
@@ -591,10 +592,14 @@
             font-size: 14px;
             color: #63656E;
             word-break: keep-all;
-            max-width: calc(100% - 80px);
+            width: 100%;
             .label {
                 border-bottom: 1px dashed #979ba5;
                 cursor: pointer;
+                max-width: calc(100% - 65px);
+                line-height: 19px;
+                display: inline-block;
+                margin-top: 6px;
             }
             span {
                 white-space: nowrap;
@@ -602,12 +607,14 @@
                 text-overflow: ellipsis;
             }
             .inner-variable {
-                line-height: 19px;
                 font-size: 12px;
-                margin-bottom: 6px;
-                border-bottom: 1px dashed #979ba5;
+                line-height: 30px;
                 display: block;
                 cursor: pointer;
+                width: 100%;
+                background: #F5F7FA;
+                padding: 0 6px;
+                margin-bottom: 5px;
             }
             /* .icon-info-circle {
                 padding: 4px;
