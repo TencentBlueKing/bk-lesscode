@@ -182,9 +182,9 @@
                         this.isInnerChange = false
                         return
                     }
-                    if (lastValue && lastValue.valueType) {
-                        // setTimeout 让 watch 第一次执行时在 created 之后
-                        setTimeout(() => {
+                    // setTimeout 让 watch 第一次执行时在 created 之后
+                    setTimeout(() => {
+                        if (lastValue && lastValue.valueType) {
                             this.formData = Object.freeze({
                                 ...this.formData,
                                 format: lastValue.format,
@@ -198,9 +198,9 @@
                                 payload: lastValue.payload,
                                 component: lastValue.component
                             }
-                            this.isRenderValueCom = true
-                        })
-                    }
+                        }
+                        this.isRenderValueCom = true
+                    })
                 },
                 immediate: true
             }
