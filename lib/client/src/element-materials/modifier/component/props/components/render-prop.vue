@@ -307,13 +307,10 @@
                             const lastValueType = Array.isArray(lastValue.valueType)
                                 ? lastValue.valueType[0]
                                 : lastValue.valueType
-                            // fix: 错误数据转换，表达式类型的 format 包存成了 value
-                            const isFixedComputeFormat = lastValue.format === 'value'
-                                && /=/.test(lastValue.code)
-                                && !/</.test(lastValue.code)
+                            
                             this.formData = Object.freeze({
                                 ...this.formData,
-                                format: isFixedComputeFormat ? 'expression' : lastValue.format,
+                                format: lastValue.format,
                                 code: lastValue.code,
                                 valueType: lastValueType
                             })
@@ -370,12 +367,18 @@
             /**
              * @desc 同步更新用户操作
              */
-            triggerChange () {
+            triggerChange (from) {
                 this.isInnerChange = true
                 // 缓存用户本地编辑值
                 this.propTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.code || this.formData.renderValue,
+                    val: this.formData.code,
                     payload: this.formData.payload
+                }
+
+                // 如果切换 format 导致到时 code 为空，
+                // 为了页面渲染效果将 propTypeValue 重置为默认
+                if (from === 'format' && !this.formData.code) {
+                    this.propTypeValueMemo[this.formData.valueType].val = this.formData.renderValue
                 }
 
                 this.$emit('on-change', this.name, {
@@ -390,19 +393,27 @@
             handleVariableFormatChange (variableSelectData) {
                 const {
                     format,
-                    code,
                     renderValue
                 } = variableSelectData
+                let { code } = variableSelectData
+
+                // format 切换为 value，这个时候 code 为空
+                // 如果有缓存对应 valueType 的值切换后默认使用缓存值
+                if (format === 'value'
+                    && code === ''
+                    && this.propTypeValueMemo[this.formData.valueType]) {
+                    code = this.propTypeValueMemo[this.formData.valueType].val
+                }
                 this.formData = Object.freeze({
                     ...this.formData,
                     format,
                     code,
                     renderValue
                 })
-                this.triggerChange()
+                this.triggerChange('format')
             },
             /**
-             * @desc prop 值得类型切换
+             * @desc format 等于 value 时 value 的类型切换
              * @param { String } valueType
              */
             handleValueTypeChange (valueType) {
@@ -436,7 +447,7 @@
                 this.triggerChange()
             },
             /**
-             * @desc 更新 prop value 的配置
+             * @desc format 等于 value 时 编辑 code
              * @param { String } name
              * @param { Any } value
              * @param { String } type

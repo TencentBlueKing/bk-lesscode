@@ -183,13 +183,9 @@
                     if (lastValue && lastValue.valueType) {
                         // setTimeout 让 watch 第一次执行时在 created 之后
                         setTimeout(() => {
-                            // fix: 错误数据转换，表达式类型的 format 包存成了 value
-                            const isFixedComputeFormat = lastValue.format === 'value'
-                                && /=/.test(lastValue.code)
-                                && !/</.test(lastValue.code)
                             this.formData = Object.freeze({
                                 ...this.formData,
-                                format: isFixedComputeFormat ? 'expression' : lastValue.format,
+                                format: lastValue.format,
                                 component: lastValue.component,
                                 code: lastValue.code,
                                 payload: lastValue.payload || {},
@@ -248,12 +244,17 @@
             /**
              * @desc 同步更新用户操作
              */
-            triggerChange () {
+            triggerChange (from) {
                 // 缓存用户本地编辑值
                 this.slotTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.code || this.formData.renderValue,
+                    val: this.formData.code,
                     payload: this.formData.payload,
                     component: this.formData.component
+                }
+                // 如果切换 format 导致到时 code 为空，
+                // 为了页面渲染效果将 slotTypeValue 重置为默认
+                if (from === 'format' && !this.formData.code) {
+                    this.slotTypeValueMemo[this.formData.valueType].val = this.formData.renderValue
                 }
                 this.isInnerChange = true
                 this.$emit('on-change', this.name, {
@@ -265,13 +266,26 @@
              * @param { Object } variableSelectData
              */
             handleVariableFormatChange (variableSelectData) {
+                const {
+                    format,
+                    renderValue
+                } = variableSelectData
+                let { code } = variableSelectData
+
+                // format 切换为 value，这个时候 code 为空
+                // 如果有缓存对应 valueType 的值切换后默认使用缓存值
+                if (format === 'value'
+                    && code === ''
+                    && this.slotTypeValueMemo[this.formData.valueType]) {
+                    code = this.slotTypeValueMemo[this.formData.valueType].val
+                }
                 this.formData = Object.freeze({
                     ...this.formData,
-                    format: variableSelectData.format,
-                    code: variableSelectData.code,
-                    renderValue: variableSelectData.renderValue
+                    format,
+                    code,
+                    renderValue
                 })
-                this.triggerChange()
+                this.triggerChange('format')
             },
             /**
              * @desc slot 组件类型切换
