@@ -18,8 +18,8 @@
                 behavior="simplicity"
                 class="variable-input"
                 left-icon="bk-icon icon-search"
-                @change="handleSearch"
-                v-model="searchText" />
+                v-model="searchText"
+                @change="handleSearch" />
             <bk-table
                 :data="renderVarialbeList"
                 :outer-border="false"
@@ -70,12 +70,30 @@
                         </span>
                     </template>
                 </bk-table-column>
+                <bk-table-column label="操作" width="60">
+                    <template slot-scope="props">
+                        <span
+                            v-bk-tooltips="{
+                                content: getEditStatus(props.row).content,
+                                disabled: !getEditStatus(props.row).disabled
+                            }"
+                        >
+                            <bk-button
+                                text
+                                :disabled="getEditStatus(props.row).disabled"
+                                @click.native.stop="handleEditVariable(props.row)"
+                            >
+                                编辑
+                            </bk-button>
+                        </span>
+                    </template>
+                </bk-table-column>
             </bk-table>
             <footer class="variable-footer">
                 <bk-button
                     :text="true"
                     title="primary"
-                    @click="handleCreateVariable">
+                    @click="handleEditVariable">
                     <i class="bk-drag-icon bk-drag-add-line"></i>
                     新建变量
                 </bk-button>
@@ -98,13 +116,21 @@
                 ref="example"
                 :data="remoteConfig" />
         </div>
+        <variable-form
+            :is-show.sync="variableFormData.isShow"
+            :form-data="variableFormData.formData"
+            :show-save-use="true"
+            :limit-types="options.limitTypes"
+            @save-use="handleVariableChange"
+        />
     </div>
 </template>
 <script>
     import _ from 'lodash'
-    import { mapGetters, mapActions } from 'vuex'
+    import { mapGetters } from 'vuex'
     import remoteExample from '@/element-materials/modifier/component/props/components/strategy/remote-example'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable/index.js'
+    import VariableForm from '@/components/variable/variable-form/index.vue'
 
     const typeEnum = {
         0: 'string',
@@ -119,7 +145,8 @@
     export default {
         name: '',
         components: {
-            remoteExample
+            remoteExample,
+            VariableForm
         },
         props: {
             options: {
@@ -133,7 +160,11 @@
             return {
                 isShowVariable: false,
                 renderVarialbeList: [],
-                searchText: ''
+                searchText: '',
+                variableFormData: {
+                    isShow: false,
+                    formData: {}
+                }
             }
         },
         computed: {
@@ -165,7 +196,7 @@
             }
             this.htmlConfig = {
                 allowHtml: true,
-                width: 644,
+                width: 744,
                 trigger: 'click',
                 theme: 'light',
                 content: '.variable-list',
@@ -181,7 +212,6 @@
             }
         },
         methods: {
-            ...mapActions('variable', ['setVariableFormData']),
             /**
              * @desc 获取变量的默认值
              * @returns { Boolean }
@@ -280,12 +310,14 @@
                 })
             },
             /**
-             * @desc 新建变量
+             * @desc 新建,编辑变量
              */
-            handleCreateVariable () {
+            handleEditVariable (formData = {}) {
                 this.$refs.tooltipsHtml._tippy.hide()
-                const data = { show: true, form: {} }
-                this.setVariableFormData(data)
+                this.variableFormData = {
+                    isShow: true,
+                    formData
+                }
             },
             /**
              * @desc 新建全局变量
@@ -296,6 +328,12 @@
             },
             handleShowRemoteExample () {
                 this.$refs.example.isShow = true
+            },
+            getEditStatus (row) {
+                return {
+                    disabled: row.effectiveRange === 0,
+                    content: '应用级变量，请到变量管理进行修改'
+                }
             }
         }
     }
@@ -375,6 +413,10 @@
             display: -webkit-box;
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
+        }
+        .table-btn {
+            color: #3a84ff;
+            cursor: pointer;
         }
    }
    .remote-example {

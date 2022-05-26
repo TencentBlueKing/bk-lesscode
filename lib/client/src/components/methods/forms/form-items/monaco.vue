@@ -13,11 +13,16 @@
 </template>
 
 <script>
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
     import monaco from '@/components/monaco'
     import mixins from './form-item-mixins'
     import { mapActions } from 'vuex'
     import { FUNCTION_TIPS } from 'shared'
     import LC from '@/element-materials/core'
+    import {
+        determineShowPropInnerVariable,
+        determineShowSlotInnerVariable
+    } from 'shared/variable'
 
     export default {
         components: {
@@ -113,6 +118,45 @@
                             ...variableNode,
                             componentId: node.componentId
                         })
+                    })
+                    // 获取页面中自带的变量，可以配置远程函数和数据源的需要使用内置变量
+                    const material = node.material
+                    const perVariableName = camelCase(node.componentId, { transform: camelCaseTransformMerge })
+                    // 属性中需要展示内置变量
+                    Object.keys(material.props || {}).forEach(propKey => {
+                        const prop = material.props[propKey]
+                        const needShowInnerVariable = determineShowPropInnerVariable(prop.type, propKey, node.type)
+                        if (needShowInnerVariable) {
+                            const isChart = node.type === 'chart'
+                            if (isChart) {
+                                this.proposals.push({
+                                    label: `lesscode.${node.componentId}.${propKey}`,
+                                    kind: window.monaco.languages.CompletionItemKind.Property,
+                                    documentation: `组件【${node.componentId}】的【${propKey}】属性的内置变量`,
+                                    insertText: `this.${perVariableName}`
+                                })
+                            } else {
+                                this.proposals.push({
+                                    label: `lesscode.${node.componentId}.${propKey}`,
+                                    kind: window.monaco.languages.CompletionItemKind.Property,
+                                    documentation: `组件【${node.componentId}】的【${propKey}】属性的内置变量`,
+                                    insertText: `this.${perVariableName}${camelCase(propKey, { transform: camelCaseTransformMerge })}`
+                                })
+                            }
+                        }
+                    })
+                    // slots 中需要展示内置变量
+                    Object.keys(material.slots || {}).forEach(slotKey => {
+                        const config = material.slots[slotKey]
+                        const needShowInnerVariable = determineShowSlotInnerVariable(config.type)
+                        if (needShowInnerVariable) {
+                            this.proposals.push({
+                                label: `lesscode.${node.componentId}.${config.displayName}`,
+                                kind: window.monaco.languages.CompletionItemKind.Property,
+                                documentation: `组件【${node.componentId}】的【${config.displayName}】的内置变量`,
+                                insertText: `this.${perVariableName}Slot${slotKey}`
+                            })
+                        }
                     })
                     node.children.forEach(childNode => recTree(childNode))
                 }

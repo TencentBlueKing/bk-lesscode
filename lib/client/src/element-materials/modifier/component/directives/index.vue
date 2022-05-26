@@ -159,7 +159,7 @@
                     type: 'v-for',
                     prop: '',
                     format: 'variable',
-                    formatInclude: ['value', 'variable'], // v-bind 支持配置（值、变量）
+                    formatInclude: ['value', 'variable', 'expression'],
                     code: '',
                     valueTypeInclude: ['array'],
                     renderValue: 1,
@@ -203,12 +203,11 @@
             renderDirectives.forEach((directive) => {
                 const directiveKey = this.genDirectiveKey(directive)
                 if (lastDirectiveMap[directiveKey]) {
-                    // fix: 错误数据转换，表达式类型的 format 包存成了 value
-                    const isFixedComputeFormat = directive.format === 'value'
-                        && /=/.test(directive.code)
-                        && !/</.test(directive.code)
+                    // fix: 错误数据格式转换，表达式类型的 format 保存成了 value
+                    const isFixedExpressionFormat = directive.format === 'value'
+                        && /[^\.\=><]+[\.\=><\']+[^\.\=><\']+/.test(directive.code)
                     Object.assign(lastDirectiveMap[directiveKey], {
-                        format: isFixedComputeFormat ? 'expression' : directive.format,
+                        format: isFixedExpressionFormat ? 'expression' : directive.format,
                         code: directive.code
                     })
                 }
@@ -263,26 +262,34 @@
                 return res
             },
             /**
-             * @desc directive 值类型切换（值、变量、表达式）
+             * @desc format 切换（值、变量、表达式）
              * @param { Object } directive
              * @param { Object } variableSelectData
              */
             handleVariableFormatChange (directive, variableSelectData) {
+                const {
+                    format,
+                    renderValue,
+                    code
+                } = variableSelectData
+
+                const directiveKey = this.genDirectiveKey(directive)
+
                 this.lastDirectiveMap = Object.freeze({
                     ...this.lastDirectiveMap,
-                    [this.genDirectiveKey(directive)]: {
+                    [directiveKey]: {
                         type: directive.type,
                         prop: directive.prop,
-                        format: variableSelectData.format,
-                        code: variableSelectData.code,
-                        renderValue: variableSelectData.renderValue
+                        format,
+                        code,
+                        renderValue
                     }
                 })
                 this.triggleUpdate()
             },
 
             /**
-             * @desc directive 是值类型时，值得 value 改变
+             * @desc format = value 时 code 改变
              * @param { Object } directive
              * @param { String } value
              */

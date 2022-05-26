@@ -192,6 +192,7 @@
 </script>
 <style lang="postcss" scoped>
     .select-variable {
+        position: relative;
         margin-top: 10px;
         .header {
             display: flex;
@@ -203,6 +204,8 @@
             width: 100%;
         }
         .format-list {
+            position: absolute;
+            right: 0;
             border: none;
             /deep/ .bk-select-angle {
                 font-size: 16px;

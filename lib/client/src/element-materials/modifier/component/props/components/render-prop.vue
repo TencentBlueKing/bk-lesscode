@@ -23,6 +23,19 @@
                         v-bk-tooltips="introTips">
                         {{ displayName }}
                     </span>
+                    <div
+                        v-if="showInnerVariable"
+                        v-bk-tooltips="{
+                            content: innerVariableTips,
+                            width: '300',
+                            placements: ['left-start'],
+                            boundary: 'window'
+                        }"
+                        class="inner-variable"
+                    >
+                        <i class="bk-icon icon-info"></i>
+                        内置变量：{{innerVariableCode}}
+                    </div>
                 </div>
             </template>
             <bk-radio-group
@@ -37,7 +50,9 @@
                     {{ item.type | valueTypeTextFormat }}
                 </bk-radio-button>
             </bk-radio-group>
-            <div class="prop-action">
+            <div
+                v-if="isRenderValueCom"
+                class="prop-action">
                 <template v-for="(renderCom, index) in renderComponentList">
                     <!-- 控件类型或者值的类型匹配都将展示，如：控制类型为 src 值的类型为 string(支持src输入加选择模式之前) 都需展示 -->
                     <template v-if="selectValueType === renderCom.type || selectValueType === renderCom.valueType">
@@ -59,9 +74,13 @@
     </div>
 </template>
 <script>
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
     import variableSelect from '@/components/variable/variable-select'
+    import {
+        determineShowPropInnerVariable
+    } from 'shared/variable'
 
     import {
         getDefaultValueByType,
@@ -102,6 +121,24 @@
         return target
     }
 
+    // 属性类型转为该变量接受的值类型
+    const getPropValueType = (type) => {
+        const valueMap = {
+            'size': 'string',
+            'text': 'string',
+            'paragraph': 'string',
+            'html': 'string',
+            'json': 'object',
+            'icon': 'string',
+            'van-icon': 'string',
+            'float': 'number',
+            'src': 'string',
+            'srcset': 'array',
+            'object': 'hidden'
+        }
+        return valueMap[type] || type
+    }
+
     export default {
         name: 'render-prop-modifier',
         components: {
@@ -125,6 +162,9 @@
         },
         props: {
             componentType: String,
+            componentId: {
+                type: String
+            },
             // prop 的 name
             name: {
                 type: String,
@@ -144,7 +184,8 @@
         data () {
             return {
                 selectValueType: '',
-                formData: {}
+                formData: {},
+                isRenderValueCom: false
             }
         },
         computed: {
@@ -223,20 +264,6 @@
                     'srcset': 'srcset'
                 }
 
-                // 属性“值”的类型映射
-                const valueMap = {
-                    'text': 'string',
-                    'paragraph': 'string',
-                    'html': 'string',
-                    'json': 'object',
-                    'icon': 'string',
-                    'van-icon': 'string',
-                    'float': 'number',
-                    'src': 'string',
-                    'srcset': 'array',
-                    'object': 'hidden'
-                }
-
                 let realType = config.type
                 // 属性type支持配置数组，内部逻辑全部按数组处理
                 if (typeof config.type === 'string') {
@@ -249,7 +276,7 @@
                         res.push({
                             type: propType,
                             component: comMap[renderType],
-                            valueType: valueMap[propType] || propType
+                            valueType: getPropValueType(propType)
                         })
                     }
                     return res
@@ -279,12 +306,18 @@
              */
             introTips () {
                 const tip = transformTipsWidth(this.describe.tips)
-                const disabled = !tip
-                return typeof tip === 'string' ? {
-                    disabled,
-                    content: tip,
-                    interactive: false
-                } : Object.assign(tip, { disabled, interactive: false })
+                const commonOptions = {
+                    disabled: !tip,
+                    interactive: false,
+                    placements: ['left-start'],
+                    boundary: 'window'
+                }
+                return typeof tip === 'string'
+                    ? {
+                        ...commonOptions,
+                        content: tip
+                    }
+                    : Object.assign(tip, commonOptions)
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量
@@ -292,6 +325,33 @@
              */
             variableSelectEnable () {
                 return !this.renderComponentList.some(com => com.type === 'remote')
+            },
+            /**
+             * @desc 是否展示内置变量
+             * @returns { Boolean }
+             */
+            showInnerVariable () {
+                return determineShowPropInnerVariable(this.describe.type, this.name, this.componentType)
+            },
+            /**
+             * 内置变量提示
+             */
+            innerVariableTips () {
+                return `${this.name} 属性有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.name}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
+            },
+            /**
+             * 内置变量名
+             */
+            innerVariableCode () {
+                const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
+                const isChart = this.componentType === 'chart'
+                let innerVariableCode
+                if (isChart) {
+                    innerVariableCode = perVariableName
+                } else {
+                    innerVariableCode = `${perVariableName}${camelCase(this.name, { transform: camelCaseTransformMerge })}`
+                }
+                return innerVariableCode
             }
         },
         watch: {
@@ -307,13 +367,10 @@
                             const lastValueType = Array.isArray(lastValue.valueType)
                                 ? lastValue.valueType[0]
                                 : lastValue.valueType
-                            // fix: 错误数据转换，表达式类型的 format 包存成了 value
-                            const isFixedComputeFormat = lastValue.format === 'value'
-                                && /=/.test(lastValue.code)
-                                && !/</.test(lastValue.code)
+                            
                             this.formData = Object.freeze({
                                 ...this.formData,
-                                format: isFixedComputeFormat ? 'expression' : lastValue.format,
+                                format: lastValue.format,
                                 code: lastValue.code,
                                 valueType: lastValueType
                             })
@@ -324,6 +381,7 @@
                             }
                         }
                         this.selectValueType = this.formData.valueType
+                        this.isRenderValueCom = true
                     })
                 },
                 immediate: true
@@ -337,7 +395,7 @@
             } = this.describe
 
             const defaultValue = val !== undefined ? val : getDefaultValueByType(type)
-            const valueTypeInclude = Array.isArray(type) ? type : [type]
+            const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
 
             // 构造 variable-select 的配置
             this.variableSelectOptions = {
@@ -346,18 +404,19 @@
                 format: 'value',
                 formatInclude: ['value', 'variable', 'expression'],
                 code: defaultValue,
-                valueTypeInclude: valueTypeInclude
+                valueTypeInclude: valueTypes,
+                limitTypes: valueTypes
             }
 
             // prop 的初始值
             this.formData = Object.freeze({
                 format: 'value',
                 code: defaultValue,
-                valueType: valueTypeInclude[0],
+                valueType: valueTypes[0],
                 renderValue: defaultValue,
                 payload: this.lastValue.payload || {}
             })
-
+            
             // 编辑状态缓存
             this.propTypeValueMemo = {
                 [this.formData.valueType]: {
@@ -370,12 +429,18 @@
             /**
              * @desc 同步更新用户操作
              */
-            triggerChange () {
+            triggerChange (from) {
                 this.isInnerChange = true
                 // 缓存用户本地编辑值
                 this.propTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.code || this.formData.renderValue,
+                    val: this.formData.code,
                     payload: this.formData.payload
+                }
+
+                // 如果切换 format 导致到时 code 为空，
+                // 为了页面渲染效果将 propTypeValue 重置为默认
+                if (from === 'format' && !this.formData.code) {
+                    this.propTypeValueMemo[this.formData.valueType].val = this.formData.renderValue
                 }
 
                 this.$emit('on-change', this.name, {
@@ -390,19 +455,27 @@
             handleVariableFormatChange (variableSelectData) {
                 const {
                     format,
-                    code,
                     renderValue
                 } = variableSelectData
+                let { code } = variableSelectData
+
+                // format 切换为 value，这个时候 code 为空
+                // 如果有缓存对应 valueType 的值切换后默认使用缓存值
+                if (format === 'value'
+                    && code === ''
+                    && this.propTypeValueMemo[this.formData.valueType]) {
+                    code = this.propTypeValueMemo[this.formData.valueType].val
+                }
                 this.formData = Object.freeze({
                     ...this.formData,
                     format,
                     code,
                     renderValue
                 })
-                this.triggerChange()
+                this.triggerChange('format')
             },
             /**
-             * @desc prop 值得类型切换
+             * @desc format 等于 value 时 value 的类型切换
              * @param { String } valueType
              */
             handleValueTypeChange (valueType) {
@@ -436,7 +509,7 @@
                 this.triggerChange()
             },
             /**
-             * @desc 更新 prop value 的配置
+             * @desc format 等于 value 时 编辑 code
              * @param { String } name
              * @param { Any } value
              * @param { String } type
@@ -509,27 +582,39 @@
         .option-col-drag {
             cursor: move;
             margin-right: -10px;
-            padding-left: 220px;
+            padding-left: 215px;
         }
     }
     .modifier-prop {
         margin: 0 10px;
         .prop-name {
-            display: flex;
-            align-items: center;
-            height: 32px;
+            line-height: 30px;
             font-size: 14px;
             color: #63656E;
             word-break: keep-all;
-            max-width: calc(100% - 80px);
+            width: 100%;
             .label {
                 border-bottom: 1px dashed #979ba5;
                 cursor: pointer;
+                max-width: calc(100% - 65px);
+                line-height: 19px;
+                display: inline-block;
+                margin-top: 6px;
             }
             span {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+            }
+            .inner-variable {
+                font-size: 12px;
+                line-height: 30px;
+                display: block;
+                cursor: pointer;
+                width: 100%;
+                background: #F5F7FA;
+                padding: 0 6px;
+                margin-bottom: 5px;
             }
             /* .icon-info-circle {
                 padding: 4px;
