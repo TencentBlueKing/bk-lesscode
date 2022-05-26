@@ -8,6 +8,7 @@
             trigger="click"
             theme="light"
             ext-cls="g-popover-empty-padding"
+            class="choose-function-popover"
             :tippy-options="{ arrow: false }"
             :on-show="getFunctionListFromApi"
         >
@@ -316,6 +317,12 @@
             box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
         }
     }
+    .choose-function-popover {
+        width: 100%;
+        ::v-deep .bk-tooltip-ref {
+            width: 100%;
+        }
+    }
     .panel-item {
         display: flex;
         align-items: center;
@@ -453,8 +460,5 @@
     }
     ::v-deep .tippy-active .choose-input .bk-input-text input {
         border-color: #3a84ff !important;
-    }
-    ::v-deep .bk-tooltip, ::v-deep .bk-tooltip-ref {
-        width: 100%;
     }
 </style>

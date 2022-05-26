@@ -3,6 +3,7 @@
         :options="variableSelectOptions"
         :value="formData"
         :remote-config="remoteConfig"
+        :show="variableSelectEnable"
         @change="handleVariableFormatChange">
         <template v-slot:title>
             <section class="slot-title-wrapper">
@@ -17,6 +18,19 @@
                         ({{ formData.valueType | capFirstLetter }})
                     </span>
                 </span>
+                <div
+                    v-if="showInnerVariable"
+                    v-bk-tooltips="{
+                        content: innerVariableTips,
+                        width: '300',
+                        placements: ['left-start'],
+                        boundary: 'window'
+                    }"
+                    class="inner-variable"
+                >
+                    <i class="bk-icon icon-info"></i>
+                    内置变量：{{innerVariableCode}}
+                </div>
                 <template v-if="describe.name && describe.name.length > 1">
                     <span class="slot-label">组件标签</span>
                     <bk-radio-group
@@ -49,6 +63,7 @@
             </bk-radio-group>
         </template>
         <component
+            v-if="isRenderValueCom"
             :is="renderValueComponent"
             :remote-validate="describe.remoteValidate"
             :slot-val="slotTypeValueMemo[formData.valueType]"
@@ -58,8 +73,12 @@
 </template>
 
 <script>
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import variableSelect from '@/components/variable/variable-select'
+    import {
+        determineShowSlotInnerVariable
+    } from 'shared/variable'
 
     import {
         getDefaultValueByType,
@@ -114,6 +133,9 @@
         },
 
         props: {
+            componentId: {
+                type: String
+            },
             name: {
                 type: String
             },
@@ -129,8 +151,8 @@
 
         data () {
             return {
-                mutlTypeVal: {},
-                formData: {}
+                formData: {},
+                isRenderValueCom: false
             }
         },
 
@@ -171,6 +193,34 @@
                     show: false,
                     value: ''
                 }
+            },
+            /**
+             * @desc type 支持 remote 类型的不支持配置变量
+             * @returns { Boolean }
+             */
+            variableSelectEnable () {
+                // 远程函数不使用变量，只使用内置变量
+                const noRemote = !this.describe.type.includes('remote')
+                // 已启用的依然启用
+                const hasEnable = ['expression', 'variable'].includes(this.formData.format)
+                return noRemote || hasEnable
+            },
+            /**
+             * @desc 是否展示内置变量
+             * @returns { Boolean }
+             */
+            showInnerVariable () {
+                return determineShowSlotInnerVariable(this.describe.type)
+            },
+            innerVariableTips () {
+                return `${this.describe.displayName}有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.describe.displayName}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
+            },
+            /**
+             * 内置变量名
+             */
+            innerVariableCode () {
+                const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
+                return `${perVariableName}Slot${this.name}`
             }
         },
         watch: {
@@ -180,28 +230,25 @@
                         this.isInnerChange = false
                         return
                     }
-                    if (lastValue && lastValue.valueType) {
-                        // setTimeout 让 watch 第一次执行时在 created 之后
-                        setTimeout(() => {
-                            // fix: 错误数据转换，表达式类型的 format 包存成了 value
-                            const isFixedComputeFormat = lastValue.format === 'value'
-                                && /=/.test(lastValue.code)
-                                && !/</.test(lastValue.code)
+                    // setTimeout 让 watch 第一次执行时在 created 之后
+                    setTimeout(() => {
+                        if (lastValue && lastValue.valueType) {
                             this.formData = Object.freeze({
                                 ...this.formData,
-                                format: isFixedComputeFormat ? 'expression' : lastValue.format,
+                                format: lastValue.format,
                                 component: lastValue.component,
                                 code: lastValue.code,
                                 payload: lastValue.payload || {},
                                 valueType: lastValue.valueType
                             })
-                            this.slotTypeValueMemo[this.formData.valueType] = {
-                                val: this.formData.code,
-                                payload: this.formData.payload,
-                                component: this.formData.component
+                            this.slotTypeValueMemo[lastValue.valueType] = {
+                                val: lastValue.code,
+                                payload: lastValue.payload,
+                                component: lastValue.component
                             }
-                        })
-                    }
+                        }
+                        this.isRenderValueCom = true
+                    })
                 },
                 immediate: true
             }
@@ -248,12 +295,17 @@
             /**
              * @desc 同步更新用户操作
              */
-            triggerChange () {
+            triggerChange (from) {
                 // 缓存用户本地编辑值
                 this.slotTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.code || this.formData.renderValue,
+                    val: this.formData.code,
                     payload: this.formData.payload,
                     component: this.formData.component
+                }
+                // 如果切换 format 导致到时 code 为空，
+                // 为了页面渲染效果将 slotTypeValue 重置为默认
+                if (from === 'format' && !this.formData.code) {
+                    this.slotTypeValueMemo[this.formData.valueType].val = this.formData.renderValue
                 }
                 this.isInnerChange = true
                 this.$emit('on-change', this.name, {
@@ -265,13 +317,26 @@
              * @param { Object } variableSelectData
              */
             handleVariableFormatChange (variableSelectData) {
+                const {
+                    format,
+                    renderValue
+                } = variableSelectData
+                let { code } = variableSelectData
+
+                // format 切换为 value，这个时候 code 为空
+                // 如果有缓存对应 valueType 的值切换后默认使用缓存值
+                if (format === 'value'
+                    && code === ''
+                    && this.slotTypeValueMemo[this.formData.valueType]) {
+                    code = this.slotTypeValueMemo[this.formData.valueType].val
+                }
                 this.formData = Object.freeze({
                     ...this.formData,
-                    format: variableSelectData.format,
-                    code: variableSelectData.code,
-                    renderValue: variableSelectData.renderValue
+                    format,
+                    code,
+                    renderValue
                 })
-                this.triggerChange()
+                this.triggerChange('format')
             },
             /**
              * @desc slot 组件类型切换
@@ -347,6 +412,9 @@
 </script>
 
 <style lang="postcss" scoped>
+    .slot-title-wrapper {
+        width: 100%;
+    }
     .slot-name {
         line-height: 32px;
     }
@@ -366,5 +434,15 @@
         font-size: 12px;
         font-weight: bold;
         color: #63656E;
+    }
+    .inner-variable {
+        font-size: 12px;
+        line-height: 30px;
+        display: block;
+        cursor: pointer;
+        width: 100%;
+        background: #F5F7FA;
+        padding: 0 6px;
+        margin-bottom: 5px;
     }
 </style>

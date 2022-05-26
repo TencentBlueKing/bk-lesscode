@@ -8,6 +8,7 @@
             :name="slotName"
             :last-value="lastSlots[slotName]"
             :describe="slotConfig"
+            :component-id="componentId"
             @on-change="handleChange" />
     </div>
 </template>
@@ -38,11 +39,13 @@
                 return
             }
             const {
+                componentId,
                 material,
                 renderSlots,
                 layoutSlotType
             } = this.componentNode
             const slotConfig = material.slots || {}
+            this.componentId = componentId
             
             this.config = Object.keys(slotConfig).reduce((result, slotName) => {
                 // slot 支持拖拽就不支持配置

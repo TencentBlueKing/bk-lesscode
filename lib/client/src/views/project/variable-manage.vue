@@ -13,7 +13,10 @@
                 <br>4. 这里为应用级公共变量，各页面私有变量请前往页面编辑-》页面变量查看
             </span>
         </variable-table>
-        <variable-form />
+        <variable-form
+            :is-show.sync="variableFormData.isShow"
+            :form-data="variableFormData.formData"
+        />
     </article>
 </template>
 
@@ -31,7 +34,11 @@
         data () {
             return {
                 isLoading: false,
-                variableName: ''
+                variableName: '',
+                variableFormData: {
+                    isShow: false,
+                    formData: {}
+                }
             }
         },
 
@@ -47,7 +54,7 @@
         },
 
         methods: {
-            ...mapActions('variable', ['getAllVariable', 'setVariableFormData']),
+            ...mapActions('variable', ['getAllVariable']),
 
             getList () {
                 const params = {
@@ -64,8 +71,10 @@
             },
 
             showVariableForm () {
-                const data = { show: true, form: {} }
-                this.setVariableFormData(data)
+                this.variableFormData = {
+                    isShow: true,
+                    formData: {}
+                }
             }
         }
     }

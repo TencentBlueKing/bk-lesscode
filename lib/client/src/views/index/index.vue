@@ -41,7 +41,6 @@
             <modifier-panel slot="right" />
         </draw-layout>
         <novice-guide ref="guide" :data="guideStep" />
-        <variable-form />
         <save-template-dialog />
     </main>
 </template>
@@ -51,7 +50,6 @@
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
     import NoviceGuide from '@/components/novice-guide'
-    import VariableForm from '@/components/variable/variable-form'
     import ExtraLinks from '@/components/ui/extra-links'
     import SaveTemplateDialog from '@/components/template/save-template-dialog'
     import DrawLayout from './components/draw-layout'
@@ -68,7 +66,6 @@
     export default {
         components: {
             NoviceGuide,
-            VariableForm,
             ExtraLinks,
             SaveTemplateDialog,
             DrawLayout,
