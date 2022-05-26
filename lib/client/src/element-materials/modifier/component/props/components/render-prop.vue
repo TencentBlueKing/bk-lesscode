@@ -509,7 +509,7 @@
         .option-col-drag {
             cursor: move;
             margin-right: -10px;
-            padding-left: 220px;
+            padding-left: 215px;
         }
     }
     .modifier-prop {
