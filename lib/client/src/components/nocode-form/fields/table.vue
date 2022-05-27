@@ -4,7 +4,30 @@
             <template v-for="col in field.choice">
                 <bk-table-column :label="col.name" :key="col.key">
                     <template slot-scope="props">
-                        <bk-input v-if="!viewMode && !disabled" v-model="props.row[col.key]" @change="change"></bk-input>
+                        <bk-input
+                            v-if="!viewMode && !disabled"
+                            v-model="props.row[col.key]"
+                            @change="change"></bk-input>
+                        <bk-select
+                            searchable
+                            v-if="!viewMode && !disabled && ['select','multiselect'].includes(col.display)"
+                            :multiple="col.display === 'multiselect'"
+                            v-model="props.row[col.key]"
+                            @change="change">
+                        </bk-select>
+                        <bk-date-picker
+                            v-if="!viewMode && !disabled && col.display === 'datetime'"
+                            :transfer="true"
+                            v-model="props.row[col.key]"
+                            @change="change">
+                        </bk-date-picker>
+                        <bk-date-picker
+                            v-if="!viewMode && !disabled && col.display === 'date'"
+                            v-model="props.row[col.key]"
+                            :transfer="true"
+                            :type="'datetime'"
+                            @change="change">
+                        </bk-date-picker>
                         <span v-else>{{ props.row[col.key] || '--' }}</span>
                     </template>
                 </bk-table-column>

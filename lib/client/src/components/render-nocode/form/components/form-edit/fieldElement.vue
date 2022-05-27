@@ -118,7 +118,9 @@
     padding:0 4px ;
     font-size: 12px;
   }
-
+  &:hover{
+     cursor: pointer;
+  }
 }
 
 .slide-left-enter,
