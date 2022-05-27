@@ -1,9 +1,28 @@
 <template>
     <!--    <div>form-material</div>-->
     <div class="side-panel">
+        <div class="search-container">
+            <bk-input
+                clearable
+                :placeholder="'组件名称'"
+                :right-icon="'bk-icon icon-search'"
+                v-model="searchValue"
+                @enter="handleSearch"
+                @clear="handleResetField">
+            </bk-input>
+        </div>
         <div class="fields-list-container">
             <div v-for="(group, index) in list" class="field-group" :key="index">
-                <h4 class="group-name">{{ group.name }}</h4>
+                <div class="group-name">
+                    <span>{{ group.name }}</span>
+                    <i
+                        class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                        :class="{
+                            floded: group.isFolded
+                        }"
+                        @click="handleToggle(index,group.isFolded)" />
+                </div>
+                <bk-divider />
                 <draggable
                     class="list-wrap"
                     handle=".field-item"
@@ -14,13 +33,22 @@
                         pull: 'clone',
                         put: false
                     }"
+                    v-if="group.items.length"
                     :list="group.items"
                     :move="handleMove"
                     @end="handleEnd">
-                    <li v-for="field in group.items" class="field-item drag-entry" :data-type="field.type" :key="field.type">
-                        {{ field.name }}
-                    </li>
+                    <template v-if="!group.isFolded">
+                        <li v-for="field in group.items" class="field-item drag-entry" :data-type="field.type" :key="field.type">
+                            {{ field.name }}
+                        </li>
+                    </template>
                 </draggable>
+                <bk-exception
+                    class="exception-wrap-item exception-part"
+                    type="empty"
+                    scene="part"
+                    v-else>
+                </bk-exception>
             </div>
         </div>
     </div>
@@ -29,33 +57,37 @@
 <script>
     import draggable from 'vuedraggable'
     import { FIELDS_TYPES } from '../../constant/forms'
+
     export default {
         components: {
             draggable
         },
         data () {
             return {
-                list: this.getGroupedFields()
+                list: this.getGroupedFields(FIELDS_TYPES),
+                searchValue: ''
             }
         },
         methods: {
-            getGroupedFields () {
+            getGroupedFields (fieldsArr) {
                 const layout = ['DESC', 'DIVIDER']
                 const group = [
                     {
-                        name: '基础控件',
-                        items: []
+                        name: '布局控件',
+                        items: [],
+                        isFolded: false
                     },
                     {
-                        name: '布局控件',
-                        items: []
+                        name: '基础控件',
+                        items: [],
+                        isFolded: false
                     }
                 ]
-                FIELDS_TYPES.forEach(item => {
+                fieldsArr.forEach(item => {
                     if (layout.includes(item.type)) {
-                        group[1].items.push(item)
-                    } else {
                         group[0].items.push(item)
+                    } else {
+                        group[1].items.push(item)
                     }
                 })
                 return group
@@ -65,6 +97,16 @@
             },
             handleEnd () {
                 this.$emit('end')
+            },
+            handleToggle (index, isFolded) {
+                this.$set(this.list[index], 'isFolded', !isFolded)
+            },
+            handleSearch () {
+                const tempField = FIELDS_TYPES.filter(item => item.name.includes(this.searchValue))
+                this.list = this.getGroupedFields(tempField)
+            },
+            handleResetField () {
+                this.list = this.getGroupedFields(FIELDS_TYPES)
             }
         }
     }
@@ -72,7 +114,7 @@
 <style lang="postcss" scoped>
 .side-panel {
   position: relative;
-  width: 340px;
+  width: 300px;
   height: 100%;
   background: #fcfcfc;
   z-index: 1;
@@ -89,28 +131,59 @@
 }
 
 .fields-list-container {
-  padding: 8px 16px 0;
   height: calc(100% - 44px);
   overflow: auto;
+  width: 100%;
+  background: #FFFFFF;
+  box-shadow: 1px 0 0 0 #DCDEE5;
 }
 
 .group-name {
-  line-height: 20px;
-  color: #c4c6cc;
+  padding: 0 12px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 12px;
-  font-weight: normal;
+  color: #313238;
+  font-weight: Bold;
+  position: relative;
+
+  .toggle-arrow {
+    position: absolute;
+    display: block;
+    line-height: 40px;
+    top: 0;
+    right: 12px;
+    font-size: 24px;
+    color: #979BA5;
+    transition: all .1s linear;
+  //transform: rotate(-270deg);
+
+    &.floded {
+      transform: rotate(90deg);
+    }
+  }
+}
+.search-container{
+  padding: 12px;
+}
+
+/deep/ .bk-divider {
+  margin: 0 !important;
 }
 
 .list-wrap {
   display: flex;
   justify-content: space-between;
   flex-flow: row wrap;
+//margin-top: 12px; padding: 12px;
 }
 
 .field-item {
   margin-bottom: 8px;
   padding: 0 4px 0 16px;
-  width: 140px;
+  width: 134px;
   height: 32px;
   line-height: 32px;
   font-size: 12px;
@@ -126,4 +199,5 @@
     border-color: #3a84ff;
   }
 }
+
 </style>

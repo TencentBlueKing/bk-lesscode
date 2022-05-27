@@ -7,16 +7,19 @@
             :group="{ name: 'form', pull: true, put: ['menu', 'half-row-field'] }"
             @add="add"
             @end="end">
-            <field-element
-                v-for="(item, index) in fields"
-                :key="`${item.key}_${index}_${item.timeStamp}`"
-                :class="{ actived: selectedIndex === index }"
-                :field="item"
-                @action="handleFormAction($event, index)">
-            </field-element>
-            <bk-exception v-if="fields.length === 0" class="fields-empty" type="empty" scene="part">
-                暂无内容，请在左侧选择需要添加的控件
-            </bk-exception>
+            <template v-if="fields.length !== 0">
+                <field-element
+                    v-for="(item, index) in fields"
+                    :key="`${item.key}_${index}_${item.timeStamp}`"
+                    :class="{ actived: selectedIndex === index }"
+                    :field="item"
+                    :curfield="curfield"
+                    @action="handleFormAction($event, index)">
+                </field-element>
+            </template>
+            <div v-else class="fields-empty">
+                请拖入组件
+            </div>
         </draggable>
     </div>
 </template>
@@ -35,12 +38,16 @@
         props: {
             fields: {
                 type: Array,
-                default: () => []
+                default: () => ([])
             },
             formId: [String, Number],
             hover: {
                 type: Boolean,
                 default: false
+            },
+            curfield: {
+                type: Object,
+                default: () => ({})
             }
         },
         data () {
@@ -164,7 +171,6 @@
 @import "@/css/mixins/scroller";
 
 .form-panel {
-  margin: 24px;
   height: calc(100vh - 258px);
   background: #ffffff;
   box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
@@ -173,10 +179,8 @@
 
 .fields-container {
   @mixin scroller;
-  padding: 35px 0;
   height: 100%;
-  overflow: auto;
-
+  overflow: hidden;
   &.hover {
     outline: 2px dashed #1768ef;
     border-radius: 4px;
@@ -188,23 +192,29 @@
 }
 
 .field-element {
+  position: relative;
   &.actived {
-    border: 1px dashed #3a84ff;
+    border: 1px solid #3a84ff;
+    background: rgba(225,236,255,0.60);;
   }
 }
 
-/deep/ .fields-empty {
-  padding-top: 100px;
+.actions-area{
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 99;
+}
 
-  .bk-exception-img {
-    width: 300px;
-    height: auto;
-  }
-
-  .bk-exception-text {
-    font-size: 20px;
-    color: #63656e;
-  }
+.fields-empty {
+  margin: 24px 24px 0;
+  height: 48px;
+  background: #FAFBFD;
+  border: 1px solid #C4C6CC;
+  font-size: 12px;
+  color: #63656E;
+  text-align: center;
+  line-height: 48px;
 }
 </style>
 <style lang="postcss">

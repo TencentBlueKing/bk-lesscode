@@ -21,8 +21,9 @@
         methods: {
             async handleClearAll () {
                 this.$bkInfo({
-                    title: '确定清空？',
-                    subTitle: '清空',
+                    title: '清空',
+                    subTitle: '清空将会清除画布下所有配置，且无法恢复，你还要继续吗？',
+                    type: 'warning',
                     confirmFn: () => {
                         this.$store.commit('nocode/formSetting/resetFieldList')
                         bus.$emit('restFieldList')

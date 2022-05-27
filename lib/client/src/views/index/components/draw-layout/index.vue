@@ -67,13 +67,13 @@
 </script>
 <style lang="postcss" module>
     @import "@/css/mixins/scroller";
-    $layoutLeftWidth: 340px;
+    $layoutLeftWidth: 300px;
     $layoutRightWidth: 300px;
 
     .draw-layout{
         position: relative;
         padding-right: 300px;
-        padding-left: 340px;
+        padding-left: 300px;
         transition: all .1s;
         &.is-left-collapsed{
             padding-left: 0;
@@ -82,6 +82,7 @@
                 overflow: hidden;
             }
             .collapsed-left-btn{
+
                 left: 0;
                 :global(.bk-drag-angle-left){
                     transform: rotate(180deg);
@@ -151,15 +152,19 @@
             }
         }
         .collapsed-left-btn{
-            left: 340px;
-            border-radius: 0 8px 8px 0;
+            left: 300px;
+            border-radius: 0 4px 4px 0;
+            width: 16px;
+            height: 64px;
             :global(.bk-drag-angle-left) {
                 transform: rotate(0deg);
             }
         }
         .collapsed-right-btn{
             right: 300px;
-            border-radius: 8px 0 0 8px;
+            border-radius:  4px 0  0 4px;
+            width: 16px;
+            height: 64px;
             :global(.bk-drag-angle-left) {
                 transform: rotate(180deg);
             }

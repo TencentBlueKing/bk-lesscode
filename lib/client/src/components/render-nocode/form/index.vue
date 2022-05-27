@@ -6,6 +6,7 @@
         <layout style="margin: 20px 0;height: 100%">
             <form-content
                 :fields="fieldsList"
+                :curfield="crtField"
                 @add="handleAddField"
                 @select="handleSelectField"
                 @copy="handleCopyField"
