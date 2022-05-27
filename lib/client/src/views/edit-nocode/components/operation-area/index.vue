@@ -74,7 +74,7 @@
   min-width: min-content;
   padding: 0 20px;
   /* margin: 20px 0; */
-  overflow: hidden;
+  overflow: auto;
   @mixin scroller;
 
   .operation-wraper {
