@@ -221,12 +221,6 @@
             margin: 0 4px;
         }
     }
-
-    .list-card.model-list-card {
-        .card-item {
-            color: bleed;
-        }
-    }
 </style>
 
 <style lang="postcss" scoped>
