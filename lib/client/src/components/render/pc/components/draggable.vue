@@ -1,7 +1,7 @@
 <template>
     <vue-draggable
         ref="draggable"
-        :class="$style['drag-area']"
+        :class="$style['drag']"
         :list="list"
         :group="dragGroup"
         :chosen-class="$style['chosen']"
@@ -51,34 +51,26 @@
             }
         },
         created () {
-            if (!this.attachToInteractiveComponent) {
-                const dragableCheck = (event) => {
-                    /**
-                     * 交互式组件状态更新
-                     * @description 当交互式组件激活时，不属于交互式组件的drag area不可拖动
-                     *  只有关闭后，才可以继续拖拽
-                     */
-                    if (event.interactiveShow) {
-                        this.dragGroup = Object.freeze({
-                            pull: false,
-                            put: false
-                        })
-                    } else {
-                        this.dragGroup = this.group
-                    }
+            const dragableCheck = (event) => {
+                /**
+                 * 交互式组件状态更新
+                 * @description 当交互式组件激活时，不属于交互式组件的drag area不可拖动
+                 *  只有关闭后，才可以继续拖拽
+                 */
+                if (event.interactiveShow
+                    && !this.attachToInteractiveComponent) {
+                    this.dragGroup = Object.freeze({
+                        pull: false,
+                        put: false
+                    })
+                } else {
+                    this.dragGroup = this.group
                 }
-                const removeChildCallback = (event) => {
-                    if (event.child.interactiveShow) {
-                        this.dragGroup = this.group
-                    }
-                }
-                LC.addEventListener('removeChild', removeChildCallback)
-                LC.addEventListener('toggleInteractive', dragableCheck)
-                this.$once('hook:beforeDestroy', () => {
-                    LC.removeEventListener('removeChild', removeChildCallback)
-                    LC.removeEventListener('toggleInteractive', dragableCheck)
-                })
             }
+            LC.addEventListener('toggleInteractive', dragableCheck)
+            this.$once('hook:beforeDestroy', () => {
+                LC.removeEventListener('toggleInteractive', dragableCheck)
+            })
         },
         mounted () {
             setTimeout(() => {
@@ -108,15 +100,12 @@
              * @param { Object } dragEvent
              */
             handleStart (event) {
-                LC.triggerEventListener('componentDragStart', {
-                    type: 'componentDragStart'
-                })
                 this.$emit('start', event)
-                // LC.triggerEventListener('componentMouserleave')
-                // const activeNode = LC.getActiveNode()
-                // if (activeNode) {
-                //     activeNode.activeClear()
-                // }
+                LC.triggerEventListener('componentMouserleave')
+                const activeNode = LC.getActiveNode()
+                if (activeNode) {
+                    activeNode.activeClear()
+                }
             },
             /**
              * @desc 结束拖拽
@@ -125,9 +114,6 @@
             handleEnd (event) {
                 this.styles = {}
                 setMousedown(false)
-                LC.triggerEventListener('componentDragEnd', {
-                    type: 'componentDragEnd'
-                })
                 this.$emit('end', event)
             },
             /**
@@ -135,8 +121,6 @@
              * @param { Object } dragEvent
              */
             handleAdd (event) {
-                // fix: vue-draggable 内部索引不更新的问题
-                this.$refs.draggable.computeIndexes()
                 setMousedown(false)
                 this.$emit('add', event)
             },
@@ -193,7 +177,7 @@
     }
 </script>
 <style lang="postcss" module>
-    .drag-area{
+    .drag{
         position: relative;
         width: 100%;
         height: 100%;

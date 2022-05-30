@@ -302,6 +302,10 @@
             */
             handleDelete (formItemNode) {
                 this.componentNode.removeChild(formItemNode)
+                // 更新 form 的 model prop
+                const model = { ...this.componentNode.prop.model }
+                delete model[formItemNode.prop.property]
+                this.componentNode.setProp('model', model)
             },
             /**
              * @desc 验证远程数据
