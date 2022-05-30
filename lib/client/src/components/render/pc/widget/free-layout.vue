@@ -29,6 +29,7 @@
                     'component'
                 ]
             }"
+            :class="$style['wrapper']"
             :ghost-class="$style['drag-ghost']"
             :force-fallback="false"
             @add="handleAdd">
@@ -240,6 +241,33 @@
                 color: #C4C6CC;
                 pointer-events: all;
             }
+        }
+    }
+    .wrapper{
+        & > [align-horizontal-left] {
+            left: 0 !important;
+        }
+        & > [align-horizontal-center] {
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+        }
+        & > [align-horizontal-right] {
+            left: unset !important;
+            right: 0 !important;
+        }
+        & > [align-vertical-top] {
+            top: 0 !important;
+        }
+        & > [align-vertical-center] {
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+        }
+        & > [align-vertical-bottom] {
+            top: unset !important;
+            bottom: 0 !important;
+        }
+        & > [align-horizontal-center][align-vertical-center]{
+            transform: translate(-50%, -50%) !important;
         }
     }
     .drag-ghost {

@@ -133,6 +133,9 @@
             this.lastStyles = Object.freeze(Object.assign({}, renderStyles))
 
             const updateCallback = _.debounce((event) => {
+                if (event.target.componentId !== this.componentId) {
+                    return
+                }
                 if (this.isInnerChange) {
                     this.isInnerChange = false
                     return
