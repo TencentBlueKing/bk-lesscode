@@ -67,8 +67,16 @@
                     this.dragGroup = this.group
                 }
             }
+            const removeChildCallback = (event) => {
+                if (event.child.interactiveShow) {
+                    this.dragGroup = this.group
+                }
+            }
+            
+            LC.addEventListener('removeChild', removeChildCallback)
             LC.addEventListener('toggleInteractive', dragableCheck)
             this.$once('hook:beforeDestroy', () => {
+                LC.removeEventListener('removeChild', removeChildCallback)
                 LC.removeEventListener('toggleInteractive', dragableCheck)
             })
         },
@@ -101,6 +109,9 @@
              */
             handleStart (event) {
                 this.$emit('start', event)
+                LC.triggerEventListener('componentDragStart', {
+                    type: 'componentDragStart'
+                })
                 LC.triggerEventListener('componentMouserleave')
                 const activeNode = LC.getActiveNode()
                 if (activeNode) {
@@ -114,6 +125,9 @@
             handleEnd (event) {
                 this.styles = {}
                 setMousedown(false)
+                LC.triggerEventListener('componentDragEnd', {
+                    type: 'componentDragEnd'
+                })
                 this.$emit('end', event)
             },
             /**
@@ -121,6 +135,8 @@
              * @param { Object } dragEvent
              */
             handleAdd (event) {
+                // fix: vue-draggable 内部索引不更新的问题
+                this.$refs.draggable.computeIndexes()
                 setMousedown(false)
                 this.$emit('add', event)
             },
