@@ -99,6 +99,7 @@
         },
         created () {
             this.optionList = JSON.parse(JSON.stringify(this.slotVal.val))
+            console.log('from list create')
             // this.trigger()
         },
         methods: {

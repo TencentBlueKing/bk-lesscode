@@ -60,7 +60,10 @@
             }, {})
             this.lastSlots = Object.freeze(_.cloneDeep(renderSlots))
 
-            const updateCallback = _.debounce(() => {
+            const updateCallback = _.debounce((event) => {
+                if (event.target.componentId !== this.componentId) {
+                    return
+                }
                 if (this.isInnerChange) {
                     this.isInnerChange = false
                     return

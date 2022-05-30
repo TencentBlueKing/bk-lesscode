@@ -53,6 +53,7 @@
     import ModifierProps from './props'
     import ModifierEvents from './events'
     import ModifierDirectives from './directives'
+    import ModifierAlign from './align'
 
     export default {
         name: '',
@@ -75,7 +76,7 @@
             modifierComList () {
                 // 当前属性面板的编辑组件
                 const comMap = {
-                    styles: [ModifierStyles],
+                    styles: [ModifierAlign, ModifierStyles],
                     props: [ModifierGird, ModifierForm, ModifierSlots, ModifierProps],
                     events: [ModifierEvents],
                     directives: [ModifierDirectives]

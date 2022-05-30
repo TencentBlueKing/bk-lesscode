@@ -21,7 +21,8 @@
         role="component-root"
         :style="Object.assign({}, componentData.style, safeStyles)"
         v-bind="{
-            [componentData.componentId]: ''
+            [componentData.componentId]: '',
+            ...bindAttrsAlign
         }"
         @mousedown.stop="handleMousedown"
         @mousemove="handleMousemove"
@@ -168,6 +169,7 @@
                 }
             }
             return {
+                bindAttrsAlign: {},
                 // 默认会继承组件的 style 配置，如果直接继承有些样式会造成排版问题需要重置
                 safeStyles: Object.assign({}, safeStyles),
                 // 百分比宽度时需要修正相对父级的值
@@ -204,6 +206,7 @@
                     this.safeStylesOfDisplay()
                     this.safeStyleOfWidth()
                     this.safeStyleOfHeight()
+                    this.updateAlign()
                     this.$forceUpdate()
                     this.$emit('component-update')
                 }
@@ -219,6 +222,7 @@
             this.safeStyleOfWidth()
             this.safeStyleOfHeight()
             this.setDefaultStyleWithAttachToFreelayout()
+            this.updateAlign()
             this.componentData.mounted(this.$refs.componentRoot)
             this.$emit('component-mounted')
         },
@@ -397,6 +401,15 @@
                     }
                 })
             },
+            updateAlign () {
+                this.bindAttrsAlign = {}
+                if (this.componentData.align.horizontal) {
+                    this.bindAttrsAlign[this.componentData.align.horizontal] = ''
+                }
+                if (this.componentData.align.vertical) {
+                    this.bindAttrsAlign[this.componentData.align.vertical] = ''
+                }
+            },
             /**
              * @desc 组件点击事件回调
              */
@@ -418,7 +431,7 @@
             /**
              * @desc 切换鼠标按下状态
              */
-            handleMouseup (event) {
+            handleMouseup () {
                 setMousedown(false)
             },
             /**
@@ -466,6 +479,59 @@
         &.precent-height{
             & > * {
                 height: 100% !important;
+            }
+        }
+        &[align-horizontal-left],
+        &[align-horizontal-center],
+        &[align-horizontal-right],
+        &[align-horizontal-space-between]{
+            & > div{
+                display: flex !important;
+                align-items: flex-start;
+            }
+            
+        }
+        &[align-horizontal-left]{
+            & > div{
+                justify-content: flex-start;
+            }
+        }
+        &[align-horizontal-center]{
+            & > div{
+                justify-content: center;
+            }
+        }
+        &[align-horizontal-right]{
+            & > div{
+                justify-content: flex-end;
+            }
+        }
+        &[align-horizontal-space-between]{
+            & > div{
+                justify-content: space-between;
+            }
+        }
+        &[align-vertical-top],
+        &[align-vertical-center],
+        &[align-vertical-bottom]{
+            & > div{
+                display: flex !important;
+            }
+            
+        }
+        &[align-vertical-top]{
+            & > div{
+                align-items: flex-start;
+            }
+        }
+        &[align-vertical-center]{
+            & > div{
+                align-items: center;
+            }
+        }
+        &[align-vertical-bottom]{
+            & > div{
+                align-items: flex-end;
             }
         }
     }

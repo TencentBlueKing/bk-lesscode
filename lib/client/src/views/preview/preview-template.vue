@@ -11,7 +11,6 @@
 
 <script>
     import Vue from 'vue'
-    import LC from '@/element-materials/core'
     import httpVueLoader from '@/common/http-vue-loader'
 
     window.previewCustomCompontensPlugin = []
@@ -110,10 +109,10 @@
                 this.isLoading = true
                 try {
                     if (this.type !== 'nav-template') {
-                        this.targetData.push(LC.parseTemplate(JSON.parse(this.detail.content || {})).toJSON())
+                        this.targetData.push(JSON.parse(this.detail.content || {}))
                     }
                 } catch (err) {
-                    this.$bkMesseage({
+                    this.$bkMessage({
                         theme: 'error',
                         message: 'targetData格式错误'
                     })
@@ -151,7 +150,7 @@
                         this.isLoading = false
                     }, 300)
                 } catch (err) {
-                    this.$bkMesseage({
+                    this.$bkMessage({
                         theme: 'error',
                         message: err.message || err
                     })
