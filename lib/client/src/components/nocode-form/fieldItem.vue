@@ -45,6 +45,7 @@
     import Textarea from './fields/textarea.vue'
     import Tree from './fields/tree.vue'
     import Upload from './fields/upload.vue'
+    import Divider from './fields/divider'
 
     // 注册fields文件夹下所有字段类型组件
     // function registerField() {
@@ -83,7 +84,8 @@
             Table: Table,
             Textarea: Textarea,
             Tree: Tree,
-            Upload: Upload
+            Upload: Upload,
+            Divider: Divider
         },
         props: {
             field: {

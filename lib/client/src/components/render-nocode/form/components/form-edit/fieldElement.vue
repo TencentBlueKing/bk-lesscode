@@ -9,16 +9,15 @@
                 <i class="drag-icon bk-icon icon-grag-fill"></i>
             </div>
         </transition>
+        <div class="actions-area" v-show="curfield.key === field.key">
+            <span class="name-area">{{`${curfield.type}-${curfield.key}`}}</span>
+            <span class="icon-area"><i class="bk-icon icon-copy" @click.stop="$emit('action', 'copy')"></i></span>
+            <span class="icon-area"> <i class="bk-drag-icon bk-drag-shanchu" @click.stop="$emit('action', 'delete')"></i></span>
+        </div>
         <div class="field-container">
             <div class="mask"></div>
             <field-item :field="field"></field-item>
         </div>
-        <transition name="slide-left">
-            <div v-show="isHover" class="actions-area">
-                <i class="bk-icon icon-copy" @click.stop="$emit('action', 'copy')"></i>
-                <i class="bk-icon icon-delete" @click.stop="$emit('action', 'delete')"></i>
-            </div>
-        </transition>
     </div>
 </template>
 <script>
@@ -31,6 +30,10 @@
         },
         props: {
             field: {
+                type: Object,
+                default: () => ({})
+            },
+            curfield: {
                 type: Object,
                 default: () => ({})
             }
@@ -51,9 +54,12 @@
   min-height: 86px;
   border: 1px solid transparent;
   vertical-align: top;
-  overflow: hidden;
   cursor: move;
   transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+
+  &:first-child{
+    margin-top: 24px;
+  }
   &:hover {
     background: #fafbfd;
     border-color: #dcdee5;
@@ -87,28 +93,33 @@
   color: #c4c6cc;
   z-index: 2;
 }
+
 .actions-area {
   position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  background: #fcfcfc;
-  border-left: 1px solid #dcdee5;
-  z-index: 2;
-  i {
-    padding: 6px 0;
-    width: 100%;
-    font-size: 14px;
-    color: #979ba5;
-    cursor: pointer;
-    &:hover {
-      color: #3a84ff;
-    }
+  left: 0;
+  top: -25px;
+  z-index: 99999;
+  display: inline-flex;
+  span{
+    display: block;
+    text-align: center;
+    margin-right: 2px;
+    background: #3A84FF;
+    color: #fff;
+    border-radius: 2px;
+  }
+  .icon-area{
+    width: 20px;
+    height: 20px;
+  }
+
+  .name-area{
+    display: block;
+    padding:0 4px ;
+    font-size: 12px;
+  }
+  &:hover{
+     cursor: pointer;
   }
 }
 

@@ -99,7 +99,8 @@
             nocodeType: {
                 type: String,
                 default: ''
-            }
+            },
+            formId: [Number, String]
         },
         data () {
             return {

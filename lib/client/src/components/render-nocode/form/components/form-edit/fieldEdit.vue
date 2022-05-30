@@ -13,16 +13,8 @@
                 <bk-form-item label="文字位置">
                     <bk-select
                         v-model="fieldData.deviderAttr.align"
-                        :clearable="false"
-                        :searchable="true"
-                        :loading="regexListLoading"
-                        :disabled="
-                            regexListLoading ||
-                                fieldData.source === 'TABLE' ||
-                                (fieldData.meta && fieldData.meta.code === 'APPROVE_RESULT')
-                        "
                         @selected="change">
-                        <bk-option v-for="option in regexList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
+                        <bk-option v-for="option in alignList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
                 <bk-form-item label="线条颜色">
@@ -327,6 +319,7 @@
                     fieldsShowDefaultValue: FIELDS_SHOW_DEFAULT_VALUE,
                     fieldsDataSource: DATA_SOURCE_FIELD
                 },
+                alignList: [{ id: 'left', name: '居左' }, { id: 'right', name: '居右' }, { id: 'center', name: '居中' }],
                 dataSourceDialogShow: false,
                 readerOnlyShow: false,
                 requireConfigShow: false,
@@ -403,6 +396,7 @@
                     .join('_')
                     .toUpperCase()
                 this.fieldData.key = key
+                this.change()
             },
             handleAddFiles (e) {
                 const fileInfo = e.target.files[0]

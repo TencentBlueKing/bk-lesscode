@@ -6,6 +6,7 @@
         <layout style="margin: 20px 0;height: 100%">
             <form-content
                 :fields="fieldsList"
+                :curfield="crtField"
                 @add="handleAddField"
                 @select="handleSelectField"
                 @copy="handleCopyField"
@@ -14,7 +15,7 @@
             />
         </layout>
         <right-panel slot="right" :field="crtField" :list="fieldsList" @update="handleUpdateField" />
-        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" />
+        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" :form-id="formId" />
     </draw-layout>
 
 </template>

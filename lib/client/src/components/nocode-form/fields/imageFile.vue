@@ -53,6 +53,14 @@
         },
         methods: {
             async change (e) {
+                const { isMax, maxLength } = this.field.imageRange
+                if (isMax && maxLength <= this.imgList.length) {
+                    this.$bkMessage({
+                        message: '上传图片超过最大长度',
+                        theme: 'warning'
+                    })
+                    return
+                }
                 const files = Array.prototype.slice.call(e.target.files)
                 if (files.length === 0) {
                     return
@@ -84,6 +92,14 @@
                     : `${window.location.origin}${window.SITE_URL}${img.path}`
             },
             handleDelete (index) {
+                const { isMin, minLength } = this.field.imageRange
+                if (isMin && this.imgList.length <= minLength) {
+                    this.$bkMessage({
+                        message: '图片小于最小长度',
+                        theme: 'warning'
+                    })
+                    return
+                }
                 this.imgList.splice(index, 1)
                 this.update()
             },
