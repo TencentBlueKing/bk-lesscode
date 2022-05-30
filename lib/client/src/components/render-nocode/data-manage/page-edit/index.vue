@@ -159,7 +159,7 @@
             ...mapGetters('page', ['pageDetail']),
             formId () {
                 // todo 先验证一下接口后面把2去除
-                return this.pageDetail.formId || 2
+                return this.pageDetail.formId || 3
             }
         },
         created () {
@@ -215,7 +215,7 @@
             triggerHandler (item, index) {
                 this.filters.push(item)
                 this.selectList.splice(index, 1)
-                this.$emit('change', item)
+                this.change()
             },
             onConfirm () {
                 // 点击确认 同步自定义字段勾选的值
