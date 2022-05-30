@@ -10,19 +10,19 @@
                             @change="change"></bk-input>
                         <bk-select
                             searchable
-                            v-if="!viewMode && !disabled && ['select','multiselect'].includes(col.display)"
+                            v-else-if="!viewMode && !disabled && ['select','multiselect'].includes(col.display)"
                             :multiple="col.display === 'multiselect'"
                             v-model="props.row[col.key]"
                             @change="change">
                         </bk-select>
                         <bk-date-picker
-                            v-if="!viewMode && !disabled && col.display === 'datetime'"
+                            v-else-if="!viewMode && !disabled && col.display === 'datetime'"
                             :transfer="true"
                             v-model="props.row[col.key]"
                             @change="change">
                         </bk-date-picker>
                         <bk-date-picker
-                            v-if="!viewMode && !disabled && col.display === 'date'"
+                            v-else-if="!viewMode && !disabled && col.display === 'date'"
                             v-model="props.row[col.key]"
                             :transfer="true"
                             :type="'datetime'"
