@@ -9,101 +9,129 @@
   specific language governing permissions and limitations under the License.
 -->
 <template>
-    <div class="flow-edit-page-container">
-        <div class="flow-edit-page-header">
-            <div class="function-and-tool">
-                <div class="operation-select">
-                    <div class="select-item">
-                        <i class="bk-drag-icon bk-drag-huabu"></i>
-                        <span>流程设计</span>
-                    </div>
-                </div>
-                <div class="spilt-line" />
-                <action-tool></action-tool>
+    <section v-bkloading="{ isLoading: flowDetailLoading, zIndex: 2999 }" class="flow-edit-wrapper">
+        <div class="page-header-container">
+            <div class="nav-container">
+                <back-btn></back-btn>
+                <flow-selector></flow-selector>
             </div>
-            <generate-page-btns></generate-page-btns>
+            <div class="steps-container">
+                <bk-steps
+                    v-if="!flowDetailLoading"
+                    :controllable="true"
+                    :steps="steps"
+                    :cur-step="curStep"
+                    @step-changed="handleStepChange">
+                </bk-steps>
+            </div>
+            <div class="genarate-action">
+                <generate-data-manage-page></generate-data-manage-page>
+            </div>
         </div>
-        <div class="flow-edit-page-content">
-            <flow-edit></flow-edit>
+        <div v-if="!flowDetailLoading" class="flow-edit-main">
+            <router-view :id="flowDetail.workflow_id" :flow-config="flowDetail"></router-view>
         </div>
-    </div>
+    </section>
 </template>
 <script>
-    import ActionTool from './components/action-tool'
-    import GeneratePageBtns from './components/generate-page-btns/index.vue'
-    import FlowEdit from '@/components/flow/index.vue'
+    import BackBtn from './components/back-btn.vue'
+    import FlowSelector from './components/flow-selector.vue'
+    import GenerateDataManagePage from './components/generate-data-manage-page.vue'
+
+    const STEPS = [
+        { id: 'flowDesign', icon: 1, title: '流程设计' },
+        { id: 'flowConfig', icon: 2, title: '流程设置' }
+    ]
 
     export default {
-        name: 'flowEditPage',
+        name: 'flowEdit',
         components: {
-            ActionTool,
-            GeneratePageBtns,
-            FlowEdit
+            BackBtn,
+            FlowSelector,
+            GenerateDataManagePage
+        },
+        props: {
+            projectId: {
+                type: String,
+                default: ''
+            },
+            flowId: Number
+        },
+        data () {
+            return {
+                steps: STEPS,
+                curStep: this.getCurStep(),
+                flowDetailLoading: true,
+                flowDetail: {}
+            }
+        },
+        watch: {
+            '$route.name' () {
+                this.curStep = this.getCurStep()
+            }
+        },
+        created () {
+            this.getFlowConfig()
+        },
+        methods: {
+            async getFlowConfig () {
+                try {
+                    this.flowDetailLoading = true
+                    this.flowDetail = await this.$store.dispatch('nocode/flow/getFlowConfig', this.flowId)
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.flowDetailLoading = false
+                }
+            },
+            getCurStep () {
+                return this.$route.name === 'flowConfig' ? 1 : 2
+            },
+            handleStepChange (val) {
+                console.log(val)
+                if (val === 1) {
+                    this.$router.push({ name: 'flowConfig' })
+                } else {
+                    this.$router.push({ name: 'flowAdvancedConfig' })
+                }
+            }
         }
     }
 </script>
 <style lang="postcss" scoped>
-    $headerHeight: 64px;
-    $pageHeaderHeight: 52px;
-
-    .flow-edit-page-container {
-        min-width: 1366px;
-        height: calc(100vh - $headerHeight);
-        margin-top: $headerHeight;
-    }
-    .flow-edit-page-header {
-        position: relative;
+.flow-edit-wrapper {
+    min-width: 1366px;
+    height: calc(100vh - 64px);
+    margin-top: 64px;
+}
+.page-header-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    background: #ffffff;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.04);
+    .nav-container {
+        position: absolute;
+        top: 10px;
+        left: 35px;
         display: flex;
-        justify-content: space-between;
-        height: 52px;
-        background: #fff;
-
-        &:after{
-            content: '';
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 99;
-            height: 1px;
-            box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
-        }
-        .function-and-tool {
-            position: relative;
-            display: flex;
-            flex: 1;
-            justify-content: center;
-            align-items: center;
-        }
-        .operation-select{
-            display: flex;
-            height: 100%;
-            align-items: center;
-            .select-item{
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                height: 100%;
-                min-width: 60px;
-                font-size: 12px;
-                background-color: #e1ecff;
-                color: #3a84ff;
-                cursor: pointer;
-                i {
-                    font-size: 16px;
-                    margin-bottom: 5px;
-                }
-            }
-        }
-        .spilt-line {
-            height: 22px;
-            width: 1px;
-            margin: 0 5px;
-            background-color: #dcdee5;
+        align-items: center;
+        .go-back-icon-wrapper {
+            margin-right: 10px;
         }
     }
-    .flow-edit-page-content{
-        height: calc(100vh - $headerHeight - $pageHeaderHeight);
+    .steps-container {
+        min-width: 360px;
     }
+    .genarate-action {
+        position: absolute;
+        top: 14px;
+        right: 24px;
+    }
+}
+.flow-edit-main {
+    height: calc(100% - 52px);
+}
 </style>

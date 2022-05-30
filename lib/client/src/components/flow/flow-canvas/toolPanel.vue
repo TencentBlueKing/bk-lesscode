@@ -1,17 +1,17 @@
 <template>
     <div class="tool-panel-container">
-        <div v-bk-tooltips.top="'放大'" class="tool-item" @click="onZoomIn" title="放大">
-            <i class="custom-icon-font icon-add-line"></i>
+        <div v-bk-tooltips.left="'放大'" class="tool-item" @click="onZoomIn" title="放大">
+            <i class="bk-drag-icon bk-drag-plus-circle"></i>
         </div>
-        <div v-bk-tooltips.top="'缩小'" class="tool-item" @click="onZoomOut" title="缩小">
-            <i class="custom-icon-font icon-reduce-line"></i>
+        <div v-bk-tooltips.left="'缩小'" class="tool-item" @click="onZoomOut" title="缩小">
+            <i class="bk-drag-icon bk-drag-minus-circle"></i>
         </div>
-        <div v-bk-tooltips.top="'复位'" class="tool-item" @click="onResetPosition" title="复位">
-            <i class="custom-icon-font icon-reduction"></i>
+        <!-- <div v-bk-tooltips.top="'复位'" class="tool-item" @click="onResetPosition" title="复位">
+            <i class="bk-drag-icon bk-drag-filliscreen"></i>
+        </div> -->
+        <div v-bk-tooltips.left="'全屏'" class="tool-item" @click="onZoomOut" title="全屏">
+            <i class="bk-drag-icon bk-drag-filliscreen-line"></i>
         </div>
-    <!-- <div v-bk-tooltips.top="'全屏'" class="tool-item" @click="onZoomOut" title="全屏">
-      <i class="custom-icon-font icon-fullscreen"></i>
-    </div> -->
     </div>
 </template>
 <script>
@@ -36,18 +36,18 @@
 </script>
 <style lang="postcss" scoped>
 .tool-panel-container {
-  display: flex;
-  align-items: center;
-  .tool-item {
+    /* padding: 6px 0; */
+    .tool-item {
     padding: 0 10px;
-    line-height: 32px;
-    font-size: 20px;
-    color: #c4c6cc;
+    line-height: 36px;
+    font-size: 16px;
+    color: #63656e;
+    text-align: center;
     cursor: pointer;
-    &:hover {
-      color: #979ba5;
-      background: #e1e3e6;
+        &:hover {
+            color: #3a84ff;
+            background: #e1e3e6;
+        }
     }
-  }
 }
 </style>

@@ -1,15 +1,18 @@
 <template>
     <section class="advanced-config">
-        <div class="advanced-config-form">
-            <bk-form ref="advancedForm" form-type="vertical" :model="advancedData" :rules="rules">
-                <div class="form-section">
-                    <h4>撤回设置</h4>
+        <div class="form-config-area">
+            <div class="form-section">
+                <h4>基础设置</h4>
+                <bk-form ref="advancedForm" class="section-content" form-type="vertical" :model="advancedData" :rules="rules">
+                    <bk-form-item label="流程名称" :required="true">
+                        <bk-input v-model="advancedData.name"></bk-input>
+                    </bk-form-item>
                     <bk-form-item label="撤回方式" :class="{ 'half-row-form': advancedData.revoke_config.type === 3 }">
                         <bk-select
                             v-model="advancedData.revoke_config.type"
                             :clearable="false"
                             @selected="onSelectRevokeType"
-                            :disabled="funcData.is_builtin">
+                            :disabled="flowConfig.is_builtin">
                             <bk-option v-for="item in revokeTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
@@ -24,9 +27,6 @@
                             </bk-option>
                         </bk-select>
                     </bk-form-item>
-                </div>
-                <div class="form-section">
-                    <h4>任务通知策略</h4>
                     <bk-form-item label="通知方式">
                         <bk-checkbox-group
                             :value="advancedData.notify.map(item => item.type)"
@@ -35,7 +35,7 @@
                                 v-for="item in notifyTypeList"
                                 :key="item.type"
                                 :value="item.type"
-                                :disabled="funcData.is_builtin">
+                                :disabled="flowConfig.is_builtin">
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
@@ -53,42 +53,79 @@
                             <bk-option v-for="item in frequencyList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
-                </div>
-                <div class="extend-setting-btn">
-                    <span class="trigger-area" @click="extendSettingOpen = !extendSettingOpen">
-                        高级配置
-                        <i :class="['bk-icon', 'icon-angle-double-down', { opened: extendSettingOpen }]"></i>
-                    </span>
-                </div>
-                <div v-show="extendSettingOpen" class="form-section">
+                </bk-form>
+            </div>
+            <div class="extend-setting-btn">
+                <span class="trigger-area" @click="extendSettingOpen = !extendSettingOpen">
+                    高级配置
+                    <i :class="['bk-icon', 'icon-angle-double-down', { opened: extendSettingOpen }]"></i>
+                </span>
+            </div>
+            <template v-if="extendSettingOpen">
+                <div class="form-section">
                     <h4>开放设置</h4>
-                    <bk-form-item class="display-checkbox" label="显示设置">
-                        <bk-checkbox
-                            v-model="advancedData.show_all_workflow"
-                            :disabled="funcData.is_builtin">
-                            在【全部流程】中显示
-                        </bk-checkbox>
-                        <bk-checkbox
-                            v-model="advancedData.show_my_create_workflow"
-                            :disabled="funcData.is_builtin">
-                            在【我发起的】中显示
-                        </bk-checkbox>
-                    </bk-form-item>
+                    <bk-form class="section-content" form-type="vertical">
+                        <bk-form-item class="display-checkbox" label="显示设置">
+                            <bk-checkbox
+                                v-model="advancedData.show_all_workflow"
+                                :disabled="flowConfig.is_builtin">
+                                在【全部流程】中显示
+                            </bk-checkbox>
+                            <bk-checkbox
+                                v-model="advancedData.show_my_create_workflow"
+                                :disabled="flowConfig.is_builtin">
+                                在【我发起的】中显示
+                            </bk-checkbox>
+                        </bk-form-item>
+                    </bk-form>
                 </div>
-            </bk-form>
+                <div class="form-section">
+                    <h4>触发器</h4>
+                    <div class="section-content"></div>
+                    <bk-form class="section-content" form-type="vertical">
+                        <bk-form-item class="display-checkbox" label="显示设置">
+                            <bk-checkbox
+                                v-model="advancedData.show_all_workflow"
+                                :disabled="flowConfig.is_builtin">
+                                在【全部流程】中显示
+                            </bk-checkbox>
+                            <bk-checkbox
+                                v-model="advancedData.show_my_create_workflow"
+                                :disabled="flowConfig.is_builtin">
+                                在【我发起的】中显示
+                            </bk-checkbox>
+                        </bk-form-item>
+                    </bk-form>
+                    <bk-form class="section-content" form-type="vertical">
+                        <bk-form-item class="display-checkbox" label="显示设置">
+                            <bk-checkbox
+                                v-model="advancedData.show_all_workflow"
+                                :disabled="flowConfig.is_builtin">
+                                在【全部流程】中显示
+                            </bk-checkbox>
+                            <bk-checkbox
+                                v-model="advancedData.show_my_create_workflow"
+                                :disabled="flowConfig.is_builtin">
+                                在【我发起的】中显示
+                            </bk-checkbox>
+                        </bk-form-item>
+                    </bk-form>
+                </div>
+            </template>
         </div>
         <div class="action-wrapper">
             <bk-button
-                size="large"
-                @click="$router.push({ name: 'functionFlow', params: { appId: appId, funcId: funcData.id } })">
+                @click="$router.push({ name: 'flowConfig' })">
                 上一步
             </bk-button>
             <bk-button
                 theme="primary"
-                size="large"
                 :loading="advancedPending"
                 @click="handleSave"
-                :disabled="funcData.is_builtin">提交</bk-button>
+                :disabled="flowConfig.is_builtin">
+                提交
+            </bk-button>
+            <bk-button @click="$router.push({ name: 'flowList' })">取消</bk-button>
         </div>
     </section>
 </template>
@@ -101,14 +138,14 @@
                 type: String,
                 default: ''
             },
-            funcData: {
+            flowConfig: {
                 type: Object,
                 default: () => ({})
             }
         },
         data () {
             return {
-                advancedData: cloneDeep(this.funcData),
+                advancedData: cloneDeep(this.flowConfig),
                 advancedDataLoading: false,
                 advancedPending: false,
                 flowNodesLoading: false,
@@ -134,7 +171,7 @@
             }
         },
         created () {
-            if (this.funcData.revoke_config.type === 3) {
+            if (this.flowConfig.revoke_config.type === 3) {
                 this.getFlowNodes()
             }
         },
@@ -193,7 +230,7 @@
                         } = this.advancedData
                         const isRevocable = revoke_config.type !== 0
                         const params = {
-                            id: this.funcData.id,
+                            id: this.flowConfig.id,
                             workflow_config: {
                                 notify,
                                 notify_freq,
@@ -220,49 +257,39 @@
 .advanced-config {
   position: relative;
   height: 100%;
-  overflow: hidden;
-}
-
-.advanced-config-form {
-  height: calc(100% - 56px);
   overflow: auto;
-
+}
+.form-config-area {
+  padding: 24px 24px 0;
   .form-section {
-    margin: 24px auto 0;
-    padding: 24px 200px 32px;
-    width: 1000px;
+    margin-bottom: 16px;
+    padding: 24px;
     background: #ffffff;
     box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
-    border-radius: 2px;
-
     & > h4 {
       margin: 0 0 16px;
       height: 22px;
       line-height: 22px;
       font-size: 14px;
-      color: #63656e;
+      color: #313238;
     }
-
-    & > h5 {
-      margin: 0 0 16px;
-      height: 22px;
-      line-height: 22px;
-      font-size: 12px;
-      color: #979ba5;
+    .section-content {
+        margin-left: 106px;
+        &.bk-form {
+            width: 680px;
+            /deep/ .bk-form-item+.bk-form-item {
+                margin-top: 15px;
+            }
+        }
     }
     .half-row-form {
       display: inline-block;
       width: 49%;
     }
   }
-
-  .trigger-section{
-    margin: 24px auto;
-  }
   .extend-setting-btn {
-    margin: 24px auto 0;
-    width: 600px;
-
+    margin-bottom: 8px;
+    padding-left: 130px;
     .trigger-area {
       font-size: 14px;
       height: 22px;
@@ -270,20 +297,17 @@
       color: #3a84ff;
       cursor: pointer;
       user-select: none;
-
       & > i {
         display: inline-block;
         font-size: 18px;
         transition: transform 0.2s ease-in-out;
-
         &.opened {
           transform: rotate(-180deg);
         }
       }
     }
   }
-
-  .display-checkbox {
+  .bk-form {
     /deep/ .bk-form-checkbox {
       margin-right: 24px;
     }
@@ -291,22 +315,12 @@
 }
 
 .action-wrapper {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 24px;
-  height: 56px;
-  line-height: 56px;
-  text-align: right;
-  background: #fafbfd;
-  box-shadow: inset 0 1px 0 0 #dcdee5;
-
-  .bk-button {
-    margin-left: 4px;
-    min-width: 100px;
-    height: 40px;
-    line-height: 40px;
-  }
+    margin: 32px 0;
+    padding: 0 24px;
+    overflow: hidden;
+    .bk-button {
+        margin-right: 4px;
+        min-width: 88px;
+    }
 }
 </style>

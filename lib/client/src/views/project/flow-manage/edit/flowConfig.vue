@@ -5,38 +5,27 @@
                 v-if="!flowDataLoading"
                 :nodes="flowData.nodes"
                 :lines="flowData.lines"
-                :type="funcData.type"
-                :flow-id="funcData.workflow_id"
-                :editable="!funcData.is_builtin"
-                :disable-edit-line="funcData.type === 'DETAIL'"
-                :show-palette="!funcData.is_builtin && funcData.type !== 'DETAIL'"
+                :flow-id="id"
                 @onNodeClick="handleNodeClick">
             </flow-canvas>
         </div>
         <div class="action-wrapper">
-            <bk-button size="large" @click="$router.push({ name: 'functionBasic', params: { appId, funcId: funcData.id } })">
-                上一步
+            <bk-button @click="$router.push({ name: 'flowList' })">
+                取消
             </bk-button>
             <bk-button
                 theme="primary"
-                size="large"
                 :loading="flowPending"
                 :disabled="flowDataLoading"
                 @click="handleNextStep">
-                {{ funcData.type === 'DETAIL' ? '关闭' : '下一步' }}
+                下一步
             </bk-button>
         </div>
         <div v-if="nodeConfigPanelShow" class="node-config-wrapper">
             <node-config-panel
                 :node-id="crtNode"
-                :app-id="appId"
-                :func-id="funcData.id"
-                :func-type="funcData.type"
-                :flow-id="funcData.workflow_id"
-                :related-form="funcData.relate_worksheet"
+                :flow-id="id"
                 :create-ticket-node-id="createTicketNodeId"
-                :disable-create-field="funcData.type === 'DETAIL'"
-                :editable="!funcData.is_builtin"
                 @close="closeConfigPanel"
                 @save="handleConfigSave">
             </node-config-panel>
@@ -44,8 +33,8 @@
     </section>
 </template>
 <script>
-    import FlowCanvas from './flow-canvas/index.vue'
-    import NodeConfigPanel from './nodeConfig/nodeConfigPanel.vue'
+    import FlowCanvas from '@/components/flow/flow-canvas/index.vue'
+    import NodeConfigPanel from '@/components/flow/nodeConfig/nodeConfigPanel.vue'
     export default {
         name: 'FunctionFlow',
         components: {
@@ -53,14 +42,7 @@
             NodeConfigPanel
         },
         props: {
-            appId: {
-                type: String,
-                default: ''
-            },
-            funcData: {
-                type: Object,
-                default: () => ({})
-            }
+            id: Number // itsm存的流程id
         },
         data () {
             return {
@@ -73,23 +55,22 @@
             }
         },
         created () {
-            this.getFlowData()
+            this.getFlowStructData()
         },
         methods: {
-            // 获取流程图详情
-            async getFlowData () {
+            // 获取流程图结构详情
+            async getFlowStructData () {
                 try {
                     this.flowDataLoading = true
-                    const params = { workflow: this.funcData.workflow_id }
                     const res = await Promise.all([
-                        this.$store.dispatch('setting/getFlowNodes', params),
-                        this.$store.dispatch('setting/getFlowLines', params)
+                        this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.id }),
+                        this.$store.dispatch('nocode/flow/getFlowLines', { workflow: this.id, page_size: 1000 })
                     ])
                     this.flowData = {
-                        nodes: res[0].data,
-                        lines: res[1].data.items
+                        nodes: res[0],
+                        lines: res[1].items
                     }
-                    this.createTicketNodeId = res[0].data.find(item => item.is_first_state && item.is_builtin).id
+                    this.createTicketNodeId = res[0].find(item => item.is_first_state && item.is_builtin).id
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -110,14 +91,10 @@
             },
             handleConfigSave () {
                 this.closeConfigPanel()
-                this.getFlowData()
+                this.getFlowStructData()
             },
             handleNextStep () {
-                if (this.funcData.type === 'DETAIL') {
-                    this.$router.push({ name: 'functionList', params: { appId: this.appId } })
-                } else {
-                    this.$router.push({ name: 'functionAdvanced', params: { appId: this.appId, funcId: this.funcData.id } })
-                }
+                this.$router.push({ name: 'flowAdvancedConfig' })
             }
         }
     }
@@ -127,22 +104,23 @@
   position: relative;
 }
 .flow-container {
-  height: calc(100% - 56px);
+  height: 100%;
   position: relative;
 }
 .action-wrapper {
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 56px;
+  right: 0;
   padding: 0 24px;
-  height: 56px;
-  line-height: 56px;
+  height: 52px;
+  line-height: 52px;
   text-align: right;
   background: #fafbfd;
-  box-shadow: inset 0 1px 0 0 #dcdee5;
+  border-top: 1px solid #dcdee5;
   .bk-button {
     margin-left: 4px;
-    min-width: 100px;
-    height: 40px;
-    line-height: 40px;
+    min-width: 88px;
   }
 }
 .node-config-wrapper {
@@ -172,7 +150,6 @@
   z-index: 100;
   top: 12px;
   left: 72px;
-
   .info {
     top: 24px;
     margin: 0 8px 0 11px;

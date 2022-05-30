@@ -17,7 +17,6 @@
             <bk-table-column label="流程描述"></bk-table-column>
             <bk-table-column label="流程表单"></bk-table-column>
             <bk-table-column label="流程数据管理页"></bk-table-column>
-            <bk-table-column label="引用页面"></bk-table-column>
             <bk-table-column label="创建人"></bk-table-column>
             <bk-table-column label="创建时间"></bk-table-column>
             <bk-table-column label="操作">
@@ -42,16 +41,16 @@
             title="新建流程"
             header-position="left"
             render-directive="if"
+            ext-cls="create-flow-dialog"
             :value="isCreateDialogShow"
-            :width="750"
-            :position="{ top: 80 }"
+            :width="480"
             :mask-close="false"
             :auto-close="false"
             @confirm="handleCreateConfirm"
             @cancel="isCreateDialogShow = false">
             <bk-form
                 ref="createForm"
-                style="padding: 16px 100px 16px 0"
+                form-type="vertical"
                 :model="newFlowData"
                 :rules="flowDataRule">
                 <bk-form-item label="流程名称" property="name" :required="true">
@@ -65,6 +64,8 @@
     </div>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
+
     export default {
         name: 'flowManage',
         data () {
@@ -92,12 +93,13 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
             }
         },
         created () {
-            // this.getFlowList()
+            this.getFlowList()
         },
         methods: {
             async getFlowList () {
@@ -142,5 +144,12 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 20px;
+    }
+</style>
+<style lang="postcss">
+    .create-flow-dialog {
+        .bk-dialog-header {
+            padding-bottom: 10px;
+        }
     }
 </style>

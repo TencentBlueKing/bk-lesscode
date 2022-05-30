@@ -11,16 +11,16 @@
         <div v-else-if="node.type === 'END'" class="end-node">结束</div>
         <!-- 并行网关 -->
         <div v-else-if="node.type === 'ROUTER-P'" class="gateway-node">
-            <i class="custom-icon-font icon-node-convergence"></i>
+            <i class="bk-drag-icon bk-drag-parallel"></i>
         </div>
         <!-- 汇聚网关 -->
         <div v-else-if="node.type === 'COVERAGE'" class="gateway-node">
-            <i class="custom-icon-font icon-node-branch"></i>
+            <i class="bk-drag-icon bk-drag-converge"></i>
         </div>
         <!-- 普通流转节点 -->
         <div v-else :class="['flow-node', node.nodeInfo && node.nodeInfo.status]">
             <div class="node-icon-area">
-                <i :class="['custom-icon-font', nodeTypeList.find(item => item.type === node.type).icon]"></i>
+                <i :class="['bk-drag-icon', nodeTypeList.find(item => item.type === node.type).icon]"></i>
             </div>
             <div class="node-name-area" :title="node.name || '新增节点'">
                 {{ node.name || '新增节点' }}
@@ -56,7 +56,7 @@
                     :key="type"
                     :class="{ 'gataway-type': ['ROUTER-P', 'COVERAGE'].includes(type) }"
                     @click.stop="$emit('fastCreateNode', node.nodeInfo.id, type)">
-                    <i :class="['custom-icon-font', nodeTypeList.find(item => item.type === type).menuIcon]"></i>
+                    <i :class="['bk-drag-icon', nodeTypeList.find(item => item.type === type).menuIcon]"></i>
                 </li>
             </ul>
             <div class="action-area">
@@ -209,21 +209,20 @@
 }
 .flow-node {
   position: relative;
-  padding-left: 40px;
-  width: 150px;
-  height: 40px;
-  line-height: 38px;
+  display: flex;
+  align-items: center;
+  width: 280px;
+  height: 48px;
   color: #63656e;
   font-size: 14px;
   text-align: center;
-  border: 1px solid #dcdee5;
-  border-radius: 25px;
-  background-color: #fff;
-  box-shadow: 0px 2px 4px 0px rgba(196, 198, 204, 0.5);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.20);
+  overflow: hidden;
   cursor: pointer;
   &:hover {
     border: 1px solid #3a84ff;
-    border-radius: 20px;
     .node-name-area {
       color: #3a84ff;
     }
@@ -255,26 +254,14 @@
     }
   }
   .node-icon-area {
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 16px;
-    width: 40px;
-    height: 38px;
-    line-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 100%;
+    font-size: 18px;
     color: #fff;
     background-color: #3a84ff;
-    border-radius: 25px 0 0 25px;
-    box-shadow: 0px 2px 4px 0px rgba(196, 198, 204, 0.5);
-    .custom-icon-font {
-      position: absolute;
-      top: 49%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.74, 0.74);
-      &.icon-node-api-pure {
-        font-size: 12px;
-      }
-    }
   }
   .status-icon {
     position: absolute;
@@ -334,13 +321,15 @@
   }
 }
 .node-name-area {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 110px;
-  padding: 0 20px 0 4px;
-  overflow: hidden;
+  flex-grow: 2;
+  padding: 7px 16px;
+  height: 100%;
+  background: #ffffff;
+  font-size: 12px;
+  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hidden;
 }
 .node-delete-icon {
   position: absolute;
