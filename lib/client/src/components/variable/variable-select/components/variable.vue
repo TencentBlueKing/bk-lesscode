@@ -72,15 +72,9 @@
                 </bk-table-column>
                 <bk-table-column label="操作" width="60">
                     <template slot-scope="props">
-                        <span
-                            v-bk-tooltips="{
-                                content: getEditStatus(props.row).content,
-                                disabled: !getEditStatus(props.row).disabled
-                            }"
-                        >
+                        <span>
                             <bk-button
                                 text
-                                :disabled="getEditStatus(props.row).disabled"
                                 @click.native.stop="handleEditVariable(props.row)"
                             >
                                 编辑
@@ -328,12 +322,6 @@
             },
             handleShowRemoteExample () {
                 this.$refs.example.isShow = true
-            },
-            getEditStatus (row) {
-                return {
-                    disabled: row.effectiveRange === 0,
-                    content: '应用级变量，请到变量管理进行修改'
-                }
             }
         }
     }
