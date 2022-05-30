@@ -50,6 +50,7 @@
             <lesscode-focus />
             <lesscode-tools />
             <lesscode-resize />
+            <lesscode-margin />
         </div>
         <div
             v-if="showNotVisibleMask"
@@ -61,23 +62,25 @@
 <script>
     import LC from '@/element-materials/core'
     import Draggable from './components/draggable'
-    import LesscodeFocus from './tools/lesscode-focus'
-    import LesscodeTools from './tools/lesscode-tool'
-    import LesscodeResize from './tools/lesscode-resize'
     import Layout from './widget/layout'
     import ResolveComponent, { setMousedown } from './resolve-component'
     import ResolveInteractiveComponent from './resolve-interactive-component'
+    import LesscodeFocus from './tools/lesscode-focus'
+    import LesscodeTools from './tools/lesscode-tool'
+    import LesscodeResize from './tools/lesscode-resize'
+    import LesscodeMargin from './tools/lesscode-margin'
 
     export default {
         name: 'render',
         components: {
             Draggable,
+            Layout,
+            ResolveComponent,
+            ResolveInteractiveComponent,
             LesscodeFocus,
             LesscodeTools,
             LesscodeResize,
-            Layout,
-            ResolveComponent,
-            ResolveInteractiveComponent
+            LesscodeMargin
         },
         provide () {
             return {
