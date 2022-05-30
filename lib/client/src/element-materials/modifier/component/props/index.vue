@@ -97,6 +97,28 @@
                 //     })
                 // }
             },
+            syncOtherProp (propName, propData) {
+                // console.log('from syncOtherProp = ', propName, propData)
+                // // bk-charts, chart 组件的 remoteOptions 需要和 options 同步
+                // if (['bk-charts', 'chart'].includes(this.componentNode.type)
+                //     && propName === 'remoteOptions') {
+                //     const propOfOptions = this.lastProps['options']
+                //     const remoteOptionsRenderValue = _.cloneDeep(propData.renderValue)
+                //     console.log('from sync add = ', propOfOptions, remoteOptionsRenderValue)
+                //     if (propOfOptions.format === 'value') {
+                //         this.componentNode.setProp('options', {
+                //             ...propOfOptions,
+                //             code: remoteOptionsRenderValue,
+                //             renderValue: remoteOptionsRenderValue
+                //         })
+                //     } else if (propOfOptions.format === 'variable') {
+                //         this.componentNode.setProp('options', {
+                //             ...propOfOptions,
+                //             renderValue: remoteOptionsRenderValue
+                //         })
+                //     }
+                // }
+            },
             /**
              * @desc 部分场景需要通过 prop 的配置自动推导 slot 的配置
              * @param { Object } propData
@@ -154,6 +176,7 @@
                     ...this.lastProps,
                     [propName]: propData
                 })
+                this.syncOtherProp(propName, propData)
                 this.syncSlot(propData)
             }, 60)
         }

@@ -488,6 +488,10 @@
             & > div{
                 display: flex !important;
                 align-items: flex-start;
+                flex-wrap: wrap;
+                & > * {
+                    flex-shrink: 0;
+                }
             }
             
         }
@@ -516,6 +520,9 @@
         &[align-vertical-bottom]{
             & > div{
                 display: flex !important;
+                & > * {
+                    flex-shrink: 0;
+                }
             }
             
         }
