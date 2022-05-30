@@ -520,6 +520,7 @@
         &[align-vertical-bottom]{
             & > div{
                 display: flex !important;
+                flex-wrap: wrap;
                 & > * {
                     flex-shrink: 0;
                 }
