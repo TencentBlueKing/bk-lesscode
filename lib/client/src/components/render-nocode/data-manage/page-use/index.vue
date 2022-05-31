@@ -2,13 +2,14 @@
     <div class="data-manage-use-page">
         <operate-area :buttons="tableConfig.operatingButtons" @click="handleClick"></operate-area>
         <filter-area :filters="filters" :fields="fields" @search="handleSearch"></filter-area>
-        <table-data :config="tableConfig"></table-data>
+        <table-data :config="tableConfig" :fields="fields"></table-data>
     </div>
 </template>
 <script>
     import operateArea from './operate-area.vue'
     import filterArea from './filter-area.vue'
     import tableData from './table-data.vue'
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'dataManageUsePage',
@@ -20,7 +21,6 @@
         data () {
             return {
                 fields: [], // 表单字段列表
-                formId: null, // 表单id
                 filters: ['key1', 'key2', 'key3'],
                 tableConfig: {
                     operatingButtons: [
@@ -33,8 +33,32 @@
                 }
             }
         },
+        computed: {
+            ...mapGetters('page', ['pageDetail']),
+            formId () {
+                // todo 先验证一下接口后面把2去除
+                return this.pageDetail.formId || 3
+            }
+        },
+        created () {
+            this.getFieldList()
+        },
         methods: {
-            getFields () {}, // 加载表单字段
+            async getFieldList () {
+                try {
+                    if (this.formId) {
+                        this.tableLoading = true
+                        const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
+                        console.log(JSON.parse(form.content))
+                        this.fields = JSON.parse(form.content) || []
+                        console.log(typeof this.fields)
+                    }
+                } catch (err) {
+
+                } finally {
+                    this.tableLoading = false
+                }
+            },
             handleClick (action) {
                 const ACTION_FUN_MAP = {
                     'add': 'handleAdd',
