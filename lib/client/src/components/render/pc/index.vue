@@ -131,9 +131,6 @@
             const updateCallback = (event) => {
                 if (event.target.componentId === this.componentData.componentId) {
                     this.$forceUpdate()
-                    setTimeout(() => {
-                        this.autoType()
-                    }, 20)
                 }
             }
 
@@ -151,9 +148,6 @@
             const nodeCallback = (event) => {
                 if (event.target.componentId === this.componentData.componentId) {
                     this.$forceUpdate()
-                    setTimeout(() => {
-                        this.autoType(event.child)
-                    }, 20)
                 }
             }
 
@@ -206,32 +200,6 @@
             })
         },
         methods: {
-            /**
-             * @desc 自动排版子组件
-             */
-            autoType (childNode) {
-                if (this._isDestroyed || !childNode) {
-                    return
-                }
-                const {
-                    top: boxTop,
-                    left: boxLeft
-                } = this.$refs.dragArea.$el.getBoundingClientRect()
-
-                const $childEl = childNode.$elm
-
-                const {
-                    top: componentTop,
-                    left: componentLeft
-                } = $childEl.getBoundingClientRect()
-                
-                if (componentTop > boxTop) {
-                    childNode.setStyle('marginTop', '10px')
-                }
-                if (componentLeft > boxLeft) {
-                    childNode.setStyle('marginLeft', '10px')
-                }
-            },
             /**
              * @desc 鼠标离开时清除组件 hover 效果
              * @param { Boolean } name

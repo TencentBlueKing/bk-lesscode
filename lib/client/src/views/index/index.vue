@@ -63,6 +63,7 @@
     import { syncVariableValue } from './components/utils'
 
     console.dir(LC)
+    window.LC = LC
 
     export default {
         components: {
