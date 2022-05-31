@@ -82,34 +82,6 @@
                 <div class="form-section">
                     <h4>触发器</h4>
                     <div class="section-content"></div>
-                    <bk-form class="section-content" form-type="vertical">
-                        <bk-form-item class="display-checkbox" label="显示设置">
-                            <bk-checkbox
-                                v-model="advancedData.show_all_workflow"
-                                :disabled="flowConfig.is_builtin">
-                                在【全部流程】中显示
-                            </bk-checkbox>
-                            <bk-checkbox
-                                v-model="advancedData.show_my_create_workflow"
-                                :disabled="flowConfig.is_builtin">
-                                在【我发起的】中显示
-                            </bk-checkbox>
-                        </bk-form-item>
-                    </bk-form>
-                    <bk-form class="section-content" form-type="vertical">
-                        <bk-form-item class="display-checkbox" label="显示设置">
-                            <bk-checkbox
-                                v-model="advancedData.show_all_workflow"
-                                :disabled="flowConfig.is_builtin">
-                                在【全部流程】中显示
-                            </bk-checkbox>
-                            <bk-checkbox
-                                v-model="advancedData.show_my_create_workflow"
-                                :disabled="flowConfig.is_builtin">
-                                在【我发起的】中显示
-                            </bk-checkbox>
-                        </bk-form-item>
-                    </bk-form>
                 </div>
             </template>
         </div>

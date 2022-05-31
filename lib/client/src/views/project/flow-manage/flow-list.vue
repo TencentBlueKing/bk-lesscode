@@ -2,7 +2,16 @@
     <div class="flow-manage-home">
         <div class="operation-area">
             <bk-button theme="primary" @click="isCreateDialogShow = true">新建</bk-button>
-            <bk-input placeholder="流程名称" style="width: 400px;" right-icon="bk-icon icon-search" />
+            <div class="search-wrapper">
+                <bk-input
+                    placeholder="请输入流程名称"
+                    style="width: 360px;"
+                    right-icon="bk-icon icon-search">
+                </bk-input>
+                <div class="archived-icon" @click="$router.push({ name: 'flowArchivedList' })">
+                    <i class="bk-drag-icon bk-drag-countdown"></i>
+                </div>
+            </div>
         </div>
         <bk-table
             :data="flowList"
@@ -64,10 +73,10 @@
     </div>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
+    // import { mapGetters } from 'vuex'
 
     export default {
-        name: 'flowManage',
+        name: 'flowList',
         data () {
             return {
                 flowList: [],
@@ -93,19 +102,25 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
+            },
+            versionId () {
+                return this.$store.state.projectVersion.currentVersion.id
             }
         },
-        created () {
+        mounted () {
             this.getFlowList()
         },
         methods: {
             async getFlowList () {
                 this.listLoading = true
                 try {
-                    const res = await this.$store.dispatch('nocode/flow/getFlowList', { project: this.projectId })
+                    console.log(this.versionId)
+                    const res = await this.$store.dispatch('nocode/flow/getFlowList', {
+                        project: this.projectId,
+                        versionId: this.versionId
+                    })
                     this.flowList = res.data
                 } catch (e) {
                     console.error(e)
@@ -144,6 +159,31 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 20px;
+    }
+    .search-wrapper {
+        display: flex;
+        align-items: center;
+        .archived-icon {
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #c4c6cc;
+            border-radius: 2px;
+            cursor: pointer;
+            &:hover {
+                i {
+                    color: #3a84ff;
+                }
+            }
+            i {
+                font-size: 14px;
+                transform: rotateY(180deg);
+                color: #63656e;
+            }
+        }
     }
 </style>
 <style lang="postcss">
