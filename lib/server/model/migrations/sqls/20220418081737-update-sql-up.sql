@@ -16,6 +16,7 @@ CREATE TABLE `flow`  (
   `content` longtext COMMENT '第一个数据源节点的json',
   `dataSourceIds` text COMMENT '关联数据表Ids',
   `itsmId` int(11) NULL COMMENT '关联itsm的流程Id',
+  `summary` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `createUser` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `updateUser` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `createTime` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
