@@ -173,11 +173,11 @@
                     @input="handleSearch">
                 </bk-input>
                 <div class="display-type-toggle">
-                    <div class="icon-button" @click="handleToggleDisplayType(DISPLAY_TYPES.CARD)">
-                        <img src="@/images/svg/icon-card.svg" width="14px" alt="">
+                    <div :class="['icon-button', { active: displayType === DISPLAY_TYPES.CARD }]" @click="handleToggleDisplayType(DISPLAY_TYPES.CARD)">
+                        <i class="bk-drag-icon bk-drag-display-card"></i>
                     </div>
-                    <div class="icon-button" @click="handleToggleDisplayType(DISPLAY_TYPES.LIST)">
-                        <img src="@/images/svg/icon-column.svg" width="14px" alt="">
+                    <div :class="['icon-button', { active: displayType === DISPLAY_TYPES.LIST }]" @click="handleToggleDisplayType(DISPLAY_TYPES.LIST)">
+                        <i class="bk-drag-icon bk-drag-display-list"></i>
                     </div>
                 </div>
             </div>
@@ -226,14 +226,16 @@
                 justify-content: center;
                 width: 24px;
                 height: 24px;
+                font-size: 16px;
                 cursor: pointer;
 
+                &.active,
                 &:hover {
                     background: #fff;
                 }
 
                 & + .icon-button {
-                    margin-left: 8px;
+                    margin-left: 4px;
                 }
             }
         }

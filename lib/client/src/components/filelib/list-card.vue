@@ -119,6 +119,8 @@
         align-content: flex-start;
         height: 100%;
         width: 100%;
+        /* box-shadow offset */
+        padding: 4px;
         overflow-y: auto;
         @mixin scroller;
 
