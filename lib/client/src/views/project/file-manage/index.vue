@@ -17,7 +17,7 @@
 
     import useUploadHandler from '@/components/filelib/use-upload-handler.js'
     import useUploadList from '@/components/filelib/use-upload-list.js'
-    import { DISPLAY_TYPES } from '@/components/filelib/helper'
+    import { DISPLAY_TYPES, FILE_MAX_LIMIT, UploadFile, getFileUrl, isImageFile } from '@/components/filelib/helper'
 
     import Upload from '@/components/filelib/upload.vue'
     import ListCard from '@/components/filelib/list-card.vue'
@@ -59,8 +59,8 @@
 
             const baseUploadProps = reactive({
                 fileList: displayList,
-                maxImageSize: 5,
-                maxFileSize: 10,
+                maxImageSize: FILE_MAX_LIMIT.IMAGE_SIZE,
+                maxFileSize: FILE_MAX_LIMIT.FILE_SIZE,
                 beforeRemove: async (file) => {
                     if (!file.id) {
                         return
@@ -116,6 +116,35 @@
                 displayType.value = type
             }
 
+            const isShowPreviewViewer = ref(false)
+            const viewerProps = reactive({
+                urlList: [],
+                initialIndex: 0
+            })
+            const handleView = (file: UploadFile, files: UploadFile[]) => {
+                const isImage = isImageFile(file)
+
+                // 非图片新标签页打开地址
+                if (!isImage) {
+                    const url = getFileUrl(file, true, true)
+                    window.open(url, '_blank')
+                    return
+                }
+
+                // 图片使用图片查看器
+                isShowPreviewViewer.value = true
+
+                // 将所有图片类型文件做为查看列表，方便左右翻动查看
+                const previewFileList = files.filter(file => isImageFile(file))
+                viewerProps.urlList = previewFileList.map(file => getFileUrl(file, true))
+
+                viewerProps.initialIndex = previewFileList.findIndex(item => item === file)
+            }
+
+            function handleClosePreviewViewer () {
+                isShowPreviewViewer.value = false
+            }
+
             onBeforeUnmount(() => {
                 uploadFiles.value.forEach(({ url }) => {
                     if (url?.startsWith('blob:')) URL.revokeObjectURL(url)
@@ -135,9 +164,13 @@
                 DISPLAY_TYPES,
                 listComponent,
                 isUploading,
+                viewerProps,
+                isShowPreviewViewer,
+                handleClosePreviewViewer,
                 handleSearch,
                 handleToggleDisplayType,
-                handleRemove
+                handleRemove,
+                handleView
             }
         },
         beforeRouteLeave (to, from, next) {
@@ -173,11 +206,11 @@
                     @input="handleSearch">
                 </bk-input>
                 <div class="display-type-toggle">
-                    <div class="icon-button" @click="handleToggleDisplayType(DISPLAY_TYPES.CARD)">
-                        <img src="@/images/svg/icon-card.svg" width="14px" alt="">
+                    <div :class="['icon-button', { active: displayType === DISPLAY_TYPES.CARD }]" @click="handleToggleDisplayType(DISPLAY_TYPES.CARD)">
+                        <i class="bk-drag-icon bk-drag-display-card"></i>
                     </div>
-                    <div class="icon-button" @click="handleToggleDisplayType(DISPLAY_TYPES.LIST)">
-                        <img src="@/images/svg/icon-column.svg" width="14px" alt="">
+                    <div :class="['icon-button', { active: displayType === DISPLAY_TYPES.LIST }]" @click="handleToggleDisplayType(DISPLAY_TYPES.LIST)">
+                        <i class="bk-drag-icon bk-drag-display-list"></i>
                     </div>
                 </div>
             </div>
@@ -188,9 +221,18 @@
                 :is="listComponent"
                 :files="uploadFiles"
                 :is-search="isSearch"
-                @remove="handleRemove">
+                :preview-enabled="true"
+                @remove="handleRemove"
+                @view="handleView">
             </component>
         </div>
+
+        <bk-image-viewer
+            v-if="isShowPreviewViewer"
+            :z-index="99999"
+            :on-close="handleClosePreviewViewer"
+            v-bind="viewerProps"
+        />
     </div>
 </template>
 
@@ -205,6 +247,8 @@
             .total {
                 font-size: 12px;
                 margin-right: 8px;
+                white-space: nowrap;
+
                 .count {
                     font-style: normal;
                     margin: 0 .1em;
@@ -226,14 +270,16 @@
                 justify-content: center;
                 width: 24px;
                 height: 24px;
+                font-size: 16px;
                 cursor: pointer;
 
+                &.active,
                 &:hover {
                     background: #fff;
                 }
 
                 & + .icon-button {
-                    margin-left: 8px;
+                    margin-left: 4px;
                 }
             }
         }

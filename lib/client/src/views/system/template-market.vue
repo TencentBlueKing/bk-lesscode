@@ -4,7 +4,7 @@
             <div v-show="!pageLoading">
                 <div class="project-template">
                     <div class="page-head" style="align-items: center">
-                        <span style="font-size: 16px;font-weight: 700">应用模板</span>
+                        <span style="font-size: 14px;font-weight: 700">应用模板</span>
                         <ul class="filter-links">
                             <li
                                 v-for="(link, index) in template.project.links"
@@ -61,7 +61,7 @@
                 </div>
                 <div class="page-template">
                     <div class="page-head" style="align-items: center">
-                        <span style="font-size: 16px;font-weight: 700">页面模板</span>
+                        <span style="font-size: 14px;font-weight: 700">页面模板</span>
                         <ul class="filter-links">
                             <li
                                 v-for="(link, index) in template.page.links"
@@ -775,7 +775,7 @@
             }
             .name {
                 margin: 0;
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 700;
                 color: #63656E;
                 @mixin ellipsis 240px, block;

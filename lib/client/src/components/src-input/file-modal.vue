@@ -10,6 +10,8 @@
     import Upload from '@/components/filelib/upload.vue'
     import ListCard from '@/components/filelib/list-card.vue'
 
+    import { FILE_MAX_LIMIT, isImageFile } from '@/components/filelib/helper'
+
     export default defineComponent({
         components: {
             ListCard,
@@ -19,6 +21,13 @@
             isShow: {
                 type: Boolean,
                 default: false
+            },
+            fileType: {
+                type: String,
+                default: '*',
+                validator (value) {
+                    return ['*', 'img', 'zip', 'doc'].includes(value)
+                }
             }
         },
         setup (props, { emit }) {
@@ -40,8 +49,8 @@
 
             const baseUploadProps = reactive({
                 fileList: displayList,
-                maxImageSize: 5,
-                maxFileSize: 10,
+                maxImageSize: FILE_MAX_LIMIT.IMAGE_SIZE,
+                maxFileSize: FILE_MAX_LIMIT.FILE_SIZE,
                 beforeRemove: async (file) => {
                     if (!file.id) {
                         return
@@ -84,6 +93,7 @@
 
             const uploadProps = computed(() => ({
                 params: paramsData.value,
+                showTips: false,
                 maxImageSize: baseUploadProps.maxImageSize,
                 maxFileSize: baseUploadProps.maxFileSize,
                 onStart: handleStart,
@@ -118,7 +128,15 @@
                 }
             })
 
+            const isDisabled = (file) => {
+                if (props.fileType === 'img') {
+                    return !isImageFile(file)
+                }
+                return false
+            }
+
             return {
+                FILE_MAX_LIMIT,
                 show,
                 keyword,
                 isSearch,
@@ -127,6 +145,7 @@
                 uploadRef,
                 uploadProps,
                 uploadFiles,
+                isDisabled,
                 handleSearch,
                 handleRemove,
                 handleSelect,
@@ -161,6 +180,9 @@
                         @input="handleSearch">
                     </bk-input>
                 </div>
+                <div :class="$style['tip']">
+                    支持上传图片大小 {{FILE_MAX_LIMIT.IMAGE_SIZE}}M 以内，文件大小 {{FILE_MAX_LIMIT.FILE_SIZE}}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等
+                </div>
             </div>
             <div :class="$style['modal-body']">
                 <list-card
@@ -173,8 +195,18 @@
                     @remove="handleRemove">
                     <template #use-action="file">
                         <div :class="$style['use-action-inner']">
-                            <bk-button :class="$style['action-button']" theme="primary" @click="handleSelect(file)">使用</bk-button>
-                            <bk-button :class="$style['action-button']" @click="handleView(file)">查看</bk-button>
+                            <bk-button
+                                :disabled="isDisabled(file)"
+                                :class="$style['action-button']"
+                                theme="primary"
+                                @click="handleSelect(file)">
+                                使用
+                            </bk-button>
+                            <bk-button
+                                :class="$style['action-button']"
+                                @click="handleView(file)">
+                                查看
+                            </bk-button>
                         </div>
                     </template>
                 </list-card>
@@ -193,9 +225,10 @@
     .modal-container {
         .modal-head {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            height: 52px;
+            margin-bottom: 12px;
 
             .search-bar {
                 display: flex;
@@ -204,11 +237,20 @@
                 .total {
                     font-size: 12px;
                     margin-right: 8px;
+                    white-space: nowrap;
+
                     .count {
                         font-style: normal;
                         margin: 0 .1em;
                     }
                 }
+            }
+
+            .tip {
+                flex-basis: 100%;
+                margin-top: 8px;
+                font-size: 12px;
+                color: #979ba5;
             }
         }
         .modal-body {
@@ -219,12 +261,6 @@
     .use-action-inner {
         .action-button {
             margin: 0 4px;
-        }
-    }
-
-    .list-card.model-list-card {
-        .card-item {
-            color: bleed;
         }
     }
 </style>
