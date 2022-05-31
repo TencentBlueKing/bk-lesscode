@@ -11,6 +11,7 @@
 
 <script>
     import { computed, defineComponent, reactive, toRefs } from '@vue/composition-api'
+    import { getFileUrl, isImageFile } from '@/components/filelib/helper'
     import FileModal from './file-modal.vue'
 
     export default defineComponent({
@@ -26,6 +27,13 @@
             triggerText: {
                 type: String,
                 default: '选择图片'
+            },
+            fileType: {
+                type: String,
+                default: '*',
+                validator (value) {
+                    return ['*', 'img', 'zip', 'doc'].includes(value)
+                }
             }
         },
         setup (props, { emit }) {
@@ -49,6 +57,10 @@
                 placeholder: props.placeholder
             }
 
+            const modalProps = {
+                fileType: props.fileType
+            }
+
             function handleSelectFile (file) {
                 state.isFileModalShow = false
 
@@ -61,8 +73,17 @@
             }
 
             function handleViewFile (file) {
+                const isImage = isImageFile(file)
+                const url = getFileUrl(file, true, true)
+
+                // 非图片新标签页打开地址
+                if (!isImage) {
+                    window.open(url, '_blank')
+                    return
+                }
+
                 state.isShowPreviewViewer = true
-                state.previewFileList = [file.url]
+                state.previewFileList = [url]
             }
 
             function handleClosePreviewViewer () {
@@ -73,6 +94,7 @@
                 ...toRefs(state),
                 url,
                 inputPrpos,
+                modalProps,
                 handleOpenFileModal,
                 handleSelectFile,
                 handleViewFile,
@@ -93,13 +115,13 @@
                 </div>
             </template>
         </bk-input>
-        <file-modal :is-show.sync="isFileModalShow" @select="handleSelectFile" @view="handleViewFile" />
+        <file-modal :is-show.sync="isFileModalShow" v-bind="modalProps" @select="handleSelectFile" @view="handleViewFile" />
         <bk-image-viewer
             v-if="isShowPreviewViewer"
             :z-index="99999"
             :on-close="handleClosePreviewViewer"
             :url-list="previewFileList"
-        ></bk-image-viewer>
+        />
     </div>
 </template>
 

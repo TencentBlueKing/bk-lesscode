@@ -62,7 +62,7 @@
                         <i class="bk-drag-icon bk-drag-image"></i>
                         <bk-link theme="primary" class="filename"
                             target="_blank"
-                            :href="getFileUrl(row, true)"
+                            :href="getFileUrl(row, true, true)"
                             :disabled="row.status === UPLOAD_STATUS.FAIL">
                             {{row.name}}
                         </bk-link>
