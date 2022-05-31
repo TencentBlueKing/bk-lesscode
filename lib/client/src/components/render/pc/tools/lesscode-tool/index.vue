@@ -35,6 +35,17 @@
                 选中父级
             </div>
             <div
+                v-if="editState.show"
+                :class="{
+                    [$style['button']]: true,
+                    [$style['disabled']]: editState.disabled
+                }"
+                style="font-size: 16px;"
+                v-bk-tooltips.top="editState.tips"
+                @click="handleShowSlot">
+                <i class="bk-drag-icon bk-drag-edit" />
+            </div>
+            <div
                 :class="$style['button']"
                 @click="handleRemove">
                 <i class="bk-drag-icon bk-drag-shanchu" />
@@ -50,10 +61,11 @@
     } from '@vue/composition-api'
     import useActiveParent from './hooks/use-active-parent'
     import useSaveTemplate from './hooks/use-save-template'
-    import useRemove from './hooks/user-remove'
+    import useRemove from './hooks/use-remove'
     import useShowMenu from '../hooks/use-show-menu'
     import useComponentActive from '../hooks/use-component-active'
     import useComponentHover from '../hooks/use-component-hover'
+    import useSlot from './hooks/use-slot'
 
     const hideStyles = {
         display: 'none'
@@ -82,6 +94,11 @@
             const handleRemove = useRemove()
             // 显示快捷面板
             const handleShowMenu = useShowMenu()
+            // 编辑slot文字
+            const {
+                state: editState,
+                edit: handleShowSlot
+            } = useSlot()
 
             /**
              * @desc acitve状态
@@ -156,12 +173,14 @@
                 ...toRefs(state),
                 hoverComponentData,
                 activeComponentData,
+                editState,
                 hoverRef,
                 activeRef,
                 handleSaveTemplate,
                 handleSelectParent,
                 handleRemove,
-                handleShowMenu
+                handleShowMenu,
+                handleShowSlot
             }
         }
     }
@@ -197,5 +216,10 @@
         color: #fff;
         text-align: center;
         pointer-events: all;
+        &.disabled{
+            background-color: #dcdee5;
+            color: #fff;
+            cursor: not-allowed;
+        }
     }
 </style>
