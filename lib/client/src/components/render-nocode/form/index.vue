@@ -15,7 +15,7 @@
             />
         </layout>
         <right-panel slot="right" :field="crtField" :list="fieldsList" @update="handleUpdateField" />
-        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" init-page-data="initManagePageData" />
+        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" :init-page-data="initManagePageData" />
     </draw-layout>
 
 </template>
