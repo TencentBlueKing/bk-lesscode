@@ -19,8 +19,7 @@
                 [$style['empty']]: componentData.children.length < 1
             }"
             @click="handleCanvaseClick"
-            @mouseleave="handleMouseleave"
-            @contextmenu.stop="handleShowContextmenu">
+            @mouseleave="handleMouseleave">
             <draggable
                 ref="dragArea"
                 class="target-drag-area"
@@ -232,9 +231,6 @@
                 if (componentLeft > boxLeft) {
                     childNode.setStyle('marginLeft', '10px')
                 }
-            },
-            handleShowContextmenu (event) {
-                LC.showMenu(event)
             },
             /**
              * @desc 鼠标离开时清除组件 hover 效果
