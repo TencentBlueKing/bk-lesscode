@@ -112,11 +112,11 @@
                 LC.triggerEventListener('componentDragStart', {
                     type: 'componentDragStart'
                 })
-                LC.triggerEventListener('componentMouserleave')
-                const activeNode = LC.getActiveNode()
-                if (activeNode) {
-                    activeNode.activeClear()
-                }
+                // LC.triggerEventListener('componentMouserleave')
+                // const activeNode = LC.getActiveNode()
+                // if (activeNode) {
+                //     activeNode.activeClear()
+                // }
             },
             /**
              * @desc 结束拖拽
