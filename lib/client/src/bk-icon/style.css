@@ -389,6 +389,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-template-logo:before {
 	content: "\e172";
 }
+.bk-drag-flow-fill:before {
+	content: "\e226";
+}
 .bk-drag-function-fill:before {
 	content: "\e1bd";
 }

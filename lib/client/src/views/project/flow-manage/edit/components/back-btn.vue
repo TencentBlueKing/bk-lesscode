@@ -1,6 +1,6 @@
 <template>
     <div class="go-back-icon-wrapper">
-        <i class="bk-drag-icon bk-drag-arrow-back"></i>
+        <i class="bk-drag-icon bk-drag-arrow-back" @click="$router.push({ name: 'flowList' })"></i>
     </div>
 </template>
 <script>

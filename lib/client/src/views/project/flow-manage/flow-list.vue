@@ -14,6 +14,7 @@
             </div>
         </div>
         <bk-table
+            v-bkloading="{ isloading: listLoading }"
             :data="flowList"
             :pagination="pagination"
             :outer-border="false"
@@ -21,23 +22,33 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
-            <bk-table-column label="ID" property="id"></bk-table-column>
-            <bk-table-column label="流程名称" property="name"></bk-table-column>
-            <bk-table-column label="流程描述"></bk-table-column>
-            <bk-table-column label="流程表单"></bk-table-column>
-            <bk-table-column label="流程数据管理页"></bk-table-column>
-            <bk-table-column label="创建人"></bk-table-column>
-            <bk-table-column label="创建时间"></bk-table-column>
-            <bk-table-column label="操作">
-                <template>
-                    <bk-button
-                        style="margin-right: 17px;"
-                        theme="primary"
-                        :text="true"
-                        @click="handleEditClick">
+            <bk-table-column label="流程名称" property="flowName" show-overflow-tooltip :min-width="120">
+                <template slot-scope="{ row }">
+                    <router-link
+                        class="link-btn"
+                        :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
+                        {{ row.flowName }}
+                    </router-link>
+                </template>
+            </bk-table-column>
+            <bk-table-column label="流程描述" property="summary"></bk-table-column>
+            <bk-table-column label="流程表单页">--</bk-table-column>
+            <bk-table-column label="流程数据管理页">--</bk-table-column>
+            <bk-table-column label="创建人" property="createUser"></bk-table-column>
+            <bk-table-column label="创建时间" show-overflow-tooltip>
+                <template slot-scope="{ row }">
+                    {{ row.createTime | timeFormatter }}
+                </template>
+            </bk-table-column>
+            <bk-table-column label="操作" width="140">
+                <template slot-scope="{ row }">
+                    <router-link
+                        class="link-btn"
+                        :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
                         编辑
-                    </bk-button>
+                    </router-link>
                     <bk-button
+                        style="margin-left: 17px;"
                         theme="primary"
                         :text="true"
                         @click="handleArchiveClick">
@@ -66,7 +77,7 @@
                     <bk-input v-model="newFlowData.name" />
                 </bk-form-item>
                 <bk-form-item label="流程描述" property="desc">
-                    <bk-input v-model="newFlowData.desc" type="textarea" :row="4" />
+                    <bk-input v-model="newFlowData.summary" type="textarea" :row="4" />
                 </bk-form-item>
             </bk-form>
         </bk-dialog>
@@ -74,13 +85,20 @@
 </template>
 <script>
     // import { mapGetters } from 'vuex'
+    import dayjs from 'dayjs'
+    import { messageError } from '@/common/bkmagic'
 
     export default {
         name: 'flowList',
+        filters: {
+            timeFormatter (val) {
+                return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : '--'
+            }
+        },
         data () {
             return {
                 flowList: [],
-                listLoading: false,
+                listLoading: true,
                 pagination: {
                     current: 1,
                     count: 0,
@@ -88,7 +106,7 @@
                 },
                 newFlowData: {
                     name: '',
-                    desc: ''
+                    summary: ''
                 },
                 flowDataRule: {
                     name: [{
@@ -116,14 +134,12 @@
             async getFlowList () {
                 this.listLoading = true
                 try {
-                    console.log(this.versionId)
-                    const res = await this.$store.dispatch('nocode/flow/getFlowList', {
-                        project: this.projectId,
+                    this.flowList = await this.$store.dispatch('nocode/flow/getFlowList', {
+                        projectId: this.projectId,
                         versionId: this.versionId
                     })
-                    this.flowList = res.data
-                } catch (e) {
-                    console.error(e)
+                } catch (err) {
+                    messageError(err.message || err)
                 } finally {
                     this.listLoading = false
                 }
@@ -132,7 +148,14 @@
                 this.$refs.createForm.validate().then(async () => {
                     this.createPending = true
                     try {
-                        await this.$store.dispatch('nocode/flow/createFlow', this.newFlowData)
+                        const { name, summary } = this.newFlowData
+                        const params = {
+                            name,
+                            summary,
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }
+                        await this.$store.dispatch('nocode/flow/createFlow', params)
                     } catch (e) {
                         console.error(e)
                     } finally {
@@ -184,6 +207,9 @@
                 color: #63656e;
             }
         }
+    }
+    .link-btn {
+        color: #3a84ff;
     }
 </style>
 <style lang="postcss">

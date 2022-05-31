@@ -33,6 +33,7 @@
     </section>
 </template>
 <script>
+    import { messageError } from '@/common/bkmagic'
     import FlowCanvas from '@/components/flow/flow-canvas/index.vue'
     import NodeConfigPanel from '@/components/flow/nodeConfig/nodeConfigPanel.vue'
     export default {
@@ -72,7 +73,7 @@
                     }
                     this.createTicketNodeId = res[0].find(item => item.is_first_state && item.is_builtin).id
                 } catch (e) {
-                    console.error(e)
+                    messageError(e.message || e)
                 } finally {
                     this.flowDataLoading = false
                 }

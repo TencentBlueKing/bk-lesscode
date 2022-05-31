@@ -34,6 +34,7 @@
     </section>
 </template>
 <script>
+    import { messageError } from '@/common/bkmagic'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
     import GenerateDataManagePage from './components/generate-data-manage-page.vue'
@@ -50,19 +51,20 @@
             FlowSelector,
             GenerateDataManagePage
         },
-        props: {
-            projectId: {
-                type: String,
-                default: ''
-            },
-            flowId: Number
-        },
         data () {
             return {
                 steps: STEPS,
                 curStep: this.getCurStep(),
                 flowDetailLoading: true,
                 flowDetail: {}
+            }
+        },
+        computed: {
+            projectId () {
+                return this.$route.params.projectId
+            },
+            flowId () {
+                return this.$route.params.projectId
             }
         },
         watch: {
@@ -79,7 +81,7 @@
                     this.flowDetailLoading = true
                     this.flowDetail = await this.$store.dispatch('nocode/flow/getFlowConfig', this.flowId)
                 } catch (e) {
-                    console.error(e)
+                    messageError(e.message || e)
                 } finally {
                     this.flowDetailLoading = false
                 }
