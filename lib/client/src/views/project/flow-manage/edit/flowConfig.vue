@@ -22,25 +22,26 @@
             </bk-button>
         </div>
         <div v-if="nodeConfigPanelShow" class="node-config-wrapper">
-            <node-config-panel
+            <node-config
                 :node-id="crtNode"
                 :flow-id="id"
                 :create-ticket-node-id="createTicketNodeId"
                 @close="closeConfigPanel"
                 @save="handleConfigSave">
-            </node-config-panel>
+            </node-config>
         </div>
     </section>
 </template>
 <script>
     import { messageError } from '@/common/bkmagic'
     import FlowCanvas from '@/components/flow/flow-canvas/index.vue'
-    import NodeConfigPanel from '@/components/flow/nodeConfig/nodeConfigPanel.vue'
+    import NodeConfig from '@/components/flow/nodeConfig/index.vue'
+
     export default {
         name: 'FunctionFlow',
         components: {
             FlowCanvas,
-            NodeConfigPanel
+            NodeConfig
         },
         props: {
             id: Number // itsm存的流程id
@@ -68,10 +69,10 @@
                         this.$store.dispatch('nocode/flow/getFlowLines', { workflow: this.id, page_size: 1000 })
                     ])
                     this.flowData = {
-                        nodes: res[0],
+                        nodes: res[0].items,
                         lines: res[1].items
                     }
-                    this.createTicketNodeId = res[0].find(item => item.is_first_state && item.is_builtin).id
+                    this.createTicketNodeId = res[0].items.find(item => item.is_first_state && item.is_builtin).id
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {

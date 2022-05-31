@@ -257,7 +257,7 @@
                             axis: { x, y }
                         }
                     }
-                    this.$store.dispatch('setting/patchFlowNode', params)
+                    this.$store.dispatch('nocode/flow/updateNode', params)
                 } catch (e) {
                     console.error(e)
                 }

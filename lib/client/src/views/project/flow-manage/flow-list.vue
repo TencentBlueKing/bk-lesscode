@@ -14,7 +14,7 @@
             </div>
         </div>
         <bk-table
-            v-bkloading="{ isloading: listLoading }"
+            v-bkloading="{ isLoading: listLoading }"
             :data="flowList"
             :pagination="pagination"
             :outer-border="false"
@@ -31,7 +31,7 @@
                     </router-link>
                 </template>
             </bk-table-column>
-            <bk-table-column label="流程描述" property="summary"></bk-table-column>
+            <bk-table-column label="流程描述" property="summary" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="流程表单页">--</bk-table-column>
             <bk-table-column label="流程数据管理页">--</bk-table-column>
             <bk-table-column label="创建人" property="createUser"></bk-table-column>
@@ -51,23 +51,26 @@
                         style="margin-left: 17px;"
                         theme="primary"
                         :text="true"
-                        @click="handleArchiveClick">
+                        @click="handleArchiveClick(row.id, $event)">
                         归档
                     </bk-button>
                 </template>
             </bk-table-column>
         </bk-table>
+        <!-- <div id="flow-archive-content">
+            <h4>确认归档该流程？</h4>
+            <p>1. 流程归档后，将不能使用，包括流程的表单页面将会被删除，请谨慎操作！</p>
+            <p>2. 后续可通过归档列表恢复使用。</p>
+        </div> -->
         <bk-dialog
             title="新建流程"
             header-position="left"
-            render-directive="if"
             ext-cls="create-flow-dialog"
             :value="isCreateDialogShow"
             :width="480"
             :mask-close="false"
             :auto-close="false"
-            @confirm="handleCreateConfirm"
-            @cancel="isCreateDialogShow = false">
+            @cancel="handleCreateDialogClose">
             <bk-form
                 ref="createForm"
                 form-type="vertical"
@@ -80,11 +83,14 @@
                     <bk-input v-model="newFlowData.summary" type="textarea" :row="4" />
                 </bk-form-item>
             </bk-form>
+            <div class="dialog-footer" slot="footer">
+                <bk-button theme="primary" :loading="createPending" @click="handleCreateConfirm">确认</bk-button>
+                <bk-button :disabled="createPending" @click="handleCreateDialogClose">取消</bk-button>
+            </div>
         </bk-dialog>
     </div>
 </template>
 <script>
-    // import { mapGetters } from 'vuex'
     import dayjs from 'dayjs'
     import { messageError } from '@/common/bkmagic'
 
@@ -115,6 +121,8 @@
                         message: '必填项'
                     }]
                 },
+                archiveId: null,
+                archivePopover: null,
                 isCreateDialogShow: false,
                 createPending: false
             }
@@ -156,6 +164,8 @@
                             versionId: this.versionId
                         }
                         await this.$store.dispatch('nocode/flow/createFlow', params)
+                        this.handleCreateDialogClose()
+                        this.getFlowList()
                     } catch (e) {
                         console.error(e)
                     } finally {
@@ -163,10 +173,32 @@
                     }
                 })
             },
-            handleEditClick () {
-                this.$router.push({ name: 'FlowEdit', params: { id: this.projectId } })
+            handleCreateDialogClose () {
+                this.isCreateDialogShow = false
+                this.newFlowData = { name: '', summary: '' }
             },
-            handleArchiveClick () {},
+            handleArchiveClick (id, e) {
+                // if (this.archiveId === id) {
+                //     return
+                // }
+                // const $self = this
+                // this.archiveId = id
+                // this.archivePopover = this.$bkPopover(e.target, {
+                //     allowHTML: true,
+                //     content: this.$el.querySelector('#flow-archive-content'),
+                //     arrow: false,
+                //     theme: 'light',
+                //     trigger: 'click',
+                //     onHide () {
+                //         console.log(this)
+                //         this.destroy()
+                //         console.log($self.archivePopover)
+                //     }
+                // })
+                // this.archivePopover.show()
+            },
+            handleArchiveConfirm () {},
+            handleArchiveCancel () {},
             handlePageChange () {},
             handlePageLimitChange () {}
         }
@@ -193,6 +225,7 @@
             justify-content: center;
             width: 32px;
             height: 32px;
+            background: #ffffff;
             border: 1px solid #c4c6cc;
             border-radius: 2px;
             cursor: pointer;

@@ -9,15 +9,19 @@
   specific language governing permissions and limitations under the License.
 -->
 <template>
-    <section v-bkloading="{ isLoading: flowDetailLoading, zIndex: 2999 }" class="flow-edit-wrapper">
+    <section v-bkloading="{ isLoading: serviceDataLoading, zIndex: 2999 }" class="flow-edit-wrapper">
         <div class="page-header-container">
             <div class="nav-container">
                 <back-btn></back-btn>
-                <flow-selector></flow-selector>
+                <flow-selector
+                    :list="flowList"
+                    :list-loading="listLoading"
+                    :flow-data="flowData">
+                </flow-selector>
             </div>
             <div class="steps-container">
                 <bk-steps
-                    v-if="!flowDetailLoading"
+                    v-if="!serviceDataLoading"
                     :controllable="true"
                     :steps="steps"
                     :cur-step="curStep"
@@ -28,8 +32,8 @@
                 <generate-data-manage-page></generate-data-manage-page>
             </div>
         </div>
-        <div v-if="!flowDetailLoading" class="flow-edit-main">
-            <router-view :id="flowDetail.workflow_id" :flow-config="flowDetail"></router-view>
+        <div v-if="!serviceDataLoading" class="flow-edit-main">
+            <router-view :id="serviceData.workflow_id" :flow-config="serviceData"></router-view>
         </div>
     </section>
 </template>
@@ -55,35 +59,66 @@
             return {
                 steps: STEPS,
                 curStep: this.getCurStep(),
-                flowDetailLoading: true,
-                flowDetail: {}
+                flowId: this.$route.params.flowId,
+                listLoading: true,
+                flowList: [],
+                flowDataLoading: true,
+                flowData: {},
+                serviceDataLoading: true,
+                serviceData: {}
             }
         },
         computed: {
             projectId () {
-                return this.$route.params.projectId
-            },
-            flowId () {
                 return this.$route.params.projectId
             }
         },
         watch: {
             '$route.name' () {
                 this.curStep = this.getCurStep()
+            },
+            '$route.params.flowId' (val) {
+                this.flowId = val
+                this.getFlowData()
             }
         },
-        created () {
-            this.getFlowConfig()
+        async created () {
+            this.getFlowList()
+            await this.getFlowData()
+            this.getServiceData()
         },
         methods: {
-            async getFlowConfig () {
+            async getFlowList () {
+                this.listLoading = true
                 try {
-                    this.flowDetailLoading = true
-                    this.flowDetail = await this.$store.dispatch('nocode/flow/getFlowConfig', this.flowId)
+                    this.flowList = await this.$store.dispatch('nocode/flow/getFlowList', {
+                        projectId: this.projectId,
+                        versionId: this.versionId
+                    })
+                } catch (err) {
+                    messageError(err.message || err)
+                } finally {
+                    this.listLoading = false
+                }
+            },
+            async getFlowData () {
+                try {
+                    this.flowDatalLoading = true
+                    this.flowData = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
-                    this.flowDetailLoading = false
+                    this.flowDataLoading = false
+                }
+            },
+            async getServiceData () {
+                try {
+                    this.serviceDataLoading = true
+                    this.serviceData = await this.$store.dispatch('nocode/flow/getServiceData', this.flowData.itsmId)
+                } catch (e) {
+                    messageError(e.message || e)
+                } finally {
+                    this.serviceDataLoading = false
                 }
             },
             getCurStep () {
