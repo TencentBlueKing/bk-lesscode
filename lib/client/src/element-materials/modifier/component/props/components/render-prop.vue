@@ -58,6 +58,7 @@
                     <template v-if="selectValueType === renderCom.type || selectValueType === renderCom.valueType">
                         <component
                             :is="renderCom.component"
+                            :component-type="componentType"
                             :name="name"
                             :type="renderCom.type"
                             :describe="describe"
@@ -367,7 +368,7 @@
                             const lastValueType = Array.isArray(lastValue.valueType)
                                 ? lastValue.valueType[0]
                                 : lastValue.valueType
-                            
+
                             this.formData = Object.freeze({
                                 ...this.formData,
                                 format: lastValue.format,
@@ -416,7 +417,7 @@
                 renderValue: defaultValue,
                 payload: this.lastValue.payload || {}
             })
-            
+
             // 编辑状态缓存
             this.propTypeValueMemo = {
                 [this.formData.valueType]: {
