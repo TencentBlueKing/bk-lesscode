@@ -23,6 +23,11 @@ export enum DISPLAY_TYPES {
 
 export type UploadStatus = Lowercase<keyof typeof UPLOAD_STATUS>
 
+export const FILE_MAX_LIMIT = {
+    IMAGE_SIZE: 5,
+    FILE_SIZE: 10
+}
+
 export interface UploadRawFile extends File {
     uid: number
 }
@@ -32,6 +37,8 @@ export interface UploadFile {
     percentage?: number
     status: UploadStatus
     size?: number
+    ext?: string
+    mime?: string
     response?: { code: number, data: Record<string, unknown>, message: string }
     uid: number
     url?: string
@@ -45,9 +52,42 @@ export function formatSize (value: number) {
     return `${size.toFixed(2)} ${uints[index]}`
 }
 
-export function getFileUrl (file: UploadFile, isServer = false) {
+export function getFileUrl (file: UploadFile, isServer = false, isPreview = false) {
     if (isServer) {
-        return file?.response?.data?.url || file.url
+        const url = (file?.response?.data?.url || file.url) as string
+        if (!isPreview) {
+            return url
+        }
+        const previewParam = 'preview=true'
+        if (url && url.indexOf('?') !== -1) {
+            return `${url}&${previewParam}`
+        }
+        return `${url}?${previewParam}`
     }
     return file.url
+}
+
+export function getFileExt (file: UploadFile): string {
+    if (file?.ext) {
+        return file.ext
+    }
+    if (file?.raw) {
+        return file.raw.name.split('.').pop()
+    }
+    return file?.response?.data?.ext as string
+}
+
+export function getFileMime (file: UploadFile): string {
+    if (file?.mime) {
+        return file.mime
+    }
+    if (file?.raw) {
+        return file.raw.type
+    }
+    return file?.response?.data?.mime as string
+}
+
+export function isImageFile (file: UploadFile): boolean {
+    const mime = getFileMime(file)
+    return mime.startsWith('image/')
 }

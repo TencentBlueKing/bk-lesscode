@@ -33,7 +33,11 @@
                                 <bk-radio v-else-if="option.type === 'radio'" :checked="item[option.key]" @change="val => handleCheckChange(val, option.key, index)" />
                                 <bk-checkbox v-else-if="option.type === 'checkbox'" :checked="item[option.key]" @change="val => handleChange(val, option.key, index)" />
                                 <icon v-else-if="option.type === 'icon'" :default-value="item[option.key]" :include-number="true" :change="val => handleChange(val, option.key, index)"></icon>
-                                <src-input v-else-if="option.type === 'src-input'" :value="item[option.key]" @change="val => handleChange(val, option.key, index)" />
+                                <src-input v-else-if="option.type === 'src-input'"
+                                    :value="item[option.key]"
+                                    v-bind="option.props"
+                                    @change="val => handleChange(val, option.key, index)"
+                                />
                             </div>
                         </section>
                     </div>
@@ -262,7 +266,10 @@
                 {
                     name: 'url',
                     key: 'url',
-                    type: 'src-input'
+                    type: 'src-input',
+                    props: {
+                        fileType: 'img'
+                    }
                 }, {
                     name: 'link',
                     key: 'link',
