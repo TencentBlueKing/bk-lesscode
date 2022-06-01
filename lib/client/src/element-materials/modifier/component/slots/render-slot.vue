@@ -73,6 +73,7 @@
 </template>
 
 <script>
+    import _ from 'lodash'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import variableSelect from '@/components/variable/variable-select'
@@ -260,6 +261,7 @@
                 type
             } = this.describe
             const defaultValue = val
+            this.defaultValue = _.cloneDeep(defaultValue)
             const component = Array.isArray[name] ? name : [name]
 
             // 构造 variable-select 的配置
@@ -381,7 +383,7 @@
              */
             handleCodeChange (valueData) {
                 let code = null
-                let renderValue = ''
+                let renderValue = _.cloneDeep(this.defaultValue)
                 
                 if (this.formData.valueType === 'remote') {
                     // 配置的是远程函数
@@ -392,10 +394,9 @@
                     }
                 } else {
                     code = valueData.val
-                    renderValue = valueData.val
                     // 用户设置数据为空时显示配置默认值（fix: 数据为空可能导致组件无法显示）
-                    if (isEmpty(renderValue)) {
-                        renderValue = this.describe.val
+                    if (!isEmpty(valueData.val)) {
+                        renderValue = valueData.val
                     }
                 }
                 this.formData = Object.freeze({

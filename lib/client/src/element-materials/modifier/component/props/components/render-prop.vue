@@ -75,6 +75,7 @@
     </div>
 </template>
 <script>
+    import _ from 'lodash'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
@@ -396,6 +397,7 @@
             } = this.describe
 
             const defaultValue = val !== undefined ? val : getDefaultValueByType(type)
+            this.defaultValue = _.cloneDeep(defaultValue)
             const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
 
             // 构造 variable-select 的配置
@@ -519,7 +521,7 @@
             handleCodeChange (name, value, type, payload = {}) {
                 try {
                     let code = null
-                    let renderValue
+                    let renderValue = _.cloneDeep(this.defaultValue)
 
                     const val = getRealValue(type, value)
 
