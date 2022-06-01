@@ -2,7 +2,7 @@
     <div class="render-content">
         <render-flow v-if="nocodeType === 'FLOW'" />
         <render-form v-else-if="nocodeType === 'FORM'" @update="$emit('update', $event)" />
-        <render-data-manage v-else-if="nocodeType" type="edit"></render-data-manage>
+        <render-data-manage v-else-if="nocodeType" type="use"></render-data-manage>
         <div v-else>empty</div>
     </div>
 </template>

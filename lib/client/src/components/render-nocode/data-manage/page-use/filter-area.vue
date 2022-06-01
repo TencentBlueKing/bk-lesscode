@@ -11,7 +11,7 @@
                     class="form-container"
                     form-type="vertical">
                     <bk-form-item
-                        v-for="(item, index) in mockDataFilter"
+                        v-for="(item, index) in filters"
                         style="width: 230px; margin-right: 16px;"
                         :key="index"
                         :label="item.name">
@@ -60,7 +60,6 @@
     </div>
 </template>
 <script>
-    import mockData from '../../common/mockFormData.json'
     import dayjs from 'dayjs'
 
     export default {
@@ -79,7 +78,6 @@
             return {
                 expanding: false,
                 conditions: [],
-                mockDataFilter: mockData.filter(item => !['TABLE', 'RICHTEXT', 'FILE', 'LINK', 'IMAGE'].includes(item.type)),
                 tableData: []
             }
         },

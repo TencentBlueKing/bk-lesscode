@@ -10,7 +10,7 @@
     import filterArea from './filter-area.vue'
     import tableData from './table-data.vue'
     import { mapGetters } from 'vuex'
-
+    import { SYS_FIELD } from '../../common/field'
     export default {
         name: 'dataManageUsePage',
         components: {
@@ -21,21 +21,13 @@
         data () {
             return {
                 fields: [], // 表单字段列表
-                filters: ['key1', 'key2', 'key3'],
+                filters: [], // 表单搜索数据
+                formFieldsList: [],
                 operatingButtons: [
                     { type: 'ADD', name: '添加' },
                     { type: 'BATCH_DELETE', name: '批量删除' },
                     { type: 'DOWNLOAD_FILES', name: '下载附件' }
                 ]
-                // tableConfig: {
-                //     operatingButtons: [
-                //         { type: 'ADD', name: '添加' },
-                //         { type: 'BATCH_DELETE', name: '批量删除' },
-                //         { type: 'DOWNLOAD_FILES', name: '下载附件' }
-                //     ],
-                //     fields: [],
-                //     innerActions: []
-                // }
             }
         },
         computed: {
@@ -44,12 +36,11 @@
                 return this.pageDetail.formId
             },
             tableSetting () {
-                return JSON.parse(this.pageDetail.content) || []
+                return this.pageDetail.content
             }
         },
         created () {
             this.getFieldList()
-            console.log(this.tableConfig)
         },
         methods: {
             async getFieldList () {
@@ -57,7 +48,12 @@
                     if (this.formId) {
                         this.tableLoading = true
                         const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
-                        this.fields = JSON.parse(form.content) || []
+                        // this.fields = JSON.parse(form.content) || []
+                        this.formFieldsList = JSON.parse(form.content) || []
+                        const { filters, tableConfig } = this.tableSetting
+                        const tempFormFieldsList = JSON.parse(form.content).concat(SYS_FIELD)
+                        this.filters = this.formFieldsList.filter(item => filters.includes(item.id))
+                        this.fields = this.formFieldsList.filter(item => tableConfig.includes(item.id))
                     }
                 } catch (err) {
 
