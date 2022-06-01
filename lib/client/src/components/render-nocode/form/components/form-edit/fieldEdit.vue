@@ -196,10 +196,8 @@
                         v-model="fieldData.regex"
                         :clearable="false"
                         :searchable="true"
-                        :loading="regexListLoading"
                         :disabled="
-                            regexListLoading ||
-                                fieldData.source === 'TABLE' ||
+                            fieldData.source === 'TABLE' ||
                                 (fieldData.meta && fieldData.meta.code === 'APPROVE_RESULT')
                         "
                         @selected="change">
@@ -282,6 +280,8 @@
         FIELDS_SOURCE_TYPE
     } from '../../constant/forms'
 
+    import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
+
     export default {
         name: 'formEdit',
         components: {
@@ -311,8 +311,7 @@
             return {
                 fieldData: cloneDeep(this.value),
                 checkTips: '',
-                regexListLoading: false,
-                regexList: [],
+                regexList: this.getRegexList(this.value),
                 defaultData: this.getDefaultData(),
                 fieldProps: {
                     fieldsFullLayout: FIELDS_FULL_LAYOUT,
@@ -354,33 +353,17 @@
         },
         watch: {
             value (val, oldVal) {
-                this.fieldData = cloneDeep(val)
                 if (val.type !== oldVal.type) {
-                    this.getRegexList()
+                    this.regexList = this.getRegexList(val)
                 }
                 this.defaultData = this.getDefaultData()
             }
         },
-        created () {
-            this.getRegexList()
-        },
         methods: {
-            async getRegexList () {
-                try {
-                    this.regexListLoading = true
-                    const params = {
-                        type: this.fieldData.type
-                    }
-                    const resp = await this.$store.dispatch('nocode/formSetting/getRegexList', params)
-                    this.regexList = resp.data.regex_choice.map((item) => {
-                        const [id, name] = item
-                        return { id, name: name === '' ? '无' : name }
-                    })
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.regexListLoading = false
-                }
+            getRegexList (val) {
+                const result = REGX_CHIOCE_LIST.filter(item => item.type === val.type || item.type.includes(val.type) || !item.type)
+                console.log(result)
+                return result
             },
             onNameBlur () {
                 if (this.fieldData.name === '') {

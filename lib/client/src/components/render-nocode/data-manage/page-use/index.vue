@@ -52,8 +52,8 @@
                         this.formFieldsList = JSON.parse(form.content) || []
                         const { filters, tableConfig } = this.tableSetting
                         const tempFormFieldsList = JSON.parse(form.content).concat(SYS_FIELD)
-                        this.filters = this.formFieldsList.filter(item => filters.includes(item.id))
-                        this.fields = this.formFieldsList.filter(item => tableConfig.includes(item.id))
+                        this.filters = tempFormFieldsList.filter(item => filters.includes(item.id))
+                        this.fields = tempFormFieldsList.filter(item => tableConfig.includes(item.id))
                     }
                 } catch (err) {
 
