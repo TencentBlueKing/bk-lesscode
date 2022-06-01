@@ -10,7 +10,6 @@
 <script>
     import { mapGetters } from 'vuex'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
-    import cloneDeep from 'lodash.clonedeep'
     export default {
         components: {
             MenuItem
