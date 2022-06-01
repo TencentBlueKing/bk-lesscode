@@ -1,8 +1,8 @@
 <template>
     <div class="data-manage-use-page">
-        <operate-area :buttons="tableConfig.operatingButtons" @click="handleClick"></operate-area>
+        <operate-area :buttons="operatingButtons" @click="handleClick"></operate-area>
         <filter-area :filters="filters" :fields="fields" @search="handleSearch"></filter-area>
-        <table-data :config="tableConfig" :fields="fields"></table-data>
+        <table-data :fields="fields"></table-data>
     </div>
 </template>
 <script>
@@ -22,26 +22,34 @@
             return {
                 fields: [], // 表单字段列表
                 filters: ['key1', 'key2', 'key3'],
-                tableConfig: {
-                    operatingButtons: [
-                        { type: 'ADD', name: '添加' },
-                        { type: 'BATCH_DELETE', name: '批量删除' },
-                        { type: 'DOWNLOAD_FILES', name: '下载附件' }
-                    ],
-                    fields: [],
-                    innerActions: []
-                }
+                operatingButtons: [
+                    { type: 'ADD', name: '添加' },
+                    { type: 'BATCH_DELETE', name: '批量删除' },
+                    { type: 'DOWNLOAD_FILES', name: '下载附件' }
+                ]
+                // tableConfig: {
+                //     operatingButtons: [
+                //         { type: 'ADD', name: '添加' },
+                //         { type: 'BATCH_DELETE', name: '批量删除' },
+                //         { type: 'DOWNLOAD_FILES', name: '下载附件' }
+                //     ],
+                //     fields: [],
+                //     innerActions: []
+                // }
             }
         },
         computed: {
             ...mapGetters('page', ['pageDetail']),
             formId () {
-                // todo 先验证一下接口后面把2去除
-                return this.pageDetail.formId || 3
+                return this.pageDetail.formId
+            },
+            tableSetting () {
+                return JSON.parse(this.pageDetail.content) || []
             }
         },
         created () {
             this.getFieldList()
+            console.log(this.tableConfig)
         },
         methods: {
             async getFieldList () {
@@ -49,9 +57,7 @@
                     if (this.formId) {
                         this.tableLoading = true
                         const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
-                        console.log(JSON.parse(form.content))
                         this.fields = JSON.parse(form.content) || []
-                        console.log(typeof this.fields)
                     }
                 } catch (err) {
 

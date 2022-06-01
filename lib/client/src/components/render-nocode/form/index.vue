@@ -99,8 +99,8 @@
                     if (this.formId) {
                         this.isLoading = true
                         const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
-                        console.log(form, 22666)
                         this.fieldsList = JSON.parse(form.content) || []
+                        this.saveFieldList()
                     }
                 } catch (err) {
 

@@ -10,7 +10,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
-    
+    import cloneDeep from 'lodash.clonedeep'
     export default {
         components: {
             MenuItem
@@ -28,6 +28,7 @@
         },
         computed: {
             ...mapGetters('page', ['pageDetail']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             nocodeType () {
                 return this.pageDetail.nocodeType || ''
             },
@@ -80,11 +81,16 @@
             async saveFormManage () {
                 const content = []
                 content.push(JSON.stringify(this.$store.state.nocode.formSetting.tableFieldsConfig))
+                const pageData = {
+                    id: this.pageDetail.id,
+                    content
+                }
                 try {
                     const res = await this.$store.dispatch('page/update', {
                         data: {
-                            ...this.pageDetail,
-                            content
+                            pageData,
+                            projectId: this.projectId,
+                            versionId: this.versionId
                         }
                     })
                     if (res) {

@@ -103,7 +103,7 @@
             // form和flow的数据管理页需要填写默认的pageCode和pageName，带上formId或flowId
             initPageData: {
                 type: Object,
-                default: {}
+                default: () => ({})
             }
         },
         data () {
