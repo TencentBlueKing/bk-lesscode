@@ -9,7 +9,6 @@
             <div ref="container" class="container">
                 <component
                     :is="panelCom"
-                    :style="containerStyle"
                     v-bind="templateData"
                     @on-change="handleChange" />
             </div>
@@ -33,25 +32,6 @@
         complexSide: RenderComplexSide
     }
 
-    const getOffset = target => {
-        let totalLeft = null
-        let totalTop = null
-        let par = target.offsetParent
-        totalLeft += target.offsetLeft
-        totalTop += target.offsetTop
-        while (par) {
-            if (navigator.userAgent.indexOf('MSIE 8.0') === -1) {
-                // 不是IE8我们才进行累加父级参照物的边框
-                totalTop += par.clientTop
-                totalLeft += par.clientLeft
-            }
-            totalTop += par.offsetTop
-            totalLeft += par.offsetLeft
-            par = par.offsetParent
-        }
-        return { left: totalLeft, top: totalTop }
-    }
-
     export default {
         components: {
             EditorProp
@@ -64,7 +44,6 @@
         },
         data () {
             return {
-                containerStyle: {}
             }
         },
         computed: {
@@ -73,12 +52,6 @@
             },
             isComplexSide () {
                 return this.templateData.panelActive === 'complexSide'
-            }
-        },
-        mounted () {
-            const { top } = getOffset(this.$refs.container)
-            this.containerStyle = {
-                height: `${window.innerHeight - top}px`
             }
         },
         methods: {
@@ -94,15 +67,13 @@
 <style lang='postcss'>
     @import "@/css/mixins/scroller";
 
-    .project-template-modifier{
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1;
+    .project-template-modifier {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
         background: #fff;
-        .header{
+
+        .header {
             height: 46px;
             font-size: 14px;
             line-height: 46px;
@@ -118,10 +89,10 @@
                 height: 100%
             }
         }
-        .container{
+        .container {
             padding: 0 10px;
         }
-        .action-title{
+        .action-title {
             margin-bottom: 10px;
             font-size: 12px;
             font-weight: bold;

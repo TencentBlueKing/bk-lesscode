@@ -74,7 +74,7 @@
 
             function handleViewFile (file) {
                 const isImage = isImageFile(file)
-                const url = getFileUrl(file, true, true)
+                const url = getFileUrl(file, true, !isImage)
 
                 // 非图片新标签页打开地址
                 if (!isImage) {
