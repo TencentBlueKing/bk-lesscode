@@ -46,7 +46,7 @@
                 <bk-radio-button
                     v-for="item in renderComponentList"
                     :key="item.type"
-                    :value="item.type">
+                    :value="item.valueType">
                     {{ item.type | valueTypeTextFormat }}
                 </bk-radio-button>
             </bk-radio-group>
@@ -373,7 +373,7 @@
                                 ...this.formData,
                                 format: lastValue.format,
                                 code: lastValue.code,
-                                valueType: lastValueType
+                                valueType: getPropValueType(lastValueType)
                             })
 
                             this.propTypeValueMemo[this.formData.valueType] = {
@@ -395,7 +395,7 @@
                 val
             } = this.describe
 
-            const defaultValue = val !== undefined ? val : getDefaultValueByType(type)
+            const defaultValue = val !== undefined ? val : getDefaultValueByType(getPropValueType(type))
             const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
 
             // 构造 variable-select 的配置
@@ -480,30 +480,32 @@
              * @param { String } valueType
              */
             handleValueTypeChange (valueType) {
-                this.selectValueType = valueType
+                const realValueType = getPropValueType(valueType)
+                this.selectValueType = realValueType
+
                 let code = null
                 let payload = {}
-                if (this.propTypeValueMemo.hasOwnProperty(valueType)) {
-                    code = this.propTypeValueMemo[valueType].val
-                    payload = this.propTypeValueMemo[valueType].payload
+                if (this.propTypeValueMemo.hasOwnProperty(realValueType)) {
+                    code = this.propTypeValueMemo[realValueType].val
+                    payload = this.propTypeValueMemo[realValueType].payload
                 } else if ([
                     'remote',
                     'data-source',
                     'table-data-source'
-                ].includes(valueType)) {
+                ].includes(realValueType)) {
                     // fix:
                     // 远程函数、数据源类型在没有获取数据前使用配置文件设置的默认值
                     code = this.describe.val
                 } else {
                     // 切换值类型时，通过类型获取默认值
-                    code = getDefaultValueByType(valueType)
+                    code = getDefaultValueByType(getPropValueType(realValueType))
                 }
 
                 this.formData = Object.freeze({
                     ...this.formData,
                     code,
                     payload,
-                    valueType,
+                    valueType: realValueType,
                     renderValue: code
                 })
 
