@@ -2,7 +2,7 @@
     <div
         id="modifierPanel"
         class="draw-page-modifier-panel">
-        <div>
+        <div class="draw-page-modifier-panel-inner">
             <div
                 v-if="componentId"
                 class="component-info">
@@ -77,7 +77,7 @@
                 this.componentDocument = ''
                 this.isAttachToForm = false
             }
-            
+
             LC.addEventListener('active', activeCallback)
             LC.addEventListener('activeClear', activeClearCallback)
             LC.addEventListener('toggleInteractive', toggleInteractiveCallback)
@@ -121,12 +121,16 @@
         position: relative;
         height: 100%;
 
+        .draw-page-modifier-panel-inner {
+            height: 100%;
+        }
+
         .component-info {
             display: flex;
             padding: 15px 0;
             text-align: center;
             border-bottom: 1px solid #dcdee5;
-            
+
             .component-id {
                 padding: 0 10px;
                 overflow: hidden;
