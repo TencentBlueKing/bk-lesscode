@@ -374,11 +374,11 @@
                                 ...this.formData,
                                 format: lastValue.format,
                                 code: lastValue.code,
-                                valueType: lastValueType
+                                valueType: lastValueType,
+                                renderValue: lastValue.renderValue
                             })
-
                             this.propTypeValueMemo[this.formData.valueType] = {
-                                val: lastValue.code,
+                                val: lastValue.renderValue,
                                 payload: lastValue.payload || {}
                             }
                         }
@@ -436,14 +436,8 @@
                 this.isInnerChange = true
                 // 缓存用户本地编辑值
                 this.propTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.code,
+                    val: this.formData.renderValue,
                     payload: this.formData.payload
-                }
-
-                // 如果切换 format 导致到时 code 为空，
-                // 为了页面渲染效果将 propTypeValue 重置为默认
-                if (from === 'format' && !this.formData.code) {
-                    this.propTypeValueMemo[this.formData.valueType].val = this.formData.renderValue
                 }
 
                 this.$emit('on-change', this.name, {
@@ -457,18 +451,26 @@
              */
             handleVariableFormatChange (variableSelectData) {
                 const {
-                    format,
+                    format
+                } = variableSelectData
+                let {
+                    code,
                     renderValue
                 } = variableSelectData
-                let { code } = variableSelectData
 
-                // format 切换为 value，这个时候 code 为空
-                // 如果有缓存对应 valueType 的值切换后默认使用缓存值
-                if (format === 'value'
-                    && code === ''
-                    && this.propTypeValueMemo[this.formData.valueType]) {
-                    code = this.propTypeValueMemo[this.formData.valueType].val
+                // 切换 format 时还没设置具体值 renderValue 取默认配置
+                if (isEmpty(renderValue)) {
+                    if (this.propTypeValueMemo[this.formData.valueType]) {
+                        renderValue = this.propTypeValueMemo[this.formData.valueType].val
+                    } else {
+                        renderValue = _.cloneDeep(this.defaultValue)
+                    }
                 }
+                // format 切换为 value 时，将 renderValue 回调到 code
+                if (format === 'value' && code === '') {
+                    code = renderValue
+                }
+
                 this.formData = Object.freeze({
                     ...this.formData,
                     format,
@@ -486,6 +488,7 @@
                 let code = null
                 let payload = {}
                 if (this.propTypeValueMemo.hasOwnProperty(valueType)) {
+                    // 有缓存的值
                     code = this.propTypeValueMemo[valueType].val
                     payload = this.propTypeValueMemo[valueType].payload
                 } else if ([
@@ -493,9 +496,9 @@
                     'data-source',
                     'table-data-source'
                 ].includes(valueType)) {
-                    // fix:
-                    // 远程函数、数据源类型在没有获取数据前使用配置文件设置的默认值
-                    code = this.describe.val
+                    // 配置远程函数类型，
+                    // 此时还没有获取API数据使用默认值
+                    code = _.cloneDeep(this.defaultValue)
                 } else {
                     // 切换值类型时，通过类型获取默认值
                     code = getDefaultValueByType(valueType)
