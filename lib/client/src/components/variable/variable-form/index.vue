@@ -105,7 +105,7 @@
                 default: false
             },
             // 限制新增或编辑的变量类型
-            limitTypes: {
+            valueTypeInclude: {
                 type: Array,
                 default: () => ([])
             }
@@ -207,8 +207,8 @@
                         ...jsType,
                         disabled: jsType.id !== 6
                             && (
-                                this.limitTypes?.length > 0
-                                && !this.limitTypes.some((limitType) => typeEnum[limitType]?.includes(jsType.id))
+                                this.valueTypeInclude?.length > 0
+                                && !this.valueTypeInclude.some((limitType) => typeEnum[limitType]?.includes(jsType.id))
                             )
                     }
                 })
@@ -216,9 +216,9 @@
 
             useSaveStatus () {
                 const disabled = this.copyForm.valueType !== 6
-                    && this.limitTypes?.every((limitType) => !typeEnum[limitType]?.includes(this.copyForm.valueType))
+                    && this.valueTypeInclude?.every((limitType) => !typeEnum[limitType]?.includes(this.copyForm.valueType))
                 return {
-                    content: `只允许使用【${this.limitTypes.join('，')}，计算变量】类型的变量`,
+                    content: `只允许使用【${this.valueTypeInclude.join('，')}，计算变量】类型的变量`,
                     disabled
                 }
             }
@@ -250,8 +250,8 @@
                 }
                 this.copyForm = Object.assign(defaultForm, JSON.parse(JSON.stringify(this.formData)))
                 // 根据限制参数，重置初始化类型
-                if (this.limitTypes?.length > 0 && this.isAdd) {
-                    const valueType = typeEnum[this.limitTypes[0]]?.[0]
+                if (this.valueTypeInclude?.length > 0 && this.isAdd) {
+                    const valueType = typeEnum[this.valueTypeInclude[0]]?.[0]
                     this.copyForm.valueType = valueType === undefined ? 6 : valueType
                 }
                 // 根据类型重置默认值

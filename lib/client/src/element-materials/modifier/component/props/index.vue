@@ -71,7 +71,6 @@
                 if (event.target.componentId !== this.componentNode.componentId) {
                     return
                 }
-
                 this.lastProps = Object.freeze(_.cloneDeep(this.componentNode.renderProps))
             }, 100)
 
