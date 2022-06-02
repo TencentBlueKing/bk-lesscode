@@ -33,14 +33,15 @@
                     placements: ['bottom']
                 }" />
         </div>
-        <draw-layout
-            v-if="!isContentLoading && !isCustomComponentLoading"
-            class="lesscode-editor-page-content">
-            <material-panel slot="left" />
-            <operation-area :operation="operationType" />
-            <modifier-panel slot="right" />
-        </draw-layout>
-        <novice-guide ref="guide" :data="guideStep" />
+        <template v-if="!isContentLoading && !isCustomComponentLoading">
+            <draw-layout
+                class="lesscode-editor-page-content">
+                <material-panel slot="left" />
+                <operation-area :operation="operationType" />
+                <modifier-panel slot="right" />
+            </draw-layout>
+            <novice-guide ref="guide" :data="guideStep" />
+        </template>
         <save-template-dialog />
     </main>
 </template>
@@ -62,6 +63,7 @@
     import { syncVariableValue } from './components/utils'
 
     console.dir(LC)
+    window.LC = LC
 
     export default {
         components: {

@@ -143,6 +143,13 @@
                                 redPoint: true
                             },
                             {
+                                title: '文件库',
+                                url: 'fileManage',
+                                toPath: {
+                                    name: 'fileManage'
+                                }
+                            },
+                            {
                                 title: '布局模板实例',
                                 url: 'layout',
                                 toPath: {
@@ -154,13 +161,6 @@
                                 url: 'variableManage',
                                 toPath: {
                                     name: 'variableManage'
-                                }
-                            },
-                            {
-                                title: '文件库',
-                                url: 'fileManage',
-                                toPath: {
-                                    name: 'fileManage'
                                 }
                             }
                         ]

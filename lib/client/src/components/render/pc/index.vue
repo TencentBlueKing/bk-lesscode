@@ -50,6 +50,7 @@
             <lesscode-focus />
             <lesscode-tools />
             <lesscode-resize />
+            <lesscode-margin />
         </div>
         <div
             v-if="showNotVisibleMask"
@@ -61,23 +62,25 @@
 <script>
     import LC from '@/element-materials/core'
     import Draggable from './components/draggable'
-    import LesscodeFocus from './tools/lesscode-focus'
-    import LesscodeTools from './tools/lesscode-tool'
-    import LesscodeResize from './tools/lesscode-resize'
     import Layout from './widget/layout'
     import ResolveComponent, { setMousedown } from './resolve-component'
     import ResolveInteractiveComponent from './resolve-interactive-component'
+    import LesscodeFocus from './tools/lesscode-focus'
+    import LesscodeTools from './tools/lesscode-tool'
+    import LesscodeResize from './tools/lesscode-resize'
+    import LesscodeMargin from './tools/lesscode-margin'
 
     export default {
         name: 'render',
         components: {
             Draggable,
+            Layout,
+            ResolveComponent,
+            ResolveInteractiveComponent,
             LesscodeFocus,
             LesscodeTools,
             LesscodeResize,
-            Layout,
-            ResolveComponent,
-            ResolveInteractiveComponent
+            LesscodeMargin
         },
         provide () {
             return {
@@ -128,9 +131,6 @@
             const updateCallback = (event) => {
                 if (event.target.componentId === this.componentData.componentId) {
                     this.$forceUpdate()
-                    setTimeout(() => {
-                        this.autoType()
-                    }, 20)
                 }
             }
 
@@ -148,9 +148,6 @@
             const nodeCallback = (event) => {
                 if (event.target.componentId === this.componentData.componentId) {
                     this.$forceUpdate()
-                    setTimeout(() => {
-                        this.autoType(event.child)
-                    }, 20)
                 }
             }
 
@@ -203,32 +200,6 @@
             })
         },
         methods: {
-            /**
-             * @desc 自动排版子组件
-             */
-            autoType (childNode) {
-                if (this._isDestroyed || !childNode) {
-                    return
-                }
-                const {
-                    top: boxTop,
-                    left: boxLeft
-                } = this.$refs.dragArea.$el.getBoundingClientRect()
-
-                const $childEl = childNode.$elm
-
-                const {
-                    top: componentTop,
-                    left: componentLeft
-                } = $childEl.getBoundingClientRect()
-                
-                if (componentTop > boxTop) {
-                    childNode.setStyle('marginTop', '10px')
-                }
-                if (componentLeft > boxLeft) {
-                    childNode.setStyle('marginLeft', '10px')
-                }
-            },
             /**
              * @desc 鼠标离开时清除组件 hover 效果
              * @param { Boolean } name

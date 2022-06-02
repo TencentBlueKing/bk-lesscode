@@ -2,7 +2,15 @@
     <div
         v-if="isShow"
         :class="$style['layout']">
-        <div :class="$style['title']">布局</div>
+        <div :class="$style['title']">
+            布局
+            <span
+                :class="$style['resize']"
+                v-bk-tooltips.top="'重置布局'"
+                @click="handleReset">
+                <i class="bk-drag-icon bk-drag-undo" />
+            </span>
+        </div>
         <div
             :class="{
                 [$style['container']]: true,
@@ -109,6 +117,16 @@
             this.renderAlign = Object.assign({}, this.componentNode.align)
         },
         methods: {
+            handleReset () {
+                this.componentNode.setAlign({
+                    'horizontal': '',
+                    'vertical': ''
+                })
+                this.renderAlign = {
+                    horizontal: '',
+                    vertical: ''
+                }
+            },
             handleHorizontalChange (align) {
                 if (align === this.renderAlign.horizontal) {
                     this.componentNode.setAlign('horizontal', '')
@@ -186,9 +204,17 @@
         line-height: 20px;
         font-weight: bold;
     }
+    .resize{
+        height: 20px;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 18px;
+        margin-left: 10px;
+    }
     .container{
         display: grid;
         border-radius: 2px;
+        margin-top: 10px;
     }
     .inner-free-layout{
         .item{

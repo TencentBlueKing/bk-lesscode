@@ -203,12 +203,22 @@
 
                 const setProp = node => {
                     const formItemPropList = ['label', 'property', 'required']
+                    const propsValue = {}
                     formItemPropList.forEach(propName => {
-                        node.setProp(propName, itemData[propName])
+                        propsValue[propName] = LC.utils.genPropFormatValue({
+                            format: 'value',
+                            code: itemData[propName],
+                            renderValue: itemData[propName]
+                        })
                     })
                     // 验证规则里面配有 required 规则
                     const hasRequired = ((itemData.validate || []).filter(item => item.required === true).length > 0)
-                    node.setProp('required', hasRequired)
+                    propsValue['required'] = LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: hasRequired,
+                        renderValue: hasRequired
+                    })
+                    node.setProp(propsValue)
                 }
 
                 const setDirective = node => {
@@ -258,7 +268,12 @@
                             valueType: 'text',
                             renderValue: '提交'
                         })
-                        submitBtnNode.setProp('theme', 'primary')
+                        
+                        submitBtnNode.setProp('theme', LC.utils.genPropFormatValue({
+                            format: 'value',
+                            code: 'primary',
+                            renderValue: 'primary'
+                        }))
                         // 取消按钮
                         const cancelBtnNode = LC.createNode('bk-button')
                         cancelBtnNode.setRenderSlots({
@@ -279,14 +294,24 @@
                     this.componentNode.insertBefore(formItemNode, actionFormItemNode)
                 }
 
-                // 更新 form 的 rules prop
-                this.componentNode.setProp('rules', Object.assign({}, this.componentNode.prop.rules, {
+                const newPropRules = Object.assign({}, this.componentNode.prop.rules, {
                     [itemData.property]: itemData.validate
-                }))
-                // 更新 form 的 model prop
-                this.componentNode.setProp('model', Object.assign({}, this.componentNode.prop.model, {
+                })
+                const newPropModel = Object.assign({}, this.componentNode.prop.model, {
                     [itemData.property]: getDefaultValFromType(itemData.type)
-                }))
+                })
+                this.componentNode.setProp({
+                    'rules': LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: newPropRules,
+                        renderValue: newPropRules
+                    }),
+                    'model': LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: newPropModel,
+                        renderValue: newPropModel
+                    })
+                })
                 this.isShowOperation = false
             },
             /**
@@ -305,7 +330,11 @@
                 // 更新 form 的 model prop
                 const model = { ...this.componentNode.prop.model }
                 delete model[formItemNode.prop.property]
-                this.componentNode.setProp('model', model)
+                this.componentNode.setProp('model', LC.utils.genPropFormatValue({
+                    format: 'value',
+                    code: model,
+                    renderValue: model
+                }))
             },
             /**
              * @desc 验证远程数据

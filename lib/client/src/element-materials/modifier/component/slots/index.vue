@@ -73,8 +73,10 @@
             }, 100)
 
             LC.addEventListener('setRenderSlots', updateCallback)
+            LC.addEventListener('setSlot', updateCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('setRenderSlots', updateCallback)
+                LC.removeEventListener('setSlot', updateCallback)
             })
         },
 

@@ -69,7 +69,11 @@
         },
         methods: {
             handleSpanChange (value, columnNode) {
-                columnNode.setProp('span', parseInt(value, 10))
+                columnNode.setProp('span', LC.utils.genPropFormatValue({
+                    format: 'value',
+                    code: parseInt(value, 10),
+                    renderValue: parseInt(value, 10)
+                }))
             },
             handleDelete (columnNode) {
                 this.componentNode.removeChild(columnNode)

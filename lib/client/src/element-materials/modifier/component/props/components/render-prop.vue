@@ -70,6 +70,7 @@
                     <template v-if="selectValueType === renderCom.type || selectValueType === renderCom.valueType">
                         <component
                             :is="renderCom.component"
+                            :component-type="componentType"
                             :name="name"
                             :type="renderCom.type"
                             :describe="describe"
@@ -380,7 +381,7 @@
                                 ...this.formData,
                                 format: lastValue.format,
                                 code: lastValue.code,
-                                valueType: lastValueType,
+                                valueType: getPropValueType(lastValueType),
                                 buildInVariableType: lastValue.buildInVariableType,
                                 payload: lastValue.payload || {}
                             })
@@ -403,7 +404,7 @@
                 val
             } = this.describe
 
-            const defaultValue = val !== undefined ? val : getDefaultValueByType(type)
+            const defaultValue = val !== undefined ? val : getDefaultValueByType(getPropValueType(type))
             const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
 
             // 构造 variable-select 的配置
@@ -425,7 +426,7 @@
                 buildInVariableType: '',
                 payload: this.lastValue.payload || {}
             })
-            
+
             // 编辑状态缓存
             this.propTypeValueMemo = {
                 [this.formData.valueType]: {
@@ -487,27 +488,29 @@
              * @param { String } valueType
              */
             handleValueTypeChange (valueType) {
-                this.selectValueType = valueType
+                const realValueType = getPropValueType(valueType)
+                this.selectValueType = realValueType
+
                 let code = null
-                if (this.propTypeValueMemo.hasOwnProperty(valueType)) {
-                    code = this.propTypeValueMemo[valueType].val
+                if (this.propTypeValueMemo.hasOwnProperty(realValueType)) {
+                    code = this.propTypeValueMemo[realValueType].val
                 } else if ([
                     'remote',
                     'data-source',
                     'table-data-source'
-                ].includes(valueType)) {
+                ].includes(realValueType)) {
                     // fix:
                     // 远程函数、数据源类型在没有获取数据前使用配置文件设置的默认值
                     code = this.describe.val
                 } else {
                     // 切换值类型时，通过类型获取默认值
-                    code = getDefaultValueByType(valueType)
+                    code = getDefaultValueByType(getPropValueType(realValueType))
                 }
 
                 this.formData = Object.freeze({
                     ...this.formData,
                     code,
-                    valueType,
+                    valueType: realValueType,
                     renderValue: code
                 })
 

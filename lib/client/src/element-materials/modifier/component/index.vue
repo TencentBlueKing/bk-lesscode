@@ -25,6 +25,11 @@
             <div
                 ref="container"
                 class="material-modifier-container">
+                <div
+                    v-if="tabPanelActive === 'styles'"
+                    class="style-setting-tips">
+                    样式面板中设置的样式将覆盖组件自带的默认样式，请谨慎调整
+                </div>
                 <template v-for="(com, index) in modifierComList">
                     <component
                         :is="com"
@@ -211,6 +216,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+        }
+        .style-setting-tips{
+            font-size: 12px;
+            margin: 10px 5px 5px 14px;
         }
     }
 </style>
