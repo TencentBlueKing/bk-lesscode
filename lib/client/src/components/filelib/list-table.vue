@@ -14,8 +14,12 @@
     import { defineComponent } from '@vue/composition-api'
     import { execCopy } from '@/common/util'
     import { UPLOAD_STATUS, UploadFile, getFileUrl, formatSize } from './helper'
+    import FileIcon from './file-icon.vue'
 
     export default defineComponent({
+        components: {
+            FileIcon
+        },
         filters: {
             time: function (value) {
                 if (!value) return '--'
@@ -59,7 +63,7 @@
             <bk-table-column label="文件名称" prop="name" min-width="210" sortable show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['filename-content', row.status]">
-                        <i class="bk-drag-icon bk-drag-image-small"></i>
+                        <file-icon :is-card="false" :file="row" />
                         <bk-link theme="primary" class="filename"
                             target="_blank"
                             :href="getFileUrl(row, true, true)"
@@ -169,9 +173,8 @@
             align-items: center;
 
             .bk-drag-icon {
-                font-size: 20px;
+                font-size: 18px;
                 margin-right: 10px;
-                color: #979BA5;
             }
 
             ::v-deep .bk-link {
