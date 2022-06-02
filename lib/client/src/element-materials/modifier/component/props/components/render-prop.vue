@@ -46,7 +46,7 @@
                 <bk-radio-button
                     v-for="item in renderComponentList"
                     :key="item.type"
-                    :value="item.type">
+                    :value="item.valueType">
                     {{ item.type | valueTypeTextFormat }}
                 </bk-radio-button>
             </bk-radio-group>
@@ -374,7 +374,7 @@
                                 ...this.formData,
                                 format: lastValue.format,
                                 code: lastValue.code,
-                                valueType: lastValueType,
+                                valueType: getPropValueType(lastValueType),
                                 renderValue: lastValue.renderValue
                             })
                             this.propTypeValueMemo[this.formData.valueType] = {
@@ -396,7 +396,7 @@
                 val
             } = this.describe
 
-            const defaultValue = val !== undefined ? val : getDefaultValueByType(type)
+            const defaultValue = val !== undefined ? val : getDefaultValueByType(getPropValueType(type))
             this.defaultValue = _.cloneDeep(defaultValue)
             const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
 
@@ -484,31 +484,32 @@
              * @param { String } valueType
              */
             handleValueTypeChange (valueType) {
-                this.selectValueType = valueType
+                const realValueType = getPropValueType(valueType)
+                this.selectValueType = realValueType
+
                 let code = null
                 let payload = {}
-                if (this.propTypeValueMemo.hasOwnProperty(valueType)) {
-                    // 有缓存的值
-                    code = this.propTypeValueMemo[valueType].val
-                    payload = this.propTypeValueMemo[valueType].payload
+                if (this.propTypeValueMemo.hasOwnProperty(realValueType)) {
+                    code = this.propTypeValueMemo[realValueType].val
+                    payload = this.propTypeValueMemo[realValueType].payload
                 } else if ([
                     'remote',
                     'data-source',
                     'table-data-source'
-                ].includes(valueType)) {
+                ].includes(realValueType)) {
                     // 配置远程函数类型，
                     // 此时还没有获取API数据使用默认值
                     code = _.cloneDeep(this.defaultValue)
                 } else {
                     // 切换值类型时，通过类型获取默认值
-                    code = getDefaultValueByType(valueType)
+                    code = getDefaultValueByType(getPropValueType(realValueType))
                 }
 
                 this.formData = Object.freeze({
                     ...this.formData,
                     code,
                     payload,
-                    valueType,
+                    valueType: realValueType,
                     renderValue: code
                 })
 
@@ -524,7 +525,7 @@
             handleCodeChange (name, value, type, payload = {}) {
                 try {
                     let code = null
-                    let renderValue = _.cloneDeep(this.defaultValue)
+                    let renderValue = this.formData.renderValue
 
                     const val = getRealValue(type, value)
 

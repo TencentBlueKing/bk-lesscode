@@ -393,7 +393,7 @@
              */
             handleCodeChange (valueData) {
                 let code = null
-                let renderValue = _.cloneDeep(this.defaultValue)
+                let renderValue = this.formData.renderValue
                 
                 if (this.formData.valueType === 'remote') {
                     // 配置的是远程函数
@@ -405,8 +405,8 @@
                 } else {
                     code = valueData.val
                     // 用户设置数据为空时显示配置默认值（fix: 数据为空可能导致组件无法显示）
-                    if (!isEmpty(valueData.val)) {
-                        renderValue = valueData.val
+                    if (!isEmpty(code)) {
+                        renderValue = code
                     }
                 }
                 this.formData = Object.freeze({
