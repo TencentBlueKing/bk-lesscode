@@ -271,10 +271,12 @@
                 width: 24px;
                 height: 24px;
                 font-size: 16px;
+                color: #979BA5;
                 cursor: pointer;
 
                 &.active,
                 &:hover {
+                    color: #63656E;
                     background: #fff;
                 }
 

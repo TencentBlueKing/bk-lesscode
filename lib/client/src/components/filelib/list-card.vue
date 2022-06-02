@@ -12,9 +12,13 @@
 <script lang="ts">
     import { computed, defineComponent } from '@vue/composition-api'
     import { execCopy } from '@/common/util'
-    import { UPLOAD_STATUS, UploadFile, getFileUrl, getFileExt, isImageFile } from './helper'
+    import { UPLOAD_STATUS, UploadFile, getFileUrl } from './helper'
+    import FileIcon from './file-icon.vue'
 
     export default defineComponent({
+        components: {
+            FileIcon
+        },
         props: {
             files: {
                 type: Array,
@@ -36,32 +40,6 @@
                 'preview-enabled': props.previewEnabled
             }))
 
-            const fileIconRender = (file: UploadFile) => {
-                const ext = getFileExt(file)
-                const isImage = isImageFile(file)
-                return {
-                    render (h) {
-                        if (isImage) {
-                            return h('img', { domProps: { src: getFileUrl(file), alt: file.name } })
-                        }
-                        const iconMap = {
-                            'doc': 'bk-drag-file-doc',
-                            'docx': 'bk-drag-file-doc',
-                            'xls': 'bk-drag-file-excel',
-                            'xlsx': 'bk-drag-file-excel',
-                            'ppt': 'bk-drag-file-ppt',
-                            'pptx': 'bk-drag-file-ppt',
-                            'pdf': 'bk-drag-file-pdf',
-                            'zip': 'bk-drag-file-zip',
-                            'tar': 'bk-drag-file-zip',
-                            'gz': 'bk-drag-file-zip'
-                        }
-                        const fileIcon = iconMap[ext] || 'bk-drag-file-text'
-                        return h('i', { class: { 'bk-drag-icon': true, 'file-preview-icon': true, [fileIcon]: true } })
-                    }
-                }
-            }
-
             const handlePreview = (file: UploadFile, files: UploadFile[]) => {
                 if (!props.previewEnabled || file.status !== UPLOAD_STATUS.SUCCESS) {
                     return
@@ -81,7 +59,6 @@
                 UPLOAD_STATUS,
                 containerStyle,
                 containerClass,
-                fileIconRender,
                 getFileUrl,
                 handleCopyLink,
                 handleRemove,
@@ -97,7 +74,7 @@
             <div class="card-item" v-for="file in files" :key="file.uid">
                 <slot name="file" v-bind="file">
                     <div class="item-icon" @click="handlePreview(file, files)">
-                        <component :is="fileIconRender(file)"></component>
+                        <file-icon :file="file" />
                         <div :class="['upload-status', file.status]" v-if="file.status === UPLOAD_STATUS.UPLOADING || file.status === UPLOAD_STATUS.FAIL">
                             <bk-round-progress
                                 width="50px"
@@ -205,32 +182,8 @@
                     object-fit: contain;
                 }
 
-                .file-preview-icon {
+                ::v-deep .file-preview-icon {
                     font-size: 68px;
-
-                    &.bk-drag-file-doc {
-                        color: #3A84FF;
-                    }
-
-                    &.bk-drag-file-excel {
-                        color: #2DCB56;
-                    }
-
-                    &.bk-drag-file-ppt {
-                        color: #EE5656;
-                    }
-
-                    &.bk-drag-file-pdf {
-                        color: #EA3636;
-                    }
-
-                    &.bk-drag-file-zip {
-                        color: #699DF4;
-                    }
-
-                    &.bk-drag-file-text {
-                        color: #979BA5;
-                    }
                 }
 
                 .upload-status {
