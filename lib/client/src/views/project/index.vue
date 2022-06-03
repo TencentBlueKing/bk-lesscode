@@ -135,6 +135,13 @@
                                 }
                             },
                             {
+                                title: '凭证管理',
+                                url: 'credential',
+                                toPath: {
+                                    name: 'credential'
+                                }
+                            },
+                            {
                                 title: '页面模板库',
                                 url: 'templateManage',
                                 toPath: {
