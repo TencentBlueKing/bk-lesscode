@@ -2,7 +2,7 @@
     <div class="data-manage-table">
         <bk-table :data="tableData">
             <bk-table-column
-                v-for="field in tableFields"
+                v-for="field in fields"
                 :key="field.key"
                 :label="field.name"
                 :prop="field.key">
@@ -31,8 +31,8 @@
         },
         props: {
             fields: {
-                type: Object,
-                default: () => ({})
+                type: Array,
+                default: () => [{}]
             },
             config: {
                 type: Object,

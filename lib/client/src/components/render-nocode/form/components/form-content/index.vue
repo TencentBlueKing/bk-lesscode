@@ -29,6 +29,7 @@
     import { FIELDS_TYPES } from '../../constant/forms'
     import FieldElement from '../form-edit/fieldElement.vue'
     import pinyin from 'pinyin'
+    import { uuid } from '@/common/util'
 
     export default {
         components: {
@@ -78,6 +79,7 @@
                     .join('_')
                     .toUpperCase()
                 const config = {
+                    id: uuid(8), // 唯一的key
                     type, // 类型
                     name: field.name, // 名称
                     desc: '', // 描述
@@ -210,7 +212,7 @@
   margin: 24px 24px 0;
   height: 48px;
   background: #FAFBFD;
-  border: 1px solid #C4C6CC;
+  border: 1px dashed #C4C6CC;
   font-size: 12px;
   color: #63656E;
   text-align: center;
