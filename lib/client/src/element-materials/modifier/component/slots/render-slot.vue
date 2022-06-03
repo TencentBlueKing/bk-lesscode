@@ -73,6 +73,7 @@
 </template>
 
 <script>
+    import _ from 'lodash'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import variableSelect from '@/components/variable/variable-select'
@@ -239,10 +240,12 @@
                                 component: lastValue.component,
                                 code: lastValue.code,
                                 payload: lastValue.payload || {},
-                                valueType: lastValue.valueType
+                                valueType: lastValue.valueType,
+                                renderValue: lastValue.renderValue
                             })
+
                             this.slotTypeValueMemo[lastValue.valueType] = {
-                                val: lastValue.code,
+                                val: lastValue.renderValue,
                                 payload: lastValue.payload,
                                 component: lastValue.component
                             }
@@ -259,7 +262,8 @@
                 name,
                 type
             } = this.describe
-            const defaultValue = val
+            const defaultValue = val || ''
+            this.defaultValue = _.cloneDeep(defaultValue)
             const component = Array.isArray[name] ? name : [name]
 
             // 构造 variable-select 的配置
@@ -298,14 +302,9 @@
             triggerChange (from) {
                 // 缓存用户本地编辑值
                 this.slotTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.code,
+                    val: this.formData.renderValue,
                     payload: this.formData.payload,
                     component: this.formData.component
-                }
-                // 如果切换 format 导致到时 code 为空，
-                // 为了页面渲染效果将 slotTypeValue 重置为默认
-                if (from === 'format' && !this.formData.code) {
-                    this.slotTypeValueMemo[this.formData.valueType].val = this.formData.renderValue
                 }
                 this.isInnerChange = true
                 this.$emit('on-change', this.name, {
@@ -318,18 +317,26 @@
              */
             handleVariableFormatChange (variableSelectData) {
                 const {
-                    format,
+                    format
+                } = variableSelectData
+                let {
+                    code,
                     renderValue
                 } = variableSelectData
-                let { code } = variableSelectData
-
-                // format 切换为 value，这个时候 code 为空
-                // 如果有缓存对应 valueType 的值切换后默认使用缓存值
-                if (format === 'value'
-                    && code === ''
-                    && this.slotTypeValueMemo[this.formData.valueType]) {
-                    code = this.slotTypeValueMemo[this.formData.valueType].val
+                
+                // 切换 format 时还没设置具体值 renderValue 取默认配置
+                if (isEmpty(renderValue)) {
+                    if (this.slotTypeValueMemo[this.formData.valueType]) {
+                        renderValue = this.slotTypeValueMemo[this.formData.valueType].val
+                    } else {
+                        renderValue = _.cloneDeep(this.defaultValue)
+                    }
                 }
+                // format 切换为 value 时，将 renderValue 回调到 code
+                if (format === 'value' && code === '') {
+                    code = renderValue
+                }
+                
                 this.formData = Object.freeze({
                     ...this.formData,
                     format,
@@ -356,12 +363,17 @@
                 let code = null
                 let payload = {}
                 if (this.slotTypeValueMemo.hasOwnProperty(valueType)) {
+                    // 有缓存的值
                     code = this.slotTypeValueMemo[valueType].val
                     payload = this.slotTypeValueMemo[valueType].payload
-                } else if (['remote', 'data-source', 'select-data-source'].includes(valueType)) {
-                    // fix: 配置远程函数类型，
-                    // 接口数据没返回时使用配置文件设置的默认值
-                    code = this.describe.val
+                } else if ([
+                    'remote',
+                    'data-source',
+                    'select-data-source'
+                ].includes(valueType)) {
+                    // 配置远程函数类型，
+                    // 此时还没有获取API数据使用默认值
+                    code = _.cloneDeep(this.defaultValue)
                 } else {
                     // 切换值类型时，通过类型获取默认值
                     code = getDefaultValueByType(valueType)
@@ -381,7 +393,7 @@
              */
             handleCodeChange (valueData) {
                 let code = null
-                let renderValue = ''
+                let renderValue = this.formData.renderValue
                 
                 if (this.formData.valueType === 'remote') {
                     // 配置的是远程函数
@@ -392,10 +404,9 @@
                     }
                 } else {
                     code = valueData.val
-                    renderValue = valueData.val
                     // 用户设置数据为空时显示配置默认值（fix: 数据为空可能导致组件无法显示）
-                    if (isEmpty(renderValue)) {
-                        renderValue = this.describe.val
+                    if (!isEmpty(code)) {
+                        renderValue = code
                     }
                 }
                 this.formData = Object.freeze({
