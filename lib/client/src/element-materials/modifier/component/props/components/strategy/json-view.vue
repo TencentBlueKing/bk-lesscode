@@ -224,6 +224,7 @@
     .option-add {
         font-size: 12px;
         cursor: pointer;
-        color: #3a84ff
+        color: #3a84ff;
+        margin-top: 4px;
     }
 </style>

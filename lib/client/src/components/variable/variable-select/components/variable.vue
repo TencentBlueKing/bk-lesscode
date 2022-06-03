@@ -87,7 +87,7 @@
                 <bk-button
                     :text="true"
                     title="primary"
-                    @click="handleEditVariable">
+                    @click="handleEditVariable()">
                     <i class="bk-drag-icon bk-drag-add-line"></i>
                     新建变量
                 </bk-button>
@@ -114,7 +114,7 @@
             :is-show.sync="variableFormData.isShow"
             :form-data="variableFormData.formData"
             :show-save-use="true"
-            :limit-types="options.limitTypes"
+            :value-type-include="options.valueTypeInclude"
             @save-use="handleVariableChange"
         />
     </div>
@@ -293,7 +293,7 @@
                         value = defaultValue.stag
                     }
                     if ([VARIABLE_TYPE.ARRAY.VAL, VARIABLE_TYPE.OBJECT.VAL].includes(valueType)) {
-                        return JSON.parse(value)
+                        value = JSON.parse(value)
                     }
                     return value
                 }

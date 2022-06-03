@@ -96,7 +96,5 @@
 <style lang="postcss" scoped>
     .modifier-slot {
         margin: 0 10px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #ccc;
     }
 </style>

@@ -83,7 +83,11 @@
     }
     .choose-event {
         margin: 16px 10px 0;
+        background: #f0f1f5;
+        border-radius: 2px;
+        padding: 8px;
         &:hover {
+            box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
             .panel-minus {
                 display: block;
             }

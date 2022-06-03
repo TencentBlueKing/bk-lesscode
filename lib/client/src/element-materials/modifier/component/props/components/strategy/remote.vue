@@ -19,7 +19,7 @@
                 width: 290
             }">
             <span :class="{ 'under-line': tips }">
-                {{ title === undefined ? ((name === 'remoteOptions' ? '动态配置' : '远程函数')) : title }}
+                {{ title === undefined ? ((name === 'remoteOptions' ? '动态配置' : '函数')) : title }}
             </span>
             <span
                 class="remote-example"
@@ -35,7 +35,7 @@
             <bk-button
                 @click="getApiData"
                 theme="primary"
-                class="mt10"
+                class="mt12"
                 size="small">
                 获取数据
             </bk-button>
@@ -71,13 +71,11 @@
             },
             change: {
                 type: Function,
-                default: () => {
-                }
+                default: () => {}
             },
             remoteValidate: {
                 type: Function,
-                default: () => {
-                }
+                default: () => {}
             },
             autoGetData: {
                 type: Boolean,
@@ -306,6 +304,7 @@
                     const res = await sandBox.exec(methodStr, this.remoteData.params)
                     let message = this.remoteValidate(res)
                     if (message) {
+                        // 选择函数已经成功设置 payload，rendervalue 因为数据校验问题没有同步过去。所以该函数选择成功，但是有异常提示
                         message = '数据源设置成功，以下问题可能会导致组件表现异常，请检查：' + message
                         this.$bkMessage({ theme: 'warning', message })
                     } else {
@@ -335,14 +334,9 @@
     .remote-title {
         display: flex;
         justify-content: space-between;
-        margin: 10px 0;
-        line-height: 24px;
+        margin: 12px 0 6px;
+        line-height: 20px;
         font-size: 12px;
-
-        &:first-child {
-            margin-top: 0;
-        }
-
     }
     .under-line {
         line-height: 24px;
@@ -364,5 +358,8 @@
             font-weight: normal;
             color: #979ba5;
         }
+    }
+    .mt12 {
+        margin-top: 12px;
     }
 </style>

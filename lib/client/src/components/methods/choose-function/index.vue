@@ -307,15 +307,9 @@
 
     .choose-function-main {
         position: relative;
-        background: #f0f1f5;
-        border-radius: 2px;
-        padding: 8px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        &:hover {
-            box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
-        }
     }
     .choose-function-popover {
         width: 100%;
@@ -326,7 +320,7 @@
     .panel-item {
         display: flex;
         align-items: center;
-        margin-top: 10px;
+        margin-top: 8px;
         width: 100%;
     }
     .icon-minus-circle {
@@ -335,15 +329,15 @@
     }
     .panel-add {
         font-size: 12px;
-        margin: 10px 0 0;
+        margin: 8px 0 0;
         line-height: 16px;
         cursor: pointer;
-        &:hover {
-            color: #3a84ff;
-        }
+        color: #3A84FF;
         i {
             padding-right: 2px;
-            font-size: 16px;
+        }
+        .icon-plus-circle {
+            margin-right: 4px;
         }
     }
     .choose-input {
