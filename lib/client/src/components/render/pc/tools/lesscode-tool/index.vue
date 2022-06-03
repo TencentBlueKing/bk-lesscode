@@ -21,7 +21,6 @@
                 {{ activeComponentData.componentId }}
             </div>
             <div
-                v-if="activeComponentData.layoutType"
                 :class="$style['button']"
                 @click="handleSaveTemplate">
                 <i class="bk-drag-icon bk-drag-template-fill" />

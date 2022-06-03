@@ -139,7 +139,7 @@
                     state.dotWidthStyles = Object.assign({}, dotBaseStyle, {
                         top: `${top - containerTop + height / 2 - halfDotSize}px`,
                         left: `${right - halfDotSize - containerLeft}px`,
-                        cursor: 'ew-resize'
+                        cursor: 'col-resize'
                     })
                     // 100% 宽度按钮的位置
                     let fullWidthBtnLeft = right - containerLeft + actionBtnOffset
@@ -155,7 +155,7 @@
                     state.dotHeightStyles = Object.assign({}, dotBaseStyle, {
                         top: `${top + height - halfDotSize - containerTop}px`,
                         left: `${left - containerLeft + width / 2 - halfDotSize}px`,
-                        cursor: 'ns-resize'
+                        cursor: 'row-resize'
                     })
                     // 高度自适应的按钮
                     // free-layout 不支持该功能，必须给定 height

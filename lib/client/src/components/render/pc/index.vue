@@ -19,7 +19,8 @@
                 [$style['empty']]: componentData.children.length < 1
             }"
             @click="handleCanvaseClick"
-            @mouseleave="handleMouseleave">
+            @mouseleave="handleMouseleave"
+            @contextmenu.stop="handleShowContextmenu">
             <draggable
                 ref="dragArea"
                 class="target-drag-area"
@@ -145,20 +146,13 @@
                 }
             }
 
-            const nodeCallback = (event) => {
-                if (event.target.componentId === this.componentData.componentId) {
-                    this.$forceUpdate()
-                }
-            }
-
             LC.addEventListener('ready', readyCallback)
             LC.addEventListener('update', updateCallback)
             LC.addEventListener('update', updateLogCallback)
             LC.addEventListener('active', interactiveCallbak)
             LC.addEventListener('active', activeLogCallback)
             LC.addEventListener('toggleInteractive', interactiveCallbak)
-            LC.addEventListener('appendChild', nodeCallback)
-            LC.addEventListener('moveChild', nodeCallback)
+            
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('ready', readyCallback)
                 LC.removeEventListener('update', updateCallback)
@@ -166,8 +160,6 @@
                 LC.removeEventListener('active', interactiveCallbak)
                 LC.removeEventListener('active', activeLogCallback)
                 LC.removeEventListener('toggleInteractive', interactiveCallbak)
-                LC.removeEventListener('appendChild', nodeCallback)
-                LC.removeEventListener('moveChild', nodeCallback)
             })
         },
         mounted () {
@@ -200,6 +192,16 @@
             })
         },
         methods: {
+            /**
+             * @desc 鼠标右键操作面板
+             */
+            handleShowContextmenu (event) {
+                const activeNode = LC.getActiveNode()
+                if (activeNode) {
+                    activeNode.activeClear()
+                }
+                LC.showMenu(event)
+            },
             /**
              * @desc 鼠标离开时清除组件 hover 效果
              * @param { Boolean } name

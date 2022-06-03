@@ -186,6 +186,7 @@
             isShadowComponent () {
                 const shadowComMap = {
                     'free-layout': true,
+                    'render-block': true,
                     'render-grid': true,
                     'render-column': true,
                     'widget-form': true,

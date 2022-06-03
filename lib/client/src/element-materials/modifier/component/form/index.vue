@@ -100,7 +100,7 @@
             'switcher': false,
             'checkbox-group': []
         }
-        return typeValMap[type] !== undefined ? typeValMap[type] : ''
+        return typeValMap[type] || ''
     }
 
     const genDefaultFormItemData = () => ({
@@ -232,9 +232,15 @@
                         }
                     ])
                 }
+                
+                const formPropRules = Object.assign({}, this.componentNode.prop.rules)
 
                 if (this.editFormItemNode) {
                     // 编辑
+                    const editFormItemDataProp = this.editFormItemNode.prop
+                    //  可能修改了 property，删除老数据重新收集
+                    delete formPropRules[editFormItemDataProp.property]
+                
                     let inputNode = this.editFormItemNode.children[0]
                     // 表单组件类型改变，删除原有组件
                     if (inputNode.type !== typeEnum[itemData.type]) {
@@ -243,6 +249,7 @@
                         inputNode = genInputNode(itemData.type)
                         this.editFormItemNode.appendChild(inputNode)
                     }
+                    
                     setDirective(inputNode)
                     setProp(this.editFormItemNode)
                 } else {
@@ -294,12 +301,17 @@
                     this.componentNode.insertBefore(formItemNode, actionFormItemNode)
                 }
 
-                const newPropRules = Object.assign({}, this.componentNode.prop.rules, {
+                const newPropRules = Object.assign(formPropRules, {
                     [itemData.property]: itemData.validate
                 })
-                const newPropModel = Object.assign({}, this.componentNode.prop.model, {
-                    [itemData.property]: getDefaultValFromType(itemData.type)
-                })
+                // form.prop.model 通过遍历 formItem 收集 formItem.prop.property得到
+                const newPropModel = this.componentNode.children.reduce((result, formItemNode) => {
+                    const formItemProp = formItemNode.prop
+                    if (formItemProp.property) {
+                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
+                    }
+                    return result
+                }, {})
                 this.componentNode.setProp({
                     'rules': LC.utils.genPropFormatValue({
                         format: 'value',
@@ -327,9 +339,23 @@
             */
             handleDelete (formItemNode) {
                 this.componentNode.removeChild(formItemNode)
-                // 更新 form 的 model prop
-                const model = { ...this.componentNode.prop.model }
-                delete model[formItemNode.prop.property]
+
+                // 更新 form 的 prop.rules
+                const rules = { ...this.componentNode.prop.rules }
+                delete rules[formItemNode.prop.property]
+                this.componentNode.setProp('rules', LC.utils.genPropFormatValue({
+                    format: 'value',
+                    code: rules,
+                    renderValue: rules
+                }))
+                // form.prop.model 通过遍历 formItem 收集 formItem.prop.property得到
+                const model = this.componentNode.children.reduce((result, formItemNode) => {
+                    const formItemProp = formItemNode.prop
+                    if (formItemProp.property) {
+                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
+                    }
+                    return result
+                }, {})
                 this.componentNode.setProp('model', LC.utils.genPropFormatValue({
                     format: 'value',
                     code: model,

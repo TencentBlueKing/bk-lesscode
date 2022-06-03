@@ -46,8 +46,8 @@
     export default {
         setup () {
             const state = reactive({
-                btnTopStyles: {},
-                btnLeftStyles: {}
+                btnTopStyles: hideStyles,
+                btnLeftStyles: hideStyles
             })
 
             const { activeComponentData } = useComponentActive((componentData = {}) => {
