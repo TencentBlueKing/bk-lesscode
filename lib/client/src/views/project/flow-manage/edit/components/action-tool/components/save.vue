@@ -37,62 +37,37 @@
         },
         methods: {
             async handleSubmit () {
-                console.log(this.nocodeType)
                 if (this.nocodeType === 'FORM') {
-                    this.saveFormList()
-                } else if (this.nocodeType === 'FORM_MANAGE') {
-                    this.saveFormManage()
-                }
-            },
-            // 保存表单
-            async saveFormList () {
-                const content = this.$store.state.nocode.formSetting.fieldsList || []
-                if (content.length < 1) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: '表单项不能为空'
-                    })
-                    return
-                }
-                const formData = {
-                    content,
-                    tableName: this.pageDetail.pageCode,
-                    projectId: this.projectId
-                }
-                let action = 'updateForm'
-                if (!this.pageDetail.formId) {
-                    action = 'createForm'
-                    Object.assign(formData, { pageId: this.pageDetail.id })
-                } else {
-                    Object.assign(formData, { id: this.pageDetail.formId })
-                }
-                const res = await this.$store.dispatch(`form/${action}`, formData)
-                if (res && res.id) {
-                    this.$bkMessage({
-                        theme: 'success',
-                        message: '保存成功'
-                    })
-                    action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
-                }
-                console.log(res, this.pageDetail)
-            },
-            // 保存表单管理页
-            async saveFormManage () {
-                console.log('save', this.pageDetail)
-                const content = this.$store.state.nocode.formSetting.tableFieldsConfig || {}
-                const payload = Object.assign({}, this.pageDetail, content)
-                try {
-                    const res = await this.$store.dispatch('page/update', payload)
-                    if (res) {
+                    const content = this.$store.state.formSetting.fieldsList || []
+                    if (content.length < 1) {
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: '表单项不能为空'
+                        })
+                        return
+                    }
+                    const formData = {
+                        content,
+                        tableName: this.pageDetail.pageCode,
+                        projectId: this.projectId
+                    }
+                    let action = 'updateForm'
+                    if (!this.pageDetail.formId) {
+                        action = 'createForm'
+                        Object.assign(formData, { pageId: this.pageDetail.id })
+                    } else {
+                        Object.assign(formData, { id: this.pageDetail.formId })
+                    }
+                    const res = await this.$store.dispatch(`form/${action}`, formData)
+                    if (res && res.id) {
                         this.$bkMessage({
                             theme: 'success',
-                            message: '新建单据管理页面成功'
+                            message: '保存成功'
                         })
+                        action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
                     }
-                } catch (e) {
-                    console.error(e)
+                    console.log(res, this.pageDetail)
                 }
-                console.log('save', content)
             }
         }
     }

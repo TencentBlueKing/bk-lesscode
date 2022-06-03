@@ -103,7 +103,7 @@
             // form和flow的数据管理页需要填写默认的pageCode和pageName，带上formId或flowId
             initPageData: {
                 type: Object,
-                default: {}
+                default: () => ({})
             }
         },
         data () {
@@ -270,13 +270,13 @@
                         data: {
                             pageData: Object.assign({}, this.formData, templateFormData),
                             projectId: this.projectId,
-                            versionId: this.versionId
+                            versionId: this.versionId,
+                            formId: this.formId
                         }
                     }
 
                     const { id, routePath } = this.showLayoutList.find(layout => layout.checked)
                     payload.data.layout = { id, routePath }
-
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
                         this.$bkMessage({

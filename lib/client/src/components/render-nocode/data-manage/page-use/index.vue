@@ -1,15 +1,16 @@
 <template>
     <div class="data-manage-use-page">
-        <operate-area :buttons="tableConfig.operatingButtons" @click="handleClick"></operate-area>
+        <operate-area :buttons="operatingButtons" @click="handleClick"></operate-area>
         <filter-area :filters="filters" :fields="fields" @search="handleSearch"></filter-area>
-        <table-data :config="tableConfig"></table-data>
+        <table-data :fields="fields"></table-data>
     </div>
 </template>
 <script>
     import operateArea from './operate-area.vue'
     import filterArea from './filter-area.vue'
     import tableData from './table-data.vue'
-
+    import { mapGetters } from 'vuex'
+    import { SYS_FIELD } from '../../common/field'
     export default {
         name: 'dataManageUsePage',
         components: {
@@ -20,21 +21,46 @@
         data () {
             return {
                 fields: [], // 表单字段列表
-                formId: null, // 表单id
-                filters: ['key1', 'key2', 'key3'],
-                tableConfig: {
-                    operatingButtons: [
-                        { type: 'ADD', name: '添加' },
-                        { type: 'BATCH_DELETE', name: '批量删除' },
-                        { type: 'DOWNLOAD_FILES', name: '下载附件' }
-                    ],
-                    fields: [],
-                    innerActions: []
-                }
+                filters: [], // 表单搜索数据
+                formFieldsList: [],
+                operatingButtons: [
+                    { type: 'ADD', name: '添加' },
+                    { type: 'BATCH_DELETE', name: '批量删除' },
+                    { type: 'DOWNLOAD_FILES', name: '下载附件' }
+                ]
             }
         },
+        computed: {
+            ...mapGetters('page', ['pageDetail']),
+            formId () {
+                return this.pageDetail.formId
+            },
+            tableSetting () {
+                return this.pageDetail.content
+            }
+        },
+        created () {
+            this.getFieldList()
+        },
         methods: {
-            getFields () {}, // 加载表单字段
+            async getFieldList () {
+                try {
+                    if (this.formId) {
+                        this.tableLoading = true
+                        const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
+                        // this.fields = JSON.parse(form.content) || []
+                        this.formFieldsList = JSON.parse(form.content) || []
+                        const { filters, tableConfig } = this.tableSetting
+                        const tempFormFieldsList = JSON.parse(form.content).concat(SYS_FIELD)
+                        this.filters = tempFormFieldsList.filter(item => filters.includes(item.id))
+                        this.fields = tempFormFieldsList.filter(item => tableConfig.includes(item.id))
+                    }
+                } catch (err) {
+
+                } finally {
+                    this.tableLoading = false
+                }
+            },
             handleClick (action) {
                 const ACTION_FUN_MAP = {
                     'add': 'handleAdd',

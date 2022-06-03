@@ -38,10 +38,9 @@
 
 <style scoped lang="postcss">
 .btn-group-container{
-  margin: 16px;
+  margin: 16px 0;
   height: 40px;
   display: flex;
   align-items: center;
-
 }
 </style>
