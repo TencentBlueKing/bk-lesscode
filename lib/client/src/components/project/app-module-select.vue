@@ -56,7 +56,6 @@
         data () {
             return {
                 isLoading: false,
-                tokenList: [],
                 showEdit: false,
                 currentAppInfo: {
                     appCode: '',
@@ -68,8 +67,7 @@
                 moduleList: [],
                 createLinkUrl: '',
                 isLoadingAppList: false,
-                isLoadingModuleList: false,
-                isLoadingToken: false
+                isLoadingModuleList: false
             }
         },
 
