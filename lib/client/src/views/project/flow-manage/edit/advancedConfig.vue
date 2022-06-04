@@ -185,42 +185,42 @@
                 this.advancedData.notify = notify
                 this.advancedData.notify_rule = val.length > 0 ? 'ONCE' : 'NONE'
             },
-            handleSave () {
-                this.$refs.advancedForm.validate(async (result) => {
-                    if (!result) {
-                        return
+            async handleSave () {
+                // this.$refs.advancedForm.validate(async (result) => {
+                //     if (!result) {
+                //         return
+                //     }
+                    
+                //         this.$router.push({ name: 'functionList', params: { appId: this.appId } })
+                //     } catch (e) {
+                //         console.error(e)
+                //     } finally {
+                //         this.advancedPending = false
+                //     }
+                // })
+                this.advancedPending = true
+                const {
+                    notify,
+                    notify_freq,
+                    notify_rule,
+                    revoke_config,
+                    show_all_workflow,
+                    show_my_create_workflow
+                } = this.advancedData
+                const isRevocable = revoke_config.type !== 0
+                const params = {
+                    id: this.flowConfig.id,
+                    workflow_config: {
+                        notify,
+                        notify_freq,
+                        notify_rule,
+                        revoke_config,
+                        is_revocable: isRevocable,
+                        show_all_workflow,
+                        show_my_create_workflow
                     }
-                    try {
-                        this.advancedPending = true
-                        const {
-                            notify,
-                            notify_freq,
-                            notify_rule,
-                            revoke_config,
-                            show_all_workflow,
-                            show_my_create_workflow
-                        } = this.advancedData
-                        const isRevocable = revoke_config.type !== 0
-                        const params = {
-                            id: this.flowConfig.id,
-                            workflow_config: {
-                                notify,
-                                notify_freq,
-                                notify_rule,
-                                revoke_config,
-                                is_revocable: isRevocable,
-                                show_all_workflow,
-                                show_my_create_workflow
-                            }
-                        }
-                        await this.$store.dispatch('setting/updateAdvancedConfig', params)
-                        this.$router.push({ name: 'functionList', params: { appId: this.appId } })
-                    } catch (e) {
-                        console.error(e)
-                    } finally {
-                        this.advancedPending = false
-                    }
-                })
+                }
+                await this.$store.dispatch('nocode/flow/editFlow', params)
             }
         }
     }

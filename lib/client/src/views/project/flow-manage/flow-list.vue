@@ -108,7 +108,8 @@
                 pagination: {
                     current: 1,
                     count: 0,
-                    limit: 15
+                    limit: 2,
+                    'limit-list': [2, 15, 20]
                 },
                 newFlowData: {
                     name: '',
@@ -141,11 +142,17 @@
         methods: {
             async getFlowList () {
                 this.listLoading = true
+                const params = {
+                    projectId: this.projectId,
+                    versionId: this.versionId,
+                    pageSize: this.pagination.limit,
+                    page: this.pagination.current
+                }
                 try {
-                    this.flowList = await this.$store.dispatch('nocode/flow/getFlowList', {
-                        projectId: this.projectId,
-                        versionId: this.versionId
-                    })
+                    const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
+                    const { list, count } = res.data
+                    this.flowList = list
+                    this.pagination.count = count
                 } catch (err) {
                     messageError(err.message || err)
                 } finally {
