@@ -277,7 +277,7 @@
         },
         watch: {
             '$route' (to, from) {
-                this.defaultActive = to.name
+                this.setDefaultActive()
             }
         },
         async created () {
@@ -297,10 +297,25 @@
             }
         },
         async mounted () {
-            this.defaultActive = this.$route.name
             this.defaultOpen = false
+            this.setDefaultActive()
         },
         methods: {
+            setDefaultActive () {
+                let name = this.$route.name
+                // 数据源管理子页面，左侧数据源管理依然高亮选中
+                if ([
+                    'tableList',
+                    'createTable',
+                    'editTable',
+                    'showTable',
+                    'updateTableRecord',
+                    'dataManage'
+                ].includes(name)) {
+                    name = 'tableList'
+                }
+                this.defaultActive = name
+            },
             toProjects () {
                 this.$router.push({
                     name: 'projects'
