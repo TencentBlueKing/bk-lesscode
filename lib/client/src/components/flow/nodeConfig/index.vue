@@ -1,10 +1,10 @@
 <template>
     <div class="node-config-panel" v-bkloading="{ isLoading: nodeDetailLoading }">
         <div class="header-wrapper">
-            {{ typeName }}
-            <i class="bk-icon icon-close back-to-flow-btn" @click="handleClose"></i>
+            <bk-button size="small" @click="handleClose">返回</bk-button>
+            <h3 class="config-title">{{ typeName }}配置</h3>
         </div>
-        <div class="config-form-wrapper">
+        <!-- <div class="config-form-wrapper">
             <div class="form-content-area">
                 <bk-form ref="configForm" form-type="vertical" :rules="rules" :model="{ name }">
                     <bk-form-item label="节点名称" property="name" error-display-type="normal" :required="true">
@@ -57,32 +57,34 @@
                         </bk-form-item>
                     </template>
                 </bk-form>
-                <component
-                    ref="nodeForm"
-                    :is="formCompDict[nodeDetail.type]"
-                    :node="nodeDetail"
-                    :app-id="appId"
-                    :func-id="funcId"
-                    :flow-id="flowId"
-                    :func-type="funcType"
-                    :related-form="relatedForm"
-                    :processors="processorData.processors"
-                    :create-ticket-node-id="createTicketNodeId"
-                    :editable="editable"
-                    :disable-create-field="disableCreateField"
-                    @updateFieldIds="nodeDetail.fields = $event"
-                    @change="handleNodeFormChange">
-                </component>
-                <div class="actions-wrapper">
-                    <bk-button
-                        theme="primary"
-                        :loading="savePending"
-                        :disabled="nodeDetailLoading || !editable"
-                        @click="handleSaveClick">
-                        保存
-                    </bk-button>
-                    <bk-button @click="handleClose" style="margin-left: 8px">取消</bk-button>
-                </div>
+            </div>
+        </div> -->
+        <div class="config-content-wrapper">
+            <component
+                ref="nodeForm"
+                :is="formCompDict[nodeDetail.type]"
+                :config="nodeDetail"
+                @updateFieldIds="nodeDetail.fields = $event"
+                @change="handleNodeFormChange">
+            </component>
+            <div class="extend-setting-btn">
+                <span class="trigger-area" @click="extendSettingOpen = !extendSettingOpen">
+                    高级配置
+                    <i :class="['bk-icon', 'icon-angle-double-down', { opened: extendSettingOpen }]"></i>
+                </span>
+            </div>
+            <form-section v-show="extendSettingOpen" title="触发器" desc="（可以定义当满足条件时，要执行的特定动作）">
+                <div>触发器内容</div>
+            </form-section>
+            <div class="actions-wrapper">
+                <bk-button
+                    theme="primary"
+                    :loading="savePending"
+                    :disabled="nodeDetailLoading"
+                    @click="handleSaveClick">
+                    保存
+                </bk-button>
+                <bk-button @click="handleClose" style="margin-left: 8px">取消</bk-button>
             </div>
         </div>
     </div>
@@ -90,22 +92,23 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
-    import Processors from './components/processors.vue'
-    import NormalNodeForm from './normalNode.vue'
-    import DataProcessNodeForm from './dataProcessNode.vue'
-    import ApiNodeForm from './apiNode.vue'
-    import SignNodeForm from './signNode.vue'
-    import ApprovalNodeForm from './approvalNode.vue'
+    import { messageError } from '@/common/bkmagic'
+    import NormalNode from './nodes/normalNode.vue'
+    import DataProcessNode from './nodes/dataProcessNode.vue'
+    import ApiNode from './nodes/apiNode.vue'
+    import SignNode from './nodes/signNode.vue'
+    import ApprovalNode from './nodes/approvalNode.vue'
+    import FormSection from './components/form-section.vue'
 
     export default {
-        name: 'NodeConfigPanel',
+        name: 'NodeConfig',
         components: {
-            Processors,
-            NormalNodeForm,
-            DataProcessNodeForm,
-            ApiNodeForm,
-            SignNodeForm,
-            ApprovalNodeForm
+            NormalNode,
+            DataProcessNode,
+            ApiNode,
+            SignNode,
+            ApprovalNode,
+            FormSection
         },
         props: {
             nodeId: Number,
@@ -150,11 +153,11 @@
                 },
                 savePending: false,
                 formCompDict: {
-                    NORMAL: 'NormalNodeForm',
-                    'DATA-PROC': 'DataProcessNodeForm',
-                    TASK: 'ApiNodeForm',
-                    SIGN: 'SignNodeForm',
-                    APPROVAL: 'ApprovalNodeForm'
+                    NORMAL: 'NormalNode',
+                    'DATA-PROC': 'DataProcessNode',
+                    TASK: 'ApiNode',
+                    SIGN: 'SignNode',
+                    APPROVAL: 'ApprovalNode'
                 },
                 rules: {
                     name: [
@@ -164,7 +167,8 @@
                             trigger: 'blur'
                         }
                     ]
-                }
+                },
+                extendSettingOpen: false
             }
         },
         computed: {
@@ -178,31 +182,32 @@
                 return this.formData.processorData.type === 'VARIABLE'
             }
         },
-        async created () {
-            await this.getNodeDetail()
+        created () {
+            this.getNodeDetail()
         },
         methods: {
             async getNodeDetail () {
                 try {
                     this.nodeDetailLoading = true
-                    const res = await this.$store.dispatch('setting/getNodeDetail', this.nodeId)
-                    this.nodeDetail = res.data
-                    const { name, processors_type: processorsType, processors } = res.data
-                    const { can_deliver, delivers_type, delivers } = res.data
+                    this.nodeDetail = await this.$store.dispatch('nocode/flow/getNodeConfig', this.nodeId)
+                    const {
+                        name, type, processors_type: processorsType, processors, can_deliver: canDeliver,
+                        delivers_type: deliversType, delivers
+                    } = this.nodeDetail
                     this.name = name
                     this.processorData = {
-                        type: this.nodeDetail.type === 'SIGN' ? 'PERSON' : processorsType,
+                        type: type === 'SIGN' ? 'PERSON' : processorsType,
                         processors: cloneDeep(processors)
                     }
-                    if (['APPROVAL', 'SIGN', 'NORMAL'].includes(this.nodeDetail.type)) {
-                        this.formData.isTrans = can_deliver
-                        if (can_deliver) {
-                            this.formData.processorData.type = delivers_type
+                    if (['APPROVAL', 'SIGN', 'NORMAL'].includes(type)) {
+                        this.formData.isTrans = canDeliver
+                        if (canDeliver) {
+                            this.formData.processorData.type = deliversType
                             this.formData.processorData.processors = delivers
                         }
                     }
                 } catch (e) {
-                    console.error(e)
+                    messageError(e.message || e)
                 } finally {
                     this.nodeDetailLoading = false
                 }
@@ -214,24 +219,24 @@
                 this.$refs.configForm
                     .validate()
                     .then(async () => {
-                        let processorValid = true
-                        if (this.$refs.processorForm) {
-                            processorValid = this.$refs.processorForm.validate()
-                        }
-                        if (!processorValid) {
-                            return
-                        }
+                        // let processorValid = true
+                        // if (this.$refs.processorForm) {
+                        //     processorValid = this.$refs.processorForm.validate()
+                        // }
+                        // if (!processorValid) {
+                        //     return
+                        // }
 
-                        const configValidate = this.$refs.nodeForm.validate
-                        if (configValidate) {
-                            // 节点表单校验
-                            const result = await configValidate()
-                            if (result) {
-                                this.saveNodeConfig()
-                            }
-                        } else {
-                            this.saveNodeConfig()
-                        }
+                        // const configValidate = this.$refs.nodeForm.validate
+                        // if (configValidate) {
+                        //     // 节点表单校验
+                        //     const result = await configValidate()
+                        //     if (result) {
+                        //         this.saveNodeConfig()
+                        //     }
+                        // } else {
+                        //     this.saveNodeConfig()
+                        // }
                     })
                     .catch(e => console.error(e))
             },
@@ -287,7 +292,7 @@
                     })
                     this.$emit('save')
                 } catch (e) {
-                    console.error(e)
+                    messageError(e.message || e)
                 } finally {
                     this.savePending = false
                 }
@@ -309,61 +314,49 @@
 @import '@/css/mixins/scroller.css';
 
 .node-config-panel {
-  margin: 24px auto 0;
-  width: 1000px;
-  height: calc(100% - 48px);
-  background: #ffffff;
-  box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
-  border-radius: 2px;
+  height: calc(100% - 52px);
+  background: #fafbfd;
 }
-
 .header-wrapper {
   position: relative;
-  padding: 0 24px;
-  height: 48px;
-  line-height: 48px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #63656e;
-  background: #fafbfd;
-
-  .back-to-flow-btn {
-    position: absolute;
-    right: 16px;
-    top: 12px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-
-    &:hover {
-      color: #3a84ff;
-    }
-  }
-}
-
-.config-form-wrapper {
-  padding: 24px 0;
-  height: calc(100% - 48px);
-  overflow: auto;
-  @mixin scroller;
-
-  .bk-form .bk-form-item {
-    margin-top: 24px;
-  }
-}
-
-.form-content-area {
-  margin: 0 auto;
-  width: 600px;
-}
-
-.actions-wrapper {
-  margin-top: 24px;
-}
-
-.trans-method {
   display: flex;
-  align-items: flex-start
+  align-items: center;
+  padding: 0 48px;
+  height: 48px;
+  background: #eaebf0;
+  .config-title {
+    margin-left: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #313238;
+  }
 }
-
+.config-content-wrapper {
+  padding: 24px;
+  .extend-setting-btn {
+      margin: 16px 0 24px;
+      padding: 0 130px;
+  }
+  .trigger-area {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      color: #3a84ff;
+      cursor: pointer;
+      i {
+          font-size: 18px;
+          transition: transform 0.2s ease;
+          &.opened {
+              transform: rotate(-180deg);
+          }
+      }
+  }
+}
+.actions-wrapper {
+    margin-top: 24px;
+    padding: 0 130px;
+    .bk-button {
+        min-width: 88px;
+    }
+}
 </style>

@@ -80,27 +80,14 @@
                     </div>
                 </template>
             </bk-form-item>
-            <node-fields-table
-                style="margin-top: 16px"
-                :node="node"
-                :app-id="appId"
-                :func-id="funcId"
-                :flow-id="flowId"
-                :related-form="relatedForm"
-                @updateFieldIds="$emit('updateFieldIds', $event)">
-            </node-fields-table>
         </bk-form>
     </div>
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import NodeFieldsTable from './components/nodeFieldsTable.vue'
 
     export default {
         name: 'SignNode',
-        components: {
-            NodeFieldsTable
-        },
         props: {
             node: {
                 type: Object,
