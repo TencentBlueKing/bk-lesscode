@@ -71,6 +71,9 @@
         computed: {
             projectId () {
                 return this.$route.params.projectId
+            },
+            versionId () {
+                return this.$store.state.projectVersion.currentVersion.id
             }
         },
         watch: {
@@ -91,10 +94,11 @@
             async getFlowList () {
                 this.listLoading = true
                 try {
-                    this.flowList = await this.$store.dispatch('nocode/flow/getFlowList', {
+                    const res = await this.$store.dispatch('nocode/flow/getFlowList', {
                         projectId: this.projectId,
                         versionId: this.versionId
                     })
+                    this.flowList = res.list
                 } catch (err) {
                     messageError(err.message || err)
                 } finally {

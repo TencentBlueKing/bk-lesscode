@@ -4,9 +4,14 @@
             <bk-button theme="primary" @click="isCreateDialogShow = true">新建</bk-button>
             <div class="search-wrapper">
                 <bk-input
+                    v-model="keyword"
                     placeholder="请输入流程名称"
                     style="width: 360px;"
-                    right-icon="bk-icon icon-search">
+                    right-icon="bk-icon icon-search"
+                    :clearable="true"
+                    @change="handleKeywordChange"
+                    @clear="handleSearch"
+                    @enter="handleSearch">
                 </bk-input>
                 <div class="archived-icon" @click="$router.push({ name: 'flowArchivedList' })">
                     <i class="bk-drag-icon bk-drag-countdown"></i>
@@ -76,8 +81,8 @@
                 form-type="vertical"
                 :model="newFlowData"
                 :rules="flowDataRule">
-                <bk-form-item label="流程名称" property="name" :required="true">
-                    <bk-input v-model="newFlowData.name" />
+                <bk-form-item label="流程名称" property="flowName" :required="true">
+                    <bk-input v-model="newFlowData.flowName" />
                 </bk-form-item>
                 <bk-form-item label="流程描述" property="desc">
                     <bk-input v-model="newFlowData.summary" type="textarea" :row="4" />
@@ -109,19 +114,20 @@
                     current: 1,
                     count: 0,
                     limit: 2,
-                    'limit-list': [2, 15, 20]
+                    'limit-list': [2, 10, 20, 50, 100]
                 },
                 newFlowData: {
-                    name: '',
+                    flowName: '',
                     summary: ''
                 },
                 flowDataRule: {
-                    name: [{
+                    flowName: [{
                         required: true,
                         trigger: 'blur',
                         message: '必填项'
                     }]
                 },
+                keyword: '',
                 archiveId: null,
                 archivePopover: null,
                 isCreateDialogShow: false,
@@ -148,9 +154,12 @@
                     pageSize: this.pagination.limit,
                     page: this.pagination.current
                 }
+                if (this.keyword) {
+                    params.flowName = this.keyword.trim()
+                }
                 try {
                     const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
-                    const { list, count } = res.data
+                    const { list, count } = res
                     this.flowList = list
                     this.pagination.count = count
                 } catch (err) {
@@ -163,9 +172,9 @@
                 this.$refs.createForm.validate().then(async () => {
                     this.createPending = true
                     try {
-                        const { name, summary } = this.newFlowData
+                        const { flowName, summary } = this.newFlowData
                         const params = {
-                            name,
+                            flowName,
                             summary,
                             projectId: this.projectId,
                             versionId: this.versionId
@@ -182,8 +191,9 @@
             },
             handleCreateDialogClose () {
                 this.isCreateDialogShow = false
-                this.newFlowData = { name: '', summary: '' }
+                this.newFlowData = { flowName: '', summary: '' }
             },
+            // 归档弹层
             handleArchiveClick (id, e) {
                 // if (this.archiveId === id) {
                 //     return
@@ -197,8 +207,6 @@
                 //     theme: 'light',
                 //     trigger: 'click',
                 //     onHide () {
-                //         console.log(this)
-                //         this.destroy()
                 //         console.log($self.archivePopover)
                 //     }
                 // })
@@ -206,8 +214,25 @@
             },
             handleArchiveConfirm () {},
             handleArchiveCancel () {},
-            handlePageChange () {},
-            handlePageLimitChange () {}
+            handlePageChange (val) {
+                this.pagination.current = val
+                this.getFlowList()
+            },
+            handlePageLimitChange (val) {
+                this.pagination.current = 1
+                this.pagination.limit = val
+                this.getFlowList()
+            },
+            // 删除搜索关键字
+            handleKeywordChange (val) {
+                if (!val) {
+                    this.handleSearch()
+                }
+            },
+            handleSearch (val) {
+                this.pagination.current = 1
+                this.getFlowList()
+            }
         }
     }
 </script>
