@@ -38,6 +38,7 @@
     </section>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
@@ -69,6 +70,9 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', {
+                versionId: 'currentVersionId'
+            }),
             projectId () {
                 return this.$route.params.projectId
             }

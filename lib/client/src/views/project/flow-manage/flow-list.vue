@@ -93,6 +93,7 @@
 <script>
     import dayjs from 'dayjs'
     import { messageError } from '@/common/bkmagic'
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'flowList',
@@ -128,11 +129,11 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', {
+                versionId: 'currentVersionId'
+            }),
             projectId () {
                 return this.$route.params.projectId
-            },
-            versionId () {
-                return this.$store.state.projectVersion.currentVersion.id
             }
         },
         mounted () {

@@ -8,4 +8,4 @@ ALTER TABLE `flow`
 ADD COLUMN `formIds` text COMMENT '节点对应表单id' AFTER `itsmId`;
 
 ALTER TABLE `flow`
-DROP COLUMN `dataSourceIds` 
+DROP COLUMN `dataSourceIds`;
