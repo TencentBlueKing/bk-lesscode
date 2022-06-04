@@ -11,5 +11,5 @@
 
 // no-code 相关配置
 module.exports = {
-    apiPerfix: '' // 转发接口 url 前缀
+    apiPrefix: '' // 转发接口 url 前缀
 }
