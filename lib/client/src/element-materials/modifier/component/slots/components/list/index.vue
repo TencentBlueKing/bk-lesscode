@@ -1,78 +1,84 @@
-<!--
-  Tencent is pleased to support the open source community by making 蓝鲸智云PaaS平台社区版 (BlueKing PaaS Community Edition) available.
-  Copyright (C) 2017-2019 THL A29 Limited, a Tencent company. All rights reserved.
-  Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  http://opensource.org/licenses/MIT
-  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
-  an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
-  specific language governing permissions and limitations under the License.
--->
-
 <template>
-    <div>
-        <div class="slot-card-wrapper">
-            <vue-draggable
-                class="group-list"
-                ghost-class="block-item-ghost"
-                :list="optionList"
-                @change="trigger"
-                handle=".option-col-drag"
-                :group="{ name: 'table-col' }">
-                <transition-group
-                    type="transition"
-                    :name="'flip-list'">
-                    <div
-                        v-for="(item, index) in optionList"
-                        class="card-item-content"
-                    
-                        :key="`option${index}`">
-                        <div class="option-col-operate">
-                            <i class="bk-drag-icon bk-drag-drag-small1 option-col-drag" />
-                            <i class="bk-icon icon-close option-col-del" @click="handleDelete(index)"></i>
+    <section>
+        <vue-draggable
+            class="group-list"
+            handle=".bk-drag-grag-fill"
+            :list="optionList"
+            :group="{ name: 'table-col' }"
+            @change="trigger">
+            <bk-popover
+                v-for="(item, index) in optionList"
+                class="list-item"
+                :key="`option${index}`"
+                placement="left-start"
+                trigger="click"
+                theme="light"
+                ext-cls="g-popover-empty-padding"
+                width="320"
+            >
+                <span class="item-content">
+                    <i class="bk-drag-icon bk-drag-grag-fill" />
+                    {{ item[currentConfig.displayKey] }}
+                </span>
+                <i class="bk-icon icon-minus-circle" @click="handleDelete(index)"></i>
+                <section slot="content">
+                    <section class="template-item-list">
+                        <div
+                            v-for="(option, idx) in currentConfig.template"
+                            class="template-item"
+                            :key="idx"
+                        >
+                            <div class="label">{{option.name}}</div>
+                            <bk-input
+                                v-if="option.type === 'input'"
+                                :value="item[option.key]"
+                                @change="val => handleChange(val, option.key, index)" />
+                            <bk-radio
+                                v-else-if="option.type === 'radio'"
+                                :checked="item[option.key]"
+                                @change="val => handleCheckChange(val, option.key, index)" />
+                            <bk-checkbox
+                                v-else-if="option.type === 'checkbox'"
+                                :checked="item[option.key]"
+                                @change="val => handleChange(val, option.key, index)" />
+                            <icon
+                                v-else-if="option.type === 'icon'"
+                                :default-value="item[option.key]"
+                                :include-number="true"
+                                :change="val => handleChange(val, option.key, index)"></icon>
                         </div>
-                        <section style="margin-top: 20px">
-                            <div
-                                v-for="(option, idx) in currentConfig.template"
-                                class="card-item"
-                                :key="idx">
-                                <div class="label">{{option.name}}</div>
-                                <bk-input
-                                    v-if="option.type === 'input'"
-                                    :value="item[option.key]"
-                                    @change="val => handleChange(val, option.key, index)" />
-                                <bk-radio
-                                    v-else-if="option.type === 'radio'"
-                                    :checked="item[option.key]"
-                                    @change="val => handleCheckChange(val, option.key, index)" />
-                                <bk-checkbox
-                                    v-else-if="option.type === 'checkbox'"
-                                    :checked="item[option.key]"
-                                    @change="val => handleChange(val, option.key, index)" />
-                                <icon
-                                    v-else-if="option.type === 'icon'"
-                                    :default-value="item[option.key]"
-                                    :include-number="true"
-                                    :change="val => handleChange(val, option.key, index)"></icon>
-                            </div>
-                        </section>
-                    </div>
-                </transition-group>
-            </vue-draggable>
-
-            <div class="content-add" @click="handleAdd">添加一项</div>
-        </div>
-    </div>
+                    </section>
+                </section>
+            </bk-popover>
+        </vue-draggable>
+        <span class="content-add" @click="handleAdd">
+            <i class="bk-icon icon-plus-circle"></i>
+            添加
+        </span>
+    </section>
 </template>
-<script>
+
+<script lang="ts">
+    import {
+        defineComponent,
+        ref,
+        // watch,
+        computed
+    } from '@vue/composition-api'
     import Icon from '@/components/modifier/icon-select'
     import configMap from './config.js'
 
-    export default {
-        name: 'slot-list',
+    interface ICurrentConfig {
+        displayKey: string,
+        template: any[],
+        generateFunc: (index) => {}
+    }
+
+    export default defineComponent({
         components: {
             Icon
         },
+
         props: {
             slotVal: {
                 type: Object,
@@ -84,101 +90,108 @@
             },
             change: {
                 type: Function,
-                default: () => {}
+                default: (slot) => {}
             }
         },
-        data () {
-            return {
-                optionList: []
-            }
-        },
-        computed: {
-            currentConfig () {
-                return configMap[this.slotVal.component]
-            }
-        },
-        created () {
-            this.optionList = JSON.parse(JSON.stringify(this.slotVal.val))
-            console.log('from list create')
-            // this.trigger()
-        },
-        methods: {
-            trigger () {
+
+        setup (props) {
+            const optionList = ref<Array<any>>(props.slotVal.val)
+            const currentConfig = computed<ICurrentConfig>(() => configMap[props.slotVal.component])
+
+            const trigger = () => {
                 const slot = {
-                    ...this.slotVal,
-                    val: JSON.parse(JSON.stringify(this.optionList))
+                    ...props.slotVal,
+                    val: JSON.parse(JSON.stringify(optionList.value))
                 }
-                this.change(slot)
-            },
-            handleDelete (index) {
-                if (this.optionList.length === 1) {
+                props.change(slot)
+            }
+
+            const handleDelete = (index) => {
+                if (optionList.value.length === 1) {
                     return
                 }
-                this.optionList.splice(index, 1)
-                this.trigger()
-            },
-            handleChange (value, key, index) {
-                this.optionList[index][key] = value
-                this.trigger()
-            },
-            handleCheckChange (value, key, index) {
+                optionList.value.splice(index, 1)
+                trigger()
+            }
+
+            const handleChange = (value, key, index) => {
+                optionList.value[index][key] = value
+                trigger()
+            }
+
+            const handleCheckChange = (value, key, index) => {
                 if (value) {
-                    this.optionList = this.optionList.map((item, itemIndex) => {
+                    optionList.value = optionList.value.map((item, itemIndex) => {
                         item[key] = itemIndex === index
                         return item
                     })
                 } else {
-                    this.optionList[index][key] = value
+                    optionList.value[index][key] = value
                 }
-                this.trigger()
-            },
-            handleAdd () {
-                this.optionList.push(this.currentConfig.generateFunc(this.optionList.length + 1))
-                this.trigger()
+                trigger()
+            }
+
+            const handleAdd = () => {
+                optionList.value.push(currentConfig.value.generateFunc(optionList.value.length + 1))
+                trigger()
+            }
+
+            return {
+                optionList,
+                currentConfig,
+                trigger,
+                handleDelete,
+                handleChange,
+                handleCheckChange,
+                handleAdd
+            }
+        }
+    })
+</script>
+
+<style lang="postcss" scoped>
+    .group-list {
+        margin-top: 4px;
+        .list-item {
+            line-height: 32px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            display: block;
+            .item-content {
+                background: #EAEBF0;
+                border-radius: 2px;
+                height: 32px;
+                display: inline-block;
+                width: calc(100% - 26px);
+                padding: 0 8px;
+                cursor: pointer;
+            }
+            .icon-minus-circle {
+                cursor: pointer;
+                margin-left: 4px;
+            }
+            ::v-deep .bk-tooltip-ref {
+                display: block;
             }
         }
     }
-</script>
-<style lang='postcss' scoped>
-    .slot-card-wrapper {
-        display: flex;
-        flex-direction: column;
-        .card-item-content {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 10px;
-            padding: 0 6px;
-            background-color: #F0F1F5;
-            &:hover{
-                box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
-                .option-col-operate {
-                    display: block;
-                    .option-col-drag {
-                        padding-left: 0;
-                    }
-                }
-            }
-            .card-item{
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                margin-bottom: 10px;
-                font-size: 12px;
-            }
-            .label{
-                height: 24px;
-                margin-right: 0.6em;
-                text-align: right;
-            }
+    .content-add {
+        color: #3A84FF;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    .template-item-list {
+        padding: 10px 16px 16px;
+    }
+    .template-item {
+        margin-top: 12px;
+        &:first-child {
+            margin-top: 0;
         }
-        .content-add {
+        .label {
             font-size: 12px;
-            cursor: pointer;
-            color: #3a84ff;
-            i {
-                padding-right: 2px;
-                font-size: 16px;
-            }
+            line-height: 20px;
+            margin-bottom: 6px;
         }
     }
 </style>

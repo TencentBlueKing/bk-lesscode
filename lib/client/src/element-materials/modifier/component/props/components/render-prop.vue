@@ -15,41 +15,53 @@
             :show="!isReadOnly && variableSelectEnable"
             :options="variableSelectOptions"
             :value="formData"
+            :show-content="isShowProp"
             @change="handleVariableFormatChange">
             <template v-slot:title>
                 <div class="prop-name">
+                    <i
+                        :class="{
+                            'bk-icon icon-angle-down': true,
+                            close: !isShowProp
+                        }"
+                        @click="toggleShowProp"
+                    ></i>
                     <span
                         :class="{ label: describe.tips }"
                         v-bk-tooltips="introTips">
                         {{ displayName }}
                     </span>
-                    <div
-                        v-if="showInnerVariable"
-                        v-bk-tooltips="{
-                            content: innerVariableTips,
-                            width: '300',
-                            placements: ['left-start'],
-                            boundary: 'window'
-                        }"
-                        class="inner-variable"
-                    >
-                        <i class="bk-icon icon-info"></i>
-                        内置变量：{{innerVariableCode}}
-                    </div>
                 </div>
             </template>
-            <bk-radio-group
-                v-if="renderComponentList.length > 1"
-                :value="selectValueType"
-                style="margin-bottom: 10px;"
-                @change="handleValueTypeChange">
-                <bk-radio-button
-                    v-for="item in renderComponentList"
-                    :key="item.type"
-                    :value="item.valueType">
-                    {{ item.type | valueTypeTextFormat }}
-                </bk-radio-button>
-            </bk-radio-group>
+
+            <template v-if="showInnerVariable">
+                <span class="g-prop-sub-title g-mb6">变量类型</span>
+                <choose-build-in-variable
+                    class="g-mb4"
+                    :build-in-variable="buildInVariable"
+                    :build-in-variable-type="formData.buildInVariableType"
+                    :component-id="componentId"
+                    :name="name"
+                    :payload="formData.payload"
+                    :option="variableSelectOptions"
+                    @change="handleBuildInVariableChange"
+                />
+            </template>
+
+            <template v-if="renderComponentList.length > 1">
+                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性值来源</span>
+                <bk-radio-group
+                    class="g-prop-radio-group mb12"
+                    :value="selectValueType"
+                    @change="handleValueTypeChange">
+                    <bk-radio-button
+                        v-for="item in renderComponentList"
+                        :key="item.type"
+                        :value="item.type">
+                        {{ item.type | valueTypeTextFormat }}
+                    </bk-radio-button>
+                </bk-radio-group>
+            </template>
             <div
                 v-if="isRenderValueCom"
                 class="prop-action">
@@ -63,7 +75,7 @@
                             :type="renderCom.type"
                             :describe="describe"
                             :default-value="propTypeValueMemo[selectValueType].val"
-                            :payload="propTypeValueMemo[selectValueType].payload"
+                            :payload="formData.payload"
                             :remote-validate="describe.remoteValidate"
                             :key="`${renderCom.type}_${index}`"
                             :readonly="isReadOnly"
@@ -80,6 +92,7 @@
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
     import variableSelect from '@/components/variable/variable-select'
+    import chooseBuildInVariable from '@/components/variable/choose-build-in-variable'
     import {
         determineShowPropInnerVariable
     } from 'shared/variable'
@@ -144,7 +157,8 @@
     export default {
         name: 'render-prop-modifier',
         components: {
-            variableSelect
+            variableSelect,
+            chooseBuildInVariable
         },
         filters: {
             valueTypeTextFormat (valueType) {
@@ -154,9 +168,9 @@
                     'object': '对象',
                     'string': '字符串',
                     'array': '数组',
-                    'remote': '远程函数',
-                    'data-source': '数据源',
-                    'table-data-source': '数据源',
+                    'remote': '函数',
+                    'data-source': '数据表',
+                    'table-data-source': '数据表',
                     'srcset': '图片列表'
                 }
                 return textMap[valueType] || toPascal(valueType)
@@ -187,7 +201,8 @@
             return {
                 selectValueType: '',
                 formData: {},
-                isRenderValueCom: false
+                isRenderValueCom: false,
+                isShowProp: true
             }
         },
         computed: {
@@ -336,24 +351,18 @@
                 return determineShowPropInnerVariable(this.describe.type, this.name, this.componentType)
             },
             /**
-             * 内置变量提示
-             */
-            innerVariableTips () {
-                return `${this.name} 属性有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.name}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
-            },
-            /**
              * 内置变量名
              */
-            innerVariableCode () {
+            buildInVariable () {
                 const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
                 const isChart = this.componentType === 'chart'
-                let innerVariableCode
+                let buildInVariable
                 if (isChart) {
-                    innerVariableCode = perVariableName
+                    buildInVariable = perVariableName
                 } else {
-                    innerVariableCode = `${perVariableName}${camelCase(this.name, { transform: camelCaseTransformMerge })}`
+                    buildInVariable = `${perVariableName}${camelCase(this.name, { transform: camelCaseTransformMerge })}`
                 }
-                return innerVariableCode
+                return buildInVariable
             }
         },
         watch: {
@@ -369,17 +378,17 @@
                             const lastValueType = Array.isArray(lastValue.valueType)
                                 ? lastValue.valueType[0]
                                 : lastValue.valueType
-
                             this.formData = Object.freeze({
                                 ...this.formData,
                                 format: lastValue.format,
                                 code: lastValue.code,
                                 valueType: getPropValueType(lastValueType),
+                                buildInVariableType: lastValue.buildInVariableType,
+                                payload: lastValue.payload || {},
                                 renderValue: lastValue.renderValue
                             })
                             this.propTypeValueMemo[this.formData.valueType] = {
-                                val: lastValue.renderValue,
-                                payload: lastValue.payload || {}
+                                val: lastValue.renderValue
                             }
                         }
                         this.selectValueType = this.formData.valueType
@@ -407,8 +416,7 @@
                 format: 'value',
                 formatInclude: ['value', 'variable', 'expression'],
                 code: defaultValue,
-                valueTypeInclude: valueTypes,
-                limitTypes: valueTypes
+                valueTypeInclude: valueTypes
             }
 
             // prop 的初始值
@@ -417,14 +425,14 @@
                 code: defaultValue,
                 valueType: valueTypes[0],
                 renderValue: defaultValue,
+                buildInVariableType: '',
                 payload: this.lastValue.payload || {}
             })
 
             // 编辑状态缓存
             this.propTypeValueMemo = {
                 [this.formData.valueType]: {
-                    val: this.formData.renderValue,
-                    payload: this.formData.payload
+                    val: this.formData.renderValue
                 }
             }
         },
@@ -436,8 +444,7 @@
                 this.isInnerChange = true
                 // 缓存用户本地编辑值
                 this.propTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.renderValue,
-                    payload: this.formData.payload
+                    val: this.formData.renderValue
                 }
 
                 this.$emit('on-change', this.name, {
@@ -488,10 +495,8 @@
                 this.selectValueType = realValueType
 
                 let code = null
-                let payload = {}
                 if (this.propTypeValueMemo.hasOwnProperty(realValueType)) {
                     code = this.propTypeValueMemo[realValueType].val
-                    payload = this.propTypeValueMemo[realValueType].payload
                 } else if ([
                     'remote',
                     'data-source',
@@ -508,7 +513,6 @@
                 this.formData = Object.freeze({
                     ...this.formData,
                     code,
-                    payload,
                     valueType: realValueType,
                     renderValue: code
                 })
@@ -535,6 +539,7 @@
                         // api 返回数据不为空时在画布编辑区才应用 api 数据
                         if (!isEmpty(val)) {
                             renderValue = val
+                            code = val
                         }
                     } else {
                         code = val
@@ -544,7 +549,7 @@
                     this.formData = Object.freeze({
                         ...this.formData,
                         code,
-                        payload,
+                        payload: Object.assign(this.formData.payload, payload),
                         renderValue
                     })
                     this.triggerChange()
@@ -554,6 +559,19 @@
                         message: `属性【${name}】的值设置不正确`
                     })
                 }
+            },
+
+            handleBuildInVariableChange ({ buildInVariableType, payload }) {
+                this.formData = Object.freeze({
+                    ...this.formData,
+                    buildInVariableType,
+                    payload: Object.assign(this.formData.payload, payload)
+                })
+                this.triggerChange()
+            },
+
+            toggleShowProp () {
+                this.isShowProp = !this.isShowProp
             }
         }
     }
@@ -595,47 +613,43 @@
     .modifier-prop {
         margin: 0 10px;
         .prop-name {
-            line-height: 30px;
-            font-size: 14px;
-            color: #63656E;
+            height: 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #313238;
             word-break: keep-all;
             width: 100%;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #EAEBF0;
             .label {
-                border-bottom: 1px dashed #979ba5;
+                border-bottom: 1px dashed #313238;
                 cursor: pointer;
                 max-width: calc(100% - 65px);
                 line-height: 19px;
                 display: inline-block;
-                margin-top: 6px;
             }
             span {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            .inner-variable {
-                font-size: 12px;
-                line-height: 30px;
-                display: block;
+            .icon-angle-down {
                 cursor: pointer;
-                width: 100%;
-                background: #F5F7FA;
-                padding: 0 6px;
-                margin-bottom: 5px;
+                font-size: 20px;
+                margin-left: -5px;
+                margin-right: 3px;
+                transition: transform 200ms;
+                &.close {
+                    transform: rotate(-90deg);
+                }
             }
-            /* .icon-info-circle {
-                padding: 4px;
-                color: #979BA5;
-                font-size: 16px;
-                cursor: pointer;
-            } */
         }
         .prop-action {
             width: 100%;
         }
-        &.slots {
-            border-top: 1px solid #ccc;
-            margin-top: 20px;
+        .mb12 {
+            margin-bottom: 12px
         }
     }
 </style>

@@ -20,27 +20,28 @@
                 </bk-option>
             </bk-select>
         </section>
-        <div
-            v-if="readonly"
-            class="readonly-text">
-            {{ formData.code }}
-        </div>
-        <div v-else style="width: 100%">
-            <slot v-if="formData.format === 'value'" />
-            <render-variable
-                v-if="formData.format === 'variable'"
-                :options="options"
-                :form-data="formData"
-                :remote-config="remoteConfig"
-                @on-change="handleChange" />
-            <render-expression
-                v-if="formData.format === 'expression'"
-                :options="options"
-                :form-data="formData"
-                @on-change="handleChange"
-            />
-        </div>
-        
+        <template v-if="showContent">
+            <div
+                v-if="readonly"
+                class="readonly-text">
+                {{ formData.code }}
+            </div>
+            <div v-else class="display-content">
+                <slot v-if="formData.format === 'value'" />
+                <render-variable
+                    v-if="formData.format === 'variable'"
+                    :options="options"
+                    :form-data="formData"
+                    :remote-config="remoteConfig"
+                    @on-change="handleChange" />
+                <render-expression
+                    v-if="formData.format === 'expression'"
+                    :options="options"
+                    :form-data="formData"
+                    @on-change="handleChange"
+                />
+            </div>
+        </template>
     </section>
 </template>
 <script>
@@ -77,6 +78,11 @@
         },
         props: {
             show: {
+                type: Boolean,
+                default: true
+            },
+            // 是否展示内容区
+            showContent: {
                 type: Boolean,
                 default: true
             },
@@ -193,7 +199,6 @@
 <style lang="postcss" scoped>
     .select-variable {
         position: relative;
-        margin-top: 10px;
         .header {
             display: flex;
             align-items: flex-start;
@@ -206,6 +211,7 @@
         .format-list {
             position: absolute;
             right: 0;
+            top: 5px;
             border: none;
             /deep/ .bk-select-angle {
                 font-size: 16px;
@@ -265,6 +271,11 @@
                     display: none;
                 }
             }
+        }
+        .display-content {
+            width: 100%;
+            margin-bottom: 16px;
+            margin-top: 4px;
         }
     }
 </style>

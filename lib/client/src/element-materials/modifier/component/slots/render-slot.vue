@@ -4,56 +4,69 @@
         :value="formData"
         :remote-config="remoteConfig"
         :show="variableSelectEnable"
+        :show-content="isShowSlot"
         @change="handleVariableFormatChange">
         <template v-slot:title>
             <section class="slot-title-wrapper">
-                <span
-                    class="slot-name"
-                    :class="{
-                        'slot-tips': describe.tips
-                    }"
-                    v-bk-tooltips="computedSlotTip">
-                    {{ describe.displayName }}
-                    <span v-if="describe.type && describe.type.length <= 1">
-                        ({{ formData.valueType | capFirstLetter }})
+                <span class="slot-name">
+                    <i
+                        :class="{
+                            'bk-icon icon-angle-down': true,
+                            close: !isShowSlot
+                        }"
+                        @click="toggleShowSlot"
+                    ></i>
+                    <span
+                        :class="{
+                            'slot-tips': describe.tips
+                        }"
+                        v-bk-tooltips="computedSlotTip"
+                    >
+                        {{ describe.displayName }}
+                        <span v-if="describe.type && describe.type.length <= 1">
+                            ({{ formData.valueType | capFirstLetter }})
+                        </span>
                     </span>
                 </span>
-                <div
-                    v-if="showInnerVariable"
-                    v-bk-tooltips="{
-                        content: innerVariableTips,
-                        width: '300',
-                        placements: ['left-start'],
-                        boundary: 'window'
-                    }"
-                    class="inner-variable"
-                >
-                    <i class="bk-icon icon-info"></i>
-                    内置变量：{{innerVariableCode}}
-                </div>
                 <template v-if="describe.name && describe.name.length > 1">
                     <span class="slot-label">组件标签</span>
                     <bk-radio-group
                         :value="formData.component"
                         @change="handleSlotComponentChange"
-                        class="mb10">
+                        class="g-prop-radio-group">
                         <bk-radio-button
                             v-for="itemName in describe.name"
                             :value="itemName"
                             :key="itemName"
-                            class="mr10">
+                        >
                             {{ itemName | renderTypeText }}
                         </bk-radio-button>
                     </bk-radio-group>
                 </template>
             </section>
         </template>
+
+        <template v-if="showInnerVariable">
+            <span class="g-prop-sub-title g-mb6">变量类型</span>
+            <choose-build-in-variable
+                class="g-mb4"
+                :build-in-variable="buildInVariable"
+                :build-in-variable-type="formData.buildInVariableType"
+                :component-id="componentId"
+                :name="describe.displayName"
+                :payload="formData.payload"
+                :option="variableSelectOptions"
+                @change="handleBuildInVariableChange"
+            />
+        </template>
+
         <template v-if="describe.type && describe.type.length > 1">
-            <span class="slot-label">数据类型</span>
+            <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性值来源</span>
             <bk-radio-group
+                class="g-prop-radio-group"
                 :value="formData.valueType"
                 @change="handleValueTypeChange"
-                class="mb10">
+            >
                 <bk-radio-button
                     :value="type"
                     v-for="type in describe.type"
@@ -66,7 +79,7 @@
             v-if="isRenderValueCom"
             :is="renderValueComponent"
             :remote-validate="describe.remoteValidate"
-            :slot-val="slotTypeValueMemo[formData.valueType]"
+            :slot-val="slotVal"
             :slot-config="describe"
             :change="handleCodeChange" />
     </variable-select>
@@ -77,6 +90,7 @@
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import variableSelect from '@/components/variable/variable-select'
+    import chooseBuildInVariable from '@/components/variable/choose-build-in-variable'
     import {
         determineShowSlotInnerVariable
     } from 'shared/variable'
@@ -112,16 +126,31 @@
         'number': '数字',
         'string': '字符串',
         'array': '数组',
-        'remote': '远程函数',
-        'data-source': '数据源',
+        'remote': '函数',
+        'data-source': '数据表',
         'list': '数据列表',
         'table-list': '数据列表',
-        'select-data-source': '数据源'
+        'select-data-source': '数据表'
+    }
+
+    // slot 类型转为可接受的值类型
+    const getSlotValueType = (type) => {
+        // slot 如果配置多个，第一个为真实的值类型，后面是远程函数等
+        const describeValueType = Array.isArray(type) ? type[0] : type
+        const valueMap = {
+            'list': 'array',
+            'html': 'string',
+            'text': 'string',
+            'textarea': 'string',
+            'table-list': 'array'
+        }
+        return [valueMap[describeValueType] || describeValueType]
     }
 
     export default {
         components: {
-            variableSelect
+            variableSelect,
+            chooseBuildInVariable
         },
 
         filters: {
@@ -153,7 +182,8 @@
         data () {
             return {
                 formData: {},
-                isRenderValueCom: false
+                isRenderValueCom: false,
+                isShowSlot: true
             }
         },
 
@@ -175,7 +205,19 @@
                 const disabled = !this.describe.tips
                 return {
                     ...(tips || {}),
-                    disabled
+                    disabled,
+                    placements: ['left-start'],
+                    boundary: 'window'
+                }
+            },
+            /**
+             * slot 类型组件需要完整的slot值
+             */
+            slotVal () {
+                return {
+                    val: this.slotTypeValueMemo[this.formData.valueType].val,
+                    payload: this.formData.payload,
+                    component: this.slotTypeValueMemo[this.formData.valueType].component
                 }
             },
             /**
@@ -213,13 +255,10 @@
             showInnerVariable () {
                 return determineShowSlotInnerVariable(this.describe.type)
             },
-            innerVariableTips () {
-                return `${this.describe.displayName}有内置变量，可以在函数中使用【lesscode.${this.componentId}.${this.describe.displayName}】关键字唤起自动补全功能来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
-            },
             /**
              * 内置变量名
              */
-            innerVariableCode () {
+            buildInVariable () {
                 const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
                 return `${perVariableName}Slot${this.name}`
             }
@@ -241,12 +280,12 @@
                                 code: lastValue.code,
                                 payload: lastValue.payload || {},
                                 valueType: lastValue.valueType,
+                                buildInVariableType: lastValue.buildInVariableType,
                                 renderValue: lastValue.renderValue
                             })
 
                             this.slotTypeValueMemo[lastValue.valueType] = {
                                 val: lastValue.renderValue,
-                                payload: lastValue.payload,
                                 component: lastValue.component
                             }
                         }
@@ -265,6 +304,7 @@
             const defaultValue = val || ''
             this.defaultValue = _.cloneDeep(defaultValue)
             const component = Array.isArray[name] ? name : [name]
+            const valueTypes = getSlotValueType(type)
 
             // 构造 variable-select 的配置
             this.variableSelectOptions = {
@@ -273,7 +313,7 @@
                 format: 'value',
                 formatInclude: ['value', 'variable', 'expression'],
                 code: defaultValue,
-                valueTypeInclude: undefined
+                valueTypeInclude: valueTypes
             }
 
             // slot 的初始值
@@ -283,14 +323,14 @@
                 code: defaultValue,
                 payload: {},
                 valueType: type[0],
-                renderValue: defaultValue
+                renderValue: defaultValue,
+                buildInVariableType: ''
             })
 
             // 编辑状态缓存
             this.slotTypeValueMemo = {
                 [this.formData.valueType]: {
                     val: defaultValue,
-                    payload: {},
                     component: this.formData.component
                 }
             }
@@ -303,7 +343,6 @@
                 // 缓存用户本地编辑值
                 this.slotTypeValueMemo[this.formData.valueType] = {
                     val: this.formData.renderValue,
-                    payload: this.formData.payload,
                     component: this.formData.component
                 }
                 this.isInnerChange = true
@@ -361,11 +400,9 @@
              */
             handleValueTypeChange (valueType) {
                 let code = null
-                let payload = {}
                 if (this.slotTypeValueMemo.hasOwnProperty(valueType)) {
                     // 有缓存的值
                     code = this.slotTypeValueMemo[valueType].val
-                    payload = this.slotTypeValueMemo[valueType].payload
                 } else if ([
                     'remote',
                     'data-source',
@@ -382,8 +419,7 @@
                     ...this.formData,
                     code,
                     valueType,
-                    renderValue: code,
-                    payload
+                    renderValue: code
                 })
                 this.triggerChange()
             },
@@ -401,6 +437,7 @@
                     // api 返回数据不为空才应用接口数据（fix: 数据为空可能导致组件无法显示）
                     if (!isEmpty(valueData.val)) {
                         renderValue = valueData.val
+                        code = valueData.val
                     }
                 } else {
                     code = valueData.val
@@ -409,13 +446,31 @@
                         renderValue = code
                     }
                 }
+                // 防止 payload 互相覆盖，采用叠加的方式赋值
                 this.formData = Object.freeze({
                     ...this.formData,
                     code,
-                    payload: valueData.payload,
+                    payload: Object.assign(this.formData.payload, valueData.payload),
                     renderValue
                 })
                 
+                this.triggerChange()
+            },
+            /**
+             * 切换展示 slot 配置区域
+             */
+            toggleShowSlot () {
+                this.isShowSlot = !this.isShowSlot
+            },
+            /**
+             * 内置变量数据变化回调
+             */
+            handleBuildInVariableChange ({ buildInVariableType, payload }) {
+                this.formData = Object.freeze({
+                    ...this.formData,
+                    buildInVariableType,
+                    payload: Object.assign(this.formData.payload, payload)
+                })
                 this.triggerChange()
             }
         }
@@ -427,33 +482,35 @@
         width: 100%;
     }
     .slot-name {
-        line-height: 32px;
+        height: 40px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #313238;
+        word-break: keep-all;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #EAEBF0;
+        .icon-angle-down {
+            cursor: pointer;
+            font-size: 20px;
+            margin-left: -5px;
+            margin-right: 3px;
+            transition: transform 200ms;
+            &.close {
+                transform: rotate(-90deg);
+            }
+        }
     }
     .slot-tips {
         border-bottom: 1px dashed #979ba5;
         cursor: pointer;
-    }
-    .slot-label {
-        height: 32px;
-        line-height: 32px;
-        font-size: 14px;
-        color: #63656E;
-        display: block;
+        line-height: 19px;
     }
     /deep/ .slot-title {
         height: 28px;
         font-size: 12px;
         font-weight: bold;
         color: #63656E;
-    }
-    .inner-variable {
-        font-size: 12px;
-        line-height: 30px;
-        display: block;
-        cursor: pointer;
-        width: 100%;
-        background: #F5F7FA;
-        padding: 0 6px;
-        margin-bottom: 5px;
     }
 </style>

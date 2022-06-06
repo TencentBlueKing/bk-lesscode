@@ -396,6 +396,7 @@
 <style lang='postcss'>
     .modifier-form {
         padding: 0 10px;
+        margin-bottom: 16px;
         .form-item-list {
             display: flex;
             flex-direction: column;

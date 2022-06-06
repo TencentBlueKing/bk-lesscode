@@ -23,6 +23,7 @@
         determineShowPropInnerVariable,
         determineShowSlotInnerVariable
     } from 'shared/variable'
+    import { BUILDIN_VARIABLE_TYPE_LIST } from 'shared/variable/constant'
 
     export default {
         components: {
@@ -121,12 +122,14 @@
                     })
                     // 获取页面中自带的变量，可以配置远程函数和数据源的需要使用内置变量
                     const material = node.material
+                    const renderProps = node.renderProps
                     const perVariableName = camelCase(node.componentId, { transform: camelCaseTransformMerge })
                     // 属性中需要展示内置变量
                     Object.keys(material.props || {}).forEach(propKey => {
                         const prop = material.props[propKey]
+                        const renderProp = renderProps[propKey]
                         const needShowInnerVariable = determineShowPropInnerVariable(prop.type, propKey, node.type)
-                        if (needShowInnerVariable) {
+                        if (needShowInnerVariable && renderProp.buildInVariableType !== BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
                             const isChart = node.type === 'chart'
                             if (isChart) {
                                 this.proposals.push({
@@ -146,10 +149,12 @@
                         }
                     })
                     // slots 中需要展示内置变量
+                    const renderSlots = node.renderSlots
                     Object.keys(material.slots || {}).forEach(slotKey => {
                         const config = material.slots[slotKey]
+                        const renderSlot = renderSlots[slotKey]
                         const needShowInnerVariable = determineShowSlotInnerVariable(config.type)
-                        if (needShowInnerVariable) {
+                        if (needShowInnerVariable && renderSlot.buildInVariableType !== BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
                             this.proposals.push({
                                 label: `lesscode.${node.componentId}.${config.displayName}`,
                                 kind: window.monaco.languages.CompletionItemKind.Property,
@@ -178,7 +183,7 @@
                     if (usageArray.length) {
                         documentation = '函数使用情况：\n' + documentation
                         usageArray.forEach((usage) => {
-                            documentation += `组件ID【${usage.componentId}】的【${usage.key}】【${sourceNameMap[usage.source] || usage.source}】`
+                            documentation += `组件ID【${usage.componentId}】的【${usage.key}】【${sourceNameMap[usage.source] || usage.source}】\n`
                         })
                     }
                     this.proposals.push({
@@ -199,7 +204,7 @@
                     if (usageArray.length) {
                         documentation = '变量使用情况：\n' + documentation
                         usageArray.forEach((usage) => {
-                            documentation += `组件ID【${usage.componentId}】的【${usage.key}】【${sourceNameMap[usage.source] || usage.source}】`
+                            documentation += `组件ID【${usage.componentId}】的【${usage.key}】【${sourceNameMap[usage.source] || usage.source}】\n`
                         })
                     }
                     this.proposals.push({

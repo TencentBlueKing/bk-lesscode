@@ -41,7 +41,6 @@
                             :required="true"
                             :desc="getItemConfig(item.type, 'desc')">
                             <choose-function
-                                class="choose-function"
                                 v-if="item.type === 'validator'"
                                 :choosen-function="{ methodCode: item[item.type] }"
                                 :show-add-params="false"
@@ -239,12 +238,6 @@
             }
             i {
                 padding-right: 2px;
-            }
-        }
-        .choose-function {
-            padding: 0;
-            &:hover {
-                box-shadow: none;
             }
         }
     }

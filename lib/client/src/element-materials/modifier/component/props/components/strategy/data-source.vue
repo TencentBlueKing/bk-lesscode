@@ -1,5 +1,8 @@
 <template>
-    <choose-data-table :value="chooseTableName" @choose="chooseTable"></choose-data-table>
+    <section>
+        <span class="g-prop-sub-title g-mb8">数据表</span>
+        <choose-data-table :value="chooseTableName" @choose="chooseTable"></choose-data-table>
+    </section>
 </template>
 
 <script lang="ts">
