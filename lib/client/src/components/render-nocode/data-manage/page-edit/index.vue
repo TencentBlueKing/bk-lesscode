@@ -1,9 +1,9 @@
 <template>
     <div class="data-manage-content" v-bkloading="{ tableLoading }">
         <!--        顶部按钮区-->
-        <div class="operating-buttons">
-            <button-group />
-        </div>
+        <!--        <div class="operating-buttons">-->
+        <!--            <button-group />-->
+        <!--        </div>-->
         <!--搜索区域-->
         <div class="data-filter-area">
             <bk-form class="filters-form" form-type="vertical">
@@ -111,7 +111,6 @@
 </template>
 <script>
     import hoverDiretive from './hover-directive.js'
-    import ButtonGroup from './buttonGroup'
     import TableActionGroup from './tableActionGroup'
     import cloneDeep from 'lodash.clonedeep'
     import { SYS_FIELD } from '../../common/field'
@@ -119,7 +118,7 @@
 
     export default {
         name: 'DataPage',
-        components: { TableActionGroup, ButtonGroup },
+        components: { TableActionGrou },
         directives: {
             hover: hoverDiretive,
             ButtonGroup,

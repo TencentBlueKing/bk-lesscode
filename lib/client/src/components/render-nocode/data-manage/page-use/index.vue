@@ -1,12 +1,11 @@
 <template>
     <div class="data-manage-use-page">
-        <operate-area :buttons="operatingButtons" @click="handleClick"></operate-area>
+        <!--        <operate-area :buttons="operatingButtons" @click="handleClick"></operate-area>-->
         <filter-area :filters="filters" :fields="fields" @search="handleSearch"></filter-area>
         <table-data :fields="fields"></table-data>
     </div>
 </template>
 <script>
-    import operateArea from './operate-area.vue'
     import filterArea from './filter-area.vue'
     import tableData from './table-data.vue'
     import { mapGetters } from 'vuex'
@@ -14,7 +13,6 @@
     export default {
         name: 'dataManageUsePage',
         components: {
-            operateArea,
             filterArea,
             tableData
         },
