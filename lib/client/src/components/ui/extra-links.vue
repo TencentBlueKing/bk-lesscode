@@ -5,7 +5,7 @@
         </div>
         <div v-if="createFormPage">
             <bk-button :text="true" title="primary" @click="handleCreateForm">
-                生成表单据管理页
+                生成表单数据管理页
             </bk-button>
         </div>
         <div class="github-link" @click="goGithub" v-bk-tooltips="{ content: 'Github', placements: ['bottom'] }">

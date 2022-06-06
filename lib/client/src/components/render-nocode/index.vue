@@ -1,10 +1,9 @@
 <template>
     <div class="render-content">
         <render-flow v-if="nocodeType === 'FLOW'" />
-        <!--        <render-form v-else-if="nocodeType === 'FORM'" @update="$emit('update', $event)" />-->
-        <render-data-manage v-else-if="nocodeType"></render-data-manage>
-        <render-form v-else />
-        <!--        <div>empty</div>-->
+        <render-form v-else-if="nocodeType === 'FORM'" @update="$emit('update', $event)" />
+        <render-data-manage v-else-if="nocodeType" type="use"></render-data-manage>
+        <div v-else>empty</div>
     </div>
 </template>
 
@@ -22,6 +21,7 @@
         },
         data () {
             return {
+                type: 'edit'
             }
         },
         computed: {
@@ -32,6 +32,7 @@
         },
         created () {
             console.log(this.pageDetail, 255)
+            this.$route.name === 'editNocode' ? this.type = 'edit' : this.type = 'use'
         }
 
     }

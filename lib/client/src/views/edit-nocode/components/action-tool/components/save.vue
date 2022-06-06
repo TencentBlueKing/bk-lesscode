@@ -10,7 +10,6 @@
 <script>
     import { mapGetters } from 'vuex'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
-    
     export default {
         components: {
             MenuItem
@@ -28,6 +27,7 @@
         },
         computed: {
             ...mapGetters('page', ['pageDetail']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             nocodeType () {
                 return this.pageDetail.nocodeType || ''
             },
@@ -38,35 +38,69 @@
         methods: {
             async handleSubmit () {
                 if (this.nocodeType === 'FORM') {
-                    const content = this.$store.state.nocode.formSetting.fieldsList || []
-                    if (content.length < 1) {
-                        this.$bkMessage({
-                            theme: 'error',
-                            message: '表单项不能为空'
-                        })
-                        return
-                    }
-                    const formData = {
-                        content,
-                        tableName: this.pageDetail.pageCode,
-                        projectId: this.projectId
-                    }
-                    let action = 'updateForm'
-                    if (!this.pageDetail.formId) {
-                        action = 'createForm'
-                        Object.assign(formData, { pageId: this.pageDetail.id })
-                    } else {
-                        Object.assign(formData, { id: this.pageDetail.formId })
-                    }
-                    const res = await this.$store.dispatch(`form/${action}`, formData)
-                    if (res && res.id) {
+                    this.saveFormList()
+                } else if (this.nocodeType === 'FORM_MANAGE') {
+                    console.log('FORM_MANAGE')
+                    this.saveFormManage()
+                }
+            },
+            // 保存表单
+            async saveFormList () {
+                const content = this.$store.state.nocode.formSetting.fieldsList || []
+                if (content.length < 1) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: '表单项不能为空'
+                    })
+                    return
+                }
+                const formData = {
+                    content,
+                    tableName: this.pageDetail.pageCode,
+                    projectId: this.projectId,
+                    versionId: this.versionId
+                }
+                let action = 'updateForm'
+                if (!this.pageDetail.formId) {
+                    action = 'createForm'
+                    Object.assign(formData, { pageId: this.pageDetail.id })
+                } else {
+                    Object.assign(formData, { id: this.pageDetail.formId })
+                }
+                const res = await this.$store.dispatch(`form/${action}`, formData)
+                if (res && res.id) {
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: '保存成功'
+                    })
+                    action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
+                }
+                console.log(res, this.pageDetail)
+            },
+            // 保存表单管理页
+            async saveFormManage () {
+                const content = []
+                content.push(JSON.stringify(this.$store.state.nocode.formSetting.tableFieldsConfig))
+                const pageData = {
+                    id: this.pageDetail.id,
+                    content
+                }
+                try {
+                    const res = await this.$store.dispatch('page/update', {
+                        data: {
+                            pageData,
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }
+                    })
+                    if (res) {
                         this.$bkMessage({
                             theme: 'success',
-                            message: '保存成功'
+                            message: '新建单据管理页面成功'
                         })
-                        action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
                     }
-                    console.log(res, this.pageDetail)
+                } catch (e) {
+                    console.error(e)
                 }
             }
         }

@@ -257,7 +257,7 @@
                             axis: { x, y }
                         }
                     }
-                    this.$store.dispatch('setting/patchFlowNode', params)
+                    this.$store.dispatch('nocode/flow/updateNode', params)
                 } catch (e) {
                     console.error(e)
                 }
@@ -522,29 +522,27 @@
 .process-canvas-wrapper {
   width: 100%;
   height: 100%;
-  background: #f5f7fa;
+  background-size: 16px 16px;
+  background-image:
+    linear-gradient(to right, #f0f1f5 1px, transparent 1px),
+    linear-gradient(to bottom, #f0f1f5 1px, transparent 1px);
   /deep/ .jsflow {
     border: none;
-    .canvas-flow-wrap {
-      background: #f5f7fa;
-    }
     .palette-panel-wrap {
-      height: auto;
-      border-right: 1px solid #dde4eb;
-      border-top: 1px solid #dde4eb;
-      width: 60px;
+      width: 56px;
       height: 100%;
       background-color: #fff;
+      border-right: 1px 0 0 0 #dcdee5;
     }
     .tool-panel-wrap {
-      top: 76px;
-      right: 24px;
+      top: 14px;
+      right: 20px;
       left: auto;
-      padding: 0 14px;
-      height: 32px;
-      background: #ebedf0;
-      border-radius: 18px;
-      box-shadow: 0px 0px 4px 0px rgba(220, 222, 229, 0.8);
+      padding: 0;
+      width: 42px;
+      background: #ffffff;
+      border: 1px solid #dcdee5;
+      border-radius: 2px;
       overflow: hidden;
       z-index: 110;
     }

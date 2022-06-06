@@ -26,6 +26,12 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-home:before {
 	content: "\e15d";
 }
+.bk-drag-minus-circle:before {
+	content: "\e219";
+}
+.bk-drag-plus-circle:before {
+	content: "\e21a";
+}
 .bk-drag-check-circle-fill:before {
 	content: "\e180";
 }
@@ -383,6 +389,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-template-logo:before {
 	content: "\e172";
 }
+.bk-drag-flow-fill:before {
+	content: "\e226";
+}
 .bk-drag-function-fill:before {
 	content: "\e1bd";
 }
@@ -433,6 +442,12 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-router:before {
 	content: "\e187";
+}
+.bk-drag-un-full-screen-2:before {
+	content: "\e21c";
+}
+.bk-drag-filliscreen-line:before {
+	content: "\e21b";
 }
 .bk-drag-card:before {
 	content: "\e189";
@@ -650,31 +665,31 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-templateline:before {
 	content: "\e1d4";
 }
-.bk-drag-shipin:before {
+.bk-drag-file-video:before {
 	content: "\e1f5";
 }
-.bk-drag-tupian:before {
+.bk-drag-file-image:before {
 	content: "\e1f6";
 }
-.bk-drag-wenben:before {
+.bk-drag-file-text:before {
 	content: "\e1f7";
 }
-.bk-drag-yasuobao:before {
+.bk-drag-file-zip:before {
 	content: "\e1f8";
 }
-.bk-drag-pdf:before {
+.bk-drag-file-pdf:before {
 	content: "\e1f9";
 }
-.bk-drag-yinle:before {
+.bk-drag-file-audio:before {
 	content: "\e1fa";
 }
-.bk-drag-doc-2:before {
+.bk-drag-file-doc:before {
 	content: "\e1fb";
 }
-.bk-drag-excel:before {
+.bk-drag-file-excel:before {
 	content: "\e1fc";
 }
-.bk-drag-ppt:before {
+.bk-drag-file-ppt:before {
 	content: "\e1fd";
 }
 .bk-drag-cellcellgroup:before {
@@ -755,7 +770,7 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-page:before {
 	content: "\e1ee";
 }
-.bk-drag-picture:before {
+.bk-drag-image-small:before {
 	content: "\e1ef";
 }
 .bk-drag-flow:before {
@@ -770,10 +785,10 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-grid:before {
 	content: "\e1f3";
 }
-.bk-drag-cardd:before {
+.bk-drag-display-card:before {
 	content: "\e1fe";
 }
-.bk-drag-lists:before {
+.bk-drag-display-list:before {
 	content: "\e1ff";
 }
 .bk-drag-links:before {
@@ -847,4 +862,31 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-zuoyouchengman:before {
 	content: "\e218";
+}
+.bk-drag-rengongjiedian:before {
+	content: "\e221";
+}
+.bk-drag-shenpijiedian:before {
+	content: "\e220";
+}
+.bk-drag-huiqianjiedian:before {
+	content: "\e21f";
+}
+.bk-drag-apijiedian:before {
+	content: "\e21e";
+}
+.bk-drag-shujuchulijiedian:before {
+	content: "\e21d";
+}
+.bk-drag-end:before {
+	content: "\e222";
+}
+.bk-drag-parallel:before {
+	content: "\e223";
+}
+.bk-drag-converge:before {
+	content: "\e224";
+}
+.bk-drag-start:before {
+	content: "\e225";
 }

@@ -13,16 +13,8 @@
                 <bk-form-item label="文字位置">
                     <bk-select
                         v-model="fieldData.deviderAttr.align"
-                        :clearable="false"
-                        :searchable="true"
-                        :loading="regexListLoading"
-                        :disabled="
-                            regexListLoading ||
-                                fieldData.source === 'TABLE' ||
-                                (fieldData.meta && fieldData.meta.code === 'APPROVE_RESULT')
-                        "
                         @selected="change">
-                        <bk-option v-for="option in regexList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
+                        <bk-option v-for="option in alignList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
                 <bk-form-item label="线条颜色">
@@ -204,10 +196,8 @@
                         v-model="fieldData.regex"
                         :clearable="false"
                         :searchable="true"
-                        :loading="regexListLoading"
                         :disabled="
-                            regexListLoading ||
-                                fieldData.source === 'TABLE' ||
+                            fieldData.source === 'TABLE' ||
                                 (fieldData.meta && fieldData.meta.code === 'APPROVE_RESULT')
                         "
                         @selected="change">
@@ -290,6 +280,8 @@
         FIELDS_SOURCE_TYPE
     } from '../../constant/forms'
 
+    import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
+
     export default {
         name: 'formEdit',
         components: {
@@ -319,14 +311,14 @@
             return {
                 fieldData: cloneDeep(this.value),
                 checkTips: '',
-                regexListLoading: false,
-                regexList: [],
+                regexList: this.getRegexList(this.value),
                 defaultData: this.getDefaultData(),
                 fieldProps: {
                     fieldsFullLayout: FIELDS_FULL_LAYOUT,
                     fieldsShowDefaultValue: FIELDS_SHOW_DEFAULT_VALUE,
                     fieldsDataSource: DATA_SOURCE_FIELD
                 },
+                alignList: [{ id: 'left', name: '居左' }, { id: 'right', name: '居右' }, { id: 'center', name: '居中' }],
                 dataSourceDialogShow: false,
                 readerOnlyShow: false,
                 requireConfigShow: false,
@@ -361,33 +353,17 @@
         },
         watch: {
             value (val, oldVal) {
-                this.fieldData = cloneDeep(val)
                 if (val.type !== oldVal.type) {
-                    this.getRegexList()
+                    this.regexList = this.getRegexList(val)
                 }
                 this.defaultData = this.getDefaultData()
             }
         },
-        created () {
-            this.getRegexList()
-        },
         methods: {
-            async getRegexList () {
-                try {
-                    this.regexListLoading = true
-                    const params = {
-                        type: this.fieldData.type
-                    }
-                    const resp = await this.$store.dispatch('nocode/formSetting/getRegexList', params)
-                    this.regexList = resp.data.regex_choice.map((item) => {
-                        const [id, name] = item
-                        return { id, name: name === '' ? '无' : name }
-                    })
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.regexListLoading = false
-                }
+            getRegexList (val) {
+                const result = REGX_CHIOCE_LIST.filter(item => item.type === val.type || item.type.includes(val.type) || !item.type)
+                console.log(result)
+                return result
             },
             onNameBlur () {
                 if (this.fieldData.name === '') {
@@ -403,6 +379,7 @@
                     .join('_')
                     .toUpperCase()
                 this.fieldData.key = key
+                this.change()
             },
             handleAddFiles (e) {
                 const fileInfo = e.target.files[0]

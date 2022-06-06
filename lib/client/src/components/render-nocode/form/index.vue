@@ -6,6 +6,7 @@
         <layout style="margin: 20px 0;height: 100%">
             <form-content
                 :fields="fieldsList"
+                :curfield="crtField"
                 @add="handleAddField"
                 @select="handleSelectField"
                 @copy="handleCopyField"
@@ -14,7 +15,7 @@
             />
         </layout>
         <right-panel slot="right" :field="crtField" :list="fieldsList" @update="handleUpdateField" />
-        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" />
+        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" :init-page-data="initManagePageData" />
     </draw-layout>
 
 </template>
@@ -53,6 +54,14 @@
             ...mapGetters('page', ['pageDetail']),
             formId () {
                 return this.pageDetail.formId
+            },
+            initManagePageData () {
+                const { formId, pageCode, pageName } = this.pageDetail
+                return {
+                    formId,
+                    pageCode: pageCode + 'formmanage',
+                    pageName: pageName + '_数据管理页'
+                }
             }
         },
         created () {
@@ -63,7 +72,14 @@
                 this.crtIndex = -1
             })
             bus.$on('openCreatPageFrom', () => {
-                this.$refs.createPageDialog.isShow = true
+                if (this.formId) {
+                    this.$refs.createPageDialog.isShow = true
+                } else {
+                    this.$bkMessage({
+                        theme: 'warning',
+                        message: '请先保存表单页面再生成数据管理页'
+                    })
+                }
             })
         },
         beforeDestroy () {
@@ -83,8 +99,8 @@
                     if (this.formId) {
                         this.isLoading = true
                         const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
-                        console.log(form, 22666)
                         this.fieldsList = JSON.parse(form.content) || []
+                        this.saveFieldList()
                     }
                 } catch (err) {
 

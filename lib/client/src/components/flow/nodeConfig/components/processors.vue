@@ -51,7 +51,6 @@
                 </bk-select>
             </div>
         </div>
-        <p v-if="errorTips" class="common-error-tips">处理人不能为空</p>
     </div>
 </template>
 <script>
@@ -158,11 +157,10 @@
             async getRoleGroupList () {
                 try {
                     this.roleGroupListLoading = true
-                    const res = await this.$store.dispatch('setting/getRoleGroups', {
+                    this.roleGroupList = await this.$store.dispatch('nocode/flow/getRoleGroups', {
                         is_processor: true,
                         project_key: this.appId
                     })
-                    this.roleGroupList = res.data
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -173,17 +171,15 @@
             async getRoleList () {
                 try {
                     this.roleListLoading = true
-                    let res
                     if (this.formData.type === 'ASSIGN_LEADER') {
                         this.getPreNodes()
                     } else if (this.formData.type === 'VARIABLE') {
                         this.getNodeVars()
                     } else {
-                        res = await this.$store.dispatch('setting/getRoleGroupProcessors', {
+                        this.roleList = await this.$store.dispatch('nocode/flow/getRoleGroupProcessors', {
                             role_type: this.formData.type,
                             project_key: this.appId
                         })
-                        this.roleList = res.data
                     }
                 } catch (e) {
                     console.error(e)
@@ -195,8 +191,7 @@
             async getOrganizations () {
                 try {
                     this.organizationsLoading = true
-                    const res = await this.$store.dispatch('setting/getOrganizations')
-                    this.organizationList = res.data
+                    this.organizationList = await this.$store.dispatch('nocode/flow/getOrganizations')
                 } catch (e) {
                     console.error(e)
                 } finally {
