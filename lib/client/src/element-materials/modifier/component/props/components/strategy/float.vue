@@ -11,14 +11,6 @@
 
 <template>
     <div class="modifier-props-input-container">
-        <!-- <bk-input type="number"
-            :max="10"
-            :min="0"
-            :precision="2"
-            style="width: 100%"
-            :class="isError && 'king-input-modifier-style-error'"
-            :value="defaultValue"
-            @change="handleChange" /> -->
         <div class="bk-form-control" style="width: 100%;">
             <div class="bk-input-number">
                 <input type="text"
@@ -113,9 +105,13 @@
             handleChange (e) {
                 const val = this.renderValue
                 const { regExp } = this.describe
+                if (val === '') {
+                    this.change(this.name, 0, this.type)
+                    return
+                }
                 // 如果配置了正则就先校验 输入的时候从 bk-input 拿到的 val 是字符串
                 if (regExp) {
-                    if (String(val).match(regExp) || val === '') {
+                    if (String(val).match(regExp)) {
                         this.change(this.name, parseFloat(val), this.type)
                         this.isError = false
                     } else {
