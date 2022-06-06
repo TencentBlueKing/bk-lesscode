@@ -123,8 +123,7 @@
                     this.$emit('select', field, index)
                     this.selectedIndex = index
                 } else if (type === 'copy') {
-                    delete field.key
-                    delete field.id
+                    field.id = uuid(8)
                     this.$emit('copy', field, index)
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
@@ -173,7 +172,7 @@
 @import "@/css/mixins/scroller";
 
 .form-panel {
-  height: calc(100vh - 258px);
+  height: calc(100vh - 200px);
   background: #ffffff;
   box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
   border-radius: 2px;
@@ -182,7 +181,7 @@
 .fields-container {
   @mixin scroller;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   &.hover {
     outline: 2px dashed #1768ef;
     border-radius: 4px;
