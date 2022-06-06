@@ -96,7 +96,6 @@
     import NormalNode from './nodes/normalNode.vue'
     import DataProcessNode from './nodes/dataProcessNode.vue'
     import ApiNode from './nodes/apiNode.vue'
-    import SignNode from './nodes/signNode.vue'
     import ApprovalNode from './nodes/approvalNode.vue'
     import FormSection from './components/form-section.vue'
 
@@ -106,27 +105,18 @@
             NormalNode,
             DataProcessNode,
             ApiNode,
-            SignNode,
             ApprovalNode,
             FormSection
         },
         props: {
             nodeId: Number,
-            appId: {
-                type: String,
-                default: ''
+            flowConfig: {
+                type: Object,
+                default: () => ({})
             },
-            funcId: [Number, String],
-            funcType: String,
-            flowId: Number,
-            relatedForm: {
-                type: Array,
-                default: () => []
-            },
-            createTicketNodeId: Number,
-            disableCreateField: {
-                type: Boolean,
-                default: false
+            serviceData: {
+                type: Object,
+                default: () => ({})
             },
             editable: {
                 type: Boolean,
@@ -154,7 +144,7 @@
                 savePending: false,
                 formCompDict: {
                     NORMAL: 'NormalNode',
-                    'DATA-PROC': 'DataProcessNode',
+                    WEBHOOK: 'DataProcessNode',
                     TASK: 'ApiNode',
                     SIGN: 'SignNode',
                     APPROVAL: 'ApprovalNode'
@@ -248,7 +238,7 @@
                     const params = {
                         id,
                         type,
-                        workflow: this.flowId,
+                        workflow: this.serviceData.workflow_id,
                         name: this.name,
                         is_draft: false,
                         is_terminable: false,
@@ -267,7 +257,7 @@
                             params.delivers_type = processorsType
                         }
                     }
-                    if (type === 'DATA-PROC') {
+                    if (type === 'WEBHOOK') {
                         params.extras = {
                             dataManager: this.$refs.nodeForm.getData()
                         }

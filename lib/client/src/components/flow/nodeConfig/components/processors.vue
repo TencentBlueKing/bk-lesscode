@@ -67,10 +67,6 @@
             event: 'change'
         },
         props: {
-            appId: {
-                type: String,
-                default: ''
-            },
             flowId: Number,
             nodeId: Number,
             shortcut: {
@@ -159,7 +155,7 @@
                     this.roleGroupListLoading = true
                     this.roleGroupList = await this.$store.dispatch('nocode/flow/getRoleGroups', {
                         is_processor: true,
-                        project_key: this.appId
+                        project_key: 'lesscode'
                     })
                 } catch (e) {
                     console.error(e)
@@ -178,7 +174,7 @@
                     } else {
                         this.roleList = await this.$store.dispatch('nocode/flow/getRoleGroupProcessors', {
                             role_type: this.formData.type,
-                            project_key: this.appId
+                            project_key: 'lesscode'
                         })
                     }
                 } catch (e) {

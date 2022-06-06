@@ -12,7 +12,7 @@
                             v-model="advancedData.revoke_config.type"
                             :clearable="false"
                             @selected="onSelectRevokeType"
-                            :disabled="flowConfig.is_builtin">
+                            :disabled="serviceData.is_builtin">
                             <bk-option v-for="item in revokeTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
@@ -35,7 +35,7 @@
                                 v-for="item in notifyTypeList"
                                 :key="item.type"
                                 :value="item.type"
-                                :disabled="flowConfig.is_builtin">
+                                :disabled="serviceData.is_builtin">
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
@@ -68,12 +68,12 @@
                         <bk-form-item class="display-checkbox" label="显示设置">
                             <bk-checkbox
                                 v-model="advancedData.show_all_workflow"
-                                :disabled="flowConfig.is_builtin">
+                                :disabled="serviceData.is_builtin">
                                 在【全部流程】中显示
                             </bk-checkbox>
                             <bk-checkbox
                                 v-model="advancedData.show_my_create_workflow"
-                                :disabled="flowConfig.is_builtin">
+                                :disabled="serviceData.is_builtin">
                                 在【我发起的】中显示
                             </bk-checkbox>
                         </bk-form-item>
@@ -94,7 +94,7 @@
                 theme="primary"
                 :loading="advancedPending"
                 @click="handleSave"
-                :disabled="flowConfig.is_builtin">
+                :disabled="serviceData.is_builtin">
                 提交
             </bk-button>
             <bk-button @click="$router.push({ name: 'flowList' })">取消</bk-button>
@@ -110,14 +110,14 @@
                 type: String,
                 default: ''
             },
-            flowConfig: {
+            serviceData: {
                 type: Object,
                 default: () => ({})
             }
         },
         data () {
             return {
-                advancedData: cloneDeep(this.flowConfig),
+                advancedData: cloneDeep(this.serviceData),
                 advancedDataLoading: false,
                 advancedPending: false,
                 flowNodesLoading: false,
@@ -143,7 +143,7 @@
             }
         },
         created () {
-            if (this.flowConfig.revoke_config.type === 3) {
+            if (this.serviceData.revoke_config.type === 3) {
                 this.getFlowNodes()
             }
         },
@@ -209,7 +209,7 @@
                 } = this.advancedData
                 const isRevocable = revoke_config.type !== 0
                 const params = {
-                    id: this.flowConfig.id,
+                    id: this.serviceData.id,
                     workflow_config: {
                         notify,
                         notify_freq,

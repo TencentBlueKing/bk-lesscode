@@ -28,7 +28,7 @@
         props: {
             type: {
                 type: String,
-                default: 'use'
+                default: 'edit'
             }
         }
     }

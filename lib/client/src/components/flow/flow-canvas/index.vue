@@ -1,12 +1,5 @@
 <template>
     <div class="process-canvas-wrapper">
-        <div class="tip-box" v-if="tipIsShow && $route.name === 'functionFlow'">
-            <span>
-                <bk-icon type="info-circle" class="info" />
-                {{tips[type]}}
-            </span>
-            <i class="bk-icon icon-close" @click="tipIsShow = false"></i>
-        </div>
         <bk-flow
             ref="flowCanvas"
             selector="entry-item"
@@ -68,13 +61,6 @@
     import ToolPanel from './toolPanel.vue'
     import LineConfig from './lineConfig.vue'
 
-    const TIPS = {
-        ADD: '数据删除功能可以用于同时删除多张表单数据的场景，通过在「数据源节点」后添加人工节点引导用户输入期望删除的数据条件，与数据处理节点搭配使用。',
-        EDIT: '数据编辑功能可以在数据源中引用对应表单开放编辑的字段，与数据处理节点搭配使用',
-        DETAIL: '查看详情功能用于表格的行操作列中，可以在「数据源节点」中配置字段实现开放部分数据给用户查看的场景。',
-        DELETE: '数据删除功能可以用于同时删除多张表单数据的场景，通过在「数据源节点」后添加人工节点引导用户输入期望删除的数据条件，与数据处理节点搭配使用。'
-    }
-
     const endpointOptions = {
         endpoint: 'Dot',
         connector: ['Flowchart', { stub: [10, 16], alwaysRespectStub: true, gap: 2, cornerRadius: 10 }],
@@ -98,6 +84,7 @@
         detachable: true // 是否可以通过鼠标拖动连线
     }
     export default {
+        name: 'FlowCanvas',
         components: {
             BkFlow,
             PalettePanel,
@@ -142,8 +129,6 @@
                 endpointOptions,
                 connectorOptions,
                 nodeOptions,
-                tips: TIPS,
-                tipIsShow: true,
                 canvasData: {
                     nodes: [],
                     lines: []
@@ -615,41 +600,6 @@
     .canvas-flow-wrap .bk-error-flow .startpoint,
     .canvas-flow-wrap .bk-error-flow .endpoint {
       border: 1.5px dashed #ff5656;
-    }
-  }
-}
-
-.tip-box {
-  position: absolute;
-  top: 20px;
-  left: 83px;
-  display: flex;
-  padding-right: 10px;
-  border: 1px solid #C5DAFF;
-  border-radius: 2px;
-  background: #F0F8FF;
-  font-size: 12px;
-  color: #63656E;
-  width: calc(100% - 108px);
-  line-height: 32px;
-  z-index: 100;
-  justify-content: space-between;
-  .info {
-    top: 24px;
-    margin: 0 8px 0 11px;
-    color: #3A84FF;
-    font-size: 14px;
-    line-height: 32px;
-    text-align: center;
-    height: 32px;
-  }
-
-  .icon-close {
-    display: inline-block;
-    font-size: 16px;
-    margin-top: 8px;
-    &:hover{
-      cursor: pointer;
     }
   }
 }

@@ -111,7 +111,7 @@
                 hideNodeGuide: false,
                 shortcutPanelShow: false,
                 nodeTypeList: NODE_TYPE_LIST,
-                shortcutNodes: ['NORMAL', 'DATA-PROC', 'TASK', 'SIGN', 'APPROVAL', 'COVERAGE', 'ROUTER-P']
+                shortcutNodes: ['NORMAL', 'WEBHOOK', 'TASK', 'SIGN', 'APPROVAL', 'COVERAGE', 'ROUTER-P']
             }
         },
         created () {

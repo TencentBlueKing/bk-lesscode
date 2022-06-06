@@ -1,11 +1,11 @@
 <template>
     <section class="flow-config" style="height: 100%">
-        <div class="flow-container" v-bkloading="{ isLoading: flowDataLoading }">
+        <div class="flow-container" v-bkloading="{ isLoading: canvasDataLoading }">
             <flow-canvas
-                v-if="!flowDataLoading"
-                :nodes="flowData.nodes"
-                :lines="flowData.lines"
-                :flow-id="id"
+                v-if="!canvasDataLoading"
+                :nodes="canvasData.nodes"
+                :lines="canvasData.lines"
+                :flow-id="serviceData.workflow_id"
                 @onNodeClick="handleNodeClick">
             </flow-canvas>
         </div>
@@ -16,7 +16,7 @@
             <bk-button
                 theme="primary"
                 :loading="flowPending"
-                :disabled="flowDataLoading"
+                :disabled="canvasDataLoading"
                 @click="handleNextStep">
                 下一步
             </bk-button>
@@ -24,7 +24,8 @@
         <div v-if="nodeConfigPanelShow" class="node-config-wrapper">
             <node-config
                 :node-id="crtNode"
-                :flow-id="id"
+                :flow-config="flowConfig"
+                :service-data="serviceData"
                 :create-ticket-node-id="createTicketNodeId"
                 @close="closeConfigPanel"
                 @save="handleConfigSave">
@@ -38,19 +39,26 @@
     import NodeConfig from '@/components/flow/nodeConfig/index.vue'
 
     export default {
-        name: 'FunctionFlow',
+        name: 'FlowConfig',
         components: {
             FlowCanvas,
             NodeConfig
         },
         props: {
-            id: Number // itsm存的流程id
+            flowConfig: {
+                type: Object,
+                default: () => ({})
+            },
+            serviceData: {
+                type: Object,
+                default: () => ({})
+            }
         },
         data () {
             return {
-                flowDataLoading: false,
+                canvasDataLoading: false,
                 flowPending: false,
-                flowData: { nodes: [], lines: [] },
+                canvasData: { nodes: [], lines: [] },
                 createTicketNodeId: '',
                 nodeConfigPanelShow: false,
                 crtNode: null
@@ -63,12 +71,12 @@
             // 获取流程图结构详情
             async getFlowStructData () {
                 try {
-                    this.flowDataLoading = true
+                    this.canvasDataLoading = true
                     const res = await Promise.all([
-                        this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.id }),
-                        this.$store.dispatch('nocode/flow/getFlowLines', { workflow: this.id, page_size: 1000 })
+                        this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.serviceData.workflow_id }),
+                        this.$store.dispatch('nocode/flow/getFlowLines', { workflow: this.serviceData.workflow_id, page_size: 1000 })
                     ])
-                    this.flowData = {
+                    this.canvasData = {
                         nodes: res[0].items,
                         lines: res[1].items
                     }
@@ -76,7 +84,7 @@
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
-                    this.flowDataLoading = false
+                    this.canvasDataLoading = false
                 }
             },
             // 节点单击

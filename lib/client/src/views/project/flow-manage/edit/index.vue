@@ -16,7 +16,7 @@
                 <flow-selector
                     :list="flowList"
                     :list-loading="listLoading"
-                    :flow-data="flowData">
+                    :flow-config="flowConfig">
                 </flow-selector>
             </div>
             <div class="steps-container">
@@ -33,7 +33,10 @@
             </div>
         </div>
         <div v-if="!serviceDataLoading" class="flow-edit-main">
-            <router-view :id="serviceData.workflow_id" :flow-config="serviceData"></router-view>
+            <router-view
+                :flow-config="flowConfig"
+                :service-data="serviceData">
+            </router-view>
         </div>
     </section>
 </template>
@@ -62,8 +65,8 @@
                 flowId: this.$route.params.flowId,
                 listLoading: true,
                 flowList: [],
-                flowDataLoading: true,
-                flowData: {},
+                flowConfigLoading: true,
+                flowConfig: {},
                 serviceDataLoading: true,
                 serviceData: {}
             }
@@ -82,12 +85,12 @@
             },
             '$route.params.flowId' (val) {
                 this.flowId = val
-                this.getFlowData()
+                this.getflowConfig()
             }
         },
         async created () {
             this.getFlowList()
-            await this.getFlowData()
+            await this.getflowConfig()
             this.getServiceData()
         },
         methods: {
@@ -105,20 +108,21 @@
                     this.listLoading = false
                 }
             },
-            async getFlowData () {
+            async getflowConfig () {
                 try {
-                    this.flowDatalLoading = true
-                    this.flowData = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
+                    this.flowConfigLoading = true
+                    this.flowConfig = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
-                    this.flowDataLoading = false
+                    this.flowConfigLoading = false
                 }
             },
+            // 保存到流程服务的配置
             async getServiceData () {
                 try {
                     this.serviceDataLoading = true
-                    this.serviceData = await this.$store.dispatch('nocode/flow/getServiceData', this.flowData.itsmId)
+                    this.serviceData = await this.$store.dispatch('nocode/flow/getServiceData', this.flowConfig.itsmId)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
@@ -129,7 +133,6 @@
                 return this.$route.name === 'flowConfig' ? 1 : 2
             },
             handleStepChange (val) {
-                console.log(val)
                 if (val === 1) {
                     this.$router.push({ name: 'flowConfig' })
                 } else {
