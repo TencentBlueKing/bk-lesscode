@@ -48,13 +48,20 @@
                 </bk-table-column>
                 <bk-table-column label="操作" width="140">
                     <template slot-scope="{ row }">
-                        <bk-button
-                            style="margin-left: 17px;"
-                            theme="primary"
-                            :text="true"
-                            @click="handleRestoreClick(row.id, $event)">
-                            恢复
-                        </bk-button>
+                        <bk-popconfirm
+                            trigger="click"
+                            width="350"
+                            title="确认恢复改流程？"
+                            content="恢复后，关联的流程提单页，流程数据管理页也一并恢复"
+                            @confirm="handleRestoreConfirm">
+                            <bk-button
+                                style="margin-left: 17px;"
+                                theme="primary"
+                                :text="true"
+                                @click="restoreId = row.id">
+                                恢复
+                            </bk-button>
+                        </bk-popconfirm>
                     </template>
                 </bk-table-column>
             </bk-table>
@@ -77,6 +84,7 @@
                 flowList: [],
                 listLoading: false,
                 keyword: '',
+                restoreId: '',
                 pagination: {
                     current: 1,
                     count: 0,
@@ -103,7 +111,7 @@
                     versionId: this.versionId,
                     pageSize: this.pagination.limit,
                     page: this.pagination.current,
-                    deleteFlag: 0
+                    deleteFlag: 1
                 }
                 if (this.keyword) {
                     params.flowName = this.keyword.trim()
@@ -119,7 +127,22 @@
                     this.listLoading = false
                 }
             },
-            handleRestoreClick () {},
+            async handleRestoreConfirm () {
+                try {
+                    const params = {
+                        id: this.restoreId,
+                        deleteFlag: 0
+                    }
+                    await this.$store.dispatch('nocode/flow/editFlow', params)
+                    this.restoreId = ''
+                    if (this.flowList.length === 1 && this.pagination.current > 1) {
+                        this.pagination.current -= 1
+                    }
+                    this.getFlowList()
+                } catch (e) {
+                    messageError(e.message || e)
+                }
+            },
             handlePageChange (val) {
                 this.pagination.current = val
                 this.getFlowList()

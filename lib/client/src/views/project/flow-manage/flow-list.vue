@@ -52,21 +52,26 @@
                         :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
                         编辑
                     </router-link>
-                    <bk-button
-                        style="margin-left: 17px;"
-                        theme="primary"
-                        :text="true"
-                        @click="handleArchiveClick(row.id, $event)">
-                        归档
-                    </bk-button>
+                    <bk-popconfirm
+                        trigger="click"
+                        width="350"
+                        @confirm="handleArchiveConfirm">
+                        <bk-button
+                            style="margin-left: 17px;"
+                            theme="primary"
+                            :text="true"
+                            @click="archiveId = row.id">
+                            归档
+                        </bk-button>
+                        <div slot="content" class="archive-tips-content">
+                            <h4>确认归档该流程？</h4>
+                            <p>1. 流程归档后，将不能使用，包括流程的表单页面将会被删除，请谨慎操作！</p>
+                            <p>2. 后续可通过归档列表恢复使用。</p>
+                        </div>
+                    </bk-popconfirm>
                 </template>
             </bk-table-column>
         </bk-table>
-        <!-- <div id="flow-archive-content">
-            <h4>确认归档该流程？</h4>
-            <p>1. 流程归档后，将不能使用，包括流程的表单页面将会被删除，请谨慎操作！</p>
-            <p>2. 后续可通过归档列表恢复使用。</p>
-        </div> -->
         <bk-dialog
             title="新建流程"
             header-position="left"
@@ -113,8 +118,7 @@
                 pagination: {
                     current: 1,
                     count: 0,
-                    limit: 2,
-                    'limit-list': [2, 10, 20, 50, 100]
+                    limit: 10
                 },
                 newFlowData: {
                     flowName: '',
@@ -193,27 +197,22 @@
                 this.isCreateDialogShow = false
                 this.newFlowData = { flowName: '', summary: '' }
             },
-            // 归档弹层
-            handleArchiveClick (id, e) {
-                // if (this.archiveId === id) {
-                //     return
-                // }
-                // const $self = this
-                // this.archiveId = id
-                // this.archivePopover = this.$bkPopover(e.target, {
-                //     allowHTML: true,
-                //     content: this.$el.querySelector('#flow-archive-content'),
-                //     arrow: false,
-                //     theme: 'light',
-                //     trigger: 'click',
-                //     onHide () {
-                //         console.log($self.archivePopover)
-                //     }
-                // })
-                // this.archivePopover.show()
+            async handleArchiveConfirm () {
+                try {
+                    const params = {
+                        id: this.archiveId,
+                        deleteFlag: 1
+                    }
+                    await this.$store.dispatch('nocode/flow/editFlow', params)
+                    this.archiveId = ''
+                    if (this.flowList.length === 1 && this.pagination.current > 1) {
+                        this.pagination.current -= 1
+                    }
+                    this.getFlowList()
+                } catch (e) {
+                    messageError(e.message || e)
+                }
             },
-            handleArchiveConfirm () {},
-            handleArchiveCancel () {},
             handlePageChange (val) {
                 this.pagination.current = val
                 this.getFlowList()
@@ -270,6 +269,21 @@
                 font-size: 14px;
                 transform: rotateY(180deg);
                 color: #63656e;
+            }
+        }
+    }
+    .archive-tips-content {
+        h4 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            font-weight: normal;
+            color: #313238;
+        }
+        p {
+            color: #63656e;
+            font-size: 12px;
+            &:last-child {
+                margin-bottom: 16px;
             }
         }
     }
