@@ -1,25 +1,32 @@
 <template>
     <div class="data-process-node">
         <form-section title="基础配置">
-            <bk-form ref="dataForm" form-type="vertical" class="data-process-node-form" :rules="rules" :model="formData">
+            <bk-form
+                ref="dataForm"
+                form-type="vertical"
+                class="data-process-node-form"
+                :rules="rules"
+                :model="formData">
                 <bk-form-item label="节点名称" property="name" :required="true">
-                    <bk-input v-model="nodeData.name"></bk-input>
+                    <bk-input v-model="formData.name"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="节点动作" property="action" :required="true">
-                    <bk-select :value="formData.action" :clearable="false" :disabled="!editable" @selected="handleSelectAction">
-                        <bk-option v-for="item in actions" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                    </bk-select>
-                </bk-form-item>
-                <bk-form-item label="目标表单" property="worksheet_id" :required="true">
-                    <bk-select
-                        v-model="formData.worksheet_id"
-                        :clearable="false"
-                        :loading="formListLoading"
-                        :disabled="formListLoading || !editable"
-                        @selected="handleSelectForm">
-                        <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                    </bk-select>
-                </bk-form-item>
+                <div class="action-select-area">
+                    <bk-form-item label="节点动作" property="action" :required="true">
+                        <bk-select :value="formData.action" :clearable="false" :disabled="!editable" @selected="handleSelectAction">
+                            <bk-option v-for="item in actions" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                        </bk-select>
+                    </bk-form-item>
+                    <bk-form-item label="目标表单" property="worksheet_id" :required="true">
+                        <bk-select
+                            v-model="formData.worksheet_id"
+                            :clearable="false"
+                            :loading="formListLoading"
+                            :disabled="formListLoading || !editable"
+                            @selected="handleSelectForm">
+                            <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.id"></bk-option>
+                        </bk-select>
+                    </bk-form-item>
+                </div>
                 <bk-form-item label="字段映射规则">
                     <template v-if="formData.action && formData.worksheet_id !== ''">
                         <!-- 满足条件，删除、更新动作存在 -->
@@ -36,7 +43,7 @@
                                     <bk-select
                                         v-model="expression.key"
                                         placeholder="目标表字段"
-                                        style="width: 140px; margin-right: 8px"
+                                        style="width: 150px; margin-right: 8px"
                                         :clearable="false"
                                         :searchable="true"
                                         :loading="formListLoading"
@@ -96,7 +103,7 @@
                                         v-if="expression.type === 'field'"
                                         v-model="expression.value"
                                         placeholder="选择变量"
-                                        style="width: 140px"
+                                        style="width: 190px"
                                         :clearable="false"
                                         :searchable="true"
                                         :loading="relationListLoading"
@@ -113,7 +120,7 @@
                                     <bk-select
                                         v-else-if="expression.type === 'system'"
                                         v-model="expression.value"
-                                        style="width: 140px"
+                                        style="width: 190px"
                                         :clearable="false"
                                         :disabled="!editable">
                                         <bk-option id="date" name="当前日期"></bk-option>
@@ -126,7 +133,7 @@
                                         v-else-if="expression.type === 'approver'"
                                         v-model="expression.value"
                                         placeholder="选择审批节点"
-                                        style="width: 140px"
+                                        style="width: 190px"
                                         :clearable="false"
                                         :loading="approvalNodeListLoading"
                                         :disabled="approvalNodeListLoading || !editable">
@@ -136,7 +143,7 @@
                                         v-else-if="expression.type === 'leader'"
                                         v-model="expression.value"
                                         placeholder="选择人员类型变量"
-                                        style="width: 140px"
+                                        style="width: 190px"
                                         :clearable="false"
                                         :loading="relationListLoading"
                                         :disabled="relationListLoading || !editable">
@@ -149,15 +156,15 @@
                                     </bk-select>
                                     <field-value
                                         v-else
-                                        style="width: 140px"
+                                        style="width: 190px"
                                         :field="fieldList.length > 0 && fieldList.find(i => i.key === expression.key)"
                                         :value="expression.value"
                                         :editable="editable"
                                         @change="expression.value = $event">
                                     </field-value>
                                     <div class="operate-btns" style="margin-left: 8px">
-                                        <i class="custom-icon-font icon-add-circle" @click="handleAddExpression(index)"></i>
-                                        <i :class="['custom-icon-font', 'icon-reduce-circle']" @click="handleDeleteExpression(index)"> </i>
+                                        <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddExpression(index)"></i>
+                                        <i class="bk-drag-icon bk-drag-reduce-fill" @click="handleDeleteExpression(index)"> </i>
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +226,7 @@
                                         v-if="['field', 'field_increment', 'field_reduction'].includes(mapping.type)"
                                         v-model="mapping.value"
                                         placeholder="选择变量"
-                                        style="width: 208px"
+                                        style="width: 268px"
                                         :clearable="false"
                                         :searchable="true"
                                         :loading="relationListLoading"
@@ -236,7 +243,7 @@
                                     <bk-select
                                         v-else-if="mapping.type === 'system'"
                                         v-model="mapping.value"
-                                        style="width: 208px"
+                                        style="width: 268px"
                                         :clearable="false"
                                         :disabled="!editable">
                                         <bk-option id="date" name="当前日期"></bk-option>
@@ -249,7 +256,7 @@
                                         v-else-if="mapping.type === 'approver'"
                                         v-model="mapping.value"
                                         placeholder="选择审批节点"
-                                        style="width: 208px"
+                                        style="width: 268px"
                                         :clearable="false"
                                         :loading="approvalNodeListLoading"
                                         :disabled="approvalNodeListLoading || !editable">
@@ -259,7 +266,7 @@
                                         v-else-if="mapping.type === 'leader'"
                                         v-model="mapping.value"
                                         placeholder="选择人员类型变量"
-                                        style="width: 208px"
+                                        style="width: 268px"
                                         :clearable="false"
                                         :loading="relationListLoading"
                                         :disabled="relationListLoading || !editable">
@@ -272,15 +279,15 @@
                                     </bk-select>
                                     <field-value
                                         v-else-if="targetFields.length > 0"
-                                        style="width: 208px"
+                                        style="width: 268px"
                                         :field=" targetFields.find(i => i.key === mapping.key)"
                                         :value="mapping.value"
                                         :editable="editable"
                                         @change="mapping.value = $event">
                                     </field-value>
                                     <div class="operate-btns" style="margin-left: 8px">
-                                        <i class="custom-icon-font icon-add-circle" @click="handleAddMapping(index)"></i>
-                                        <i :class="['custom-icon-font', 'icon-reduce-circle']" @click="handleDeleteMapping(index)"> </i>
+                                        <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddMapping(index)"></i>
+                                        <i class="bk-drag-icon bk-drag-reduce-fill" @click="handleDeleteMapping(index)"> </i>
                                     </div>
                                 </div>
                             </div>
@@ -296,6 +303,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import FormSection from '../components/form-section.vue'
     import { CONDITION_RELATIONS } from '@/components/nocode-form/constants/forms.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
     import FieldValue from '@/components/render-nocode/form/components/form-edit/fieldValue.vue'
@@ -303,7 +311,8 @@
     export default {
         name: 'DataProcessNode',
         components: {
-            FieldValue
+            FieldValue,
+            FormSection
         },
         props: {
             config: {
@@ -328,7 +337,6 @@
                 conditionRelations: CONDITION_RELATIONS,
                 formListLoading: false,
                 formList: [],
-                fieldListLoading: false,
                 fieldList: [],
                 approvalNodeListLoading: false,
                 approvalNodeList: [],
@@ -389,8 +397,8 @@
         },
         created () {
             this.getFormList()
-            this.getRelationList()
-            this.getApprovalNode()
+            // this.getRelationList()
+            // this.getApprovalNode()
             if (this.config.extras.dataManager && this.config.extras.dataManager.worksheet_id !== '') {
                 this.getFieldList(this.config.extras.dataManager.worksheet_id)
             }
@@ -403,34 +411,30 @@
                         projectId: this.projectId,
                         versionId: this.versionId
                     }
-                    const res = await this.$store.dispatch('nocode/flow/getFormList', params)
-                    this.formList = res.data.items
+                    this.formList = await this.$store.dispatch('nocode/flow/getFormList', params)
                 } catch (e) {
                     console.error(e)
                 } finally {
                     this.formListLoading = false
                 }
             },
-            async getFieldList (id) {
-                try {
-                    this.fieldListLoading = true
-                    const res = await this.$store.dispatch('setting/getFormFields', id)
-                    res.data.unshift({ key: 'id', name: 'id', type: 'INT' })
-                    if (this.formData.action === 'DELETE') {
-                        res.data.unshift({ key: 'ids', name: 'ids', type: 'INT' })
-                    }
-                    this.fieldList = res.data
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.fieldListLoading = false
+            getFieldList (id) {
+                let fieldData = []
+                const form = this.formList.find(item => item.id === id)
+                if (form) {
+                    fieldData = JSON.parse(form.content)
                 }
+                fieldData.unshift({ key: 'id', name: 'id', type: 'INT' })
+                if (this.formData.action === 'DELETE') {
+                    fieldData.unshift({ key: 'ids', name: 'ids', type: 'INT' })
+                }
+                this.fieldList = fieldData
             },
             // 获取节点字段列表
             async getRelationList () {
                 try {
                     this.relationListLoading = true
-                    const res = await this.$store.dispatch('setting/getGroupedNodeVars', this.config.id)
+                    const res = await this.$store.dispatch('nocode/flow/getGroupedNodeVars', this.config.id)
                     const groupedList = []
                     res.data.forEach((group) => {
                         if (group.fields.length > 0) {
@@ -467,7 +471,9 @@
             },
             // 接口返回的数据可能数据字段不全
             getInitialFormData (node) {
-                let data = {}
+                let data = {
+                    name: node.name
+                }
                 if (node.extras.dataManager) {
                     data = cloneDeep(node.extras.dataManager)
                     if (!data.conditions) {
@@ -646,67 +652,84 @@
 </script>
 <style lang="postcss" scoped>
 .data-process-node-form {
-  & > .bk-form-item {
-    margin-top: 24px;
-  }
-  .bk-select {
-    background: #ffffff;
-  }
-  .logic-radio {
-    display: flex;
-    align-items: center;
-    height: 20px;
-    & > label {
-      margin-right: 30px;
-      white-space: nowrap;
-      color: #63656e;
-      font-size: 14px;
-    }
-  }
-  .rules-section {
-    margin-top: 16px;
-    padding: 14px 24px 24px;
-    background: #fafbfd;
-    border: 1px solid #dcdee5;
-    & > label {
-      color: #63656e;
-      font-size: 14px;
-    }
-    .condition-item {
-      display: flex;
-      align-items: center;
-      margin-top: 16px;
-    }
-    .operate-btns {
-      user-select: none;
-      i {
-        color: #c4c6cc;
-        cursor: pointer;
-        &:hover {
-          color: #979ba5;
+    width: 656px;
+    .action-select-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        .bk-form-item {
+            flex: 1;
+            margin-top: 0;
+            &:first-child {
+                margin-right: 16px;
+            }
         }
-        &.disabled {
-          color: #dcdee5;
-          cursor: not-allowed;
+    }
+    & > .bk-form-item {
+        margin-top: 15px;
+    }
+    .bk-select {
+        background: #ffffff;
+    }
+    .logic-radio {
+        display: flex;
+        align-items: center;
+        height: 20px;
+        & > label {
+            margin-right: 30px;
+            white-space: nowrap;
+            color: #63656e;
+            font-size: 14px;
         }
-      }
     }
-    .data-empty {
-      margin-top: 16px;
-      padding: 24px 0;
-      font-size: 12px;
-      text-align: center;
-      color: #dcdee5;
-      border: 1px dashed #dcdee5;
-      cursor: pointer;
-      &:not(.disabled):hover {
-        border-color: #3a84ff;
-        color: #3a84ff;
-      }
-      &.disabled {
-        cursor: not-allowed;
-      }
+    .rules-section {
+        margin-top: 16px;
+        padding: 16px;
+        background: #f5f6fa;
+        border-radius: 2px;
+        & > label {
+            color: #63656e;
+            font-size: 14px;
+        }
+        .condition-item {
+            display: flex;
+            align-items: center;
+            margin-top: 16px;
+        }
+        .operate-btns {
+            user-select: none;
+            i {
+                color: #c4c6cc;
+                cursor: pointer;
+                &:hover {
+                    color: #979ba5;
+                }
+                &.disabled {
+                    color: #dcdee5;
+                    cursor: not-allowed;
+                }
+            }
+        }
+        .data-empty {
+            margin-top: 16px;
+            padding: 24px 0;
+            font-size: 12px;
+            text-align: center;
+            color: #dcdee5;
+            border: 1px dashed #dcdee5;
+            cursor: pointer;
+            &:not(.disabled):hover {
+                border-color: #3a84ff;
+                color: #3a84ff;
+            }
+            &.disabled {
+                cursor: not-allowed;
+            }
+        }
+        .bk-form-radio {
+            margin-right: 64px;
+        }
     }
-  }
 }
 </style>

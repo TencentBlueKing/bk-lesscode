@@ -315,26 +315,26 @@
                         from_state: sNode.nodeInfo.id,
                         to_state: tNode.nodeInfo.id
                     }
-                    const res = await this.$store.dispatch('setting/createLine', params)
+                    const res = await this.$store.dispatch('nocode/flow/createLine', params)
                     const lineData = {
                         source: {
-                            arrow: res.data.axis.start,
+                            arrow: res.axis.start,
                             id: source.id
                         },
                         target: {
-                            arrow: res.data.axis.end,
+                            arrow: res.axis.end,
                             id: target.id
                         },
-                        lineInfo: res.data,
+                        lineInfo: res,
                         options: {
                             paintStyle: {
                                 fill: 'transparent',
-                                stroke: res.data.lineStatus === 'SUCCESS' ? '#2DCB56' : '#a9adb6',
+                                stroke: res.lineStatus === 'SUCCESS' ? '#2DCB56' : '#a9adb6',
                                 strokeWidth: 1
                             }
                         }
                     }
-                    this.addOverlay({ id: res.data.id, sourceId: sNode.id, targetId: tNode.id })
+                    this.addOverlay({ id: res.id, sourceId: sNode.id, targetId: tNode.id })
                     this.canvasData.lines.push(lineData)
                 } catch (e) {
                     this.$refs.flowCanvas.removeConnector({
@@ -447,28 +447,28 @@
             async handleLineSave (data) {
                 try {
                     this.lineSavePending = true
-                    const res = await this.$store.dispatch('setting/updateLine', data)
+                    const res = await this.$store.dispatch('nocode/flow/updateLine', data)
                     const line = this.canvasData.lines.find(item => item.lineInfo.id === data.id)
                     this.$refs.flowCanvas.removeLineOverlay(
                         { source: { id: line.source.id }, target: { id: line.target.id } },
                         `label_${data.id}`
                     )
-                    this.addOverlay({ id: data.id, name: res.data.name, sourceId: line.source.id, targetId: line.target.id })
+                    this.addOverlay({ id: data.id, name: res.name, sourceId: line.source.id, targetId: line.target.id })
                     const index = this.canvasData.lines.findIndex(item => item.lineInfo.id === data.id)
                     this.canvasData.lines.splice(index, 1, {
                         source: {
-                            arrow: res.data.axis.start,
-                            id: `node_${res.data.from_state}`
+                            arrow: res.axis.start,
+                            id: `node_${res.from_state}`
                         },
                         target: {
-                            arrow: res.data.axis.end,
-                            id: `node_${res.data.to_state}`
+                            arrow: res.axis.end,
+                            id: `node_${res.to_state}`
                         },
-                        lineInfo: res.data,
+                        lineInfo: res,
                         options: {
                             paintStyle: {
                                 fill: 'transparent',
-                                stroke: res.data.lineStatus === 'SUCCESS' ? '#2dcb56' : '#a9adb6',
+                                stroke: res.lineStatus === 'SUCCESS' ? '#2dcb56' : '#a9adb6',
                                 strokeWidth: 1
                             }
                         }
@@ -483,7 +483,7 @@
             async handleLineDelete () {
                 try {
                     this.lineDeletePending = true
-                    await this.$store.dispatch('setting/deleteLine', this.lineConfig.id)
+                    await this.$store.dispatch('nocode/flow/deleteLine', this.lineConfig.id)
                     this.$refs.flowCanvas.removeConnector({
                         source: { id: this.lineConfig.sNode.id },
                         target: { id: this.lineConfig.tNode.id }
