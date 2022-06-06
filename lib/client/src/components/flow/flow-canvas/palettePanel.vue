@@ -1,13 +1,17 @@
 <template>
     <ul class="palette-panel">
         <li v-for="node in nodeTypeList" v-bk-tooltips.right="node.name" :key="node.type">
-            <div v-if="node.type === 'START'" class="start-node" data-type="START">开始</div>
-            <div v-else-if="node.type === 'END'" class="end-node" data-type="END">结束</div>
+            <div v-if="node.type === 'START'" class="start-node" data-type="START">
+                <span>开始</span>
+            </div>
+            <div v-else-if="node.type === 'END'" class="end-node" data-type="END">
+                <span>结束</span>
+            </div>
             <div
                 v-else
                 :class="['entry-item', { 'gateway-node': ['ROUTER-P', 'COVERAGE'].includes(node.type) }]"
                 :data-type="node.type">
-                <i :class="['custom-icon-font', node.menuIcon]"></i>
+                <i :class="['bk-drag-icon', node.menuIcon]"></i>
             </div>
         </li>
     </ul>
@@ -35,17 +39,23 @@
   }
   .start-node,
   .end-node {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     margin: 12px 0;
-    width: 34px;
-    height: 34px;
-    line-height: 34px;
-    font-size: 12px;
-    color: #979ba5;
-    border: 1px solid #c3cdd7;
+    width: 21px;
+    height: 21px;
+    border: 2px solid #979ba5;
     border-radius: 50%;
     user-select: none;
     cursor: not-allowed;
+    & > span {
+      display: block;
+      font-size: 12px;
+      color: #979ba5;
+      transform: scale(0.6);
+      white-space: nowrap;
+    }
   }
   .entry-item {
     display: inline-block;
@@ -54,15 +64,12 @@
     color: #979ba5;
     user-select: none;
     cursor: move;
-    &.gateway-node i {
-      font-size: 32px;
-    }
     &:hover {
       background: #e1ecff;
       color: #3a84ff;
     }
     i {
-      font-size: 26px;
+      font-size: 20px;
     }
   }
 }
