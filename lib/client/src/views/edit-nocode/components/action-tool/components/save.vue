@@ -57,7 +57,8 @@
                 const formData = {
                     content,
                     tableName: this.pageDetail.pageCode,
-                    projectId: this.projectId
+                    projectId: this.projectId,
+                    versionId: this.versionId
                 }
                 let action = 'updateForm'
                 if (!this.pageDetail.formId) {
