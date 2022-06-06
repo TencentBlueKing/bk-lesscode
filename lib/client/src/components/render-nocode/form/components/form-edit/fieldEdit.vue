@@ -23,13 +23,38 @@
                 </bk-form-item>
             </template>
             <template v-else>
-                <bk-form-item label="字段名称">
+                <div class="group-name">
+                    <i
+                        class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                        :class="{
+                            floded: basicIsFolded
+                        }"
+                        @click="basicIsFolded = !basicIsFolded" />
+                    <span>基础属性</span>
+                </div>
+                <bk-form-item label="字段名称" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.name" @change="handleChangeName" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="唯一标识">
+                <bk-form-item label="唯一标识" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.key" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="表头配置" v-if="fieldData.type === 'TABLE'">
+                <bk-form-item label="布局" v-if="!basicIsFolded">
+                    <bk-radio-group v-model="fieldData.layout" @change="change">
+                        <bk-radio value="COL_6" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">半行</bk-radio>
+                        <bk-radio value="COL_12" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
+                    </bk-radio-group>
+                </bk-form-item>
+                <bk-divider />
+                <div class="group-name">
+                    <i
+                        class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                        :class="{
+                            floded: handleIsFolded
+                        }"
+                        @click="handleIsFolded = !handleIsFolded" />
+                    <span>填写属性</span>
+                </div>
+                <bk-form-item label="表头配置" v-if="fieldData.type === 'TABLE' && !handleIsFolded">
                     <table-header-setting
                         :list="fieldData.choice"
                         @move="handleChangeTableHeader"
@@ -38,7 +63,7 @@
                     </table-header-setting>
                     <span class="add-chocie" @click="handleAddTableChoice">添加</span>
                 </bk-form-item>
-                <bk-form-item label="上传模板附件" :ext-cls="'input-position mt20-item'" v-if="fieldData.type === 'FILE'">
+                <bk-form-item label="上传模板附件" :ext-cls="'input-position mt20-item'" v-if="fieldData.type === 'FILE' && !handleIsFolded">
                     <bk-button :theme="'default'" title="点击上传">
                         点击上传
                     </bk-button>
@@ -52,12 +77,6 @@
                             <span class="file-delete" @click="handleDelete(item, index)">×</span>
                         </li>
                     </ul>
-                </bk-form-item>
-                <bk-form-item label="布局">
-                    <bk-radio-group v-model="fieldData.layout" @change="change">
-                        <bk-radio value="COL_6" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">半行</bk-radio>
-                        <bk-radio value="COL_12" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
-                    </bk-radio-group>
                 </bk-form-item>
                 <bk-form-item v-if="fieldProps.fieldsDataSource.includes(fieldData.type)" label="下拉数据源">
                     <div class="source-data">
@@ -73,7 +92,7 @@
                         </bk-button>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="填写属性">
+                <bk-form-item label="填写属性" v-if="!handleIsFolded">
                     <div class="attr-value">
                         <div class="contidion">
                             <bk-checkbox
@@ -86,12 +105,21 @@
                             <span v-show="fieldData.is_readonly === true" @click="readerOnlyShow = true">条件编辑</span>
                         </div>
                         <div class="contidion">
+                            <div id="require-tips" class="demo-html1">
+                                <p>选择为必填时，请确保字段配置满足以下两种情形之一，否则表单可能无法提交：</p>
+                                <p>1、字段已设置默认值</p>
+                                <p>2、字段可编辑且非隐藏</p>
+                            </div>
                             <bk-checkbox
                                 :true-value="'REQUIRE'"
                                 :false-value="'OPTION'"
                                 v-model="fieldData.validate_type"
                                 @change="handleChangeValidataType">
                                 必填
+                                <span v-bk-tooltips="htmlConfig"
+                                    class="top-middle">
+                                    <i class="bk-icon icon-info-circle-shape"></i>
+                                </span>
                             </bk-checkbox>
                             <span v-show="fieldData.validate_type === 'REQUIRE'" @click="requireConfigShow = true">条件编辑</span>
                         </div>
@@ -107,7 +135,7 @@
                         </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="控制上传范围" v-if="fieldData.type === 'IMAGE'">
+                <bk-form-item label="控制上传范围" v-if="fieldData.type === 'IMAGE' && !handleIsFolded">
                     <div>
                         <div>
                             <bk-checkbox
@@ -149,7 +177,7 @@
                         </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type)">
+                <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
                     <div>
                         <div>
                             <bk-checkbox
@@ -191,7 +219,7 @@
                         </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="校验方式">
+                <bk-form-item label="校验方式" v-if="!handleIsFolded">
                     <bk-select
                         v-model="fieldData.regex"
                         :clearable="false"
@@ -206,14 +234,14 @@
                 </bk-form-item>
                 <bk-form-item
                     label="默认值"
-                    v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM'">
+                    v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
                     <default-value
                         :key="fieldData.type"
                         :field="defaultData"
                         @change="handleDefaultValChange">
                     </default-value>
                 </bk-form-item>
-                <bk-form-item label="填写说明">
+                <bk-form-item label="填写说明" v-if="!handleIsFolded">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
@@ -313,6 +341,8 @@
                 checkTips: '',
                 regexList: this.getRegexList(this.value),
                 defaultData: this.getDefaultData(),
+                basicIsFolded: false,
+                handleIsFolded: false,
                 fieldProps: {
                     fieldsFullLayout: FIELDS_FULL_LAYOUT,
                     fieldsShowDefaultValue: FIELDS_SHOW_DEFAULT_VALUE,
@@ -324,7 +354,13 @@
                 requireConfigShow: false,
                 showTypeShow: false,
                 descCompValueShow: false,
-                fileVal: ''
+                fileVal: '',
+                htmlConfig: {
+                    allowHtml: true,
+                    width: 240,
+                    content: '#require-tips',
+                    placement: 'top-start'
+                }
             }
         },
         computed: {
@@ -666,4 +702,39 @@
     cursor: pointer;
   }
 }
+
+.group-name {
+  height: 40px;
+  font-size: 12px;
+  color: #313238;
+  font-weight: Bold;
+  position: relative;
+  display: flex;
+  align-items: center;
+  .toggle-arrow {
+    position: absolute;
+    display: block;
+    line-height: 40px;
+    top: 0;
+    left: -5px;
+    font-size: 24px;
+    color: #979BA5;
+    transition: all .1s linear;
+  //transform: rotate(-270deg);
+
+    &.floded {
+      transform: rotate(-90deg);
+    }
+  }
+  span{
+    display: block;
+    margin-left:19px;
+  }
+}
+
+/deep/ .bk-divider {
+  margin: 12px 0 0 !important;
+  width: 300px !important;
+}
+
 </style>
