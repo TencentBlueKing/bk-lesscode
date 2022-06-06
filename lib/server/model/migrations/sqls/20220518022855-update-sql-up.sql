@@ -42,6 +42,7 @@ CREATE TABLE `api`  (
   `header` json NULL COMMENT '请求头配置',
   `query` json NULL COMMENT '请求 Query 参数配置',
   `body` json NULL COMMENT '请求 Body 参数配置',
+  `response` json NULL COMMENT '请求 response 参数配置',
   PRIMARY KEY (`id`),
   INDEX `id`(`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
