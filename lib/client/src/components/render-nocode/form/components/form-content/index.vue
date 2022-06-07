@@ -129,9 +129,8 @@
                 } else if (type === 'delete') {
                     this.$bkInfo({
                         title: '确认删除？',
-                        type: 'warning',
                         subTitle: '删除字段将会同时删除已存在该字段下的数据，你还要继续吗？',
-                        theme: 'primary',
+                        theme: 'danger',
                         confirmFn: async () => {
                             this.$emit('delete', index)
                             if (this.selectedIndex === index) {
