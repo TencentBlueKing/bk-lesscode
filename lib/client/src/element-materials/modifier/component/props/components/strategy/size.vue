@@ -59,9 +59,11 @@
                 this.sizeUnit = splitValueAndUnit('unit', this.defaultValue) || this.defaultUnit
             },
             handleInputChange (val) {
+                this.sizeValue = val
                 this.change(this.name, val + this.sizeUnit, this.type)
             },
             handleSelectChange (unit) {
+                this.sizeUnit = unit
                 this.change(this.name, this.sizeValue + unit, this.type)
             }
         }
