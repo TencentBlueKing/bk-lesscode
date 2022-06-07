@@ -1,5 +1,5 @@
 <template>
-    <div class="form-panel">
+    <div class="form-panel" @click="showFormPanel">
         <draggable
             filter=".actions-area"
             :class="['fields-container', activeCls]"
@@ -24,6 +24,7 @@
     </div>
 </template>
 <script>
+    import { mapMutations, mapGetters } from 'vuex'
     import draggable from 'vuedraggable'
     import cloneDeep from 'lodash.clonedeep'
     import { FIELDS_TYPES } from '../../constant/forms'
@@ -57,6 +58,7 @@
             }
         },
         computed: {
+            ...mapGetters('drag', ['curTemplateData']),
             activeCls () {
                 if (this.hover) {
                     return `hover ${this.fields.length === 0 ? 'add-first-field' : ''}`
@@ -65,6 +67,7 @@
             }
         },
         methods: {
+            ...mapMutations('drag', ['setCurTemplateData']),
             // 拖拽添加字段
             add (e) {
                 const { type } = e.item.dataset
@@ -163,6 +166,12 @@
                     isMax: false,
                     maxNum: 1
                 } : ''
+            },
+            showFormPanel () {
+                this.curTemplateData.layoutType !== 'empty' && this.setCurTemplateData({
+                    ...this.curTemplateData,
+                    panelActive: ''
+                })
             }
         }
     }
