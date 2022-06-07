@@ -107,7 +107,6 @@
     import TypeRemote from './strategy/remote'
     import TypeFunction from './strategy/function'
     import TypeBoolean from './strategy/boolean'
-    import TypeColumn from './strategy/column'
     import TypeNumber from './strategy/number'
     import TypeFloat from './strategy/float'
     import TypeSelect from './strategy/select'
@@ -216,7 +215,6 @@
                     'areatext': TypeTextarea,
                     'boolean': TypeBoolean,
                     'size': TypeSize,
-                    'column': TypeColumn,
                     'number': TypeNumber,
                     'float': TypeFloat,
                     'select': TypeSelect,

@@ -10,25 +10,32 @@
 -->
 
 <template>
-    <bk-input
-        type="number"
-        placeholder=" "
-        :ext-cls="isError ? 'king-input-margin-style king-input-modifier-style-error' : 'king-input-margin-style'"
-        :precision="0"
-        :value="value"
-        @change="handleInputChange">
-        <template slot="prepend">
+    <div class="bk-form-control control-prepend-group control-append-group king-input-margin-style" :class="isError ? 'king-input-modifier-style-error' : ''">
+        <div class="group-box group-prepend">
             <div class="common-input-slot-text">{{ name }}</div>
-        </template>
-        <template slot="append">
+        </div>
+        <div class="bk-input-number">
+            <input type="text"
+                maxlength="10"
+                style="width: 100%"
+                class="bk-form-input"
+                @keydown="inputKeydownHandler($event)"
+                v-model="renderValue"
+                @input="handleInputChange" />
+            <span class="input-number-option">
+                <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
+                <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
+            </span>
+        </div>
+        <div class="group-box group-append">
             <append-select :value="unit" :is-margin-style="true" @change="$emit('selectChange', $event)"></append-select>
-        </template>
-    </bk-input>
+        </div>
+    </div>
 </template>
 
 <script>
     import AppendSelect from '@/components/modifier/append-select'
-    import { validateNaturalNumber, validateRoundNumber } from '@/common/util'
+    import { validateNaturalNumber, validateRoundNumber, accAdd, accSub } from '@/common/util'
 
     export default {
         components: {
@@ -54,11 +61,31 @@
         },
         data () {
             return {
-                isError: false
+                isError: false,
+                // 数字输入框中允许输入的键盘按钮的 keyCode 集合
+                validKeyCodeList: [
+                    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, // 0-9
+                    8, // backspace
+                    189, // -
+                    // 190, // .
+                    38, 40, 37, 39, // up down left right
+                    46, // del
+                    9 // tab
+                ],
+                renderValue: 0
+            }
+        },
+        watch: {
+            value: {
+                handler (v) {
+                    this.renderValue = v
+                },
+                immediate: true
             }
         },
         methods: {
-            handleInputChange (val) {
+            handleInputChange () {
+                const val = this.renderValue
                 if (this.disableNegative) {
                     if (!validateNaturalNumber(val)) {
                         this.isError = true
@@ -74,6 +101,50 @@
                         this.$emit('inputChange', val)
                     }
                 }
+            },
+
+            /**
+             * 数字文本框获 keydown 事件回调
+             * input type=number 不支持 setSelectionRange
+             *
+             * @param {Object} e 事件对象
+             */
+            inputKeydownHandler (e) {
+                const target = e.currentTarget
+                const value = target.value
+                const keyCode = e.keyCode
+                // - 号
+                if (e.keyCode === 189) {
+                    if (value.trim()) {
+                        // 只有开头位置能出现 - 号
+                        if (document.getSelection().type !== 'Range') {
+                            if (target.selectionEnd !== 0) {
+                                e.stopPropagation()
+                                e.preventDefault()
+                                return false
+                            }
+                        }
+                    }
+                }
+
+                // 键盘按下不允许的按钮
+                if (this.validKeyCodeList.indexOf(keyCode) < 0
+                    || (value.indexOf('-') >= 0 && keyCode === 189) // 已经有一个 - 了，本次又输入的是 -
+                ) {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return false
+                }
+            },
+
+            add () {
+                this.renderValue = accAdd(this.renderValue, 1)
+                this.handleInputChange()
+            },
+
+            sub () {
+                this.renderValue = accSub(this.renderValue, 1)
+                this.handleInputChange()
             }
         }
     }
