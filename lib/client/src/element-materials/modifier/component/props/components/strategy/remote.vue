@@ -86,6 +86,9 @@
             },
             tips: {
                 type: String
+            },
+            describe: {
+                type: Object
             }
         },
         data () {
@@ -102,7 +105,7 @@
             ...mapGetters('functions', ['functionList']),
             ...mapGetters('variable', ['variableList']),
             exampleData () {
-                return { name: this.name, value: this.defaultValue }
+                return { name: this.name, value: this.describe.val }
             }
         },
         created () {

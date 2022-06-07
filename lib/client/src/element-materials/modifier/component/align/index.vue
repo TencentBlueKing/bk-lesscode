@@ -196,13 +196,14 @@
 </script>
 <style lang="postcss" module>
     .layout{
-        padding: 20px 12px;
+        padding: 0px 10px 16px;
     }
     .title{
         font-size: 12px;
-        height: 20px;
-        line-height: 20px;
+        height: 40px;
+        line-height: 40px;
         font-weight: bold;
+        color: #313238;
     }
     .resize{
         height: 20px;
@@ -214,7 +215,7 @@
     .container{
         display: grid;
         border-radius: 2px;
-        margin-top: 10px;
+        margin-top: 4px;
     }
     .inner-free-layout{
         .item{

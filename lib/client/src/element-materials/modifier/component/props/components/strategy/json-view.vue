@@ -13,6 +13,7 @@
     <section>
         <section v-if="showInput">
             <bk-input
+                class="json-textarea"
                 disabled
                 style="width: 100%"
                 type="textarea"
@@ -178,7 +179,7 @@
     }
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
     @import "@/css/mixins/scroller";
     .json-setting-dialog {
         /deep/ .bk-dialog {
@@ -226,5 +227,13 @@
         cursor: pointer;
         color: #3a84ff;
         margin-top: 4px;
+    }
+    .json-textarea {
+        /deep/ .bk-textarea-wrapper {
+            border: none;
+            .bk-form-textarea {
+                @mixin scroller;
+            }
+        }
     }
 </style>

@@ -156,6 +156,7 @@
             color: #3a84ff;
             cursor: pointer;
             display: inline-block;
+            font-size: 12px;
         }
         .active-empty{
             height: 100%;
