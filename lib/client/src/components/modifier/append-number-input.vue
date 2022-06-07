@@ -10,21 +10,26 @@
 -->
 
 <template>
-    <bk-input
-        type="number"
-        placeholder=" "
-        :ext-cls="isError ? 'king-input-modifier-append-number-input king-input-modifier-style-error' : 'king-input-modifier-append-number-input'"
-        :show-controls="controls"
-        :value="value"
-        @change="handleChange">
-        <template slot="append">
+    <div class="bk-form-control king-input-modifier-append-number-input control-append-group" :class="isError && 'king-input-modifier-style-error'">
+        <div class="bk-input-number">
+            <input type="text"
+                class="bk-form-input"
+                @keydown="inputKeydownHandler($event)"
+                v-model="renderValue"
+                @input="handleChange" />
+            <span class="input-number-option" v-if="controls">
+                <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
+                <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
+            </span>
+        </div>
+        <div class="group-box group-append">
             <div class="common-input-slot-text" style="width: 24px;">px</div>
-        </template>
-    </bk-input>
+        </div>
+    </div>
 </template>
 
 <script>
-    import { validateNaturalNumber } from '@/common/util'
+    import { validateNaturalNumber, accAdd, accSub } from '@/common/util'
 
     export default {
         model: {
@@ -47,11 +52,31 @@
         },
         data () {
             return {
-                isError: false
+                isError: false,
+                // 数字输入框中允许输入的键盘按钮的 keyCode 集合
+                validKeyCodeList: [
+                    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, // 0-9
+                    8, // backspace
+                    // 189, // -
+                    // 190, // .
+                    38, 40, 37, 39, // up down left right
+                    46, // del
+                    9 // tab
+                ],
+                renderValue: 0
+            }
+        },
+        watch: {
+            value: {
+                handler (v) {
+                    this.renderValue = v
+                },
+                immediate: true
             }
         },
         methods: {
-            handleChange (val) {
+            handleChange () {
+                let val = this.renderValue
                 if (!validateNaturalNumber(val)) {
                     this.isError = true
                     return
@@ -62,6 +87,43 @@
                     val = Number(val)
                 }
                 this.$emit('change', val)
+            },
+
+            /**
+             * 数字文本框获 keydown 事件回调
+             * input type=number 不支持 setSelectionRange
+             *
+             * @param {Object} e 事件对象
+             */
+            inputKeydownHandler (e) {
+                const keyCode = e.keyCode
+                // 键盘按下不允许的按钮
+                if (this.validKeyCodeList.indexOf(keyCode) < 0) {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return false
+                }
+
+                if (keyCode === 38) {
+                    e.preventDefault()
+                    this.add()
+                } else if (keyCode === 40) {
+                    e.preventDefault()
+                    this.sub()
+                }
+            },
+
+            add () {
+                this.renderValue = accAdd(this.renderValue, 1)
+                this.handleChange()
+            },
+
+            sub () {
+                if (parseFloat(this.renderValue) <= 0) {
+                    return
+                }
+                this.renderValue = accSub(this.renderValue, 1)
+                this.handleChange()
             }
         }
     }

@@ -82,6 +82,26 @@
             }
         },
         methods: {
+            handleChange () {
+                const val = this.renderValue
+                const { regExp } = this.describe
+                if (val === '') {
+                    this.change(this.name, 0, this.type)
+                    return
+                }
+                // 如果配置了正则就先校验 输入的时候从 bk-input 拿到的 val 是字符串
+                if (regExp) {
+                    if (String(val).match(regExp)) {
+                        this.change(this.name, parseFloat(val), this.type)
+                        this.isError = false
+                    } else {
+                        this.isError = true
+                    }
+                } else {
+                    this.change(this.name, parseFloat(val), this.type)
+                }
+            },
+
             /**
              * 数字文本框获 keydown 事件回调
              * input type=number 不支持 setSelectionRange
@@ -100,25 +120,13 @@
                     e.preventDefault()
                     return false
                 }
-            },
 
-            handleChange (e) {
-                const val = this.renderValue
-                const { regExp } = this.describe
-                if (val === '') {
-                    this.change(this.name, 0, this.type)
-                    return
-                }
-                // 如果配置了正则就先校验 输入的时候从 bk-input 拿到的 val 是字符串
-                if (regExp) {
-                    if (String(val).match(regExp)) {
-                        this.change(this.name, parseFloat(val), this.type)
-                        this.isError = false
-                    } else {
-                        this.isError = true
-                    }
-                } else {
-                    this.change(this.name, parseFloat(val), this.type)
+                if (keyCode === 38) {
+                    e.preventDefault()
+                    this.add()
+                } else if (keyCode === 40) {
+                    e.preventDefault()
+                    this.sub()
                 }
             },
 
