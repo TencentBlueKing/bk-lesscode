@@ -161,7 +161,7 @@
                 margin-left: 12px;
             }
             &:last-child {
-                margin-left: 2px;
+                margin-left: 8px;
             }
         }
         .inner-variable-txt {

@@ -25,6 +25,9 @@
         display: flex;
         margin-top: 10px;
         height: 32px;
+        &:first-child {
+            margin-top: 4px;
+        }
         .item-label {
             display: flex;
             align-items: center;

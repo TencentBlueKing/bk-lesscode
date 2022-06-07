@@ -16,8 +16,8 @@
         <h3 class="directive-tip">
             编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值
         </h3>
-        <bk-form form-type="vertical" :label-width="280">
-            <bk-form-item
+        <ul>
+            <li
                 v-for="(directive, index) in directiveList"
                 :key="index"
                 class="directive-item">
@@ -45,8 +45,8 @@
                         @change="(val) => handleCodeChange(directive, val)"
                         clearable />
                 </variable-select>
-            </bk-form-item>
-        </bk-form>
+            </li>
+        </ul>
     </section>
 </template>
 
@@ -317,8 +317,16 @@
     .directive-home {
         margin: 0 10px;
     }
-    .directive-item.bk-form-item {
-        margin: 0 !important;
+    .directive-item {
+        /deep/ .header {
+            height: 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #313238;
+        }
+        &.bk-form-item {
+            margin: 0 !important;
+        }
     }
     .directive-tip {
         margin: 10px 0 0;
@@ -326,14 +334,15 @@
         font-size: 12px;
         font-weight: normal;
     }
+    
     .directive-label {
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        max-width: calc(100 - 80px);
+        line-height: 20px;
+        max-width: calc(100% - 80px);
     }
     .under-line {
-        line-height: 20px;
         border-bottom: 1px dashed #979ba5;
         cursor: pointer;
     }

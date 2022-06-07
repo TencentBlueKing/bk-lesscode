@@ -4,7 +4,7 @@
             class="group-list"
             handle=".bk-drag-grag-fill"
             :list="optionList"
-            :group="{ name: 'table-col' }"
+            :group="{ name: 'table-col', pull: false, put: false }"
             @change="trigger">
             <bk-popover
                 v-for="(item, index) in optionList"
@@ -158,17 +158,25 @@
             font-size: 12px;
             display: block;
             .item-content {
-                background: #EAEBF0;
+                background: #F5F7FA;
                 border-radius: 2px;
                 height: 32px;
                 display: inline-block;
                 width: calc(100% - 26px);
                 padding: 0 8px;
                 cursor: pointer;
+                &:hover {
+                    background: #EAEBF0;
+                }
             }
             .icon-minus-circle {
                 cursor: pointer;
-                margin-left: 4px;
+                margin-left: 6px;
+                color: #979ba5;
+                font-size: 14px;
+                &:hover {
+                    color: #63656e;
+                }
             }
             ::v-deep .bk-tooltip-ref {
                 display: block;

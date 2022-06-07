@@ -8,9 +8,27 @@
             v-bk-tooltips="htmlConfig"
             ref="tooltipsHtml">
             <bk-input
+                class="choose-variable"
                 placeholder="请选择变量"
                 :value="formData.code"
                 readonly />
+            <i
+                :class="[
+                    'choose-icon bk-icon icon-angle-down',
+                    {
+                        'hover-hidden': formData.code
+                    }
+                ]"
+            ></i>
+            <i
+                :class="[
+                    'choose-icon bk-icon icon-close-circle-shape',
+                    {
+                        'hover-show': formData.code
+                    }
+                ]"
+                @click.stop="handleClear"
+            ></i>
         </div>
         <div class="variable-list">
             <bk-input
@@ -322,6 +340,15 @@
             },
             handleShowRemoteExample () {
                 this.$refs.example.isShow = true
+            },
+            /**
+             * 清空 code
+             */
+            handleClear () {
+                this.$emit('on-change', {
+                    code: '',
+                    renderValue: this.formData.renderValue
+                })
             }
         }
     }
@@ -341,6 +368,56 @@
     }
 </style>
 <style lang="postcss" scoped>
+    .select-variable-value {
+        position: relative;
+        .choose-variable {
+            width: 100%;
+            cursor: pointer;
+            ::v-deep .bk-form-input[readonly] {
+                background-color: #ffffff !important;
+                border-color: #c4c6cc !important;
+                cursor: pointer;
+            }
+        }
+        .choose-icon {
+            cursor: pointer;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            color: #979ba5;
+            font-size: 22px;
+            &.icon-close-circle-shape {
+                display: none;
+                position: absolute;
+                right: 8px;
+                top: 8px;
+                text-align: center;
+                font-size: 14px;
+                z-index: 100;
+                color: #c4c6cc;
+                &:hover {
+                    color: #979ba5;
+                }
+            }
+        }
+        &:hover {
+            .hover-hidden {
+                display: none;
+            }
+            .hover-show {
+                display: block;
+            }
+        }
+        &.is-focus {
+            .icon-angle-down {
+                transform: rotate(180deg);
+            }
+            /deep/ .choose-variable .bk-input-text input {
+                border-color: #3a84ff !important;
+                box-shadow: 0 0 4px rgb(58 132 255 / 40%);
+            }
+        }
+    }
     .variable-list {
        .variable-table:before {
            height: 0;

@@ -61,7 +61,7 @@
         </template>
 
         <template v-if="describe.type && describe.type.length > 1">
-            <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性值来源</span>
+            <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性初始值来源</span>
             <bk-radio-group
                 class="g-prop-radio-group"
                 :value="formData.valueType"
