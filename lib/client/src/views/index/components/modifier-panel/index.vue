@@ -14,7 +14,7 @@
                 <div class="action-wrapper">
                     <i
                         v-if="!isAttachToForm"
-                        class="bk-drag-icon bk-drag-shanchu mr5"
+                        class="bk-drag-icon bk-drag-delet mr5"
                         id="del-component-right-sidebar"
                         @click="handleRemoveElement"
                         v-bk-tooltips="'删除'" />

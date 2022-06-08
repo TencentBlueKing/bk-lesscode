@@ -416,10 +416,15 @@
              */
             handleClick () {
                 LC.clearMenu()
-                this.componentData.active()
+                if (!this.componentData.isActived) {
+                    this.componentData.active()
+                }
             },
             handleDBClick () {
-                console.log('dbdbdb')
+                LC.triggerEventListener('componentDbclick', {
+                    type: 'componentDbclick',
+                    target: this.componentData
+                })
             },
             /**
              * @desc 记录鼠标按下状态，抛出 component-mousedown 事件
