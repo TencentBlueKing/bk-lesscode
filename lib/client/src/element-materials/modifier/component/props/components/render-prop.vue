@@ -49,7 +49,7 @@
             </template>
 
             <template v-if="renderComponentList.length > 1">
-                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性值来源</span>
+                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性初始值来源</span>
                 <bk-radio-group
                     class="g-prop-radio-group mb12"
                     :value="selectValueType"
@@ -107,7 +107,6 @@
     import TypeRemote from './strategy/remote'
     import TypeFunction from './strategy/function'
     import TypeBoolean from './strategy/boolean'
-    import TypeColumn from './strategy/column'
     import TypeNumber from './strategy/number'
     import TypeFloat from './strategy/float'
     import TypeSelect from './strategy/select'
@@ -216,7 +215,6 @@
                     'areatext': TypeTextarea,
                     'boolean': TypeBoolean,
                     'size': TypeSize,
-                    'column': TypeColumn,
                     'number': TypeNumber,
                     'float': TypeFloat,
                     'select': TypeSelect,

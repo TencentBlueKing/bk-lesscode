@@ -154,12 +154,15 @@
                     const slotName = 'default'
                     const slotConfig = this.material.slots[slotName]
                     const columns = payload.sourceData.columns
-                    const slotValue = columns.map(columnName => ({
-                        label: columnName,
-                        prop: columnName,
-                        sortable: false,
-                        type: ''
-                    }))
+                    // 返回 columns 的时候根据返回值渲染，否则渲染配置的值
+                    const slotValue = columns
+                        ? columns.map(columnName => ({
+                            label: columnName,
+                            prop: columnName,
+                            sortable: false,
+                            type: ''
+                        }))
+                        : slotConfig.val
                     this.componentNode.setRenderSlots({
                         format: 'value',
                         component: Array.isArray(slotConfig.name) ? slotConfig.name[0] : slotConfig.name,

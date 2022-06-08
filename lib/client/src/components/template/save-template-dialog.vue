@@ -184,7 +184,7 @@
 
 <style lang="postcss">
     .template-operate-dialog {
-        z-index: 2100 !important;
+        /* z-index: 2100 !important; */
         .bk-dialog-body {
             padding: 10px 15px 25px;
         }

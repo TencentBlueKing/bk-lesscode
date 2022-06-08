@@ -22,6 +22,7 @@
                     <bk-select
                         :clearable="false"
                         v-model="dialog.formData.categoryId"
+                        @toggle="toggleCategory"
                     >
                         <bk-option v-for="item in categoryList" :id="item.id" :name="item.name" :key="item.id">
                         </bk-option>
@@ -141,6 +142,11 @@
             this.getTemplateCategory()
         },
         methods: {
+            toggleCategory (open = false) {
+                if (open) {
+                    this.getTemplateCategory()
+                }
+            },
             async getTemplateCategory () {
                 try {
                     this.categoryList = await this.$store.dispatch('pageTemplate/categoryList', { projectId: this.projectId })

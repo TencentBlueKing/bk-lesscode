@@ -44,7 +44,7 @@
     const getRenderStyleDisplayValue = display => {
         switch (display) {
             case 'flex':
-            case 'gird':
+            case 'grid':
             case 'block':
                 return 'block'
             case 'inline-flex':
@@ -259,7 +259,7 @@
                     })
                     return
                 }
-                
+
                 // 继承组件渲染结果的 display
                 const $baseComponentEl = this.$refs.componentRoot.querySelector(':scope > [lesscode-base-component]')
                 if ($baseComponentEl) {
@@ -494,7 +494,7 @@
                     flex-shrink: 0;
                 }
             }
-            
+
         }
         &[align-horizontal-left]{
             & > div{
@@ -526,7 +526,7 @@
                     flex-shrink: 0;
                 }
             }
-            
+
         }
         &[align-vertical-top]{
             & > div{

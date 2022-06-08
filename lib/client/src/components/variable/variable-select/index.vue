@@ -201,7 +201,7 @@
         position: relative;
         .header {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             font-size: 14px;
             color: #63656E;

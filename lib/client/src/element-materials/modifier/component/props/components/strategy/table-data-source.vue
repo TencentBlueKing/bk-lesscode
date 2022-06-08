@@ -1,7 +1,11 @@
 <template>
     <section>
         <span class="g-prop-sub-title g-mb8">数据表</span>
-        <choose-data-table :value="chooseTableName" @choose="chooseTable"></choose-data-table>
+        <choose-data-table
+            :value="chooseTableName"
+            @choose="chooseTable"
+            @clear="clearTable"
+        ></choose-data-table>
     </section>
 </template>
 
@@ -44,6 +48,9 @@
             batchUpdate: {
                 type: Function,
                 default: () => {}
+            },
+            describe: {
+                type: Object
             }
         },
 
@@ -51,11 +58,11 @@
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
 
-            const chooseTable = (tableName, result, table) => {
+            const chooseTable = ({ tableName, data, table }) => {
                 chooseTableName.value = tableName
                 propStatus.change.value(
                     props.name,
-                    result.list,
+                    data.list,
                     props.type,
                     {
                         sourceData: {
@@ -66,9 +73,24 @@
                 )
             }
 
+            const clearTable = () => {
+                chooseTableName.value = ''
+                propStatus.change.value(
+                    props.name,
+                    props.describe.val,
+                    props.type,
+                    {
+                        sourceData: {
+                            tableName: ''
+                        }
+                    }
+                )
+            }
+
             return {
                 chooseTableName,
-                chooseTable
+                chooseTable,
+                clearTable
             }
         }
     })
