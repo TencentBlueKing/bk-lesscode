@@ -20,7 +20,8 @@
             :auto-get-data="false"
             :default-value="{}"
             :remote-validate="validateObjectMethod"
-            :change="transformRemoteDataToNode" />
+            :change="transformRemoteDataToNode"
+            :describe="formConfig" />
         <div
             class="form-slot-title"
             style="margin: 20px 0 10px;">
@@ -139,7 +140,19 @@
             return {
                 isShow: false,
                 isShowOperation: false,
-                editFormItemData: {}
+                editFormItemData: {},
+                // 数据示例基于配置的value来展示值，这里需要传入一份配置的标准值
+                formConfig: {
+                    val: {
+                        'string': '',
+                        'boolean': false,
+                        'array': [
+                            1,
+                            2,
+                            3
+                        ]
+                    }
+                }
             }
         },
         
