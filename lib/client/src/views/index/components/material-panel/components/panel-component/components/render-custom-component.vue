@@ -62,6 +62,7 @@
 </template>
 <script>
     import Vue from 'vue'
+    import Tippy from 'bk-magic-vue/lib/utils/tippy'
     import GroupBox from '../../common/group-box'
     import SearchBox from '../../common/search-box'
     import RenderComponent from '../../common/group-box/render-component'
@@ -143,7 +144,77 @@
                     this.isLoading = false
                 }
             },
-            
+            async handleShowIntroduction (component, event) {
+                const componentId = component.meta.id
+                const componentVersionId = component.meta.versionId
+                this.popperInstance = Tippy(event.target, {
+                    placement: 'top-start',
+                    trigger: 'manual',
+                    theme: 'light custom-component-introduction',
+                    hideOnClick: false,
+                    animateFill: false,
+                    animation: 'slide-toggle',
+                    lazy: false,
+                    ignoreAttributes: true,
+                    boundary: 'window',
+                    distance: 20,
+                    arrow: true,
+                    zIndex: window.__bk_zIndex_manager.nextZIndex()
+                })
+                this.componentIntroduction = {}
+                this.isDiscriptionLoading = true
+                this.popperInstance.setContent(this.$refs.introduction)
+                this.popperInstance.popperInstance.update()
+                this.popperInstance.show()
+                try {
+                    const [componentData, componentVersionData] = await Promise.all([
+                        this.$store.dispatch('components/detail', {
+                            id: componentId
+                        }),
+                        this.$store.dispatch('components/versionDetail', {
+                            versionId: componentVersionId
+                        })
+                    ])
+                    if (!this.popperInstance) {
+                        return
+                    }
+                    this.componentIntroduction = Object.freeze({
+                        ...componentVersionData,
+                        lastVersion: componentData.version
+                    })
+                    setTimeout(() => {
+                        this.popperInstance.popperInstance.update()
+                    })
+                } finally {
+                    this.isDiscriptionLoading = false
+                }
+            },
+            handleHideIntroduction () {
+                if (this.popperInstance) {
+                    this.popperInstance.hide()
+                    this.popperInstance.destroy()
+                    this.popperInstance = null
+                }
+            },
+            async handleClickFavorite (component) {
+                try {
+                    const data = {
+                        compId: component.meta.id,
+                        projectId: this.projectId
+                    }
+                    if (component.meta.favorite) {
+                        await this.$store.dispatch('components/favoriteDelete', { data })
+                        this.messageSuccess('取消成功')
+                    } else {
+                        await this.$store.dispatch('components/favoriteAdd', { data })
+                        this.messageSuccess('收藏成功')
+                    }
+                    // 更新数据状态
+                    this.fetchFavoriteList(true)
+                } catch (e) {
+                    console.error(e)
+                }
+            },
             /**
              * @desc 去新建自定义组件
              */

@@ -97,7 +97,6 @@
         <bk-dialog v-model="dialog.create.visible"
             render-directive="if"
             theme="primary"
-            :title="isCopy ? '复制应用' : '创建应用'"
             width="750"
             :position="{ top: 100 }"
             :mask-close="false"
@@ -105,15 +104,19 @@
             header-position="left"
             ext-cls="project-create-dialog"
             @value-change="handleCreateDialogToggle">
+            <span slot="header">
+                {{ isCopy ? '复制应用' : '创建应用' }}
+                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建lesscode应用时，会同步创建蓝鲸开发者应用的default模块' }"></i>
+            </span>
             <bk-form ref="createForm" :label-width="86" :rules="dialog.create.formRules" :model="dialog.create.formData">
                 <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.create.formData.projectName"
-                        placeholder="请输入应用名称，60个字符以内">
+                        placeholder="由汉字，英文字母，数字组成，20个字符以内">
                     </bk-input>
                 </bk-form-item>
                 <bk-form-item label="应用ID" required property="projectCode" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.create.formData.projectCode"
-                        placeholder="只能由小写字母组成，该ID将作为自定义组件前缀，创建后不可更改">
+                        placeholder="由小写字母组成，长度小于16个字符，该ID将作为自定义组件前缀，创建后不可更改">
                     </bk-input>
                 </bk-form-item>
                 <bk-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
@@ -151,7 +154,7 @@
                     <bk-input ref="projectRenameInput"
                         maxlength="60"
                         v-model="dialog.rename.formData.projectName"
-                        placeholder="请输入应用名称，60个字符以内">
+                        placeholder="由汉字，英文字母，数字组成，20个字符以内">
                     </bk-input>
                 </bk-form-item>
             </bk-form>
@@ -254,20 +257,15 @@
                         formRules: {
                             projectName: [
                                 {
-                                    required: true,
-                                    message: '必填项',
+                                    regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
+                                    message: '由汉字，英文字母，数字组成，20个字符以内',
                                     trigger: 'blur'
                                 }
                             ],
                             projectCode: [
                                 {
-                                    required: true,
-                                    message: '必填项',
-                                    trigger: 'blur'
-                                },
-                                {
-                                    regex: /^[a-z]+$/,
-                                    message: '只能由小写字母组成',
+                                    regex: /^[a-z]{1,16}$/,
+                                    message: '只能由小写字母组成, 16个字符以内',
                                     trigger: 'blur'
                                 }
                             ],
@@ -291,6 +289,11 @@
                                 {
                                     required: true,
                                     message: '必填项',
+                                    trigger: 'blur'
+                                },
+                                {
+                                    regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
+                                    message: '由汉字，英文字母，数字组成，20个字符以内',
                                     trigger: 'blur'
                                 }
                             ]
@@ -536,7 +539,7 @@
             async handleCopy (project) {
                 this.hideDropdownMenu(project)
                 defaultCreateFormData.copyFrom = project.id
-                defaultCreateFormData.projectName = `${project.projectName}-copy`
+                defaultCreateFormData.projectName = `${project.projectName}copy`
                 this.dialog.create.visible = true
             },
             handleDownloadSource (project) {

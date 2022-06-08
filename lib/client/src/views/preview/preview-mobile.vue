@@ -17,28 +17,25 @@
 </template>
 
 <script>
-    import { useStore } from '@/store'
     import { useRoute } from '@/router'
 
     export default {
         setup () {
-            const store = useStore()
             const route = useRoute()
             const width = '375'
             const height = '812'
 
             const projectId = route.params.projectId
             const pagePath = route.query.pagePath || '/mobile'
-            // const pagePath = `${store.getters['page/pageRoute'].layoutPath}${store.getters['page/pageRoute'].layoutPath.endsWith('/') ? '' : '/'}${store.getters['page/pageRoute'].path}`
-            const versionId = store.getters['projectVersion/currentVersionId']
+            const versionId = route.query.version
 
-            let queryStr = '?platform=MOBILE'
-            queryStr += `${versionId ? `&v=${versionId}` : ''}`
+            let pathStr = `${versionId ? `/version/${versionId}` : ''}`
+            pathStr += '/platform/MOBILE'
 
             return {
                 width,
                 height,
-                source: `${location.origin}/preview/project/${projectId}${pagePath}${queryStr}`
+                source: `${location.origin}/preview/project/${projectId}${pathStr}${pagePath}`
             }
         }
     }

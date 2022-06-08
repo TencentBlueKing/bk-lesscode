@@ -6,13 +6,18 @@
         </div>
         <div style="margin-top: 10px;">
             <div class="action-title">应用 LOGO 配置</div>
-            <bk-input :value="logo" @change="handleLogoChange" />
+            <src-input :value="logo" file-type="img" @change="handleLogoChange" />
         </div>
     </div>
 </template>
 <script>
+    import SrcInput from '@/components/src-input/index.vue'
+
     export default {
         name: '',
+        components: {
+            SrcInput
+        },
         props: {
             logo: String,
             siteName: String

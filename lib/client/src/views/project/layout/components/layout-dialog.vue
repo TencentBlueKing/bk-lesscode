@@ -159,12 +159,11 @@
                     setTimeout(() => {
                         this.$refs.showNameInput && this.$refs.showNameInput.$el.querySelector('input').focus()
                     }, 50)
-
                     if (this.action === 'edit') {
                         this.dialog.formData.showName = this.currentLayout.showName
                         this.dialog.formData.layoutCode = this.currentLayout.layoutCode
                         this.dialog.formData.routePath = this.getDisplayLayoutPath(this.currentLayout.routePath)
-                        this.dislog.formData.layoutType = this.currentLayout.layoutType
+                        this.dialog.formData.layoutType = this.currentLayout.layoutType
                     } else {
                         this.dialog.formData.showName = ''
                         this.dialog.formData.layoutCode = ''
@@ -222,6 +221,7 @@
                     }
                     if (this.action === 'edit') {
                         formData.id = this.currentLayout.id
+                        formData.layoutType = this.currentLayout.layoutType
                         if (formData.showName === this.currentLayout.showName) {
                             delete formData.showName
                         }
@@ -229,13 +229,13 @@
                             delete formData.layoutCode
                         }
                         if (formData.routePath === this.currentLayout.routePath) {
+                            delete formData.layoutType
                             delete formData.routePath
                         }
                     }
                     await this.$store.dispatch('layout/checkName', {
                         data: {
                             ...formData,
-                            routePath: this.realRoutePath,
                             projectId: this.projectId,
                             versionId: this.versionId
                         }

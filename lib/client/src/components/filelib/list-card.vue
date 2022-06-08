@@ -13,14 +13,19 @@
     import { computed, defineComponent } from '@vue/composition-api'
     import { execCopy } from '@/common/util'
     import { UPLOAD_STATUS, UploadFile, getFileUrl } from './helper'
+    import FileIcon from './file-icon.vue'
 
     export default defineComponent({
+        components: {
+            FileIcon
+        },
         props: {
             files: {
                 type: Array,
                 default: () => []
             },
             isSearch: Boolean,
+            previewEnabled: Boolean,
             cardWidth: Number,
             cardHeight: Number,
             imageHeight: Number
@@ -31,6 +36,16 @@
                 '--card-height': props.cardHeight ? `${props.cardHeight}px` : undefined,
                 '--image-height': props.imageHeight ? `${props.imageHeight}px` : undefined
             }))
+            const containerClass = computed(() => ({
+                'preview-enabled': props.previewEnabled
+            }))
+
+            const handlePreview = (file: UploadFile, files: UploadFile[]) => {
+                if (!props.previewEnabled || file.status !== UPLOAD_STATUS.SUCCESS) {
+                    return
+                }
+                emit('view', file, files)
+            }
 
             const handleCopyLink = (file: UploadFile) => {
                 execCopy(getFileUrl(file, true))
@@ -43,21 +58,23 @@
             return {
                 UPLOAD_STATUS,
                 containerStyle,
+                containerClass,
                 getFileUrl,
                 handleCopyLink,
-                handleRemove
+                handleRemove,
+                handlePreview
             }
         }
     })
 </script>
 
 <template>
-    <div class="list-card" :style="containerStyle">
+    <div class="list-card" :class="containerClass" :style="containerStyle">
         <template v-if="files.length">
             <div class="card-item" v-for="file in files" :key="file.uid">
                 <slot name="file" v-bind="file">
-                    <div class="item-icon">
-                        <img :src="getFileUrl(file)" :alt="file.name">
+                    <div class="item-icon" @click="handlePreview(file, files)">
+                        <file-icon :file="file" />
                         <div :class="['upload-status', file.status]" v-if="file.status === UPLOAD_STATUS.UPLOADING || file.status === UPLOAD_STATUS.FAIL">
                             <bk-round-progress
                                 width="50px"
@@ -74,7 +91,7 @@
                             </bk-round-progress>
                             <div v-if="file.status === UPLOAD_STATUS.FAIL" class="fail-content">
                                 <i class="bk-drag-icon bk-drag-close-circle-fill"></i>
-                                <div class="fail-text">{{ file.statusText || '上传失败'}}</div>
+                                <div class="fail-text">{{file.statusText || '上传失败'}}</div>
                             </div>
                         </div>
                         <div class="use-action" v-if="$scopedSlots['use-action'] && file.status === UPLOAD_STATUS.SUCCESS">
@@ -119,6 +136,8 @@
         align-content: flex-start;
         height: 100%;
         width: 100%;
+        /* box-shadow offset */
+        padding: 4px;
         overflow-y: auto;
         @mixin scroller;
 
@@ -148,15 +167,23 @@
             }
 
             .item-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 width: 100%;
                 height: var(--image-height, 140px);
                 background: #f5f7fa;
                 position: relative;
+                overflow: hidden;
 
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: contain;
+                }
+
+                ::v-deep .file-preview-icon {
+                    font-size: 68px;
                 }
 
                 .upload-status {
@@ -251,6 +278,14 @@
             justify-content: center;
             width: 100%;
             height: 100%;
+        }
+
+        &.preview-enabled {
+            .card-item {
+                .item-icon {
+                    cursor: pointer;
+                }
+            }
         }
     }
 </style>

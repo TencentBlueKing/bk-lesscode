@@ -1,5 +1,5 @@
 <template>
-    <bk-sideslider :is-show="variableFormData.show" :before-close="hidden" :quick-close="true" :width="796" :title="isAdd ? '新增变量' : '编辑变量'">
+    <bk-sideslider :is-show="isShow" :before-close="hidden" :quick-close="true" :width="796" :title="isAdd ? '新增变量' : '编辑变量'">
         <section slot="content" class="variable-form-main">
             <bk-form :label-width="84" :model="copyForm" ref="variableForm">
                 <bk-form-item label="变量名称" :required="true" :rules="[requireRule('变量名称'), nameRule]" property="variableName" error-display-type="normal">
@@ -10,8 +10,12 @@
                 </bk-form-item>
                 <bk-form-item label="初始类型" :required="true" property="valueType" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.valueType" @change="resetValue">
-                        <template v-for="type in jsTypes">
-                            <bk-radio-button :key="type.id" :value="type.id" v-if="!type.hidden || !type.hidden()">{{ type.label }}</bk-radio-button>
+                        <template v-for="type in renderJsTypes">
+                            <bk-radio-button
+                                :key="type.id"
+                                :value="type.id"
+                                v-if="!type.hidden"
+                            >{{ type.label }}</bk-radio-button>
                         </template>
                     </bk-radio-group>
                 </bk-form-item>
@@ -36,8 +40,28 @@
                     <bk-input v-model="copyForm.description" type="textarea"></bk-input>
                 </bk-form-item>
             </bk-form>
-            <bk-button theme="primary" class="confirm-button" @click="confirm" :loading="isSaving">确定</bk-button>
-            <bk-button @click="hidden" :disabled="isSaving">取消</bk-button>
+            <bk-button
+                class="confirm-button variable-button"
+                theme="primary"
+                :loading="isSaving"
+                @click="handleSave"
+            >保存</bk-button>
+            <bk-button
+                class="variable-button"
+                :disabled="isSaving"
+                @click="hidden"
+            >取消</bk-button>
+            <section
+                class="variable-button"
+                v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled }"
+            >
+                <bk-button
+                    :loading="isUseSaving"
+                    :disabled="useSaveStatus.disabled"
+                    v-if="showSaveUse"
+                    @click="handleSaveUse"
+                >保存并使用</bk-button>
+            </section>
         </section>
     </bk-sideslider>
 </template>
@@ -51,6 +75,14 @@
     import variableJson from './variable-json'
     import variableUpload from './variable-upload'
 
+    const typeEnum = {
+        'string': [0, 5],
+        'number': [1],
+        'boolean': [2],
+        'array': [3],
+        'object': [4]
+    }
+
     export default {
         components: {
             variableSwitcher,
@@ -60,19 +92,30 @@
             variableUpload
         },
 
+        props: {
+            isShow: {
+                type: Boolean
+            },
+            formData: {
+                type: Object,
+                default: () => ({})
+            },
+            showSaveUse: {
+                type: Boolean,
+                default: false
+            },
+            // 限制新增或编辑的变量类型
+            valueTypeInclude: {
+                type: Array,
+                default: () => ([])
+            }
+        },
+
         data () {
             return {
-                jsTypes: [
-                    { label: 'String', id: 0 },
-                    { label: 'Number', id: 1 },
-                    { label: 'Boolean', id: 2 },
-                    { label: 'Array', id: 3 },
-                    { label: 'Object', id: 4 },
-                    // { label: '图片地址', id: 5 },
-                    { label: '计算变量', id: 6, hidden: () => (this.copyForm.effectiveRange === 0) }
-                ],
                 copyForm: {},
                 isSaving: false,
+                isUseSaving: false,
                 allProjectVariableList: [],
                 repeatRule: {
                     validator: (variableCode) => (!this.variableList.find(variable => variable.variableCode === variableCode && this.copyForm.id !== variable.id)),
@@ -106,7 +149,7 @@
         },
 
         computed: {
-            ...mapGetters('variable', ['variableFormData', 'variableList']),
+            ...mapGetters('variable', ['variableList']),
             ...mapGetters('page', ['pageDetail']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
 
@@ -148,11 +191,41 @@
                         break
                 }
                 return renderComponent
+            },
+
+            renderJsTypes () {
+                return [
+                    { label: 'String', id: 0 },
+                    { label: 'Number', id: 1 },
+                    { label: 'Boolean', id: 2 },
+                    { label: 'Array', id: 3 },
+                    { label: 'Object', id: 4 },
+                    // { label: '图片地址', id: 5 },
+                    { label: '计算变量', id: 6, hidden: this.copyForm.effectiveRange === 0 }
+                ].map((jsType) => {
+                    return {
+                        ...jsType,
+                        disabled: jsType.id !== 6
+                            && (
+                                this.valueTypeInclude?.length > 0
+                                && !this.valueTypeInclude.some((limitType) => typeEnum[limitType]?.includes(jsType.id))
+                            )
+                    }
+                })
+            },
+
+            useSaveStatus () {
+                const disabled = this.copyForm.valueType !== 6
+                    && this.valueTypeInclude?.every((limitType) => !typeEnum[limitType]?.includes(this.copyForm.valueType))
+                return {
+                    content: `只允许使用【${this.valueTypeInclude.join('，')}，计算变量】类型的变量`,
+                    disabled
+                }
             }
         },
 
         watch: {
-            'variableFormData.show' (val) {
+            'isShow' (val) {
                 if (val) {
                     this.initData()
                 }
@@ -160,7 +233,7 @@
         },
 
         methods: {
-            ...mapActions('variable', ['getAllProjectVariable', 'getAllVariable', 'addVariable', 'editVariable', 'setVariableFormData']),
+            ...mapActions('variable', ['getAllProjectVariable', 'getAllVariable', 'addVariable', 'editVariable']),
 
             initData () {
                 const defaultForm = {
@@ -175,7 +248,16 @@
                     versionId: this.versionId,
                     pageCode: this.pageDetail.pageCode
                 }
-                this.copyForm = Object.assign(defaultForm, JSON.parse(JSON.stringify(this.variableFormData.form)))
+                this.copyForm = Object.assign(defaultForm, JSON.parse(JSON.stringify(this.formData)))
+                // 根据限制参数，重置初始化类型
+                if (this.valueTypeInclude?.length > 0 && this.isAdd) {
+                    const valueType = typeEnum[this.valueTypeInclude[0]]?.[0]
+                    this.copyForm.valueType = valueType === undefined ? 6 : valueType
+                }
+                // 根据类型重置默认值
+                if (!Reflect.has(this.formData, 'defaultValue')) {
+                    this.resetValue()
+                }
                 this.getAllProjectVariable({ projectId: this.projectId, versionId: this.versionId }).then((res) => {
                     this.allProjectVariableList = res || []
                 }).catch((err) => {
@@ -221,37 +303,55 @@
                 }
             },
 
-            confirm () {
-                const confirmMethod = this.isAdd ? this.addVariable : this.editVariable
-                this.copyForm.pageCode = this.copyForm.effectiveRange === 0 ? '' : this.pageDetail.pageCode
-                this.isSaving = true
-                this.$refs.variableForm.validate(() => {
-                    return confirmMethod(this.copyForm).then(() => {
-                        this.$bkMessage({ theme: 'success', message: this.isAdd ? '新增变量成功' : '编辑变量成功' })
-                        this.hidden()
-                        const params = { projectId: this.projectId, versionId: this.versionId, effectiveRange: 0 }
-                        if (this.pageId) {
-                            params.pageCode = this.pageDetail.pageCode
-                        }
-                        return this.getAllVariable(params)
-                    }).catch((err) => {
-                        if (err?.code === 499) {
-                            this.messageHtmlError(err.message || err)
-                        } else {
-                            this.messageError(err.message || err)
-                        }
-                    }).finally(() => {
-                        this.isSaving = false
-                    })
-                }).catch((validator) => {
-                    this.isSaving = false
-                    this.$bkMessage({ theme: 'error', message: validator.content || '数据校验不通过，请修改后重试' })
+            handleSave () {
+                return new Promise((resolve, reject) => {
+                    const confirmMethod = this.isAdd ? this.addVariable : this.editVariable
+                    this.copyForm.pageCode = this.copyForm.effectiveRange === 0 ? '' : this.pageDetail.pageCode
+                    this.isSaving = true
+                    this.$refs.variableForm
+                        .validate(() => {
+                            return confirmMethod(this.copyForm)
+                                .then(() => {
+                                    this.$bkMessage({ theme: 'success', message: this.isAdd ? '新增变量成功' : '编辑变量成功' })
+                                    this.hidden()
+                                    const params = { projectId: this.projectId, versionId: this.versionId, effectiveRange: 0 }
+                                    if (this.pageId) {
+                                        params.pageCode = this.pageDetail.pageCode
+                                    }
+                                    resolve()
+                                    return this.getAllVariable(params)
+                                })
+                                .catch((err) => {
+                                    if (err?.code === 499) {
+                                        this.messageHtmlError(err.message || err)
+                                    } else {
+                                        this.messageError(err.message || err)
+                                    }
+                                    reject(err)
+                                })
+                                .finally(() => {
+                                    this.isSaving = false
+                                })
+                        })
+                        .catch((validator) => {
+                            this.isSaving = false
+                            this.$bkMessage({ theme: 'error', message: validator.content || '数据校验不通过，请修改后重试' })
+                            reject(validator)
+                        })
+                })
+            },
+
+            handleSaveUse () {
+                this.isUseSaving = true
+                this.handleSave().then(() => {
+                    this.$emit('save-use', this.copyForm)
+                }).finally(() => {
+                    this.isUseSaving = false
                 })
             },
 
             hidden () {
-                const data = { show: false, form: {} }
-                this.setVariableFormData(data)
+                this.$emit('update:isShow', false)
             }
         }
     }
@@ -268,9 +368,17 @@
         margin-right: 65px;
     }
     .confirm-button {
-        margin: 19px 10px 0 84px;
-        +button {
-            margin-top: 19px;
+        margin-left: 84px;
+    }
+    .variable-button {
+        display: inline-block;
+        margin-right: 10px;
+        margin-top: 19px;
+        vertical-align: middle;
+    }
+    ::v-deep .bk-form-radio-button.disabled:first-child {
+        .bk-radio-button-text {
+            border-left: 1px solid #c4c6cc;
         }
     }
 </style>

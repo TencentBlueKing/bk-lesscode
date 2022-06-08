@@ -20,18 +20,11 @@
             }
         },
         methods: {
-            async handleClearAll () {
+            handleClearAll () {
                 // const isLock = await this.checkLockStatus('lock')
                 // if (isLock) return // 如果被锁，不可清空
 
-                const me = this
-                me.$bkInfo({
-                    title: '确定清空所有组件元素？',
-                    subTitle: '包含的已下架自定义组件将不能再被使用',
-                    confirmFn () {
-                        LC.reset()
-                    }
-                })
+                LC.reset()
             }
         }
     }

@@ -29,7 +29,6 @@
     export default {
         name: '',
         props: {
-            componentId: String,
             left: Number,
             top: Number
         },

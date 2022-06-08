@@ -1,5 +1,12 @@
 <template>
-    <choose-data-table :value="chooseTableName" @choose="chooseTable"></choose-data-table>
+    <section>
+        <span class="g-prop-sub-title g-mb8">数据表</span>
+        <choose-data-table
+            :value="chooseTableName"
+            @choose="chooseTable"
+            @clear="clearTable"
+        ></choose-data-table>
+    </section>
 </template>
 
 <script lang="ts">
@@ -36,6 +43,9 @@
             change: {
                 type: Function,
                 default: () => {}
+            },
+            describe: {
+                type: Object
             }
         },
 
@@ -43,16 +53,23 @@
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
 
-            const chooseTable = (tableName, result, table) => {
+            const chooseTable = ({ tableName, data }) => {
+                triggleUpdate(tableName, data.list)
+            }
+
+            const clearTable = () => {
+                triggleUpdate('', props.describe.val)
+            }
+
+            const triggleUpdate = (tableName, val) => {
                 chooseTableName.value = tableName
                 propStatus.change.value(
                     props.name,
-                    result.list,
+                    val,
                     props.type,
                     {
                         sourceData: {
-                            tableName,
-                            columns: table.columns.map(({ name }) => name)
+                            tableName: tableName
                         }
                     }
                 )
@@ -60,7 +77,8 @@
 
             return {
                 chooseTableName,
-                chooseTable
+                chooseTable,
+                clearTable
             }
         }
     })

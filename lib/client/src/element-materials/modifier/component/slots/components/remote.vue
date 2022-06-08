@@ -5,6 +5,7 @@
         :default-value="copySlotVal.val"
         :remote-validate="slotConfig.remoteValidate"
         :change="remoteChange"
+        :describe="slotConfig"
     />
 </template>
 
