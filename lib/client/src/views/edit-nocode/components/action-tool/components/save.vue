@@ -14,6 +14,9 @@
         components: {
             MenuItem
         },
+        props: {
+            custom: Boolean // 是否需要自定义保存逻辑
+        },
         data () {
             return {
                 isLoading: false,
@@ -37,6 +40,12 @@
         },
         methods: {
             async handleSubmit () {
+                if (this.custom) {
+                    if (this.validateForm()) {
+                        this.$emit('save', this.$store.state.nocode.formSetting.fieldsList)
+                    }
+                    return
+                }
                 if (this.nocodeType === 'FORM') {
                     this.saveFormList()
                 } else if (this.nocodeType === 'FORM_MANAGE') {
@@ -46,16 +55,11 @@
             },
             // 保存表单
             async saveFormList () {
-                const content = this.$store.state.nocode.formSetting.fieldsList || []
-                if (content.length < 1) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: '表单项不能为空'
-                    })
+                if (!this.validateForm()) {
                     return
                 }
                 const formData = {
-                    content,
+                    content: this.$store.state.nocode.formSetting.fieldsList,
                     tableName: this.pageDetail.pageCode,
                     projectId: this.projectId,
                     versionId: this.versionId
@@ -102,6 +106,18 @@
                 } catch (e) {
                     console.error(e)
                 }
+            },
+            // 校验表单配置
+            validateForm () {
+                let result = true
+                if (this.$store.state.nocode.formSetting.fieldsList.length < 1) {
+                    result = false
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: '表单项不能为空'
+                    })
+                }
+                return result
             }
         }
     }

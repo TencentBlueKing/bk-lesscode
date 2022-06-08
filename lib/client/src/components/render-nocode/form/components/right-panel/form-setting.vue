@@ -51,9 +51,7 @@
 @import "@/css/mixins/scroller";
 .config-panel {
   position: relative;
-  width: 320px;
-  height: calc(100vh - 126px);
-  //overflow: auto;
+  height: 100%;
   background: #ffffff;
   z-index: 1;
 }

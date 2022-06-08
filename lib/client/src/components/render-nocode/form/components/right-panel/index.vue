@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="height: 100%;">
         <layout-setting v-if="editType === 'layout'" />
         <form-setting v-else :field="field" :list="list" @update="$emit('update', $event)" />
     </div>

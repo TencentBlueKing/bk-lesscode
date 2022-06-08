@@ -6,7 +6,7 @@
                 class="type-form-item"
                 :clearable="false"
                 :loading="roleGroupListLoading"
-                :disabled="roleGroupListLoading || disableType || !editable"
+                :disabled="roleGroupListLoading"
                 @selected="handleSelectGroup">
                 <bk-option v-for="item in groupTypeList" :key="item.type" :id="item.type" :name="item.name"></bk-option>
             </bk-select>
@@ -67,21 +67,13 @@
             event: 'change'
         },
         props: {
-            flowId: Number,
+            workflowId: Number,
             nodeId: Number,
-            shortcut: {
-                type: Boolean,
-                default: false
-            },
             specifyIds: {
                 type: Array,
                 default: () => []
             },
-            disableType: {
-                type: Boolean,
-                default: false
-            },
-            excludeList: {
+            excludeType: {
                 type: Array,
                 default: () => []
             },
@@ -120,10 +112,10 @@
         },
         computed: {
             groupTypeList () {
-                return this.roleGroupList.filter(item => !this.excludeList.includes(item.type))
+                return this.roleGroupList.filter(item => !this.excludeType.includes(item.type))
             },
             hideProcessorsForm () {
-                return ['EMPTY', 'OPEN', 'STARTER', 'BY_ASSIGNOR', 'STARTER_LEADER'].includes(this.formData.type)
+                return ['', 'EMPTY', 'OPEN', 'STARTER', 'BY_ASSIGNOR', 'STARTER_LEADER'].includes(this.formData.type)
             },
             specifyRuleList () {
                 const target = this.specifyIds.find(rule => rule.type === this.formData.type)
@@ -171,11 +163,6 @@
                         this.getPreNodes()
                     } else if (this.formData.type === 'VARIABLE') {
                         this.getNodeVars()
-                    } else {
-                        this.roleList = await this.$store.dispatch('nocode/flow/getRoleGroupProcessors', {
-                            role_type: this.formData.type,
-                            project_key: 'lesscode'
-                        })
                     }
                 } catch (e) {
                     console.error(e)
@@ -199,12 +186,12 @@
                 try {
                     this.memberFieldListLoading = true
                     const params = {
-                        workflow: this.flowId,
+                        workflow: this.workflowId,
                         state: this.nodeId,
                         exclude_self: true
                     }
-                    const res = await this.$store.dispatch('setting/getNodeVars', params)
-                    this.roleList = res.data
+                    const res = await this.$store.dispatch('nocode/flow/getNodeVars', params)
+                    this.roleList = res
                         .filter(item => ['MEMBERS', 'MEMBER'].includes(item.type))
                         .map(item => ({ id: item.key, name: item.name }))
                 } catch (e) {
@@ -217,8 +204,8 @@
             async getPreNodes () {
                 try {
                     this.preNodeListLoading = true
-                    const res = await this.$store.dispatch('setting/getPreNodes', this.nodeId)
-                    this.roleList = res.data.filter(node => !['ROUTER-P', 'COVERAGE'].includes(node.type))
+                    const res = await this.$store.dispatch('nocode/flow/getPreNodes', this.nodeId)
+                    this.roleList = res.filter(node => !['ROUTER-P', 'COVERAGE'].includes(node.type))
                 } catch (e) {
                     console.error(e)
                 } finally {

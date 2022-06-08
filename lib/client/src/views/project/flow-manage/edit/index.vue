@@ -9,7 +9,7 @@
   specific language governing permissions and limitations under the License.
 -->
 <template>
-    <section v-bkloading="{ isLoading: serviceDataLoading, zIndex: 2999 }" class="flow-edit-wrapper">
+    <section class="flow-edit-wrapper">
         <div class="page-header-container">
             <div class="nav-container">
                 <back-btn></back-btn>
@@ -41,6 +41,7 @@
     </section>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
@@ -75,9 +76,7 @@
             projectId () {
                 return this.$route.params.projectId
             },
-            versionId () {
-                return this.$store.state.projectVersion.currentVersion.id
-            }
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
         },
         watch: {
             '$route.name' () {
@@ -144,9 +143,7 @@
 </script>
 <style lang="postcss" scoped>
 .flow-edit-wrapper {
-    min-width: 1366px;
-    height: calc(100vh - 64px);
-    margin-top: 64px;
+    height: 100%;
 }
 .page-header-container {
     position: relative;
@@ -176,6 +173,6 @@
     }
 }
 .flow-edit-main {
-    height: calc(100% - 52px);
+    height: calc(100% - 53px);
 }
 </style>

@@ -1,21 +1,16 @@
 <template>
     <section class="node-form-setting">
-        <div class="create-form-methods">
-            <div
-                v-for="item in createFormMethods"
-                class="create-method-item"
-                :key="item.id"
-                @click="handleCreateForm(item.id)">
-                <i class="bk-icon icon-plus"></i>
-                {{ item.name }}
-            </div>
-        </div>
-        <!-- <div class="edit-form-card">
+        <div v-if="formConfig.type !== ''" class="edit-form-card">
             <div class="card-header">
-                <h5>差旅补贴申请</h5>
-                <div class="type-label">引用表单</div>
+                <h5>{{ formConfig.name || formConfig.id }}</h5>
+                <div class="type-label">{{ typeNameMap[formConfig.type] }}</div>
             </div>
-            <p class="created-page">是否生成流程提单页：否</p>
+            <div class="related-info">
+                流程提单页：
+                <span :class="['related-item', { 'not-empty': flowConfig.pageId }]">--</span>
+                关联数据表：
+                <span :class="['related-item', { 'not-empty': formConfig.id }]">{{ formConfig.id }}</span>
+            </div>
             <div class="operate-area">
                 <i
                     class="bk-drag-icon bk-drag-edit"
@@ -33,40 +28,102 @@
                     @click="handleDelClick">
                 </i>
             </div>
-        </div> -->
+        </div>
+        <div v-else class="create-form-methods">
+            <div
+                v-for="item in createFormMethods"
+                class="create-method-item"
+                :key="item.id"
+                @click="handleSetForm(item.id)">
+                <i class="bk-icon icon-plus"></i>
+                {{ item.name }}
+            </div>
+        </div>
+        <edit-form-panel
+            v-if="editFormPanelShow"
+            :edit-form-panel-show.sync="editFormPanelShow"
+            :has-create-ticket-page="hasCreateTicketPage"
+            :form-config="formConfig"
+            @save="handleCreateForm">
+        </edit-form-panel>
         <select-form-dialog
-            :method="createMethod"
-            :show.sync="selectFormDialogShow">
+            :method="selectedType"
+            :show.sync="selectFormDialogShow"
+            @confirm="handleSelectForm">
         </select-form-dialog>
     </section>
 </template>
 <script>
+    import { mapState } from 'vuex'
+    import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
 
     export default {
         name: 'NodeFormSetting',
         components: {
+            EditFormPanel,
             SelectFormDialog
+        },
+        props: {
+            flowConfig: {
+                type: Object,
+                default: () => ({})
+            }
         },
         data () {
             return {
                 createFormMethods: [
-                    { id: 'new', name: '创建空白表单' },
-                    { id: 'cite', name: '引用已有表单' },
-                    { id: 'use', name: '复用已有表单' }
+                    { id: 'NEW_FORM', name: '新建空白表单' },
+                    { id: 'COPY_FORM', name: '引用已有表单' },
+                    { id: 'USE_FORM', name: '复用已有表单' }
                 ],
-                createMethod: '',
-                selectFormDialogShow: false
+                typeNameMap: {
+                    NEW_FORM: '新建表单',
+                    COPY_FORM: '引用表单',
+                    USE_FORM: '复用表单'
+                },
+                selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
+                editFormPanelShow: false, // 表单编辑
+                selectFormDialogShow: false // 选择表单弹窗
+            }
+        },
+        computed: {
+            ...mapState('nocode/nodeConfig', [
+                'nodeData',
+                'formConfig'
+            ]),
+            hasCreateTicketPage () {
+                return typeof this.flowConfig.pageId === 'number'
             }
         },
         methods: {
-            handleCreateForm (val) {
-                this.selectFormDialogShow = true
-                this.createMethod = val
+            handleSetForm (val) {
+                this.selectedType = val
+                if (val === 'NEW_FORM') {
+                    this.editFormPanelShow = true
+                } else {
+                    this.selectFormDialogShow = true
+                }
             },
-            handleEditClick () {},
+            handleEditClick () {
+                this.editFormPanelShow = true
+            },
             handlePreviewClick () {},
-            handleDelClick () {}
+            handleDelClick () {
+                this.updateFormConfig({ id: '', type: '', content: [] })
+            },
+            // 引用和复用
+            handleSelectForm (id, content = []) {
+                this.selectFormDialogShow = false
+                this.updateFormConfig({ id, content, type: this.selectedType })
+            },
+            handleCreateForm (content) {
+                this.editFormPanelShow = false
+                this.updateFormConfig({ content, type: this.selectedType })
+            },
+            updateFormConfig (data) {
+                this.$store.commit('nocode/nodeConfig/setFormConfig', data)
+            }
         }
     }
 </script>
@@ -119,11 +176,23 @@
                 transform: scale(0.83);
             }
         }
-        p {
+        .related-info {
+            display: flex;
+            align-items: center;
             margin-top: 4px;
-            line-height: 16px;
             font-size: 12px;
             color: #63656e;
+            .related-item {
+                margin-right: 10px;
+                width: 180px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                &.not-empty {
+                    color: #3a84ff;
+                    cursor: pointer;
+                }
+            }
         }
         .operate-area {
             position: absolute;

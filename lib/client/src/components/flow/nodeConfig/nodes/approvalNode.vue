@@ -10,7 +10,8 @@
                         ref="processorForm"
                         v-model="processorData"
                         :flow-id="nodeData.workflow"
-                        :node-id="nodeData.id">
+                        :node-id="nodeData.id"
+                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']">
                     </processors>
                 </bk-form-item>
                 <bk-form-item label="审批方式" :required="true">
@@ -38,9 +39,10 @@
                 <bk-form-item v-if="nodeData.can_deliver" label="转单人" :required="true">
                     <processors
                         ref="processorForm"
-                        v-model="processorData"
+                        v-model="dilverData"
                         :flow-id="nodeData.workflow"
-                        :node-id="nodeData.id">
+                        :node-id="nodeData.id"
+                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']">
                     </processors>
                 </bk-form-item>
             </bk-form>
@@ -61,27 +63,42 @@
             endCondition
         },
         props: {
-            config: {
+            nodeDetail: {
                 type: Object,
                 default: () => ({})
             }
         },
         data () {
             return {
-                nodeData: cloneDeep(this.config),
-                processorData: {},
-                approvalType: this.getApprovalType(this.config)
+                nodeData: cloneDeep(this.nodeDetail),
+                processorData: {
+                    type: this.nodeDetail.processors_type,
+                    processors: cloneDeep(this.nodeDetail.processors)
+                },
+                dilverData: {
+                    type: this.nodeDetail.delivers_type,
+                    processors: cloneDeep(this.nodeDetail.delivers)
+                },
+                approvalType: this.getApprovalType(this.nodeDetail)
             }
         },
         watch: {
-            config (val) {
+            nodeDetail (val) {
                 this.nodeData = cloneDeep(val)
+                this.processorData = {
+                    type: val.processors_type,
+                    processors: cloneDeep(val.processors)
+                }
+                this.diliverData = {
+                    type: val.delivers_type,
+                    processors: cloneDeep(val.delivers)
+                }
                 this.approvalType = this.getApprovalType(val)
             }
         },
         methods: {
-            getApprovalType (config) {
-                const { is_multi: isMulti, is_sequential: isSequential } = config
+            getApprovalType (nodeDetail) {
+                const { is_multi: isMulti, is_sequential: isSequential } = nodeDetail
                 return isMulti ? isSequential ? 'orderCountersign' : 'randomCountersign' : 'orsign'
             },
             handleApprovalChange (val) {

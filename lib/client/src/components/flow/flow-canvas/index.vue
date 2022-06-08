@@ -242,7 +242,7 @@
                             axis: { x, y }
                         }
                     }
-                    this.$store.dispatch('nocode/flow/updateNode', params)
+                    this.$store.dispatch('nocode/flow/updateNodePos', params)
                 } catch (e) {
                     console.error(e)
                 }
@@ -260,6 +260,13 @@
                         is_terminable: false, // @待确认是否需要
                         axis: { x, y },
                         workflow: this.flowId
+                    }
+                    if (type === 'NORMAL') {
+                        // 人工节点需要保存使用表单的配置
+                        params.extras.formConfig = {
+                            type: '',
+                            id: ''
+                        }
                     }
                     const res = await this.$store.dispatch('nocode/flow/createNode', params)
                     const { axis, type: nodeType, name: nodeName } = res

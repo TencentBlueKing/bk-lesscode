@@ -303,6 +303,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import { mapGetters } from 'vuex'
     import FormSection from '../components/form-section.vue'
     import { CONDITION_RELATIONS } from '@/components/nocode-form/constants/forms.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
@@ -315,7 +316,7 @@
             FormSection
         },
         props: {
-            config: {
+            nodeDetail: {
                 type: Object,
                 default: () => ({})
             },
@@ -327,7 +328,7 @@
         },
         data () {
             return {
-                formData: this.getInitialFormData(this.config),
+                formData: this.getInitialFormData(this.nodeDetail),
                 actions: [
                     { id: 'ADD', name: '插入' },
                     { id: 'EDIT', name: '更新' },
@@ -365,9 +366,7 @@
             projectId () {
                 return this.$route.params.projectId
             },
-            versionId () {
-                return this.$store.state.projectVersion.currentVersion.id
-            },
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             targetFields () {
                 const tempKey = this.formData?.mapping.filter(item => item.type === 'department').map(item => item.key)
                 const targetFiled = this.fieldList.filter(item => !['id', 'ids'].includes(item.key)).map((el) => {
@@ -391,7 +390,7 @@
             }
         },
         watch: {
-            config (val) {
+            nodeDetail (val) {
                 this.formData = this.getInitialFormData(val.extras.dataManager)
             }
         },
@@ -399,8 +398,8 @@
             this.getFormList()
             // this.getRelationList()
             // this.getApprovalNode()
-            if (this.config.extras.dataManager && this.config.extras.dataManager.worksheet_id !== '') {
-                this.getFieldList(this.config.extras.dataManager.worksheet_id)
+            if (this.nodeDetail.extras.dataManager && this.nodeDetail.extras.dataManager.worksheet_id !== '') {
+                this.getFieldList(this.nodeDetail.extras.dataManager.worksheet_id)
             }
         },
         methods: {
@@ -434,7 +433,7 @@
             async getRelationList () {
                 try {
                     this.relationListLoading = true
-                    const res = await this.$store.dispatch('nocode/flow/getGroupedNodeVars', this.config.id)
+                    const res = await this.$store.dispatch('nocode/flow/getGroupedNodeVars', this.nodeDetail.id)
                     const groupedList = []
                     res.data.forEach((group) => {
                         if (group.fields.length > 0) {

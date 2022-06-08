@@ -12,33 +12,35 @@
     </div>
 </template>
 <script>
+    const OPERATION_LIST = [
+        {
+            key: 'edit',
+            label: '表单设计',
+            icon: 'bk-drag-huabu'
+        },
+        {
+            key: 'setting',
+            label: '页面设置',
+            icon: 'bk-drag-set'
+        },
+        {
+            key: 'jsonSource',
+            label: 'JSON',
+            icon: 'bk-drag-json'
+        }
+    ]
     export default {
         name: '',
         props: {
             value: {
                 type: String,
                 default: 'edit'
-            }
+            },
+            hidePageSetting: Boolean
         },
         data () {
             return {
-                operationList: [
-                    {
-                        key: 'edit',
-                        label: '表单设计',
-                        icon: 'bk-drag-huabu'
-                    },
-                    {
-                        key: 'setting',
-                        label: '页面设置',
-                        icon: 'bk-drag-set'
-                    },
-                    {
-                        key: 'jsonSource',
-                        label: 'JSON',
-                        icon: 'bk-drag-json'
-                    }
-                ]
+                operationList: this.hidePageSetting ? OPERATION_LIST.filter(item => item.key !== 'setting') : OPERATION_LIST.slice()
             }
         },
         methods: {
