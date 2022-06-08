@@ -106,6 +106,15 @@
     margin-bottom: 4px;
 }
 
+.g-mt12 {
+    margin-top: 12px;
+}
+
+.g-config-subline {
+    cursor: pointer;
+    border-bottom: 1px dashed #313238;
+}
+
 @media screen and (min-width: 1660px) {
     .page-content {
         .info-flexible {

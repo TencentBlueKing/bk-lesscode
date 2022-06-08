@@ -31,9 +31,11 @@
             <choose-function
                 :choosen-function="remoteData"
                 @change="changeFunc"
+                @clear="handleClear"
             ></choose-function>
             <bk-button
                 @click="getApiData"
+                :loading="isGettingApiData"
                 theme="primary"
                 class="mt12"
                 size="small">
@@ -98,7 +100,8 @@
                     params: []
                 },
                 usedMethodMap: {},
-                usedVariableMap: {}
+                usedVariableMap: {},
+                isGettingApiData: false
             }
         },
         computed: {
@@ -110,6 +113,9 @@
         },
         created () {
             this.remoteData = Object.assign({}, this.remoteData, this.payload)
+            if (this.autoGetData && this.remoteData.methodCode) {
+                this.getApiData()
+            }
         },
         methods: {
             changeFunc (val) {
@@ -118,6 +124,11 @@
                 if (this.autoGetData) {
                     this.getApiData()
                 }
+            },
+
+            handleClear () {
+                this.remoteData = Object.assign(this.remoteData, { methodCode: '' })
+                this.change(this.name, this.defaultValue, this.type, this.remoteData)
             },
 
             getVariableVal (variable) {
@@ -303,19 +314,20 @@
                 }
                 
                 try {
+                    this.isGettingApiData = true
                     const sandBox = this.createSandBox(this.usedVariableMap)
                     const res = await sandBox.exec(methodStr, this.remoteData.params)
                     let message = this.remoteValidate(res)
                     if (message) {
                         // 选择函数已经成功设置 payload，rendervalue 因为数据校验问题没有同步过去。所以该函数选择成功，但是有异常提示
                         message = '数据源设置成功，以下问题可能会导致组件表现异常，请检查：' + message
-                        this.$bkMessage({ theme: 'warning', message })
+                        this.messageWarn(message)
                     } else {
                         this.change(this.name, res, this.type, JSON.parse(JSON.stringify(this.remoteData)))
                         if (this.name === 'remoteOptions') {
                             bus.$emit('update-chart-options', res)
                         }
-                        this.$bkMessage({ theme: 'success', message: '获取数据成功', limit: 1 })
+                        // this.$bkMessage({ theme: 'success', message: '获取数据成功', limit: 1 })
                     }
                 } catch (error) {
                     this.$bkMessage({
@@ -323,6 +335,8 @@
                         message: error.message || error || '获取数据失败，请检查函数是否正确',
                         limit: 1
                     })
+                } finally {
+                    this.isGettingApiData = false
                 }
             },
 

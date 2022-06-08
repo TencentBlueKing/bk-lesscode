@@ -57,7 +57,7 @@
     }) => ({
         // 类型（value、variable、expression）
         format,
-        // 对应 format 的值
+        // 对应 变量code 和 expression
         code,
         // 最终值的类型
         valueType,
@@ -171,7 +171,7 @@
             /**
              * @desc 格式改变
              * @param { String } format
-             *
+             * code 代表 选择的变量 或者 填写的表达式
              * format 改变时需要重置 code 的值
              */
             handleFormatChange (format) {

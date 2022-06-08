@@ -57,8 +57,8 @@
                     <bk-radio-button
                         v-for="item in renderComponentList"
                         :key="item.type"
-                        :value="item.type">
-                        {{ item.type | valueTypeTextFormat }}
+                        :value="item.valueType">
+                        {{ item.valueType | valueTypeTextFormat }}
                     </bk-radio-button>
                 </bk-radio-group>
             </template>
@@ -83,25 +83,52 @@
                     </template>
                 </template>
             </div>
+
+            <template v-if="describe.operation">
+                <div
+                    v-bk-tooltips="{
+                        content: describe.operation.tips,
+                        placement: 'left-start',
+                        boundary: 'window'
+                    }"
+                    :class="[
+                        'g-prop-sub-title g-mb6 g-mt12',
+                        {
+                            'g-config-subline': describe.operation.tips
+                        }
+                    ]"
+                >
+                    {{ describe.operation.title }}
+                </div>
+                <bk-button
+                    class="prop-operation"
+                    size="small"
+                    @click="describe.operation.click(formData, syncSlot)"
+                >
+                    {{ describe.operation.name }}
+                </bk-button>
+            </template>
         </variable-select>
     </div>
 </template>
 <script>
     import _ from 'lodash'
+    import { mapActions } from 'vuex'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
     import variableSelect from '@/components/variable/variable-select'
     import chooseBuildInVariable from '@/components/variable/choose-build-in-variable'
     import {
-        determineShowPropInnerVariable
+        determineShowPropInnerVariable,
+        BUILDIN_VARIABLE_TYPE_LIST
     } from 'shared/variable'
 
     import {
         getDefaultValueByType,
         isEmpty,
         toPascal
-    } from '../../utils'
+    } from 'shared/util'
 
     import TypeSize from './strategy/size'
     import TypeRemote from './strategy/remote'
@@ -117,9 +144,9 @@
     import TypeTableColumn from './strategy/table-column'
     import TypeCollapse from './strategy/collapse.vue'
     import TypeJson from './strategy/json-view.vue'
-    import TypeSlot from './strategy/slot.vue'
+    import TypeHtml from './strategy/html.vue'
     import TypeFreeLayoutItem from './strategy/free-layout-item.vue'
-    import TypeSlotWrapper from './strategy/slot-wrapper'
+    import TypeList from './strategy/list.vue'
     import TypeIcon from './strategy/icon'
     import TypeVanIcon from './strategy/van-icon'
     import TypeColor from './strategy/color'
@@ -195,6 +222,9 @@
             lastValue: {
                 type: [Number, String, Boolean, Object, Array],
                 default: () => ({})
+            },
+            syncSlot: {
+                type: Function
             }
         },
         data () {
@@ -226,18 +256,18 @@
                     'collapse': TypeCollapse,
                     'remote': TypeRemote,
                     'json': TypeJson,
-                    'slot-html': TypeSlot,
+                    'html': TypeHtml,
                     'free-layout-item': TypeFreeLayoutItem,
                     'icon': TypeIcon,
                     'van-icon': TypeVanIcon,
                     'color': TypeColor,
-                    'step': TypeSlotWrapper,
+                    'step': TypeList,
                     'function': TypeFunction,
                     'el-props': TypleElProps,
                     'data-source': TypeDataSource,
                     'table-data-source': TypeTableDataSource,
                     'src': TypeSrc,
-                    'srcset': TypeSlotWrapper
+                    'srcset': TypeList
                 }
 
                 const typeMap = {
@@ -260,7 +290,7 @@
                     'collapse': 'collapse',
                     'remote': 'remote',
                     'json': 'json',
-                    'html': 'slot-html',
+                    'html': 'html',
                     'free-layout-item': 'free-layout-item',
                     'bread-crumb': 'bread-crumb',
                     'icon': 'icon',
@@ -404,10 +434,11 @@
                 type,
                 val
             } = this.describe
-
-            const defaultValue = val !== undefined ? val : getDefaultValueByType(getPropValueType(type))
-            this.defaultValue = _.cloneDeep(defaultValue)
+            // 属性各个交互类型可以接受的值类型
             const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
+            // 该属性的默认值
+            const defaultValue = val !== undefined ? val : getDefaultValueByType(valueTypes[0])
+            this.defaultValue = _.cloneDeep(defaultValue)
 
             // 构造 variable-select 的配置
             this.variableSelectOptions = {
@@ -437,23 +468,24 @@
             }
         },
         methods: {
+            ...mapActions('variable', ['updateVariable']),
             /**
              * @desc 同步更新用户操作
              */
-            triggerChange (from) {
+            triggerChange (formData = this.formData) {
                 this.isInnerChange = true
                 // 缓存用户本地编辑值
-                this.propTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.renderValue
+                this.propTypeValueMemo[formData.valueType] = {
+                    val: formData.renderValue
                 }
 
                 this.$emit('on-change', this.name, {
-                    ...this.formData,
+                    ...formData,
                     modifiers: this.describe.modifiers || []
                 })
             },
             /**
-             * @desc 变量切换
+             * @desc 右上角类型切换，format: value | variable | expression
              * @param { Object } variableSelectData
              */
             handleVariableFormatChange (variableSelectData) {
@@ -484,7 +516,7 @@
                     code,
                     renderValue
                 })
-                this.triggerChange('format')
+                this.triggerChange()
             },
             /**
              * @desc format 等于 value 时 value 的类型切换
@@ -502,9 +534,9 @@
                     'data-source',
                     'table-data-source'
                 ].includes(realValueType)) {
-                    // 配置远程函数类型，
-                    // 此时还没有获取API数据使用默认值
-                    code = _.cloneDeep(this.defaultValue)
+                    // 切换到数据表和远程函数此时还没有获取API数据
+                    // code 和 rendervalue 保持不变
+                    code = _.cloneDeep(this.formData.renderValue)
                 } else {
                     // 切换值类型时，通过类型获取默认值
                     code = getDefaultValueByType(getPropValueType(realValueType))
@@ -553,6 +585,13 @@
                         renderValue
                     })
                     this.triggerChange()
+
+                    // 如果是自定义变量需要更新变量列表
+                    if (this.formData.buildInVariableType === BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
+                        this.updateVariable({
+                            [this.formData.payload.customVariableCode]: renderValue
+                        })
+                    }
                 } catch {
                     this.$bkMessage({
                         theme: 'error',
@@ -647,6 +686,9 @@
         }
         .prop-action {
             width: 100%;
+        }
+        .prop-operation {
+            display: block;
         }
         .mb12 {
             margin-bottom: 12px

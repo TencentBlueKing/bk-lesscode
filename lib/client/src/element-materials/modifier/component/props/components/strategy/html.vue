@@ -12,7 +12,7 @@
 <template functional>
     <div>
         <div class="text-action">
-            <bk-input :value="props.defaultValue" type="textarea" :rows="5" @blur="val => props.change('slots', val, props.type)" />
+            <bk-input :value="props.defaultValue" type="textarea" :rows="5" @blur="val => props.change(props.name, val, props.type)" />
         </div>
     </div>
 </template>
