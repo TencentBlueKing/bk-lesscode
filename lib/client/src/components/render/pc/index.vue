@@ -146,12 +146,24 @@
                 }
             }
 
+            const nodeCallback = (event) => {
+                if (event.target.componentId === this.componentData.componentId) {
+                    this.$forceUpdate()
+                    setTimeout(() => {
+                        this.autoType(event.child)
+                    }, 20)
+                }
+            }
+
             LC.addEventListener('ready', readyCallback)
             LC.addEventListener('update', updateCallback)
             LC.addEventListener('update', updateLogCallback)
             LC.addEventListener('active', interactiveCallbak)
             LC.addEventListener('active', activeLogCallback)
             LC.addEventListener('toggleInteractive', interactiveCallbak)
+            LC.addEventListener('appendChild', nodeCallback)
+            LC.addEventListener('moveChild', nodeCallback)
+            LC.addEventListener('insertAfter', nodeCallback)
             
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('ready', readyCallback)
@@ -160,6 +172,9 @@
                 LC.removeEventListener('active', interactiveCallbak)
                 LC.removeEventListener('active', activeLogCallback)
                 LC.removeEventListener('toggleInteractive', interactiveCallbak)
+                LC.removeEventListener('appendChild', nodeCallback)
+                LC.removeEventListener('moveChild', nodeCallback)
+                LC.removeEventListener('insertAfter', nodeCallback)
             })
         },
         mounted () {
@@ -175,6 +190,7 @@
             const resetCallback = () => {
                 LC.clearMenu()
             }
+            
             document.body.addEventListener('mousedown', mousedownCallback)
             document.body.addEventListener('mouseup', mouseupCallback)
             document.body.addEventListener('click', resetCallback)
@@ -192,6 +208,34 @@
             })
         },
         methods: {
+            /**
+             * @desc 自动排版子组件
+             */
+            autoType (childNode) {
+                if (this._isDestroyed || !childNode) {
+                    return
+                }
+                const {
+                    top: boxTop,
+                    left: boxLeft
+                } = this.$refs.dragArea.$el.getBoundingClientRect()
+                const $childEl = childNode.$elm
+                const {
+                    top: componentTop,
+                    left: componentLeft
+                } = $childEl.getBoundingClientRect()
+                
+                const styles = {}
+                if (componentTop > boxTop + 3) {
+                    styles['marginTop'] = '8px'
+                }
+                if (componentLeft > boxLeft + 3) {
+                    styles['marginLeft'] = '8px'
+                }
+                if (Object.keys(styles).length > 0) {
+                    childNode.setStyle(styles)
+                }
+            },
             /**
              * @desc 鼠标右键操作面板
              */

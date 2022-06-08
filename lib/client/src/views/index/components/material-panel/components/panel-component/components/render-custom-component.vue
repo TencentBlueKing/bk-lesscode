@@ -36,26 +36,6 @@
                             v-for="component in componentList"
                             :key="component.name"
                             :data="component" />
-                        <div
-                            v-if="group === ExtraGroup.Public"
-                            class="component-introduction"
-                            @mouseenter="handleShowIntroduction(component, $event)"
-                            @mouseleave="handleHideIntroduction">
-                            <i class="bk-icon icon-info-circle" />
-                        </div>
-                        <div
-                            v-if="Object.values(ExtraGroup).includes(group)"
-                            class="favorite-btn"
-                            v-bk-tooltips="{
-                                content: (component.meta && component.meta.favorite) ? '取消收藏' : '添加收藏',
-                                onShow () {
-                                    const inst = $refs[`component-item_${component.name}_${groupIndex}`][0].tippyInstance
-                                    inst && inst.hide()
-                                }
-                            }"
-                            @click.stop="handleClickFavorite(component)">
-                            <i :class="['bk-drag-icon', `bk-drag-favorite${(component.meta && component.meta.favorite) ? '' : '-o' }`]"></i>
-                        </div>
                     </group-box>
                 </template>
                 <group-box
