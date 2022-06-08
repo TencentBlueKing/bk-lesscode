@@ -220,7 +220,7 @@
     "shelljs": "~0.8.4",
     "shx": "~0.3.2",
     "swig": "~1.4.2",
-    "terser-webpack-plugin": "2.3.8",
+    "terser-webpack-plugin": "4.2.2",
     "transliteration": "~2.1.8",
     "ts-loader": "^8.2.0",
     "tslib": "^2.0.3",
