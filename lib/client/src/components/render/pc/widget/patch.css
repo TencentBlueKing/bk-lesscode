@@ -5,11 +5,4 @@
     :global(.bk-sideslider){
         pointer-events: auto !important;
     }
-    :global(.bk-card){
-        :global(.bk-card-head){
-            display: flex;
-            align-items: center;
-            line-height: inherit;
-        }
-    }
 }
