@@ -43,8 +43,13 @@
         },
         computed: {
             hasMaterialConfig () {
-                const keys = Object.keys(this.propsConfig).filter(key => this.propsConfig[key].display !== 'hidden')
-                return keys.length
+                let count = 0
+                Object.keys(this.propsConfig).forEach(propName => {
+                    if (this.propsConfig[propName].type !== 'hidden') {
+                        count++
+                    }
+                })
+                return count > 0
             }
         },
         created () {
