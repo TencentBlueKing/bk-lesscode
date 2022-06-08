@@ -57,18 +57,50 @@
             const nodeCallback = (event) => {
                 if (event.target.componentId === this.componentData.componentId) {
                     this.$forceUpdate()
+                    setTimeout(() => {
+                        this.autoType(event.child)
+                    }, 20)
                 }
             }
 
             LC.addEventListener('appendChild', nodeCallback)
             LC.addEventListener('moveChild', nodeCallback)
+            LC.addEventListener('insertAfter', nodeCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('appendChild', nodeCallback)
                 LC.removeEventListener('moveChild', nodeCallback)
+                LC.removeEventListener('insertAfter', nodeCallback)
             })
         },
         methods: {
-            
+            /**
+             * @desc 自动排版子组件
+             */
+            autoType (childNode) {
+                if (this._isDestroyed) {
+                    return
+                }
+                const {
+                    top: boxTop,
+                    left: boxLeft
+                } = this.$refs.draggable.$el.getBoundingClientRect()
+                const $childEl = childNode.$elm
+                const {
+                    top: componentTop,
+                    left: componentLeft
+                } = $childEl.getBoundingClientRect()
+                
+                const styles = {}
+                if (componentTop > boxTop + 3) {
+                    styles['marginTop'] = '8px'
+                }
+                if (componentLeft > boxLeft + 3) {
+                    styles['marginLeft'] = '8px'
+                }
+                if (Object.keys(styles).length > 0) {
+                    childNode.setStyle(styles)
+                }
+            }
         }
     }
 </script>

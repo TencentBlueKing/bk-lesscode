@@ -34,20 +34,9 @@
                 选中父级
             </div>
             <div
-                v-if="editState.show"
-                :class="{
-                    [$style['button']]: true,
-                    [$style['disabled']]: editState.disabled
-                }"
-                style="font-size: 16px;"
-                v-bk-tooltips.top="editState.tips"
-                @click="handleShowSlot">
-                <i class="bk-drag-icon bk-drag-edit" />
-            </div>
-            <div
                 :class="$style['button']"
                 @click="handleRemove">
-                <i class="bk-drag-icon bk-drag-shanchu" />
+                <i class="bk-drag-icon bk-drag-delet" />
             </div>
         </div>
     </div>
@@ -94,10 +83,7 @@
             // 显示快捷面板
             const handleShowMenu = useShowMenu()
             // 编辑slot文字
-            const {
-                state: editState,
-                edit: handleShowSlot
-            } = useSlot()
+            useSlot()
 
             /**
              * @desc acitve状态
@@ -172,14 +158,12 @@
                 ...toRefs(state),
                 hoverComponentData,
                 activeComponentData,
-                editState,
                 hoverRef,
                 activeRef,
                 handleSaveTemplate,
                 handleSelectParent,
                 handleRemove,
-                handleShowMenu,
-                handleShowSlot
+                handleShowMenu
             }
         }
     }
@@ -219,6 +203,9 @@
             background-color: #dcdee5;
             color: #fff;
             cursor: not-allowed;
+        }
+        &:hover{
+            background: #1964E1;
         }
     }
 </style>

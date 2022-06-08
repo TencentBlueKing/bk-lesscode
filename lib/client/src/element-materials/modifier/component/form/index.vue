@@ -294,6 +294,9 @@
                             code: 'primary',
                             renderValue: 'primary'
                         }))
+                        submitBtnNode.setStyle({
+                            width: '88px'
+                        })
                         // 取消按钮
                         const cancelBtnNode = LC.createNode('bk-button')
                         cancelBtnNode.setRenderSlots({
@@ -303,7 +306,10 @@
                             valueType: 'text',
                             renderValue: '取消'
                         })
-                        cancelBtnNode.setStyle('marginLeft', '10px')
+                        cancelBtnNode.setStyle({
+                            width: '88px',
+                            'marginLeft': '8px'
+                        })
                         actionFormItemNode = LC.createNode('widget-form-item')
                         actionFormItemNode.appendChild(submitBtnNode)
                         actionFormItemNode.appendChild(cancelBtnNode)
