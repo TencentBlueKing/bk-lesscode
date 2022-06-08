@@ -41,8 +41,8 @@
             const pagePath = `${store.getters['page/pageRoute'].layoutPath}${store.getters['page/pageRoute'].layoutPath.endsWith('/') ? '' : '/'}${store.getters['page/pageRoute'].path}`
             const versionId = store.getters['projectVersion/currentVersionId']
 
-            let queryStr = '?platform=MOBILE'
-            queryStr += `${versionId ? `&v=${versionId}` : ''}`
+            let pathStr = `${versionId ? `/version/${versionId}` : ''}`
+            pathStr += '/platform/MOBILE'
 
             emitter.on('update-canvas-size', val => {
                 width.value = val.value.width
@@ -52,7 +52,7 @@
             return {
                 width,
                 height,
-                source: `${location.origin}/preview/project/${projectId}${pagePath}${queryStr}`
+                source: `${location.origin}/preview/project/${projectId}${pathStr}${pagePath}`
             }
         }
     }
