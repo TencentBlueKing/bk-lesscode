@@ -48,7 +48,7 @@
     interface Iprop {
         slotVal?: any,
         slotConfig?: any,
-        change: (slot: any) => void
+        change: (slot: any, type: string) => void
     }
 
     export default defineComponent({
@@ -65,6 +65,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: () => {}
@@ -72,6 +75,8 @@
         },
 
         setup (props) {
+            // copy type 防止响应式更新
+            const type = props.type
             const {
                 slotVal,
                 slotConfig,
@@ -119,7 +124,7 @@
                         }
                     }
                 }
-                change.value(slot)
+                change.value(slot, type)
             }
 
             return {

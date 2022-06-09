@@ -233,7 +233,7 @@
         },
 
         methods: {
-            ...mapActions('variable', ['getAllProjectVariable', 'getAllVariable', 'addVariable', 'editVariable']),
+            ...mapActions('variable', ['getAllProjectVariable', 'addVariable', 'editVariable']),
 
             initData () {
                 const defaultForm = {
@@ -318,8 +318,8 @@
                                     if (this.pageId) {
                                         params.pageCode = this.pageDetail.pageCode
                                     }
+                                    this.$emit('success-save')
                                     resolve()
-                                    return this.getAllVariable(params)
                                 })
                                 .catch((err) => {
                                     if (err?.code === 499) {

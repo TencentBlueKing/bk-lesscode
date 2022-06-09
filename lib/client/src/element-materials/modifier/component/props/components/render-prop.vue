@@ -43,6 +43,7 @@
                     :component-id="componentId"
                     :name="name"
                     :payload="formData.payload"
+                    :render-value="formData.renderValue"
                     :option="variableSelectOptions"
                     @change="handleBuildInVariableChange"
                 />
@@ -548,6 +549,7 @@
                 })
 
                 this.triggerChange()
+                this.triggerUpdateVariable()
             },
             /**
              * @desc format 等于 value 时 编辑 code
@@ -557,6 +559,8 @@
              * @param { Object } payload prop 配置附带的额外信息(eq: type 为 remote 时接口函数相关的配置)
              */
             handleCodeChange (name, value, type, payload = {}) {
+                // 快速切换的情况下，如果type对不上，就不更新
+                if (this.formData.valueType !== getPropValueType(type)) return
                 try {
                     let code = null
                     let renderValue = this.formData.renderValue
@@ -583,13 +587,7 @@
                         renderValue
                     })
                     this.triggerChange()
-
-                    // 如果是自定义变量需要更新变量列表
-                    if (this.formData.buildInVariableType === BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
-                        this.updateVariable({
-                            [this.formData.payload.customVariableCode]: renderValue
-                        })
-                    }
+                    this.triggerUpdateVariable()
                 } catch {
                     this.$bkMessage({
                         theme: 'error',
@@ -605,6 +603,16 @@
                     payload: Object.assign(this.formData.payload, payload)
                 })
                 this.triggerChange()
+                this.triggerUpdateVariable()
+            },
+
+            triggerUpdateVariable () {
+                // 如果是自定义变量需要更新变量列表
+                if (this.formData.buildInVariableType === BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
+                    this.updateVariable({
+                        [this.formData.payload.customVariableCode]: this.formData.renderValue
+                    })
+                }
             },
 
             toggleShowProp () {
