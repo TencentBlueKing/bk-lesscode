@@ -215,7 +215,10 @@
 
             handleInsertFunction (renderGroup, functionData) {
                 // 设置函数名称不重复
-                const functionList = this.groupList.map(group => group.children).flat()
+                const functionList = [
+                    ...this.renderGroupList,
+                    ...this.groupList
+                ].map(group => group.children).flat()
                 while (functionList.some(x => x.funcName === functionData.funcName)) {
                     functionData.funcName += 'Copy'
                 }

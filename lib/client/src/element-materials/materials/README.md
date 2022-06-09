@@ -152,7 +152,7 @@
         default: {
             name: ['bk-table-column'], // 插槽内使用的组件名称
             type: ['table-list', 'remote'], // 插槽数据类型
-            displayName: '表头配置', // 页面展示名称
+            displayName: '表头', // 页面展示名称
             // 插槽数据
             val: [
                 { label: '第一列', prop: 'prop1', sortable: false, type: '' },

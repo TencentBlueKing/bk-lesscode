@@ -16,8 +16,8 @@
         <h3 class="directive-tip">
             编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值
         </h3>
-        <bk-form form-type="vertical" :label-width="280">
-            <bk-form-item
+        <ul>
+            <li
                 v-for="(directive, index) in directiveList"
                 :key="index"
                 class="directive-item">
@@ -45,8 +45,8 @@
                         @change="(val) => handleCodeChange(directive, val)"
                         clearable />
                 </variable-select>
-            </bk-form-item>
-        </bk-form>
+            </li>
+        </ul>
     </section>
 </template>
 
@@ -159,7 +159,7 @@
                     type: 'v-for',
                     prop: '',
                     format: 'variable',
-                    formatInclude: ['value', 'variable'], // v-bind 支持配置（值、变量）
+                    formatInclude: ['value', 'variable', 'expression'],
                     code: '',
                     valueTypeInclude: ['array'],
                     renderValue: 1,
@@ -203,12 +203,11 @@
             renderDirectives.forEach((directive) => {
                 const directiveKey = this.genDirectiveKey(directive)
                 if (lastDirectiveMap[directiveKey]) {
-                    // fix: 错误数据转换，表达式类型的 format 包存成了 value
-                    const isFixedComputeFormat = directive.format === 'value'
-                        && /=/.test(directive.code)
-                        && !/</.test(directive.code)
+                    // fix: 错误数据格式转换，表达式类型的 format 保存成了 value
+                    const isFixedExpressionFormat = directive.format === 'value'
+                        && /[^\.\=><]+[\.\=><\']+[^\.\=><\']+/.test(directive.code)
                     Object.assign(lastDirectiveMap[directiveKey], {
-                        format: isFixedComputeFormat ? 'expression' : directive.format,
+                        format: isFixedExpressionFormat ? 'expression' : directive.format,
                         code: directive.code
                     })
                 }
@@ -263,26 +262,34 @@
                 return res
             },
             /**
-             * @desc directive 值类型切换（值、变量、表达式）
+             * @desc format 切换（值、变量、表达式）
              * @param { Object } directive
              * @param { Object } variableSelectData
              */
             handleVariableFormatChange (directive, variableSelectData) {
+                const {
+                    format,
+                    renderValue,
+                    code
+                } = variableSelectData
+
+                const directiveKey = this.genDirectiveKey(directive)
+
                 this.lastDirectiveMap = Object.freeze({
                     ...this.lastDirectiveMap,
-                    [this.genDirectiveKey(directive)]: {
+                    [directiveKey]: {
                         type: directive.type,
                         prop: directive.prop,
-                        format: variableSelectData.format,
-                        code: variableSelectData.code,
-                        renderValue: variableSelectData.renderValue
+                        format,
+                        code,
+                        renderValue
                     }
                 })
                 this.triggleUpdate()
             },
 
             /**
-             * @desc directive 是值类型时，值得 value 改变
+             * @desc format = value 时 code 改变
              * @param { Object } directive
              * @param { String } value
              */
@@ -310,8 +317,16 @@
     .directive-home {
         margin: 0 10px;
     }
-    .directive-item.bk-form-item {
-        margin: 0 !important;
+    .directive-item {
+        /deep/ .header {
+            height: 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #313238;
+        }
+        &.bk-form-item {
+            margin: 0 !important;
+        }
     }
     .directive-tip {
         margin: 10px 0 0;
@@ -319,14 +334,15 @@
         font-size: 12px;
         font-weight: normal;
     }
+    
     .directive-label {
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        max-width: calc(100 - 80px);
+        line-height: 20px;
+        max-width: calc(100% - 80px);
     }
     .under-line {
-        line-height: 20px;
         border-bottom: 1px dashed #979ba5;
         cursor: pointer;
     }

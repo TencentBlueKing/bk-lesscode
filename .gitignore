@@ -49,3 +49,4 @@ lib/server/project-template/bklesscode-proj*
 
 .codecc
 build.yml
+package-lock.json

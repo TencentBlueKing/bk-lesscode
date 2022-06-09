@@ -33,15 +33,15 @@
                     placements: ['bottom']
                 }" />
         </div>
-        <draw-layout
-            v-if="!isContentLoading && !isCustomComponentLoading"
-            class="lesscode-editor-page-content">
-            <material-panel slot="left" />
-            <operation-area :operation="operationType" />
-            <modifier-panel slot="right" />
-        </draw-layout>
-        <novice-guide ref="guide" :data="guideStep" />
-        <variable-form />
+        <template v-if="!isContentLoading && !isCustomComponentLoading">
+            <draw-layout
+                class="lesscode-editor-page-content">
+                <material-panel slot="left" />
+                <operation-area :operation="operationType" />
+                <modifier-panel slot="right" />
+            </draw-layout>
+            <novice-guide ref="guide" :data="guideStep" />
+        </template>
         <save-template-dialog />
     </main>
 </template>
@@ -51,7 +51,6 @@
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
     import NoviceGuide from '@/components/novice-guide'
-    import VariableForm from '@/components/variable/variable-form'
     import ExtraLinks from '@/components/ui/extra-links'
     import SaveTemplateDialog from '@/components/template/save-template-dialog'
     import DrawLayout from './components/draw-layout'
@@ -64,11 +63,11 @@
     import { syncVariableValue } from './components/utils'
 
     console.dir(LC)
+    window.LC = LC
 
     export default {
         components: {
             NoviceGuide,
-            VariableForm,
             ExtraLinks,
             SaveTemplateDialog,
             DrawLayout,

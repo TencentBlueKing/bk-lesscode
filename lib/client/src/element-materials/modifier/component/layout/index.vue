@@ -25,9 +25,10 @@
 <style lang="postcss" module>
     .title{
         font-size: 12px;
-        height: 20px;
-        line-height: 20px;
+        height: 40px;
+        line-height: 40px;
         font-weight: bold;
+        color: #313238;
     }
     .content{
         display: flex;

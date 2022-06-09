@@ -330,6 +330,12 @@
             align-items: center;
             .form-component {
                 width: 100%;
+                background: #f0f1f5;
+                border-radius: 2px;
+                padding: 8px;
+                &:hover {
+                    box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
+                }
             }
             .buttons {
                 display: flex;

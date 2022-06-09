@@ -191,10 +191,10 @@
                 this.isLoadingCategoryList = true
                 Promise.all([
                     this.getCategoryList({ projectId: this.projectId, versionId: this.currentVersionId }),
-                    this.getCategoryList({ projectId: this.projectId, versionId: this.currentVersionId })
+                    this.getApiList({ projectId: this.projectId, versionId: this.currentVersionId })
                 ]).then(([categoryList, apiList]) => {
                     this.categoryList = categoryList.map((category) => {
-                        const filterApiList = apiList.filter(fun => fun.funcCategoryId === category.id)
+                        const filterApiList = apiList.filter(api => api.categoryId === category.id)
                         category.apiCount = filterApiList.length
                         return category
                     })
@@ -219,7 +219,7 @@
 
             handerSearchCategory () {
                 const searchReg = new RegExp(this.searchCategoryString?.trim(), 'i')
-                this.renderCategoryList = this.categoryList.filter((category) => searchReg.test(category.CategoryName))
+                this.renderCategoryList = this.categoryList.filter((category) => searchReg.test(category.name))
             },
 
             handleCategorySort () {
@@ -260,7 +260,7 @@
             },
 
             handleChangeCategory (category) {
-                this.$set(category, 'tempName', category.CategoryName)
+                this.$set(category, 'tempName', category.name)
                 this.$set(category, 'showChange', true)
                 setTimeout(() => {
                     const el = this.$refs[category.id][0]
@@ -344,7 +344,7 @@
                         reject(new Error('不能创建相同名字的分类'))
                     } else if (nameList.some(x => x === '')) {
                         reject(new Error('分类名不能为空'))
-                    } else if (this.categoryList.find(category => nameList.includes(category.CategoryName))) {
+                    } else if (this.categoryList.find(category => nameList.includes(category.name))) {
                         reject(new Error('分类名重复，请修改后重试'))
                     } else {
                         resolve()

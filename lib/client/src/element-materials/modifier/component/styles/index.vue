@@ -11,7 +11,6 @@
 
 <template>
     <div v-if="config.length">
-        <p class="style-setting-tips">样式面板中设置的样式将覆盖组件自带的默认样式，请谨慎调整</p>
         <position
             v-if="checkConfig('position')"
             :value="lastStyles"
@@ -133,6 +132,9 @@
             this.lastStyles = Object.freeze(Object.assign({}, renderStyles))
 
             const updateCallback = _.debounce((event) => {
+                if (event.target.componentId !== this.componentId) {
+                    return
+                }
                 if (this.isInnerChange) {
                     this.isInnerChange = false
                     return
@@ -172,10 +174,3 @@
         }
     }
 </script>
-
-<style lang="postcss" scoped>
-    .style-setting-tips {
-        font-size: 12px;
-        margin: 10px 5px 5px 14px;
-    }
-</style>

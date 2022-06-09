@@ -64,7 +64,7 @@
                 const { formId, pageCode, pageName } = this.pageDetail
                 return {
                     formId,
-                    pageCode: pageCode + 'formmanage',
+                    pageCode: pageCode + 'manage',
                     pageName: pageName + '_数据管理页'
                 }
             }

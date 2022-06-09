@@ -31,6 +31,8 @@
         computed: {
             ...mapGetters('page', ['pageDetail']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('drag', ['curTemplateData']),
+            ...mapGetters('layout', ['pageLayout']),
             nocodeType () {
                 return this.pageDetail.nocodeType || ''
             },
@@ -52,6 +54,7 @@
                     console.log('FORM_MANAGE')
                     this.saveFormManage()
                 }
+                this.saveTemplate()
             },
             // 保存表单
             async saveFormList () {
@@ -118,6 +121,34 @@
                     })
                 }
                 return result
+            },
+            // 保存导航数据
+            async saveTemplate () {
+                const {
+                    layoutType,
+                    logo,
+                    siteName,
+                    theme,
+                    menuList = [],
+                    topMenuList = [],
+                    renderProps = {}
+                } = this.curTemplateData
+
+                const templateData = layoutType === 'empty' ? {} : {
+                    logo,
+                    siteName,
+                    theme,
+                    menuList,
+                    topMenuList,
+                    renderProps
+                }
+                layoutType !== 'empty' && this.$store.dispatch('layout/update', {
+                    data: {
+                        layoutData: { id: this.pageLayout?.layoutId, content: JSON.stringify(templateData) },
+                        projectId: this.projectId,
+                        versionId: this.versionId
+                    }
+                })
             }
         }
     }
