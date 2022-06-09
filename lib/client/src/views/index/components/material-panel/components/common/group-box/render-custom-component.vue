@@ -90,7 +90,6 @@
             if (this.data.renderStyles && this.data.renderStyles.display) {
                 this.displayClass = this.data.renderStyles.display
             }
-            console.log('print custom comepjt = ', this.data)
             this.favoriteTips = {
                 content: (this.data.meta && this.data.meta.favorite) ? '取消收藏' : '添加收藏',
                 onShow: () => {
