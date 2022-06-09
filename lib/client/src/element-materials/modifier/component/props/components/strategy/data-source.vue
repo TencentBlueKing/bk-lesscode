@@ -50,6 +50,8 @@
         },
 
         setup (props) {
+            // copy type 防止响应式更新
+            const type = props.type
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
 
@@ -66,7 +68,7 @@
                 propStatus.change.value(
                     props.name,
                     val,
-                    props.type,
+                    type,
                     {
                         sourceData: {
                             tableName: tableName

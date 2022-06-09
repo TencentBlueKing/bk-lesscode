@@ -54,7 +54,7 @@
                     <template slot-scope="props">
                         <bk-radio
                             :value="props.row.variableCode === formData.code"
-                            :disabled="props.row.disabled" />
+                            :disabled="props.row.useInfo.disabled" />
                     </template>
                 </bk-table-column>
                 <bk-table-column
@@ -143,6 +143,7 @@
     import remoteExample from '@/element-materials/modifier/component/props/components/strategy/remote-example'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable/index.js'
     import VariableForm from '@/components/variable/variable-form/index.vue'
+    import LC from '@/element-materials/core'
 
     const typeEnum = {
         0: 'string',
@@ -166,7 +167,8 @@
                 required: true
             },
             formData: Object,
-            remoteConfig: Object
+            remoteConfig: Object,
+            isChooseCustomVariable: Boolean
         },
         data () {
             return {
@@ -176,29 +178,16 @@
                 variableFormData: {
                     isShow: false,
                     formData: {}
-                }
+                },
+                wholeVariableList: []
             }
         },
         computed: {
-            ...mapGetters('variable', ['variableList']),
-            /**
-             * @desc 可供选择的完整变量列表
-             * @returns { Array }
-             */
-            wholeVariableList () {
-                return this.variableList.map(variable => {
-                    const variableValueTypeStr = typeEnum[variable.valueType]
-                    return {
-                        ...variable,
-                        disabled: variableValueTypeStr !== 'all'
-                            && (this.options.valueTypeInclude
-                                && !this.options.valueTypeInclude.includes(variableValueTypeStr))
-                    }
-                })
-            }
+            ...mapGetters('variable', ['variableList'])
         },
         
         created () {
+            this.wholeVariableList = this.getVariableList()
             this.renderVarialbeList = Object.freeze(this.wholeVariableList)
 
             this.envTextMap = {
@@ -224,6 +213,57 @@
             }
         },
         methods: {
+            getVariableList () {
+                // 获取已使用的自定义变量 map
+                const customVariableMap = {}
+                const recTree = node => {
+                    if (!node) {
+                        return
+                    }
+                    Object.keys(node.variable).forEach(variablePathKey => {
+                        const variable = node.variable[variablePathKey]
+                        if (variable.type === 'buildIn') {
+                            let key = variable.key
+                            // slot 取配置的 displayname
+                            if (variable.source === 'slot') {
+                                key = node.material?.slots?.[key]?.displayName
+                            }
+                            customVariableMap[variable.code] = {
+                                key,
+                                componentId: node.componentId
+                            }
+                        }
+                    })
+                    node.children.forEach(childNode => recTree(childNode))
+                }
+                // 自定义变量互相不能选择，其余根据值类型过滤
+                if (this.isChooseCustomVariable) {
+                    recTree(LC.getRoot())
+                }
+
+                return this.variableList.map(variable => {
+                    // 变量类型名
+                    const variableValueTypeStr = typeEnum[variable.valueType]
+                    const customVariableInfo = customVariableMap[variable.variableCode]
+                    // 是否不可用
+                    const useInfo = {
+                        disabled: false
+                    }
+                    if (variableValueTypeStr !== 'all'
+                        && (this.options.valueTypeInclude
+                            && !this.options.valueTypeInclude.includes(variableValueTypeStr))) {
+                        useInfo.disabled = true
+                        useInfo.tips = '变量初始类型不适合该属性'
+                    } else if (customVariableInfo) {
+                        useInfo.disabled = true
+                        useInfo.tips = `该变量使用在组件【ID：${customVariableInfo.componentId}】的【${customVariableInfo.key}】的自定义变量中，不可重复使用`
+                    }
+                    return {
+                        ...variable,
+                        useInfo
+                    }
+                })
+            },
             /**
              * @desc 获取变量的默认值
              * @returns { Boolean }
@@ -253,7 +293,7 @@
              * @returns { Boolean }
              */
             getVariableListRowClassName ({ row }) {
-                return row.disabled ? 'variable-disabled' : ''
+                return row.useInfo.disabled ? 'variable-disabled' : ''
             },
             /**
              * @desc 鼠标移入 tips
@@ -263,9 +303,9 @@
              */
             handleRowMouseEnter (index, event, row) {
                 const rowEl = event.currentTarget
-                if (rowEl._tippy || !row.disabled) return
+                if (rowEl._tippy || !row.useInfo.disabled) return
                 const instance = this.$bkPopover(rowEl, {
-                    content: '变量初始类型不适合该属性',
+                    content: row.useInfo.tips,
                     arrow: true,
                     extCls: 'variable-disabled-tips'
                 })
@@ -293,7 +333,7 @@
              * @param { Object } variableData
              */
             handleVariableChange (variableData) {
-                if (variableData.disabled) {
+                if (variableData.useInfo.disabled) {
                     return
                 }
 

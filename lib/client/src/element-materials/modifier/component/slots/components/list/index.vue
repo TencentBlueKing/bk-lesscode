@@ -65,7 +65,7 @@
         // watch,
         computed
     } from '@vue/composition-api'
-    import Icon from '@/components/modifier/icon-select'
+    import Icon from '@/components/modifier/icon-select.vue'
     import configMap from './config.js'
 
     interface ICurrentConfig {
@@ -88,6 +88,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: (slot) => {}
@@ -95,6 +98,7 @@
         },
 
         setup (props) {
+            const type = props.type
             const optionList = ref<Array<any>>(props.slotVal.val)
             const currentConfig = computed<ICurrentConfig>(() => configMap[props.slotVal.component])
 
@@ -103,7 +107,7 @@
                     ...props.slotVal,
                     val: JSON.parse(JSON.stringify(optionList.value))
                 }
-                props.change(slot)
+                props.change(slot, type)
             }
 
             const handleDelete = (index) => {

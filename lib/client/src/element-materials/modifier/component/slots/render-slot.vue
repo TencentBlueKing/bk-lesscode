@@ -81,6 +81,7 @@
             :remote-validate="describe.remoteValidate"
             :slot-val="slotVal"
             :slot-config="describe"
+            :type="formData.valueType"
             :change="handleCodeChange" />
     </variable-select>
 </template>
@@ -425,12 +426,16 @@
                     renderValue: code
                 })
                 this.triggerChange()
+                this.triggerUpdateVariable()
             },
             /**
              * @desc format 等于 value 时，编辑 code 的值
              * @param { Object } valueData
              */
-            handleCodeChange (valueData) {
+            handleCodeChange (valueData, type) {
+                // 快速切换的情况下，如果type对不上，就不更新
+                if (this.formData.valueType !== type) return
+
                 let code = null
                 let renderValue = this.formData.renderValue
                 
@@ -458,13 +463,7 @@
                 })
                 
                 this.triggerChange()
-
-                // 如果是自定义变量需要更新变量列表
-                if (this.formData.buildInVariableType === BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
-                    this.updateVariable({
-                        [this.formData.payload.customVariableCode]: renderValue
-                    })
-                }
+                this.triggerUpdateVariable()
             },
             /**
              * 切换展示 slot 配置区域
@@ -482,6 +481,15 @@
                     payload: Object.assign(this.formData.payload, payload)
                 })
                 this.triggerChange()
+                this.triggerUpdateVariable()
+            },
+            // 如果是自定义变量需要更新变量列表
+            triggerUpdateVariable () {
+                if (this.formData.buildInVariableType === BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
+                    this.updateVariable({
+                        [this.formData.payload.customVariableCode]: this.formData.renderValue
+                    })
+                }
             }
         }
     }

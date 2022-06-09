@@ -1,5 +1,5 @@
 <template>
-    <article class="page-variable-home" v-bkloading="{ isLoading }">
+    <article class="page-variable-home">
         <header class="page-variable-header">
             <h3 class="variable-header-title">本页面可用变量详情
                 <bk-button :text="true" title="primary" @click="showVariableForm" class="add-button">
@@ -25,7 +25,6 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
     import variableTable from '@/components/variable/variable-table.vue'
     import VariableForm from '@/components/variable/variable-form/index.vue'
 
@@ -37,7 +36,6 @@
 
         data () {
             return {
-                isLoading: false,
                 variableFormData: {
                     isShow: false,
                     formData: {}
@@ -46,38 +44,12 @@
         },
 
         computed: {
-            ...mapGetters('page', ['pageDetail']),
-            ...mapGetters('projectVersion', {
-                versionId: 'currentVersionId'
-            }),
-
             projectId () {
                 return this.$route.params.projectId
             }
         },
 
-        created () {
-            this.getList()
-        },
-
         methods: {
-            ...mapActions('variable', ['getAllVariable']),
-
-            getList () {
-                this.isLoading = true
-                const params = {
-                    projectId: this.projectId,
-                    pageCode: this.pageDetail.pageCode,
-                    effectiveRange: 0,
-                    versionId: this.versionId
-                }
-                this.getAllVariable(params).catch((err) => {
-                    this.$bkMessage({ theme: 'error', message: err.message || err })
-                }).finally(() => {
-                    this.isLoading = false
-                })
-            },
-
             showVariableForm () {
                 this.variableFormData = {
                     isShow: true,

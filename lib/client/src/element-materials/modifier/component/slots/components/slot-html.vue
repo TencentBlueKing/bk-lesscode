@@ -16,7 +16,7 @@
                 :value="props.slotVal.val"
                 type="textarea"
                 :rows="5"
-                @blur="val => props.change({ ...props.slotVal,val: val })" />
+                @blur="val => props.change({ ...props.slotVal,val: val }, props.type)" />
         </div>
     </div>
 </template>

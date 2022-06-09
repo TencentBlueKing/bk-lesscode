@@ -67,11 +67,12 @@
                                     :popover-options="{ appendTo: 'parent' }"
                                     :value="item.methodCode"
                                     :multiple="true"
+                                    :key="JSON.stringify(item) + index"
                                     @change="val => handleChange(val, 'methodCode', index)">
                                     <bk-option-group
-                                        v-for="(group, funcIndex) in funcGroups"
+                                        v-for="group in funcGroups"
                                         :name="group.groupName"
-                                        :key="funcIndex">
+                                        :key="group.id">
                                         <bk-option
                                             v-for="option in group.children"
                                             class="function-option"
@@ -182,6 +183,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: (slot) => {}
@@ -193,6 +197,7 @@
         },
 
         setup (props) {
+            const type = props.type
             const column = ref([])
             const showMethod = ref(false)
             const typeList = [
@@ -229,7 +234,7 @@
                     ...props.slotVal,
                     val: JSON.parse(JSON.stringify(column.value))
                 }
-                props.change(slot)
+                props.change(slot, type)
             }
 
             const showMethodDialog = () => {

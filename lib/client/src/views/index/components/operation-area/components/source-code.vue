@@ -44,6 +44,7 @@
         computed: {
             ...mapGetters('page', ['pageDetail']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId', currentVersion: 'currentVersion' }),
+            ...mapGetters('variable', ['variableList']),
             projectId () {
                 return this.$route.params.projectId || ''
             },
@@ -68,7 +69,8 @@
                     projectId,
                     versionId: this.versionId,
                     pageId,
-                    withNav
+                    withNav,
+                    variableData: this.variableList
                 }).then(res => {
                     this.formatCode = res
                 }).finally(() => {
