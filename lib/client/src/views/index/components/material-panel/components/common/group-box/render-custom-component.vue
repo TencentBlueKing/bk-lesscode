@@ -1,6 +1,6 @@
 <template>
     <div
-        class="render-drag-item"
+        class="render-drag-item render-custom-component-item"
         :class="{
             [displayClass]: true,
             favorite: data.meta && data.meta.favorite
@@ -9,30 +9,56 @@
             content: data.displayName,
             disabled: !(data.displayName && data.displayName.length > 8)
         }"
-        :ref="`component-item_${data.name}_${groupIndex}`">
+        ref="root">
         <div class="component-icon">
-            <i class="bk-drag-icon" :class="data.icon || 'bk-drag-custom-comp-default'"></i>
+            <i
+                class="bk-drag-icon"
+                :class="data.icon || 'bk-drag-custom-comp-default'" />
         </div>
-        <div class="component-name" v-if="data.displayName">{{data.displayName}}</div>
+        <div class="component-name">
+            {{data.displayName}}
+        </div>
         <div
-            v-if="group === ExtraGroup.Public"
             class="component-introduction"
             @mouseenter="handleShowIntroduction(data, $event)"
             @mouseleave="handleHideIntroduction">
             <i class="bk-icon icon-info-circle" />
         </div>
         <div
-            v-if="Object.values(ExtraGroup).includes(group)"
+            v-if="publicGroup || favouriteGroup"
             class="favorite-btn"
-            v-bk-tooltips="{
-                content: (data.meta && data.meta.favorite) ? '取消收藏' : '添加收藏',
-                onShow () {
-                    const inst = $refs[`component-item_${data.name}_${groupIndex}`][0].tippyInstance
-                    inst && inst.hide()
-                }
-            }"
+            v-bk-tooltips="favoriteTips"
             @click.stop="handleClickFavorite(data)">
             <i :class="['bk-drag-icon', `bk-drag-favorite${(data.meta.favorite) ? '' : '-o' }`]"></i>
+        </div>
+        <div style="display: none">
+            <div
+                ref="introduction"
+                class="component-introduction-dialog"
+                v-bkloading="{ isLoading: isDiscriptionLoading }">
+                <table>
+                    <tr>
+                        <td class="label">来源项目：</td>
+                        <td>{{ componentIntroduction.projectName }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">最新版本：</td>
+                        <td>{{ componentIntroduction.lastVersion }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">当前版本：</td>
+                        <td>{{ componentIntroduction.version }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">上传人：</td>
+                        <td>{{ componentIntroduction.updateUser }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">组件简介：</td>
+                        <td>{{ componentIntroduction.description }}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -42,12 +68,35 @@
     export default {
         name: '',
         props: {
-            data: Object
+            data: Object,
+            publicGroup: {
+                type: Boolean,
+                default: false
+            },
+            favouriteGroup: {
+                type: Boolean,
+                default: false
+            }
+        },
+        data () {
+            return {
+                isDiscriptionLoading: false,
+                componentIntroduction: {}
+            }
         },
         created () {
+            this.projectId = parseInt(this.$route.params.projectId)
             this.displayClass = ''
             if (this.data.renderStyles && this.data.renderStyles.display) {
                 this.displayClass = this.data.renderStyles.display
+            }
+            console.log('print custom comepjt = ', this.data)
+            this.favoriteTips = {
+                content: (this.data.meta && this.data.meta.favorite) ? '取消收藏' : '添加收藏',
+                onShow: () => {
+                    const inst = this.$refs.root.tippyInstance
+                    inst && inst.hide()
+                }
             }
         },
         methods: {
@@ -117,8 +166,7 @@
                         this.messageSuccess('收藏成功')
                     }
 
-                    // // 更新数据状态
-                    // this.fetchFavoriteList(true)
+                    this.$emit('on-favorite')
                 } catch (e) {
                     console.error(e)
                 }
@@ -140,6 +188,56 @@
     }
 </script>
 <style lang="postcss">
+    .render-custom-component-item{
+        position: relative;
+        &:hover {
+            border: 1px solid #3A84FF;
+            background: #3A84FF;
+            color: #FFF;
+            .component-introduction,
+            .favorite-btn {
+                opacity: 1;
+            }
+        }
+        &.favorite {
+            .favorite-btn {
+                opacity: 1;
+            }
+        }
+        .component-introduction,
+        .favorite-btn {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: -1px;
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            opacity: 0;
+            transition: all .125s ease;
+            .bk-icon,
+            .bk-drag-icon {
+                font-size: 12px;
+                transform: scale(0.9);
+            }
+            .bk-drag-favorite {
+                color: #FE9C00;
+            }
+            &:hover {
+                background: #0E52C2;
+            }
+        }
+        .component-introduction{
+            left: -1px;
+            .bk-drag-icon {
+                color: #fff;
+            }
+        }
+        .favorite-btn{
+            right: -1px;
+        }
+    }
     .custom-component-introduction-theme{
         max-width: 355px;
         min-width: 260px;
