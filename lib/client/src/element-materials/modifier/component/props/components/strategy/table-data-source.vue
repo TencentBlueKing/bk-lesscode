@@ -58,7 +58,7 @@
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
 
-            const chooseTable = ({ tableName, data, table }) => {
+            const chooseTable = ({ tableName, data }) => {
                 chooseTableName.value = tableName
                 propStatus.change.value(
                     props.name,
@@ -66,8 +66,7 @@
                     props.type,
                     {
                         sourceData: {
-                            tableName,
-                            columns: table.columns.map(({ name }) => name)
+                            tableName
                         }
                     }
                 )

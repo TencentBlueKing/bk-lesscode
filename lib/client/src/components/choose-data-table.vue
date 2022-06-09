@@ -43,7 +43,7 @@
             value: String
         },
 
-        setup (_, { emit }) {
+        setup (props, { emit }) {
             const isLoading = ref(false)
             const isLoadingList = ref(false)
             const projectId = router?.currentRoute?.params?.projectId
@@ -90,7 +90,13 @@
                 emit('clear')
             }
 
-            onBeforeMount(getTableList)
+            onBeforeMount(() => {
+                getTableList()
+                // 初始化的时候，需要同步获取最新的表数据
+                if (props.value) {
+                    handleSelectTable(props.value)
+                }
+            })
 
             return {
                 isLoading,
