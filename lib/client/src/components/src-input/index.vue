@@ -64,8 +64,10 @@
             function handleSelectFile (file) {
                 state.isFileModalShow = false
 
-                emit('input', file.url)
-                emit('change', file.url)
+                const url = getFileUrl(file, true)
+
+                emit('input', url)
+                emit('change', url)
             }
 
             function handleOpenFileModal () {

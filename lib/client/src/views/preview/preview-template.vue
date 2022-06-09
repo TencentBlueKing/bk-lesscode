@@ -46,13 +46,16 @@
         },
         data () {
             return {
+                mobileHeight: '812',
+                mobileWidth: '375',
                 isCustomComponentLoading: true,
                 detail: {},
                 pageType: 'preview',
                 comp: 'LoadingComponent',
                 isLoading: false,
                 targetData: [],
-                minHeight: 0
+                minHeight: 0,
+                renderType: 'PC'
             }
         },
         computed: {
@@ -140,6 +143,7 @@
                             pageType: 'previewSingle',
                             fromPageCode: this.detail.fromPageCode
                         })
+                        this.renderType = this.detail?.templateType
                     }
 
                     code = code.replace('export default', 'module.exports =').replace('components: { chart: ECharts },', '')
@@ -160,9 +164,28 @@
                 this.minHeight = window.innerHeight
             }
         },
-        template: ''
-            + '<div v-if="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">'
-            + '<component :is="comp" :is-loading="isLoading"/>'
-            + '</div>'
+        template: `<div v-if="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">
+            <div v-if="renderType === 'MOBILE'" class="area-wrapper">
+                <div class="simulator-wrapper" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px' }">
+                    <div class="device-phone-frame">
+                        <div class="device-phone"></div>
+                    </div>
+                    <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px', overflow: 'auto' }">
+                        <component :is="comp" :is-loading="isLoading"/>
+                    </div>
+                </div>
+            </div>
+            <component v-else :is="comp" :is-loading="isLoading"/>
+        </div>`
     }
 </script>
+
+<style lang="postcss" scoped>
+    @import './../../components/render/mobile/area.scss';
+
+    .area-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>

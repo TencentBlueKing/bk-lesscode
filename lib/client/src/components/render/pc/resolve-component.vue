@@ -44,7 +44,7 @@
     const getRenderStyleDisplayValue = display => {
         switch (display) {
             case 'flex':
-            case 'gird':
+            case 'grid':
             case 'block':
                 return 'block'
             case 'inline-flex':
@@ -207,6 +207,7 @@
                     this.safeStylesOfDisplay()
                     this.safeStyleOfWidth()
                     this.safeStyleOfHeight()
+                    this.safeStyleOfLineHeight()
                     this.updateAlign()
                     this.$forceUpdate()
                     this.$emit('component-update')
@@ -222,6 +223,7 @@
             this.safeStylesOfDisplay()
             this.safeStyleOfWidth()
             this.safeStyleOfHeight()
+            this.safeStyleOfLineHeight()
             this.setDefaultStyleWithAttachToFreelayout()
             this.updateAlign()
             this.componentData.mounted(this.$refs.componentRoot)
@@ -259,7 +261,7 @@
                     })
                     return
                 }
-                
+
                 // 继承组件渲染结果的 display
                 const $baseComponentEl = this.$refs.componentRoot.querySelector(':scope > [lesscode-base-component]')
                 if ($baseComponentEl) {
@@ -368,6 +370,43 @@
                 })
             },
             /**
+             * @desc 保证组件的 line-height 渲染正确
+             *
+             * 渲染实际组件时会包裹一层 div 导致 line-height 与预览页面效果不一致
+             */
+            safeStyleOfLineHeight () {
+                if (this.isShadowComponent) {
+                    return
+                }
+                const componentDataStyle = this.componentData.style
+                
+                // 优先使用自定义配置的 line-height
+                if (_.has(componentDataStyle, 'line-height')
+                    && componentDataStyle['line-height'] !== '') {
+                    this.safeStyles = Object.assign({}, this.safeStyles, {
+                        'line-height': componentDataStyle['line-height']
+                    })
+                    return
+                }
+
+                this.$nextTick(() => {
+                    // 因为异步任务执行的时机问题，此时可能组件已经被销毁
+                    if (!this.$refs.componentRoot) {
+                        return
+                    }
+                    const $baseComponentEl = this.$refs.componentRoot
+                        .querySelector(':scope > [lesscode-base-component]')
+                    if ($baseComponentEl) {
+                        const styleLineHeight = document.defaultView.getComputedStyle($baseComponentEl).lineHeight
+                        if (styleLineHeight) {
+                            this.safeStyles = Object.assign({}, this.safeStyles, {
+                                'line-height': styleLineHeight
+                            })
+                        }
+                    }
+                })
+            },
+            /**
              * @desc 当组件在 freelayout 布局中时需要设置一些默认样式
              */
             setDefaultStyleWithAttachToFreelayout () {
@@ -416,10 +455,15 @@
              */
             handleClick () {
                 LC.clearMenu()
-                this.componentData.active()
+                if (!this.componentData.isActived) {
+                    this.componentData.active()
+                }
             },
             handleDBClick () {
-                console.log('dbdbdb')
+                LC.triggerEventListener('componentDbclick', {
+                    type: 'componentDbclick',
+                    target: this.componentData
+                })
             },
             /**
              * @desc 记录鼠标按下状态，抛出 component-mousedown 事件
@@ -494,7 +538,7 @@
                     flex-shrink: 0;
                 }
             }
-            
+
         }
         &[align-horizontal-left]{
             & > div{
@@ -526,7 +570,7 @@
                     flex-shrink: 0;
                 }
             }
-            
+
         }
         &[align-vertical-top]{
             & > div{

@@ -11,16 +11,30 @@
 
 <template>
     <div class="modifier-props-input-container">
-        <bk-input type="number"
-            style="width: 100%"
-            :class="isError && 'king-input-modifier-style-error'"
-            :value="defaultValue"
-            @change="handleChange" />
+        <div class="bk-form-control" style="width: 100%;">
+            <div class="bk-input-number">
+                <input type="text"
+                    maxlength="10"
+                    style="width: 100%"
+                    class="bk-form-input"
+                    :class="isError && 'king-input-modifier-style-error'"
+                    @keydown="inputKeydownHandler($event)"
+                    v-model="renderValue"
+                    @input="handleChange" />
+                <span class="input-number-option">
+                    <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
+                    <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
+                </span>
+            </div>
+        </div>
+
         <p class="modifier-input-error-text" v-if="isError">{{describe.regErrorText || '格式错误，请重新输入'}}</p>
     </div>
 </template>
 
 <script>
+    import { accAdd, accSub } from '@/common/util'
+
     export default {
         props: {
             defaultValue: {
@@ -46,24 +60,76 @@
         },
         data () {
             return {
-                isError: false
+                isError: false,
+                // 数字输入框中允许输入的键盘按钮的 keyCode 集合
+                validKeyCodeList: [
+                    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, // 0-9
+                    8, // backspace
+                    // 189, // -
+                    // 190, // .
+                    38, 40, 37, 39, // up down left right
+                    46, // del
+                    9 // tab
+                ],
+                renderValue: 0
+            }
+        },
+        watch: {
+            defaultValue: {
+                handler (v) {
+                    this.renderValue = v
+                },
+                immediate: true
             }
         },
         methods: {
-            handleChange (val) {
+            handleChange () {
+                const val = this.renderValue
+                if (val === '') {
+                    this.change(this.name, 0, this.type)
+                    return
+                }
                 const { regExp } = this.describe
                 // 如果配置了正则就先校验 输入的时候从 bk-input 拿到的 val 是字符串
                 if (regExp) {
-                    val = val.toString()
-                    if (val.match(regExp) || val === '') {
-                        this.change(`${this.name}`, parseInt(~~val, 10), this.type)
+                    if (String(val).match(regExp)) {
+                        this.change(this.name, parseInt(val, 10), this.type)
                         this.isError = false
                     } else {
                         this.isError = true
                     }
                 } else {
-                    this.change(`${this.name}`, parseInt(~~val, 10), this.type)
+                    this.change(this.name, parseInt(val, 10), this.type)
                 }
+            },
+
+            /**
+             * 数字文本框获 keydown 事件回调
+             * input type=number 不支持 setSelectionRange
+             *
+             * @param {Object} e 事件对象
+             */
+            inputKeydownHandler (e) {
+                const keyCode = e.keyCode
+                // 键盘按下不允许的按钮
+                if (this.validKeyCodeList.indexOf(keyCode) < 0) {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return false
+                }
+            },
+
+            add () {
+                this.renderValue = accAdd(this.renderValue, 1)
+                this.handleChange()
+            },
+
+            sub () {
+                if (parseFloat(this.renderValue) <= 0) {
+                    return
+                }
+                this.renderValue = accSub(this.renderValue, 1)
+                this.handleChange()
             }
         }
     }

@@ -64,8 +64,8 @@
                     </bk-exception>
                 </div>
             </div>
-            <template-edit-dialog ref="templateEditDialog" :refresh-list="getTemplateList"></template-edit-dialog>
-            <template-import-dialog ref="templateImportDialog" :refresh-list="getTemplateList"></template-import-dialog>
+            <template-edit-dialog ref="templateEditDialog" :refresh-list="refreshData"></template-edit-dialog>
+            <template-import-dialog ref="templateImportDialog" :refresh-list="refreshData"></template-import-dialog>
         </main>
     </section>
 </template>
@@ -89,6 +89,10 @@
             categoryId: {
                 type: Number,
                 default: 0
+            },
+            refreshCategory: {
+                type: Function,
+                default: () => {}
             }
         },
         data () {
@@ -128,6 +132,10 @@
             await this.getTemplateList()
         },
         methods: {
+            refreshData () {
+                this.getTemplateList()
+                this.refreshCategory()
+            },
             async getTemplateList () {
                 this.isLoading = true
                 try {
@@ -196,7 +204,7 @@
                         await this.$store.dispatch('pageTemplate/delete', {
                             templateId: template.id
                         })
-                        this.getTemplateList()
+                        this.refreshData()
                     }
                 })
             },
