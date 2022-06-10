@@ -8,8 +8,9 @@
             @change="trigger">
             <bk-popover
                 v-for="(item, index) in column"
-                class="list-item"
                 :key="`option${index}`"
+                ref="tablePopover"
+                class="list-item"
                 placement="left-start"
                 trigger="click"
                 theme="light"
@@ -87,7 +88,7 @@
                                             <i class="bk-icon icon-info" v-bk-tooltips="option.funcSummary || '该函数暂无描述'"></i>
                                         </bk-option>
                                     </bk-option-group>
-                                    <div slot="extension" style="cursor: pointer;" @click="showMethodDialog">
+                                    <div slot="extension" style="cursor: pointer;" @click="showMethodDialog(index)">
                                         <i class="bk-drag-icon bk-drag-function-fill"></i>函数库
                                     </div>
                                 </bk-select>
@@ -206,6 +207,7 @@
                 // { id: 'expand', name: '展开按钮' },
                 { id: 'index', name: '索引序号列（从 1 开始）' }
             ]
+            const currentInstance = getCurrentInstance()
 
             const handleDelete = (index) => {
                 if (column.value.length === 1) {
@@ -237,11 +239,10 @@
                 props.change(slot, type)
             }
 
-            const showMethodDialog = () => {
-                const currentInstance = getCurrentInstance()
-                const eventChooseComp = currentInstance.$refs.eventChooseComp[0]
-                if (eventChooseComp) {
-                    eventChooseComp.close()
+            const showMethodDialog = (index) => {
+                const tablePopover = currentInstance.proxy.$refs.tablePopover[index]
+                if (tablePopover) {
+                    tablePopover.hideHandler()
                 }
                 showMethod.value = true
             }

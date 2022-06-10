@@ -179,15 +179,40 @@
                     isShow: false,
                     formData: {}
                 },
-                wholeVariableList: []
+                customVariableMap: {}
             }
         },
         computed: {
-            ...mapGetters('variable', ['variableList'])
+            ...mapGetters('variable', ['variableList']),
+
+            wholeVariableList () {
+                return this.variableList.map(variable => {
+                    // 变量类型名
+                    const variableValueTypeStr = typeEnum[variable.valueType]
+                    const customVariableInfo = this.customVariableMap[variable.variableCode]
+                    // 是否不可用
+                    const useInfo = {
+                        disabled: false
+                    }
+                    if (variableValueTypeStr !== 'all'
+                        && (this.options.valueTypeInclude
+                            && !this.options.valueTypeInclude.includes(variableValueTypeStr))) {
+                        useInfo.disabled = true
+                        useInfo.tips = '变量初始类型不适合该属性'
+                    } else if (customVariableInfo) {
+                        useInfo.disabled = true
+                        useInfo.tips = `该变量使用在组件【ID：${customVariableInfo.componentId}】的【${customVariableInfo.key}】的自定义变量中，不可重复使用`
+                    }
+                    return {
+                        ...variable,
+                        useInfo
+                    }
+                })
+            }
         },
         
         created () {
-            this.wholeVariableList = this.getVariableList()
+            this.getVariableList()
             this.renderVarialbeList = Object.freeze(this.wholeVariableList)
 
             this.envTextMap = {
@@ -213,9 +238,8 @@
             }
         },
         methods: {
+            // 获取已使用的自定义变量 map
             getVariableList () {
-                // 获取已使用的自定义变量 map
-                const customVariableMap = {}
                 const recTree = node => {
                     if (!node) {
                         return
@@ -228,7 +252,7 @@
                             if (variable.source === 'slot') {
                                 key = node.material?.slots?.[key]?.displayName
                             }
-                            customVariableMap[variable.code] = {
+                            this.customVariableMap[variable.code] = {
                                 key,
                                 componentId: node.componentId
                             }
@@ -240,29 +264,6 @@
                 if (this.isChooseCustomVariable) {
                     recTree(LC.getRoot())
                 }
-
-                return this.variableList.map(variable => {
-                    // 变量类型名
-                    const variableValueTypeStr = typeEnum[variable.valueType]
-                    const customVariableInfo = customVariableMap[variable.variableCode]
-                    // 是否不可用
-                    const useInfo = {
-                        disabled: false
-                    }
-                    if (variableValueTypeStr !== 'all'
-                        && (this.options.valueTypeInclude
-                            && !this.options.valueTypeInclude.includes(variableValueTypeStr))) {
-                        useInfo.disabled = true
-                        useInfo.tips = '变量初始类型不适合该属性'
-                    } else if (customVariableInfo) {
-                        useInfo.disabled = true
-                        useInfo.tips = `该变量使用在组件【ID：${customVariableInfo.componentId}】的【${customVariableInfo.key}】的自定义变量中，不可重复使用`
-                    }
-                    return {
-                        ...variable,
-                        useInfo
-                    }
-                })
             },
             /**
              * @desc 获取变量的默认值
@@ -333,7 +334,7 @@
              * @param { Object } variableData
              */
             handleVariableChange (variableData) {
-                if (variableData.useInfo.disabled) {
+                if (variableData?.useInfo?.disabled) {
                     return
                 }
 

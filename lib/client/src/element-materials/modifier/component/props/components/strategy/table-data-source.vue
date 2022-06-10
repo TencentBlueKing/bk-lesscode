@@ -60,7 +60,7 @@
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
 
-            const chooseTable = ({ tableName, data }) => {
+            const chooseTable = ({ tableName, data, table }) => {
                 chooseTableName.value = tableName
                 propStatus.change.value(
                     props.name,
@@ -68,7 +68,9 @@
                     type,
                     {
                         sourceData: {
-                            tableName
+                            tableName,
+                            // 表示数据表的表头信息
+                            columns: table?.columns?.map(column => column.name) || []
                         }
                     }
                 )
