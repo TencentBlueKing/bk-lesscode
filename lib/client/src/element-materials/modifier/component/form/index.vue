@@ -33,6 +33,7 @@
                 ghost-class="block-item-ghost"
                 :list="formItemList"
                 handle=".option-col-drag"
+                :group="{ name: 'form-item-list', pull: false, put: false }"
                 @change="handleSort">
                 <transition-group
                     type="transition"
