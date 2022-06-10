@@ -276,15 +276,15 @@
                         axis: { x, y },
                         workflow: this.flowId
                     }
-                    const res = await this.$store.dispatch('setting/createFlowNode', params)
-                    const { axis, type: nodeType, name: nodeName } = res.data
+                    const res = await this.$store.dispatch('nocode/flow/createNode', params)
+                    const { axis, type: nodeType, name: nodeName } = res
                     const addedNode = {
                         id: node.id,
                         x: axis.x,
                         y: axis.y,
                         type: nodeType,
                         name: nodeName,
-                        nodeInfo: cloneDeep(res.data)
+                        nodeInfo: cloneDeep(res)
                     }
                     const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
                     this.canvasData.nodes.splice(index, 1, addedNode)
@@ -363,7 +363,7 @@
             handleDeleteNode (node) {
                 try {
                     this.$refs.flowCanvas.removeNode(node)
-                    this.$store.dispatch('setting/deleteFlowNode', node.nodeInfo.id)
+                    this.$store.dispatch('nocode/flow/delNode', node.nodeInfo.id)
                 } catch (e) {
                     console.log(e)
                 }

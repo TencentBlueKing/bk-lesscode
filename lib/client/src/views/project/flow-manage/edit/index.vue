@@ -38,7 +38,6 @@
     </section>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
@@ -70,11 +69,11 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', {
-                versionId: 'currentVersionId'
-            }),
             projectId () {
                 return this.$route.params.projectId
+            },
+            versionId () {
+                return this.$store.state.projectVersion.currentVersion.id
             }
         },
         watch: {
@@ -95,10 +94,11 @@
             async getFlowList () {
                 this.listLoading = true
                 try {
-                    this.flowList = await this.$store.dispatch('nocode/flow/getFlowList', {
+                    const res = await this.$store.dispatch('nocode/flow/getFlowList', {
                         projectId: this.projectId,
                         versionId: this.versionId
                     })
+                    this.flowList = res.list
                 } catch (err) {
                     messageError(err.message || err)
                 } finally {

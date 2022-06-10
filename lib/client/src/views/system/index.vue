@@ -3,7 +3,7 @@
         <aside class="aside">
             <div class="side-hd">
                 <div class="brand">
-                    <span class="bk-drag-icon app-logo" @click="$router.push('projects')">
+                    <span class="bk-drag-icon app-logo" @click="$router.push('/projects')">
                         <svg aria-hidden="true" width="22" height="22">
                             <use xlink:href="#bk-drag-logo"></use>
                         </svg>

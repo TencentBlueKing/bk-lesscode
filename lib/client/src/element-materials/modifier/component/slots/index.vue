@@ -8,6 +8,7 @@
             :name="slotName"
             :last-value="lastSlots[slotName]"
             :describe="slotConfig"
+            :component-id="componentId"
             @on-change="handleChange" />
     </div>
 </template>
@@ -38,11 +39,13 @@
                 return
             }
             const {
+                componentId,
                 material,
                 renderSlots,
                 layoutSlotType
             } = this.componentNode
             const slotConfig = material.slots || {}
+            this.componentId = componentId
             
             this.config = Object.keys(slotConfig).reduce((result, slotName) => {
                 // slot 支持拖拽就不支持配置
@@ -57,7 +60,10 @@
             }, {})
             this.lastSlots = Object.freeze(_.cloneDeep(renderSlots))
 
-            const updateCallback = _.debounce(() => {
+            const updateCallback = _.debounce((event) => {
+                if (event.target.componentId !== this.componentId) {
+                    return
+                }
                 if (this.isInnerChange) {
                     this.isInnerChange = false
                     return
@@ -67,8 +73,10 @@
             }, 100)
 
             LC.addEventListener('setRenderSlots', updateCallback)
+            LC.addEventListener('setSlot', updateCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('setRenderSlots', updateCallback)
+                LC.removeEventListener('setSlot', updateCallback)
             })
         },
 
@@ -88,7 +96,5 @@
 <style lang="postcss" scoped>
     .modifier-slot {
         margin: 0 10px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #ccc;
     }
 </style>

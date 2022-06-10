@@ -11,7 +11,6 @@
 
 <script>
     import Vue from 'vue'
-    import LC from '@/element-materials/core'
     import httpVueLoader from '@/common/http-vue-loader'
 
     window.previewCustomCompontensPlugin = []
@@ -47,13 +46,16 @@
         },
         data () {
             return {
+                mobileHeight: '812',
+                mobileWidth: '375',
                 isCustomComponentLoading: true,
                 detail: {},
                 pageType: 'preview',
                 comp: 'LoadingComponent',
                 isLoading: false,
                 targetData: [],
-                minHeight: 0
+                minHeight: 0,
+                renderType: 'PC'
             }
         },
         computed: {
@@ -110,10 +112,10 @@
                 this.isLoading = true
                 try {
                     if (this.type !== 'nav-template') {
-                        this.targetData.push(LC.parseTemplate(JSON.parse(this.detail.content || {})).toJSON())
+                        this.targetData.push(JSON.parse(this.detail.content || {}))
                     }
                 } catch (err) {
-                    this.$bkMesseage({
+                    this.$bkMessage({
                         theme: 'error',
                         message: 'targetData格式错误'
                     })
@@ -141,6 +143,7 @@
                             pageType: 'previewSingle',
                             fromPageCode: this.detail.fromPageCode
                         })
+                        this.renderType = this.detail?.templateType
                     }
 
                     code = code.replace('export default', 'module.exports =').replace('components: { chart: ECharts },', '')
@@ -151,7 +154,7 @@
                         this.isLoading = false
                     }, 300)
                 } catch (err) {
-                    this.$bkMesseage({
+                    this.$bkMessage({
                         theme: 'error',
                         message: err.message || err
                     })
@@ -161,9 +164,28 @@
                 this.minHeight = window.innerHeight
             }
         },
-        template: ''
-            + '<div v-if="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">'
-            + '<component :is="comp" :is-loading="isLoading"/>'
-            + '</div>'
+        template: `<div v-if="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">
+            <div v-if="renderType === 'MOBILE'" class="area-wrapper">
+                <div class="simulator-wrapper" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px' }">
+                    <div class="device-phone-frame">
+                        <div class="device-phone"></div>
+                    </div>
+                    <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px', overflow: 'auto' }">
+                        <component :is="comp" :is-loading="isLoading"/>
+                    </div>
+                </div>
+            </div>
+            <component v-else :is="comp" :is-loading="isLoading"/>
+        </div>`
     }
 </script>
+
+<style lang="postcss" scoped>
+    @import './../../components/render/mobile/area.scss';
+
+    .area-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>

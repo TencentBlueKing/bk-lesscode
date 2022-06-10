@@ -96,7 +96,7 @@
 - 蓝鲸制品库服务（非必须）： 若需要使用到平台的自定义组件功能开发模块，请事先搭建 [蓝鲸制品库服务](https://github.com/Tencent/bk-ci/tree/master/src/backend/storage/core)， **搭建时并开启npm-registry**
 
 ## 分支说明
-可视化开发平台使用 lesscode-develop, lesscode-master 两个分支进行迭代。其中 lesscode-master 为稳定版分支，每次 release 都会基于这个分支；lesscode-develop 为日常开发的分支，给可视化开发平台贡献代码统一向主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/tree/lesscode-master) 的  [lesscode-develop](https://github.com/TencentBlueKing/bk-lesscode/tree/lesscode-develop) 分支提 pr。
+可视化开发平台使用 develop, master 两个分支进行迭代。其中 master 为稳定版分支，每次 release develop 为日常开发的分支，给可视化开发平台贡献代码统一向主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/tree/master) 的  [develop](https://github.com/TencentBlueKing/bk-lesscode/tree/develop) 分支提 pr。
 
 ## 安装部署
 - [本地开发部署](./docs/install/dev_install.md)

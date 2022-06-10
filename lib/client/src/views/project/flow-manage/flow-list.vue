@@ -4,9 +4,14 @@
             <bk-button theme="primary" @click="isCreateDialogShow = true">新建</bk-button>
             <div class="search-wrapper">
                 <bk-input
+                    v-model="keyword"
                     placeholder="请输入流程名称"
                     style="width: 360px;"
-                    right-icon="bk-icon icon-search">
+                    right-icon="bk-icon icon-search"
+                    :clearable="true"
+                    @change="handleKeywordChange"
+                    @clear="handleSearch"
+                    @enter="handleSearch">
                 </bk-input>
                 <div class="archived-icon" @click="$router.push({ name: 'flowArchivedList' })">
                     <i class="bk-drag-icon bk-drag-countdown"></i>
@@ -47,21 +52,26 @@
                         :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
                         编辑
                     </router-link>
-                    <bk-button
-                        style="margin-left: 17px;"
-                        theme="primary"
-                        :text="true"
-                        @click="handleArchiveClick(row.id, $event)">
-                        归档
-                    </bk-button>
+                    <bk-popconfirm
+                        trigger="click"
+                        width="350"
+                        @confirm="handleArchiveConfirm">
+                        <bk-button
+                            style="margin-left: 17px;"
+                            theme="primary"
+                            :text="true"
+                            @click="archiveId = row.id">
+                            归档
+                        </bk-button>
+                        <div slot="content" class="archive-tips-content">
+                            <h4>确认归档该流程？</h4>
+                            <p>1. 流程归档后，将不能使用，包括流程的表单页面将会被删除，请谨慎操作！</p>
+                            <p>2. 后续可通过归档列表恢复使用。</p>
+                        </div>
+                    </bk-popconfirm>
                 </template>
             </bk-table-column>
         </bk-table>
-        <!-- <div id="flow-archive-content">
-            <h4>确认归档该流程？</h4>
-            <p>1. 流程归档后，将不能使用，包括流程的表单页面将会被删除，请谨慎操作！</p>
-            <p>2. 后续可通过归档列表恢复使用。</p>
-        </div> -->
         <bk-dialog
             title="新建流程"
             header-position="left"
@@ -76,8 +86,8 @@
                 form-type="vertical"
                 :model="newFlowData"
                 :rules="flowDataRule">
-                <bk-form-item label="流程名称" property="name" :required="true">
-                    <bk-input v-model="newFlowData.name" />
+                <bk-form-item label="流程名称" property="flowName" :required="true">
+                    <bk-input v-model="newFlowData.flowName" />
                 </bk-form-item>
                 <bk-form-item label="流程描述" property="desc">
                     <bk-input v-model="newFlowData.summary" type="textarea" :row="4" />
@@ -93,7 +103,6 @@
 <script>
     import dayjs from 'dayjs'
     import { messageError } from '@/common/bkmagic'
-    import { mapGetters } from 'vuex'
 
     export default {
         name: 'flowList',
@@ -109,19 +118,20 @@
                 pagination: {
                     current: 1,
                     count: 0,
-                    limit: 15
+                    limit: 10
                 },
                 newFlowData: {
-                    name: '',
+                    flowName: '',
                     summary: ''
                 },
                 flowDataRule: {
-                    name: [{
+                    flowName: [{
                         required: true,
                         trigger: 'blur',
                         message: '必填项'
                     }]
                 },
+                keyword: '',
                 archiveId: null,
                 archivePopover: null,
                 isCreateDialogShow: false,
@@ -129,11 +139,11 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', {
-                versionId: 'currentVersionId'
-            }),
             projectId () {
                 return this.$route.params.projectId
+            },
+            versionId () {
+                return this.$store.state.projectVersion.currentVersion.id
             }
         },
         mounted () {
@@ -142,11 +152,20 @@
         methods: {
             async getFlowList () {
                 this.listLoading = true
+                const params = {
+                    projectId: this.projectId,
+                    versionId: this.versionId,
+                    pageSize: this.pagination.limit,
+                    page: this.pagination.current
+                }
+                if (this.keyword) {
+                    params.flowName = this.keyword.trim()
+                }
                 try {
-                    this.flowList = await this.$store.dispatch('nocode/flow/getFlowList', {
-                        projectId: this.projectId,
-                        versionId: this.versionId
-                    })
+                    const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
+                    const { list, count } = res
+                    this.flowList = list
+                    this.pagination.count = count
                 } catch (err) {
                     messageError(err.message || err)
                 } finally {
@@ -157,9 +176,9 @@
                 this.$refs.createForm.validate().then(async () => {
                     this.createPending = true
                     try {
-                        const { name, summary } = this.newFlowData
+                        const { flowName, summary } = this.newFlowData
                         const params = {
-                            name,
+                            flowName,
                             summary,
                             projectId: this.projectId,
                             versionId: this.versionId
@@ -176,32 +195,43 @@
             },
             handleCreateDialogClose () {
                 this.isCreateDialogShow = false
-                this.newFlowData = { name: '', summary: '' }
+                this.newFlowData = { flowName: '', summary: '' }
             },
-            handleArchiveClick (id, e) {
-                // if (this.archiveId === id) {
-                //     return
-                // }
-                // const $self = this
-                // this.archiveId = id
-                // this.archivePopover = this.$bkPopover(e.target, {
-                //     allowHTML: true,
-                //     content: this.$el.querySelector('#flow-archive-content'),
-                //     arrow: false,
-                //     theme: 'light',
-                //     trigger: 'click',
-                //     onHide () {
-                //         console.log(this)
-                //         this.destroy()
-                //         console.log($self.archivePopover)
-                //     }
-                // })
-                // this.archivePopover.show()
+            async handleArchiveConfirm () {
+                try {
+                    const params = {
+                        id: this.archiveId,
+                        deleteFlag: 1
+                    }
+                    await this.$store.dispatch('nocode/flow/editFlow', params)
+                    this.archiveId = ''
+                    if (this.flowList.length === 1 && this.pagination.current > 1) {
+                        this.pagination.current -= 1
+                    }
+                    this.getFlowList()
+                } catch (e) {
+                    messageError(e.message || e)
+                }
             },
-            handleArchiveConfirm () {},
-            handleArchiveCancel () {},
-            handlePageChange () {},
-            handlePageLimitChange () {}
+            handlePageChange (val) {
+                this.pagination.current = val
+                this.getFlowList()
+            },
+            handlePageLimitChange (val) {
+                this.pagination.current = 1
+                this.pagination.limit = val
+                this.getFlowList()
+            },
+            // 删除搜索关键字
+            handleKeywordChange (val) {
+                if (!val) {
+                    this.handleSearch()
+                }
+            },
+            handleSearch (val) {
+                this.pagination.current = 1
+                this.getFlowList()
+            }
         }
     }
 </script>
@@ -239,6 +269,21 @@
                 font-size: 14px;
                 transform: rotateY(180deg);
                 color: #63656e;
+            }
+        }
+    }
+    .archive-tips-content {
+        h4 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            font-weight: normal;
+            color: #313238;
+        }
+        p {
+            color: #63656e;
+            font-size: 12px;
+            &:last-child {
+                margin-bottom: 16px;
             }
         }
     }

@@ -226,12 +226,13 @@
             },
             handlePreviewPcProject () {
                 // 跳转到预览入口页面
-                const versionQuery = `${this.versionId ? `?v=${this.versionId}` : ''}`
-                window.open(`/preview/project/${this.projectId}/${versionQuery}`, '_blank')
+                const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                window.open(`/preview/project/${this.projectId}${versionPath}/`, '_blank')
             },
             handlePreviewMobileProject () {
                 // 跳转到预览入口页面
-                window.open(`/preview-mobile/project/${this.projectId}`, '_blank')
+                const versionQuery = `${this.versionId ? `?version=${this.versionId}` : ''}`
+                window.open(`/preview-mobile/project/${this.projectId}${versionQuery}`, '_blank')
             },
             async handleCopy (page) {
                 this.action = 'copy'
@@ -333,12 +334,12 @@
                 }
 
                 // 跳转到预览入口页面
-                const versionQuery = `${this.versionId ? `&v=${this.versionId}` : ''}`
-                
                 if (page.pageType === 'MOBILE') {
-                    window.open(`/preview-mobile/project/${this.projectId}?pagePath=${route.fullPath}&pageCode=${page.pageCode}`, '_blank')
+                    const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
+                    window.open(`/preview-mobile/project/${this.projectId}?pagePath=${route.fullPath}&pageCode=${page.pageCode}${versionQuery}`, '_blank')
                 } else {
-                    const routerUrl = `/preview/project/${this.projectId}${route.fullPath}?pageCode=${page.pageCode}${versionQuery}`
+                    const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                    const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${page.pageCode}`
                     window.open(routerUrl, '_blank')
                 }
             },

@@ -1,5 +1,5 @@
 <template>
-    <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb }]">
+    <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
         <aside class="aside">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
@@ -18,7 +18,9 @@
                     </bk-option>
                 </bk-select>
             </div>
-            <div class="side-bd" :class="{ 'no-click': pageLoading }">
+            <div class="side-bd" :class="{ 'no-click': pageLoading }"
+                @mouseenter="asideHover = true"
+                @mouseleave="asideHover = false">
                 <!-- <nav class="nav-list">
                     <router-link tag="div" class="nav-item" v-for="item in navList" :key="item.title" :to="item.toPath">
                         <i :class="`bk-drag-icon bk-drag-${item.icon}`"></i>{{ item.title }} <i v-if="item.redPoint" class="red-point"></i>
@@ -51,6 +53,11 @@
                         </div>
                     </bk-navigation-menu-item>
                 </bk-navigation-menu>
+            </div>
+            <div class="side-ft">
+                <span class="nav-toggle" @click="asideFolded = !asideFolded">
+                    <i class="bk-drag-icon bk-drag-nav-toggle"></i>
+                </span>
             </div>
         </aside>
         <div class="breadcrumbs" v-if="hasBreadcrumb">
@@ -128,12 +135,26 @@
                                 }
                             },
                             {
+                                title: '凭证管理',
+                                url: 'credential',
+                                toPath: {
+                                    name: 'credential'
+                                }
+                            },
+                            {
                                 title: '页面模板库',
                                 url: 'templateManage',
                                 toPath: {
                                     name: 'templateManage'
                                 },
                                 redPoint: true
+                            },
+                            {
+                                title: '文件库',
+                                url: 'fileManage',
+                                toPath: {
+                                    name: 'fileManage'
+                                }
                             },
                             {
                                 title: '布局模板实例',
@@ -147,13 +168,6 @@
                                 url: 'variableManage',
                                 toPath: {
                                     name: 'variableManage'
-                                }
-                            },
-                            {
-                                title: '文件库',
-                                url: 'fileManage',
-                                toPath: {
-                                    name: 'fileManage'
                                 }
                             }
                         ]
@@ -243,7 +257,9 @@
                     'item-child-icon-active-color': '#3A84FF'
 
                 },
-                defaultOpen: true
+                defaultOpen: true,
+                asideFolded: false,
+                asideHover: false
             }
         },
         computed: {
@@ -269,7 +285,7 @@
         },
         watch: {
             '$route' (to, from) {
-                this.defaultActive = to.name
+                this.setDefaultActive()
             }
         },
         async created () {
@@ -289,10 +305,25 @@
             }
         },
         async mounted () {
-            this.defaultActive = this.$route.name
             this.defaultOpen = false
+            this.setDefaultActive()
         },
         methods: {
+            setDefaultActive () {
+                let name = this.$route.name
+                // 数据源管理子页面，左侧数据源管理依然高亮选中
+                if ([
+                    'tableList',
+                    'createTable',
+                    'editTable',
+                    'showTable',
+                    'updateTableRecord',
+                    'dataManage'
+                ].includes(name)) {
+                    name = 'tableList'
+                }
+                this.defaultActive = name
+            },
             toProjects () {
                 this.$router.push({
                     name: 'projects'
@@ -347,12 +378,53 @@
 
     .project-layout {
         --side-hd-height: 52px;
+        --side-ft-height: 50px;
         --aside-width: 258px;
         --footer-height: 50px;
         --breadcrumb-height: 52px;
+        --aside-folded-width: 60px;
         min-width: 1280px;
         height: calc(100vh - 68px);
         margin-top: 64px;
+
+        &.aside-folded:not(.aside-hover) {
+            .aside {
+                width: var(--aside-folded-width);
+                .side-hd {
+                    justify-content: center;
+
+                    .seperate-line,
+                    .template-logo,
+                    .select-project {
+                        display: none;
+                    }
+                }
+                .side-bd {
+                    overflow: hidden;
+                }
+                .side-ft {
+                    .nav-toggle {
+                        transform: rotate(0);
+                    }
+                }
+            }
+
+            .nav-list {
+                .navigation-menu-item-name {
+                    text-overflow: clip;
+                }
+                .navigation-sbmenu-content {
+                    height: 0 !important;
+                    overflow: hidden !important;
+                }
+                .navigation-sbmenu-title-arrow {
+                    display: none;
+                }
+                .navigation-sbmenu-title-content {
+                    text-overflow: clip;
+                }
+            }
+        }
 
         .aside {
             position: relative;
@@ -403,6 +475,30 @@
                 height: calc(100% - var(--side-hd-height) - var(--side-ft-height, 0px));
                 overflow-y: auto;
                 @mixin scroller;
+            }
+            .side-ft {
+                position: absolute;
+                bottom: 0;
+                height: var(--side-ft-height);
+                line-height: var(--side-ft-height);
+                width: 100%;
+                background: #fff;
+                padding-left: 12px;
+
+                .nav-toggle {
+                    width: 32px;
+                    height: 32px;
+                    line-height: 32px;
+                    cursor: pointer;
+                    display: inline-block;
+                    text-align: center;
+                    transform: rotate(180deg);
+                    transition: transform .2s cubic-bezier(0.4, 0, 0.2, 1);
+
+                    &:hover {
+                        opacity: .8;
+                    }
+                }
             }
             .no-click {
                 pointer-events: none;

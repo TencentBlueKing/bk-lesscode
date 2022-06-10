@@ -1,5 +1,9 @@
 <template>
-    <choose-data-table :value="chooseTableName" @choose="chooseTable"></choose-data-table>
+    <choose-data-table
+        :value="chooseTableName"
+        @choose="chooseTable"
+        @clear="clearTable"
+    ></choose-data-table>
 </template>
 
 <script lang="ts">
@@ -40,11 +44,19 @@
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.slotVal?.value?.payload?.sourceData?.tableName)
 
-            const chooseTable = (tableName, result) => {
+            const chooseTable = ({ tableName, data }) => {
+                triggleUpdate(tableName, data.list)
+            }
+
+            const clearTable = () => {
+                triggleUpdate('', propStatus.slotConfig.value.val)
+            }
+
+            const triggleUpdate = (tableName, val) => {
                 chooseTableName.value = tableName
                 const slot = {
                     ...propStatus.slotVal.value,
-                    val: result.list,
+                    val,
                     payload: {
                         sourceData: {
                             tableName
@@ -56,7 +68,8 @@
 
             return {
                 chooseTableName,
-                chooseTable
+                chooseTable,
+                clearTable
             }
         }
     })
