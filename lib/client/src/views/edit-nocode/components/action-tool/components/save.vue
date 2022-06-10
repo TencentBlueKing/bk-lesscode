@@ -59,6 +59,7 @@
                 }
                 const formData = {
                     content,
+                    formName: this.pageDetail.pageName,
                     tableName: this.pageDetail.pageCode,
                     projectId: this.projectId,
                     versionId: this.versionId
