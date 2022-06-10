@@ -1,11 +1,17 @@
 <template>
     <div class="worksheet-data-wrapper">
+        <!-- 当前版本只有本应用表单 后续可能加上  暂时保留-->
+        <!--        <bk-radio-group-->
+        <!--            style="margin-bottom: 24px;"-->
+        <!--            :value="localVal.target.project_key === appId"-->
+        <!--            @change="handleChangeFormType">-->
+        <!--            <bk-radio :value="true">本应用表单</bk-radio>-->
+        <!--            <bk-radio :value="false">其他应用表单</bk-radio>-->
+        <!--        </bk-radio-group>-->
         <bk-radio-group
             style="margin-bottom: 24px;"
-            :value="localVal.target.project_key === appId"
-            @change="handleChangeFormType">
+            :value="localVal.target.project_key === appId">
             <bk-radio :value="true">本应用表单</bk-radio>
-            <bk-radio :value="false">其他应用表单</bk-radio>
         </bk-radio-group>
         <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="formModel" :rules="sourceRules">
             <bk-form-item v-if="changeSource" label="数据源" :required="true" error-display-type="normal">
@@ -34,7 +40,7 @@
                     :disabled="formListLoading"
                     :loading="formListLoading"
                     @selected="handleSelectForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.name || item.id"></bk-option>
                 </bk-select>
             </bk-form-item>
             <bk-form-item label="字段" property="field" :required="true" error-display-type="normal">
@@ -125,6 +131,7 @@
     import cloneDeep from 'lodash.clonedeep'
     import { getFieldConditions } from '../../../../common/form'
     import FieldValue from '../fieldValue'
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'WorksheetData',
@@ -188,6 +195,7 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             // 传入bk-form用来做表单校验
             formModel () {
                 const { field, target } = this.localVal
@@ -195,19 +203,22 @@
             }
         },
         watch: {
-            value (val) {
+            value (val, oldVal) {
                 this.localVal = cloneDeep(val)
+                if (val.id !== oldVal.id) {
+                    this.getFormList()
+                }
             }
         },
         created () {
-            this.getAppList()
+            // this.getAppList()
             this.getFormList()
             if (this.value.target.worksheet_id) {
                 this.getFieldList()
             }
-            if (this.useVariable) {
-                this.getRelationList()
-            }
+            // if (this.useVariable) {
+            //     this.getRelationList()
+            // }
         },
         methods: {
             // 获取有访问数据权限的应用列表
@@ -226,25 +237,28 @@
                 try {
                     this.formListLoading = true
                     const params = {
-                        project_key: this.localVal.target.project_key,
-                        page_size: 10000
+                        projectId: this.$route.params.projectId,
+                        versionId: this.versionId
                     }
                     const res = await this.$store.dispatch('nocode/formSetting/getFormList', params)
-                    this.formList = res.data.items
+                    this.formList = res
+                    console.log(this.formList)
                     this.formListLoading = false
                 } catch (e) {
                     console.error(e)
                 }
             },
-            async getFieldList () {
-                try {
-                    this.fieldListLoading = true
-                    const res = await this.$store.dispatch('nocode/formSetting/getFormFields', this.localVal.target.worksheet_id)
-                    this.fieldList = res.data
-                    this.fieldListLoading = false
-                } catch (e) {
-                    console.error(e)
-                }
+            async getFieldList (id) {
+                console.log(id)
+                this.fieldList = JSON.parse(this.formList.find(item => item.id === id).content)
+                // try {
+                //     this.fieldListLoading = true
+                //     const res = await this.$store.dispatch('nocode/formSetting/getFormFields', this.localVal.target.worksheet_id)
+                //     this.fieldList = res.data
+                //     this.fieldListLoading = false
+                // } catch (e) {
+                //     console.error(e)
+                // }
             },
             async getRelationList () {
                 try {
@@ -322,7 +336,7 @@
                 this.localVal.conditions.connector = ''
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
-                this.getFieldList()
+                this.getFieldList(val)
                 this.update()
             },
             // 选择筛选条件字段

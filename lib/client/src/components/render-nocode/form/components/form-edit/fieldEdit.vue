@@ -44,6 +44,39 @@
                         <bk-radio value="COL_12" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
+                <bk-form-item v-if="fieldProps.fieldsDataSource.includes(fieldData.type)" label="数据源">
+                    <bk-select
+                        :value="fieldData.source_type"
+                        :clearable="false"
+                        @selected="handleSourceTypeChange">
+                        <bk-option v-for="item in sourceTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                    </bk-select>
+                    <bk-select
+                        class="mt8"
+                        v-if="fieldData.source_type === 'API'"
+                        v-model="fieldData.api_info.remote_system_id"
+                        placeholder="请选择接口"
+                        :clearable="false"
+                        :disabled="systemListLoading"
+                        :loading="systemListLoading"
+                        @selected="handleSelectSystem">
+                        <bk-option v-for="item in systemList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                    </bk-select>
+                    <!--                    <bk-select-->
+                    <!--                        class="mt8"-->
+                    <!--                        v-if="fieldData.source_type === 'API'"-->
+                    <!--                        v-model="fieldData.api_info.remote_api_id"-->
+                    <!--                        placeholder="请选择接口"-->
+                    <!--                        :clearable="false"-->
+                    <!--                        :disabled="systemApisLoading"-->
+                    <!--                        :loading="systemApisLoading"-->
+                    <!--                        @selected="handleSelectApi">-->
+                    <!--                        <bk-option v-for="item in apiList" :key="item.id" :id="item.id" :name="item.name"></bk-option>-->
+                    <!--                    </bk-select>-->
+                    <bk-button class="mt8" :theme="'primary'" :title="'配置'" @click="dataSourceDialogShow = true" :disabled="isConfigDataSourceDisabled">
+                        配置数据源
+                    </bk-button>
+                </bk-form-item>
                 <bk-divider />
                 <div class="group-name">
                     <i
@@ -78,20 +111,6 @@
                         </li>
                     </ul>
                 </bk-form-item>
-                <bk-form-item v-if="fieldProps.fieldsDataSource.includes(fieldData.type)" label="下拉数据源">
-                    <div class="source-data">
-                        <bk-select
-                            :value="fieldData.source_type"
-                            :clearable="false"
-                            style="width: 200px"
-                            @selected="handleSourceTypeChange">
-                            <bk-option v-for="item in sourceTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                        </bk-select>
-                        <bk-button :theme="'default'" :title="'配置'" @click="dataSourceDialogShow = true">
-                            配置
-                        </bk-button>
-                    </div>
-                </bk-form-item>
                 <bk-form-item label="填写属性" v-if="!handleIsFolded">
                     <div class="attr-value">
                         <div class="contidion">
@@ -117,8 +136,8 @@
                                 @change="handleChangeValidataType">
                                 必填
                                 <span v-bk-tooltips="htmlConfig"
-                                    class="top-middle">
-                                    <i class="bk-icon icon-info-circle-shape"></i>
+                                    style="color:#313238 ">
+                                    <i class="bk-icon icon-question-circle"></i>
                                 </span>
                             </bk-checkbox>
                             <span v-show="fieldData.validate_type === 'REQUIRE'" @click="requireConfigShow = true">条件编辑</span>
@@ -281,6 +300,8 @@
             :source-type="fieldData.source_type"
             :field-type="fieldData.type"
             :value="sourceData"
+            :api-detail="apiDetail"
+            :res-array-tree-data="resArrayTreeData"
             @confirm="handleDataSourceChange">
         </data-source-dialog>
         <config-desc-comp-value-dialog
@@ -309,6 +330,8 @@
     } from '../../constant/forms'
 
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
+    import { mapGetters } from 'vuex'
+    import { transSchemeToArrayTypeTree } from '../../../common/apiScheme'
 
     export default {
         name: 'formEdit',
@@ -348,6 +371,10 @@
                     fieldsShowDefaultValue: FIELDS_SHOW_DEFAULT_VALUE,
                     fieldsDataSource: DATA_SOURCE_FIELD
                 },
+                systemList: [],
+                systemListLoading: false,
+                apiDetail: {},
+                resArrayTreeData: [],
                 alignList: [{ id: 'left', name: '居左' }, { id: 'right', name: '居右' }, { id: 'center', name: '居中' }],
                 dataSourceDialogShow: false,
                 readerOnlyShow: false,
@@ -357,18 +384,25 @@
                 fileVal: '',
                 htmlConfig: {
                     allowHtml: true,
-                    width: 240,
+                    width: 232,
                     content: '#require-tips',
                     placement: 'top-start'
                 }
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            projectId () {
+                return this.$route.params.projectId
+            },
             sourceTypeList () {
                 if (this.fieldData.type === 'TABLE') {
                     return FIELDS_SOURCE_TYPE.filter(item => item.id === 'CUSTOM')
                 }
                 return FIELDS_SOURCE_TYPE
+            },
+            isConfigDataSourceDisabled () {
+                return this.fieldData.source_type === 'API' && !this.fieldData.api_info.remote_system_id
             },
             sourceData () {
                 const { source_type: sourceType, choice, meta, api_info: apiInfo, kv_relation: kvRelation } = this.fieldData
@@ -392,8 +426,16 @@
                 if (val.type !== oldVal.type) {
                     this.regexList = this.getRegexList(val)
                 }
+                if (this.fieldProps.fieldsDataSource.includes(val.type)) {
+                    this.getSystems()
+                }
                 this.defaultData = this.getDefaultData()
                 this.fieldData = cloneDeep(val)
+            }
+        },
+        created () {
+            if (this.fieldProps.fieldsDataSource.includes(this.fieldData.type)) {
+                this.getSystems()
             }
         },
         methods: {
@@ -542,6 +584,28 @@
                     }
                 }
                 this.change()
+            },
+            // 获取系统列表
+            async getSystems () {
+                try {
+                    this.systemListLoading = true
+                    const params = {
+                        projectId: this.projectId,
+                        versionId: this.versionId
+                    }
+                    this.systemList = await this.$store.dispatch('nocode/formSetting/getRemoteSystem', params)
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.systemListLoading = false
+                }
+            },
+            async handleSelectSystem (val) {
+                this.setFormData(val)
+            },
+            setFormData (apiId) {
+                this.apiDetail = this.systemList.find(item => item.id === apiId)
+                this.resArrayTreeData = transSchemeToArrayTypeTree(this.apiDetail.response)
             },
             // 设置描述组件的值
             handleDescValueChange (val) {
@@ -737,4 +801,10 @@
   width: 300px !important;
 }
 
+.top-start{
+  color: #313238;
+}
+.mt8{
+  margin-top: 8px;
+}
 </style>

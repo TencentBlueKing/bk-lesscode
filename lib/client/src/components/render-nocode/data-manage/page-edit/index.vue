@@ -118,10 +118,9 @@
 
     export default {
         name: 'DataPage',
-        components: { TableActionGrou },
+        components: { TableActionGroup },
         directives: {
             hover: hoverDiretive,
-            ButtonGroup,
             TableActionGroup
         },
         data () {
@@ -158,7 +157,7 @@
             ...mapGetters('page', ['pageDetail']),
             formId () {
                 // todo 先验证一下接口后面把2去除
-                return this.pageDetail.formId || 3
+                return this.pageDetail.formId
             }
         },
         created () {
