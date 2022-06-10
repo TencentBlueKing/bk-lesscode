@@ -16,7 +16,15 @@
                 ext-cls="g-popover-empty-padding"
                 width="320"
             >
-                <span class="item-content">
+                <span
+                    class="item-content"
+                    v-bk-overflow-tips="{
+                        content: item[currentConfig.displayKey],
+                        placement: 'left-start',
+                        width: 200,
+                        boundary: 'window'
+                    }"
+                >
                     <i class="bk-drag-icon bk-drag-grag-fill" />
                     {{ item[currentConfig.displayKey] }}
                 </span>
@@ -46,6 +54,11 @@
                                 :default-value="item[option.key]"
                                 :include-number="true"
                                 :change="val => handleChange(val, option.key, index)"></icon>
+                            <src-input v-else-if="option.type === 'src-input'"
+                                :value="item[option.key]"
+                                v-bind="option.props"
+                                @change="val => handleChange(val, option.key, index)"
+                            />
                         </div>
                     </section>
                 </section>
@@ -61,12 +74,10 @@
 <script lang="ts">
     import {
         defineComponent,
-        ref,
-        // watch,
-        computed
+        ref
     } from '@vue/composition-api'
     import Icon from '@/components/modifier/icon-select.vue'
-    import configMap from './config.js'
+    import SrcInput from '@/components/src-input/index.vue'
 
     interface ICurrentConfig {
         displayKey: string,
@@ -74,40 +85,87 @@
         generateFunc: (index) => {}
     }
 
+    const configMap = {
+        'step': {
+            template: [
+                {
+                    name: 'title',
+                    key: 'title',
+                    type: 'input'
+                }, {
+                    name: 'icon',
+                    key: 'icon',
+                    type: 'icon'
+                }, {
+                    name: '步骤描述',
+                    key: 'description',
+                    type: 'input'
+                }
+            ],
+            generateFunc: index => ({
+                title: `步骤${index}`,
+                icon: index,
+                description: ''
+            }),
+            displayKey: 'title'
+        },
+        'srcset': {
+            template: [
+                {
+                    name: 'url',
+                    key: 'url',
+                    type: 'src-input',
+                    props: {
+                        fileType: 'img'
+                    }
+                }, {
+                    name: 'link',
+                    key: 'link',
+                    type: 'input'
+                }
+            ],
+            generateFunc: index => ({
+                url: '',
+                link: ''
+            }),
+            displayKey: 'url'
+        }
+    }
+
     export default defineComponent({
         components: {
-            Icon
+            Icon,
+            SrcInput
         },
 
         props: {
-            slotVal: {
-                type: Object,
+            name: {
+                type: String,
                 required: true
             },
-            slotConfig: {
+            defaultValue: {
+                type: Array,
+                required: true
+            },
+            payload: {
                 type: Object,
                 default: () => ({})
-            },
-            type: {
-                type: String
             },
             change: {
                 type: Function,
                 default: (slot) => {}
+            },
+            type: {
+                type: String
             }
         },
 
         setup (props) {
-            const type = props.type
-            const optionList = ref<Array<any>>(props.slotVal.val)
-            const currentConfig = computed<ICurrentConfig>(() => configMap[props.slotVal.component])
+            const optionList = ref<Array<any>>(props.defaultValue)
+            const currentConfig = ref<ICurrentConfig>(configMap[props.type])
 
             const trigger = () => {
-                const slot = {
-                    ...props.slotVal,
-                    val: JSON.parse(JSON.stringify(optionList.value))
-                }
-                props.change(slot, type)
+                props.change(props.name, JSON.parse(JSON.stringify(optionList.value)), props.type, props.payload)
             }
 
             const handleDelete = (index) => {
@@ -169,6 +227,9 @@
                 width: calc(100% - 26px);
                 padding: 0 8px;
                 cursor: pointer;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 &:hover {
                     background: #EAEBF0;
                 }
@@ -183,7 +244,8 @@
                 }
             }
             ::v-deep .bk-tooltip-ref {
-                display: block;
+                display: flex;
+                align-items: center;
             }
         }
     }

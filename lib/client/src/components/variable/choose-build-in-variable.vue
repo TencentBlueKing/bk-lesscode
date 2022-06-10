@@ -33,6 +33,7 @@
                 :options="option"
                 :form-data="{ code: buildInVariableStatus.payload.customVariableCode }"
                 :remote-config="{ show: false }"
+                :is-choose-custom-variable="true"
                 @on-change="handleCustomVariableChange"
             />
         </template>

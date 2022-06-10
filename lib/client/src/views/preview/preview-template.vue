@@ -170,9 +170,8 @@
                     <div class="device-phone-frame">
                         <div class="device-phone"></div>
                     </div>
-                    <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px' }">
+                    <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px', overflow: 'auto' }">
                         <component :is="comp" :is-loading="isLoading"/>
-                        </iframe>
                     </div>
                 </div>
             </div>

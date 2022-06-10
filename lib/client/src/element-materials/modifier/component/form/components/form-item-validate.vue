@@ -45,6 +45,7 @@
                                 :choosen-function="{ methodCode: item[item.type] }"
                                 :show-add-params="false"
                                 @change="val => handleChange(val, item.type, index)"
+                                @clear="handleChange('', item.type, index)"
                             />
                             <bk-input
                                 v-else

@@ -14,6 +14,7 @@
         <choose-function
             :choosen-function="remoteData"
             @change="saveChange"
+            @clear="handleClear"
         ></choose-function>
     </section>
 </template>
@@ -57,6 +58,9 @@
         methods: {
             saveChange (val) {
                 this.change(this.name, this.defaultValue, this.type, val)
+            },
+            handleClear () {
+                this.change(this.name, this.defaultValue, this.type, '')
             }
         }
     }

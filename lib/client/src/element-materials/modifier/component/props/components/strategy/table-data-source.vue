@@ -55,19 +55,20 @@
         },
 
         setup (props) {
+            // copy type 防止响应式更新
+            const type = props.type
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
 
-            const chooseTable = ({ tableName, data, table }) => {
+            const chooseTable = ({ tableName, data }) => {
                 chooseTableName.value = tableName
                 propStatus.change.value(
                     props.name,
                     data.list,
-                    props.type,
+                    type,
                     {
                         sourceData: {
-                            tableName,
-                            columns: table.columns.map(({ name }) => name)
+                            tableName
                         }
                     }
                 )
@@ -78,7 +79,7 @@
                 propStatus.change.value(
                     props.name,
                     props.describe.val,
-                    props.type,
+                    type,
                     {
                         sourceData: {
                             tableName: ''
