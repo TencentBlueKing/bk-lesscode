@@ -44,6 +44,21 @@
                         <bk-radio value="COL_12" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
+                <bk-form-item label="上传模板附件" :ext-cls="'input-position '" v-if="fieldData.type === 'FILE' && !handleIsFolded">
+                    <bk-button :theme="'default'" title="点击上传">
+                        点击上传
+                    </bk-button>
+                    <input type="file" :value="fileVal" class="input-file" @change="handleAddFiles">
+                    <ul class="file-list">
+                        <li v-for="(item, index) in fieldData.fileTemplate" :key="index">
+                            <span class="file-success">
+                                <i class="bk-icon icon-check-1"></i>
+                            </span>
+                            <span>{{ item.name }}</span>
+                            <span class="file-delete" @click="handleDelete(item, index)">×</span>
+                        </li>
+                    </ul>
+                </bk-form-item>
                 <bk-form-item v-if="fieldProps.fieldsDataSource.includes(fieldData.type)" label="数据源">
                     <bk-select
                         :value="fieldData.source_type"
@@ -96,21 +111,7 @@
                     </table-header-setting>
                     <span class="add-chocie" @click="handleAddTableChoice">添加</span>
                 </bk-form-item>
-                <bk-form-item label="上传模板附件" :ext-cls="'input-position mt20-item'" v-if="fieldData.type === 'FILE' && !handleIsFolded">
-                    <bk-button :theme="'default'" title="点击上传">
-                        点击上传
-                    </bk-button>
-                    <input type="file" :value="fileVal" class="input-file" @change="handleAddFiles">
-                    <ul class="file-list">
-                        <li v-for="(item, index) in fieldData.fileTemplate" :key="index">
-                            <span class="file-success">
-                                <i class="bk-icon icon-check-1"></i>
-                            </span>
-                            <span>{{ item.name }}</span>
-                            <span class="file-delete" @click="handleDelete(item, index)">×</span>
-                        </li>
-                    </ul>
-                </bk-form-item>
+
                 <bk-form-item label="填写属性" v-if="!handleIsFolded">
                     <div class="attr-value">
                         <div class="contidion">
@@ -252,6 +253,7 @@
                     </bk-select>
                 </bk-form-item>
                 <bk-form-item
+                    ext-cls="default-val"
                     label="默认值"
                     v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
                     <default-value
@@ -280,16 +282,19 @@
             </template>
         </bk-form>
         <read-only-dialog
+            :field-list="list"
             :show.sync="readerOnlyShow"
             :value="fieldData.read_only_conditions"
             @confirm="(val) => onConfirm('read_only_conditions',val)">
         </read-only-dialog>
         <require-dialog
+            :field-list="list"
             :show.sync="requireConfigShow"
             :value="fieldData.mandatory_conditions"
             @confirm="(val) => onConfirm('mandatory_conditions',val)">
         </require-dialog>
         <show-type-dialog
+            :field-list="list"
             :show.sync="showTypeShow"
             :value="fieldData.show_conditions"
             @confirm="(val) => onConfirm('show_conditions',val)">
@@ -301,6 +306,7 @@
             :field-type="fieldData.type"
             :value="sourceData"
             :api-detail="apiDetail"
+            :is-display-tag="fieldData.isDisplayTag"
             :res-array-tree-data="resArrayTreeData"
             @confirm="handleDataSourceChange">
         </data-source-dialog>
@@ -418,6 +424,7 @@
                         data = meta.data_config
                         break
                 }
+                console.log(data)
                 return data
             }
         },
@@ -426,7 +433,7 @@
                 if (val.type !== oldVal.type) {
                     this.regexList = this.getRegexList(val)
                 }
-                if (this.fieldProps.fieldsDataSource.includes(val.type)) {
+                if (this.fieldProps.fieldsDataSource.includes(val.type) && val.id !== oldVal.id) {
                     this.getSystems()
                 }
                 this.defaultData = this.getDefaultData()
@@ -534,7 +541,8 @@
                 const { source_type: sourceType } = this.fieldData
                 this.dataSourceDialogShow = false
                 if (sourceType === 'CUSTOM') {
-                    this.fieldData.choice = val
+                    this.fieldData.choice = val.localVal
+                    this.fieldData.isDisplayTag = !!val?.localValIsDisplayTag
                 } else if (sourceType === 'API') {
                     this.fieldData.api_info = val.api_info
                     this.fieldData.kv_relation = val.kv_relation
@@ -709,8 +717,8 @@
   justify-content: space-between;
 }
 
-.mt20-item {
-  margin-top: 20px !important;
+.mt12-item {
+  margin-top: 12px !important;
 }
 
 .up-load-input {
@@ -806,5 +814,10 @@
 }
 .mt8{
   margin-top: 8px;
+}
+
+.default-val{
+  position: relative;
+  height: 32px;
 }
 </style>
