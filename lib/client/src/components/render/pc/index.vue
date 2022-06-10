@@ -317,7 +317,8 @@
         position: fixed;
         z-index: 99999999;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         background: rgba(0,0,0,0.8);
         top: 0;
         right: 0;
