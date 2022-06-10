@@ -20,7 +20,7 @@
                 :last-value="lastProps[key]"
                 :name="key"
                 :key="key"
-                :sync-slot="syncSlot"
+                :sync-slot="(val) => syncSlot(val, key)"
                 @on-change="handleChange" />
         </template>
     </div>
@@ -135,16 +135,14 @@
                 }
             },
             /**
-             * @desc 部分场景需要通过 prop 的配置自动推导 slot 的配置
-             * @param { Object } propData
-             *
-             * eq:
              * 通过 table 的 data 推导出 table 列的配置
              */
-            syncSlot (propData) {
+            syncSlot (propData, key) {
                 const {
                     format,
-                    payload
+                    payload,
+                    renderValue = [],
+                    valueType
                 } = propData
 
                 // 需要同步 prop 配置到 slot 的场景
@@ -154,11 +152,17 @@
                     return
                 }
                 // 同步 table 的 columns
-                if (payload.columns) {
+                if (key === 'data' && ['bk-table', 'el-table', 'folding-table', 'search-table'].includes(this.componentType)) {
                     // 默认同步 第一个 slot
                     const slotName = Object.keys(this.material.slots)[0]
                     const slotConfig = this.material.slots[slotName]
-                    const columns = payload.columns
+                    // 通过数据表配置的 columns
+                    const dataSourceColumns = payload.sourceData?.columns || []
+                    // 通过值类型计算的 columns
+                    const firstValue = renderValue[0] || {}
+                    const valueColumns = Object.keys(firstValue)
+                    // 基于类型设置表头信息
+                    const columns = valueType === 'table-data-source' ? dataSourceColumns : valueColumns
                     // 获取自定义column配置，这个配置比较复杂不覆盖
                     const renderSlot = this.componentNode.renderSlots[slotName]
                     const slotRenderValue = renderSlot.renderValue || []
@@ -202,7 +206,6 @@
                     [propName]: propData
                 })
                 this.syncOtherProp(propName)
-                this.syncSlot(propData)
             }, 60)
         }
     }

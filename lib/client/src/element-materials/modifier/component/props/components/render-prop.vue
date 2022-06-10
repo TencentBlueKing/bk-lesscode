@@ -176,7 +176,8 @@
             'float': 'number',
             'src': 'string',
             'srcset': 'array',
-            'object': 'hidden'
+            // 老数据存在 type = 'hidden' 但是值是 object 的情况
+            'hidden': 'object'
         }
         return valueMap[type] || type
     }
