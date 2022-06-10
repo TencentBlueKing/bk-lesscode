@@ -22,7 +22,7 @@
             <node-actions
                 :loading="nodeDetailLoading"
                 :flow-config="flowConfig"
-                @save="$emit('save')"
+                @save="$emit('save', $event)"
                 @close="handleClose">
             </node-actions>
         </div>
@@ -93,6 +93,9 @@
         created () {
             this.getNodeDetail()
         },
+        beforeDestroy () {
+            this.$store.commit('nocode/nodeConfig/clearNodeConfigData')
+        },
         methods: {
             async getNodeDetail () {
                 try {
@@ -108,6 +111,12 @@
                 } finally {
                     this.nodeDetailLoading = false
                 }
+            },
+            async validate () {
+                if (typeof this.$refs.nodeComp.validate === 'function') {
+                    return this.$refs.nodeComp.validate()
+                }
+                return true
             },
             handleClose () {
                 this.$bkInfo({

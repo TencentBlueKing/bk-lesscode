@@ -109,8 +109,10 @@
                 this.nodeConfigPanelShow = false
                 this.crtNode = null
             },
-            handleConfigSave () {
+            handleConfigSave (node) {
                 this.closeConfigPanel()
+                const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
+                this.canvasData.nodes.splice(index, 1, node)
                 console.log('close node config')
             },
             handleNextStep () {

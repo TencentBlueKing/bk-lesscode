@@ -6,19 +6,19 @@
                 form-type="vertical"
                 class="data-process-node-form"
                 :rules="rules"
-                :model="formData">
+                :model="nodeData">
                 <bk-form-item label="节点名称" property="name" :required="true">
-                    <bk-input v-model="formData.name"></bk-input>
+                    <bk-input :value="nodeData.name"></bk-input>
                 </bk-form-item>
                 <div class="action-select-area">
                     <bk-form-item label="节点动作" property="action" :required="true">
-                        <bk-select :value="formData.action" :clearable="false" :disabled="!editable" @selected="handleSelectAction">
+                        <bk-select :value="dataProcessConfig.action" :clearable="false" :disabled="!editable" @selected="handleSelectAction">
                             <bk-option v-for="item in actions" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
                     <bk-form-item label="目标表单" property="worksheet_id" :required="true">
                         <bk-select
-                            v-model="formData.worksheet_id"
+                            :value="dataProcessConfig.worksheet_id"
                             :clearable="false"
                             :loading="formListLoading"
                             :disabled="formListLoading || !editable"
@@ -28,18 +28,18 @@
                     </bk-form-item>
                 </div>
                 <bk-form-item label="字段映射规则">
-                    <template v-if="formData.action && formData.worksheet_id !== ''">
+                    <template v-if="dataProcessConfig.action && dataProcessConfig.worksheet_id !== ''">
                         <!-- 满足条件，删除、更新动作存在 -->
-                        <div v-if="['DELETE', 'EDIT'].includes(formData.action)" class="rules-section">
+                        <div v-if="['DELETE', 'EDIT'].includes(dataProcessConfig.action)" class="rules-section">
                             <div class="logic-radio">
-                                <label>{{ formData.action === 'DELETE' ? '删除条件' : '满足条件' }}</label>
-                                <bk-radio-group v-model="formData.conditions.connector">
+                                <label>{{ dataProcessConfig.action === 'DELETE' ? '删除条件' : '满足条件' }}</label>
+                                <bk-radio-group :value="dataProcessConfig.conditions.connector">
                                     <bk-radio value="and" :disabled="!editable">且</bk-radio>
                                     <bk-radio value="or" :disabled="!editable">或</bk-radio>
                                 </bk-radio-group>
                             </div>
-                            <div v-if="formData.conditions.expressions.length > 0" class="condition-list">
-                                <div class="condition-item" v-for="(expression, index) in formData.conditions.expressions" :key="index">
+                            <div v-if="dataProcessConfig.conditions.expressions.length > 0" class="condition-list">
+                                <div class="condition-item" v-for="(expression, index) in dataProcessConfig.conditions.expressions" :key="index">
                                     <bk-select
                                         v-model="expression.key"
                                         placeholder="目标表字段"
@@ -171,10 +171,10 @@
                             <div v-else :class="['data-empty', { disabled: !editable }]" @click="handleAddExpression(-1)">点击添加</div>
                         </div>
                         <!-- 映射规则，增加、更新动作存在 -->
-                        <div v-if="['ADD', 'EDIT'].includes(formData.action)" class="rules-section">
-                            <label>{{ formData.action === 'ADD' ? '插入规则' : '则更新' }}</label>
-                            <div v-if="formData.mapping.length > 0" class="mapping-list">
-                                <div class="condition-item" v-for="(mapping, index) in formData.mapping" :key="index">
+                        <div v-if="['ADD', 'EDIT'].includes(dataProcessConfig.action)" class="rules-section">
+                            <label>{{ dataProcessConfig.action === 'ADD' ? '插入规则' : '则更新' }}</label>
+                            <div v-if="dataProcessConfig.mapping.length > 0" class="mapping-list">
+                                <div class="condition-item" v-for="(mapping, index) in dataProcessConfig.mapping" :key="index">
                                     <bk-select
                                         v-model="mapping.key"
                                         placeholder="目标表字段"
@@ -207,8 +207,8 @@
                                         ">
                                             <bk-option id="increment" name="增加"></bk-option>
                                             <bk-option id="reduction" name="减少"></bk-option>
-                                            <bk-option v-if="formData.action === 'EDIT'" id="field_increment" name="加指定变量"></bk-option>
-                                            <bk-option v-if="formData.action === 'EDIT'" id="field_reduction" name="减指定变量"></bk-option>
+                                            <bk-option v-if="dataProcessConfig.action === 'EDIT'" id="field_increment" name="加指定变量"></bk-option>
+                                            <bk-option v-if="dataProcessConfig.action === 'EDIT'" id="field_reduction" name="减指定变量"></bk-option>
                                         </template>
                                         <template v-if="
                                             targetFields.length > 0 &&
@@ -303,7 +303,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import { mapGetters } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import FormSection from '../components/form-section.vue'
     import { CONDITION_RELATIONS } from '@/components/nocode-form/constants/forms.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
@@ -316,10 +316,6 @@
             FormSection
         },
         props: {
-            nodeDetail: {
-                type: Object,
-                default: () => ({})
-            },
             createTicketNodeId: Number,
             editable: {
                 type: Boolean,
@@ -328,7 +324,6 @@
         },
         data () {
             return {
-                formData: this.getInitialFormData(this.nodeDetail),
                 actions: [
                     { id: 'ADD', name: '插入' },
                     { id: 'EDIT', name: '更新' },
@@ -363,12 +358,19 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('nocode/nodeConfig', [
+                'dataProcessConfig'
+            ]),
+            ...mapState('nocode/nodeConfig', [
+                'nodeData',
+                'formConfig'
+            ]),
             projectId () {
                 return this.$route.params.projectId
             },
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             targetFields () {
-                const tempKey = this.formData?.mapping.filter(item => item.type === 'department').map(item => item.key)
+                const tempKey = this.dataProcessConfig?.mapping.filter(item => item.type === 'department').map(item => item.key)
                 const targetFiled = this.fieldList.filter(item => !['id', 'ids'].includes(item.key)).map((el) => {
                     if (tempKey.includes(el.key)) {
                         return { ...el, type: 'MEMBER' }
@@ -389,17 +391,12 @@
                 return list
             }
         },
-        watch: {
-            nodeDetail (val) {
-                this.formData = this.getInitialFormData(val.extras.dataManager)
-            }
-        },
         created () {
             this.getFormList()
             // this.getRelationList()
             // this.getApprovalNode()
-            if (this.nodeDetail.extras.dataManager && this.nodeDetail.extras.dataManager.worksheet_id !== '') {
-                this.getFieldList(this.nodeDetail.extras.dataManager.worksheet_id)
+            if (this.nodeData.extras.dataManager && this.nodeData.extras.dataManager.worksheet_id !== '') {
+                this.getFieldList(this.nodeData.extras.dataManager.worksheet_id)
             }
         },
         methods: {
@@ -424,7 +421,7 @@
                     fieldData = JSON.parse(form.content)
                 }
                 fieldData.unshift({ key: 'id', name: 'id', type: 'INT' })
-                if (this.formData.action === 'DELETE') {
+                if (this.dataProcessConfig.action === 'DELETE') {
                     fieldData.unshift({ key: 'ids', name: 'ids', type: 'INT' })
                 }
                 this.fieldList = fieldData
@@ -468,27 +465,6 @@
                     this.approvalNodeListLoading = false
                 }
             },
-            // 接口返回的数据可能数据字段不全
-            getInitialFormData (node) {
-                let data = {
-                    name: node.name
-                }
-                if (node.extras.dataManager) {
-                    data = cloneDeep(node.extras.dataManager)
-                    if (!data.conditions) {
-                        data.conditions = { connector: 'and', expressions: [] }
-                    }
-                    if (!data.conditions.expressions) {
-                        data.conditions.expressions = []
-                    }
-                    if (!data.mapping) {
-                        data.mapping = []
-                    }
-                } else {
-                    data = { action: '', conditions: { connector: 'and', expressions: [] }, mapping: [], worksheet_id: '' }
-                }
-                return data
-            },
             getConditionOptions (key) {
                 if (key) {
                     const field = this.fieldList.find(i => i.key === key)
@@ -498,7 +474,7 @@
             },
             // 可选择的目标表字段
             getSelectableField (fieldList, crtKey, type) {
-                const data = type === 'condition' ? this.formData.conditions.expressions : this.formData.mapping
+                const data = type === 'condition' ? this.dataProcessConfig.conditions.expressions : this.dataProcessConfig.mapping
                 const usedKeys = []
                 data.forEach((item) => {
                     if (item.key && item.key !== crtKey) {
@@ -510,7 +486,7 @@
             // 切换动作
             handleSelectAction (val) {
                 const idsFieldIdx = this.fieldList.findIndex(item => item.key === 'ids')
-                this.formData.action = val
+                this.dataProcessConfig.action = val
                 if (val === 'DELETE') {
                     if (idsFieldIdx === -1) {
                         this.fieldList.splice(0, 0, { key: 'ids', name: 'ids' })
@@ -533,7 +509,7 @@
                 if (!this.editable) {
                     return
                 }
-                this.formData.conditions.expressions.splice(index + 1, 0, {
+                this.dataProcessConfig.conditions.expressions.splice(index + 1, 0, {
                     key: '',
                     type: 'const',
                     condition: '',
@@ -544,13 +520,13 @@
                 if (!this.editable) {
                     return
                 }
-                this.formData.conditions.expressions.splice(index, 1)
+                this.dataProcessConfig.conditions.expressions.splice(index, 1)
             },
             handleAddMapping (index) {
                 if (!this.editable) {
                     return
                 }
-                this.formData.mapping.splice(index + 1, 0, {
+                this.dataProcessConfig.mapping.splice(index + 1, 0, {
                     key: '',
                     type: 'const',
                     value: ''
@@ -560,7 +536,7 @@
                 if (!this.editable) {
                     return
                 }
-                this.formData.mapping.splice(index, 1)
+                this.dataProcessConfig.mapping.splice(index, 1)
             },
             // 数字类型的变量如果指定值类型为减指定变量、加指定变量，可选变量需要过滤
             getAvailableRelationList (exp) {
@@ -604,22 +580,15 @@
                 }
             },
             resetForm () {
-                this.formData = {
-                    ...this.formData,
-                    conditions: {
-                        connector: 'and',
-                        expressions: []
-                    },
-                    mapping: []
-                }
+                // @todo 清楚store里的数据
             },
             validate () {
                 return this.$refs.dataForm
                     .validate()
                     .then(() => {
-                        const { expressions = [] } = this.formData.conditions
+                        const { expressions = [] } = this.dataProcessConfig.conditions
                         const expInValid = expressions.some(item => item.key === '' || item.condition === '' || item.value === '')
-                        const mapInValid = (this.formData.mapping || []).some(item => item.key === '' || item.value === '')
+                        const mapInValid = (this.dataProcessConfig.mapping || []).some(item => item.key === '' || item.value === '')
                         this.errorTips = expInValid || mapInValid
                         if (expInValid || mapInValid) {
                             this.errorTips = true
@@ -635,8 +604,8 @@
             },
             // 提供获取组件表单数据方法
             getData () {
-                const data = cloneDeep(this.formData)
-                if (this.formData.action === 'ADD') {
+                const data = cloneDeep(this.dataProcessConfig)
+                if (this.dataProcessConfig.action === 'ADD') {
                     // 插入类型的动作接口不支持传conditions字段
                     delete data.conditions
                 }

@@ -1,7 +1,7 @@
 <template>
     <div
         v-bk-clickoutside="closeShortcutPanel"
-        :class="['process-node-item', { 'draft-status': node.nodeInfo && node.nodeInfo.is_draft }]"
+        :class="['process-node-item', { 'configured': !isDraft }]"
         @mousedown="onMousedown"
         @contextmenu.prevent="handleContextMenuClick"
         @click="handleNodeClick">
@@ -22,20 +22,19 @@
             <div class="node-icon-area">
                 <i :class="['bk-drag-icon', nodeTypeList.find(item => item.type === node.type).icon]"></i>
             </div>
-            <div class="node-name-area" :title="node.name || '新增节点'">
-                {{ node.name || '新增节点' }}
-            </div>
-            <div
-                v-if="
-                    node.nodeInfo && ['TERMINATED', 'FAILED', 'FINISHED', 'RUNNING', 'SUSPEND'].includes(node.nodeInfo.status)
-                "
-                class="status-icon">
-                <i v-if="node.nodeInfo.status === 'FINISHED'" class="bk-icon icon-check-1"></i>
-                <i v-if="['TERMINATED', 'FAILED'].includes(node.nodeInfo.status)" class="bk-icon icon-close"></i>
-                <!-- <img
-                    v-if="['RUNNING', 'SUSPEND'].includes(node.nodeInfo.status)"
-                    src="../../assets/images/spin.svg"
-                    class="spin-img" /> -->
+            <div class="node-name-area" :title="node.name">
+                <p class="name">{{ node.name }}</p>
+                <p class="desc">
+                    <span v-if="isDraft" style="color: #c4c6cc;">
+                        点击配置
+                    </span>
+                    <template v-else>
+                        <span v-if="node.type === 'NORMAL'">处理人：--</span>
+                        <span v-else-if="node.type === 'APPROVAL'">类型：-- 处理人: --</span>
+                        <span v-else-if="node.type === 'WEBHOOK'">数据来源节点：-- 目标表： --</span>
+                        <span v-else-if="node.type === 'API'">API：--</span>
+                    </template>
+                </p>
             </div>
             <div class="action-desc-area" v-if="!single && !hideNodeGuide && node.nodeInfo && node.nodeInfo.is_builtin">
                 <p><span>单击：</span>快速配置节点</p>
@@ -114,9 +113,15 @@
                 shortcutNodes: ['NORMAL', 'WEBHOOK', 'TASK', 'SIGN', 'APPROVAL', 'COVERAGE', 'ROUTER-P']
             }
         },
+        computed: {
+            isDraft () {
+                return !this.node.nodeInfo || this.node.nodeInfo.is_draft
+            }
+        },
         created () {
             this.hideNodeGuide = JSON.parse(localStorage.getItem('hideNodeGuide'))
         },
+
         methods: {
             onMousedown (e) {
                 this.moveFlag = { x: e.pageX, y: e.pageY }
@@ -154,19 +159,11 @@
     }
 </script>
 <style lang="postcss" scoped>
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 .process-node-item {
   position: relative;
-  &.draft-status {
+  &.configured {
     .node-icon-area {
-      background: #c4c6cc;
+      background: #3a84ff;
     }
   }
   &:hover {
@@ -211,7 +208,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  width: 280px;
+  width: 240px;
   height: 48px;
   color: #63656e;
   font-size: 14px;
@@ -227,32 +224,6 @@
       color: #3a84ff;
     }
   }
-  &.FINISHED {
-    .node-icon-area {
-      background: #2dcb56;
-    }
-    .status-icon {
-      background: #2dcb56;
-    }
-  }
-  &.TERMINATED,
-  &.FAILED {
-    .node-icon-area {
-      background: #ff5656;
-    }
-    .status-icon {
-      background: #ff5656;
-    }
-  }
-  &.RUNNING,
-  &.SUSPEND {
-    .node-icon-area {
-      background: #3a84ff;
-    }
-    .status-icon {
-      background: #3a84ff;
-    }
-  }
   .node-icon-area {
     display: flex;
     align-items: center;
@@ -261,25 +232,7 @@
     height: 100%;
     font-size: 18px;
     color: #fff;
-    background-color: #3a84ff;
-  }
-  .status-icon {
-    position: absolute;
-    top: 12px;
-    right: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 14px;
-    height: 14px;
-    text-align: center;
-    border-radius: 50%;
-    font-size: 12px;
-    color: #ffffff;
-  }
-  .spin-img {
-    width: 10px;
-    animation: rotation 1.5s linear infinite;
+    background-color: #c4c6cc;
   }
   .action-desc-area {
     position: absolute;
@@ -321,15 +274,29 @@
   }
 }
 .node-name-area {
-  flex-grow: 2;
-  padding: 7px 16px;
-  height: 100%;
-  background: #ffffff;
-  font-size: 12px;
-  text-align: left;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+    width: 190px;
+    padding: 7px 16px;
+    height: 100%;
+    background: #ffffff;
+    font-size: 12px;
+    text-align: left;
+  .name {
+        color: #63656e;
+        font-weight: bold;
+        height: 16px;
+        line-height: 16px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+  }
+  .desc {
+        color: #979ba5;
+        height: 16px;
+        line-height: 16px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+  }
 }
 .node-delete-icon {
   position: absolute;

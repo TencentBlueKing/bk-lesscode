@@ -55,6 +55,7 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import { uuid } from '@/common/util.js'
+    import { NODE_TYPE_LIST } from '../constants/nodes.js'
     import BkFlow from './flow.js'
     import PalettePanel from './palettePanel.vue'
     import NodeTemplate from './nodeTemplate.vue'
@@ -139,8 +140,17 @@
                 lineDeletePending: false
             }
         },
+        watch: {
+            nodes () {
+                this.transNodeData()
+            },
+            lines () {
+                this.transLineData()
+            }
+        },
         created () {
-            this.transData()
+            this.transNodeData()
+            this.transLineData()
         },
         mounted () {
             this.lines.forEach((item) => {
@@ -155,11 +165,12 @@
         },
         methods: {
             // 将数据转换为画布组件要求格式
-            transData () {
+            transNodeData () {
+                const nodes = []
                 this.nodes.forEach((item, index) => {
                     const xValue = item.axis.x ? item.axis.x : 165 + index * 250
                     const yValue = item.axis.y ? item.axis.y : 195 + (index % 2 === 1 ? 5 : 0)
-                    this.canvasData.nodes.push({
+                    nodes.push({
                         id: `node_${item.id}`,
                         x: xValue,
                         y: yValue,
@@ -168,8 +179,12 @@
                         nodeInfo: cloneDeep(item)
                     })
                 })
+                this.canvasData.nodes = nodes
+            },
+            transLineData () {
+                const lines = []
                 this.lines.forEach((item) => {
-                    this.canvasData.lines.push({
+                    lines.push({
                         source: {
                             arrow: item.axis.start || 'Right',
                             id: `node_${item.from_state}`
@@ -188,6 +203,7 @@
                         }
                     })
                 })
+                this.canvasData.lines = lines
             },
             // 注册线条的Label
             addOverlay (line) {
@@ -252,7 +268,9 @@
                     return false
                 }
                 try {
-                    const { name = '', x, y, type } = node
+                    const { x, y, type } = node
+                    const nodeDesc = NODE_TYPE_LIST.find(item => item.type === type)
+                    const name = nodeDesc ? nodeDesc.name : '新增节点'
                     const params = {
                         name,
                         type,

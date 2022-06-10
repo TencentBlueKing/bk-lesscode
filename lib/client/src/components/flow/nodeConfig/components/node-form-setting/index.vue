@@ -1,15 +1,26 @@
 <template>
     <section class="node-form-setting">
-        <div v-if="formConfig.type !== ''" class="edit-form-card">
+        <div
+            v-if="formConfig.type !== ''"
+            v-bkloading="{ isLoading: formContentLoading || pageContextLoading }"
+            class="edit-form-card">
             <div class="card-header">
-                <h5>{{ formConfig.name || formConfig.id }}</h5>
+                <h5>{{ formConfig.name }}</h5>
                 <div class="type-label">{{ typeNameMap[formConfig.type] }}</div>
             </div>
             <div class="related-info">
                 流程提单页：
-                <span :class="['related-item', { 'not-empty': flowConfig.pageId }]">--</span>
+                <span
+                    :class="['related-item', { 'not-empty': flowConfig.pageId }]"
+                    @click="handlePageClick">
+                    {{ pageDetail.pageName || '--' }}
+                </span>
                 关联数据表：
-                <span :class="['related-item', { 'not-empty': formConfig.id }]">{{ formConfig.id }}</span>
+                <span
+                    :class="['related-item', { 'not-empty': formConfig.id }]"
+                    @click="handleTableClick">
+                    {{ typeof formConfig.id === 'number' ? formConfig.code : '--' }}
+                </span>
             </div>
             <div class="operate-area">
                 <i
@@ -39,6 +50,7 @@
                 {{ item.name }}
             </div>
         </div>
+        <p v-if="isUnset" class="error-tips">请选择配置表单</p>
         <edit-form-panel
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
@@ -54,7 +66,7 @@
     </section>
 </template>
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
 
@@ -68,7 +80,8 @@
             flowConfig: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            formContentLoading: Boolean
         },
         data () {
             return {
@@ -82,21 +95,45 @@
                     COPY_FORM: '引用表单',
                     USE_FORM: '复用表单'
                 },
+                pageContextLoading: false,
                 selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
                 editFormPanelShow: false, // 表单编辑
-                selectFormDialogShow: false // 选择表单弹窗
+                selectFormDialogShow: false, // 选择表单弹窗
+                isUnset: false
             }
         },
         computed: {
-            ...mapState('nocode/nodeConfig', [
-                'nodeData',
-                'formConfig'
-            ]),
+            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
+            ...mapGetters('page', ['pageDetail']),
             hasCreateTicketPage () {
                 return typeof this.flowConfig.pageId === 'number'
             }
         },
+        created () {
+            // 如果流程生成了提单页并且当前节点为第一个人工节点，则加载页面详情的上下文数据
+            if (this.nodeData.is_first_state && typeof this.flowConfig.pageId === 'number') {
+                this.getPageDetail()
+            }
+        },
+        beforeDestroy () {
+            this.clearContext()
+        },
         methods: {
+            async getPageDetail () {
+                try {
+                    this.pageContextLoading = true
+                    const [pageDetail] = await Promise.all([
+                        this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId }),
+                        this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId })
+                    ])
+
+                    this.$store.commit('page/setPageDetail', pageDetail || {})
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.pageContextLoading = false
+                }
+            },
             handleSetForm (val) {
                 this.selectedType = val
                 if (val === 'NEW_FORM') {
@@ -110,19 +147,45 @@
             },
             handlePreviewClick () {},
             handleDelClick () {
+                this.isUnset = true
                 this.updateFormConfig({ id: '', type: '', content: [] })
             },
             // 引用和复用
             handleSelectForm (id, content = []) {
+                this.isUnset = false
                 this.selectFormDialogShow = false
                 this.updateFormConfig({ id, content, type: this.selectedType })
             },
+            // 新建空白
             handleCreateForm (content) {
+                this.isUnset = false
                 this.editFormPanelShow = false
                 this.updateFormConfig({ content, type: this.selectedType })
             },
+            // 流程提单页点击
+            handlePageClick () {
+                if (this.flowConfig.pageId) {
+                    this.editFormPanelShow = true
+                }
+            },
+            // 关联数据表点击
+            handleTableClick () {
+                if (!this.formConfig.code) {
+                    const route = this.$router.resolve({ name: 'dataManage', query: { tableName: this.formConfig.code } })
+                    window.open(route.href, '__blank')
+                }
+            },
             updateFormConfig (data) {
                 this.$store.commit('nocode/nodeConfig/setFormConfig', data)
+            },
+            // 清楚page以及layout相关的上下文数据
+            clearContext () {
+                this.$store.commit('page/setPageDetail', {})
+                this.$store.commit('layout/setPageLayout', {})
+            },
+            validate () {
+                this.isUnset = this.formConfig.type === ''
+                return !this.isUnset
             }
         }
     }
@@ -208,5 +271,11 @@
                 }
             }
         }
+    }
+    .error-tips {
+        font-size: 12px;
+        color: #ea3636;
+        line-height: 18px;
+        margin: 2px 0 0;
     }
 </style>

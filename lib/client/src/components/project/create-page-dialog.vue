@@ -279,19 +279,22 @@
                     payload.data.layout = { id, routePath }
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
-                        this.$bkMessage({
-                            theme: 'success',
-                            message: '新建页面成功'
-                        })
-                        const toPageRouteName = this.nocodeType ? 'editNocode' : 'new'
-                        this.$router.push({
-                            name: toPageRouteName,
-                            params: {
-                                projectId: this.projectId,
-                                pageId: res
-                            }
-                        })
+                        if (this.nocodeType !== 'flow') {
+                            this.$bkMessage({
+                                theme: 'success',
+                                message: '新建页面成功'
+                            })
+                            const toPageRouteName = this.nocodeType ? 'editNocode' : 'new'
+                            this.$router.push({
+                                name: toPageRouteName,
+                                params: {
+                                    projectId: this.projectId,
+                                    pageId: res
+                                }
+                            })
+                        }
                     }
+                    this.$emit('save', res)
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -311,7 +314,7 @@
                         pageRoute: '',
                         nocodeType: this.nocodeType
                     }
-                    if (this.nocodeType === 'FORM_MANAGE' || this.nocodeType === 'FLOW_MANAGE') {
+                    if (['FORM_MANAGE', 'FLOW_MANAGE', 'FLOW'].includes(this.nocodeType)) {
                         Object.assign(this.formData, this.initPageData)
                     }
                     this.initData()

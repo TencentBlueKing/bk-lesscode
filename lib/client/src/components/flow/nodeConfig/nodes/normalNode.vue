@@ -1,9 +1,14 @@
 <template>
     <div class="normal-node-nodeDetail">
         <form-section title="基础配置">
-            <bk-form form-type="vertical" style="width: 656px">
+            <bk-form
+                ref="basicForm"
+                style="width: 656px"
+                form-type="vertical"
+                :rules="rules"
+                :model="nodeData">
                 <bk-form-item label="节点名称" property="name" :required="true">
-                    <bk-input :value="nodeData.name"></bk-input>
+                    <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="处理人" :required="true">
                     <processors
@@ -11,14 +16,18 @@
                         :value="processorData"
                         :workflow-id="nodeData.workflow"
                         :node-id="nodeData.id"
-                        :exclude-type="['CMDB', 'GENERAL', 'EMPTY', 'BY_ASSIGNOR', 'IAM', 'API']"
+                        :exclude-type="excludeRoleType"
                         @change="handleProcessorChange">
                     </processors>
                 </bk-form-item>
             </bk-form>
         </form-section>
         <form-section title="表单配置" style="margin-top: 16px;">
-            <node-form-setting :flow-config="flowConfig"></node-form-setting>
+            <node-form-setting
+                ref="formSetting"
+                :flow-config="flowConfig"
+                :form-content-loading="formContentLoading">
+            </node-form-setting>
         </form-section>
     </div>
 </template>
@@ -45,6 +54,7 @@
         },
         data () {
             return {
+                formContentLoading: false,
                 rules: {
                     name: [
                         {
@@ -63,7 +73,14 @@
             ...mapState('nocode/nodeConfig', [
                 'nodeData',
                 'formConfig'
-            ])
+            ]),
+            excludeRoleType () {
+                const typeList = ['CMDB', 'GENERAL', 'EMPTY', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION']
+                if (!this.nodeData.is_first_state) {
+                    typeList.push('OPEN')
+                }
+                return typeList
+            }
         },
         created () {
             if (typeof this.nodeData.extras.formConfig?.id === 'number') {
@@ -91,16 +108,26 @@
                     const { id } = this.nodeData.extras.formConfig
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
-                    const code = 'ti_dan_634'
-                    const name = data.name
+                    const code = data.tableName
+                    const name = '表单名称待添加....'
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, name })
                     this.formContentLoading = false
                 } catch (e) {
                     messageError(e.message || e)
                 }
             },
+            handleNameChange (val) {
+                this.$store.commit('nocode/nodeConfig/setNodeData', { ...this.nodeData, name: val })
+            },
             handleProcessorChange (val) {
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)
+            },
+            validate () {
+                return this.$refs.basicForm.validate().then(() => {
+                    return this.$refs.formSetting.validate()
+                }).catch(() => {
+                    return false
+                })
             }
         }
     }
