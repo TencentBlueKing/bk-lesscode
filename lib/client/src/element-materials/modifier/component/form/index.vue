@@ -31,6 +31,7 @@
             class="form-item-list">
             <vue-draggable
                 ghost-class="block-item-ghost"
+                :group="{ name: 'form-item-list', pull: false, put: false }"
                 :list="componentNode.children"
                 handle=".option-col-drag">
                 <transition-group
