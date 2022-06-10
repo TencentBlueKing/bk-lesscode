@@ -175,19 +175,14 @@
              */
             handleToggleExpandTree () {
                 this.allExpanded = !this.allExpanded
-                const commandTreeNodes = (nodes, command) => {
-                    if (!nodes || nodes.length < 1) {
-                        return
-                    }
-                    nodes.forEach(node => {
+                this.$refs.tree.nodes.forEach(node => {
+                    if (!node.isLeaf) {
                         this.$refs.tree.setExpanded(node.id, {
-                            expanded: command,
-                            emitEvent: true
+                            expanded: this.allExpanded,
+                            emitEvent: false
                         })
-                        commandTreeNodes(node.children, command)
-                    })
-                }
-                commandTreeNodes(this.data, this.allExpanded)
+                    }
+                })
             },
             /**
              * @desc 切换交互式组件的显示状态

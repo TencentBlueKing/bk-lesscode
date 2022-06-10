@@ -31,13 +31,14 @@
             class="form-item-list">
             <vue-draggable
                 ghost-class="block-item-ghost"
+                :list="formItemList"
+                handle=".option-col-drag"
                 :group="{ name: 'form-item-list', pull: false, put: false }"
-                :list="componentNode.children"
-                handle=".option-col-drag">
+                @change="handleSort">
                 <transition-group
                     type="transition"
                     :name="'flip-list'">
-                    <template v-for="(formItemNode, index) in componentNode.children">
+                    <template v-for="(formItemNode, index) in formItemList">
                         <div
                             v-if="formItemNode.prop.property"
                             :key="`item${index}`"
@@ -167,8 +168,11 @@
                 return
             }
 
+            this.formItemList = [...this.componentNode.children]
+
             const updateCallback = _.throttle((event) => {
                 if (this.componentNode.componentId === event.target.componentId) {
+                    this.formItemList = [...this.componentNode.children]
                     this.$forceUpdate()
                 }
             }, 20)
@@ -179,6 +183,22 @@
             })
         },
         methods: {
+            handleSort (event) {
+                if (event.moved) {
+                    const {
+                        element,
+                        newIndex,
+                        oldIndex
+                    } = event.moved
+                    if (newIndex === oldIndex) {
+                        return
+                    }
+                    // 从原位置删除
+                    this.componentNode.removeChild(element)
+                    // 插入新位置
+                    this.componentNode.insertBefore(element, this.componentNode.children[newIndex])
+                }
+            },
             /**
              * @desc 编辑表单项属性
              * @param { Object | null } formItemNode 操作的表单节点
