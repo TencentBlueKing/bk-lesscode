@@ -12,6 +12,8 @@
     </div>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
+    
     export default {
         name: '',
         props: {
@@ -20,9 +22,10 @@
                 default: 'edit'
             }
         },
-        data () {
-            return {
-                operationList: [
+        computed: {
+            ...mapGetters('page', ['pageDetail']),
+            operationList () {
+                const list = [
                     {
                         key: 'edit',
                         label: '表单设计',
@@ -32,13 +35,16 @@
                         key: 'setting',
                         label: '页面设置',
                         icon: 'bk-drag-set'
-                    },
-                    {
+                    }
+                ]
+                if (this.pageDetail?.nocodeType === 'FORM') {
+                    list.push({
                         key: 'jsonSource',
                         label: 'JSON',
                         icon: 'bk-drag-json'
-                    }
-                ]
+                    })
+                }
+                return list
             }
         },
         methods: {

@@ -66,8 +66,8 @@
         },
         created () {
             this.getFieldList()
-            bus.$on('restFieldList', () => {
-                this.fieldsList = []
+            bus.$on('resetFieldList', (fieldsList = []) => {
+                this.fieldsList = fieldsList
                 this.crtField = {}
                 this.crtIndex = -1
             })
@@ -83,7 +83,7 @@
             })
         },
         beforeDestroy () {
-            bus.$off('restFieldList')
+            bus.$off('resetFieldList')
             bus.$off('openCreatPageFrom')
         },
         methods: {
@@ -139,9 +139,6 @@
                 this.crtField = cloneDeep(this.fieldsList[newIndex])
                 this.saveFieldList()
             },
-            // change () {
-            //     this.$emit('change', cloneDeep(this.fieldsList))
-            // },
             handleUpdateField (val) {
                 this.isEdit = true
                 this.crtField = val

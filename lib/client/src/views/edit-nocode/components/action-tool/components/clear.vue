@@ -26,7 +26,7 @@
                     theme: 'danger',
                     confirmFn: () => {
                         this.$store.commit('nocode/formSetting/restFieldList')
-                        bus.$emit('restFieldList')
+                        bus.$emit('resetFieldList', [])
                     }
                 })
             }
