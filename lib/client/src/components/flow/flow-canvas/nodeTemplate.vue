@@ -110,7 +110,7 @@
                 hideNodeGuide: false,
                 shortcutPanelShow: false,
                 nodeTypeList: NODE_TYPE_LIST,
-                shortcutNodes: ['NORMAL', 'WEBHOOK', 'TASK', 'SIGN', 'APPROVAL', 'COVERAGE', 'ROUTER-P']
+                shortcutNodes: ['NORMAL', 'WEBHOOK', 'APPROVAL', 'COVERAGE', 'ROUTER-P']
             }
         },
         computed: {
@@ -213,13 +213,12 @@
   color: #63656e;
   font-size: 14px;
   text-align: center;
-  border: 1px solid transparent;
   border-radius: 4px;
   box-shadow: 0 1px 3px 0 rgba(0,0,0,0.20);
   overflow: hidden;
   cursor: pointer;
   &:hover {
-    border: 1px solid #3a84ff;
+    outline: 1px solid #3a84ff;
     .node-name-area {
       color: #3a84ff;
     }
