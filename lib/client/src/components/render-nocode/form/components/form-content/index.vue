@@ -183,9 +183,9 @@
 
 .form-panel {
   height: calc(100vh - 258px);
-  background: #ffffff;
+  /* background: #ffffff;
   box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
-  border-radius: 2px;
+  border-radius: 2px; */
 }
 
 .fields-container {

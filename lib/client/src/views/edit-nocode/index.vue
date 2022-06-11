@@ -36,6 +36,7 @@
     </main>
 </template>
 <script>
+    import LC from '@/element-materials/core'
     import { mapGetters, mapActions } from 'vuex'
     import ExtraLinks from '@/components/ui/extra-links'
     import PageList from '../index/components/page-list'
@@ -121,9 +122,17 @@
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId })
                     ])
 
+                    await this.$store.dispatch('page/getPageSetting', {
+                        pageId: this.pageId,
+                        projectId: this.projectId,
+                        versionId: this.versionId
+                    })
+
                     this.$store.commit('page/setPageDetail', pageDetail || {})
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
+
+                    LC.pageStyle = pageDetail.styleSetting
                 } catch (e) {
                     console.error(e)
                 } finally {
