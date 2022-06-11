@@ -5,6 +5,7 @@
             <bk-input
                 clearable
                 :placeholder="'组件名称'"
+                :input-style="{ background: '#F5F7FA' }"
                 :right-icon="'bk-icon icon-search'"
                 v-model="searchValue"
                 @enter="handleSearch"
@@ -14,13 +15,13 @@
         <div class="fields-list-container">
             <div v-for="(group, index) in list" class="field-group" :key="index">
                 <div class="group-name">
-                    <span>{{ group.name }}</span>
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                         :class="{
                             floded: group.isFolded
                         }"
                         @click="handleToggle(index,group.isFolded)" />
+                    <span>{{ group.name }}</span>
                 </div>
                 <bk-divider />
                 <draggable
@@ -141,28 +142,31 @@
 .group-name {
   padding: 0 12px;
   height: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   font-size: 12px;
   color: #313238;
   font-weight: Bold;
   position: relative;
-
+  display: flex;
+  align-items: center;
   .toggle-arrow {
     position: absolute;
     display: block;
     line-height: 40px;
     top: 0;
-    right: 12px;
+    left: 0;
     font-size: 24px;
     color: #979BA5;
     transition: all .1s linear;
+    margin-right: 8px;
   //transform: rotate(-270deg);
 
     &.floded {
-      transform: rotate(90deg);
+      transform: rotate(-90deg);
     }
+  }
+  span{
+    display: block;
+    margin-left: 8px;
   }
 }
 .search-container{
