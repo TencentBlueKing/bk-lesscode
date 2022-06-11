@@ -7,13 +7,13 @@
         <!--            @click="handleClick('edit')">-->
         <!--            编辑-->
         <!--        </bk-button>-->
-        <bk-button
-            class="table-action-btn"
-            size="small"
-            :text="true"
-            @click="handleClick('del')">
-            删除
-        </bk-button>
+        <!--        <bk-button-->
+        <!--            class="table-action-btn"-->
+        <!--            size="small"-->
+        <!--            :text="true"-->
+        <!--            @click="handleClick('del')">-->
+        <!--            删除-->
+        <!--        </bk-button>-->
         <bk-button
             class="table-action-btn"
             size="small"

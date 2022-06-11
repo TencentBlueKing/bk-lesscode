@@ -1,8 +1,8 @@
 <template>
-    <edit-dynamic-object
+    <edit-dynamic-data
         ref="editObjectRef"
         :disable-edit-root="true"
-        :param="{ a: [{ c: 2 }] }"
+        :param="formData.response"
     />
 </template>
 
@@ -10,12 +10,12 @@
     import {
         defineComponent
     } from '@vue/composition-api'
-    import EditDynamicObject from './edit-dynamic-object/index.vue'
+    import EditDynamicData from './edit-dynamic-data/index.vue'
     import useForm from './use-form'
 
     export default defineComponent({
         components: {
-            EditDynamicObject
+            EditDynamicData
         },
 
         props: {

@@ -12,23 +12,8 @@
     </div>
 </template>
 <script>
-    const OPERATION_LIST = [
-        {
-            key: 'edit',
-            label: '表单设计',
-            icon: 'bk-drag-huabu'
-        },
-        {
-            key: 'setting',
-            label: '页面设置',
-            icon: 'bk-drag-set'
-        },
-        {
-            key: 'jsonSource',
-            label: 'JSON',
-            icon: 'bk-drag-json'
-        }
-    ]
+    import { mapGetters } from 'vuex'
+
     export default {
         name: '',
         props: {
@@ -38,9 +23,32 @@
             },
             hidePageSetting: Boolean
         },
-        data () {
-            return {
-                operationList: this.hidePageSetting ? OPERATION_LIST.filter(item => item.key !== 'setting') : OPERATION_LIST.slice()
+        computed: {
+            ...mapGetters('page', ['pageDetail']),
+            operationList () {
+                let list = [
+                    {
+                        key: 'edit',
+                        label: '表单设计',
+                        icon: 'bk-drag-huabu'
+                    },
+                    {
+                        key: 'setting',
+                        label: '页面设置',
+                        icon: 'bk-drag-set'
+                    }
+                ]
+                if (['FORM', 'FLOW'].includes(this.pageDetail?.nocodeType)) {
+                    list.push({
+                        key: 'jsonSource',
+                        label: 'JSON',
+                        icon: 'bk-drag-json'
+                    })
+                }
+                if (this.hidePageSetting) {
+                    list = list.filter(item => item.key !== 'setting')
+                }
+                return list
             }
         },
         methods: {

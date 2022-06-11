@@ -2,7 +2,7 @@
     <div class="table">
         <bk-table :data="val" size="small" :outer-border="isHaveBorder" :max-height="maxHeight">
             <template v-for="col in field.choice">
-                <bk-table-column :label="col.name" :key="col.key">
+                <bk-table-column :label="col.name" :key="col.key + col.name">
                     <template slot-scope="props">
                         <bk-input
                             v-if="!viewMode && !disabled"

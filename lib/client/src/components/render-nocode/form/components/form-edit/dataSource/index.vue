@@ -18,6 +18,8 @@
             :source-type-list="sourceTypeList"
             :use-variable="useVariable"
             :value="value"
+            :api-detail="apiDetail"
+            :res-array-tree-data="resArrayTreeData"
             @sourceTypeChange="$emit('sourceTypeChange', $event)"
             @update="$emit('change', $event)">
         </api-data>
@@ -55,6 +57,14 @@
             sourceTypeList: {
                 type: Array,
                 default: () => []
+            },
+            apiDetail: {
+                type: Object,
+                default: () => ({})
+            },
+            resArrayTreeData: {
+                type: Array,
+                default: () => ([])
             },
             flowId: Number,
             nodeId: Number,

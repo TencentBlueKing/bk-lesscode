@@ -1,9 +1,9 @@
 <template>
     <div class="data-manage-content" v-bkloading="{ tableLoading }">
         <!--        顶部按钮区-->
-        <div class="operating-buttons">
-            <button-group />
-        </div>
+        <!--        <div class="operating-buttons">-->
+        <!--            <button-group />-->
+        <!--        </div>-->
         <!--搜索区域-->
         <div class="data-filter-area">
             <bk-form class="filters-form" form-type="vertical">
@@ -28,7 +28,8 @@
                     @hide="dropdownHide"
                     v-if="selectList.length > 0"
                     ref="dropdown"
-                    ext-cls="dropdown">
+                    ext-cls="dropdown"
+                    style="height: 27px">
                     <div class="add-search" slot="dropdown-trigger">
                         <div class="add-filter-btn">
                             <bk-button
@@ -111,18 +112,15 @@
 </template>
 <script>
     import hoverDiretive from './hover-directive.js'
-    import ButtonGroup from './buttonGroup'
     import TableActionGroup from './tableActionGroup'
-    import cloneDeep from 'lodash.clonedeep'
     import { SYS_FIELD } from '../../common/field'
     import { mapGetters } from 'vuex'
-
+    import cloneDeep from 'lodash.clonedeep'
     export default {
         name: 'DataPage',
-        components: { TableActionGroup, ButtonGroup },
+        components: { TableActionGroup },
         directives: {
             hover: hoverDiretive,
-            ButtonGroup,
             TableActionGroup
         },
         data () {
@@ -159,7 +157,10 @@
             ...mapGetters('page', ['pageDetail']),
             formId () {
                 // todo 先验证一下接口后面把2去除
-                return this.pageDetail.formId || 3
+                return this.pageDetail.formId
+            },
+            tableSetting () {
+                return this.pageDetail.content
             }
         },
         created () {
@@ -168,9 +169,12 @@
         methods: {
             getFormList (val = []) {
                 // 关联的表单
+                this.fieldList = cloneDeep(val)
                 this.localFieldList = cloneDeep(val)
                 this.selectionFields = cloneDeep(val)
-                this.selectList = cloneDeep(val)
+                const filtersKey = this.filters.map(i => i.id)
+                this.selectList = val.concat(SYS_FIELD).filter(item => !filtersKey.includes(item.id))
+                console.log(this.selectList)
                 this.customFields = this.selectionFields.map(i => i.key)
             },
             async getFieldList () {
@@ -178,9 +182,25 @@
                     if (this.formId) {
                         this.tableLoading = true
                         const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
-                        console.log(JSON.parse(form.content))
-                        this.fieldList = JSON.parse(form.content) || []
-                        this.getFormList(JSON.parse(form.content))
+                        console.log(this.tableSetting)
+                        const { filters, tableConfig } = this.tableSetting
+                        const tempFormFieldsList = JSON.parse(form.content).concat(SYS_FIELD)
+                        // 计算可选的筛选条件
+                        if (filters?.length > 0) {
+                            this.filters = tempFormFieldsList.filter(item => filters.includes(item.id))
+                            const filtersKey = this.filters.map(i => i.id)
+                            this.selectList = this.fieldList.filter(item => !filtersKey.includes(item.id))
+                        }
+                        if (tableConfig?.length > 0) {
+                            // 自定义字段
+                            this.fieldList = tempFormFieldsList.filter(item => tableConfig.includes(item.id))
+                            this.selectionFields = JSON.parse(form.content)
+                            this.localFieldList = JSON.parse(form.content)
+                            this.customFields = this.fieldList.map(i => i.key)
+                        }
+                        if (!filters?.length && !tableConfig?.length) {
+                            this.getFormList(JSON.parse(form.content))
+                        }
                         this.change()
                     }
                 } catch (err) {
@@ -193,8 +213,9 @@
             // TODO 获取表单配置项
             },
             getSelectList (data) {
+                const filtersKey = this.filters.map(i => i.id)
                 const UN_SEARCH_ABLE_ARR = ['TABLE', 'RICHTEXT', 'FILE', 'LINK', 'IMAGE']
-                return data.filter(item => !UN_SEARCH_ABLE_ARR.includes(item.type))
+                return data.filter(item => !UN_SEARCH_ABLE_ARR.includes(item.type) && !filtersKey.includes(item.id))
             },
             handleCompClick (data) {
                 console.log('click', data)
@@ -221,6 +242,7 @@
                 // 点击确认 同步自定义字段勾选的值
                 const curSelectFields = this.localFieldList.filter(item => this.customFields.includes(item.key))
                 const curSelectSysFields = SYS_FIELD.filter(item => this.sysSelectFields.includes(item.key))
+                console.log(curSelectFields, curSelectSysFields)
                 this.fieldList = curSelectFields.concat(curSelectSysFields)
                 this.selectList = this.getSelectList(curSelectFields).concat(curSelectSysFields)
                 this.change()
@@ -383,6 +405,7 @@
 }
 
 .dropdown {
+  height: 27px;
 
   .bk-dropdown-list {
     cursor: pointer;

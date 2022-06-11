@@ -18,7 +18,7 @@
                         :clearable="false"
                         :loading="fieldsLoading"
                         @selected="handleSelectField(conditionItem)">
-                        <bk-option v-for="field in fields" :key="field.key" :id="field.key" :name="field.name"></bk-option>
+                        <bk-option v-for="field in fields" :key="field.id" :id="field.id" :name="field.name"></bk-option>
                     </bk-select>
                     <!-- 选择逻辑关系 -->
                     <bk-select
@@ -42,9 +42,9 @@
                     </field-value>
                 </div>
                 <div class="operate-btns">
-                    <i class="custom-icon-font icon-add-circle" @click="handleAddExpression(index)"></i>
+                    <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAddExpression(index)"></i>
                     <i
-                        :class="['custom-icon-font', 'icon-reduce-circle', { disabled: localVal.expressions.length < 2 }]"
+                        :class="['icon', 'bk-drag-icon', 'bk-drag-reduce-fill', { disabled: localVal.expressions.length < 2 }]"
                         @click="handleDeleteExpression(index)">
                     </i>
                 </div>
@@ -54,9 +54,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import jsonData from '../../../common/mockFormData.json'
     import FieldValue from './fieldValue.vue'
-    const SHOW_DATA = jsonData.filter(item => !['IMAGE', 'RICHTEXT', 'FILE', 'IMAGE'].includes(item.type))
 
     export default {
         name: 'ConditionGroup',
@@ -64,10 +62,10 @@
             FieldValue
         },
         props: {
-            // fields: {
-            //     type: Array,
-            //     default: () => []
-            // },
+            fields: {
+                type: Array,
+                default: () => []
+            },
             fieldsLoading: {
                 type: Boolean,
                 default: false
@@ -97,7 +95,7 @@
         data () {
             return {
                 localVal: this.getLocalVal(this.value),
-                fields: SHOW_DATA
+                localFileds: cloneDeep(this.fields).filter(item => !['IMAGE', 'RICHTEXT', 'FILE', 'IMAGE'].includes(item.type))
             }
         },
         watch: {
