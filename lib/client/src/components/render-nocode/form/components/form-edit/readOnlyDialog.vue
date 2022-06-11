@@ -10,7 +10,7 @@
         :value="show"
         @confirm="onConfirm"
         @cancel="$emit('update:show', false)">
-        <condition-group :value="value" @change="handleChangeValue">
+        <condition-group :value="value" @change="handleChangeValue" :fields="fieldList">
         </condition-group>
     </bk-dialog>
 </template>
@@ -42,6 +42,10 @@
 
                     }
                 }
+            },
+            fieldList: {
+                type: Array,
+                default: () => []
             }
         },
         data () {

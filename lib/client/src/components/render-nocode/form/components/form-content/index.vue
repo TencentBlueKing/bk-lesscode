@@ -105,6 +105,7 @@
                     show_type: 0, // 显隐
                     fileTemplate: [], // 存储文件类型组件模板的值
                     imageRange: this.getDefaultImageRange(type),
+                    isDisplayTag: false,
                     deviderAttr: { // 下划线属性
                         align: 'center',
                         color: '#787A7F'
@@ -126,16 +127,14 @@
                     this.$emit('select', field, index)
                     this.selectedIndex = index
                 } else if (type === 'copy') {
-                    delete field.key
-                    delete field.id
+                    field.id = uuid(8)
                     this.$emit('copy', field, index)
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
                     this.$bkInfo({
                         title: '确认删除？',
-                        type: 'warning',
                         subTitle: '删除字段将会同时删除已存在该字段下的数据，你还要继续吗？',
-                        theme: 'primary',
+                        theme: 'danger',
                         confirmFn: async () => {
                             this.$emit('delete', index)
                             if (this.selectedIndex === index) {
@@ -182,7 +181,7 @@
 @import "@/css/mixins/scroller";
 
 .form-panel {
-  height: calc(100vh - 258px);
+  height: calc(100vh - 200px);
   background: #ffffff;
   box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
   border-radius: 2px;
@@ -191,7 +190,7 @@
 .fields-container {
   @mixin scroller;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   &.hover {
     outline: 2px dashed #1768ef;
     border-radius: 4px;
