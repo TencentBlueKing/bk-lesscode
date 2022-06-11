@@ -25,7 +25,7 @@
                     subTitle: '清空',
                     confirmFn: () => {
                         this.$store.commit('nocode/formSetting/restFieldList')
-                        bus.$emit('restFieldList')
+                        bus.$emit('resetFieldList', [])
                     }
                 })
             }

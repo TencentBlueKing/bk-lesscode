@@ -21,6 +21,8 @@
     import JsonView from '@/element-materials/modifier/component/props/components/strategy/json-view.vue'
     import { circleJSON } from '@/common/util.js'
     import LC from '@/element-materials/core'
+    import { bus } from '@/common/bus'
+    import { mapGetters } from 'vuex'
 
     export default {
         components: {
@@ -34,13 +36,19 @@
             }
         },
         computed: {
+            ...mapGetters('page', ['pageDetail']),
             pageId () {
                 return this.$route.params.pageId || ''
             }
         },
         created () {
-            const root = LC.getRoot()
-            this.code = circleJSON(root.toJSON().renderSlots.default)
+            if (this.pageDetail.nocodeType === 'FORM') {
+                const content = this.$store.state.nocode.formSetting.fieldsList || []
+                this.code = circleJSON(content)
+            } else {
+                const root = LC.getRoot()
+                this.code = circleJSON(root.toJSON().renderSlots.default)
+            }
         },
         methods: {
             showEditData () {
@@ -48,7 +56,13 @@
             },
             setImportData (name, data) {
                 if (data && Array.isArray(data)) {
-                    LC.parseData(data)
+                    if (this.pageDetail.nocodeType === 'FORM') {
+                        this.$store.commit('nocode/formSetting/setFieldsList', data)
+                        bus.$emit('resetFieldList', data)
+                        this.code = circleJSON(data)
+                    } else {
+                        LC.parseData(data)
+                    }
                 }
             }
         }
