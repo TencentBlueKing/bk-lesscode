@@ -1,6 +1,11 @@
 <template>
     <div class="get-request-params" v-bkloading="{ isLoading: fieldListLoading, zIndex: 4 }">
-        <bk-table :data="paramsTableList" :size="'small'">
+        <bk-table
+            size="small"
+            :outer-border="false"
+            :header-border="false"
+            :header-cell-style="{ background: '#f0f1f5' }"
+            :data="paramsTableList">
             <bk-table-column label="名称" prop="name" min-width="180"></bk-table-column>
             <bk-table-column label="必选" width="60">
                 <template slot-scope="props">
@@ -117,8 +122,8 @@
                         workflow: this.flowId,
                         state: this.nodeId
                     }
-                    const res = await this.$store.dispatch('nocode/formSetting/getNodeVars', params)
-                    this.fieldList = res.data.map(item => {
+                    const res = await this.$store.dispatch('nocode/flow/getNodeVars', params)
+                    this.fieldList = res.map(item => {
                         const { key, name } = item
                         return { key: `\${params_${key}}`, name }
                     })

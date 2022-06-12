@@ -6,12 +6,12 @@
         <div v-bk-tooltips.left="'缩小'" class="tool-item" @click="onZoomOut" title="缩小">
             <i class="bk-drag-icon bk-drag-minus-circle"></i>
         </div>
-        <!-- <div v-bk-tooltips.top="'复位'" class="tool-item" @click="onResetPosition" title="复位">
-            <i class="bk-drag-icon bk-drag-filliscreen"></i>
-        </div> -->
-        <div v-bk-tooltips.left="'全屏'" class="tool-item" @click="onZoomOut" title="全屏">
-            <i class="bk-drag-icon bk-drag-filliscreen-line"></i>
+        <div v-bk-tooltips.left="'复位'" class="tool-item" @click="onResetPosition" title="复位">
+            <i class="bk-drag-icon bk-drag-radio"></i>
         </div>
+        <!-- <div v-bk-tooltips.left="'全屏'" class="tool-item" @click="onZoomOut" title="全屏">
+            <i class="bk-drag-icon bk-drag-filliscreen-line"></i>
+        </div> -->
     </div>
 </template>
 <script>

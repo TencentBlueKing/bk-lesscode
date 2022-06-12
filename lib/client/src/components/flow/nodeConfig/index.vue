@@ -8,7 +8,8 @@
             <component
                 ref="nodeComp"
                 :is="formCompDict[nodeData.type]"
-                :flow-config="flowConfig">
+                :flow-config="flowConfig"
+                @close="handleClose">
             </component>
             <div class="extend-setting-btn">
                 <span class="trigger-area" @click="extendSettingOpen = !extendSettingOpen">

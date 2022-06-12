@@ -119,7 +119,7 @@
                 return this.$store.dispatch('nocode/flow/editFlowNode', params)
             },
             // 更新itsm节点数据
-            updateItsmNode () {
+            updateItsmNode (formId) {
                 const data = cloneDeep(this.nodeData)
                 // 流程服务校验desc字段不为空，节点上没有可配置desc的地方，故先删除
                 delete data.desc
@@ -132,6 +132,11 @@
                     if (!data.is_multi) {
                         data.finish_condition = {}
                     }
+                } else if (data.type === 'NORMAL' && this.nodeData.is_first_state) {
+                    data.extras.formConfig = {
+                        id: formId,
+                        type: this.formConfig.type
+                    }
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
             },
@@ -143,12 +148,15 @@
                         this.savePending = true
                     }
                     if (this.nodeData.type === 'NORMAL') {
-                        await this.saveItsmFields()
-                        await this.saveFormConfig()
+                        // itsm 接口校验暂时有问题，先去掉
+                        // await this.saveItsmFields()
+                        const res = await this.saveFormConfig()
+                        this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
+                        console.log(this.formConfig.id)
                         if (createPage) {
                             await this.$refs.createPageDialog.save()
                         }
-                        await this.updateItsmNode()
+                        await this.updateItsmNode(res.formId)
                     } else {
                         await this.updateItsmNode()
                     }

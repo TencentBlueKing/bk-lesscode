@@ -25,7 +25,7 @@
                     @click="handleFormSelect(item.id)">
                     <div class="selected-label"></div>
                     <span class="preview-btn" @click.stop="handlePreviewClick">预览</span>
-                    <p>{{ item.name || item.id }}</p>
+                    <p>{{ item.formName }}</p>
                 </div>
                 <bk-exception
                     v-if="formList.length === 0"

@@ -5,7 +5,7 @@
             v-bkloading="{ isLoading: formContentLoading || pageContextLoading }"
             class="edit-form-card">
             <div class="card-header">
-                <h5>{{ formConfig.name }}</h5>
+                <h5>{{ formConfig.formName }}</h5>
                 <div class="type-label">{{ typeNameMap[formConfig.type] }}</div>
             </div>
             <div class="related-info">
@@ -55,8 +55,10 @@
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
             :has-create-ticket-page="hasCreateTicketPage"
+            :flow-config="flowConfig"
             :form-config="formConfig"
-            @save="handleCreateForm">
+            @save="handleCreateForm"
+            @closeNode="$emit('close')">
         </edit-form-panel>
         <select-form-dialog
             :method="selectedType"
@@ -170,7 +172,7 @@
             },
             // 关联数据表点击
             handleTableClick () {
-                if (!this.formConfig.code) {
+                if (this.formConfig.code) {
                     const route = this.$router.resolve({ name: 'dataManage', query: { tableName: this.formConfig.code } })
                     window.open(route.href, '__blank')
                 }
@@ -227,7 +229,11 @@
                 margin: 0;
                 font-size: 12px;
                 color: #63656e;
+                max-width: 420px;
                 line-height: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .type-label {
                 padding: 2px 6px;

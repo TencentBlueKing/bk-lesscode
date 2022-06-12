@@ -26,7 +26,8 @@
             <node-form-setting
                 ref="formSetting"
                 :flow-config="flowConfig"
-                :form-content-loading="formContentLoading">
+                :form-content-loading="formContentLoading"
+                @close="$emit('close')">
             </node-form-setting>
         </form-section>
     </div>
@@ -95,9 +96,9 @@
                     heteronym: false
                 }).join('_')
 
-                const name = this.nodeData.name
+                const formName = `${this.flowConfig.flowName}_提单页`
                 const code = `${cnName}_${this.nodeData.id}`
-                this.$store.commit('nocode/nodeConfig/setFormConfig', { code, name })
+                this.$store.commit('nocode/nodeConfig/setFormConfig', { code, formName })
             }
         },
         methods: {
@@ -109,8 +110,8 @@
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
                     const code = data.tableName
-                    const name = '表单名称待添加....'
-                    this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, name })
+                    const formName = data.formName || '默认添加的提单页'
+                    this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                     this.formContentLoading = false
                 } catch (e) {
                     messageError(e.message || e)
@@ -124,7 +125,11 @@
             },
             validate () {
                 return this.$refs.basicForm.validate().then(() => {
-                    return this.$refs.formSetting.validate()
+                    if (this.$refs.processorForm.validate()) {
+                        return this.$refs.formSetting.validate()
+                    } else {
+                        return false
+                    }
                 }).catch(() => {
                     return false
                 })
