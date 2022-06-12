@@ -82,20 +82,21 @@
                 if (createPage) {
                     this.$refs.createPageDialog.isShow = true
                 } else {
-                    this.saveConfig(this.flowConfig.pageId)
+                    this.saveConfig()
                 }
             },
             handleCreatePageConfirm () {
                 this.createPagePending = true
-                this.saveConfig()
+                this.saveConfig(true)
             },
             // 表单字段保存到itsm
             saveItsmFields () {
                 const fields = this.formConfig.content.map(item => {
                     const field = cloneDeep(item)
                     field.workflow = this.serviceData.workflow_id
+                    field.id = null
+                    field.state_id = this.nodeData.id
                     delete field.api_instance_id
-                    delete field.id
                     return field
                 })
                 const params = {
@@ -115,7 +116,6 @@
                     versionId: this.versionId,
                     formData: this.formConfig
                 }
-                this.savePending = true
                 return this.$store.dispatch('nocode/flow/editFlowNode', params)
             },
             // 更新itsm节点数据
@@ -123,34 +123,42 @@
                 const data = cloneDeep(this.nodeData)
                 // 流程服务校验desc字段不为空，节点上没有可配置desc的地方，故先删除
                 delete data.desc
+                data.is_draft = false
                 if (data.type === 'WEBHOOK') {
                     // @todo 处理人为不限后台校验不通过，暂时用固定值
                     data.processors_type = 'STARTER'
                     data.processors = ''
+                } else if (data.type === 'APPROVAL') {
+                    if (!data.is_multi) {
+                        data.finish_condition = {}
+                    }
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
             },
-            async saveConfig () {
+            async saveConfig (createPage = false) {
                 try {
-                    try {
-                        if (this.nodeData.type === 'NORMAL') {
-                            await this.saveItsmFields()
-                            await this.saveFormConfig()
-                            if (typeof this.nodeData.extras.flowConfig?.id === 'number') {
-                                await this.$refs.createPageDialog.save()
-                            }
-                            await this.updateItsmNode()
-                        } else {
-                            await this.updateItsmNode()
-                        }
-                        this.$bkMessage({
-                            message: '节点保存成功',
-                            theme: 'success'
-                        })
-                        this.$emit('save')
-                    } catch (e) {
-                        messageError(e.message || e)
+                    if (createPage) {
+                        this.createPagePending = true
+                    } else {
+                        this.savePending = true
                     }
+                    if (this.nodeData.type === 'NORMAL') {
+                        await this.saveItsmFields()
+                        await this.saveFormConfig()
+                        if (createPage) {
+                            await this.$refs.createPageDialog.save()
+                        }
+                        await this.updateItsmNode()
+                    } else {
+                        await this.updateItsmNode()
+                    }
+                    this.$bkMessage({
+                        message: '节点保存成功',
+                        theme: 'success'
+                    })
+                    this.$emit('save')
+                } catch (e) {
+                    messageError(e.message || e)
                 } finally {
                     this.createPagePending = false
                     this.savePending = false

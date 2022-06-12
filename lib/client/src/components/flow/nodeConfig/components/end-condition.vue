@@ -1,7 +1,7 @@
 <template>
     <div class="end-condition-wrapper">
         <div
-            v-for="(group, index) in formData.finishCondition.expressions"
+            v-for="(group, index) in formData.expressions"
             class="condition-group-wrapper"
             :key="index">
             <p class="group-title">或-条件组{{ index + 1 }}</p>
@@ -25,13 +25,13 @@
                         <bk-input
                             v-model="expression.value"
                             v-bk-tooltips="{
-                                disabled: processorLength > 0,
-                                content: '请选择处理人',
+                                disabled: tipsContent(expression).length === 0,
+                                content: tipsContent(expression),
                                 placements: ['top']
                             }"
                             type="number"
                             :clearable="false"
-                            :disabled="!expression.key || processorLength === 0"
+                            :disabled="tipsContent(expression).length > 0"
                             :max="expression.meta.unit === 'INT' ? processorLength : 100"
                             :min="0"
                             :precision="0">
@@ -39,11 +39,11 @@
                         <span v-if="expression.meta.unit === 'PERCENT'" class="percent-icon">%</span>
                     </div>
                     <div class="opt-btns">
-                        <i class="custom-icon-font icon-add-circle" @click="handleAddCondition(i, index)"></i>
+                        <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddCondition(i, index)"></i>
                         <i
                             :class="[
-                                'custom-icon-font',
-                                'icon-reduce-circle',
+                                'bk-drag-icon',
+                                'bk-drag-reduce-fill',
                                 'delete-condition-icon',
                                 { disabled: group.expressions.length === 1 }
                             ]"
@@ -62,14 +62,42 @@
     </div>
 </template>
 <script>
+    import cloneDeep from 'lodash.clonedeep'
+    import { mapState, mapGetters } from 'vuex'
+
     export default {
         name: 'EndCondition',
         data () {
             return {
-                formData: {
-                    finishCondition: {}
-                }
+                formData: cloneDeep(this.$store.state.nocode.nodeConfig.nodeData.finish_condition),
+                conditionList: [],
+                conditionListLoading: true,
+                relationList: [
+                    { name: '>=', key: '>=' },
+                    { name: '>', key: '>' },
+                    { name: '=', key: '==' },
+                    { name: '<=', key: '<=' },
+                    { name: '<', key: '<' }
+                ]
             }
+        },
+        computed: {
+            ...mapState('nocode/nodeConfig', ['nodeData']),
+            ...mapGetters('nocode/nodeConfig', ['processorData']),
+            processorLength () {
+                return this.nodeData.processors.length > 0 ? this.nodeData.processors.split(',').length : 0
+            }
+        },
+        watch: {
+            formData: {
+                handler (val) {
+                    this.$store.commit('nocode/nodeConfig/setFinishCondition', val)
+                },
+                deep: true
+            }
+        },
+        created () {
+            this.getConditionList()
         },
         methods: {
             getEmptyExp () {
@@ -89,39 +117,56 @@
             async getConditionList () {
                 try {
                     this.conditionListLoading = true
-                    const res = await this.$store.dispatch('setting/getSignNodeConditions', this.node.id)
-                    this.conditionList = res.data.filter(item => item.meta.code !== 'NODE_APPROVE_RESULT')
+                    const res = await this.$store.dispatch('nocode/flow/getSignNodeConditions', this.nodeData.id)
+                    this.conditionList = res.filter(item => item.meta.code !== 'NODE_APPROVE_RESULT')
                 } catch (e) {
                     console.error(e)
                 } finally {
                     this.conditionListLoading = false
                 }
             },
+            tipsContent (exp) {
+                const { type } = this.processorData
+                let tips = ''
+                // 未选择条件
+                if (!exp.key) {
+                    tips = '请选择处理人'
+                }
+                // 条件为个人，但是处理人类型不是个人
+                if (!['PASS_RATE', 'REJECT_RATE'].includes(exp.meta.code) && type !== 'PERSON') {
+                    tips = '请选择个人类型处理人'
+                }
+                // 条件为个人，处理人类型为个人，但是没有填值
+                if (!['PASS_RATE', 'REJECT_RATE'].includes(exp.meta.code) && type === 'PERSON' && this.processorLength === 0) {
+                    tips = '请选择处理人'
+                }
+                return tips
+            },
             handleAddGroup () {
-                this.formData.finishCondition.expressions.push({ type: 'and', expressions: [this.getEmptyExp()] })
+                this.formData.expressions.push({ type: 'and', expressions: [this.getEmptyExp()] })
             },
             handleDeleteGroup (index) {
-                if (this.formData.finishCondition.expressions.length === 1) {
+                if (this.formData.expressions.length === 1) {
                     this.$bkInfo({
                         type: 'warning',
                         title: '确定删除唯一的条件组？',
                         subTitle: '若删除，则必须所有人处理完成才结束',
                         confirmFn: () => {
-                            this.formData.finishCondition.expressions.splice(index, 1)
+                            this.formData.expressions.splice(index, 1)
                         }
                     })
                 } else {
-                    this.formData.finishCondition.expressions.splice(index, 1)
+                    this.formData.expressions.splice(index, 1)
                 }
             },
             handleAddCondition (index, groupIndex) {
-                this.formData.finishCondition.expressions[groupIndex].expressions.splice(index + 1, 0, this.getEmptyExp())
+                this.formData.expressions[groupIndex].expressions.splice(index + 1, 0, this.getEmptyExp())
             },
             handleDeleteCondition (index, groupIndex) {
-                if (this.formData.finishCondition.expressions[groupIndex].expressions.length === 1) {
+                if (this.formData.expressions[groupIndex].expressions.length === 1) {
                     return
                 }
-                this.formData.finishCondition.expressions[groupIndex].expressions.splice(index, 1)
+                this.formData.expressions[groupIndex].expressions.splice(index, 1)
             },
             handleSelectCondition (val, exp) {
                 const condition = this.conditionList.find(item => item.key === val)
@@ -163,7 +208,7 @@
                 align-items: center;
                 height: 30px;
                 width: 30px;
-                top: 2px;
+                top: 1px;
                 right: 1px;
                 color: #63656e;
                 font-size: 12px;

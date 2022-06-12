@@ -30,7 +30,7 @@
                     </span>
                     <template v-else>
                         <span v-if="node.type === 'NORMAL'">处理人：--</span>
-                        <span v-else-if="node.type === 'APPROVAL'">类型：-- 处理人: --</span>
+                        <span v-else-if="node.type === 'APPROVAL'">类型：{{ approvalType }} 处理人: --</span>
                         <span v-else-if="node.type === 'WEBHOOK'">数据来源节点：-- 目标表： --</span>
                         <span v-else-if="node.type === 'API'">API：--</span>
                     </template>
@@ -116,6 +116,15 @@
         computed: {
             isDraft () {
                 return !this.node.nodeInfo || this.node.nodeInfo.is_draft
+            },
+            approvalType () {
+                if (this.node.nodeInfo) {
+                    if (this.node.nodeInfo.is_multi) {
+                        return this.node.nodeInfo.is_sequential ? '顺序会签' : '随机会签'
+                    }
+                    return '或签'
+                }
+                return '--'
             }
         },
         created () {

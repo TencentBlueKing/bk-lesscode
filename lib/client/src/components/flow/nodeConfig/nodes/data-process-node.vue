@@ -341,6 +341,13 @@
                 relationList: [],
                 errorTips: false,
                 rules: {
+                    name: [
+                        {
+                            required: true,
+                            message: '节点名称为必填项',
+                            trigger: 'blur'
+                        }
+                    ],
                     action: [
                         {
                             required: true,
@@ -624,18 +631,6 @@
                         return true
                     })
                     .catch(() => false)
-            },
-            change () {
-                this.validate()
-            },
-            // 提供获取组件表单数据方法
-            getData () {
-                const data = cloneDeep(this.dataProcessConfig)
-                if (this.dataProcessConfig.action === 'ADD') {
-                    // 插入类型的动作接口不支持传conditions字段
-                    delete data.conditions
-                }
-                return data
             },
             handleSelectMapValue (mapping, val) {
                 mapping.value = ''

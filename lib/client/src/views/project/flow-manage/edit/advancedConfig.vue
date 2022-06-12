@@ -103,6 +103,8 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import { messageError } from '@/common/bkmagic'
+
     export default {
         name: 'AdvancedConfig',
         props: {
@@ -111,6 +113,10 @@
                 default: ''
             },
             serviceData: {
+                type: Object,
+                default: () => ({})
+            },
+            flowConfig: {
                 type: Object,
                 default: () => ({})
             }
@@ -139,7 +145,15 @@
                     { id: 'RETRY', name: '首次通知后，次日起每天定时通知' }
                 ],
                 frequencyList: this.getFrequencyList(),
-                rules: {}
+                rules: {
+                    name: [
+                        {
+                            required: true,
+                            message: '流程名称为必填项',
+                            trigger: 'blur'
+                        }
+                    ]
+                }
             }
         },
         created () {
@@ -151,8 +165,8 @@
             async getFlowNodes () {
                 try {
                     this.flowNodesLoading = true
-                    const res = await this.$store.dispatch('setting/getFlowNodes', { workflow: this.advancedData.workflow_id })
-                    this.flowNodes = res.data.filter(node => !node.is_builtin && !['ROUTER-P', 'COVERAGE'].includes(node.type))
+                    const res = await this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.advancedData.workflow_id })
+                    this.flowNodes = res.items.filter(node => !node.is_builtin && !['ROUTER-P', 'COVERAGE'].includes(node.type))
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -185,42 +199,41 @@
                 this.advancedData.notify = notify
                 this.advancedData.notify_rule = val.length > 0 ? 'ONCE' : 'NONE'
             },
-            async handleSave () {
-                // this.$refs.advancedForm.validate(async (result) => {
-                //     if (!result) {
-                //         return
-                //     }
-                    
-                //         this.$router.push({ name: 'functionList', params: { appId: this.appId } })
-                //     } catch (e) {
-                //         console.error(e)
-                //     } finally {
-                //         this.advancedPending = false
-                //     }
-                // })
-                this.advancedPending = true
-                const {
-                    notify,
-                    notify_freq,
-                    notify_rule,
-                    revoke_config,
-                    show_all_workflow,
-                    show_my_create_workflow
-                } = this.advancedData
-                const isRevocable = revoke_config.type !== 0
-                const params = {
-                    id: this.serviceData.id,
-                    workflow_config: {
-                        notify,
-                        notify_freq,
-                        notify_rule,
-                        revoke_config,
-                        is_revocable: isRevocable,
-                        show_all_workflow,
-                        show_my_create_workflow
+            handleSave () {
+                this.$refs.advancedForm.validate().then(async () => {
+                    try {
+                        this.advancedPending = true
+                        const {
+                            name,
+                            workflow_id,
+                            notify,
+                            notify_freq,
+                            notify_rule,
+                            revoke_config,
+                            show_all_workflow,
+                            show_my_create_workflow
+                        } = this.advancedData
+                        const isRevocable = revoke_config.type !== 0
+                        const serviceConfig = {
+                            workflow_config: {
+                                notify,
+                                notify_freq,
+                                notify_rule,
+                                revoke_config,
+                                is_revocable: isRevocable,
+                                show_all_workflow,
+                                show_my_create_workflow
+                            }
+                        }
+                        await this.$store.dispatch('nocode/flow/updateServiceData', { id: workflow_id, data: serviceConfig })
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })
+                        this.$router.push({ name: 'flowList' })
+                    } catch (e) {
+                        messageError(e.message || e)
+                    } finally {
+                        this.advancedPending = false
                     }
-                }
-                await this.$store.dispatch('nocode/flow/editFlow', params)
+                })
             }
         }
     }
@@ -256,7 +269,7 @@
     }
     .half-row-form {
       display: inline-block;
-      width: 49%;
+      width: calc(50% - 2px);
     }
   }
   .extend-setting-btn {

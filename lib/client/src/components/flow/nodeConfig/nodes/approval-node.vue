@@ -1,17 +1,23 @@
 <template>
     <div class="approval-node-form">
         <form-section title="基础配置">
-            <bk-form form-type="vertical" style="width: 656px">
+            <bk-form
+                ref="basicForm"
+                form-type="vertical"
+                style="width: 656px"
+                :model="nodeData"
+                :rules="rules">
                 <bk-form-item label="节点名称" property="name" :required="true">
-                    <bk-input v-model="nodeData.name"></bk-input>
+                    <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="处理人" :required="true">
                     <processors
                         ref="processorForm"
-                        v-model="processorData"
+                        :value="processorData"
                         :flow-id="nodeData.workflow"
                         :node-id="nodeData.id"
-                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']">
+                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']"
+                        @change="handleProcessorChange">
                     </processors>
                 </bk-form-item>
                 <bk-form-item label="审批方式" :required="true">
@@ -39,10 +45,11 @@
                 <bk-form-item v-if="nodeData.can_deliver" label="转单人" :required="true">
                     <processors
                         ref="processorForm"
-                        v-model="dilverData"
+                        :value="deliverData"
                         :flow-id="nodeData.workflow"
                         :node-id="nodeData.id"
-                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']">
+                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']"
+                        @change="handleDeliverChange">
                     </processors>
                 </bk-form-item>
             </bk-form>
@@ -50,7 +57,7 @@
     </div>
 </template>
 <script>
-    import cloneDeep from 'lodash.clonedeep'
+    import { mapState, mapGetters } from 'vuex'
     import FormSection from '../components/form-section.vue'
     import Processors from '../components/processors.vue'
     import endCondition from '../components/end-condition.vue'
@@ -62,56 +69,64 @@
             Processors,
             endCondition
         },
-        props: {
-            nodeDetail: {
-                type: Object,
-                default: () => ({})
-            }
-        },
         data () {
             return {
-                nodeData: cloneDeep(this.nodeDetail),
-                processorData: {
-                    type: this.nodeDetail.processors_type,
-                    processors: cloneDeep(this.nodeDetail.processors)
-                },
-                dilverData: {
-                    type: this.nodeDetail.delivers_type,
-                    processors: cloneDeep(this.nodeDetail.delivers)
-                },
-                approvalType: this.getApprovalType(this.nodeDetail)
+                approvalType: this.getApprovalType(this.nodeDetail),
+                rules: {
+                    name: [
+                        {
+                            required: true,
+                            message: '节点名称为必填项',
+                            trigger: 'blur'
+                        }
+                    ]
+                }
             }
         },
-        watch: {
-            nodeDetail (val) {
-                this.nodeData = cloneDeep(val)
-                this.processorData = {
-                    type: val.processors_type,
-                    processors: cloneDeep(val.processors)
-                }
-                this.diliverData = {
-                    type: val.delivers_type,
-                    processors: cloneDeep(val.delivers)
-                }
-                this.approvalType = this.getApprovalType(val)
-            }
+        computed: {
+            ...mapGetters('nocode/nodeConfig', [
+                'processorData',
+                'deliverData'
+            ]),
+            ...mapState('nocode/nodeConfig', [
+                'nodeData',
+                'formConfig'
+            ])
         },
         methods: {
-            getApprovalType (nodeDetail) {
-                const { is_multi: isMulti, is_sequential: isSequential } = nodeDetail
-                return isMulti ? isSequential ? 'orderCountersign' : 'randomCountersign' : 'orsign'
+            getApprovalType () {
+                const { is_multi: isMulti, is_sequential: isSequential } = this.$store.state.nocode.nodeConfig.nodeData
+                return isMulti ? (isSequential ? 'orderCountersign' : 'randomCountersign') : 'orsign'
+            },
+            handleNameChange (val) {
+                this.$store.commit('nocode/nodeConfig/setNodeData', { ...this.nodeData, name: val })
+            },
+            handleProcessorChange (val) {
+                this.$store.commit('nocode/nodeConfig/updateProcessor', val)
             },
             handleApprovalChange (val) {
+                let isMulti, isSequential
                 if (val === 'orsign') {
-                    this.nodeData.is_multi = false
-                    this.nodeData.is_sequential = false
+                    isMulti = false
+                    isSequential = false
                 } else if (val === 'orderCountersign') {
-                    this.nodeData.is_multi = true
-                    this.nodeData.is_sequential = true
+                    isMulti = true
+                    isSequential = true
                 } else {
-                    this.nodeData.is_multi = true
-                    this.nodeData.is_sequential = false
+                    isMulti = true
+                    isSequential = false
                 }
+                this.$store.commit('nocode/nodeConfig/setApprovalConfig', { isMulti, isSequential })
+            },
+            handleDeliverChange (val) {
+                this.$store.commit('nocode/nodeConfig/updateDeliver', val)
+            },
+            validate () {
+                return this.$refs.basicForm.validate().then(() => {
+                    return true
+                }).catch(() => {
+                    return false
+                })
             }
         }
     }
