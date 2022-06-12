@@ -111,9 +111,9 @@
             },
             handleConfigSave (node) {
                 this.closeConfigPanel()
-                const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
-                this.canvasData.nodes.splice(index, 1, node)
-                console.log('close node config')
+                // const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
+                // this.canvasData.nodes.splice(index, 1, node)
+                this.getFlowStructData()
             },
             handleNextStep () {
                 this.$router.push({ name: 'flowAdvancedConfig' })
@@ -123,66 +123,37 @@
 </script>
 <style lang="postcss" scoped>
 .flow-config {
-  position: relative;
+    position: relative;
 }
 .flow-container {
-  height: 100%;
-  position: relative;
+    height: 100%;
+    position: relative;
 }
 .action-wrapper {
-  position: absolute;
-  bottom: 0;
-  left: 56px;
-  right: 0;
-  padding: 0 24px;
-  height: 52px;
-  line-height: 52px;
-  text-align: right;
-  background: #fafbfd;
-  border-top: 1px solid #dcdee5;
-  .bk-button {
-    margin-left: 4px;
-    min-width: 88px;
-  }
+    position: absolute;
+    bottom: 0;
+    left: 56px;
+    right: 0;
+    padding: 0 24px;
+    height: 52px;
+    line-height: 52px;
+    text-align: right;
+    background: #fafbfd;
+    border-top: 1px solid #dcdee5;
+    .bk-button {
+        margin-left: 4px;
+        min-width: 88px;
+    }
 }
 .node-config-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #f5f7fa;
-  z-index: 1100;
-}
-
-.tip-box {
-  display: flex;
-  position: absolute;
-  margin-bottom: 24px;
-  width: 800px;
-  padding: 4px 10px;
-  border: 1px solid #C5DAFF;
-  border-radius: 2px;
-  background: #F0F8FF;
-  font-size: 12px;
-  color: #63656E;
-  line-height: 32px;
-  z-index: 100;
-  top: 12px;
-  left: 72px;
-  .info {
-    top: 24px;
-    margin: 0 8px 0 11px;
-    color: #3A84FF;
-    font-size: 14px ;
-    line-height: 32px;
-  }
-  .icon-close{
-    display: inline-block;
-    font-size: 16px;
-    margin-top: 8px;
-  }
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fafbfd;
+    z-index: 1100;
 }
 </style>

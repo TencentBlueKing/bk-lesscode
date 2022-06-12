@@ -22,6 +22,7 @@
             <node-actions
                 :loading="nodeDetailLoading"
                 :flow-config="flowConfig"
+                :service-data="serviceData"
                 @save="$emit('save', $event)"
                 @close="handleClose">
             </node-actions>
@@ -32,10 +33,10 @@
     import { mapState, mapGetters } from 'vuex'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
     import { messageError } from '@/common/bkmagic'
-    import NormalNode from './nodes/normalNode.vue'
-    import DataProcessNode from './nodes/dataProcessNode.vue'
-    import ApiNode from './nodes/apiNode.vue'
-    import ApprovalNode from './nodes/approvalNode.vue'
+    import NormalNode from './nodes/normal-node.vue'
+    import DataProcessNode from './nodes/data-process-node.vue'
+    import ApiNode from './nodes/api-node.vue'
+    import ApprovalNode from './nodes/approval-node.vue'
     import FormSection from './components/form-section.vue'
     import NodeActions from './components/node-actions.vue'
 
@@ -135,9 +136,10 @@
 @import '@/css/mixins/scroller.css';
 
 .node-config-panel {
-  height: calc(100% - 52px);
-  background: #fafbfd;
+    height: 100%;
+    @mixin scroller;
 }
+
 .header-wrapper {
   position: relative;
   display: flex;
@@ -154,6 +156,8 @@
 }
 .config-content-wrapper {
   padding: 24px;
+  height: calc(100% - 48px);
+  overflow: auto;
   .extend-setting-btn {
       margin: 16px 0 24px;
       padding: 0 130px;

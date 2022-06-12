@@ -72,7 +72,7 @@
                 <bk-button
                     theme="primary"
                     :loading="loading"
-                    @click="handleCreateConfirm">确定</bk-button>
+                    @click="handleConfirmClick">确定</bk-button>
                 <bk-button @click="handleDialogCancel" :disabled="loading">取消</bk-button>
             </div>
         </bk-dialog>
@@ -232,7 +232,14 @@
                     })
                 }
             },
-            async handleCreateConfirm () {
+            handleConfirmClick () {
+                if (this.nocodeType === 'FLOW') {
+                    this.$emit('save')
+                } else {
+                    this.save()
+                }
+            },
+            async save () {
                 try {
                     this.loading = true
                     await this.$refs.templateForm.validate()
@@ -294,7 +301,7 @@
                             })
                         }
                     }
-                    this.$emit('save', res)
+                    return res
                 } catch (e) {
                     console.error(e)
                 } finally {

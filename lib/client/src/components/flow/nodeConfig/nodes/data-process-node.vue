@@ -6,9 +6,9 @@
                 form-type="vertical"
                 class="data-process-node-form"
                 :rules="rules"
-                :model="nodeData">
+                :model="dataProcessConfig">
                 <bk-form-item label="节点名称" property="name" :required="true">
-                    <bk-input :value="nodeData.name"></bk-input>
+                    <bk-input v-model="dataProcessConfig.name"></bk-input>
                 </bk-form-item>
                 <div class="action-select-area">
                     <bk-form-item label="节点动作" property="action" :required="true">
@@ -23,7 +23,7 @@
                             :loading="formListLoading"
                             :disabled="formListLoading || !editable"
                             @selected="handleSelectForm">
-                            <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.id"></bk-option>
+                            <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName"></bk-option>
                         </bk-select>
                     </bk-form-item>
                 </div>
@@ -156,7 +156,7 @@
                                     </bk-select>
                                     <field-value
                                         v-else
-                                        style="width: 190px"
+                                        style="width: 190px; background: #ffffff;"
                                         :field="fieldList.length > 0 && fieldList.find(i => i.key === expression.key)"
                                         :value="expression.value"
                                         :editable="editable"
@@ -279,7 +279,7 @@
                                     </bk-select>
                                     <field-value
                                         v-else-if="targetFields.length > 0"
-                                        style="width: 268px"
+                                        style="width: 268px; background: #ffffff;"
                                         :field=" targetFields.find(i => i.key === mapping.key)"
                                         :value="mapping.value"
                                         :editable="editable"
@@ -295,7 +295,7 @@
                         </div>
                     </template>
                     <bk-exception v-else class="no-data" type="empty" scene="part">请选择节点动作和目标表单</bk-exception>
-                    <p v-if="errorTips" class="common-error-tips">请检查字段映射规则</p>
+                    <p v-if="errorTips" class="error-tips">请检查字段映射规则</p>
                 </bk-form-item>
             </bk-form>
         </form-section>
@@ -329,6 +329,7 @@
                     { id: 'EDIT', name: '更新' },
                     { id: 'DELETE', name: '删除' }
                 ],
+                dataProcessConfig: {},
                 isDepartMent: '',
                 conditionRelations: CONDITION_RELATIONS,
                 formListLoading: false,
@@ -359,13 +360,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapGetters('nocode/nodeConfig', [
-                'dataProcessConfig'
-            ]),
-            ...mapState('nocode/nodeConfig', [
-                'nodeData',
-                'formConfig'
-            ]),
+            ...mapState('nocode/nodeConfig', ['nodeData']),
             projectId () {
                 return this.$route.params.projectId
             },
@@ -391,12 +386,34 @@
                 return list
             }
         },
-        created () {
-            this.getFormList()
-            // this.getRelationList()
-            // this.getApprovalNode()
-            if (this.nodeData.extras.dataManager && this.nodeData.extras.dataManager.worksheet_id !== '') {
+        watch: {
+            dataProcessConfig: {
+                handler (val) {
+                    console.log(val)
+                    this.$store.commit('nocode/nodeConfig/setDataProcessConfig', val)
+                },
+                deep: true
+            }
+        },
+        async mounted () {
+            this.getRelationList()
+            this.getApprovalNode()
+            await this.getFormList()
+            if (typeof this.nodeData.extras.dataManager?.worksheet_id === 'number') {
                 this.getFieldList(this.nodeData.extras.dataManager.worksheet_id)
+                this.dataProcessConfig = { name: this.nodeData.name, ...cloneDeep(this.nodeData.extras.dataManager) }
+            } else {
+                const dataManager = {
+                    conditions: {
+                        connector: 'and',
+                        expressions: []
+                    },
+                    mapping: [],
+                    action: '',
+                    worksheet_id: '',
+                    name: this.nodeData.name
+                }
+                this.dataProcessConfig = dataManager
             }
         },
         methods: {
@@ -430,9 +447,9 @@
             async getRelationList () {
                 try {
                     this.relationListLoading = true
-                    const res = await this.$store.dispatch('nocode/flow/getGroupedNodeVars', this.nodeDetail.id)
+                    const res = await this.$store.dispatch('nocode/flow/getGroupedNodeVars', this.nodeData.id)
                     const groupedList = []
-                    res.data.forEach((group) => {
+                    res.forEach((group) => {
                         if (group.fields.length > 0) {
                             groupedList.push({
                                 name: group.state_name,
@@ -457,8 +474,7 @@
             async getApprovalNode () {
                 try {
                     this.approvalNodeListLoading = true
-                    const res = await this.$store.dispatch('setting/getApprovalNode', this.createTicketNodeId)
-                    this.approvalNodeList = res.data
+                    this.approvalNodeList = await this.$store.dispatch('nocode/flow/getApprovalNode', this.nodeData.id)
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -486,7 +502,15 @@
             // 切换动作
             handleSelectAction (val) {
                 const idsFieldIdx = this.fieldList.findIndex(item => item.key === 'ids')
-                this.dataProcessConfig.action = val
+                this.dataProcessConfig = {
+                    action: val,
+                    worksheet_id: this.dataProcessConfig.worksheet_id,
+                    conditions: {
+                        connector: 'and',
+                        expressions: []
+                    },
+                    mapping: []
+                }
                 if (val === 'DELETE') {
                     if (idsFieldIdx === -1) {
                         this.fieldList.splice(0, 0, { key: 'ids', name: 'ids' })
@@ -496,14 +520,19 @@
                         this.fieldList.splice(idsFieldIdx, 1)
                     }
                 }
-                this.resetForm()
-                this.change()
             },
             // 切换表单
             handleSelectForm (val) {
                 this.getFieldList(val)
-                this.resetForm()
-                this.change()
+                this.dataProcessConfig = {
+                    action: this.dataProcessConfig.action,
+                    worksheet_id: val,
+                    conditions: {
+                        connector: 'and',
+                        expressions: []
+                    },
+                    mapping: []
+                }
             },
             handleAddExpression (index) {
                 if (!this.editable) {
@@ -578,9 +607,6 @@
                     default:
                         data.value = ''
                 }
-            },
-            resetForm () {
-                // @todo 清楚store里的数据
             },
             validate () {
                 return this.$refs.dataForm
@@ -698,6 +724,12 @@
         .bk-form-radio {
             margin-right: 64px;
         }
+    }
+    .error-tips {
+        font-size: 12px;
+        color: #ea3636;
+        line-height: 18px;
+        margin: 2px 0 0;
     }
 }
 </style>

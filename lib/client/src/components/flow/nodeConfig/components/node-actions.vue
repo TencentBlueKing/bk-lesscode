@@ -3,15 +3,15 @@
         <bk-button
             v-if="showCreatePageBtn"
             theme="primary"
-            :loading="savePending"
-            :disabled="loading"
+            :loading="createPagePending"
+            :disabled="loading || savePending"
             @click="handleSaveClick(true)">
             保存并生成提单页
         </bk-button>
         <bk-button
             :theme="showCreatePageBtn ? 'default' : 'primary'"
             :loading="savePending"
-            :disabled="loading"
+            :disabled="loading || createPagePending"
             @click="handleSaveClick(false)">
             保存
         </bk-button>
@@ -21,7 +21,7 @@
             platform="PC"
             nocode-type="FLOW"
             :init-page-data="pageData"
-            @save="handlePageCreated">
+            @save="handleCreatePageConfirm">
         </create-page-dialog>
     </div>
 </template>
@@ -39,6 +39,10 @@
         props: {
             loading: Boolean,
             flowConfig: {
+                type: Object,
+                default: () => ({})
+            },
+            serviceData: {
                 type: Object,
                 default: () => ({})
             }
@@ -81,35 +85,74 @@
                     this.saveConfig(this.flowConfig.pageId)
                 }
             },
-            handlePageCreated (pageId) {
-                this.saveConfig(pageId)
+            handleCreatePageConfirm () {
+                this.createPagePending = true
+                this.saveConfig()
             },
-            async saveConfig (pageId = '') {
+            // 表单字段保存到itsm
+            saveItsmFields () {
+                const fields = this.formConfig.content.map(item => {
+                    const field = cloneDeep(item)
+                    field.workflow = this.serviceData.workflow_id
+                    delete field.api_instance_id
+                    delete field.id
+                    return field
+                })
+                const params = {
+                    fields,
+                    state_id: this.nodeData.id,
+                    delete_ids: []
+                }
+                return this.$store.dispatch('nocode/flow/batchSaveFields', params)
+            },
+            // 表单配置保存到form表
+            saveFormConfig () {
+                const params = {
+                    // pageId,
+                    id: this.flowConfig.id,
+                    nodeId: this.nodeData.id,
+                    projectId: this.projectId,
+                    versionId: this.versionId,
+                    formData: this.formConfig
+                }
+                this.savePending = true
+                return this.$store.dispatch('nocode/flow/editFlowNode', params)
+            },
+            // 更新itsm节点数据
+            updateItsmNode () {
                 const data = cloneDeep(this.nodeData)
                 // 流程服务校验desc字段不为空，节点上没有可配置desc的地方，故先删除
                 delete data.desc
+                if (data.type === 'WEBHOOK') {
+                    // @todo 处理人为不限后台校验不通过，暂时用固定值
+                    data.processors_type = 'STARTER'
+                    data.processors = ''
+                }
+                return this.$store.dispatch('nocode/flow/updateNode', data)
+            },
+            async saveConfig () {
                 try {
-                    if (data.type === 'NORMAL') {
-                        const params = {
-                            pageId,
-                            id: this.flowConfig.id,
-                            nodeId: data.id,
-                            projectId: this.projectId,
-                            versionId: this.versionId,
-                            formData: this.formConfig
+                    try {
+                        if (this.nodeData.type === 'NORMAL') {
+                            await this.saveItsmFields()
+                            await this.saveFormConfig()
+                            if (typeof this.nodeData.extras.flowConfig?.id === 'number') {
+                                await this.$refs.createPageDialog.save()
+                            }
+                            await this.updateItsmNode()
+                        } else {
+                            await this.updateItsmNode()
                         }
-                        this.savePending = true
-                        await this.$store.dispatch('nocode/flow/editFlowNode', params)
-                        const node = await this.$store.dispatch('nocode/flow/updateNode', data)
                         this.$bkMessage({
                             message: '节点保存成功',
                             theme: 'success'
                         })
-                        this.$emit('save', node)
+                        this.$emit('save')
+                    } catch (e) {
+                        messageError(e.message || e)
                     }
-                } catch (e) {
-                    messageError(e.message || e)
                 } finally {
+                    this.createPagePending = false
                     this.savePending = false
                 }
             }
