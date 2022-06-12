@@ -9,14 +9,14 @@
   specific language governing permissions and limitations under the License.
 -->
 <template>
-    <section v-bkloading="{ isLoading: serviceDataLoading, zIndex: 2999 }" class="flow-edit-wrapper">
+    <section class="flow-edit-wrapper">
         <div class="page-header-container">
             <div class="nav-container">
                 <back-btn></back-btn>
                 <flow-selector
                     :list="flowList"
                     :list-loading="listLoading"
-                    :flow-data="flowData">
+                    :flow-config="flowConfig">
                 </flow-selector>
             </div>
             <div class="steps-container">
@@ -33,11 +33,15 @@
             </div>
         </div>
         <div v-if="!serviceDataLoading" class="flow-edit-main">
-            <router-view :id="serviceData.workflow_id" :flow-config="serviceData"></router-view>
+            <router-view
+                :flow-config="flowConfig"
+                :service-data="serviceData">
+            </router-view>
         </div>
     </section>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
@@ -62,8 +66,8 @@
                 flowId: this.$route.params.flowId,
                 listLoading: true,
                 flowList: [],
-                flowDataLoading: true,
-                flowData: {},
+                flowConfigLoading: true,
+                flowConfig: {},
                 serviceDataLoading: true,
                 serviceData: {}
             }
@@ -72,9 +76,7 @@
             projectId () {
                 return this.$route.params.projectId
             },
-            versionId () {
-                return this.$store.state.projectVersion.currentVersion.id
-            }
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
         },
         watch: {
             '$route.name' () {
@@ -82,12 +84,12 @@
             },
             '$route.params.flowId' (val) {
                 this.flowId = val
-                this.getFlowData()
+                this.getflowConfig()
             }
         },
         async created () {
             this.getFlowList()
-            await this.getFlowData()
+            await this.getflowConfig()
             this.getServiceData()
         },
         methods: {
@@ -105,20 +107,21 @@
                     this.listLoading = false
                 }
             },
-            async getFlowData () {
+            async getflowConfig () {
                 try {
-                    this.flowDatalLoading = true
-                    this.flowData = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
+                    this.flowConfigLoading = true
+                    this.flowConfig = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
-                    this.flowDataLoading = false
+                    this.flowConfigLoading = false
                 }
             },
+            // 保存到流程服务的配置
             async getServiceData () {
                 try {
                     this.serviceDataLoading = true
-                    this.serviceData = await this.$store.dispatch('nocode/flow/getServiceData', this.flowData.itsmId)
+                    this.serviceData = await this.$store.dispatch('nocode/flow/getServiceData', this.flowConfig.itsmId)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
@@ -129,7 +132,6 @@
                 return this.$route.name === 'flowConfig' ? 1 : 2
             },
             handleStepChange (val) {
-                console.log(val)
                 if (val === 1) {
                     this.$router.push({ name: 'flowConfig' })
                 } else {
@@ -141,9 +143,7 @@
 </script>
 <style lang="postcss" scoped>
 .flow-edit-wrapper {
-    min-width: 1366px;
-    height: calc(100vh - 64px);
-    margin-top: 64px;
+    height: 100%;
 }
 .page-header-container {
     position: relative;
@@ -173,6 +173,6 @@
     }
 }
 .flow-edit-main {
-    height: calc(100% - 52px);
+    height: calc(100% - 53px);
 }
 </style>

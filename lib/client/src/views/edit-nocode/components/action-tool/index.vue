@@ -1,6 +1,6 @@
 <template>
     <div class="action-tool-list">
-        <save />
+        <save :custom="customSave" @save="$emit('save', $event)" />
         <preview />
         <clear />
     </div>
@@ -15,6 +15,9 @@
             Save,
             Preview,
             Clear
+        },
+        props: {
+            customSave: Boolean
         }
     }
 </script>

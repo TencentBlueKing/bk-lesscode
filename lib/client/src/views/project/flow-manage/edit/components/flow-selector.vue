@@ -4,14 +4,14 @@
             style="width: 340px;"
             ext-cls="flow-selector"
             ext-popover-cls="select-flow-dropdown"
-            :value="flowData.id"
+            :value="flowConfig.id"
             :clearable="false"
             :searchable="true"
             :loading="listLoading"
             @selected="handleSelectFlow">
             <div class="selected-flow-trigger" slot="trigger">
                 <i class="prefix-icon bk-drag-icon bk-drag-flow-fill"></i>
-                <div class="flow-name">{{ flowData.flowName }}</div>
+                <div class="flow-name">{{ flowConfig.flowName }}</div>
                 <i class="bk-select-angle bk-icon icon-angle-down" />
             </div>
             <bk-option
@@ -35,7 +35,7 @@
                 type: Boolean,
                 default: true
             },
-            flowData: {
+            flowConfig: {
                 type: Object,
                 default () {
                     return {}

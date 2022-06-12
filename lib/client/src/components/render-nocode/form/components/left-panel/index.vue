@@ -115,7 +115,6 @@
 <style lang="postcss" scoped>
 .side-panel {
   position: relative;
-  width: 300px;
   height: 100%;
   background: #fcfcfc;
   z-index: 1;
@@ -132,7 +131,7 @@
 }
 
 .fields-list-container {
-  height: calc(100% - 44px);
+  height: calc(100% - 56px);
   overflow: auto;
   width: 100%;
   background: #FFFFFF;

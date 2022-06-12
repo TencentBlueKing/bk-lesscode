@@ -13,19 +13,20 @@
 </template>
 <script>
     import { mapGetters } from 'vuex'
-    
+
     export default {
         name: '',
         props: {
             value: {
                 type: String,
                 default: 'edit'
-            }
+            },
+            hidePageSetting: Boolean
         },
         computed: {
             ...mapGetters('page', ['pageDetail']),
             operationList () {
-                const list = [
+                let list = [
                     {
                         key: 'edit',
                         label: '表单设计',
@@ -37,12 +38,15 @@
                         icon: 'bk-drag-set'
                     }
                 ]
-                if (this.pageDetail?.nocodeType === 'FORM') {
+                if (['FORM', 'FLOW'].includes(this.pageDetail?.nocodeType)) {
                     list.push({
                         key: 'jsonSource',
                         label: 'JSON',
                         icon: 'bk-drag-json'
                     })
+                }
+                if (this.hidePageSetting) {
+                    list = list.filter(item => item.key !== 'setting')
                 }
                 return list
             }
