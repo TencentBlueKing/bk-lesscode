@@ -3,7 +3,7 @@
         <bk-dialog v-model="isShow"
             render-directive="if"
             :width="nocodeType ? 750 : 1080"
-            ext-cls="page-from-template-dialog"
+            ext-cls="new-page-from-template-dialog"
             :position="{ top: 80 }"
             :mask-close="false"
             :auto-close="false"
@@ -365,7 +365,7 @@
 </script>
 
 <style lang="postcss">
-    .page-from-template-dialog {
+    .new-page-from-template-dialog {
         .bk-dialog-tool{
             display: none;
         }
