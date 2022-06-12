@@ -142,7 +142,6 @@
                         ]
                     }
                 },
-                selectedLayout: {},
                 isAddNavList: true
             }
         },
