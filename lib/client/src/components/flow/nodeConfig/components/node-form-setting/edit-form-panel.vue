@@ -18,7 +18,11 @@
                 <extra-links></extra-links>
             </div>
             <div class="edit-content-wrapper">
-                <nocode-form v-if="operationType === 'edit'" :content="formConfig.content"></nocode-form>
+                <nocode-form
+                    v-if="operationType === 'edit'"
+                    :content="formConfig.content"
+                    :disabled="formConfig.type === 'USE_FORM'">
+                </nocode-form>
                 <page-setting v-else-if="operationType === 'setting'"></page-setting>
                 <page-json v-else-if="operationType === 'jsonSource'"></page-json>
             </div>

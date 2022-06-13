@@ -8,17 +8,18 @@
             </div>
             <template v-else-if="fieldData.type === 'DIVIDER'">
                 <bk-form-item label="是否展示文字">
-                    <bk-input v-model.trim="fieldData.default" @change="change"></bk-input>
+                    <bk-input v-model.trim="fieldData.default" :disabled="disabled" @change="change"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="文字位置">
                     <bk-select
                         v-model="fieldData.deviderAttr.align"
+                        :disabled="disabled"
                         @selected="change">
                         <bk-option v-for="option in alignList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
                 <bk-form-item label="线条颜色">
-                    <bk-color-picker v-model="fieldData.deviderAttr.color" size="small" @change="change">
+                    <bk-color-picker v-model="fieldData.deviderAttr.color" size="small" ::disabled="disabled" @change="change">
                     </bk-color-picker>
                 </bk-form-item>
             </template>
@@ -33,22 +34,22 @@
                     <span>基础属性</span>
                 </div>
                 <bk-form-item label="字段名称" v-if="!basicIsFolded">
-                    <bk-input v-model.trim="fieldData.name" @change="handleChangeName" @blur="onNameBlur"></bk-input>
+                    <bk-input v-model.trim="fieldData.name" :disabled="disabled" @change="handleChangeName" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="唯一标识" v-if="!basicIsFolded">
-                    <bk-input v-model.trim="fieldData.key" @change="change" @blur="onNameBlur"></bk-input>
+                    <bk-input v-model.trim="fieldData.key" :disabled="disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="布局" v-if="!basicIsFolded">
                     <bk-radio-group v-model="fieldData.layout" @change="change">
-                        <bk-radio value="COL_6" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">半行</bk-radio>
-                        <bk-radio value="COL_12" :disabled="fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
+                        <bk-radio value="COL_6" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">半行</bk-radio>
+                        <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
                 <bk-form-item label="上传模板附件" :ext-cls="'input-position '" v-if="fieldData.type === 'FILE' && !handleIsFolded">
-                    <bk-button :theme="'default'" title="点击上传">
+                    <bk-button :theme="'default'" title="点击上传" :disabled="disabled">
                         点击上传
                     </bk-button>
-                    <input type="file" :value="fileVal" class="input-file" @change="handleAddFiles">
+                    <input type="file" :value="fileVal" class="input-file" :disabled="disabled" @change="handleAddFiles">
                     <ul class="file-list">
                         <li v-for="(item, index) in fieldData.fileTemplate" :key="index">
                             <span class="file-success">
@@ -63,6 +64,7 @@
                     <bk-select
                         :value="fieldData.source_type"
                         :clearable="false"
+                        :disabled="disabled"
                         @selected="handleSourceTypeChange">
                         <bk-option v-for="item in sourceTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                     </bk-select>
@@ -72,7 +74,7 @@
                         v-model="fieldData.api_info.remote_system_id"
                         placeholder="请选择接口"
                         :clearable="false"
-                        :disabled="systemListLoading"
+                        :disabled="disabled || systemListLoading"
                         :loading="systemListLoading"
                         @selected="handleSelectSystem">
                         <bk-option v-for="item in systemList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
@@ -118,6 +120,7 @@
                             <bk-checkbox
                                 :true-value="true"
                                 :false-value="false"
+                                :disabled="disabled"
                                 v-model="fieldData.is_readonly"
                                 @change="change">
                                 只读
@@ -133,6 +136,7 @@
                             <bk-checkbox
                                 :true-value="'REQUIRE'"
                                 :false-value="'OPTION'"
+                                :disabled="disabled"
                                 v-model="fieldData.validate_type"
                                 @change="handleChangeValidataType">
                                 必填
@@ -147,6 +151,7 @@
                             <bk-checkbox
                                 :true-value="1"
                                 :false-value="0"
+                                :disabled="disabled"
                                 v-model="fieldData.show_type"
                                 @change="change">
                                 隐藏
@@ -159,7 +164,7 @@
                     <div>
                         <div>
                             <bk-checkbox
-                                :disabled="fieldData.validate_type === 'REQUIRE'"
+                                :disabled="disabled || fieldData.validate_type === 'REQUIRE'"
                                 :true-value="true"
                                 :false-value="false"
                                 v-model="fieldData.imageRange.isMin"
@@ -171,6 +176,7 @@
                                 type="number"
                                 :max="99"
                                 :min="1"
+                                :disabled="disabled"
                                 v-model="fieldData.imageRange.minNum"
                                 @change="change">
                             </bk-input>
@@ -180,6 +186,7 @@
                             <bk-checkbox
                                 :true-value="true"
                                 :false-value="false"
+                                :disabled="disabled"
                                 v-model="fieldData.imageRange.isMax"
                                 @change="change">
                                 最多上传
@@ -190,6 +197,7 @@
                                 style="width: 80px"
                                 :max="99"
                                 :min="1"
+                                :disabled="disabled"
                                 v-model="fieldData.imageRange.maxNum"
                                 @change="change">
                             </bk-input>
@@ -201,7 +209,7 @@
                     <div>
                         <div>
                             <bk-checkbox
-                                :disabled="fieldData.validate_type === 'REQUIRE'"
+                                :disabled="disabled || fieldData.validate_type === 'REQUIRE'"
                                 :true-value="true"
                                 :false-value="false"
                                 v-model="fieldData.imageRange.isMin"
@@ -213,6 +221,7 @@
                                 type="number"
                                 :max="99"
                                 :min="1"
+                                :disabled="disabled"
                                 v-model="fieldData.imageRange.minNum"
                                 @change="change">
                             </bk-input>
@@ -222,6 +231,7 @@
                             <bk-checkbox
                                 :true-value="true"
                                 :false-value="false"
+                                :disabled="disabled"
                                 v-model="fieldData.imageRange.isMax"
                                 @change="change">
                                 最多选择
@@ -232,6 +242,7 @@
                                 style="width: 80px"
                                 :max="99"
                                 :min="1"
+                                :disabled="disabled"
                                 v-model="fieldData.imageRange.maxNum"
                                 @change="change">
                             </bk-input>
@@ -245,7 +256,8 @@
                         :clearable="false"
                         :searchable="true"
                         :disabled="
-                            fieldData.source === 'TABLE' ||
+                            disabled ||
+                                fieldData.source === 'TABLE' ||
                                 (fieldData.meta && fieldData.meta.code === 'APPROVE_RESULT')
                         "
                         @selected="change">
@@ -259,14 +271,15 @@
                     <default-value
                         :key="fieldData.type"
                         :field="defaultData"
+                        :disabled="disabled"
                         @change="handleDefaultValChange">
                     </default-value>
                 </bk-form-item>
                 <bk-form-item label="填写说明" v-if="!handleIsFolded">
-                    <bk-input v-model.trim="fieldData.desc" type="textarea" :rows="4" @change="change"></bk-input>
+                    <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
-                            <span>  <bk-checkbox v-model="checkTips" @change="handleCheckedChange">添加额外填写说明</bk-checkbox></span>
+                            <span>  <bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleCheckedChange">添加额外填写说明</bk-checkbox></span>
                             <span class="tips" v-show="checkTips" v-bk-tooltips.top-start="fieldData.tips">效果预览</span>
                         </div>
                         <bk-input
@@ -275,6 +288,7 @@
                             v-model.trim="fieldData.tips"
                             type="textarea"
                             :rows="4"
+                            :disabled="disabled"
                             @change="change">
                         </bk-input>
                     </div>
@@ -362,7 +376,8 @@
             list: {
                 type: Array,
                 default: () => []
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

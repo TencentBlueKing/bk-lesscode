@@ -68,6 +68,7 @@
             }
         },
         computed: {
+            ...mapGetters('nocode/flow/', ['flowNodeForms']),
             ...mapGetters('nocode/nodeConfig', [
                 'processorData'
             ]),
@@ -84,10 +85,12 @@
             }
         },
         created () {
-            if (typeof this.nodeData.extras.formConfig?.id === 'number') {
+            if (this.nodeData.id in this.flowNodeForms) {
                 // 已生成表单配置
                 this.getFormDetail()
-                const { id, type } = this.nodeData.extras.formConfig
+                const id = this.flowNodeForms[this.nodeData.id]
+                // @todo 如果流程服务保存失败，这里的type会有问题
+                const type = this.nodeData.extras.formConfig.type || 'NEW_FORM'
                 this.$store.commit('nocode/nodeConfig/setFormConfig', { id, type })
             } else {
                 // 新建空白表单
@@ -96,7 +99,7 @@
                     heteronym: false
                 }).join('_')
 
-                const formName = `${this.flowConfig.flowName}_提单页`
+                const formName = `${this.nodeData.name}_表单`
                 const code = `${cnName}_${this.nodeData.id}`
                 this.$store.commit('nocode/nodeConfig/setFormConfig', { code, formName })
             }
@@ -106,11 +109,11 @@
             async getFormDetail () {
                 try {
                     this.formContentLoading = true
-                    const { id } = this.nodeData.extras.formConfig
+                    const id = this.flowNodeForms[this.nodeData.id]
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
                     const code = data.tableName
-                    const formName = data.formName || '默认添加的提单页'
+                    const formName = data.formName
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                     this.formContentLoading = false
                 } catch (e) {

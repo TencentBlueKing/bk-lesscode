@@ -11,7 +11,7 @@
                 :flow-config="flowConfig"
                 @close="handleClose">
             </component>
-            <div class="extend-setting-btn">
+            <!-- <div class="extend-setting-btn">
                 <span class="trigger-area" @click="extendSettingOpen = !extendSettingOpen">
                     高级配置
                     <i :class="['bk-icon', 'icon-angle-double-down', { opened: extendSettingOpen }]"></i>
@@ -19,7 +19,7 @@
             </div>
             <form-section v-show="extendSettingOpen" title="触发器" desc="（可以定义当满足条件时，要执行的特定动作）">
                 <div>触发器内容</div>
-            </form-section>
+            </form-section> -->
             <node-actions
                 :loading="nodeDetailLoading"
                 :flow-config="flowConfig"

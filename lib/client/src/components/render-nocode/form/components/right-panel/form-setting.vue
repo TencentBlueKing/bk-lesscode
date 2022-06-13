@@ -8,6 +8,7 @@
                     v-if="field.type"
                     v-model="configData"
                     :list="list"
+                    :disabled="disabled"
                     @change="$emit('update', $event)">
                 </field-edit>
             </div>
@@ -28,7 +29,7 @@
             fieldEdit
         },
         props: {
-            appId: String,
+            disabled: Boolean,
             field: {
                 type: Object,
                 default: () => ({})

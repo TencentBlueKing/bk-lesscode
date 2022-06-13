@@ -41,7 +41,7 @@
     </section>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapGetters, mapState } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
@@ -67,16 +67,16 @@
                 listLoading: true,
                 flowList: [],
                 flowConfigLoading: true,
-                flowConfig: {},
                 serviceDataLoading: true,
                 serviceData: {}
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapState('nocode/flow', ['flowConfig']),
             projectId () {
                 return this.$route.params.projectId
-            },
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
+            }
         },
         watch: {
             '$route.name' () {
@@ -91,6 +91,9 @@
             this.getFlowList()
             await this.getflowConfig()
             this.getServiceData()
+        },
+        beforeDestroy () {
+            this.$store.commit('nocode/flow/clearFlowConfig')
         },
         methods: {
             async getFlowList () {
@@ -110,7 +113,8 @@
             async getflowConfig () {
                 try {
                     this.flowConfigLoading = true
-                    this.flowConfig = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
+                    const res = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
+                    this.$store.commit('nocode/flow/setFlowConfig', res)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {

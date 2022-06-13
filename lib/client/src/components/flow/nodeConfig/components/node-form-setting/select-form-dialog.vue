@@ -24,7 +24,7 @@
                     :class="['form-card-item', { 'selected': selected === item.id }]"
                     @click="handleFormSelect(item.id)">
                     <div class="selected-label"></div>
-                    <span class="preview-btn" @click.stop="handlePreviewClick">预览</span>
+                    <span class="preview-btn" @click.stop="$emit('preview', JSON.parse(item.content))">预览</span>
                     <p>{{ item.formName }}</p>
                 </div>
                 <bk-exception
@@ -90,9 +90,6 @@
             handleFormSelect (val) {
                 this.selected = val
             },
-            handlePreviewClick (val) {
-                console.log(val)
-            },
             handleConfirm () {
                 if (typeof this.selected !== 'number') {
                     this.$bkMessage({
@@ -101,13 +98,9 @@
                     })
                     return
                 }
-                let content = []
-                if (this.method === 'COPY_FORM') {
-                    const form = this.formList.find(item => item.id === this.selected)
-                    content = JSON.parse(form.content)
-                }
+                const form = this.formList.find(item => item.id === this.selected)
                 this.selected = ''
-                this.$emit('confirm', this.selected, content)
+                this.$emit('confirm', form.id, JSON.parse(form.content), form.tableName)
             },
             handleCancel () {
                 this.selected = ''
@@ -117,6 +110,8 @@
     }
 </script>
 <style lang="postcss">
+    @import "@/css/mixins/scroller";
+
     .select-form-dialog {
         .bk-dialog-tool {
             display: none;
@@ -143,15 +138,17 @@
         }
         .form-list-wrapper {
             padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
             min-height: 160px;
             max-height: 320px;
             overflow: auto;
+            @mixin scroller;
         }
         .form-card-item {
             position: relative;
-            float: left;
             margin-bottom: 16px;
-            margin-right: 16px;
             padding: 0 50px 0 16px;
             width: 320px;
             height: 50px;
@@ -166,9 +163,6 @@
                 .preview-btn {
                     display: block;
                 }
-            }
-            &:nth-child(2n) {
-                margin-right: 0;
             }
             &.selected {
                 border-color: #3a84ff;

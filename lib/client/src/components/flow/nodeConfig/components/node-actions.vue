@@ -38,10 +38,6 @@
         },
         props: {
             loading: Boolean,
-            flowConfig: {
-                type: Object,
-                default: () => ({})
-            },
             serviceData: {
                 type: Object,
                 default: () => ({})
@@ -56,6 +52,7 @@
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
+            ...mapState('nocode/flow', ['flowConfig']),
             projectId () {
                 return this.$route.params.projectId
             },
@@ -64,31 +61,17 @@
                 return this.nodeData.is_first_state && this.nodeData.type === 'NORMAL' && typeof this.flowConfig.pageId !== 'number'
             },
             pageData () {
-                const { id } = this.formConfig
+                const { id: formId } = this.formConfig
+                const { id: flowId } = this.flowConfig
                 return {
-                    formId: id,
+                    formId,
+                    flowId,
                     pageCode: `createTicket${this.flowConfig.id}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
         },
         methods: {
-            async handleSaveClick (createPage) {
-                const result = await this.$parent.validate()
-                if (!result) {
-                    return
-                }
-                // 点击保存并创建提单页
-                if (createPage) {
-                    this.$refs.createPageDialog.isShow = true
-                } else {
-                    this.saveConfig()
-                }
-            },
-            handleCreatePageConfirm () {
-                this.createPagePending = true
-                this.saveConfig(true)
-            },
             // 表单字段保存到itsm
             saveItsmFields () {
                 const fields = this.formConfig.content.map(item => {
@@ -107,9 +90,9 @@
                 return this.$store.dispatch('nocode/flow/batchSaveFields', params)
             },
             // 表单配置保存到form表
-            saveFormConfig () {
+            saveFormConfig (pageId = null) {
                 const params = {
-                    // pageId,
+                    pageId,
                     id: this.flowConfig.id,
                     nodeId: this.nodeData.id,
                     projectId: this.projectId,
@@ -117,6 +100,14 @@
                     formData: this.formConfig
                 }
                 return this.$store.dispatch('nocode/flow/editFlowNode', params)
+            },
+            // 更新流程提单页面pageId
+            updateFlowPageId (pageId) {
+                const params = {
+                    pageId,
+                    id: this.flowConfig.id
+                }
+                return this.$store.dispatch('nocode/flow/editFlow', params)
             },
             // 更新itsm节点数据
             updateItsmNode (formId) {
@@ -132,7 +123,7 @@
                     if (!data.is_multi) {
                         data.finish_condition = {}
                     }
-                } else if (data.type === 'NORMAL' && this.nodeData.is_first_state) {
+                } else if (data.type === 'NORMAL') {
                     data.extras.formConfig = {
                         id: formId,
                         type: this.formConfig.type
@@ -140,8 +131,20 @@
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
             },
-            async saveConfig (createPage = false) {
+            // 更新表单的名称
+            updateFormName () {
+                const params = {
+                    id: this.formConfig.id,
+                    formName: this.formConfig.formName
+                }
+                return this.$store.dispatch('nocode/form/updateForm', params)
+            },
+            async handleSaveClick (createPage = false) {
                 try {
+                    const result = await this.$parent.validate()
+                    if (!result) {
+                        return
+                    }
                     if (createPage) {
                         this.createPagePending = true
                     } else {
@@ -150,16 +153,20 @@
                     if (this.nodeData.type === 'NORMAL') {
                         // itsm 接口校验暂时有问题，先去掉
                         // await this.saveItsmFields()
-                        const res = await this.saveFormConfig()
+                        const res = await this.saveFormConfig(this.flowConfig.pageId)
                         this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
-                        console.log(this.formConfig.id)
+                        this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
+                        await this.updateItsmNode(this.formConfig.id)
+                        await this.updateFormName()
                         if (createPage) {
-                            await this.$refs.createPageDialog.save()
+                            this.$refs.createPageDialog.isShow = true
+                            return
                         }
-                        await this.updateItsmNode(res.formId)
                     } else {
                         await this.updateItsmNode()
+                        await this.updateFormName()
                     }
+
                     this.$bkMessage({
                         message: '节点保存成功',
                         theme: 'success'
@@ -170,6 +177,18 @@
                 } finally {
                     this.createPagePending = false
                     this.savePending = false
+                }
+            },
+            async handleCreatePageConfirm () {
+                try {
+                    const pageId = await this.$refs.createPageDialog.save()
+                    this.$store.commit('nocode/flow/setFlowConfig', { pageId })
+                    await this.updateFlowPageId(pageId)
+                    this.$emit('save')
+                } catch (e) {
+                    messageError(e.message || e)
+                } finally {
+                    this.createPagePending = false
                 }
             }
         }
