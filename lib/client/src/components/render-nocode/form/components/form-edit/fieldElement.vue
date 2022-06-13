@@ -9,8 +9,8 @@
                 <i class="drag-icon bk-icon icon-grag-fill"></i>
             </div>
         </transition>
-        <div class="actions-area" v-show="curfield.key === field.key">
-            <span class="name-area">{{`${curfield.type}-${curfield.key}`}}</span>
+        <div class="actions-area" v-show="curfield.id === field.id">
+            <span class="name-area">{{`${curfield.type}-${curfield.id}`}}</span>
             <span class="icon-area"><i class="bk-icon icon-copy" @click.stop="$emit('action', 'copy')"></i></span>
             <span class="icon-area"> <i class="bk-drag-icon bk-drag-shanchu" @click.stop="$emit('action', 'delete')"></i></span>
         </div>

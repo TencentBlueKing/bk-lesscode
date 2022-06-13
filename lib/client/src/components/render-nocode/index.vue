@@ -31,7 +31,6 @@
             }
         },
         created () {
-            console.log(this.pageDetail, 255)
             this.$route.name === 'editNocode' ? this.type = 'edit' : this.type = 'use'
         }
 

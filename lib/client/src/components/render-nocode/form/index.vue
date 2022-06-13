@@ -23,6 +23,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
+    import { messageError } from '@/common/bkmagic'
     import DrawLayout from '@/views/index/components/draw-layout'
     import LeftPanel from './components/left-panel'
     import RightPanel from './components/right-panel'
@@ -39,9 +40,13 @@
             FormContent,
             CreatePageDialog
         },
+        props: {
+            content: Array // 表单项列表
+        },
         data () {
             return {
                 fieldsList: [],
+                isLoading: false,
                 fieldPanelHover: false,
                 createPlatform: 'PC',
                 createNocodeType: 'FORM_MANAGE',
@@ -65,9 +70,17 @@
             }
         },
         created () {
-            this.getFieldList()
-            bus.$on('restFieldList', () => {
+            // 如果父组件传content则直接取表单内容，否则走表单页面编辑逻辑
+            if (this.content) {
+                this.fieldsList = cloneDeep(this.content)
+                this.saveFieldList()
+            } else {
+                this.getFieldList()
+            }
+
+            bus.$on('restFieldList', (fieldsList = []) => {
                 this.fieldsList = []
+                this.fieldsList = fieldsList
                 this.crtField = {}
                 this.crtIndex = -1
             })
@@ -83,7 +96,7 @@
             })
         },
         beforeDestroy () {
-            bus.$off('restFieldList')
+            bus.$off('resetFieldList')
             bus.$off('openCreatPageFrom')
         },
         methods: {
@@ -103,7 +116,7 @@
                         this.saveFieldList()
                     }
                 } catch (err) {
-
+                    messageError(err.message || err)
                 } finally {
                     this.isLoading = false
                 }
@@ -139,9 +152,6 @@
                 this.crtField = cloneDeep(this.fieldsList[newIndex])
                 this.saveFieldList()
             },
-            // change () {
-            //     this.$emit('change', cloneDeep(this.fieldsList))
-            // },
             handleUpdateField (val) {
                 this.isEdit = true
                 this.crtField = val

@@ -12,7 +12,7 @@
                             v-model="advancedData.revoke_config.type"
                             :clearable="false"
                             @selected="onSelectRevokeType"
-                            :disabled="flowConfig.is_builtin">
+                            :disabled="serviceData.is_builtin">
                             <bk-option v-for="item in revokeTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
@@ -35,7 +35,7 @@
                                 v-for="item in notifyTypeList"
                                 :key="item.type"
                                 :value="item.type"
-                                :disabled="flowConfig.is_builtin">
+                                :disabled="serviceData.is_builtin">
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
@@ -68,12 +68,12 @@
                         <bk-form-item class="display-checkbox" label="显示设置">
                             <bk-checkbox
                                 v-model="advancedData.show_all_workflow"
-                                :disabled="flowConfig.is_builtin">
+                                :disabled="serviceData.is_builtin">
                                 在【全部流程】中显示
                             </bk-checkbox>
                             <bk-checkbox
                                 v-model="advancedData.show_my_create_workflow"
-                                :disabled="flowConfig.is_builtin">
+                                :disabled="serviceData.is_builtin">
                                 在【我发起的】中显示
                             </bk-checkbox>
                         </bk-form-item>
@@ -94,7 +94,7 @@
                 theme="primary"
                 :loading="advancedPending"
                 @click="handleSave"
-                :disabled="flowConfig.is_builtin">
+                :disabled="serviceData.is_builtin">
                 提交
             </bk-button>
             <bk-button @click="$router.push({ name: 'flowList' })">取消</bk-button>
@@ -103,12 +103,18 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import { messageError } from '@/common/bkmagic'
+
     export default {
         name: 'AdvancedConfig',
         props: {
             appId: {
                 type: String,
                 default: ''
+            },
+            serviceData: {
+                type: Object,
+                default: () => ({})
             },
             flowConfig: {
                 type: Object,
@@ -117,7 +123,7 @@
         },
         data () {
             return {
-                advancedData: cloneDeep(this.flowConfig),
+                advancedData: cloneDeep(this.serviceData),
                 advancedDataLoading: false,
                 advancedPending: false,
                 flowNodesLoading: false,
@@ -139,11 +145,19 @@
                     { id: 'RETRY', name: '首次通知后，次日起每天定时通知' }
                 ],
                 frequencyList: this.getFrequencyList(),
-                rules: {}
+                rules: {
+                    name: [
+                        {
+                            required: true,
+                            message: '流程名称为必填项',
+                            trigger: 'blur'
+                        }
+                    ]
+                }
             }
         },
         created () {
-            if (this.flowConfig.revoke_config.type === 3) {
+            if (this.serviceData.revoke_config.type === 3) {
                 this.getFlowNodes()
             }
         },
@@ -151,8 +165,8 @@
             async getFlowNodes () {
                 try {
                     this.flowNodesLoading = true
-                    const res = await this.$store.dispatch('setting/getFlowNodes', { workflow: this.advancedData.workflow_id })
-                    this.flowNodes = res.data.filter(node => !node.is_builtin && !['ROUTER-P', 'COVERAGE'].includes(node.type))
+                    const res = await this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.advancedData.workflow_id })
+                    this.flowNodes = res.items.filter(node => !node.is_builtin && !['ROUTER-P', 'COVERAGE'].includes(node.type))
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -185,42 +199,41 @@
                 this.advancedData.notify = notify
                 this.advancedData.notify_rule = val.length > 0 ? 'ONCE' : 'NONE'
             },
-            async handleSave () {
-                // this.$refs.advancedForm.validate(async (result) => {
-                //     if (!result) {
-                //         return
-                //     }
-                    
-                //         this.$router.push({ name: 'functionList', params: { appId: this.appId } })
-                //     } catch (e) {
-                //         console.error(e)
-                //     } finally {
-                //         this.advancedPending = false
-                //     }
-                // })
-                this.advancedPending = true
-                const {
-                    notify,
-                    notify_freq,
-                    notify_rule,
-                    revoke_config,
-                    show_all_workflow,
-                    show_my_create_workflow
-                } = this.advancedData
-                const isRevocable = revoke_config.type !== 0
-                const params = {
-                    id: this.flowConfig.id,
-                    workflow_config: {
-                        notify,
-                        notify_freq,
-                        notify_rule,
-                        revoke_config,
-                        is_revocable: isRevocable,
-                        show_all_workflow,
-                        show_my_create_workflow
+            handleSave () {
+                this.$refs.advancedForm.validate().then(async () => {
+                    try {
+                        this.advancedPending = true
+                        const {
+                            name,
+                            workflow_id,
+                            notify,
+                            notify_freq,
+                            notify_rule,
+                            revoke_config,
+                            show_all_workflow,
+                            show_my_create_workflow
+                        } = this.advancedData
+                        const isRevocable = revoke_config.type !== 0
+                        const serviceConfig = {
+                            workflow_config: {
+                                notify,
+                                notify_freq,
+                                notify_rule,
+                                revoke_config,
+                                is_revocable: isRevocable,
+                                show_all_workflow,
+                                show_my_create_workflow
+                            }
+                        }
+                        await this.$store.dispatch('nocode/flow/updateServiceData', { id: workflow_id, data: serviceConfig })
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })
+                        this.$router.push({ name: 'flowList' })
+                    } catch (e) {
+                        messageError(e.message || e)
+                    } finally {
+                        this.advancedPending = false
                     }
-                }
-                await this.$store.dispatch('nocode/flow/editFlow', params)
+                })
             }
         }
     }
@@ -256,7 +269,7 @@
     }
     .half-row-form {
       display: inline-block;
-      width: 49%;
+      width: calc(50% - 2px);
     }
   }
   .extend-setting-btn {

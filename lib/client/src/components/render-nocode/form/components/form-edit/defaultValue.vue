@@ -14,6 +14,7 @@
             :value="field.value"
             :disabled="disabled"
             @change="$emit('change', $event)"></bk-input>
+        <span v-else-if="field.type === 'RICHTEXT'" class="setting" @click="richTextVisible = true">前往设置</span>
         <field-item
             v-else
             :field="field"
@@ -23,6 +24,22 @@
             :show-label="false"
             @change="$emit('change', $event)">
         </field-item>
+        <bk-dialog v-model="richTextVisible"
+            theme="primary"
+            :mask-close="false"
+            :header-position="'left'"
+            :width="'960'"
+            title="内容配置"
+            @confirm="$emit('change', localVal)">
+            <field-item
+                :field="field"
+                :use-fixed-data-source="true"
+                :value="field.value"
+                :disabled="disabled"
+                :show-label="false"
+                @change="localVal = $event">
+            </field-item>
+        </bk-dialog>
     </div>
 </template>
 <script>
@@ -45,6 +62,12 @@
                 default: false
             }
         },
+        data () {
+            return {
+                richTextVisible: false,
+                localVal: ''
+            }
+        },
         computed: {
             selectType () {
                 return ['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(this.field.type)
@@ -57,3 +80,16 @@
         }
     }
 </script>
+<style lang="postcss" scoped>
+.setting{
+  position: absolute;
+  color: #3a84ff;
+  display: block;
+  top:-32px;
+  font-size: 12px;
+  right: 0;
+}
+/deep/ .field-form-item{
+  margin-top: 0;
+}
+</style>

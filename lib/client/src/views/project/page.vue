@@ -2,14 +2,14 @@
     <section v-bkloading="{ isLoading: isLoading }" style="height: 100%">
         <main class="pages pages-content" v-show="!isLoading">
             <div class="pages-head">
-                <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
+                <bk-dropdown-menu trigger="click" :align="'left'" :ext-cls="'create-dropdown'">
                     <div class="dropdown-trigger-btn" slot="dropdown-trigger">
                         <bk-button theme="primary" icon-right="icon-angle-down">新建</bk-button>
                     </div>
-                    <ul class="bk-dropdown-list" slot="dropdown-content">
-                        <li><a href="javascript:;" @click="handleCreate('PC', '')">自定义页面</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('MOBILE', '')">移动端页面</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')">普通表单页面</a></li>
+                    <ul class="bk-dropdown-list select-page-type" slot="dropdown-content">
+                        <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>PC自定义页面</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>PC表单页面</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('MOBILE', '')"><i class="bk-drag-icon bk-drag-mobilephone"> </i>Mobile自定义页面</a></li>
                     </ul>
                 </bk-dropdown-menu>
                 <template>
@@ -94,6 +94,33 @@
                                 </bk-dropdown-menu>
                             </div>
                         </div>
+                        <span v-if="page.nocodeType" class="nocode-type-tag" :style="{ background: nocodeTypeMap.bgColor[page.nocodeType], color: nocodeTypeMap.color[page.nocodeType] }">
+                            <bk-popover
+                                v-if="page.nocodeType === 'FORM' && getFormManagePages(page.formId).length"
+                                ext-cls="form-manage-page-list"
+                                placement="right-start"
+                                theme="light"
+                                width="300"
+                            >
+                                <section style="display: flex; align-items: center;">
+                                    {{nocodeTypeMap.title[page.nocodeType] || page.nocodeType}}
+                                    <i class="bk-drag-icon bk-drag-data-source-manage" style="margin: 0 2px;"></i>
+                                    <span>{{getFormManagePages(page.formId).length}}</span>
+                                </section>
+                                <div slot="content" class="form-manage-list">
+                                    <div class="list-title"><span>关联的表单数据管理页</span></div>
+                                    <ul class="list-ul">
+                                        <li v-for="item in getFormManagePages(page.formId)" :key="item.id">
+                                            <i class="bk-drag-icon bk-drag-page"></i>
+                                            <span class="name">{{item.pageName}}</span>
+                                            <i title="预览" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
+                                            <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" @click="handleEditPage(item)"></i>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </bk-popover>
+                            <section v-else>{{nocodeTypeMap.title[page.nocodeType] || page.nocodeType}}</section>
+                        </span>
                     </div>
                 </div>
                 <div class="empty" v-show="(!pageList.length || !renderList.length) && !isLoading">
@@ -149,7 +176,27 @@
                 routeGroup: [],
                 isLoading: true,
                 editRouteGroup: [],
-                pageType: 'ALL'
+                pageType: 'ALL',
+                nocodeTypeMap: {
+                    title: {
+                        FORM: '表单页',
+                        FORM_MANAGE: '表单数据管理页',
+                        FLOW: '流程提单页',
+                        FLOW_MANAGE: '流程数据管理页'
+                    },
+                    color: {
+                        FORM: '#7573E6',
+                        FORM_MANAGE: '#3A9DFF',
+                        FLOW: '#5EA9AD',
+                        FLOW_MANAGE: '#71C26E'
+                    },
+                    bgColor: {
+                        FORM: '#E8E6FF',
+                        FORM_MANAGE: '#DAE9FD',
+                        FLOW: '#D8F4F5',
+                        FLOW_MANAGE: '#DAF5C8'
+                    }
+                }
             }
         },
         computed: {
@@ -303,7 +350,6 @@
                 return this.userPerm.roleId === 1 || this.user.username === page.createUser
             },
             handleEditPage (page) {
-                console.log(page, 453)
                 const toPageRouteName = page.nocodeType ? 'editNocode' : 'new'
                 this.$router.push({
                     name: toPageRouteName,
@@ -380,15 +426,61 @@
                 this.$router.push({
                     name: 'release'
                 })
+            },
+            getFormManagePages (formId) {
+                return this.renderList.filter(page => page.formId === formId && page.nocodeType === 'FORM_MANAGE')
             }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
+    .form-manage-page-list {
+        .form-manage-list {
+            font-size: 12px;
+            color: #63656E;
+            cursor: default;
+            .list-title {
+                height: 24px;
+                font-weight: bold;
+            }
+            .list-ul {
+                li {
+                    display: flex;
+                    align-items: center;
+                    height: 28px;
+                    i {
+                        margin-right: 6px;
+                    }
+                    .click-icon {
+                        cursor: pointer;
+                    }
+                    .name {
+                        display: inline-block;
+                        width: 220px;
+                    }
+                    &:hover {
+                        color: #3A84FF;
+                        background: #E1ECFF;
+                    }
+                }
+            }
+        }
+    }
     .create-dropdown {
         /deep/ .bk-dropdown-trigger .bk-button {
             font-size: 14px;
+        }
+        .select-page-type {
+            font-size: 12px;
+            color:#63656E;
+            a:hover i {
+                color: #3a84ff;
+            }
+            i {
+                color: #979ba5;
+                margin-right: 4px;
+            }
         }
     }
 
@@ -509,6 +601,19 @@
                         align-items: center;
                         justify-content: space-between;
                         margin: 16px 10px 0 10px;
+                    }
+
+                    .nocode-type-tag {
+                        position: absolute;
+                        right: 6px;
+                        top: 6px;
+                        height: 22px;
+                        line-height: 22px;
+                        text-align: center;
+                        border-radius: 2px;
+                        font-size: 12px;
+                        color: #fff;
+                        padding: 0 6px;
                     }
 
                     .preview {
