@@ -3,38 +3,39 @@
         <bk-dialog v-model="isShow"
             render-directive="if"
             :width="nocodeType ? 750 : 1080"
-            ext-cls="page-from-template-dialog"
+            ext-cls="new-page-from-template-dialog"
             :position="{ top: 80 }"
             :mask-close="false"
             :auto-close="false"
             @value-change="handleDialogToggle">
             <div slot="header">
                 <div class="header">
-                    <div>
-                        <span class="main-title">新建页面</span>
-                        <span class="sub-title">{{subTitle}}</span>
+                    <div class="dialog-title">
+                        <span class="platform-icon">
+                            <i v-if="platform === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
+                            <i v-else class="bk-drag-icon bk-drag-pc"> </i>
+                        </span>
+                        <span class="main-title">{{pageTitle}}</span>
                     </div>
-                    <div class="bk-button-group" style="margin-left: 200px" v-if="!nocodeType">
+                    <div class="bk-button-group origin-type" v-if="!nocodeType">
                         <bk-button
                             :ext-cls="'type-button'"
                             @click="changeCreateFrom('EMPTY')"
                             :class="pageFrom !== 'TEMPLATE' ? 'is-selected' : ''">
-                            <i class="bk-drag-icon bk-drag-border-all"> </i>
                             新建空白页面
                         </bk-button>
                         <bk-button
                             :ext-cls="'type-button'"
                             @click="changeCreateFrom('TEMPLATE')"
                             :class="pageFrom === 'TEMPLATE' ? 'is-selected' : ''">
-                            <i class="bk-drag-icon bk-drag-template-fill"> </i>
                             从模板新建
                         </bk-button>
                     </div>
                 </div>
             </div>
 
-            <page-from-template :platform="platform" :create-from-template="createFromTemplate" :template-change="changeTemplate">
-                <bk-form ref="templateForm" :label-width="createFromTemplate ? 150 : 86" :rules="formRules" :model="formData" :form-type="createFromTemplate ? 'vertical' : 'horizontal'">
+            <page-from-template :platform="platform" :create-from-template="createFromTemplate" :template-change="changeTemplate" :nocode-type="nocodeType">
+                <bk-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" form-type="vertical">
                     <bk-form-item label="当前已选模板" property="templateName" error-display-type="normal" v-if="createFromTemplate">
                         <bk-input readonly v-model.trim="selectTemplate.templateName"
                             placeholder="模板名称">
@@ -64,6 +65,16 @@
                                 <div class="group-text">{{layoutRoutePath}}</div>
                             </template>
                         </bk-input>
+                    </bk-form-item>
+                    <bk-form-item
+                        label="本页面添加到导航菜单"
+                        v-if="showAddNavListSwitcher"
+                        :label-width="170"
+                        error-display-type="normal">
+                        <bk-switcher
+                            theme="primary"
+                            :value="isAddNavList"
+                            @change="(val) => isAddNavList = val" />
                     </bk-form-item>
                 </bk-form>
             </page-from-template>
@@ -161,7 +172,8 @@
                 },
                 layoutList: [],
                 selectedLayout: {},
-                selectTemplate: {}
+                selectTemplate: {},
+                isAddNavList: true
             }
         },
         computed: {
@@ -172,28 +184,27 @@
             createFromTemplate () {
                 return !this.nocodeType && this.pageFrom === 'TEMPLATE'
             },
-            subTitle () {
-                let title = ''
+            pageTitle () {
+                const platformType = this.platform === 'MOBILE' ? 'Mobile' : 'PC'
+                let pageType = '自定义'
                 if (this.nocodeType) {
                     switch (this.nocodeType) {
                         case 'FORM':
-                            title = '普通表单页'
+                            pageType = '表单'
                             break
                         case 'FORM_MANAGE':
-                            title = '表单数据管理页'
+                            pageType = '表单数据管理'
                             break
                         case 'FLOW':
-                            title = '流程页'
+                            pageType = '流程提单'
                             break
                         case 'FLOW_MANAGE':
-                            title = '流程数据管理页'
+                            pageType = '流程数据管理'
                             break
                         default:
                     }
-                } else {
-                    title = this.platform === 'MOBILE' ? '移动端页面' : '自定义页面'
                 }
-                return title
+                return `新建${platformType}${pageType}页面`
             },
             layoutRoutePath () {
                 const { routePath } = this.selectedLayout
@@ -204,6 +215,9 @@
             },
             showLayoutList () {
                 return this.layoutList.filter(layout => layout.layoutType === this.platform)
+            },
+            showAddNavListSwitcher () {
+                return this.platform !== 'MOBILE' && this.selectedLayout.type && this.selectedLayout.type !== 'empty'
             }
         },
         methods: {
@@ -284,6 +298,9 @@
 
                     const { id, routePath } = this.showLayoutList.find(layout => layout.checked)
                     payload.data.layout = { id, routePath }
+                    if (this.showAddNavListSwitcher) {
+                        payload.data.pageData.isAddNav = this.isAddNavList
+                    }
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
                         if (this.nocodeType !== 'flow') {
@@ -348,40 +365,50 @@
 </script>
 
 <style lang="postcss">
-    .page-from-template-dialog {
+    .new-page-from-template-dialog {
         .bk-dialog-tool{
             display: none;
         }
         .bk-dialog-header{
-            position: absolute;
-            top: 20px;
+            padding: 0 24px;
             .header {
-                display: flex;
-                justify-content: space-between;
-                .main-title {
-                    font-size: 20px;
-                    color: #63656e;
+                .dialog-title {
+                    text-align: left;
+                    margin: 18px 0 14px;
+                    .platform-icon {
+                        font-size: 16px;
+                        padding: 2px;
+                        color: #979ba5;
+                        border-radius: 2px;
+                        background: #f0f1f5;
+                    }
+                    .main-title {
+                        font-size: 20px;
+                        color: #313238;
+                    }
                 }
-                .sub-title {
-                    margin-left: 10px;
-                    font-size: 12px;
-                    color: #979ba5;
+                .origin-type {
+                    margin-bottom: 10px;
                 }
             }
             .type-button {
-                width: 240px;
+                width: 350px;
             }
         }
         .bk-dialog-body{
             padding: 0;
-            height: 570px;
+            /* height: 570px; */
+            min-height: 400px;
             display:flex;
             font-size:12px;
         }
 
-        .dialog-footer {
-            button + button {
-                margin-left: 4px;
+        .bk-dialog-footer {
+            padding: 8px 24px;
+            .dialog-footer {
+                button + button {
+                    margin-left: 4px;
+                }
             }
         }
     }

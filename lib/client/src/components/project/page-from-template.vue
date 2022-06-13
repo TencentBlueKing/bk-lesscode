@@ -1,26 +1,28 @@
 <template>
-    <section style="margin: 50px auto 0;">
-        <section v-if="createFromTemplate" class="template-container">
+    <section style="margin: 0 auto">
+        <section v-if="createFromTemplate" class="template-container-page" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
             <div class="layout-left">
-                <!-- <bk-input
-                    clearable
-                    :placeholder="'请输入模板名称'"
-                    :right-icon="'bk-icon icon-search'"
-                    :ext-cls="'search-input'"
-                    v-model="searchFilter"
-                    @enter="changeList"
-                    @clear="changeList">
-                </bk-input> -->
-                <ul class="filter-links">
-                    <li
-                        v-for="link in filterLinks"
-                        :key="link.id"
-                        :class="['link-item', { 'active': filter === link.id }]"
-                        @click="handleClickFilter(link.id)">
-                        {{link.name}}
-                    </li>
-                </ul>
-                <div class="template-container" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
+                <div class="filter-div">
+                    <ul class="filter-links">
+                        <li
+                            v-for="link in filterLinks"
+                            :key="link.id"
+                            :class="['link-item', { 'active': filter === link.id }]"
+                            @click="handleClickFilter(link.id)">
+                            {{link.name}}
+                        </li>
+                    </ul>
+                    <bk-input
+                        clearable
+                        :placeholder="'请输入模板名称'"
+                        :right-icon="'bk-icon icon-search'"
+                        :ext-cls="'search-input'"
+                        v-model="searchFilter"
+                        @enter="changeList"
+                        @clear="changeList">
+                    </bk-input>
+                </div>
+                <div class="template-container">
                     <div class="template-container-wrapper" v-show="!pageLoading">
                         <div class="page-template-list" v-show="!pageLoading">
                             <li v-for="template in list" :key="template.id"
@@ -58,7 +60,7 @@
         </section>
     
         <template v-else>
-            <div style="width: 700px; margin-top: 30px;">
+            <div class="from-empty-template" :style="{ 'min-height': nocodeType ? '420px' : '', height: nocodeType ? '' : '490px' }">
                 <slot />
             </div>
             
@@ -82,6 +84,10 @@
             platform: {
                 type: String,
                 default: 'PC'
+            },
+            nocodeType: {
+                type: String,
+                default: ''
             },
             createFromTemplate: {
                 type: Boolean,
@@ -246,25 +252,41 @@
     @import "@/css/mixins/scroller";
     @import "@/css/mixins/ellipsis";
 
-    .template-container {
+    .from-empty-template {
+        width: 700px;
+        margin-bottom: 20px;
+        overflow-y: auto;
+        @mixin scroller;
+    }
+
+    .template-container-page {
         display: flex;
-        height: 100%;
+        height: 510px;
+        border-top: 1px solid #dcdee5;
         .layout-left {
             width: 681px;
             height: 100%;
             opacity: 1;
             background: #ffffff;
-            padding: 20px 0;
+            padding-bottom: 20px;
 
-            .search-input {
-                width: 300px;
-                margin-left: calc(100% - 321px);
+            .filter-div {
+                display: flex;
+                align-content: space-between;
+                margin-top: 10px;
+                height: 32px;
             }
-
+            .search-input {
+                width: 178px;
+            }
             .filter-links {
                 display: flex;
                 align-items: center;
-                margin: 10px 0 0 10px;
+                width: 480px;
+                padding-left: 6px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                @mixin scroller;
 
                 .link-item {
                     padding: 6px 12px;
@@ -450,7 +472,7 @@
             height: 100%;
             opacity: 1;
             background: #ffffff;
-            border: 1px solid #dcdee5;
+            border-left: 1px solid #dcdee5;
             padding: 20px;
             overflow-y: auto;
             @mixin scroller;
