@@ -64,6 +64,7 @@
   @mixin scroller;
 
   .operation-wraper {
+    height: 100%;
     background: #fff;
     min-width: min-content;
   }
