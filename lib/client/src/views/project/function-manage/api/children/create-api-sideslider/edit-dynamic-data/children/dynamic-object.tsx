@@ -1,7 +1,8 @@
 import {
+    ref,
     defineComponent
 } from '@vue/composition-api'
-import DyncmicHeader from './dyncmic-header'
+import DynamicHeader from './dynamic-header'
 import SingleSchemeComponent from './single-scheme'
 
 export default defineComponent({
@@ -10,20 +11,31 @@ export default defineComponent({
     },
 
     setup (props, { emit }) {
+        const schemeRef = ref(null)
+
         const handleUpdate = (scheme) => {
             emit('change', scheme)
         }
 
+        const validate = () => {
+            return schemeRef.value.validate()
+        }
+
         return {
-            handleUpdate
+            schemeRef,
+            handleUpdate,
+            validate
         }
     },
 
     render () {
         return (
             <section>
-                <DyncmicHeader />
+                <DynamicHeader />
                 <SingleSchemeComponent
+                    ref="schemeRef"
+                    typeDisable={true}
+                    minusDisable={true}
                     scheme={this.editScheme}
                     onUpdate={this.handleUpdate}
                     disable={this.disableEditRoot}
