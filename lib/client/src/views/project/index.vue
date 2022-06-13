@@ -1,6 +1,6 @@
 <template>
     <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
-        <aside class="aside">
+        <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
                 <span class="seperate-line">|</span>
@@ -174,7 +174,7 @@
                     },
                     {
                         title: '流程管理',
-                        icon: 'data-source-manage',
+                        icon: 'flow',
                         url: 'flowList',
                         toPath: {
                             name: 'flowList'
@@ -276,6 +276,10 @@
             },
             hasBreadcrumb () {
                 return this.currentPage?.length > 0
+            },
+            // 流程详情编辑页需要隐藏左侧导航
+            hideSideNav () {
+                return this.$route.meta.hideSideNav
             }
         },
         beforeRouteUpdate (to, from, next) {

@@ -83,7 +83,7 @@
                 <bk-button
                     theme="primary"
                     :loading="loading"
-                    @click="handleCreateConfirm">确定</bk-button>
+                    @click="handleConfirmClick">确定</bk-button>
                 <bk-button @click="handleDialogCancel" :disabled="loading">取消</bk-button>
             </div>
         </bk-dialog>
@@ -246,7 +246,14 @@
                     })
                 }
             },
-            async handleCreateConfirm () {
+            handleConfirmClick () {
+                if (this.nocodeType === 'FLOW') {
+                    this.$emit('save')
+                } else {
+                    this.save()
+                }
+            },
+            async save () {
                 try {
                     this.loading = true
                     await this.$refs.templateForm.validate()
@@ -296,19 +303,22 @@
                     }
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
-                        this.$bkMessage({
-                            theme: 'success',
-                            message: '新建页面成功'
-                        })
-                        const toPageRouteName = this.nocodeType ? 'editNocode' : 'new'
-                        this.$router.push({
-                            name: toPageRouteName,
-                            params: {
-                                projectId: this.projectId,
-                                pageId: res
-                            }
-                        })
+                        if (this.nocodeType !== 'flow') {
+                            this.$bkMessage({
+                                theme: 'success',
+                                message: '新建页面成功'
+                            })
+                            const toPageRouteName = this.nocodeType ? 'editNocode' : 'new'
+                            this.$router.push({
+                                name: toPageRouteName,
+                                params: {
+                                    projectId: this.projectId,
+                                    pageId: res
+                                }
+                            })
+                        }
                     }
+                    return res
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -328,7 +338,7 @@
                         pageRoute: '',
                         nocodeType: this.nocodeType
                     }
-                    if (this.nocodeType === 'FORM_MANAGE' || this.nocodeType === 'FLOW_MANAGE') {
+                    if (['FORM_MANAGE', 'FLOW_MANAGE', 'FLOW'].includes(this.nocodeType)) {
                         Object.assign(this.formData, this.initPageData)
                     }
                     this.initData()

@@ -287,7 +287,7 @@
                         need_poll,
                         req_body,
                         req_params,
-                        rsp_data,
+                        rsp_data: rspData,
                         succeed_conditions
                     } = cloneDeep(this.node.api_info)
                     return {
@@ -297,7 +297,7 @@
                         need_poll,
                         postReqData: req_body,
                         getReqData: req_params,
-                        resData: rsp_data ? rsp_data.split(',') : [],
+                        resData: rspData ? rspData.split(',') : [],
                         succeed_conditions
                     }
                 }
@@ -526,14 +526,14 @@
                     remote_system_id,
                     remote_api_id,
                     end_conditions,
-                    need_poll,
+                    need_poll: needPoll,
                     postReqData,
                     getReqData,
                     resData,
                     succeed_conditions
                 } = this.formData
                 let succeedConditions
-                if (!need_poll) {
+                if (!needPoll) {
                     succeedConditions = { type: 'or', expressions: [] }
                 } else {
                     const expressions = []
@@ -551,7 +551,7 @@
                         remote_system_id,
                         remote_api_id,
                         end_conditions,
-                        need_poll,
+                        need_poll: needPoll,
                         req_body: postReqData,
                         req_params: getReqData,
                         rsp_data: resData.join(','),

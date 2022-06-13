@@ -1,12 +1,5 @@
 <template>
     <div class="process-canvas-wrapper">
-        <div class="tip-box" v-if="tipIsShow && $route.name === 'functionFlow'">
-            <span>
-                <bk-icon type="info-circle" class="info" />
-                {{tips[type]}}
-            </span>
-            <i class="bk-icon icon-close" @click="tipIsShow = false"></i>
-        </div>
         <bk-flow
             ref="flowCanvas"
             selector="entry-item"
@@ -62,18 +55,12 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import { uuid } from '@/common/util.js'
+    import { NODE_TYPE_LIST } from '../constants/nodes.js'
     import BkFlow from './flow.js'
     import PalettePanel from './palettePanel.vue'
     import NodeTemplate from './nodeTemplate.vue'
     import ToolPanel from './toolPanel.vue'
     import LineConfig from './lineConfig.vue'
-
-    const TIPS = {
-        ADD: '数据删除功能可以用于同时删除多张表单数据的场景，通过在「数据源节点」后添加人工节点引导用户输入期望删除的数据条件，与数据处理节点搭配使用。',
-        EDIT: '数据编辑功能可以在数据源中引用对应表单开放编辑的字段，与数据处理节点搭配使用',
-        DETAIL: '查看详情功能用于表格的行操作列中，可以在「数据源节点」中配置字段实现开放部分数据给用户查看的场景。',
-        DELETE: '数据删除功能可以用于同时删除多张表单数据的场景，通过在「数据源节点」后添加人工节点引导用户输入期望删除的数据条件，与数据处理节点搭配使用。'
-    }
 
     const endpointOptions = {
         endpoint: 'Dot',
@@ -98,6 +85,7 @@
         detachable: true // 是否可以通过鼠标拖动连线
     }
     export default {
+        name: 'FlowCanvas',
         components: {
             BkFlow,
             PalettePanel,
@@ -142,8 +130,6 @@
                 endpointOptions,
                 connectorOptions,
                 nodeOptions,
-                tips: TIPS,
-                tipIsShow: true,
                 canvasData: {
                     nodes: [],
                     lines: []
@@ -154,8 +140,17 @@
                 lineDeletePending: false
             }
         },
+        watch: {
+            nodes () {
+                this.transNodeData()
+            },
+            lines () {
+                this.transLineData()
+            }
+        },
         created () {
-            this.transData()
+            this.transNodeData()
+            this.transLineData()
         },
         mounted () {
             this.lines.forEach((item) => {
@@ -170,11 +165,12 @@
         },
         methods: {
             // 将数据转换为画布组件要求格式
-            transData () {
+            transNodeData () {
+                const nodes = []
                 this.nodes.forEach((item, index) => {
                     const xValue = item.axis.x ? item.axis.x : 165 + index * 250
                     const yValue = item.axis.y ? item.axis.y : 195 + (index % 2 === 1 ? 5 : 0)
-                    this.canvasData.nodes.push({
+                    nodes.push({
                         id: `node_${item.id}`,
                         x: xValue,
                         y: yValue,
@@ -183,8 +179,12 @@
                         nodeInfo: cloneDeep(item)
                     })
                 })
+                this.canvasData.nodes = nodes
+            },
+            transLineData () {
+                const lines = []
                 this.lines.forEach((item) => {
-                    this.canvasData.lines.push({
+                    lines.push({
                         source: {
                             arrow: item.axis.start || 'Right',
                             id: `node_${item.from_state}`
@@ -203,6 +203,7 @@
                         }
                     })
                 })
+                this.canvasData.lines = lines
             },
             // 注册线条的Label
             addOverlay (line) {
@@ -257,7 +258,7 @@
                             axis: { x, y }
                         }
                     }
-                    this.$store.dispatch('nocode/flow/updateNode', params)
+                    this.$store.dispatch('nocode/flow/updateNodePos', params)
                 } catch (e) {
                     console.error(e)
                 }
@@ -267,7 +268,9 @@
                     return false
                 }
                 try {
-                    const { name = '', x, y, type } = node
+                    const { x, y, type } = node
+                    const nodeDesc = NODE_TYPE_LIST.find(item => item.type === type)
+                    const name = nodeDesc ? nodeDesc.name : '新增节点'
                     const params = {
                         name,
                         type,
@@ -275,6 +278,13 @@
                         is_terminable: false, // @待确认是否需要
                         axis: { x, y },
                         workflow: this.flowId
+                    }
+                    if (type === 'NORMAL') {
+                        // 人工节点需要保存使用表单的配置
+                        params.extras.formConfig = {
+                            type: '',
+                            id: ''
+                        }
                     }
                     const res = await this.$store.dispatch('nocode/flow/createNode', params)
                     const { axis, type: nodeType, name: nodeName } = res
@@ -330,26 +340,26 @@
                         from_state: sNode.nodeInfo.id,
                         to_state: tNode.nodeInfo.id
                     }
-                    const res = await this.$store.dispatch('setting/createLine', params)
+                    const res = await this.$store.dispatch('nocode/flow/createLine', params)
                     const lineData = {
                         source: {
-                            arrow: res.data.axis.start,
+                            arrow: res.axis.start,
                             id: source.id
                         },
                         target: {
-                            arrow: res.data.axis.end,
+                            arrow: res.axis.end,
                             id: target.id
                         },
-                        lineInfo: res.data,
+                        lineInfo: res,
                         options: {
                             paintStyle: {
                                 fill: 'transparent',
-                                stroke: res.data.lineStatus === 'SUCCESS' ? '#2DCB56' : '#a9adb6',
+                                stroke: res.lineStatus === 'SUCCESS' ? '#2DCB56' : '#a9adb6',
                                 strokeWidth: 1
                             }
                         }
                     }
-                    this.addOverlay({ id: res.data.id, sourceId: sNode.id, targetId: tNode.id })
+                    this.addOverlay({ id: res.id, sourceId: sNode.id, targetId: tNode.id })
                     this.canvasData.lines.push(lineData)
                 } catch (e) {
                     this.$refs.flowCanvas.removeConnector({
@@ -462,28 +472,28 @@
             async handleLineSave (data) {
                 try {
                     this.lineSavePending = true
-                    const res = await this.$store.dispatch('setting/updateLine', data)
+                    const res = await this.$store.dispatch('nocode/flow/updateLine', data)
                     const line = this.canvasData.lines.find(item => item.lineInfo.id === data.id)
                     this.$refs.flowCanvas.removeLineOverlay(
                         { source: { id: line.source.id }, target: { id: line.target.id } },
                         `label_${data.id}`
                     )
-                    this.addOverlay({ id: data.id, name: res.data.name, sourceId: line.source.id, targetId: line.target.id })
+                    this.addOverlay({ id: data.id, name: res.name, sourceId: line.source.id, targetId: line.target.id })
                     const index = this.canvasData.lines.findIndex(item => item.lineInfo.id === data.id)
                     this.canvasData.lines.splice(index, 1, {
                         source: {
-                            arrow: res.data.axis.start,
-                            id: `node_${res.data.from_state}`
+                            arrow: res.axis.start,
+                            id: `node_${res.from_state}`
                         },
                         target: {
-                            arrow: res.data.axis.end,
-                            id: `node_${res.data.to_state}`
+                            arrow: res.axis.end,
+                            id: `node_${res.to_state}`
                         },
-                        lineInfo: res.data,
+                        lineInfo: res,
                         options: {
                             paintStyle: {
                                 fill: 'transparent',
-                                stroke: res.data.lineStatus === 'SUCCESS' ? '#2dcb56' : '#a9adb6',
+                                stroke: res.lineStatus === 'SUCCESS' ? '#2dcb56' : '#a9adb6',
                                 strokeWidth: 1
                             }
                         }
@@ -498,7 +508,7 @@
             async handleLineDelete () {
                 try {
                     this.lineDeletePending = true
-                    await this.$store.dispatch('setting/deleteLine', this.lineConfig.id)
+                    await this.$store.dispatch('nocode/flow/deleteLine', this.lineConfig.id)
                     this.$refs.flowCanvas.removeConnector({
                         source: { id: this.lineConfig.sNode.id },
                         target: { id: this.lineConfig.tNode.id }
@@ -615,41 +625,6 @@
     .canvas-flow-wrap .bk-error-flow .startpoint,
     .canvas-flow-wrap .bk-error-flow .endpoint {
       border: 1.5px dashed #ff5656;
-    }
-  }
-}
-
-.tip-box {
-  position: absolute;
-  top: 20px;
-  left: 83px;
-  display: flex;
-  padding-right: 10px;
-  border: 1px solid #C5DAFF;
-  border-radius: 2px;
-  background: #F0F8FF;
-  font-size: 12px;
-  color: #63656E;
-  width: calc(100% - 108px);
-  line-height: 32px;
-  z-index: 100;
-  justify-content: space-between;
-  .info {
-    top: 24px;
-    margin: 0 8px 0 11px;
-    color: #3A84FF;
-    font-size: 14px;
-    line-height: 32px;
-    text-align: center;
-    height: 32px;
-  }
-
-  .icon-close {
-    display: inline-block;
-    font-size: 16px;
-    margin-top: 8px;
-    &:hover{
-      cursor: pointer;
     }
   }
 }

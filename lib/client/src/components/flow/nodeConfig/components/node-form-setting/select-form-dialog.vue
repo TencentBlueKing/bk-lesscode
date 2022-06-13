@@ -11,7 +11,7 @@
         @cancel="handleCancel">
         <header slot="header" class="dialog-header">
             <h4>请选择已有表单</h4>
-            <span>（{{ method === 'cite' ? '引用' : '复用' }}已有表单）</span>
+            <span>（{{ method === 'COPY_FORM' ? '引用' : '复用' }}已有表单）</span>
         </header>
         <div class="dialog-content" v-bkloading="{ isLoading: listLoading }">
             <div style="margin-bottom: 16px; padding: 0 24px;">
@@ -25,7 +25,7 @@
                     @click="handleFormSelect(item.id)">
                     <div class="selected-label"></div>
                     <span class="preview-btn" @click.stop="handlePreviewClick">预览</span>
-                    <p>{{ item.name }}</p>
+                    <p>{{ item.name || item.id }}</p>
                 </div>
                 <bk-exception
                     v-if="formList.length === 0"
@@ -38,6 +38,7 @@
     </bk-dialog>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
 
     export default {
@@ -55,10 +56,14 @@
         },
         computed: {
             tips () {
-                return this.method === 'cite'
+                return this.method === 'COPY_FORM'
                     ? '引用已有表单：引用已有表单快速建表，运行时节点数据不会存入被引用的表中，字段属性可自定义'
                     : '复用已有表单：运行时节点数据会存入被复用的表中，不支持增加和修改字段属性'
-            }
+            },
+            projectId () {
+                return this.$route.params.projectId
+            },
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
         },
         watch: {
             show (val) {
@@ -71,7 +76,11 @@
             async getFormList () {
                 try {
                     this.listLoading = true
-                    this.formList = await this.$store.dispatch('nocode/flow/getFormList', this.$route.params.projectId)
+                    const params = {
+                        projectId: this.projectId,
+                        versionId: this.versionId
+                    }
+                    this.formList = await this.$store.dispatch('nocode/flow/getFormList', params)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
@@ -85,9 +94,23 @@
                 console.log(val)
             },
             handleConfirm () {
-                this.$emit('update:show', false)
+                if (typeof this.selected !== 'number') {
+                    this.$bkMessage({
+                        message: '请选择表单',
+                        theme: 'error'
+                    })
+                    return
+                }
+                let content = []
+                if (this.method === 'COPY_FORM') {
+                    const form = this.formList.find(item => item.id === this.selected)
+                    content = JSON.parse(form.content)
+                }
+                this.selected = ''
+                this.$emit('confirm', this.selected, content)
             },
             handleCancel () {
+                this.selected = ''
                 this.$emit('update:show', false)
             }
         }
@@ -120,6 +143,7 @@
         }
         .form-list-wrapper {
             padding: 0 24px;
+            min-height: 160px;
             max-height: 320px;
             overflow: auto;
         }

@@ -21,7 +21,7 @@
         methods: {
             async handleClearAll () {
                 this.$bkInfo({
-                    title: '是否清空画布?？',
+                    title: '是否清空画布?',
                     subTitle: '清空将会清除画布下所有配置，且无法恢复，你还要继续吗？',
                     theme: 'danger',
                     confirmFn: () => {

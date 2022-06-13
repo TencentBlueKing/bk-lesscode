@@ -139,7 +139,7 @@
             const handleMethodChange = (method) => {
                 emit('update', {
                     method,
-                    query: {},
+                    query: [],
                     body: {}
                 })
             }

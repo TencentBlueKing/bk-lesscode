@@ -102,6 +102,7 @@
 </template>
 <script>
     import dayjs from 'dayjs'
+    import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
 
     export default {
@@ -139,11 +140,9 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
-            },
-            versionId () {
-                return this.$store.state.projectVersion.currentVersionId
             }
         },
         mounted () {
