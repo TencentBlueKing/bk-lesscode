@@ -1,25 +1,34 @@
 <template>
     <section>
         <div
-            class="label"
-            v-bk-tooltips="{ content: '数据源管理中的表' }"
-        >表</div>
+            class="g-prop-sub-title g-mt8 g-mb6"
+        >数据表</div>
         <choose-data-table
-            class="mt10"
+            class="g-mb8"
             :value="sourceData.tableName"
             @choose="chooseTable"
+            @clear="clearTable"
         />
         <div
-            class="label mt20"
-            v-bk-tooltips="{ content: '用于赋值的字段名，默认为 id' }"
+            class="g-prop-sub-title g-mb6 g-mt8 subline"
+            v-bk-tooltips="{
+                content: '用于赋值的字段名，默认为 id',
+                placements: ['left-start'],
+                boundary: 'window'
+            }"
         >id 配置</div>
         <bk-input
+            class="g-mb8"
             :value="sourceData.params.idKey"
             @change="val => changeParams('idKey', val)"
         />
         <div
-            class="label mt10"
-            v-bk-tooltips="{ content: '用于展示的字段名，默认为 name' }"
+            class="g-prop-sub-title g-mb6 g-mt8 subline"
+            v-bk-tooltips="{
+                content: '用于展示的字段名，默认为 name',
+                placements: ['left-start'],
+                boundary: 'window'
+            }"
         >name 配置</div>
         <bk-input
             :value="sourceData.params.nameKey"
@@ -39,7 +48,7 @@
     interface Iprop {
         slotVal?: any,
         slotConfig?: any,
-        change: (slot: any) => void
+        change: (slot: any, type: string) => void
     }
 
     export default defineComponent({
@@ -56,6 +65,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: () => {}
@@ -63,8 +75,11 @@
         },
 
         setup (props) {
+            // copy type 防止响应式更新
+            const type = props.type
             const {
                 slotVal,
+                slotConfig,
                 change
             } = toRefs<Iprop>(props)
             // 参数原始值
@@ -79,14 +94,20 @@
                 }
             })
 
-            const chooseTable = (tableName, result) => {
-                sourceData.value.val = result.list
+            const chooseTable = ({ tableName, data }) => {
+                sourceData.value.val = data.list
                 sourceData.value.tableName = tableName
                 triggleUpdate()
             }
 
             const changeParams = (key, value) => {
                 sourceData.value.params[key] = value
+                triggleUpdate()
+            }
+
+            const clearTable = () => {
+                sourceData.value.val = slotConfig?.value?.val
+                sourceData.value.tableName = ''
                 triggleUpdate()
             }
 
@@ -103,24 +124,22 @@
                         }
                     }
                 }
-                change.value(slot)
+                change.value(slot, type)
             }
 
             return {
                 sourceData,
                 chooseTable,
-                changeParams
+                changeParams,
+                clearTable
             }
         }
     })
 </script>
 
 <style lang="postcss" scoped>
-    .label {
-        line-height: 19px;
-        margin-bottom: 4px;
-        display: inline-block;
-        border-bottom: 1px dashed #979ba5;
+    .subline {
         cursor: pointer;
+        border-bottom: 1px dashed #63656E;
     }
 </style>

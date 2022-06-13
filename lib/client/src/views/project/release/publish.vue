@@ -7,72 +7,9 @@
             <div :class="$style['release-summary']">
                 <span :class="$style['setting']">
                     <span :class="$style['label']"><span v-bk-tooltips="bindInfoTips" :class="$style['bind-label']">绑定蓝鲸应用模块</span>：</span>
-                    <div v-if="!showEdit" :class="$style['show-setting']">
-                        <span v-if="currentAppInfo.appCode && currentAppInfo.moduleCode">{{ showAppAndModule }}</span>
-                        <span v-else>
-                            <i class="bk-drag-icon bk-drag-info-tips" :class="$style['info-tips']" title="绑定应用模块"></i>
-                            <span>未绑定</span>
-                        </span>
-                        <span><i class="bk-drag-icon bk-drag-edit" :class="$style['edit-setting-icon']" @click="showEdit = true"></i></span>
-                        <span v-if="currentAppInfo.appCode && currentAppInfo.moduleCode" @click="toProcessPage" title="进程管理">
-                            <i class="bk-drag-icon bk-drag-process" :class="$style['edit-setting-icon']" style="font-size: 12px"></i>
-                        </span>
-                    </div>
-                    <div v-else :class="$style['edit-setting']">
-                        <bk-select :class="$style['saas-option']"
-                            v-model="tmpAppCode"
-                            placeholder="请选择应用"
-                            :clearable="false"
-                            :searchable="true"
-                            :loading="applicationLoading"
-                            @toggle="toggleApplicationList"
-                            @selected="changeAppCode"
-                        >
-                            <bk-option v-for="option in applicationList"
-                                :key="option.application.id"
-                                :id="option.application.code"
-                                :name="option.application.name">
-                            </bk-option>
-                            <template v-if="createLinkUrl">
-                                <div slot="extension" :class="$style['selector-create-item']">
-                                    <a :href="`${createLinkUrl}/app/create`" target="_blank">
-                                        <i class="bk-drag-icon bk-drag-add-line" />
-                                        去创建应用
-                                    </a>
-                                </div>
-                            </template>
-                        </bk-select>
-                        <bk-select
-                            :class="$style['saas-option']"
-                            v-model="tmpModuleCode"
-                            placeholder="请选择模块"
-                            :clearable="false"
-                            :searchable="true"
-                            :loading="moduleLoading"
-                            @toggle="toggleModuleList"
-                        >
-                            <bk-option v-for="option in moduleList"
-                                :key="option.id"
-                                :id="option.name"
-                                :disabled="option.disabled"
-                                :name="option.name">
-                                <span v-if="option.disabled" :title="`${option.name}: 已被其它应用绑定`">{{ option.name }}</span>
-                            </bk-option>
-                            <template v-if="createLinkUrl && tmpAppCode">
-                                <div slot="extension" :class="$style['selector-create-item']">
-                                    <a :href="`${createLinkUrl}/apps/${tmpAppCode}/module/create`" target="_blank">
-                                        <i class="bk-drag-icon bk-drag-add-line" />
-                                        去创建模块
-                                    </a>
-                                </div>
-                            </template>
-                        </bk-select>
-                        <span :class="$style['operate-bind']">
-                            <span @click="confirmBind">确定</span> | <span @click="cancelBind">取消</span>
-                        </span>
-                    </div>
+                    <app-module-select ref="appModuleSelect"></app-module-select>
                 </span>
-                <span :class="[$style['latest-info'], { [$style['s-margin']]: showEdit }]">
+                <span :class="[$style['latest-info']]">
                     <span :class="$style['label']">当前生产环境部署版本：</span>
                     <span v-if="prodInfo.version && !prodInfo.isOffline">
                         <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="getInfoTips(prodInfo)">
@@ -98,7 +35,7 @@
                     </span>
                 </span>
 
-                <span :class="[$style['latest-info'], { [$style['s-margin']]: showEdit }]">
+                <span :class="[$style['latest-info']]">
                     <span :class="$style['label']">当前预发布环境部署版本：</span>
                     <span v-if="stagInfo.version && !stagInfo.isOffline">
                         <span v-if="stagInfo.accessUrl" :class="$style['link-detail']">
@@ -127,6 +64,20 @@
                         <span>下架</span>
                     </bk-button>
                 </span>
+
+                <bk-dropdown-menu v-show="stagInfo.version || prodInfo.version" @show="() => isDropdownShow = true " @hide="isDropdownShow = false" ref="dropdown">
+                    <div class="dropdown-trigger-btn" style="padding-left: 19px;" slot="dropdown-trigger">
+                        <span>更多操作</span>
+                        <i :class="['bk-icon icon-angle-down', { 'icon-flip': isDropdownShow }]"></i>
+                    </div>
+                    <ul class="bk-dropdown-list" slot="dropdown-content">
+                        <li><a href="javascript:;" @click="toManagePage('deploy')">部署管理</a></li>
+                        <li><a href="javascript:;" @click="toManagePage('process')">进程管理</a></li>
+                        <li><a href="javascript:;" @click="toManagePage('log?tab=structured')">日志查询</a></li>
+                        <li><a href="javascript:;" @click="toManagePage('environment_variable')">环境配置</a></li>
+                        <li><a href="javascript:;" @click="toManagePage('app_entry_config')">访问入口</a></li>
+                    </ul>
+                </bk-dropdown-menu>
             </div>
 
             <div :class="$style['release-content']">
@@ -208,7 +159,7 @@
                         <span :class="$style['version-label']">创建应用版本</span>
                         <bk-radio-group v-model="versionForm.isCreateProjVersion" :class="$style['version-type']">
                             <bk-radio :value="0">否</bk-radio>
-                            <bk-radio :value="1" style="margin-left: 70px">是，部署成功后创建应用版本并归档</bk-radio>
+                            <bk-radio :value="1" style="margin-left: 50px">是，部署成功后创建应用版本并归档</bk-radio>
                         </bk-radio-group>
                     </div>
                     <div :class="[$style['form-item'], 'version-publish-log']"
@@ -223,6 +174,7 @@
                     </div>
                     <div :class="[$style['operate-btn'], $style['m-left']]">
                         <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">{{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? `部署中...` : '部署'}}</bk-button>
+                        <span :class="$style['release-tips']">由蓝鲸开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理</span>
                     </div>
                 </div>
             </div>
@@ -277,6 +229,7 @@
 <script>
     import dayjs from 'dayjs'
     import completedLog from './components/completed-log'
+    import appModuleSelect from '@/components/project/app-module-select'
     import runningLog from './components/running-log'
     import monaco from '@/components/monaco.vue'
     import { execCopy } from '@/common/util'
@@ -295,17 +248,14 @@
         components: {
             completedLog,
             runningLog,
-            monaco
+            monaco,
+            appModuleSelect
         },
         data () {
             return {
                 isLoading: true,
-                applicationLoading: false,
-                moduleLoading: false,
                 sucVersionLoading: false,
                 projVersionLoading: false,
-                applicationList: [],
-                moduleList: [],
                 projVersionList: [],
                 sucVersionList: [],
                 currentProject: {},
@@ -313,10 +263,8 @@
                     appCode: '',
                     moduleCode: ''
                 },
-                tmpAppCode: '',
-                tmpModuleCode: '',
                 versionForm: defaultVersionFormData(),
-                showEdit: false,
+                isDropdownShow: false,
                 disabledRelease: false,
                 createLinkUrl: '',
                 latestInfo: {},
@@ -378,9 +326,8 @@
                 return ''
             },
             showAppAndModule () {
-                const selectApp = this.applicationList.find(item => item.application.code === this.currentAppInfo.appCode)
-                const showAppCode = (selectApp && selectApp.application.name) || this.currentAppInfo.appCode
-                return `${showAppCode}/${this.currentAppInfo.moduleCode}`
+                const innerData = this.$refs.appModuleSelect && this.$refs.appModuleSelect.showAppAndModule
+                return (innerData && innerData !== '/') ? innerData : `${this.currentAppInfo.appCode}/${this.currentAppInfo.moduleCode}`
             },
             releaseBtnDisabled () {
                 return this.disabledRelease
@@ -414,7 +361,7 @@
                 return {
                     placement: 'top',
                     width: '284px',
-                    content: `必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块，<a target="_blank" href="${this.createLinkUrl}/app/create" style="cursor: pointer;color: #3a84ff">跳转创建</a>`
+                    content: '必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块'
                 }
             }
         },
@@ -452,13 +399,9 @@
                     this.isLoading = true
                     this.getProjVersionOptionList()
                     this.getSucVersionList()
-                    this.getApplicationList()
                     const { appCode = '', moduleCode = '' } = await this.$store.dispatch('project/detail', { projectId: this.projectId }) || {}
-                    this.tmpAppCode = this.currentAppInfo.appCode = appCode || ''
-                    this.tmpModuleCode = this.currentAppInfo.moduleCode = moduleCode || ''
-                    if (this.currentAppInfo.appCode) {
-                        this.getModuleList(this.currentAppInfo.appCode)
-                    }
+                    this.currentAppInfo.appCode = appCode || ''
+                    this.currentAppInfo.moduleCode = moduleCode || ''
                     await this.resetData()
                     this.getReleaseSql()
                 } catch (err) {
@@ -466,18 +409,6 @@
                 } finally {
                     this.isLoading = false
                 }
-            },
-            async getApplicationList () {
-                this.applicationLoading = true
-                this.applicationList = await this.$store.dispatch('release/applicationList')
-                this.applicationLoading = false
-            },
-            async getModuleList (appCode) {
-                this.moduleLoading = true
-                this.moduleList = await this.$store.dispatch('release/moduleList', {
-                    appCode
-                })
-                this.moduleLoading = false
             },
             async getProjVersionOptionList () {
                 this.projVersionLoading = true
@@ -499,57 +430,11 @@
                 })
                 this.sucVersionLoading = false
             },
-            changeAppCode (val) {
-                this.tmpModuleCode = ''
-                this.getModuleList(val)
-            },
-            cancelBind () {
-                this.showEdit = false
-                this.tmpAppCode = this.currentAppInfo.appCode
-                this.tmpModuleCode = this.currentAppInfo.moduleCode
-            },
-            toProcessPage () {
-                window.open(`${this.createLinkUrl}/apps/${this.currentAppInfo.appCode}/${this.currentAppInfo.moduleCode}/process`, '_blank')
+            toManagePage (pageUrl) {
+                window.open(`${this.createLinkUrl}/apps/${this.currentAppInfo.appCode}/${this.currentAppInfo.moduleCode}/${pageUrl}`, '_blank')
             },
             copy (value) {
                 execCopy(value)
-            },
-            async confirmBind () {
-                if (!this.tmpAppCode || !this.tmpModuleCode) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: '请先选择应用和相应模块'
-                    })
-                } else {
-                    await this.$store.dispatch('release/checkAppInfoExist', {
-                        appInfo: {
-                            appCode: this.tmpAppCode,
-                            moduleCode: this.tmpModuleCode
-                        },
-                        projectId: this.projectId
-                    })
-                    const res = await this.$store.dispatch('project/update', {
-                        data: {
-                            id: this.projectId,
-                            fields: {
-                                appCode: this.tmpAppCode,
-                                moduleCode: this.tmpModuleCode
-                            }
-                        }
-                    })
-                    if (res) {
-                        this.$bkMessage({
-                            theme: 'success',
-                            message: '绑定成功'
-                        })
-                        this.currentAppInfo = {
-                            appCode: this.tmpAppCode,
-                            moduleCode: this.tmpModuleCode
-                        }
-                        this.showEdit = false
-                        this.resetData()
-                    }
-                }
             },
             async release () {
                 if (this.releaseBtnDisabled) {
@@ -711,16 +596,6 @@
                     this.offlineLoading = false
                 }
             },
-            toggleApplicationList (isOpen) {
-                if (isOpen) {
-                    this.getApplicationList()
-                }
-            },
-            toggleModuleList (isOpen) {
-                if (isOpen && this.tmpAppCode) {
-                    this.getModuleList(this.tmpAppCode)
-                }
-            },
             toggleSucVersionList (isOpen) {
                 if (isOpen) {
                     this.getSucVersionList()
@@ -799,34 +674,6 @@
                 align-items: center;
                 margin-left: 30px;
                 /* min-width: 300px; */
-                .show-setting {
-                    display: inline-flex;
-                    align-items: center;
-                    .edit-setting-icon {
-                        cursor: pointer;
-                        padding: 3px;
-                        font-size: 16px;
-                        &:hover {
-                            color: #3a84ff;
-                        }
-                    }
-                }
-                .edit-setting {
-                    display: inline-flex;
-                    align-items: center;
-                    .saas-option {
-                        width: 150px;
-                        height: 32px;
-                        margin-right: 6px;
-                    }
-                    .operate-bind {
-                        width: 60px;
-                        span {
-                            cursor: pointer;
-                            color: #3a84ff;
-                        }
-                    }
-                }
             }
             .latest-info {
                 margin-left: 40px;
@@ -894,6 +741,11 @@
             .release-form {
                 .m-left {
                     margin-left: 110px;
+                }
+                .release-tips {
+                    color: #979ba5;
+                    font-size: 12px;
+                    margin-left: 18px;
                 }
                 & > div {
                     margin-bottom: 28px;

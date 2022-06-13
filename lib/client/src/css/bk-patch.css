@@ -53,7 +53,7 @@
 
 .g-popover-empty-padding {
     .tippy-tooltip {
-        padding: 0;
+        padding: 0 !important;
     }
 }
 .mg-header{
@@ -61,4 +61,24 @@
     left: 0;
     width: unset !important;
     min-width: unset !important;
+}
+.g-prop-radio-group {
+    margin-bottom: 8px;
+    display: flex;
+    .bk-form-radio-button {
+        flex: 1;
+        .bk-radio-button-text {
+            width: 100%;
+            font-size: 12px;
+        }
+        .bk-radio-button-input:checked+.bk-radio-button-text {
+            background: none;
+        }
+        .bk-radio-button-input.is-checked+.bk-radio-button-text {
+            position: relative;
+            z-index: 1;
+            color: #3a84ff;
+            border-color: currentColor;
+        }
+    }
 }

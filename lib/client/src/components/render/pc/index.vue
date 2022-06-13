@@ -19,7 +19,8 @@
                 [$style['empty']]: componentData.children.length < 1
             }"
             @click="handleCanvaseClick"
-            @mouseleave="handleMouseleave">
+            @mouseleave="handleMouseleave"
+            @contextmenu.stop="handleShowContextmenu">
             <draggable
                 ref="dragArea"
                 class="target-drag-area"
@@ -50,34 +51,39 @@
             <lesscode-focus />
             <lesscode-tools />
             <lesscode-resize />
+            <lesscode-margin />
         </div>
         <div
             v-if="showNotVisibleMask"
-            :class="$style['not-visible-mask']">
-            {{`该组件(${invisibleComponent})处于隐藏状态，请先打开`}}
+            :class="$style['not-visible-mask']"
+            @dblclick="maskDbCLickHandler">
+            <p>{{`该组件(${invisibleComponent})处于隐藏状态，请先打开`}}</p>
+            <p class="mt20">双击继续操作页面其他组件</p>
         </div>
     </layout>
 </template>
 <script>
     import LC from '@/element-materials/core'
     import Draggable from './components/draggable'
-    import LesscodeFocus from './tools/lesscode-focus'
-    import LesscodeTools from './tools/lesscode-tool'
-    import LesscodeResize from './tools/lesscode-resize'
     import Layout from './widget/layout'
     import ResolveComponent, { setMousedown } from './resolve-component'
     import ResolveInteractiveComponent from './resolve-interactive-component'
+    import LesscodeFocus from './tools/lesscode-focus'
+    import LesscodeTools from './tools/lesscode-tool'
+    import LesscodeResize from './tools/lesscode-resize'
+    import LesscodeMargin from './tools/lesscode-margin'
 
     export default {
         name: 'render',
         components: {
             Draggable,
+            Layout,
+            ResolveComponent,
+            ResolveInteractiveComponent,
             LesscodeFocus,
             LesscodeTools,
             LesscodeResize,
-            Layout,
-            ResolveComponent,
-            ResolveInteractiveComponent
+            LesscodeMargin
         },
         provide () {
             return {
@@ -128,21 +134,20 @@
             const updateCallback = (event) => {
                 if (event.target.componentId === this.componentData.componentId) {
                     this.$forceUpdate()
-                    setTimeout(() => {
-                        this.autoType()
-                    }, 20)
                 }
             }
 
             /**
-             * @name interactiveCallbak
+             * @name interactiveCallback
              * @description 当交互式组件的状态改变，每次更新需要监测是否显示“打开交互式组件”的提示
              */
-            const interactiveCallbak = event => {
+            const interactiveCallback = event => {
                 const activeNode = LC.getActiveNode()
                 if (activeNode) {
                     this.showNotVisibleMask = activeNode.isInteractiveComponent && !activeNode.interactiveShow
+                    return
                 }
+                this.showNotVisibleMask = false
             }
 
             const nodeCallback = (event) => {
@@ -157,20 +162,24 @@
             LC.addEventListener('ready', readyCallback)
             LC.addEventListener('update', updateCallback)
             LC.addEventListener('update', updateLogCallback)
-            LC.addEventListener('active', interactiveCallbak)
+            LC.addEventListener('active', interactiveCallback)
             LC.addEventListener('active', activeLogCallback)
-            LC.addEventListener('toggleInteractive', interactiveCallbak)
+            LC.addEventListener('toggleInteractive', interactiveCallback)
             LC.addEventListener('appendChild', nodeCallback)
             LC.addEventListener('moveChild', nodeCallback)
+            LC.addEventListener('insertAfter', nodeCallback)
+            LC.addEventListener('removeChild', interactiveCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('ready', readyCallback)
                 LC.removeEventListener('update', updateCallback)
                 LC.removeEventListener('update', updateLogCallback)
-                LC.removeEventListener('active', interactiveCallbak)
+                LC.removeEventListener('active', interactiveCallback)
                 LC.removeEventListener('active', activeLogCallback)
-                LC.removeEventListener('toggleInteractive', interactiveCallbak)
+                LC.removeEventListener('toggleInteractive', interactiveCallback)
                 LC.removeEventListener('appendChild', nodeCallback)
                 LC.removeEventListener('moveChild', nodeCallback)
+                LC.removeEventListener('insertAfter', nodeCallback)
+                LC.removeEventListener('removeChild', interactiveCallback)
             })
         },
         mounted () {
@@ -186,6 +195,7 @@
             const resetCallback = () => {
                 LC.clearMenu()
             }
+            
             document.body.addEventListener('mousedown', mousedownCallback)
             document.body.addEventListener('mouseup', mouseupCallback)
             document.body.addEventListener('click', resetCallback)
@@ -214,20 +224,35 @@
                     top: boxTop,
                     left: boxLeft
                 } = this.$refs.dragArea.$el.getBoundingClientRect()
-
                 const $childEl = childNode.$elm
-
                 const {
                     top: componentTop,
                     left: componentLeft
                 } = $childEl.getBoundingClientRect()
                 
-                if (componentTop > boxTop) {
-                    childNode.setStyle('marginTop', '10px')
+                const styles = {}
+                if (componentTop > boxTop + 3) {
+                    styles['marginTop'] = '8px'
                 }
-                if (componentLeft > boxLeft) {
-                    childNode.setStyle('marginLeft', '10px')
+                if (componentLeft > boxLeft + 3) {
+                    styles['marginLeft'] = '8px'
                 }
+                if (Object.keys(styles).length > 0) {
+                    childNode.setStyle(styles)
+                }
+            },
+            maskDbCLickHandler () {
+                this.showNotVisibleMask = false
+            },
+            /**
+             * @desc 鼠标右键操作面板
+             */
+            handleShowContextmenu (event) {
+                const activeNode = LC.getActiveNode()
+                if (activeNode) {
+                    activeNode.activeClear()
+                }
+                LC.showMenu(event)
             },
             /**
              * @desc 鼠标离开时清除组件 hover 效果
@@ -292,7 +317,8 @@
         position: fixed;
         z-index: 99999999;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         background: rgba(0,0,0,0.8);
         top: 0;
         right: 0;

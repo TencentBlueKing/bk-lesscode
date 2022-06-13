@@ -1,5 +1,9 @@
 <template>
-    <choose-data-table :value="chooseTableName" @choose="chooseTable"></choose-data-table>
+    <choose-data-table
+        :value="chooseTableName"
+        @choose="chooseTable"
+        @clear="clearTable"
+    ></choose-data-table>
 </template>
 
 <script lang="ts">
@@ -13,7 +17,7 @@
     interface Iprop {
         slotVal?: any,
         slotConfig?: any,
-        change: (slot: any) => void
+        change: (slot: any, type: string) => void
     }
 
     export default defineComponent({
@@ -30,6 +34,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: () => {}
@@ -37,26 +44,37 @@
         },
 
         setup (props) {
+            // copy type 防止响应式更新
+            const type = props.type
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.slotVal?.value?.payload?.sourceData?.tableName)
 
-            const chooseTable = (tableName, result) => {
+            const chooseTable = ({ tableName, data }) => {
+                triggleUpdate(tableName, data.list)
+            }
+
+            const clearTable = () => {
+                triggleUpdate('', propStatus.slotConfig.value.val)
+            }
+
+            const triggleUpdate = (tableName, val) => {
                 chooseTableName.value = tableName
                 const slot = {
                     ...propStatus.slotVal.value,
-                    val: result.list,
+                    val,
                     payload: {
                         sourceData: {
                             tableName
                         }
                     }
                 }
-                propStatus.change.value(slot)
+                propStatus.change.value(slot, type)
             }
 
             return {
                 chooseTableName,
-                chooseTable
+                chooseTable,
+                clearTable
             }
         }
     })

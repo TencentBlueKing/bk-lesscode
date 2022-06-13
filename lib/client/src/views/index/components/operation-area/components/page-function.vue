@@ -32,6 +32,7 @@
                                 :class="`form-component ${field.type}`"
                                 :choosen-function="editField.value"
                                 @change="(val) => chooseFunction(editField, val)"
+                                @clear="chooseFunction(editField, '')"
                             />
                             <div class="buttons">
                                 <bk-button text size="small" theme="primary"
@@ -330,6 +331,12 @@
             align-items: center;
             .form-component {
                 width: 100%;
+                background: #f0f1f5;
+                border-radius: 2px;
+                padding: 8px;
+                &:hover {
+                    box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
+                }
             }
             .buttons {
                 display: flex;

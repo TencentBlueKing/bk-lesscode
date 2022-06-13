@@ -21,7 +21,6 @@
                 {{ activeComponentData.componentId }}
             </div>
             <div
-                v-if="activeComponentData.layoutType"
                 :class="$style['button']"
                 @click="handleSaveTemplate">
                 <i class="bk-drag-icon bk-drag-template-fill" />
@@ -37,7 +36,7 @@
             <div
                 :class="$style['button']"
                 @click="handleRemove">
-                <i class="bk-drag-icon bk-drag-shanchu" />
+                <i class="bk-drag-icon bk-drag-delet" />
             </div>
         </div>
     </div>
@@ -50,10 +49,11 @@
     } from '@vue/composition-api'
     import useActiveParent from './hooks/use-active-parent'
     import useSaveTemplate from './hooks/use-save-template'
-    import useRemove from './hooks/user-remove'
+    import useRemove from './hooks/use-remove'
     import useShowMenu from '../hooks/use-show-menu'
     import useComponentActive from '../hooks/use-component-active'
     import useComponentHover from '../hooks/use-component-hover'
+    import useSlot from './hooks/use-slot'
 
     const hideStyles = {
         display: 'none'
@@ -82,6 +82,8 @@
             const handleRemove = useRemove()
             // 显示快捷面板
             const handleShowMenu = useShowMenu()
+            // 编辑slot文字
+            useSlot()
 
             /**
              * @desc acitve状态
@@ -197,5 +199,13 @@
         color: #fff;
         text-align: center;
         pointer-events: all;
+        &.disabled{
+            background-color: #dcdee5;
+            color: #fff;
+            cursor: not-allowed;
+        }
+        &:hover{
+            background: #1964E1;
+        }
     }
 </style>

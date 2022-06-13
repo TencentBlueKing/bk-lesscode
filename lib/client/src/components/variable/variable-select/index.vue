@@ -20,27 +20,28 @@
                 </bk-option>
             </bk-select>
         </section>
-        <div
-            v-if="readonly"
-            class="readonly-text">
-            {{ formData.code }}
-        </div>
-        <div v-else style="width: 100%">
-            <slot v-if="formData.format === 'value'" />
-            <render-variable
-                v-if="formData.format === 'variable'"
-                :options="options"
-                :form-data="formData"
-                :remote-config="remoteConfig"
-                @on-change="handleChange" />
-            <render-expression
-                v-if="formData.format === 'expression'"
-                :options="options"
-                :form-data="formData"
-                @on-change="handleChange"
-            />
-        </div>
-        
+        <template v-if="showContent">
+            <div
+                v-if="readonly"
+                class="readonly-text">
+                {{ formData.code }}
+            </div>
+            <div v-else class="display-content">
+                <slot v-if="formData.format === 'value'" />
+                <render-variable
+                    v-if="formData.format === 'variable'"
+                    :options="options"
+                    :form-data="formData"
+                    :remote-config="remoteConfig"
+                    @on-change="handleChange" />
+                <render-expression
+                    v-if="formData.format === 'expression'"
+                    :options="options"
+                    :form-data="formData"
+                    @on-change="handleChange"
+                />
+            </div>
+        </template>
     </section>
 </template>
 <script>
@@ -56,7 +57,7 @@
     }) => ({
         // 类型（value、variable、expression）
         format,
-        // 对应 format 的值
+        // 对应 变量code 和 expression
         code,
         // 最终值的类型
         valueType,
@@ -77,6 +78,11 @@
         },
         props: {
             show: {
+                type: Boolean,
+                default: true
+            },
+            // 是否展示内容区
+            showContent: {
                 type: Boolean,
                 default: true
             },
@@ -165,7 +171,7 @@
             /**
              * @desc 格式改变
              * @param { String } format
-             *
+             * code 代表 选择的变量 或者 填写的表达式
              * format 改变时需要重置 code 的值
              */
             handleFormatChange (format) {
@@ -192,10 +198,10 @@
 </script>
 <style lang="postcss" scoped>
     .select-variable {
-        margin-top: 10px;
+        position: relative;
         .header {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             font-size: 14px;
             color: #63656E;
@@ -203,6 +209,9 @@
             width: 100%;
         }
         .format-list {
+            position: absolute;
+            right: 0;
+            top: 5px;
             border: none;
             /deep/ .bk-select-angle {
                 font-size: 16px;
@@ -262,6 +271,11 @@
                     display: none;
                 }
             }
+        }
+        .display-content {
+            width: 100%;
+            margin-bottom: 16px;
+            margin-top: 4px;
         }
     }
 </style>

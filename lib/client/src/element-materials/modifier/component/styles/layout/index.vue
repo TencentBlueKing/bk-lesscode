@@ -52,15 +52,16 @@
         display: flex;
         flex-direction: column;
         width: 276px;
-        padding: 20px 0 10px;
-        margin-left: 12px;
+        padding: 0 0 16px;
+        margin-left: 10px;
         .style-title {
             font-size: 12px;
             display: flex;
             align-items: center;
-            height: 20px;
-            line-height: 20px;
+            height: 40px;
+            line-height: 40px;
             font-weight: bold;
+            color: #313238;
 
             .style-icon {
                 height: 20px;

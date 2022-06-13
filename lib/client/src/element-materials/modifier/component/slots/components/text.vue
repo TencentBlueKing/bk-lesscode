@@ -39,6 +39,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 required: true
@@ -68,7 +71,7 @@
                             ...this.slotVal,
                             val
                         }
-                        this.change(slot)
+                        this.change(slot, this.type)
                         this.isError = false
                     } else {
                         this.isError = true
@@ -78,7 +81,7 @@
                     ...this.slotVal,
                     val
                 }
-                this.change(slot)
+                this.change(slot, this.type)
             }
         }
     }

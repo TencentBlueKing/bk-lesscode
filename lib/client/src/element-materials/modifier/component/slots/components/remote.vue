@@ -5,6 +5,7 @@
         :default-value="copySlotVal.val"
         :remote-validate="slotConfig.remoteValidate"
         :change="remoteChange"
+        :describe="slotConfig"
     />
 </template>
 
@@ -26,6 +27,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: () => {}
@@ -45,6 +49,11 @@
             }
         },
 
+        created () {
+            // 防止响应式更新
+            this.copyType = this.type
+        },
+
         methods: {
             remoteChange (name, val, type, methodData) {
                 const slot = {
@@ -54,7 +63,7 @@
                         methodData
                     }
                 }
-                this.change(slot)
+                this.change(slot, this.copyType)
             }
         }
     }

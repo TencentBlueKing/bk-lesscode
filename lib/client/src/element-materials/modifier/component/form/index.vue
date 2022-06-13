@@ -20,7 +20,8 @@
             :auto-get-data="false"
             :default-value="{}"
             :remote-validate="validateObjectMethod"
-            :change="transformRemoteDataToNode" />
+            :change="transformRemoteDataToNode"
+            :describe="formConfig" />
         <div
             class="form-slot-title"
             style="margin: 20px 0 10px;">
@@ -30,12 +31,14 @@
             class="form-item-list">
             <vue-draggable
                 ghost-class="block-item-ghost"
-                :list="componentNode.children"
-                handle=".option-col-drag">
+                :list="formItemList"
+                handle=".option-col-drag"
+                :group="{ name: 'form-item-list', pull: false, put: false }"
+                @change="handleSort">
                 <transition-group
                     type="transition"
                     :name="'flip-list'">
-                    <template v-for="(formItemNode, index) in componentNode.children">
+                    <template v-for="(formItemNode, index) in formItemList">
                         <div
                             v-if="formItemNode.prop.property"
                             :key="`item${index}`"
@@ -100,7 +103,7 @@
             'switcher': false,
             'checkbox-group': []
         }
-        return typeValMap[type] !== undefined ? typeValMap[type] : ''
+        return typeValMap[type] || ''
     }
 
     const genDefaultFormItemData = () => ({
@@ -139,7 +142,19 @@
             return {
                 isShow: false,
                 isShowOperation: false,
-                editFormItemData: {}
+                editFormItemData: {},
+                // 数据示例基于配置的value来展示值，这里需要传入一份配置的标准值
+                formConfig: {
+                    val: {
+                        'string': '',
+                        'boolean': false,
+                        'array': [
+                            1,
+                            2,
+                            3
+                        ]
+                    }
+                }
             }
         },
         
@@ -153,8 +168,11 @@
                 return
             }
 
+            this.formItemList = [...this.componentNode.children]
+
             const updateCallback = _.throttle((event) => {
                 if (this.componentNode.componentId === event.target.componentId) {
+                    this.formItemList = [...this.componentNode.children]
                     this.$forceUpdate()
                 }
             }, 20)
@@ -165,6 +183,22 @@
             })
         },
         methods: {
+            handleSort (event) {
+                if (event.moved) {
+                    const {
+                        element,
+                        newIndex,
+                        oldIndex
+                    } = event.moved
+                    if (newIndex === oldIndex) {
+                        return
+                    }
+                    // 从原位置删除
+                    this.componentNode.removeChild(element)
+                    // 插入新位置
+                    this.componentNode.insertBefore(element, this.componentNode.children[newIndex])
+                }
+            },
             /**
              * @desc 编辑表单项属性
              * @param { Object | null } formItemNode 操作的表单节点
@@ -203,12 +237,22 @@
 
                 const setProp = node => {
                     const formItemPropList = ['label', 'property', 'required']
+                    const propsValue = {}
                     formItemPropList.forEach(propName => {
-                        node.setProp(propName, itemData[propName])
+                        propsValue[propName] = LC.utils.genPropFormatValue({
+                            format: 'value',
+                            code: itemData[propName],
+                            renderValue: itemData[propName]
+                        })
                     })
                     // 验证规则里面配有 required 规则
                     const hasRequired = ((itemData.validate || []).filter(item => item.required === true).length > 0)
-                    node.setProp('required', hasRequired)
+                    propsValue['required'] = LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: hasRequired,
+                        renderValue: hasRequired
+                    })
+                    node.setProp(propsValue)
                 }
 
                 const setDirective = node => {
@@ -222,9 +266,15 @@
                         }
                     ])
                 }
+                
+                const formPropRules = Object.assign({}, this.componentNode.prop.rules)
 
                 if (this.editFormItemNode) {
                     // 编辑
+                    const editFormItemDataProp = this.editFormItemNode.prop
+                    //  可能修改了 property，删除老数据重新收集
+                    delete formPropRules[editFormItemDataProp.property]
+                
                     let inputNode = this.editFormItemNode.children[0]
                     // 表单组件类型改变，删除原有组件
                     if (inputNode.type !== typeEnum[itemData.type]) {
@@ -233,6 +283,7 @@
                         inputNode = genInputNode(itemData.type)
                         this.editFormItemNode.appendChild(inputNode)
                     }
+                    
                     setDirective(inputNode)
                     setProp(this.editFormItemNode)
                 } else {
@@ -258,7 +309,15 @@
                             valueType: 'text',
                             renderValue: '提交'
                         })
-                        submitBtnNode.setProp('theme', 'primary')
+                        
+                        submitBtnNode.setProp('theme', LC.utils.genPropFormatValue({
+                            format: 'value',
+                            code: 'primary',
+                            renderValue: 'primary'
+                        }))
+                        submitBtnNode.setStyle({
+                            width: '88px'
+                        })
                         // 取消按钮
                         const cancelBtnNode = LC.createNode('bk-button')
                         cancelBtnNode.setRenderSlots({
@@ -268,7 +327,10 @@
                             valueType: 'text',
                             renderValue: '取消'
                         })
-                        cancelBtnNode.setStyle('marginLeft', '10px')
+                        cancelBtnNode.setStyle({
+                            width: '88px',
+                            'marginLeft': '8px'
+                        })
                         actionFormItemNode = LC.createNode('widget-form-item')
                         actionFormItemNode.appendChild(submitBtnNode)
                         actionFormItemNode.appendChild(cancelBtnNode)
@@ -279,14 +341,29 @@
                     this.componentNode.insertBefore(formItemNode, actionFormItemNode)
                 }
 
-                // 更新 form 的 rules prop
-                this.componentNode.setProp('rules', Object.assign({}, this.componentNode.prop.rules, {
+                const newPropRules = Object.assign(formPropRules, {
                     [itemData.property]: itemData.validate
-                }))
-                // 更新 form 的 model prop
-                this.componentNode.setProp('model', Object.assign({}, this.componentNode.prop.model, {
-                    [itemData.property]: getDefaultValFromType(itemData.type)
-                }))
+                })
+                // form.prop.model 通过遍历 formItem 收集 formItem.prop.property得到
+                const newPropModel = this.componentNode.children.reduce((result, formItemNode) => {
+                    const formItemProp = formItemNode.prop
+                    if (formItemProp.property) {
+                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
+                    }
+                    return result
+                }, {})
+                this.componentNode.setProp({
+                    'rules': LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: newPropRules,
+                        renderValue: newPropRules
+                    }),
+                    'model': LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: newPropModel,
+                        renderValue: newPropModel
+                    })
+                })
                 this.isShowOperation = false
             },
             /**
@@ -302,6 +379,28 @@
             */
             handleDelete (formItemNode) {
                 this.componentNode.removeChild(formItemNode)
+
+                // 更新 form 的 prop.rules
+                const rules = { ...this.componentNode.prop.rules }
+                delete rules[formItemNode.prop.property]
+                this.componentNode.setProp('rules', LC.utils.genPropFormatValue({
+                    format: 'value',
+                    code: rules,
+                    renderValue: rules
+                }))
+                // form.prop.model 通过遍历 formItem 收集 formItem.prop.property得到
+                const model = this.componentNode.children.reduce((result, formItemNode) => {
+                    const formItemProp = formItemNode.prop
+                    if (formItemProp.property) {
+                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
+                    }
+                    return result
+                }, {})
+                this.componentNode.setProp('model', LC.utils.genPropFormatValue({
+                    format: 'value',
+                    code: model,
+                    renderValue: model
+                }))
             },
             /**
              * @desc 验证远程数据
@@ -337,6 +436,7 @@
 <style lang='postcss'>
     .modifier-form {
         padding: 0 10px;
+        margin-bottom: 16px;
         .form-item-list {
             display: flex;
             flex-direction: column;
