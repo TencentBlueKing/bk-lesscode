@@ -1,7 +1,7 @@
 <template>
     <div class="desc">
         <div class="content">
-            <viewer :initial-value="value"></viewer>
+            <viewer :initial-value="value || field.value"></viewer>
         </div>
     </div>
 </template>

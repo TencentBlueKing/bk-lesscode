@@ -96,7 +96,7 @@
                 <bk-table-column type="selection" width="60"></bk-table-column>
                 <bk-table-column
                     v-for="field in fieldList"
-                    :key="field.id"
+                    :key="field.key"
                     :label="field.name"
                     :prop="field.key"
                 >
@@ -172,8 +172,8 @@
                 this.fieldList = cloneDeep(val)
                 this.localFieldList = cloneDeep(val)
                 this.selectionFields = cloneDeep(val)
-                const filtersKey = this.filters.map(i => i.id)
-                this.selectList = val.concat(SYS_FIELD).filter(item => !filtersKey.includes(item.id))
+                const filtersKey = this.fieldList.map(i => i.key)
+                this.selectList = val.concat(SYS_FIELD).filter(item => filtersKey.includes(item.key))
                 console.log(this.selectList)
                 this.customFields = this.selectionFields.map(i => i.key)
             },
@@ -187,13 +187,13 @@
                         const tempFormFieldsList = JSON.parse(form.content).concat(SYS_FIELD)
                         // 计算可选的筛选条件
                         if (filters?.length > 0) {
-                            this.filters = tempFormFieldsList.filter(item => filters.includes(item.id))
-                            const filtersKey = this.filters.map(i => i.id)
-                            this.selectList = this.fieldList.filter(item => !filtersKey.includes(item.id))
+                            this.filters = tempFormFieldsList.filter(item => filters.includes(item.key))
+                            const filtersKey = this.filters.map(i => i.key)
+                            this.selectList = this.fieldList.filter(item => !filtersKey.includes(item.key))
                         }
                         if (tableConfig?.length > 0) {
                             // 自定义字段
-                            this.fieldList = tempFormFieldsList.filter(item => tableConfig.includes(item.id))
+                            this.fieldList = tempFormFieldsList.filter(item => tableConfig.includes(item.key))
                             this.selectionFields = JSON.parse(form.content)
                             this.localFieldList = JSON.parse(form.content)
                             this.customFields = this.fieldList.map(i => i.key)
@@ -213,9 +213,9 @@
             // TODO 获取表单配置项
             },
             getSelectList (data) {
-                const filtersKey = this.filters.map(i => i.id)
+                const filtersKey = this.filters.map(i => i.key)
                 const UN_SEARCH_ABLE_ARR = ['TABLE', 'RICHTEXT', 'FILE', 'LINK', 'IMAGE']
-                return data.filter(item => !UN_SEARCH_ABLE_ARR.includes(item.type) && !filtersKey.includes(item.id))
+                return data.filter(item => !UN_SEARCH_ABLE_ARR.includes(item.type) && !filtersKey.includes(item.key))
             },
             handleCompClick (data) {
                 console.log('click', data)
@@ -273,8 +273,8 @@
                 return type === 'INT' ? 'number' : 'text'
             },
             change () {
-                const filters = this.filters.map(i => i.id)
-                const tableConfig = this.fieldList.map(i => i.id)
+                const filters = this.filters.map(i => i.key)
+                const tableConfig = this.fieldList.map(i => i.key)
                 const tableConfigOption = Object.assign({}, { filters }, { tableConfig })
                 this.$store.commit('nocode/formSetting/setTableFields', tableConfigOption)
             }
@@ -286,7 +286,7 @@
 @import "@/css/mixins/scroller";
 .data-manage-content {
   padding: 24px;
-  height: 100%;
+  height: calc(100vh - 200px);
   background: #ffffff;
 }
 

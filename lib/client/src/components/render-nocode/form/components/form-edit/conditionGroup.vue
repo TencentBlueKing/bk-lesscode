@@ -18,7 +18,7 @@
                         :clearable="false"
                         :loading="fieldsLoading"
                         @selected="handleSelectField(conditionItem)">
-                        <bk-option v-for="field in fields" :key="field.id" :id="field.id" :name="field.name"></bk-option>
+                        <bk-option v-for="field in fields" :key="field.key" :id="field.key" :name="field.name"></bk-option>
                     </bk-select>
                     <!-- 选择逻辑关系 -->
                     <bk-select
@@ -28,8 +28,8 @@
                         @selected="change">
                         <bk-option
                             v-for="field in getConditionOptions(conditionItem.key)"
-                            :key="field.id"
-                            :id="field.id"
+                            :key="field.key"
+                            :id="field.key"
                             :name="field.name">
                         </bk-option>
                     </bk-select>

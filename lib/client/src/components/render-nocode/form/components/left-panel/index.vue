@@ -132,7 +132,7 @@
 
 .fields-list-container {
   height: calc(100% - 56px);
-  overflow: auto;
+  overflow: hidden;
   width: 100%;
   background: #FFFFFF;
   box-shadow: 1px 0 0 0 #DCDEE5;

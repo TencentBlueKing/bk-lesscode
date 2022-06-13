@@ -1,12 +1,12 @@
 <template>
     <div class="field-edit">
         <bk-form form-type="vertical">
-            <div v-if="fieldData.type === 'DESC'">
+            <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
                     <rich-text @change="handleDescValueChange"></rich-text>
                 </bk-form-item>
             </div>
-            <template v-else-if="fieldData.type === 'DIVIDER'">
+            <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
                 <bk-form-item label="是否展示文字">
                     <bk-input v-model.trim="fieldData.default" @change="change"></bk-input>
                 </bk-form-item>
@@ -18,11 +18,11 @@
                     </bk-select>
                 </bk-form-item>
                 <bk-form-item label="线条颜色">
-                    <bk-color-picker v-model="fieldData.deviderAttr.color" size="small" @change="change">
+                    <bk-color-picker size="small" v-model="fieldData.deviderAttr.color" @change="change" transfer>
                     </bk-color-picker>
                 </bk-form-item>
-            </template>
-            <template v-else>
+            </div>
+            <div class="field-container" v-else>
                 <div class="group-name">
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
@@ -33,10 +33,11 @@
                     <span>基础属性</span>
                 </div>
                 <bk-form-item label="字段名称" v-if="!basicIsFolded">
-                    <bk-input v-model.trim="fieldData.name" @change="handleChangeName" @blur="onNameBlur"></bk-input>
+                    <bk-input v-model.trim="fieldData.name" @blur="onNameBlur" @change="change"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="唯一标识" v-if="!basicIsFolded">
-                    <bk-input v-model.trim="fieldData.key" @change="change" @blur="onNameBlur"></bk-input>
+                    <bk-input v-model.trim="fieldData.key" :disabled="fieldData.disabled" @change="change" @blur="onNameBlur">
+                    </bk-input>
                 </bk-form-item>
                 <bk-form-item label="布局" v-if="!basicIsFolded">
                     <bk-radio-group v-model="fieldData.layout" @change="change">
@@ -111,7 +112,6 @@
                     </table-header-setting>
                     <span class="add-chocie" @click="handleAddTableChoice">添加</span>
                 </bk-form-item>
-
                 <bk-form-item label="填写属性" v-if="!handleIsFolded">
                     <div class="attr-value">
                         <div class="contidion">
@@ -279,7 +279,7 @@
                         </bk-input>
                     </div>
                 </bk-form-item>
-            </template>
+            </div>
         </bk-form>
         <read-only-dialog
             :field-list="list"
@@ -320,7 +320,6 @@
 
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import pinyin from 'pinyin'
     import DefaultValue from './defaultValue.vue'
     import ReadOnlyDialog from './readOnlyDialog.vue'
     import RequireDialog from './requireDialog.vue'
@@ -426,7 +425,6 @@
                         data = meta.data_config
                         break
                 }
-                console.log(data)
                 return data
             }
         },
@@ -459,16 +457,6 @@
                     this.fieldData.name = '字段名称'
                     this.change()
                 }
-            },
-            handleChangeName (val) {
-                const key = pinyin(val, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                })
-                    .join('_')
-                    .toUpperCase()
-                this.fieldData.key = key
-                this.change()
             },
             handleAddFiles (e) {
                 const fileInfo = e.target.files[0]
@@ -659,6 +647,7 @@
                 this.change()
             },
             change () {
+                this.fieldData.timeStamp = Date.parse(new Date())
                 this.$emit('change', this.fieldData)
             }
         }
@@ -666,6 +655,12 @@
 </script>
 
 <style scoped lang="postcss">
+@import "@/css/mixins/scroller";
+.field-edit {
+  height: 100%;
+  overflow: auto;
+  @mixin scroller;
+}
 /deep/ .bk-form-control {
   & > .bk-form-radio,
   & > .bk-form-checkbox {
@@ -820,9 +815,10 @@
 .mt8{
   margin-top: 8px;
 }
-
-.default-val{
-  position: relative;
-  height: 32px;
+.field-container{
+  padding-bottom: 64px;
+}
+/deep/ .bk-color-picker-show-value{
+  width: 100% !important;
 }
 </style>

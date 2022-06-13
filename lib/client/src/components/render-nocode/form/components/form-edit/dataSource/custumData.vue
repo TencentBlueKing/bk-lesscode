@@ -24,7 +24,7 @@
                     @change="handleValChange">
                 </bk-input>
                 <bk-radio :value="item.isDefaultVal" style="margin: 0 8px" @change="handleChangeDefaultVal(index)">设为下拉默认值</bk-radio>
-                <bk-color-picker v-model="item.color" :show-value="false" @change="handleValChange"></bk-color-picker>
+                <bk-color-picker v-model="item.color" :show-value="false" @change="handleValChange" transfer></bk-color-picker>
             </div>
             <div class="btn-area">
                 <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAddItem(index)"></i>

@@ -17,7 +17,7 @@
                         :true-value="true"
                         :false-value="false"
                         v-model="localValIsDisplayTag">
-                        是否启用白名单
+                        显示为标签
                     </bk-checkbox>
                 </div>
             </div>

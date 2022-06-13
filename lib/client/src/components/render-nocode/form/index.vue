@@ -112,7 +112,9 @@
                     if (this.formId) {
                         this.isLoading = true
                         const form = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formId })
-                        this.fieldsList = JSON.parse(form.content) || []
+                        this.fieldsList = JSON.parse(form.content).map(item => {
+                            return { ...item, disabled: true }
+                        }) || []
                         this.saveFieldList()
                     }
                 } catch (err) {
