@@ -2,9 +2,9 @@
     <div class="field-edit">
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'">
-                <bk-button :theme="'default'" title="内容配置" @click="descCompValueShow = true" class="mr10">
-                    内容配置
-                </bk-button>
+                <bk-form-item label="内容" ext-cls="richtext-container">
+                    <rich-text @change="handleDescValueChange"></rich-text>
+                </bk-form-item>
             </div>
             <template v-else-if="fieldData.type === 'DIVIDER'">
                 <bk-form-item label="是否展示文字">
@@ -328,6 +328,7 @@
     import DataSourceDialog from './dataSourceDialog.vue'
     import ConfigDescCompValueDialog from './configDescCompValueDialog'
     import TableHeaderSetting from './tableHeaderSetting.vue'
+    import RichText from '../../../../nocode-form/fields/richText.vue'
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
@@ -348,7 +349,8 @@
             RequireDialog,
             ShowTypeDialog,
             DataSourceDialog,
-            ConfigDescCompValueDialog
+            ConfigDescCompValueDialog,
+            RichText
         },
         model: {
             prop: 'value',
@@ -671,6 +673,9 @@
   }
 }
 
+.richtext-container{
+  overflow: hidden;
+}
 .form-tip {
   margin-top: 8px;
   display: flex;
