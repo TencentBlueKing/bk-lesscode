@@ -73,7 +73,7 @@
                 return this.$route.params.projectId
             },
             versionId () {
-                return this.$store.state.projectVersion.currentVersion.id
+                return this.$store.state.projectVersion.currentVersionId
             }
         },
         watch: {

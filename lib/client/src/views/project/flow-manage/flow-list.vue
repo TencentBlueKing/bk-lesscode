@@ -37,8 +37,8 @@
                 </template>
             </bk-table-column>
             <bk-table-column label="流程描述" property="summary" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="流程表单页">--</bk-table-column>
-            <bk-table-column label="流程数据管理页">--</bk-table-column>
+            <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip></bk-table-column>
+            <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="创建人" property="createUser"></bk-table-column>
             <bk-table-column label="创建时间" show-overflow-tooltip>
                 <template slot-scope="{ row }">
@@ -143,7 +143,7 @@
                 return this.$route.params.projectId
             },
             versionId () {
-                return this.$store.state.projectVersion.currentVersion.id
+                return this.$store.state.projectVersion.currentVersionId
             }
         },
         mounted () {
