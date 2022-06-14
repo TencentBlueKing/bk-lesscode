@@ -10,6 +10,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
+    import { bus } from '@/common/bus'
     export default {
         components: {
             MenuItem
@@ -51,7 +52,6 @@
                 if (this.nocodeType === 'FORM') {
                     this.saveFormList()
                 } else if (this.nocodeType === 'FORM_MANAGE') {
-                    console.log('FORM_MANAGE')
                     this.saveFormManage()
                 }
                 this.saveTemplate()
@@ -82,8 +82,8 @@
                         message: '保存成功'
                     })
                     action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
+                    bus.$emit('saveSuccess')
                 }
-                console.log(res, this.pageDetail)
             },
             // 保存表单管理页
             async saveFormManage () {
