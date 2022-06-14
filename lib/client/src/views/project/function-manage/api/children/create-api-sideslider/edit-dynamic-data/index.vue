@@ -15,6 +15,7 @@
         </bk-tab>
         <component
             class="tab-component"
+            ref="componentRef"
             :is="renderComponent"
             :edit-scheme="editScheme"
             @change="handleChange"
@@ -55,6 +56,7 @@
             const activeTab = ref('edit')
             const renderComponent = ref(null)
             const editScheme = ref()
+            const componentRef = ref(null)
 
             const calcRenderComponent = () => {
                 if (activeTab.value === 'edit') {
@@ -66,25 +68,31 @@
 
             const validate = () => {
                 return new Promise((resolve, reject) => {
-                    try {
-                        let jsonScheme
-                        if (Array.isArray(editScheme.value)) {
-                            jsonScheme = editScheme.value.map(parseEditScheme2JsonScheme)
-                        } else {
-                            jsonScheme = parseEditScheme2JsonScheme(editScheme.value)
-                        }
-                        resolve(jsonScheme)
-                    } catch (err) {
-                        reject(err.message || err)
-                    }
+                    componentRef
+                        .value
+                        .validate()
+                        .then(() => {
+                            resolve(getJsonScheme())
+                        })
+                        .catch((err) => {
+                            reject(err.content || err)
+                        })
                 })
             }
 
             const handleChange = (scheme) => {
                 editScheme.value = scheme
-                validate().then((jsonScheme) => {
-                    emit('change', jsonScheme)
-                })
+                emit('change', getJsonScheme())
+            }
+
+            const getJsonScheme = () => {
+                let jsonScheme
+                if (Array.isArray(editScheme.value)) {
+                    jsonScheme = editScheme.value.map(parseEditScheme2JsonScheme)
+                } else {
+                    jsonScheme = parseEditScheme2JsonScheme(editScheme.value)
+                }
+                return jsonScheme
             }
 
             watch(
@@ -103,6 +111,7 @@
                 activeTab,
                 renderComponent,
                 editScheme,
+                componentRef,
                 validate,
                 calcRenderComponent,
                 handleChange

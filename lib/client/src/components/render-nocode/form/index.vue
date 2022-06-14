@@ -2,11 +2,12 @@
     <draw-layout
         class="lesscode-editor-page-content"
         v-bkloading="{ isLoading }">
-        <left-panel slot="left" @move="fieldPanelHover = true" @end="fieldPanelHover = false" />
+        <left-panel slot="left" :disabled="disabled" @move="fieldPanelHover = true" @end="fieldPanelHover = false" />
         <layout style="margin: 20px 0;height: 100%">
             <form-content
                 :fields="fieldsList"
                 :curfield="crtField"
+                :disabled="disabled"
                 @add="handleAddField"
                 @select="handleSelectField"
                 @copy="handleCopyField"
@@ -14,7 +15,7 @@
                 @move="handleOrderField"
             />
         </layout>
-        <right-panel slot="right" :field="crtField" :list="fieldsList" @update="handleUpdateField" />
+        <right-panel slot="right" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
         <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" :init-page-data="initManagePageData" />
     </draw-layout>
 
@@ -41,7 +42,11 @@
             CreatePageDialog
         },
         props: {
-            content: Array // 表单项列表
+            content: Array, // 表单项列表
+            disabled: {
+                type: Boolean,
+                default: false
+            }
         },
         data () {
             return {
@@ -78,7 +83,7 @@
                 this.getFieldList()
             }
 
-            bus.$on('restFieldList', (fieldsList = []) => {
+            bus.$on('resetFieldList', (fieldsList = []) => {
                 this.fieldsList = []
                 this.fieldsList = fieldsList
                 this.crtField = {}

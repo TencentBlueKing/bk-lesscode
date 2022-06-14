@@ -1,7 +1,7 @@
 <template>
     <div class="right-panel">
         <layout-setting v-if="editType === 'LAYOUT'" :template-data="curTemplateData" />
-        <form-setting v-else :field="field" :list="list" @update="$emit('update', $event)" />
+        <form-setting v-else :field="field" :list="list" :disabled="disabled" @update="$emit('update', $event)" />
     </div>
 </template>
 
@@ -22,7 +22,8 @@
             list: {
                 type: Array,
                 default: () => []
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

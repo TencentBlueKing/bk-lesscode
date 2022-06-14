@@ -350,14 +350,33 @@
                 return this.userPerm.roleId === 1 || this.user.username === page.createUser
             },
             handleEditPage (page) {
-                const toPageRouteName = page.nocodeType ? 'editNocode' : 'new'
-                this.$router.push({
-                    name: toPageRouteName,
-                    params: {
-                        projectId: this.projectId,
-                        pageId: page.id
+                if (page.nocodeType) {
+                    if (page.nocodeType === 'FLOW') {
+                        this.$router.push({
+                            name: 'flowConfig',
+                            params: {
+                                projectId: this.projectId,
+                                flowId: page.flowId
+                            }
+                        })
+                    } else {
+                        this.$router.push({
+                            name: 'editNocode',
+                            params: {
+                                projectId: this.projectId,
+                                pageId: page.id
+                            }
+                        })
                     }
-                })
+                } else {
+                    this.$router.push({
+                        name: 'new',
+                        params: {
+                            projectId: this.projectId,
+                            pageId: page.id
+                        }
+                    })
+                }
             },
             handlePreview (page) {
                 if (!page.content) {

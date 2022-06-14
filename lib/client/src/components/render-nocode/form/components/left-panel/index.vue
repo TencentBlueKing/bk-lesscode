@@ -25,10 +25,11 @@
                 </div>
                 <bk-divider />
                 <draggable
-                    class="list-wrap"
+                    :class="['list-wrap', { 'disabled': disabled }]"
                     handle=".field-item"
                     tag="p"
                     :sort="false"
+                    :disabled="disabled"
                     :group="{
                         name: 'menu',
                         pull: 'clone',
@@ -62,6 +63,9 @@
     export default {
         components: {
             draggable
+        },
+        props: {
+            disabled: Boolean
         },
         data () {
             return {
@@ -181,6 +185,11 @@
   justify-content: space-between;
   flex-flow: row wrap;
 //margin-top: 12px; padding: 12px;
+  &.disabled {
+    .field-item {
+        cursor: inherit;;
+    }
+  }
 }
 
 .field-item {

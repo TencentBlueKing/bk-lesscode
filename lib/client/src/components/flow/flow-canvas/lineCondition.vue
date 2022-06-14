@@ -53,15 +53,15 @@
                         @change="fieldValueChange(index, i, $event)">
                     </field-value>
                     <div class="action-area">
-                        <i class="custom-icon-font icon-add-circle" @click="handleAddExpression(index, i)"></i>
+                        <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddExpression(index, i)"></i>
                         <i
-                            :class="['custom-icon-font', 'icon-reduce-circle', { disabled: exp.expressions.length < 2 }]"
+                            :class="['bk-drag-icon', 'bk-drag-reduce-fill', { disabled: exp.expressions.length < 2 }]"
                             @click="handleDelExpression(index, i)">
                         </i>
                     </div>
                 </div>
             </div>
-            <div v-if="exp.error" class="common-error-tips">关系组内的数据不能为空</div>
+            <div v-if="exp.error" class="error-tips">关系组内的数据不能为空</div>
         </div>
         <div class="add-condition">
             <span @click="handleAddCondition">
@@ -127,8 +127,8 @@
             async getLineVars () {
                 try {
                     this.fieldListLoading = true
-                    const res = await this.$store.dispatch('setting/getLineVars', this.lineId)
-                    this.fieldList = res.data.filter(item => !HIDDEN_ARR.includes(item.key))
+                    const res = await this.$store.dispatch('nocode/flow/getLineVars', this.lineId)
+                    this.fieldList = res.filter(item => !HIDDEN_ARR.includes(item.key))
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -290,5 +290,14 @@
 }
 .bk-select {
   background: #ffffff;
+}
+>>> .bk-form-radio {
+    margin-right: 20px;
+}
+.error-tips {
+    font-size: 12px;
+    color: #ea3636;
+    line-height: 18px;
+    margin: 2px 0 0;
 }
 </style>

@@ -5,7 +5,7 @@
             v-bkloading="{ isLoading: formContentLoading || pageContextLoading }"
             class="edit-form-card">
             <div class="card-header">
-                <h5>{{ formConfig.name }}</h5>
+                <h5>{{ formConfig.formName }}</h5>
                 <div class="type-label">{{ typeNameMap[formConfig.type] }}</div>
             </div>
             <div class="related-info">
@@ -29,9 +29,10 @@
                     @click="handleEditClick">
                 </i>
                 <i
+                    v-bk-tooltips.top="'预览表单内容'"
                     class="bk-drag-icon bk-drag-visible-eye"
                     style="font-size: 16px; margin-right: 14px;"
-                    @click="handlePreviewClick">
+                    @click="handlePreviewClick(formConfig.content)">
                 </i>
                 <i
                     class="bk-icon icon-delete"
@@ -55,26 +56,36 @@
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
             :has-create-ticket-page="hasCreateTicketPage"
+            :flow-config="flowConfig"
             :form-config="formConfig"
-            @save="handleCreateForm">
+            @save="handleCreateForm"
+            @closeNode="$emit('close')">
         </edit-form-panel>
         <select-form-dialog
             :method="selectedType"
             :show.sync="selectFormDialogShow"
+            @preview="handlePreviewClick"
             @confirm="handleSelectForm">
         </select-form-dialog>
+        <preview-form-dialog
+            :fields="previewFormContent"
+            :show="previewFormDialogShow"
+            @close="handlePreviewClose">
+        </preview-form-dialog>
     </section>
 </template>
 <script>
     import { mapState, mapGetters } from 'vuex'
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
+    import PreviewFormDialog from './preview-form-dialog.vue'
 
     export default {
         name: 'NodeFormSetting',
         components: {
             EditFormPanel,
-            SelectFormDialog
+            SelectFormDialog,
+            PreviewFormDialog
         },
         props: {
             flowConfig: {
@@ -99,6 +110,8 @@
                 selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
                 editFormPanelShow: false, // 表单编辑
                 selectFormDialogShow: false, // 选择表单弹窗
+                previewFormContent: [], // 预览表单字段
+                previewFormDialogShow: false, // 预览弹窗
                 isUnset: false
             }
         },
@@ -145,16 +158,31 @@
             handleEditClick () {
                 this.editFormPanelShow = true
             },
-            handlePreviewClick () {},
+            handlePreviewClick (content) {
+                this.previewFormContent = content
+                this.previewFormDialogShow = true
+            },
+            handlePreviewClose () {
+                this.previewFormDialogShow = false
+                this.previewFormContent = []
+            },
             handleDelClick () {
                 this.isUnset = true
-                this.updateFormConfig({ id: '', type: '', content: [] })
+                if (this.formConfig.type === 'USE_FORM') {
+                    this.updateFormConfig({ id: '', type: '', content: [] })
+                } else {
+                    this.updateFormConfig({ type: '', content: [] })
+                }
             },
             // 引用和复用
-            handleSelectForm (id, content = []) {
+            handleSelectForm (id, content = [], code = '') {
                 this.isUnset = false
                 this.selectFormDialogShow = false
-                this.updateFormConfig({ id, content, type: this.selectedType })
+                if (this.selectedType === 'COPY_FORM') {
+                    this.updateFormConfig({ content, type: this.selectedType })
+                } else {
+                    this.updateFormConfig({ id, content, code, type: this.selectedType })
+                }
             },
             // 新建空白
             handleCreateForm (content) {
@@ -170,7 +198,7 @@
             },
             // 关联数据表点击
             handleTableClick () {
-                if (!this.formConfig.code) {
+                if (this.formConfig.code) {
                     const route = this.$router.resolve({ name: 'dataManage', query: { tableName: this.formConfig.code } })
                     window.open(route.href, '__blank')
                 }
@@ -227,7 +255,11 @@
                 margin: 0;
                 font-size: 12px;
                 color: #63656e;
+                max-width: 420px;
                 line-height: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .type-label {
                 padding: 2px 6px;

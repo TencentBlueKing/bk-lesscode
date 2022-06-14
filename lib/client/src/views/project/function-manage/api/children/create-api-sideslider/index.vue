@@ -67,6 +67,9 @@
     } from 'shared/api'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
+    import {
+        messageError
+    } from '@/common/bkmagic'
 
     export default defineComponent({
         components: {
@@ -130,14 +133,27 @@
                 emit('update:form', {})
             }
 
+            const validate = () => {
+                return new Promise((resolve, reject) => {
+                    Promise
+                        .all([
+                            basicRef.value.validate(),
+                            paramRef.value.validate(),
+                            responseRef.value.validate()
+                        ])
+                        .then((res) => {
+                            resolve(res)
+                        })
+                        .catch((err) => {
+                            messageError(err.message || err)
+                            reject(err.message || err)
+                        })
+                })
+            }
+
             const submitApi = () => {
                 isSubmitting.value = true
-                Promise
-                    .all([
-                        basicRef.value.validate(),
-                        paramRef.value.validate(),
-                        responseRef.value.validate()
-                    ])
+                validate()
                     .then(([
                         basicData,
                         paramData,
@@ -150,7 +166,8 @@
                             ...paramData,
                             ...responseData
                         }
-                        return store.dispatch('api/createApi', form).then(() => {
+                        const submitMethod = formData.value.id ? editApi : createApi
+                        return submitMethod(form).then(() => {
                             emit('success-submit')
                             handleClose()
                         })
@@ -158,6 +175,14 @@
                     .finally(() => {
                         isSubmitting.value = false
                     })
+            }
+
+            const createApi = (form) => {
+                return store.dispatch('api/createApi', form)
+            }
+
+            const editApi = (form) => {
+                return store.dispatch('api/editApi', form)
             }
 
             const handleUpdate = (formItem) => {

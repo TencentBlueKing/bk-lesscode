@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="['field-element', { 'half-row': field.layout === 'COL_6' }]"
+        :class="['field-element', { 'half-row': field.layout === 'COL_6', 'disabled': disabled }]"
         @mouseenter="isHover = true"
         @mouseleave="isHover = false"
         @click="$emit('action', 'edit')">
@@ -9,7 +9,7 @@
                 <i class="drag-icon bk-icon icon-grag-fill"></i>
             </div>
         </transition>
-        <div class="actions-area" v-show="curfield.key === field.key">
+        <div class="actions-area" v-show="!disabled && curfield.key === field.key">
             <span class="name-area">{{`${curfield.type}-${curfield.key}`}}</span>
             <span class="icon-area"><i class="bk-icon icon-copy" @click.stop="$emit('action', 'copy')"></i></span>
             <span class="icon-area"> <i class="bk-drag-icon bk-drag-shanchu" @click.stop="$emit('action', 'delete')"></i></span>
@@ -36,7 +36,8 @@
             curfield: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {
@@ -54,8 +55,10 @@
   min-height: 86px;
   border: 1px solid transparent;
   vertical-align: top;
-  cursor: move;
   transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+  &:not(.disabled) {
+    cursor: move;
+  }
 
   &:hover {
     background: #fafbfd;

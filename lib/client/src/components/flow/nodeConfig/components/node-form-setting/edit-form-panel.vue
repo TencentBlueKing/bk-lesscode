@@ -2,6 +2,11 @@
     <div class="edit-form-panel">
         <div class="content-edit-container">
             <div class="edit-header">
+                <div class="nav-area">
+                    <i class="bk-drag-icon bk-drag-arrow-back back-icon" @click="close"></i>
+                    <div class="split-line"></div>
+                    <breadcrumb-nav :flow-config="flowConfig" @close="close" @closeNode="$emit('closeNode')"></breadcrumb-nav>
+                </div>
                 <div
                     id="toolActionBox"
                     class="function-and-tool">
@@ -10,19 +15,14 @@
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
                     <action-tool :custom-save="true" @save="$emit('save', $event)"></action-tool>
                 </div>
-                <div class="page-operate-area">
-                    <bk-button
-                        class="back-to-node-btn"
-                        theme="primary"
-                        size="small"
-                        :text="true"
-                        @click="$emit('update:editFormPanelShow', false)">
-                        返回流程设计
-                    </bk-button>
-                </div>
+                <extra-links></extra-links>
             </div>
             <div class="edit-content-wrapper">
-                <nocode-form v-if="operationType === 'edit'" :content="formConfig.content"></nocode-form>
+                <nocode-form
+                    v-if="operationType === 'edit'"
+                    :content="formConfig.content"
+                    :disabled="formConfig.type === 'USE_FORM'">
+                </nocode-form>
                 <page-setting v-else-if="operationType === 'setting'"></page-setting>
                 <page-json v-else-if="operationType === 'jsonSource'"></page-json>
             </div>
@@ -30,6 +30,8 @@
     </div>
 </template>
 <script>
+    import BreadcrumbNav from './breadcrumb-nav.vue'
+    import ExtraLinks from '@/components/ui/extra-links'
     import OperationSelect from '@/views/edit-nocode/components/operation-select'
     import ActionTool from '@/views/edit-nocode/components/action-tool'
     import NocodeForm from '@/components/render-nocode/form/index.vue'
@@ -39,6 +41,8 @@
     export default {
         name: 'EditFormPanel',
         components: {
+            BreadcrumbNav,
+            ExtraLinks,
             OperationSelect,
             ActionTool,
             NocodeForm,
@@ -47,6 +51,10 @@
         },
         props: {
             hasCreateTicketPage: Boolean,
+            flowConfig: {
+                type: Object,
+                default: () => ({})
+            },
             formConfig: {
                 type: Object,
                 default: () => ({})
@@ -55,6 +63,11 @@
         data () {
             return {
                 operationType: 'edit'
+            }
+        },
+        methods: {
+            close () {
+                this.$emit('update:editFormPanelShow', false)
             }
         }
     }
@@ -83,7 +96,6 @@
         justify-content: space-between;
         height: 52px;
         background: #fff;
-
         &:after{
             content: '';
             position: absolute;
@@ -94,7 +106,24 @@
             height: 1px;
             box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
         }
-        
+        .nav-area {
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            height: 52px;
+        }
+        .back-icon {
+            font-size: 13px;
+            color: #3a84ff;
+            cursor: pointer;
+        }
+        .split-line {
+            margin-left: 14px;
+            margin-right: 11px;
+            width: 1px;
+            height: 16px;
+            background: #d8d8d8;
+        }
         .function-and-tool {
             position: relative;
             display: flex;

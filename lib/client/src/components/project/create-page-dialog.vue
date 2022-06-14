@@ -303,7 +303,7 @@
                     }
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
-                        if (this.nocodeType !== 'flow') {
+                        if (this.nocodeType !== 'FLOW') {
                             this.$bkMessage({
                                 theme: 'success',
                                 message: '新建页面成功'

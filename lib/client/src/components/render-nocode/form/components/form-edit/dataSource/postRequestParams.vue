@@ -1,6 +1,11 @@
 <template>
     <div class="post-request-params">
-        <bk-table size="small" :data="paramsTableData">
+        <bk-table
+            size="small"
+            :outer-border="false"
+            :header-border="false"
+            :header-cell-style="{ background: '#f0f1f5' }"
+            :data="paramsTableData">
             <bk-table-column label="名称" min-width="120">
                 <template slot-scope="props">
                     <div class="key" :style="{ marginLeft: `${props.row.level * 20}px` }">
@@ -138,8 +143,8 @@
                         workflow: this.flowId,
                         state: this.nodeId
                     }
-                    const res = await this.$store.dispatch('nocode/formSetting/getNodeVars', params)
-                    this.fieldList = res.data.map(item => {
+                    const res = await this.$store.dispatch('nocode/flow/getNodeVars', params)
+                    this.fieldList = res.map(item => {
                         const { key, name } = item
                         return { key: `\${params_${key}}`, name }
                     })
