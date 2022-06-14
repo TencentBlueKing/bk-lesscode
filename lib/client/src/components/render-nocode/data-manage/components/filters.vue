@@ -46,6 +46,8 @@
     </div>
 </template>
 <script>
+    const UN_FILTERABLE_TYPE = ['TABLE', 'RICHTEXT', 'FILE', 'LINK', 'IMAGE']
+
     export default {
         name: 'Filters',
         props: {
@@ -78,7 +80,7 @@
             },
             canSelectFields () {
                 const list = []
-                const fullFields = this.fields.concat(this.systemFields)
+                const fullFields = this.fields.concat(this.systemFields).filter(item => !UN_FILTERABLE_TYPE.includes(item.type))
                 fullFields.forEach(item => {
                     if (!this.filters.includes(item.key)) {
                         list.push(item)

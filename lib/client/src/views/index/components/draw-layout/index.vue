@@ -2,10 +2,11 @@
     <div
         :class="{
             [$style['draw-layout']]: !isDataManagePage,
+            [$style['page-nocode-layout']]: nocodeType === 'FORM',
             [$style['is-left-collapsed']]: isLeftCollapse,
             [$style['is-right-collapsed']]: isRightCollapse
         }">
-        <div :class="$style['layout-left']" v-if="!isDataManagePage">
+        <div :class="[$style['layout-left'],{ [$style['page-nocode-left-layout']]: nocodeType === 'FORM' }]" v-if="!isDataManagePage">
             <slot name="left" />
         </div>
         <div
@@ -18,7 +19,7 @@
         </div>
         <div
             v-if="!isDataManagePage"
-            :class="$style['collapsed-left-btn']"
+            :class="[$style['collapsed-left-btn'],{ [$style['collapsed-nocode-left-btn']]: nocodeType === 'FORM' }]"
             v-bk-tooltips.right="{
                 content: '查看所有组件',
                 disabled: !isLeftCollapse
@@ -70,13 +71,13 @@
 </script>
 <style lang="postcss" module>
     @import "@/css/mixins/scroller";
-    $layoutLeftWidth: 300px;
+    $layoutLeftWidth: 340px;
     $layoutRightWidth: 300px;
 
     .draw-layout{
         position: relative;
         padding-right: 300px;
-        padding-left: 300px;
+        padding-left: 340px;
         transition: all .1s;
         &.is-left-collapsed{
             padding-left: 0;
@@ -126,9 +127,7 @@
             width: $layoutRightWidth;
             background: #FFF;
             box-shadow: -2px 4px 4px 0px rgba(0,0,0,0.1);
-            height: 100%;
-            overflow: auto;
-            @mixin scroller;
+
         }
         .layout-center{
             position: relative;
@@ -157,7 +156,7 @@
             }
         }
         .collapsed-left-btn{
-            left: 300px;
+            left: 340px;
             border-radius: 0 8px 8px 0;
             :global(.bk-drag-angle-left) {
                 transform: rotate(0deg);
@@ -170,5 +169,19 @@
                 transform: rotate(180deg);
             }
         }
+    }
+
+    .page-nocode-left-layout{
+      width: 300px !important;
+      height: 100%;
+      overflow: auto;
+      background: #3a84ff;
+      @mixin scroller;
+    }
+    .page-nocode-layout{
+      padding-left: 300px !important;
+    }
+    .collapsed-nocode-left-btn{
+      left: 300px !important;
     }
 </style>
