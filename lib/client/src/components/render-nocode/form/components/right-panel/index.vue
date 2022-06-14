@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="right-panel">
         <layout-setting v-if="editType === 'LAYOUT'" :template-data="curTemplateData" />
         <form-setting v-else :field="field" :list="list" :disabled="disabled" @update="$emit('update', $event)" />
     </div>
@@ -45,3 +45,10 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+.right-panel{
+  height: 100%;
+  overflow: hidden;
+}
+</style>

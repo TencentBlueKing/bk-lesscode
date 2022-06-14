@@ -1,13 +1,13 @@
 import {
     defineComponent,
     ref,
-    watch
+    watch,
+    getCurrentInstance
 } from '@vue/composition-api'
 import {
-    getDefaultApiParamEditScheme,
-    API_PARAM_TYPES
+    getDefaultApiParamEditScheme
 } from 'shared/api'
-import DyncmicHeader from './dyncmic-header'
+import DynamicHeader from './dynamic-header'
 import SingleSchemeComponent from './single-scheme'
 
 export default defineComponent({
@@ -16,22 +16,40 @@ export default defineComponent({
     },
 
     setup (props, { emit }) {
-        const arrayScheme = ref(getDefaultApiParamEditScheme({
-            type: API_PARAM_TYPES.OBJECT.VAL
-        }))
+        const arrayScheme = ref([])
+        const currentInstance = getCurrentInstance()
 
         const handleUpdate = (scheme, index) => {
-            arrayScheme.value.properties.splice(index, 1, scheme)
-            emit('change', arrayScheme.value.properties)
+            arrayScheme.value.splice(index, 1, scheme)
+            triggleUpdate()
+        }
+
+        const plusBrotherNode = () => {
+            arrayScheme.value.push(getDefaultApiParamEditScheme())
+            triggleUpdate()
+        }
+
+        const minusNode = (index) => {
+            arrayScheme.value.splice(index, 1)
+            triggleUpdate()
+        }
+
+        const triggleUpdate = () => {
+            emit('change', arrayScheme.value)
+        }
+
+        const validate = () => {
+            const refs = currentInstance.proxy.$refs
+            return Promise
+                .all([
+                    ...Object.keys(refs).map(key => (refs[key] as any).validate())
+                ])
         }
 
         watch(
             () => props.editScheme,
             (editScheme) => {
-                arrayScheme.value.properties = editScheme.map((scheme) => ({
-                    ...scheme,
-                    parent: arrayScheme.value
-                }))
+                arrayScheme.value = editScheme
             },
             {
                 immediate: true
@@ -40,20 +58,27 @@ export default defineComponent({
 
         return {
             arrayScheme,
-            handleUpdate
+            handleUpdate,
+            plusBrotherNode,
+            minusNode,
+            validate
         }
     },
 
     render () {
         return (
             <section>
-                <DyncmicHeader />
+                <DynamicHeader />
                 {
-                    this.arrayScheme.properties.map((scheme, index) => (
+                    this.arrayScheme.map((scheme, index) => (
                         <SingleSchemeComponent
+                            ref={'schemeRef' + index}
                             scheme={scheme}
                             typeDisable={true}
+                            minusDisable={this.arrayScheme.length <= 1}
                             onUpdate={(scheme) => this.handleUpdate(scheme, index)}
+                            onPlusBrotherNode={this.plusBrotherNode}
+                            onMinusNode={() => this.minusNode(index)}
                         />
                     ))
                 }

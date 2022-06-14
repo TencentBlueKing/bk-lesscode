@@ -1,11 +1,18 @@
 <template>
     <div class="desc">
-        <div class="content">{{ value }}</div>
+        <div class="content">
+            <viewer :initial-value="value || field.value"></viewer>
+        </div>
     </div>
 </template>
 <script>
+    import { Viewer } from '@toast-ui/vue-editor'
+    import '@toast-ui/editor/dist/toastui-editor.css'
     export default {
         name: 'Description',
+        components: {
+            Viewer
+        },
         props: {
             field: {
                 type: Object,

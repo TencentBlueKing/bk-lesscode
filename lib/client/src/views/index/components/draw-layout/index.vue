@@ -123,6 +123,9 @@
             width: $layoutRightWidth;
             background: #FFF;
             box-shadow: -2px 4px 4px 0px rgba(0,0,0,0.1);
+            height: 100%;
+            overflow: auto;
+            @mixin scroller;
         }
         .layout-center{
             position: relative;

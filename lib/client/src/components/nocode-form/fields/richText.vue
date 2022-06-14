@@ -1,6 +1,7 @@
 <template>
     <div class="rich-text">
-        <rich-text-editor :value="val" :disabled="disabled" @change="change"></rich-text-editor>
+        <rich-text-editor :value="val" :disabled="disabled" @change="change" @fullscreen="handleFullScreen">
+        </rich-text-editor>
     </div>
 </template>
 <script>
@@ -37,7 +38,24 @@
         methods: {
             change (val) {
                 this.$emit('change', val)
+            },
+            handleFullScreen () {
+                this.$emit('fullscreen')
             }
         }
     }
 </script>
+<style lang="postcss" scoped>
+.rich-text{
+  position: relative;
+}
+.full-screen{
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #333;
+  height: 28px;
+  font-size: 13px;
+  z-index: 99;
+}
+</style>

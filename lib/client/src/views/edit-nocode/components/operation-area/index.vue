@@ -58,7 +58,7 @@
 .operation-area {
   height: 100%;
   min-width: min-content;
-  padding: 0 20px;
+  /*padding: 0 20px; */
   /* margin: 20px 0; */
   overflow: auto;
   @mixin scroller;

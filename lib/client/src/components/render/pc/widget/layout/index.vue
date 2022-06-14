@@ -101,6 +101,7 @@
         .bk-navigation {
             width: auto;
             height: auto;
+            /* max-width: calc(100vw - 600px); */
             .bk-navigation-wrapper {
                 flex: initial;
                 .nav-slider {

@@ -7,7 +7,13 @@
         <bk-form-item
             label="名称"
             property="name"
+            error-display-type="normal"
             :required="true"
+            :rules="[
+                getRequireRule('名称'),
+                getNameRepeatRule()
+            ]"
+            v-bkloading="{ isLoading: isLoadingApi }"
         >
             <bk-input
                 :value="formData.name"
@@ -17,17 +23,29 @@
         <bk-form-item
             label="标识"
             property="code"
+            error-display-type="normal"
             :required="true"
+            :rules="[
+                getRequireRule('标识'),
+                getCodeRule(),
+                getCodeRepeatRule()
+            ]"
+            v-bkloading="{ isLoading: isLoadingApi }"
         >
             <bk-input
                 :value="formData.code"
+                :disabled="!!formData.id"
                 @change="update('code', ...arguments)"
             ></bk-input>
         </bk-form-item>
         <bk-form-item
             label="分类"
             property="categoryId"
+            error-display-type="normal"
             :required="true"
+            :rules="[
+                getRequireRule('分类')
+            ]"
         >
             <bk-select
                 :clearable="false"
@@ -47,7 +65,12 @@
         <bk-form-item
             label="接口路径"
             property="url"
+            error-display-type="normal"
             :required="true"
+            :rules="[
+                getRequireRule('接口路径'),
+                getUrlRule()
+            ]"
         >
             <bk-compose-form-item class="basic-compose-url">
                 <bk-select
@@ -107,12 +130,30 @@
             const store = useStore()
             const route = useRoute()
             const categoryList = ref([])
+            const apiList = ref([])
             const isLoadingCategory = ref(false)
+            const isLoadingApi = ref(false)
             const formRef = ref(null)
 
             const {
                 update
             } = useForm(emit)
+
+            const getApiList = () => {
+                isLoadingApi.value = true
+                const params = {
+                    projectId: route.params.projectId,
+                    versionId: store.getters['projectVersion/currentVersionId']
+                }
+                return store
+                    .dispatch('api/getApiList', params)
+                    .then((list) => {
+                        apiList.value = list
+                    })
+                    .finally(() => {
+                        isLoadingApi.value = false
+                    })
+            }
 
             const getCategoryList = () => {
                 isLoadingCategory.value = true
@@ -154,17 +195,67 @@
                 })
             }
 
-            onBeforeMount(getCategoryList)
+            // 数据校验方法
+            const getRequireRule = (name) => {
+                return {
+                    required: true,
+                    message: `${name}是必填项，请修改后重试`,
+                    trigger: 'blur'
+                }
+            }
+
+            const getCodeRule = () => {
+                return {
+                    validator: (val) => /^[A-Za-z]*$/.test(val),
+                    message: '由大小写英文字母组成',
+                    trigger: 'blur'
+                }
+            }
+
+            const getCodeRepeatRule = () => {
+                return {
+                    validator: (val) => !apiList.value.find(api => api.code === val && api.id !== props.formData.id),
+                    message: '标识在当前应用下重复，请修改后重试',
+                    trigger: 'blur'
+                }
+            }
+
+            const getNameRepeatRule = () => {
+                return {
+                    validator: (val) => !apiList.value.find(api => api.name === val && api.id !== props.formData.id),
+                    message: '名称在当前应用下重复，请修改后重试',
+                    trigger: 'blur'
+                }
+            }
+
+            const getUrlRule = () => {
+                return {
+                    validator: (val) => /^http(s)?\:\/\//.test(val),
+                    message: '接口路径需要是 http:// 或者 https:// 开头',
+                    trigger: 'blur'
+                }
+            }
+
+            onBeforeMount(() => {
+                getApiList()
+                getCategoryList()
+            })
 
             return {
                 API_METHOD,
                 categoryList,
                 isLoadingCategory,
+                isLoadingApi,
                 formRef,
                 update,
                 handleCategoryToggle,
                 handleMethodChange,
-                validate
+                validate,
+                getRequireRule,
+                getCodeRule,
+                getCodeRepeatRule,
+                getNameRepeatRule,
+                getUrlRule
             }
         }
     })

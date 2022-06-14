@@ -40,7 +40,7 @@
                     :disabled="formListLoading"
                     :loading="formListLoading"
                     @selected="handleSelectForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.name || item.id"></bk-option>
+                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName || item.id"></bk-option>
                 </bk-select>
             </bk-form-item>
             <bk-form-item label="字段" property="field" :required="true" error-display-type="normal">
@@ -117,7 +117,7 @@
                     </field-value>
                     <div class="operate-btns" style="margin-left: 8px">
                         <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAddExpression(index)"></i>
-                        <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleDeleteExpression(index)">
+                        <i class="icon bk-drag-icon bk-drag-reduce-fill" @click="handleDeleteExpression(index)">
                         </i>
                     </div>
                 </div>
