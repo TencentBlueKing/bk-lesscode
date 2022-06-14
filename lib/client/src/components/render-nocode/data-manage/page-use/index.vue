@@ -6,10 +6,10 @@
     </div>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
+    import { SYS_FIELD } from '../../../common/field.js'
     import filterArea from './filter-area.vue'
     import tableData from './table-data.vue'
-    import { mapGetters } from 'vuex'
-    import { SYS_FIELD } from '../../common/field'
     export default {
         name: 'dataManageUsePage',
         components: {
