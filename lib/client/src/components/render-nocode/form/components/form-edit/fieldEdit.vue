@@ -626,7 +626,7 @@
                 this.change()
             },
             handleChangeValidataType (val) {
-                if (val === 'REQUIRE') {
+                if (val === 'REQUIRE' && this.fieldData.type === 'IMAGE') {
                     this.fieldData.imageRange.isMin = true
                 }
                 this.change()

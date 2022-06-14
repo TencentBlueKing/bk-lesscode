@@ -41,7 +41,7 @@
                     @end="handleEnd">
                     <template v-if="!group.isFolded">
                         <li v-for="field in group.items" class="field-item drag-entry" :data-type="field.type" :key="field.type">
-                            {{ field.name }}
+                            <i :class="['comp-icon',field.icon]"></i> {{ field.name }}
                         </li>
                     </template>
                 </draggable>
@@ -202,7 +202,7 @@
   color: #63656e;
   background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 2px;
+  border-radius: 4px;
   cursor: move;
   user-select: none;
 
@@ -212,4 +212,8 @@
   }
 }
 
+.comp-icon{
+  font-size: 16px;
+  padding-right: 8px;
+}
 </style>
