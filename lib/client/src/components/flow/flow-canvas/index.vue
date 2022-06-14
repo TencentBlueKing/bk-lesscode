@@ -54,6 +54,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import { mapGetters, mapState } from 'vuex'
     import { uuid } from '@/common/util.js'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
     import BkFlow from './flow.js'
@@ -64,7 +65,8 @@
 
     const endpointOptions = {
         endpoint: 'Dot',
-        connector: ['Flowchart', { stub: [10, 16], alwaysRespectStub: true, gap: 2, cornerRadius: 10 }],
+        // connector: ['Flowchart', { stub: [10, 16], alwaysRespectStub: true, gap: 2, cornerRadius: 10 }],
+        connector: ['Bezier', { curviness: 5 }],
         connectorOverlays: [['PlainArrow', { width: 8, length: 6, location: 1, id: 'arrow' }]],
         paintStyle: { fill: 'rgba(0, 0, 0, 0)', stroke: '', strokeWidth: 1, radius: 6 },
         hoverPaintStyle: { fill: '#EE8F62', stroke: '#EE8F62', radius: 8 },
@@ -75,7 +77,7 @@
         maxConnections: -1
     }
     const nodeOptions = {
-        grid: [10, 10]
+        grid: [5, 5]
     }
     const connectorOptions = {
         paintStyle: { fill: 'transparent', stroke: '#a9adb6', strokeWidth: 1 },
@@ -139,6 +141,10 @@
                 lineSavePending: false,
                 lineDeletePending: false
             }
+        },
+        computed: {
+            ...mapGetters('nocode/flow', ['flowNodeForms']),
+            ...mapState('nocode/flow', ['flowConfig'])
         },
         watch: {
             nodes () {
@@ -374,6 +380,13 @@
                 try {
                     this.$refs.flowCanvas.removeNode(node)
                     this.$store.dispatch('nocode/flow/delNode', node.nodeInfo.id)
+                    if (node.nodeInfo.id in this.flowNodeForms) {
+                        this.$store.commit('nocode/flow/delFlowNodeFormId', node.nodeInfo.id)
+                        this.$store.dispatch('nocode/flow/editFlow', {
+                            id: this.flowConfig.id,
+                            formIds: JSON.stringify(this.flowNodeForms)
+                        })
+                    }
                 } catch (e) {
                     console.log(e)
                 }

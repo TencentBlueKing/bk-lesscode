@@ -6,9 +6,9 @@
         @contextmenu.prevent="handleContextMenuClick"
         @click="handleNodeClick">
         <!-- 开始节点 -->
-        <div v-if="node.type === 'START'" class="start-node">开始</div>
+        <div v-if="node.type === 'START'" class="start-node"><div class="text">开始</div></div>
         <!-- 结束节点 -->
-        <div v-else-if="node.type === 'END'" class="end-node">结束</div>
+        <div v-else-if="node.type === 'END'" class="end-node"><div class="text">结束</div></div>
         <!-- 并行网关 -->
         <div v-else-if="node.type === 'ROUTER-P'" class="gateway-node">
             <i class="bk-drag-icon bk-drag-parallel"></i>
@@ -182,28 +182,27 @@
   }
 }
 .start-node,
-.end-node {
-  width: 40px;
-  height: 40px;
-  line-height: 37px;
-  border-radius: 50%;
-  border: 2px solid #c9cacb;
-  text-align: center;
-  color: #63656e;
-  background-color: #f0f1f5;
-  font-size: 12px;
-  box-shadow: 0px 2px 4px 0px rgba(196, 198, 204, 0.5);
-}
+.end-node,
 .gateway-node {
-  border: 1px solid #c4c6cc;
+  padding: 8px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  background-color: #fff;
-  position: relative;
-  box-shadow: 0px 2px 4px 0px rgba(196, 198, 204, 0.5);
-  cursor: pointer;
-  position: relative;
+  color: #63656e;
+  background-color: #ffffff;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
+  .text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background: #e6e7eb;
+    font-size: 12px;
+    font-weight: bold;
+    color: #979ba5;
+    border-radius: 50%;
+  }
   & > i {
     position: absolute;
     top: 50%;
@@ -217,8 +216,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  width: 240px;
-  height: 48px;
+  width: 236px;
+  height: 46px;
   color: #63656e;
   font-size: 14px;
   text-align: center;
@@ -236,7 +235,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
+    width: 46px;
     height: 100%;
     font-size: 18px;
     color: #fff;

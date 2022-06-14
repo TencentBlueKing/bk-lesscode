@@ -3,6 +3,7 @@
         <draggable
             filter=".actions-area"
             :class="['fields-container', activeCls]"
+            :disabled="disabled"
             :value="fields"
             :group="{ name: 'form', pull: true, put: ['menu', 'half-row-field'] }"
             @add="add"
@@ -14,6 +15,7 @@
                     :class="{ actived: selectedIndex === index }"
                     :field="item"
                     :curfield="curfield"
+                    :disabled="disabled"
                     @action="handleFormAction($event, index)">
                 </field-element>
             </template>
@@ -42,6 +44,7 @@
                 type: Array,
                 default: () => ([])
             },
+            disabled: Boolean,
             formId: [String, Number],
             hover: {
                 type: Boolean,

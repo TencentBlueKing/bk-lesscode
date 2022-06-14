@@ -2,11 +2,11 @@
     <div class="line-config">
         <div class="config-content-container">
             <div class="node-wrapper">
-                <node-template :node="line.sNode" :single="true" :editable="false"></node-template>
+                <node-template class="small" :node="line.sNode" :single="true" :editable="false"></node-template>
                 <div class="node-connector">
                     <span class="label-name"> {{ formData.name || '--' }} </span>
                 </div>
-                <node-template :node="line.tNode" :single="true" :editable="false"></node-template>
+                <node-template class="small" :node="line.tNode" :single="true" :editable="false"></node-template>
             </div>
             <bk-form ref="lineForm" form-type="vertical" :label-width="200" :model="formData" :rules="rules">
                 <bk-form-item label="关系名称" error-display-type="normal" :property="'name'" :required="true">
@@ -159,8 +159,9 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
+  padding: 0 16px;
   height: 70px;
-  background: #f0f1f5;
+  background: #fafbfd;
   text-align: center;
 }
 .node-connector {
@@ -208,10 +209,22 @@
     z-index: 2;
   }
 }
+.process-node-item.small {
+    >>> .flow-node {
+        width: 210px;
+        .node-name-area {
+            width: 164px;
+        }
+    }
+}
 .btns-wrapper {
   padding: 0 24px;
   height: 48px;
   line-height: 48px;
   background: #fafbfd;
+  .bk-button {
+    margin-right: 4px;
+    min-width: 88px;
+  }
 }
 </style>

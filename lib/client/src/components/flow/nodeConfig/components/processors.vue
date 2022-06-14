@@ -12,13 +12,20 @@
             </bk-select>
             <div v-if="!hideProcessorsForm" class="role-form-item">
                 <!-- 人员选择 -->
-                <member-select
+                <!-- <member-select
                     v-if="formData.type === 'PERSON'"
                     v-model="formData.processors"
                     :specify-id-list="specifyRuleList"
                     :disabled="!editable"
                     @change="handleSelectProcessor">
-                </member-select>
+                </member-select> -->
+                <member-selector
+                    v-if="formData.type === 'PERSON'"
+                    v-model="formData.processors"
+                    style="width: 100%;"
+                    :user-list.sync="userList"
+                    @choose="handleSelectProcessor">
+                </member-selector>
                 <!-- 组织架构 -->
                 <bk-select
                     v-if="formData.type === 'ORGANIZATION'"
@@ -55,12 +62,14 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import MemberSelect from '@/components/nocode-form/components/memberSelect.vue'
+    // import MemberSelect from '@/components/nocode-form/components/memberSelect.vue'
+    import memberSelector from '@/components/member-selector'
 
     export default {
         name: 'Processors',
         components: {
-            MemberSelect
+            // MemberSelect
+            memberSelector
         },
         model: {
             prop: 'value',
@@ -100,6 +109,7 @@
                 roleList: [],
                 organizationsLoading: false,
                 organizationList: [], // 组织架构
+                userList: [],
                 memberFieldListLoading: false,
                 preNodeListLoading: false,
                 formData: {

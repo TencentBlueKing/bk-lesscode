@@ -26,7 +26,8 @@
             <node-form-setting
                 ref="formSetting"
                 :flow-config="flowConfig"
-                :form-content-loading="formContentLoading">
+                :form-content-loading="formContentLoading"
+                @close="$emit('close')">
             </node-form-setting>
         </form-section>
     </div>
@@ -67,6 +68,7 @@
             }
         },
         computed: {
+            ...mapGetters('nocode/flow/', ['flowNodeForms']),
             ...mapGetters('nocode/nodeConfig', [
                 'processorData'
             ]),
@@ -83,10 +85,12 @@
             }
         },
         created () {
-            if (typeof this.nodeData.extras.formConfig?.id === 'number') {
+            if (this.nodeData.id in this.flowNodeForms) {
                 // 已生成表单配置
                 this.getFormDetail()
-                const { id, type } = this.nodeData.extras.formConfig
+                const id = this.flowNodeForms[this.nodeData.id]
+                // @todo 如果流程服务保存失败，这里的type会有问题
+                const type = this.nodeData.extras.formConfig.type || 'NEW_FORM'
                 this.$store.commit('nocode/nodeConfig/setFormConfig', { id, type })
             } else {
                 // 新建空白表单
@@ -95,9 +99,9 @@
                     heteronym: false
                 }).join('_')
 
-                const name = this.nodeData.name
+                const formName = `${this.nodeData.name}_表单`
                 const code = `${cnName}_${this.nodeData.id}`
-                this.$store.commit('nocode/nodeConfig/setFormConfig', { code, name })
+                this.$store.commit('nocode/nodeConfig/setFormConfig', { code, formName })
             }
         },
         methods: {
@@ -105,12 +109,12 @@
             async getFormDetail () {
                 try {
                     this.formContentLoading = true
-                    const { id } = this.nodeData.extras.formConfig
+                    const id = this.flowNodeForms[this.nodeData.id]
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
                     const code = data.tableName
-                    const name = '表单名称待添加....'
-                    this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, name })
+                    const formName = data.formName
+                    this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                     this.formContentLoading = false
                 } catch (e) {
                     messageError(e.message || e)
@@ -124,7 +128,11 @@
             },
             validate () {
                 return this.$refs.basicForm.validate().then(() => {
-                    return this.$refs.formSetting.validate()
+                    if (this.$refs.processorForm.validate()) {
+                        return this.$refs.formSetting.validate()
+                    } else {
+                        return false
+                    }
                 }).catch(() => {
                     return false
                 })

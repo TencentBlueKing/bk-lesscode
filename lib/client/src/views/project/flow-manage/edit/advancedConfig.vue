@@ -204,8 +204,8 @@
                     try {
                         this.advancedPending = true
                         const {
+                            id,
                             name,
-                            workflow_id,
                             notify,
                             notify_freq,
                             notify_rule,
@@ -222,10 +222,18 @@
                                 revoke_config,
                                 is_revocable: isRevocable,
                                 show_all_workflow,
-                                show_my_create_workflow
-                            }
+                                show_my_create_workflow,
+                                // 以下为流程服务必需字段
+                                is_supervise_needed: false,
+                                supervise_type: 'EMPTY',
+                                supervisor: '',
+                                is_auto_approve: false
+                            },
+                            // 以下为流程服务必需字段
+                            can_ticket_agency: false,
+                            display_type: 'OPEN'
                         }
-                        await this.$store.dispatch('nocode/flow/updateServiceData', { id: workflow_id, data: serviceConfig })
+                        await this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })
                         this.$router.push({ name: 'flowList' })
                     } catch (e) {
