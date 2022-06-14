@@ -81,8 +81,8 @@
                 })
                     .join('_')
                     .toUpperCase()
+                    .concat(uuid(4))
                 const config = {
-                    id: uuid(8), // 唯一的key
                     type, // 类型
                     name: field.name, // 名称
                     desc: '', // 描述
@@ -127,7 +127,14 @@
                     this.$emit('select', field, index)
                     this.selectedIndex = index
                 } else if (type === 'copy') {
-                    field.id = uuid(8)
+                    const key = pinyin(field.name, {
+                        style: pinyin.STYLE_NORMAL,
+                        heteronym: false
+                    })
+                        .join('_')
+                        .toUpperCase()
+                        .concat(uuid(4))
+                    field.key = key
                     this.$emit('copy', field, index)
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
@@ -191,6 +198,7 @@
   @mixin scroller;
   height: 100%;
   overflow: auto;
+  background: #ffffff;
   &.hover {
     outline: 2px dashed #1768ef;
     border-radius: 4px;

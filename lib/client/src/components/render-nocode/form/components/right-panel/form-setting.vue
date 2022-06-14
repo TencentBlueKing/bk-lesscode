@@ -83,7 +83,7 @@
 
 .config-wrapper {
   padding: 0 12px;
-  height: calc(100% - 40px);
+  height: 100%;
   overflow: auto;
   @mixin scroller;
 }
