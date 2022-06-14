@@ -73,10 +73,10 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
-            },
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
+            }
         },
         watch: {
             '$route.name' () {
