@@ -60,9 +60,6 @@
     cursor: move;
   }
 
-  &:first-child{
-    margin-top: 24px;
-  }
   &:hover {
     background: #fafbfd;
     border-color: #dcdee5;
@@ -121,6 +118,7 @@
     display: block;
     padding:0 4px ;
     font-size: 12px;
+    line-height: 20px;
   }
   &:hover{
      cursor: pointer;
