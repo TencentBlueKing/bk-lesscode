@@ -59,7 +59,6 @@
             value (val) {
                 if (this.$refs.editor) {
                     this.$refs.editor.invoke('setHTML', val)
-                    console.log()
                 }
             }
         },
@@ -70,12 +69,10 @@
                 button.style.backgroundImage = 'none'
                 button.style.margin = '0'
                 button.innerHTML = '<i class="icon bk-drag-icon bk-drag-filliscreen-line full-screen"></i>'
-                // if (this.$refs.editor) {
                 const that = this
                 button.addEventListener('click', () => {
                     that.$emit('fullscreen')
                 })
-                // }
                 return button
             },
             onEditorChange () {
@@ -83,7 +80,7 @@
                 this.$emit('change', value)
             },
             handleFullScreen () {
-                console.log('handleFullScreen')
+                // todo
             }
         }
     }
