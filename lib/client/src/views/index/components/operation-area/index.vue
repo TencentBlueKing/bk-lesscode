@@ -114,6 +114,7 @@
         padding: 20px;
         height: 100%;
         overflow: auto;
+        @mixin scroller;
     }
     .vertical-wrapper{
         background: #fff;
