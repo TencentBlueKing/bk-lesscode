@@ -185,18 +185,17 @@
                         console.log(this.tableSetting)
                         const { filters, tableConfig } = this.tableSetting
                         const tempFormFieldsList = JSON.parse(form.content).concat(SYS_FIELD)
-                        // 计算可选的筛选条件
-                        if (filters?.length > 0) {
-                            this.filters = tempFormFieldsList.filter(item => filters.includes(item.key))
-                            const filtersKey = this.filters.map(i => i.key)
-                            this.selectList = this.fieldList.filter(item => !filtersKey.includes(item.key))
-                        }
                         if (tableConfig?.length > 0) {
                             // 自定义字段
                             this.fieldList = tempFormFieldsList.filter(item => tableConfig.includes(item.key))
                             this.selectionFields = JSON.parse(form.content)
                             this.localFieldList = JSON.parse(form.content)
                             this.customFields = this.fieldList.map(i => i.key)
+                        }
+                        // 计算可选的筛选条件
+                        if (filters?.length > 0) {
+                            this.filters = tempFormFieldsList.filter(item => filters.includes(item.key))
+                            this.selectList = this.fieldList.filter(item => !filters.includes(item.key))
                         }
                         if (!filters?.length && !tableConfig?.length) {
                             this.getFormList(JSON.parse(form.content))
