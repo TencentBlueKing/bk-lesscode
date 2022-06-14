@@ -9,12 +9,13 @@
     .layout-item {
         width: 200px;
         margin-right: 10px;
+        max-height: 32px;
     }
     .layout-small {
         min-width: 80px;
         margin-right: 10px;
     }
-    .layout-icon {
+    >.layout-icon {
         color: #979BA5;
         line-height: 32px;
         min-width: 20px;
@@ -22,14 +23,24 @@
         &.close {
             transform: rotate(-90deg);
         }
-        &.hidden {
-            visibility: hidden;
-        }
-        &.icon-plus-circle, &.icon-minus-circle {
-            font-size: 14px;
-        }
         &.icon-down-shape {
             margin-right: 4px;
+        }
+    }
+    .layout-icons {
+        min-width: 36px;
+        max-height: 32px;
+        display: flex;
+        align-items: center;
+        .layout-icon {
+            cursor: pointer;
+            margin-right: 4px;
+            &.hidden {
+                visibility: hidden;
+            }
+            &.icon-plus-circle, &.icon-minus-circle {
+                font-size: 14px;
+            }
         }
     }
 }

@@ -5,7 +5,8 @@ import {
 } from '@vue/composition-api'
 import monaco from '@/components/monaco.vue'
 import {
-    parseEditScheme2JsonValue
+    parseEditArrayScheme2QueryValue,
+    parseEditObjectScheme2JsonValue
 } from 'shared/api'
 
 export default defineComponent({
@@ -23,8 +24,12 @@ export default defineComponent({
         watch(
             () => props.editScheme,
             () => {
-                const json = parseEditScheme2JsonValue(props.editScheme)
-                jsonValue.value = JSON.stringify(json, null, 4)
+                if (Array.isArray(props.editScheme)) {
+                    jsonValue.value = parseEditArrayScheme2QueryValue(props.editScheme)
+                } else {
+                    const json = parseEditObjectScheme2JsonValue(props.editScheme)
+                    jsonValue.value = JSON.stringify(json, null, 4)
+                }
             },
             {
                 immediate: true
