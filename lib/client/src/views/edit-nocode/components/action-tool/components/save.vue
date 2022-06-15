@@ -11,6 +11,7 @@
     import { mapGetters } from 'vuex'
     import html2canvas from 'html2canvas'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
+    import { bus } from '@/common/bus'
     export default {
         components: {
             MenuItem
@@ -51,7 +52,7 @@
                 }
                 if (this.nocodeType === 'FORM') {
                     this.saveFormList()
-                } else if (this.nocodeType === 'FORM_MANAGE') {
+                } else if (['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.saveFormManage()
                 }
                 this.saveTemplate()
@@ -83,8 +84,8 @@
                         message: '保存成功'
                     })
                     action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
+                    bus.$emit('saveSuccess')
                 }
-                console.log(res, this.pageDetail)
             },
             // 保存表单管理页
             async saveFormManage () {
@@ -105,7 +106,7 @@
                     if (res) {
                         this.$bkMessage({
                             theme: 'success',
-                            message: '新建单据管理页面成功'
+                            message: '保存成功'
                         })
                     }
                 } catch (e) {

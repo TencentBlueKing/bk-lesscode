@@ -4,11 +4,6 @@
         @mouseenter="isHover = true"
         @mouseleave="isHover = false"
         @click="$emit('action', 'edit')">
-        <transition name="fade">
-            <div v-show="isHover" class="drag-icon-wrapper">
-                <i class="drag-icon bk-icon icon-grag-fill"></i>
-            </div>
-        </transition>
         <div class="actions-area" v-show="!disabled && curfield.key === field.key">
             <span class="name-area">{{`${curfield.type}-${curfield.key}`}}</span>
             <span class="icon-area"><i class="bk-icon icon-copy" @click.stop="$emit('action', 'copy')"></i></span>
@@ -50,7 +45,7 @@
 .field-element {
   position: relative;
   display: inline-block;
-  padding: 12px 40px;
+  padding: 12px;
   width: 100%;
   min-height: 86px;
   border: 1px solid transparent;
@@ -59,8 +54,7 @@
   &:not(.disabled) {
     cursor: move;
   }
-
-  &:first-child{
+  &:first-child {
     margin-top: 24px;
   }
   &:hover {
@@ -69,6 +63,9 @@
   }
   &.half-row {
     width: 50%;
+    &:nth-of-type(2){
+      margin-top: 24px;
+    }
   }
 }
 .field-container {
@@ -121,6 +118,7 @@
     display: block;
     padding:0 4px ;
     font-size: 12px;
+    line-height: 20px;
   }
   &:hover{
      cursor: pointer;

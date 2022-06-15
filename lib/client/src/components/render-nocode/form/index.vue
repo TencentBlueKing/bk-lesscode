@@ -99,10 +99,16 @@
                     })
                 }
             })
+            bus.$on('saveSuccess', () => {
+                this.fieldsList = this.fieldsList.map(item => {
+                    return { ...item, disabled: true }
+                })
+            })
         },
         beforeDestroy () {
             bus.$off('resetFieldList')
             bus.$off('openCreatPageFrom')
+            bus.$off('saveSuccess')
         },
         methods: {
             // 添加字段

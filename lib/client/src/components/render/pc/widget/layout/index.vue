@@ -1,6 +1,6 @@
 <template>
     <component
-        class="lesscode-editor-layout"
+        :class="['lesscode-editor-layout',{ 'form-page-width': pageDetail.nocodeType === 'FORM' }]"
         :style="style"
         :is="layoutCom">
         <slot />
@@ -31,6 +31,7 @@
         computed: {
             ...mapGetters('layout', ['pageLayout']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('page', ['pageDetail']),
             layoutCom () {
                 if (!componentMap[this.layout]) {
                     return 'div'
@@ -60,7 +61,6 @@
         created () {
             this.projectId = this.$route.params.projectId
             this.fetchPageList()
-            
             LC.addEventListener('setPageStyle', this.applyPageSetting)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('setPageStyle', this.applyPageSetting)
@@ -101,7 +101,7 @@
         .bk-navigation {
             width: auto;
             height: auto;
-            /* max-width: calc(100vw - 600px); */
+
             .bk-navigation-wrapper {
                 flex: initial;
                 .nav-slider {
@@ -254,5 +254,8 @@
                 cursor: pointer;
             }
         }
+    }
+    .form-page-width{
+      max-width: calc(100vw - 603px);
     }
 </style>

@@ -36,7 +36,7 @@
                 <bk-form-item label="字段名称" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.name" :disabled="disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="唯一标识" v-if="!basicIsFolded">
+                <bk-form-item label="唯一标识" desc-type="icon" desc=" 用作数据库字段名， 保存成功后不允许修改" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.key" :disabled="disabled || fieldData.disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="布局" v-if="!basicIsFolded">
@@ -626,7 +626,7 @@
                 this.change()
             },
             handleChangeValidataType (val) {
-                if (val === 'REQUIRE') {
+                if (val === 'REQUIRE' && this.fieldData.type === 'IMAGE') {
                     this.fieldData.imageRange.isMin = true
                 }
                 this.change()

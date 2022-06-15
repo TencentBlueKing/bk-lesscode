@@ -84,7 +84,7 @@
                 })
                     .join('_')
                     .toUpperCase()
-                    .concat(uuid(4))
+                    .concat(`_${uuid(4)}`)
                 const config = {
                     type, // 类型
                     name: field.name, // 名称

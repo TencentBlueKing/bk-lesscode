@@ -25,10 +25,7 @@
                 <!-- 保存、预览、快捷键等tool单独抽离 -->
                 <action-tool />
             </div>
-            <extra-links
-                :show-help-box="false"
-                create-form-page
-            />
+            <extra-links :show-help-box="false" :create-form-page="nocodeType === 'FORM'" />
         </div>
         <div class="lesscode-editor-page-content" ref="root" v-if="!isContentLoading">
             <operation-area :operation="operationType" />
@@ -70,6 +67,9 @@
             }),
             pageRoute () {
                 return this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageId))
+            },
+            nocodeType () {
+                return this.pageDetail.nocodeType || ''
             }
         },
         async created () {
