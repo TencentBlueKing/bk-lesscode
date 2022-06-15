@@ -108,6 +108,14 @@
                         }
                     },
                     {
+                        title: '流程管理',
+                        icon: 'flow',
+                        url: 'flowList',
+                        toPath: {
+                            name: 'flowList'
+                        }
+                    },
+                    {
                         title: '数据源管理',
                         icon: 'data-source-manage',
                         url: 'tableList',
@@ -171,14 +179,6 @@
                                 }
                             }
                         ]
-                    },
-                    {
-                        title: '流程管理',
-                        icon: 'flow',
-                        url: 'flowList',
-                        toPath: {
-                            name: 'flowList'
-                        }
                     },
                     {
                         title: '发布管理',
