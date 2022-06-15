@@ -60,6 +60,19 @@
                         </bk-button>
                     </template>
                 </bk-table-column>
+                <bk-table-column label="引用" show-overflow-tooltip>
+                    <template slot-scope="props">
+                        <span
+                            v-bk-tooltips.light="{
+                                content: getUseInfoTips(props.row.useInfo).join('<br>'),
+                                disabled: !getUseInfoTips(props.row.useInfo).length
+                            }"
+                            class="use-info"
+                        >
+                            {{ getUseInfoTips(props.row.useInfo).length }}
+                        </span>
+                    </template>
+                </bk-table-column>
                 <bk-table-column label="备注" prop="funcSummary" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.summary || '--' }}</span>
@@ -292,16 +305,10 @@
                 return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : '--'
             },
 
-            getUseInfoTips ({ funcCodes, pageNames, variableCodes }) {
+            getUseInfoTips ({ funcCodes }) {
                 const tips = []
                 funcCodes?.forEach((funcCode) => {
-                    tips.push(`API 标识【${funcCode}】`)
-                })
-                pageNames?.forEach((pageName) => {
-                    tips.push(`页面名称【${pageName}】`)
-                })
-                variableCodes?.forEach((variableCode) => {
-                    tips.push(`变量标识【${variableCode}】`)
+                    tips.push(`函数标识【${funcCode}】`)
                 })
                 return tips
             },
@@ -311,6 +318,7 @@
                 const username = user.bk_username || user.username
                 let tip = ''
                 if (this.userPerm.roleId !== 1 && username !== row.createUser) tip = '只有管理员或自己创建的才有删除权限'
+                if (row.useInfo?.funcCodes?.length > 0) tip = '该 API 被函数引用，无法删除'
                 return tip
             },
 

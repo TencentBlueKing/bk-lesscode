@@ -1,8 +1,8 @@
 /* Replace with your SQL commands */
 
 ALTER TABLE `func` 
-ADD COLUMN `apiCode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Api Code' AFTER `funcCode`,
-ADD COLUMN `apiHeader` json NULL COMMENT 'Api header 的值' AFTER `apiCode`,
+ADD COLUMN `apiId` int(11) NULL DEFAULT NULL COMMENT 'Api Id' AFTER `funcCode`,
+ADD COLUMN `apiHeader` json NULL COMMENT 'Api header 的值' AFTER `apiId`,
 ADD COLUMN `apiQuery` json NULL COMMENT 'Api query 的值' AFTER `apiHeader`,
 ADD COLUMN `apiBody` json NULL COMMENT 'Api body 的值' AFTER `apiQuery`;
 
