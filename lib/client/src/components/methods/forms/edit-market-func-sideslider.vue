@@ -2,14 +2,13 @@
     <bk-sideslider
         :is-show="isShow"
         :quick-close="true"
-        :width="796"
+        :width="1200"
         :title="form.id ? '编辑函数' : '新建函数'"
         :before-close="confirmClose"
         @hidden="handleClose">
         <section class="func-form-home" slot="content">
             <form-name :form.sync="form" ref="name" :function-list="functionList"></form-name>
             <form-detail :form.sync="form" ref="detail"></form-detail>
-            <form-api-data :form.sync="form" ref="apiData"></form-api-data>
             <form-summary :form.sync="form" :require-summary="true" ref="summary"></form-summary>
             <form-monaco :form.sync="form" :function-list="[]" class="mt20" ref="monaco"></form-monaco>
         </section>
