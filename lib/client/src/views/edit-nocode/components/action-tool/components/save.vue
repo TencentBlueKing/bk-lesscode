@@ -56,7 +56,7 @@
                     this.saveFormManage()
                 }
                 this.saveTemplate()
-                this.savePreviewImg()
+                // this.savePreviewImg()
             },
             // 保存表单
             async saveFormList () {
@@ -79,6 +79,7 @@
                 }
                 const res = await this.$store.dispatch(`form/${action}`, formData)
                 if (res && res.id) {
+                    this.savePreviewImg()
                     this.$bkMessage({
                         theme: 'success',
                         message: '保存成功'
@@ -104,6 +105,7 @@
                         }
                     })
                     if (res) {
+                        this.savePreviewImg()
                         this.$bkMessage({
                             theme: 'success',
                             message: '保存成功'
