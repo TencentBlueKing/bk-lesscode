@@ -9,6 +9,7 @@
 
 <script>
     import { mapGetters } from 'vuex'
+    import html2canvas from 'html2canvas'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
     import { bus } from '@/common/bus'
     export default {
@@ -55,6 +56,7 @@
                     this.saveFormManage()
                 }
                 this.saveTemplate()
+                this.savePreviewImg()
             },
             // 保存表单
             async saveFormList () {
@@ -150,6 +152,23 @@
                         versionId: this.versionId
                     }
                 })
+            },
+            async savePreviewImg () {
+                const targetArea = document.getElementById('lesscodeDrawContent')
+                html2canvas(targetArea)
+                    .then(async (canvas) => {
+                        const imgData = canvas.toDataURL('image/png')
+                        return this.$store.dispatch('page/update', {
+                            data: {
+                                projectId: this.projectId,
+                                versionId: this.versionId,
+                                pageData: {
+                                    id: this.pageDetail.id,
+                                    previewImg: imgData
+                                }
+                            }
+                        })
+                    })
             }
         }
     }
