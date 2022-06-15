@@ -4,7 +4,7 @@
         :is-show="isShow"
         :quick-close="true"
         :title="title"
-        :width="796"
+        :width="1200"
         :before-close="handleClose"
     >
         <section class="func-form-home" slot="content">
@@ -31,12 +31,9 @@
             ></form-group>
             <form-detail
                 :form.sync="form"
+                :variable-list="variableList"
                 ref="detail"
             ></form-detail>
-            <form-api-data
-                :form.sync="form"
-                ref="apiData"
-            ></form-api-data>
             <form-summary
                 :form.sync="form"
                 ref="summary"

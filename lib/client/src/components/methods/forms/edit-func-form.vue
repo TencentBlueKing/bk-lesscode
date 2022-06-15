@@ -28,14 +28,10 @@
                 ></form-group>
                 <form-detail
                     :form.sync="form"
+                    :variable-list="variableList"
                     ref="detail"
                     form-type="vertical">
                 </form-detail>
-                <form-api-data
-                    :form.sync="form"
-                    ref="apiData"
-                    form-type="vertical">
-                </form-api-data>
                 <form-summary
                     :form.sync="form"
                     ref="summary"
@@ -203,7 +199,7 @@
     }
     .func-form-main {
         float: left;
-        width: 350px;
+        width: 650px;
         height: 100%;
         overflow-y: auto;
         margin: 7px 0;
@@ -236,6 +232,6 @@
     .monaco {
         margin: 0;
         height: 100%;
-        margin-left: 350px;
+        margin-left: 650px;
     }
 </style>
