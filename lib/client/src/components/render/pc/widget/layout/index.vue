@@ -99,6 +99,7 @@
         transform: translate(0, 0);
         
         .bk-navigation {
+            padding: 20px 0 0;
             width: auto;
             height: auto;
 
@@ -256,6 +257,6 @@
         }
     }
     .form-page-width{
-      max-width: calc(100vw - 603px);
+      margin: 0 !important;
     }
 </style>
