@@ -86,7 +86,7 @@
                 try {
                     this.initDataLoading = true
                     const serviceData = await this.$store.dispatch('nocode/flow/getServiceData', this.flowConfig.itsmId)
-                    const res = await this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: serviceData.workflow_id })
+                    const res = await this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: serviceData.workflow_id, page_size: 1000 })
                     const nodes = []
                     res.items.forEach(node => {
                         if (node.type === 'NORMAL' && node.id in this.formIds) {
