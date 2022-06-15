@@ -51,7 +51,7 @@
                 }
                 if (this.nocodeType === 'FORM') {
                     this.saveFormList()
-                } else if (this.nocodeType === 'FORM_MANAGE') {
+                } else if (['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.saveFormManage()
                 }
                 this.saveTemplate()
@@ -104,7 +104,7 @@
                     if (res) {
                         this.$bkMessage({
                             theme: 'success',
-                            message: '新建单据管理页面成功'
+                            message: '保存成功'
                         })
                     }
                 } catch (e) {
