@@ -1,5 +1,5 @@
 <template>
-    <bk-form :label-width="110" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
+    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
         <bk-form-item label="函数类型" property="funcType">
             <bk-radio-group
                 :value="form.funcType"
@@ -36,24 +36,61 @@
         </bk-form-item>
         <template v-if="form.funcType === 1">
             <bk-form-item
-                label="Api Url"
-                property="funcApiUrl"
+                label="Api"
+                property="apiCode"
                 error-display-type="normal"
                 :required="true"
-                :rules="[requireRule('Api Url')]"
-                :desc="`请输入接口 URL，例如：{{domain}}/api/data/getMockData`">
-                <bk-input
+                :rules="[requireRule('Api')]"
+            >
+                <bk-select
+                    :value="form.apiCode"
+                    :clearable="false"
+                    :popover-options="{ appendTo: 'parent' }"
                     :disabled="disabled"
-                    :value="form.funcApiUrl"
-                    @input="(funcApiUrl) => updateValue({ funcApiUrl })">
-                </bk-input>
+                    :loading="isLoading"
+                    @toggle="handleToggle"
+                    @selected="(apiCode) => updateValue({ apiCode })"
+                >
+                    <bk-option v-for="api in apiList"
+                        :key="api.code"
+                        :id="api.code"
+                        :name="`${api.name}（${api.method}）`">
+                    </bk-option>
+                </bk-select>
             </bk-form-item>
             <bk-form-item
-                label="Api 返回数据"
+                v-if="METHODS_WITHOUT_DATA.includes(choosenApi.method)"
+                label="Api 请求参数（query）"
+                property="remoteParams"
+                error-display-type="normal">
+                <query-params
+                    :api="choosenApi"
+                    :value="form.apiQuery"
+                    :disabled="disabled"
+                    :variable-list="variableList"
+                    @change="(apiQuery) => updateValue({ apiQuery })"
+                ></query-params>
+            </bk-form-item>
+            <bk-form-item
+                v-else
+                label="Api 请求参数（body）"
+                property="remoteParams"
+                error-display-type="normal">
+                <body-params
+                    :api="choosenApi"
+                    :value="form.apiBody"
+                    :disabled="disabled"
+                    :variable-list="variableList"
+                    @change="(apiBody) => updateValue({ apiBody })"
+                >
+                </body-params>
+            </bk-form-item>
+            <bk-form-item
+                label="Api 返回数据变量名"
                 ref="remoteParams"
                 property="remoteParams"
                 error-display-type="normal"
-                desc="该参数用于接收Api返回数据，在函数中直接可使用该参数获取Api返回数据"
+                desc="该参数用于接收Api返回数据，在函数中直接可使用该变量名来操作Api返回数据"
                 :rules="[nameRule]">
                 <dynamic-tag
                     :disabled="disabled"
@@ -61,40 +98,28 @@
                     @change="(val) => tagChange('remoteParams', val)">
                 </dynamic-tag>
             </bk-form-item>
-            <bk-form-item
-                label="Method"
-                property="funcMethod"
-                error-display-type="normal"
-                :required="true"
-                :rules="[requireRule('Method')]">
-                <bk-select
-                    :value="form.funcMethod"
-                    @selected="(funcMethod) => updateValue({ funcMethod })"
-                    :clearable="false"
-                    :popover-options="{ appendTo: 'parent' }"
-                    :disabled="disabled">
-                    <bk-option v-for="option in methodList"
-                        :key="option.id"
-                        :id="option.id"
-                        :name="option.name">
-                    </bk-option>
-                </bk-select>
-            </bk-form-item>
         </template>
     </bk-form>
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex'
     import mixins from './form-item-mixins'
-    import dynamicTag from '@/components/dynamic-tag.vue'
+    import DynamicTag from '@/components/dynamic-tag.vue'
+    import QueryParams from './children/query-params.vue'
+    import BodyParams from './children/body-params.vue'
     import {
-        FUNCTION_TYPE,
-        FUNCTION_METHOD
+        FUNCTION_TYPE
     } from 'shared/function/'
+    import {
+        METHODS_WITHOUT_DATA
+    } from 'shared/api'
 
     export default {
         components: {
-            dynamicTag
+            DynamicTag,
+            QueryParams,
+            BodyParams
         },
 
         mixins: [mixins],
@@ -103,6 +128,10 @@
             requireSummary: {
                 type: Boolean,
                 default: false
+            },
+            variableList: {
+                type: Array,
+                default: () => ([])
             }
         },
 
@@ -114,16 +143,56 @@
                     { id: FUNCTION_TYPE.EMPTY, name: '空白函数' },
                     { id: FUNCTION_TYPE.REMOTE, name: '远程函数', info: '建议以下几种情况使用 "远程函数":\n1、远程API需要携带用户登录态认证\n2、远程API无法跨域或纯前端访问' }
                 ],
-                methodList: Object.keys(FUNCTION_METHOD).map((key) => ({ name: key, id: FUNCTION_METHOD[key] })),
                 nameRule: {
                     validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z_0-9]+$/.test(x))),
                     message: '由大小写英文字母、下划线、数字组成',
                     trigger: 'blur'
-                }
+                },
+                apiList: [],
+                isLoading: false,
+                METHODS_WITHOUT_DATA
             }
         },
 
+        computed: {
+            ...mapGetters('projectVersion', ['currentVersionId']),
+
+            projectId () {
+                return parseInt(this.$route.params.projectId)
+            },
+
+            choosenApi () {
+                return this.apiList.find(api => {
+                    return api.code === this.form.apiCode
+                }) || {}
+            }
+        },
+
+        created () {
+            this.getApiListFromApi()
+        },
+
         methods: {
+            ...mapActions('api', ['getApiList']),
+
+            handleToggle (isOpen) {
+                if (isOpen) {
+                    this.getApiListFromApi()
+                }
+            },
+
+            getApiListFromApi () {
+                this.isLoading = true
+                this.getApiList({
+                    projectId: this.projectId,
+                    versionId: this.currentVersionId
+                }).then((res) => {
+                    this.apiList = res
+                }).finally(() => {
+                    this.isLoading = false
+                })
+            },
+
             tagChange (key, val) {
                 this.updateValue({ [key]: val })
                 this.$nextTick(() => {

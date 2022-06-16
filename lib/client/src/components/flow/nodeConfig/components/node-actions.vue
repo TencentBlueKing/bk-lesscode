@@ -115,7 +115,7 @@
                 // 流程服务校验desc字段不为空，节点上没有可配置desc的地方，故先删除
                 delete data.desc
                 data.is_draft = false
-                if (data.type === 'WEBHOOK') {
+                if (data.type === 'DATA_PROC') {
                     // @todo 处理人为不限后台校验不通过，暂时用固定值
                     data.processors_type = 'STARTER'
                     data.processors = ''
@@ -164,7 +164,6 @@
                         }
                     } else {
                         await this.updateItsmNode()
-                        await this.updateFormName()
                     }
 
                     this.$bkMessage({

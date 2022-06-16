@@ -255,7 +255,7 @@
             async fetchData () {
                 try {
                     this.isContentLoading = true
-                    const [pageDetail, pageList, projectDetail, functionData] = await Promise.all([
+                    const [pageDetail, pageList, projectDetail, functionData, apiData] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.pageId }),
                         this.$store.dispatch('page/getList', {
                             projectId: this.projectId,
@@ -263,6 +263,10 @@
                         }),
                         this.$store.dispatch('project/detail', { projectId: this.projectId }),
                         this.$store.dispatch('functions/getAllGroupAndFunction', {
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }),
+                        this.$store.dispatch('api/getCategoryAndApiList', {
                             projectId: this.projectId,
                             versionId: this.versionId
                         }),
@@ -293,6 +297,7 @@
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
                     this.$store.commit('functions/setFunctionData', functionData)
+                    this.$store.commit('api/setApiData', apiData)
 
                     syncVariableValue(pageDetail.content, variableList)
 

@@ -9,6 +9,7 @@
 
 <script>
     import { mapGetters } from 'vuex'
+    import html2canvas from 'html2canvas'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
     import { bus } from '@/common/bus'
     export default {
@@ -51,10 +52,11 @@
                 }
                 if (this.nocodeType === 'FORM') {
                     this.saveFormList()
-                } else if (this.nocodeType === 'FORM_MANAGE') {
+                } else if (['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.saveFormManage()
                 }
                 this.saveTemplate()
+                // this.savePreviewImg()
             },
             // 保存表单
             async saveFormList () {
@@ -77,6 +79,7 @@
                 }
                 const res = await this.$store.dispatch(`form/${action}`, formData)
                 if (res && res.id) {
+                    this.savePreviewImg()
                     this.$bkMessage({
                         theme: 'success',
                         message: '保存成功'
@@ -102,9 +105,10 @@
                         }
                     })
                     if (res) {
+                        this.savePreviewImg()
                         this.$bkMessage({
                             theme: 'success',
-                            message: '新建单据管理页面成功'
+                            message: '保存成功'
                         })
                     }
                 } catch (e) {
@@ -150,6 +154,23 @@
                         versionId: this.versionId
                     }
                 })
+            },
+            async savePreviewImg () {
+                const targetArea = document.getElementById('lesscodeDrawContent')
+                html2canvas(targetArea)
+                    .then(async (canvas) => {
+                        const imgData = canvas.toDataURL('image/png')
+                        return this.$store.dispatch('page/update', {
+                            data: {
+                                projectId: this.projectId,
+                                versionId: this.versionId,
+                                pageData: {
+                                    id: this.pageDetail.id,
+                                    previewImg: imgData
+                                }
+                            }
+                        })
+                    })
             }
         }
     }

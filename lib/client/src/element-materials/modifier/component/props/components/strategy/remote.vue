@@ -52,6 +52,7 @@
     import { bus } from '@/common/bus'
     import { replaceFuncKeyword, replaceFuncParam } from 'shared/function'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable'
+    import { getApiSource } from 'shared/api'
     import remoteExample from './remote-example'
 
     export default {
@@ -104,6 +105,7 @@
         computed: {
             ...mapGetters('functions', ['functionList']),
             ...mapGetters('variable', ['variableList']),
+            ...mapGetters('api', ['apiList']),
             exampleData () {
                 return { name: this.name, value: this.describe.val }
             }
@@ -173,14 +175,28 @@
             getMethodStr (returnMethod) {
                 const funcParams = (returnMethod.funcParams || []).join(', ')
                 if (returnMethod.funcType === 1) {
-                    const remoteParams = (returnMethod.remoteParams || []).join(', ')
-                    const data = `{
-                        url: \`${this.processVarInFunApiUrl(returnMethod.funcApiUrl, returnMethod.funcName)}\`,
-                        type: '${returnMethod.funcMethod}',
-                        apiData: ${this.processVarInFunApiData(returnMethod.funcApiData, returnMethod.funcName) || '\'\''},
-                        withToken: ${returnMethod.withToken}
-                    }`
-                    returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { return this.$store.dispatch('getApiData', ${data}).then((${remoteParams}) => { ${returnMethod.funcBody} }) };`
+                    const api = this.apiList.find((api) => api.code === returnMethod.apiCode)
+                    const apiData = {
+                        api,
+                        remoteParams: returnMethod.remoteParams,
+                        origin: location.origin,
+                        apiQuery: returnMethod.apiQuery,
+                        apiBody: returnMethod.apiBody,
+                        funcBody: returnMethod.funcBody
+                    }
+                    const {
+                        code,
+                        variableCodes
+                    } = getApiSource(apiData)
+                    variableCodes.forEach((variableCode) => {
+                        const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
+                        if (curVar) {
+                            this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
+                        } else {
+                            throw new Error(`函数【${returnMethod.funcName}】里引用的变量【${variableCode}】不存在，请检查`)
+                        }
+                    })
+                    returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { return ${code} };`
                 } else {
                     returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { ${returnMethod.funcBody} };`
                 }

@@ -83,7 +83,7 @@
                 try {
                     this.canvasDataLoading = true
                     const res = await Promise.all([
-                        this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.serviceData.workflow_id }),
+                        this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.serviceData.workflow_id, page_size: 1000 }),
                         this.$store.dispatch('nocode/flow/getFlowLines', { workflow: this.serviceData.workflow_id, page_size: 1000 })
                     ])
                     this.canvasData = {

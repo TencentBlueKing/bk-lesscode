@@ -71,7 +71,7 @@
                 nodeDetailLoading: true,
                 formCompDict: {
                     NORMAL: 'NormalNode',
-                    WEBHOOK: 'DataProcessNode',
+                    DATA_PROC: 'DataProcessNode',
                     TASK: 'ApiNode',
                     SIGN: 'SignNode',
                     APPROVAL: 'ApprovalNode'

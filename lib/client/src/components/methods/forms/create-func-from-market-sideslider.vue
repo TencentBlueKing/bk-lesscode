@@ -3,7 +3,7 @@
         title="添加至应用"
         :is-show.sync="isShow"
         :quick-close="true"
-        :width="796"
+        :width="1200"
         :before-close="confirmClose"
         @hidden="handleClose">
         <section class="func-form-home" slot="content">
@@ -30,11 +30,8 @@
             <form-detail
                 ref="detail"
                 :form.sync="form"
+                :variable-list="variableList"
             ></form-detail>
-            <form-api-data
-                ref="apiData"
-                :form.sync="form"
-            ></form-api-data>
             <form-summary
                 ref="summary"
                 :form.sync="form"
