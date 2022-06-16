@@ -1,5 +1,5 @@
 <template>
-    <bk-form :label-width="110" :model="form" ref="funcForm" :form-type="formType" class="func-form-bottom">
+    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-bottom">
         <bk-form-item
             :rules="[requireRule('应用')]"
             label="应用"

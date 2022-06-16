@@ -5,11 +5,11 @@
                 ref="basicForm"
                 form-type="vertical"
                 style="width: 656px;"
-                :model="nodeData"
+                :model="formData"
                 :rules="rules">
                 <div class="select-api">
                     <bk-form-item label="节点名称" property="name" :required="true">
-                        <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
+                        <bk-input v-model="formData.name" @change="handleNameChange"></bk-input>
                     </bk-form-item>
                     <bk-form-item label="处理人" :required="true">
                         <processors
@@ -17,11 +17,11 @@
                             :value="processorData"
                             :workflow-id="nodeData.workflow"
                             :node-id="nodeData.id"
-                            :exclude-type="['CMDB', 'GENERAL', 'EMPTY', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION']"
+                            :exclude-type="['CMDB', 'GENERAL', 'EMPTY', 'OPEN', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION']"
                             @change="handleProcessorChange">
                         </processors>
                     </bk-form-item>
-                    <bk-form-item label="API" :required="true">
+                    <bk-form-item label="API" property="remote_api_id" :required="true">
                         <bk-select
                             v-model="formData.remote_api_id"
                             placeholder="请选择API"
@@ -274,7 +274,7 @@
                 resParams: [], // 返回数据字段列表
                 resParamsTable: [], // 表格中显示的字段
                 resParamsTree: [], // 轮询配置需要使用的字段，返回数据去掉array类型
-                formData: this.getInitialFormData(nodeData),
+                formData: { name: nodeData.name, ...this.getInitialFormData(nodeData) },
                 variables: this.getInitialVar(nodeData),
                 relationList: [
                     { name: '>=', key: '>=' },
@@ -288,6 +288,13 @@
                         {
                             required: true,
                             message: '节点名称为必填项',
+                            trigger: 'blur'
+                        }
+                    ],
+                    remote_api_id: [
+                        {
+                            required: true,
+                            message: '请选择API',
                             trigger: 'blur'
                         }
                     ]
@@ -307,16 +314,24 @@
                 return parseInt(this.$route.params.projectId)
             }
         },
+        watch: {
+            formData: {
+                handler () {
+                    this.update()
+                },
+                deep: true
+            }
+        },
         created () {
-            this.getSystemApis()
-            if (typeof this.nodeData.api_info?.id === 'number') {
-                this.apiDetail = this.nodeData.api_info.remote_api_info
+            this.getApiList()
+            if (typeof this.nodeData.extras.apiInfo?.remote_api_id === 'number') {
+                this.apiDetail = this.nodeData.extras.apiInfo.api_config
                 this.setResParamsData()
             }
         },
         methods: {
             getInitialFormData (data) {
-                if (data.api_info) {
+                if (data.extras.apiInfo) {
                     const {
                         remote_api_id,
                         end_conditions,
@@ -325,7 +340,7 @@
                         query,
                         rsp_data: rspData,
                         succeed_conditions
-                    } = cloneDeep(data.api_info)
+                    } = cloneDeep(data.extras.apiInfo)
                     return {
                         remote_api_id,
                         end_conditions,
@@ -350,8 +365,8 @@
                 const { inputs, outputs } = data.variables
                 return { inputs: [...inputs], outputs: [...outputs] }
             },
-            // 获取接入系统接口列表
-            async getSystemApis () {
+            // 获取接口列表
+            async getApiList () {
                 try {
                     this.systemApisLoading = true
                     this.apiList = await this.$store.dispatch('api/getApiList', { projectId: this.projectId, versionId: this.versionId })
@@ -359,6 +374,16 @@
                     console.error(e)
                 } finally {
                     this.systemApisLoading = false
+                }
+            },
+            async getApiDetail () {
+                try {
+                    this.apiDetailLoading = true
+                    this.apiList = await this.$store.dispatch('api/getApiList', { projectId: this.projectId, versionId: this.versionId })
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.apiDetailLoading = false
                 }
             },
             handleNameChange (val) {
@@ -545,7 +570,7 @@
                 this.variables = { inputs: [], outputs: [] }
                 this.resParamsTree = []
             },
-            getData () {
+            update () {
                 const {
                     remote_api_id,
                     end_conditions,
@@ -569,18 +594,20 @@
                     })
                     succeedConditions = { type: 'or', expressions }
                 }
-                return {
-                    api_info: {
+                const data = {
+                    apiInfo: {
                         remote_api_id,
                         end_conditions,
                         need_poll: needPoll,
                         body: postReqData,
                         query: getReqData,
                         response: resData.join(','),
-                        succeed_conditions: succeedConditions
+                        succeed_conditions: succeedConditions,
+                        api_config: this.apiDetail
                     },
                     variables: this.variables
                 }
+                this.$store.commit('nocode/nodeConfig/setApiNodeConfig', data)
             }
         }
     }

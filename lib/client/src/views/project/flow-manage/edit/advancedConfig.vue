@@ -165,7 +165,7 @@
             async getFlowNodes () {
                 try {
                     this.flowNodesLoading = true
-                    const res = await this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.advancedData.workflow_id })
+                    const res = await this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: this.advancedData.workflow_id, page_size: 1000 })
                     this.flowNodes = res.items.filter(node => !node.is_builtin && !['ROUTER-P', 'COVERAGE'].includes(node.type))
                 } catch (e) {
                     console.error(e)

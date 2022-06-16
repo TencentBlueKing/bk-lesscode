@@ -362,10 +362,10 @@
         color: #63656e;
         .function-main {
             position: absolute;
-            width: 86%;
-            height: 74%;
-            top: 13%;
-            left: 7%;
+            width: 90%;
+            height: 80%;
+            top: 10%;
+            left: 5%;
             border-radius: 2px;
             box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.2);
         }

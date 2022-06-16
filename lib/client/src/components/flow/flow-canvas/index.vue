@@ -57,6 +57,7 @@
     import { mapGetters, mapState } from 'vuex'
     import { uuid } from '@/common/util.js'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
+    import { messageError } from '@/common/bkmagic'
     import BkFlow from './flow.js'
     import PalettePanel from './palettePanel.vue'
     import NodeTemplate from './nodeTemplate.vue'
@@ -269,10 +270,51 @@
                     console.error(e)
                 }
             },
+            // 拖入节点或者快速创建节点执行保存
             async handleCreateNode (node) {
                 if (node.nodeInfo && 'id' in node.nodeInfo) {
                     return false
                 }
+                const res = await this.saveNode(node)
+                const { axis, type: nodeType, name: nodeName } = res
+                const addedNode = {
+                    id: node.id,
+                    x: axis.x,
+                    y: axis.y,
+                    type: nodeType,
+                    name: nodeName,
+                    nodeInfo: cloneDeep(res)
+                }
+                const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
+                this.canvasData.nodes.splice(index, 1, addedNode)
+                if (node.type === 'NORMAL') {
+                    const { x, y } = node
+                    const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' })
+                    const { id, axis, type, name } = procNode
+                    const dataProcNode = {
+                        id: `node_${id}`,
+                        x: axis.x,
+                        y: axis.y,
+                        type,
+                        name,
+                        nodeInfo: cloneDeep(procNode)
+                    }
+                    this.$refs.flowCanvas.createNode(dataProcNode)
+                    this.$nextTick(() => { // 等自动添加的节点dom更新完毕
+                        this.$refs.flowCanvas.createConnector({
+                            source: {
+                                arrow: 'Right',
+                                id: addedNode.id
+                            },
+                            target: {
+                                arrow: 'Left',
+                                id: `node_${procNode.id}`
+                            }
+                        })
+                    })
+                }
+            },
+            async saveNode (node) {
                 try {
                     const { x, y, type } = node
                     const nodeDesc = NODE_TYPE_LIST.find(item => item.type === type)
@@ -291,35 +333,47 @@
                             type: '',
                             id: ''
                         }
+                    } else if (type === 'DATA_PROC') {
+                        params.extras.node_type = 'DATA_PROC'
+                        params.extras.dataManager = {
+                            conditions: {
+                                connector: 'and',
+                                expressions: []
+                            },
+                            mapping: [],
+                            action: '',
+                            worksheet_id: ''
+                        }
+                    } else if (type === 'TASK') {
+                        params.extras.node_type = 'TASK'
+                        params.extras.apiInfo = {
+                            remote_api_id: '',
+                            end_conditions: { poll_interval: 1, poll_time: 3 },
+                            need_poll: false,
+                            getReqData: {},
+                            postReqData: {},
+                            resData: [],
+                            succeed_conditions: { expressions: [], type: 'and' }
+                        }
                     }
-                    const res = await this.$store.dispatch('nocode/flow/createNode', params)
-                    const { axis, type: nodeType, name: nodeName } = res
-                    const addedNode = {
-                        id: node.id,
-                        x: axis.x,
-                        y: axis.y,
-                        type: nodeType,
-                        name: nodeName,
-                        nodeInfo: cloneDeep(res)
-                    }
-                    const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
-                    this.canvasData.nodes.splice(index, 1, addedNode)
+                    return this.$store.dispatch('nocode/flow/createNode', params)
                 } catch (e) {
                     // this.$refs.flowCanvas.removeNode(addedNode);
                     console.error(e)
+                    messageError(e.message || e)
                 }
             },
             async handleCloneNode (nodeId) {
                 try {
-                    const res = await this.$store.dispatch('setting/cloneFlowNode', nodeId)
-                    const { id, axis, type, name } = res.data
+                    const res = await this.$store.dispatch('nocode/flow/cloneFlowNode', nodeId)
+                    const { id, axis, type, name } = res
                     const addedNode = {
                         id: `node_${id}`,
                         x: axis.x,
                         y: axis.y,
                         type,
                         name,
-                        nodeInfo: cloneDeep(res.data)
+                        nodeInfo: cloneDeep(res)
                     }
                     this.$refs.flowCanvas.createNode(addedNode)
                 } catch (e) {

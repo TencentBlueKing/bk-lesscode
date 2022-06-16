@@ -1,12 +1,12 @@
 <template>
     <div
         :class="{
-            [$style['draw-layout']]: nocodeType !== 'FORM_MANAGE',
+            [$style['draw-layout']]: !isDataManagePage,
             [$style['page-nocode-layout']]: nocodeType === 'FORM',
             [$style['is-left-collapsed']]: isLeftCollapse,
             [$style['is-right-collapsed']]: isRightCollapse
         }">
-        <div :class="[$style['layout-left'],{ [$style['page-nocode-left-layout']]: nocodeType === 'FORM' }]" v-if="nocodeType !== 'FORM_MANAGE'">
+        <div :class="[$style['layout-left'],{ [$style['page-nocode-left-layout']]: nocodeType === 'FORM' }]" v-if="!isDataManagePage">
             <slot name="left" />
         </div>
         <div
@@ -14,11 +14,11 @@
             :class="$style['layout-center']">
             <slot />
         </div>
-        <div :class="$style['layout-right']" v-if="nocodeType !== 'FORM_MANAGE'">
+        <div :class="$style['layout-right']" v-if="!isDataManagePage">
             <slot name="right" />
         </div>
         <div
-            v-if="nocodeType !== 'FORM_MANAGE'"
+            v-if="!isDataManagePage"
             :class="[$style['collapsed-left-btn'],{ [$style['collapsed-nocode-left-btn']]: nocodeType === 'FORM' }]"
             v-bk-tooltips.right="{
                 content: '查看所有组件',
@@ -28,7 +28,7 @@
             <i class="bk-drag-icon bk-drag-angle-left" />
         </div>
         <div
-            v-if="nocodeType !== 'FORM_MANAGE'"
+            v-if="!isDataManagePage"
             :class="[$style['collapsed-right-btn'],{
                 [ $style['nocode-collapsed-right-btn']]: nocodeType === 'FORM'
             }]"
@@ -56,6 +56,9 @@
             ...mapGetters('page', ['pageDetail']),
             nocodeType () {
                 return this.pageDetail.nocodeType || ''
+            },
+            isDataManagePage () {
+                return ['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)
             }
         },
         methods: {
