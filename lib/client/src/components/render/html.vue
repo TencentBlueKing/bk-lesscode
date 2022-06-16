@@ -52,15 +52,18 @@
             },
 
             updateMethods () {
-                (this.renderOptions.methodCode || []).forEach((method) => {
+                if (this.renderOptions?.methodCode?.length > 0) {
                     let parent = this.$parent
                     while (parent && parent._uid !== this.parentId) {
                         parent = parent.$parent
                     }
                     if (parent) {
-                        this[method] = parent[method]
+                        const userKeys = Object.keys(parent).filter((key) => /^[^_$]/.test(key)) || []
+                        userKeys.forEach((userKey) => {
+                            this[userKey] = parent[userKey]
+                        })
                     }
-                })
+                }
             }
         },
 

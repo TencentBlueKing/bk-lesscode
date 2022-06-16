@@ -10,7 +10,7 @@
                     :key="groupName"
                     :list="comList"
                     :group-name="groupName">
-                    <render-component
+                    <render-custom-component
                         v-for="component in comList"
                         :key="component.name"
                         :data="component" />
@@ -21,10 +21,12 @@
                     :list="favoriteComponentList"
                     :group-name="'我的收藏'"
                     key="favorite">
-                    <render-component
+                    <render-custom-component
                         v-for="component in favoriteComponentList"
                         :key="component.name"
-                        :data="component" />
+                        favourite-group
+                        :data="component"
+                        @on-favorite="handleFavorite" />
                 </group-box>
                 <template v-for="(componentList, groupName) in groupComponentMap">
                     <group-box
@@ -32,20 +34,26 @@
                         :key="groupName"
                         :list="componentList"
                         :group-name="groupName">
-                        <render-component
+                        <render-custom-component
                             v-for="component in componentList"
                             :key="component.name"
-                            :data="component" />
+                            :data="component"
+                            @on-favorite="handleFavorite" />
                     </group-box>
                 </template>
                 <group-box
                     :list="publicComponentList"
                     :group-name="'其他应用公开的组件'"
                     key="publice">
-                    <render-component
+                    <render-custom-component
                         v-for="component in publicComponentList"
                         :key="component.name"
-                        :data="component" />
+                        public-group
+                        :data="component"
+                        @on-favorite="handleFavorite" />
+                    <div slot="tag">
+                        公共
+                    </div>
                 </group-box>
             </template>
         </div>
@@ -62,17 +70,16 @@
 </template>
 <script>
     import Vue from 'vue'
-    import Tippy from 'bk-magic-vue/lib/utils/tippy'
     import GroupBox from '../../common/group-box'
     import SearchBox from '../../common/search-box'
-    import RenderComponent from '../../common/group-box/render-component'
+    import RenderCustomComponent from '../../common/group-box/render-custom-component'
 
     export default {
         name: '',
         components: {
             GroupBox,
             SearchBox,
-            RenderComponent
+            RenderCustomComponent
         },
         data () {
             return {
@@ -113,6 +120,8 @@
                             config,,
                             baseInfo
                         ] = registerCallback(Vue)
+                        // 是否收藏tag
+                        baseInfo.favorite = false
                         const realConfig = {
                             ...config,
                             meta: baseInfo
@@ -120,6 +129,7 @@
                         searchList.push(config)
                         if (favoriteIdMap[baseInfo.id]) {
                             favoriteComponentList.push(realConfig)
+                            baseInfo.favorite = true
                             return
                         }
                         if (baseInfo.isPublic) {
@@ -144,76 +154,8 @@
                     this.isLoading = false
                 }
             },
-            async handleShowIntroduction (component, event) {
-                const componentId = component.meta.id
-                const componentVersionId = component.meta.versionId
-                this.popperInstance = Tippy(event.target, {
-                    placement: 'top-start',
-                    trigger: 'manual',
-                    theme: 'light custom-component-introduction',
-                    hideOnClick: false,
-                    animateFill: false,
-                    animation: 'slide-toggle',
-                    lazy: false,
-                    ignoreAttributes: true,
-                    boundary: 'window',
-                    distance: 20,
-                    arrow: true,
-                    zIndex: window.__bk_zIndex_manager.nextZIndex()
-                })
-                this.componentIntroduction = {}
-                this.isDiscriptionLoading = true
-                this.popperInstance.setContent(this.$refs.introduction)
-                this.popperInstance.popperInstance.update()
-                this.popperInstance.show()
-                try {
-                    const [componentData, componentVersionData] = await Promise.all([
-                        this.$store.dispatch('components/detail', {
-                            id: componentId
-                        }),
-                        this.$store.dispatch('components/versionDetail', {
-                            versionId: componentVersionId
-                        })
-                    ])
-                    if (!this.popperInstance) {
-                        return
-                    }
-                    this.componentIntroduction = Object.freeze({
-                        ...componentVersionData,
-                        lastVersion: componentData.version
-                    })
-                    setTimeout(() => {
-                        this.popperInstance.popperInstance.update()
-                    })
-                } finally {
-                    this.isDiscriptionLoading = false
-                }
-            },
-            handleHideIntroduction () {
-                if (this.popperInstance) {
-                    this.popperInstance.hide()
-                    this.popperInstance.destroy()
-                    this.popperInstance = null
-                }
-            },
-            async handleClickFavorite (component) {
-                try {
-                    const data = {
-                        compId: component.meta.id,
-                        projectId: this.projectId
-                    }
-                    if (component.meta.favorite) {
-                        await this.$store.dispatch('components/favoriteDelete', { data })
-                        this.messageSuccess('取消成功')
-                    } else {
-                        await this.$store.dispatch('components/favoriteAdd', { data })
-                        this.messageSuccess('收藏成功')
-                    }
-                    // 更新数据状态
-                    this.fetchFavoriteList(true)
-                } catch (e) {
-                    console.error(e)
-                }
+            handleFavorite () {
+                this.fetchFavoriteList()
             },
             /**
              * @desc 去新建自定义组件

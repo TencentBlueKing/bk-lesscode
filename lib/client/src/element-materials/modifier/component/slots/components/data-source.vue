@@ -17,7 +17,7 @@
     interface Iprop {
         slotVal?: any,
         slotConfig?: any,
-        change: (slot: any) => void
+        change: (slot: any, type: string) => void
     }
 
     export default defineComponent({
@@ -34,6 +34,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: () => {}
@@ -41,6 +44,8 @@
         },
 
         setup (props) {
+            // copy type 防止响应式更新
+            const type = props.type
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.slotVal?.value?.payload?.sourceData?.tableName)
 
@@ -63,7 +68,7 @@
                         }
                     }
                 }
-                propStatus.change.value(slot)
+                propStatus.change.value(slot, type)
             }
 
             return {
