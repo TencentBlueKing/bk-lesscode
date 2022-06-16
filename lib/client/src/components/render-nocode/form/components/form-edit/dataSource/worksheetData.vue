@@ -8,7 +8,7 @@
         <!--            <bk-radio :value="true">本应用表单</bk-radio>-->
         <!--            <bk-radio :value="false">其他应用表单</bk-radio>-->
         <!--        </bk-radio-group>-->
-        <bk-radio-group style="margin-bottom: 24px;">
+        <bk-radio-group style="margin-bottom: 24px;" :value="true">
             <bk-radio :value="true">本应用表单</bk-radio>
         </bk-radio-group>
         <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="formModel" :rules="sourceRules">
@@ -196,7 +196,6 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             // 传入bk-form用来做表单校验
             formModel () {
-                console.log(this.localVal)
                 const { field, target } = this.localVal
                 return { field, formId: target.worksheet_id }
             }
@@ -247,7 +246,6 @@
                 }
             },
             async getFieldList (id) {
-                console.log(this.formList.find(item => item.id === id))
                 this.fieldList = JSON.parse(this.formList.find(item => item.id === id).content)
                 // try {
                 //     this.fieldListLoading = true
