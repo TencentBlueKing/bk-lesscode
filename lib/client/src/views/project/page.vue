@@ -85,10 +85,10 @@
                                         <i class="bk-drag-icon bk-drag-more-dot"></i>
                                     </span>
                                     <ul class="bk-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(page.id)">
-                                        <li><a href="javascript:;" @click="handleDownloadSource(page.content, page.id, page.styleSetting)">下载源码</a></li>
+                                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page.content, page.id, page.styleSetting)">下载源码</a></li>
                                         <li><a href="javascript:;" @click="handleRename(page)">重命名</a></li>
                                         <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
-                                        <li><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
+                                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
                                         <li><a href="javascript:;" @click="handleDelete(page)" :class="{ 'g-no-permission': !getDeletePerm(page) }" v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePerm(page) }">删除</a></li>
                                     </ul>
                                 </bk-dropdown-menu>
@@ -148,6 +148,7 @@
     import { getRouteFullPath } from 'shared/route'
     import typeSelect from '@/components/project/type-select'
     import dayjs from 'dayjs'
+    import { NOCODE_TYPE_MAP } from '@/common/constant'
     import relativeTime from 'dayjs/plugin/relativeTime'
     import 'dayjs/locale/zh-cn'
     dayjs.extend(relativeTime)
@@ -177,26 +178,7 @@
                 isLoading: true,
                 editRouteGroup: [],
                 pageType: 'ALL',
-                nocodeTypeMap: {
-                    title: {
-                        FORM: '表单页',
-                        FORM_MANAGE: '表单数据管理页',
-                        FLOW: '流程提单页',
-                        FLOW_MANAGE: '流程数据管理页'
-                    },
-                    color: {
-                        FORM: '#7573E6',
-                        FORM_MANAGE: '#3A9DFF',
-                        FLOW: '#5EA9AD',
-                        FLOW_MANAGE: '#71C26E'
-                    },
-                    bgColor: {
-                        FORM: '#E8E6FF',
-                        FORM_MANAGE: '#DAE9FD',
-                        FLOW: '#D8F4F5',
-                        FLOW_MANAGE: '#DAF5C8'
-                    }
-                }
+                nocodeTypeMap: NOCODE_TYPE_MAP
             }
         },
         computed: {
@@ -335,16 +317,50 @@
                 if (!this.getDeletePerm(page)) return
 
                 this.$bkInfo({
-                    title: '确认删除?',
-                    subTitle: `确认删除  “页面${page.pageName}”?`,
+                    width: 422,
+                    extCls: 'delete-page-dialog',
+                    title: `确认删除该${this.nocodeTypeMap.title[page.nocodeType] || '页面'}`,
+                    subHeader: this.getDeleteSubHeader(page.pageName, this.nocodeTypeMap.deleteTips[page.nocodeType] || ''),
                     theme: 'danger',
                     confirmFn: async () => {
                         await this.$store.dispatch('page/delete', {
                             pageId: page.id
                         })
+                        if (page.flowId && ['FLOW', 'FLOW_MANAGE'].includes(page.nocodeType)) {
+                            const params = {
+                                id: page.flowId,
+                                pageId: page.nocodeType === 'FLOW' ? '' : undefined,
+                                managePageIds: page.nocodeType === 'FLOW_MANAGE' ? '' : undefined
+                            }
+                            await this.$store.dispatch('nocode/flow/editFlow', params)
+                        }
                         this.getPageList()
                     }
                 })
+            },
+            getDeleteSubHeader (pageName, deleteTips) {
+                const h = this.$createElement
+                return h('div', {
+                    style: {
+                        'text-align': 'center',
+                        'margin-top': '-10px'
+                    }
+                }, [
+                    h('span', {
+                        style: {
+                            'color': '#979BA5',
+                            'font-size': '12px'
+                        }
+                    }, `页面：${pageName}`),
+                    h('div', {
+                        style: {
+                            'color': '#63656E',
+                            'margin-top': '10px',
+                            'text-align': 'left',
+                            'font-size': '14px'
+                        }
+                    }, deleteTips)
+                ])
             },
             getDeletePerm (page) {
                 return this.userPerm.roleId === 1 || this.user.username === page.createUser
@@ -453,6 +469,11 @@
     }
 </script>
 
+<style lang="postcss">
+    .delete-page-dialog .bk-info-box .bk-dialog-sub-header{
+        padding: 5px 24px;
+    }
+</style>
 <style lang="postcss" scoped>
     .form-manage-page-list {
         .form-manage-list {

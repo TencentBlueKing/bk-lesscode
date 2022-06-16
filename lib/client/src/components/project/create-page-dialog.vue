@@ -95,6 +95,7 @@
     import { compile } from 'path-to-regexp'
     import LayoutThumbList from '@/components/project/layout-thumb-list'
     import pageFromTemplate from './page-from-template.vue'
+    import { NOCODE_TYPE_MAP } from '@/common/constant'
 
     export default {
         name: 'page-from-template-dialog',
@@ -186,25 +187,8 @@
             },
             pageTitle () {
                 const platformType = this.platform === 'MOBILE' ? 'Mobile' : 'PC'
-                let pageType = '自定义'
-                if (this.nocodeType) {
-                    switch (this.nocodeType) {
-                        case 'FORM':
-                            pageType = '表单'
-                            break
-                        case 'FORM_MANAGE':
-                            pageType = '表单数据管理'
-                            break
-                        case 'FLOW':
-                            pageType = '流程提单'
-                            break
-                        case 'FLOW_MANAGE':
-                            pageType = '流程数据管理'
-                            break
-                        default:
-                    }
-                }
-                return `新建${platformType}${pageType}页面`
+                const pageType = NOCODE_TYPE_MAP.title[this.nocodeType] || '自定义页'
+                return `新建${platformType}${pageType}面`
             },
             layoutRoutePath () {
                 const { routePath } = this.selectedLayout
@@ -232,13 +216,17 @@
                     const layoutList = await this.$store.dispatch('layout/getList', { projectId: this.projectId, versionId: this.versionId })
                     
                     layoutList.forEach(item => {
-                        item.checked = item.isDefault === 1
+                        if (item.layoutType === 'MOBILE') {
+                            item.checked = item.type === 'mobile-empty'
+                        } else {
+                            item.checked = item.isDefault === 1
+                        }
                         item.defaultName = item.showName || item.defaultName
                         // 不需要显示选中态标签
                         item.isDefault = false
                     })
                     this.layoutList = layoutList
-                    this.selectedLayout = layoutList.find(item => item.checked) || this.showLayoutList[0]
+                    this.selectedLayout = this.showLayoutList.find(item => item.checked) || this.showLayoutList[0]
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',

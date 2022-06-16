@@ -63,7 +63,7 @@
                         </bk-option>
                         
                     </bk-option-group>
-                    <div slot="extension" class="extension">
+                    <!-- <div slot="extension" class="extension">
                         <div
                             class="page-row"
                             @click="handleNewPage('create')">
@@ -74,7 +74,7 @@
                             @click="handlePageFromTemplate">
                             <i class="bk-icon icon-plus-circle" /> 从模板新建页面
                         </div>
-                    </div>
+                    </div> -->
                 </bk-select>
             </div>
         </div>
@@ -89,6 +89,7 @@
         mapState,
         mapGetters
     } from 'vuex'
+    import { NOCODE_TYPE_MAP } from '@/common/constant'
     import PageDialog from '@/components/project/page-dialog'
     import PageFromTemplateDialog from '@/components/project/page-from-template-dialog'
 
@@ -178,19 +179,32 @@
              * @desc 页面切换
              */
             handlePageChange (pageId) {
-                if (!pageId || pageId === this.pageId) {
+                const page = this.pageList.find(item => item.id === pageId)
+                if (!pageId || pageId === this.pageId || !page.id) {
                     return
                 }
-                this.$bkInfo({
-                    title: '确认离开?',
-                    subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
-                    confirmFn: async () => {
-                        this.$router.push({
-                            params: {
-                                projectId: this.projectId,
-                                pageId
-                            }
-                        })
+                // 如果是离开routeName, 本身已经存在一次离开弹窗
+                const currentRouteName = this.$route.name
+                const toRouteName = NOCODE_TYPE_MAP?.toRouteName[page.nocodeType] || 'new'
+                if (currentRouteName === toRouteName) {
+                    this.$bkInfo({
+                        title: '确认离开?',
+                        subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                        confirmFn: async () => {
+                            this.toNewPage(page, toRouteName)
+                        }
+                    })
+                } else {
+                    this.toNewPage(page, toRouteName)
+                }
+            },
+            toNewPage (page, toRouteName) {
+                this.$router.push({
+                    name: toRouteName || 'new',
+                    params: {
+                        projectId: this.projectId,
+                        pageId: page.nocodeType !== 'FLOW' ? page.id : undefined,
+                        flowId: page.nocodeType === 'FLOW' ? page.flowId : undefined
                     }
                 })
             },
