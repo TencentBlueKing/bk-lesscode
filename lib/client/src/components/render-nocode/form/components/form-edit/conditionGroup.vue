@@ -28,8 +28,8 @@
                         @selected="change">
                         <bk-option
                             v-for="field in getConditionOptions(conditionItem.key)"
-                            :key="field.key"
-                            :id="field.key"
+                            :key="field.id"
+                            :id="field.id"
                             :name="field.name">
                         </bk-option>
                     </bk-select>

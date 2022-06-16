@@ -30,14 +30,17 @@
                 @page-limit-change="handlePageLimitChange">
                 <bk-table-column label="流程名称" property="flowName" show-overflow-tooltip :min-width="120">
                     <template slot-scope="{ row }">
-                        <router-link
+                        <!-- <router-link
                             class="link-btn"
                             :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
                             {{ row.flowName }}
-                        </router-link>
+                        </router-link> -->
+                        <span>{{ row.flowName }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="流程描述" property="summary" show-overflow-tooltip></bk-table-column>
+                <bk-table-column label="流程描述" property="summary" show-overflow-tooltip>
+                    <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
+                </bk-table-column>
                 <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip></bk-table-column>
                 <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip></bk-table-column>
                 <bk-table-column label="创建人" property="createUser"></bk-table-column>
@@ -55,7 +58,6 @@
                             content="恢复后，关联的流程提单页，流程数据管理页也一并恢复"
                             @confirm="handleRestoreConfirm">
                             <bk-button
-                                style="margin-left: 17px;"
                                 theme="primary"
                                 :text="true"
                                 @click="restoreId = row.id">

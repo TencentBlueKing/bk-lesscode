@@ -238,6 +238,7 @@
     "vue-content-loader": "~0.2.3",
     "vue-echarts": "^5.0.0-beta.0",
     "vue-eslint-parser": "~7.4.1",
+    "vue-fullscreen": "^2.6.1",
     "vue-json-viewer": "~2.2.11",
     "vue-loader": "~15.7.1",
     "vue-markdown-loader": "~2.4.1",

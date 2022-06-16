@@ -1,7 +1,7 @@
 <template>
-    <div :class="['field-form-item', { 'half-row': field.layout === 'COL_6' }]" v-if="isShow">
+    <div :class="['field-form-item', { 'half-row': field.layout === 'COL_6' }]">
         <div
-            v-if="showLabel && field.type !== 'DESC'"
+            v-if="showLabel && !['DESC','DIVIDER'].includes(field.type)"
             :class="['field-label', { required: field.validate_type === 'REQUIRE' }]">
             <span v-if="field.desc" v-bk-tooltips="field.desc" class="label-text has-desc">{{ field.name }}</span>
             <span v-else class="label-text">{{ field.name }}</span>
@@ -118,12 +118,6 @@
             // 默认规则设置为禁止填写 和 字段设置为禁止编辑的时候禁止编辑
             isDisabled () {
                 return this.field.is_readonly
-            },
-            isShow () {
-                if (this.field.show_conditions && this.field.show_conditions.connector) {
-                    return false
-                }
-                return true
             }
         }
         // beforeCreate() {

@@ -112,8 +112,7 @@
                     const id = this.flowNodeForms[this.nodeData.id]
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
-                    const code = data.tableName
-                    const formName = data.formName
+                    const { code, formName } = data.tableName
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                     this.formContentLoading = false
                 } catch (e) {

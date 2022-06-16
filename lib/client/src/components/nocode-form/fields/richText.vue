@@ -1,11 +1,12 @@
 <template>
     <div class="rich-text">
-        <rich-text-editor :value="val" :disabled="disabled" @change="change" @fullscreen="handleFullScreen">
+        <rich-text-editor :value="val" :disabled="disabled" @change="change" :is-full-screen="isFullScreen">
         </rich-text-editor>
     </div>
 </template>
 <script>
     import RichTextEditor from '../components/richTextEditor.vue'
+
     export default {
         name: 'RichText',
         components: {
@@ -23,11 +24,16 @@
             disabled: {
                 type: Boolean,
                 default: false
+            },
+            isFullScreen: {
+                type: Boolean,
+                default: false
             }
         },
         data () {
             return {
                 val: this.value
+
             }
         },
         watch: {
@@ -38,9 +44,6 @@
         methods: {
             change (val) {
                 this.$emit('change', val)
-            },
-            handleFullScreen () {
-                this.$emit('fullscreen')
             }
         }
     }

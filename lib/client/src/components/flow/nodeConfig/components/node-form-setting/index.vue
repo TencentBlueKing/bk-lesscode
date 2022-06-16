@@ -55,7 +55,7 @@
         <edit-form-panel
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
-            :has-create-ticket-page="hasCreateTicketPage"
+            :has-created-ticket-page="hasCreatedTicketPage"
             :flow-config="flowConfig"
             :form-config="formConfig"
             @save="handleCreateForm"
@@ -118,8 +118,8 @@
         computed: {
             ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
             ...mapGetters('page', ['pageDetail']),
-            hasCreateTicketPage () {
-                return typeof this.flowConfig.pageId === 'number'
+            hasCreatedTicketPage () {
+                return typeof this.flowConfig.pageId === 'number' && this.flowConfig.pageId !== 0
             }
         },
         created () {
