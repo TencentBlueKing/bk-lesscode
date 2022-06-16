@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        title="只读条件设置"
+        :title="`表格【${[title]}】只读条件设置`"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"
@@ -26,6 +26,10 @@
             show: {
                 type: Boolean,
                 default: false
+            },
+            title: {
+                type: String,
+                default: ''
             },
             value: {
                 type: Object,

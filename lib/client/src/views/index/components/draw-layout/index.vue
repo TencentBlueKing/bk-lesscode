@@ -29,7 +29,9 @@
         </div>
         <div
             v-if="!isDataManagePage"
-            :class="$style['collapsed-right-btn']"
+            :class="[$style['collapsed-right-btn'],{
+                [ $style['nocode-collapsed-right-btn']]: nocodeType === 'FORM'
+            }]"
             v-bk-tooltips.right="{
                 content: '查看组件配置',
                 disabled: !isRightCollapse
@@ -84,6 +86,10 @@
             .layout-left {
                 width: 0;
                 overflow: hidden;
+            }
+            .page-nocode-left-layout{
+              width: 0 !important;
+              overflow: hidden;
             }
             .collapsed-left-btn{
                 left: 0;
@@ -170,18 +176,55 @@
             }
         }
     }
-
     .page-nocode-left-layout{
       width: 300px !important;
       height: 100%;
       overflow: auto;
       background: #3a84ff;
+      border: 1px solid #DCDEE5;
+      box-shadow: 1px 0 0 0 #DCDEE5;
       @mixin scroller;
     }
     .page-nocode-layout{
       padding-left: 300px !important;
+      &.is-left-collapsed{
+        padding-left: 0 !important;
+        .collapsed-left-btn{
+          left: 0 !important;
+          :global(.bk-drag-angle-left){
+            transform: rotate(180deg);
+          }
+        }
+      }
+
+      &.is-right-collapsed{
+        padding-right: 0 !important;
+        .layout-right{
+          width: 0 !important;
+          overflow: hidden;
+          height: calc(100vh - 116px);
+        }
+        .collapsed-right-btn{
+          right:  0 !important;
+          :global(.bk-drag-angle-left){
+            transform: rotate(0deg);
+          }
+        }
+      }
+
     }
     .collapsed-nocode-left-btn{
       left: 300px !important;
+      width: 16px !important;
+      height: 64px !important;
+      background: #DCDEE5 !important;
+      border-radius: 0 4px  4px 0 !important;
     }
+    .nocode-collapsed-right-btn{
+      width: 16px !important;
+      height: 64px !important;
+      background: #DCDEE5 !important;
+      border-radius: 4px 0  0 4px!important;
+    }
+
 </style>

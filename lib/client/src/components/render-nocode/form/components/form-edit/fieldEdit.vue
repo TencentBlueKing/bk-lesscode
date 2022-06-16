@@ -3,7 +3,7 @@
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
-                    <rich-text @change="handleDescValueChange"></rich-text>
+                    <rich-text @change="handleDescValueChange" is-full-screen></rich-text>
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
@@ -296,18 +296,21 @@
         </bk-form>
         <read-only-dialog
             :field-list="list"
+            :title="fieldData.name"
             :show.sync="readerOnlyShow"
             :value="fieldData.read_only_conditions"
             @confirm="(val) => onConfirm('read_only_conditions',val)">
         </read-only-dialog>
         <require-dialog
             :field-list="list"
+            :title="fieldData.name"
             :show.sync="requireConfigShow"
             :value="fieldData.mandatory_conditions"
             @confirm="(val) => onConfirm('mandatory_conditions',val)">
         </require-dialog>
         <show-type-dialog
             :field-list="list"
+            :title="fieldData.name"
             :show.sync="showTypeShow"
             :value="fieldData.show_conditions"
             @confirm="(val) => onConfirm('show_conditions',val)">
@@ -674,6 +677,15 @@
   height: 100%;
   overflow: auto;
   @mixin scroller;
+  /deep/ .bk-form .bk-label{
+    font-size: 12px;
+  }
+  /deep/ .bk-form-radio{
+    font-size: 12px;
+  }
+  /deep/ .bk-form-checkbox .bk-checkbox-text{
+    font-size: 12px;
+  }
 }
 /deep/ .bk-form-control {
   & > .bk-form-radio,
@@ -714,7 +726,7 @@
 
     span {
       color: #3a84ff;
-
+      font-size: 12px;
       &:hover {
         cursor: pointer;
       }
@@ -757,7 +769,7 @@
   .file-list {
     margin-top: 10px;
     line-height: 25px;
-    font-size: 14px;
+    font-size: 12px;
     color: #424950;
 
     li {
@@ -782,7 +794,7 @@
 
 .add-chocie{
   color: #3a84ff;
-  font-size: 14px;
+  font-size: 12px;
   margin-top: 8px;
   &:hover{
     cursor: pointer;
@@ -804,12 +816,16 @@
     top: 0;
     left: -5px;
     font-size: 24px;
-    color: #979BA5;
+    color: #63656E;
     transition: all .1s linear;
   //transform: rotate(-270deg);
 
     &.floded {
       transform: rotate(-90deg);
+    }
+
+    &:hover{
+      cursor: pointer;
     }
   }
   span{

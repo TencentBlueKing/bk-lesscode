@@ -59,7 +59,8 @@
   }
   &:hover {
     background: #fafbfd;
-    border-color: #dcdee5;
+    border: 1px dashed #dcdee5;
+
   }
   &.half-row {
     width: 50%;

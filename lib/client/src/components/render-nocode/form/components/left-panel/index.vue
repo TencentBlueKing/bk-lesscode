@@ -14,6 +14,7 @@
         </div>
         <div class="fields-list-container">
             <div v-for="(group, index) in list" class="field-group" :key="index">
+                <bk-divider />
                 <div class="group-name">
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
@@ -23,7 +24,6 @@
                         @click="handleToggle(index,group.isFolded)" />
                     <span>{{ group.name }}</span>
                 </div>
-                <bk-divider />
                 <draggable
                     :class="['list-wrap', { 'disabled': disabled }]"
                     handle=".field-item"
@@ -120,7 +120,7 @@
 .side-panel {
   position: relative;
   height: 100%;
-  background: #fcfcfc;
+  box-shadow: 1px 0 0 0 #DCDEE5;
   z-index: 1;
 }
 
@@ -158,7 +158,7 @@
     top: 0;
     left: 0;
     font-size: 24px;
-    color: #979BA5;
+    color: #63656E;
     transition: all .1s linear;
     margin-right: 8px;
   //transform: rotate(-270deg);
@@ -166,10 +166,16 @@
     &.floded {
       transform: rotate(-90deg);
     }
+    &:hover{
+      cursor: pointer;
+    }
   }
   span{
     display: block;
-    margin-left: 8px;
+    position: absolute;
+    top: 0;
+    left: 28px;
+    line-height: 40px;
   }
 }
 .search-container{
