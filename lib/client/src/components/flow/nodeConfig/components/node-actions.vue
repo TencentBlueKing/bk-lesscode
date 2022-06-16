@@ -181,9 +181,10 @@
             async handleCreatePageConfirm () {
                 try {
                     const pageId = await this.$refs.createPageDialog.save()
-                    this.$store.commit('nocode/flow/setFlowConfig', { pageId })
-                    await this.updateFlowPageId(pageId)
-                    this.$emit('save')
+                    if (typeof pageId === 'number') {
+                        this.$store.commit('nocode/flow/setFlowConfig', { pageId })
+                        await this.updateFlowPageId(pageId)
+                    }
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {

@@ -10,7 +10,7 @@
                 <div
                     id="toolActionBox"
                     class="function-and-tool">
-                    <operation-select v-model="operationType" :hide-page-setting="hasCreateTicketPage"></operation-select>
+                    <operation-select v-model="operationType" :hide-page-setting="hasCreatedTicketPage"></operation-select>
                     <div class="spilt-line"></div>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
                     <action-tool :custom-save="true" @save="$emit('save', $event)"></action-tool>
@@ -50,7 +50,7 @@
             PageJson
         },
         props: {
-            hasCreateTicketPage: Boolean,
+            hasCreatedTicketPage: Boolean,
             flowConfig: {
                 type: Object,
                 default: () => ({})

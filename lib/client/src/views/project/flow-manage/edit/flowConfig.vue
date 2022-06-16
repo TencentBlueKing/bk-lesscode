@@ -16,6 +16,7 @@
                 :nodes="canvasData.nodes"
                 :lines="canvasData.lines"
                 :flow-id="serviceData.workflow_id"
+                :editable="editable"
                 @onNodeClick="handleNodeClick">
             </flow-canvas>
         </div>
@@ -72,6 +73,11 @@
                 createTicketNodeId: '',
                 nodeConfigPanelShow: false,
                 crtNode: null
+            }
+        },
+        computed: {
+            editable () {
+                return this.flowConfig.deleteFlag === 0
             }
         },
         created () {

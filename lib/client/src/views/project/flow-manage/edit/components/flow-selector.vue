@@ -11,7 +11,10 @@
             @selected="handleSelectFlow">
             <div class="selected-flow-trigger" slot="trigger">
                 <i class="prefix-icon bk-drag-icon bk-drag-flow-fill"></i>
-                <div class="flow-name">{{ flowConfig.flowName }}</div>
+                <div class="name-wrapper">
+                    <div class="flow-name" :title="flowConfig.flowName">{{ flowConfig.flowName }}</div>
+                    <span v-if="flowConfig.deleteFlag" class="archive-tag">已归档</span>
+                </div>
                 <i class="bk-select-angle bk-icon icon-angle-down" />
             </div>
             <bk-option
@@ -84,13 +87,28 @@
         color: #979ba5;
         font-size: 12px;
     }
-    .flow-name {
+    .name-wrapper {
+        display: flex;
+        align-items: center;
         flex: 2;
         margin-left: 10px;
         font-size: 14px;
         color: #313238;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        
+        .flow-name {
+            max-width: 218px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .archive-tag {
+        margin-left: 4px;
+        padding: 0 10px;
+        line-height: 22px;
+        background: #feebea;
+        border-radius: 2px;
+        font-size: 12px;
+        color: #ea3536;
     }
 </style>

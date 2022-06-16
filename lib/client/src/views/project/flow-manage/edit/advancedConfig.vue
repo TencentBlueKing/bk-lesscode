@@ -55,7 +55,7 @@
                     </bk-form-item>
                 </bk-form>
             </div>
-            <div class="extend-setting-btn">
+            <!-- <div class="extend-setting-btn">
                 <span class="trigger-area" @click="extendSettingOpen = !extendSettingOpen">
                     高级配置
                     <i :class="['bk-icon', 'icon-angle-double-down', { opened: extendSettingOpen }]"></i>
@@ -83,7 +83,7 @@
                     <h4>触发器</h4>
                     <div class="section-content"></div>
                 </div>
-            </template>
+            </template> -->
         </div>
         <div class="action-wrapper">
             <bk-button

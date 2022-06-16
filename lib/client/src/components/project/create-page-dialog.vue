@@ -235,7 +235,7 @@
                 }
             },
             handleConfirmClick () {
-                if (this.nocodeType === 'FLOW') {
+                if (['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.$emit('save')
                 } else {
                     this.save()
@@ -291,15 +291,7 @@
                     }
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
-                        if (this.nocodeType !== 'FLOW') {
-                            // 流程数据管理页，回写到flow表的managePageIds字段
-                            if (this.nocodeType === 'FLOW_MANAGE' && this.formData?.flowId) {
-                                const params = {
-                                    id: this.formData?.flowId,
-                                    managePageIds: res
-                                }
-                                await this.$store.dispatch('nocode/flow/editFlow', params)
-                            }
+                        if (!['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                             this.$bkMessage({
                                 theme: 'success',
                                 message: '新建页面成功'
