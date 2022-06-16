@@ -102,7 +102,6 @@
 </template>
 <script>
     import dayjs from 'dayjs'
-    import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
 
     export default {
@@ -140,7 +139,6 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
             }
@@ -153,7 +151,6 @@
                 this.listLoading = true
                 const params = {
                     projectId: this.projectId,
-                    versionId: this.versionId,
                     pageSize: this.pagination.limit,
                     page: this.pagination.current
                 }
@@ -179,8 +176,7 @@
                         const params = {
                             flowName,
                             summary,
-                            projectId: this.projectId,
-                            versionId: this.versionId
+                            projectId: this.projectId
                         }
                         await this.$store.dispatch('nocode/flow/createFlow', params)
                         this.handleCreateDialogClose()
@@ -202,7 +198,7 @@
                         id: this.archiveId,
                         deleteFlag: 1
                     }
-                    await this.$store.dispatch('nocode/flow/editFlow', params)
+                    await this.$store.dispatch('nocode/flow/archiveFlow', params)
                     this.archiveId = ''
                     if (this.flowList.length === 1 && this.pagination.current > 1) {
                         this.pagination.current -= 1
