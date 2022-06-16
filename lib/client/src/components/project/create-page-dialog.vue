@@ -247,7 +247,7 @@
                 }
             },
             handleConfirmClick () {
-                if (this.nocodeType === 'FLOW') {
+                if (['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.$emit('save')
                 } else {
                     this.save()
@@ -303,7 +303,7 @@
                     }
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
-                        if (this.nocodeType !== 'FLOW') {
+                        if (!['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                             this.$bkMessage({
                                 theme: 'success',
                                 message: '新建页面成功'

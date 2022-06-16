@@ -55,7 +55,7 @@
         <edit-form-panel
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
-            :has-create-ticket-page="hasCreateTicketPage"
+            :has-created-ticket-page="hasCreatedTicketPage"
             :flow-config="flowConfig"
             :form-config="formConfig"
             @save="handleCreateForm"
@@ -118,13 +118,13 @@
         computed: {
             ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
             ...mapGetters('page', ['pageDetail']),
-            hasCreateTicketPage () {
-                return typeof this.flowConfig.pageId === 'number'
+            hasCreatedTicketPage () {
+                return typeof this.flowConfig.pageId === 'number' && this.flowConfig.pageId !== 0
             }
         },
         created () {
             // 如果流程生成了提单页并且当前节点为第一个人工节点，则加载页面详情的上下文数据
-            if (this.nodeData.is_first_state && typeof this.flowConfig.pageId === 'number') {
+            if (this.nodeData.is_first_state && this.flowConfig.pageId === 'number') {
                 this.getPageDetail()
             }
         },

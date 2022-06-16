@@ -29,7 +29,7 @@
                 </bk-steps>
             </div>
             <div class="genarate-action">
-                <generate-data-manage-page></generate-data-manage-page>
+                <generate-data-manage-page v-if="!flowConfigLoading"></generate-data-manage-page>
             </div>
         </div>
         <div v-if="!serviceDataLoading" class="flow-edit-main">
