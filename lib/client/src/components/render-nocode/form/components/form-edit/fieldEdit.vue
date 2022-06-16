@@ -554,7 +554,7 @@
                     this.fieldData.api_info = val.api_info
                     this.fieldData.kv_relation = val.kv_relation
                 } else if (sourceType === 'WORKSHEET') {
-                    this.fieldData.meta.data_config = val
+                    this.fieldData.meta.data_config = val.localVal
                 }
                 this.change()
             },

@@ -8,9 +8,7 @@
         <!--            <bk-radio :value="true">本应用表单</bk-radio>-->
         <!--            <bk-radio :value="false">其他应用表单</bk-radio>-->
         <!--        </bk-radio-group>-->
-        <bk-radio-group
-            style="margin-bottom: 24px;"
-            :value="localVal.target.project_key === appId">
+        <bk-radio-group style="margin-bottom: 24px;">
             <bk-radio :value="true">本应用表单</bk-radio>
         </bk-radio-group>
         <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="formModel" :rules="sourceRules">
@@ -198,8 +196,9 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             // 传入bk-form用来做表单校验
             formModel () {
+                console.log(this.localVal)
                 const { field, target } = this.localVal
-                return { field, appId: target.project_key, formId: target.worksheet_id }
+                return { field, formId: target.worksheet_id }
             }
         },
         watch: {
@@ -210,11 +209,11 @@
                 }
             }
         },
-        created () {
+        async  created () {
             // this.getAppList()
-            this.getFormList()
+            await this.getFormList()
             if (this.value.target.worksheet_id) {
-                this.getFieldList()
+                this.getFieldList(this.value.target.worksheet_id)
             }
             // if (this.useVariable) {
             //     this.getRelationList()
@@ -242,14 +241,13 @@
                     }
                     const res = await this.$store.dispatch('nocode/formSetting/getFormList', params)
                     this.formList = res
-                    console.log(this.formList)
                     this.formListLoading = false
                 } catch (e) {
                     console.error(e)
                 }
             },
             async getFieldList (id) {
-                console.log(id)
+                console.log(this.formList.find(item => item.id === id))
                 this.fieldList = JSON.parse(this.formList.find(item => item.id === id).content)
                 // try {
                 //     this.fieldListLoading = true
@@ -393,12 +391,14 @@
 .worksheet-data-wrapper {
   .select-worksheet {
     display: flex;
-    align-items: center;
+    //align-items: center;
 
     .bk-form-item {
       margin-top: 0;
       flex: 1;
-
+      /deep/ .bk-form-content{
+        line-height: unset;
+      }
       &:not(:last-of-type) {
         margin-right: 10px;
       }
