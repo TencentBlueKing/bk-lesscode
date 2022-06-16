@@ -7,7 +7,7 @@
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
-                <bk-form-item label="是否展示文字">
+                <bk-form-item label="展示文字">
                     <bk-input v-model.trim="fieldData.default" :disabled="disabled" @change="change"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="文字位置">
@@ -554,7 +554,7 @@
                     this.fieldData.api_info = val.api_info
                     this.fieldData.kv_relation = val.kv_relation
                 } else if (sourceType === 'WORKSHEET') {
-                    this.fieldData.meta.data_config = val
+                    this.fieldData.meta.data_config = val.localVal
                 }
                 this.change()
             },
