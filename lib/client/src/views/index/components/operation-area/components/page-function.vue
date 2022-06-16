@@ -32,6 +32,7 @@
                                 :class="`form-component ${field.type}`"
                                 :choosen-function="editField.value"
                                 @change="(val) => chooseFunction(editField, val)"
+                                @clear="chooseFunction(editField, '')"
                             />
                             <div class="buttons">
                                 <bk-button text size="small" theme="primary"

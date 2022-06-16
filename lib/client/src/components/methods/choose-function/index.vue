@@ -81,7 +81,9 @@
                                                 :key="functionData.funcName"
                                                 @click="handleChooseFunction(functionData.funcCode)"
                                             >
-                                                <span class="function-item-name" v-bk-overflow-tips>{{ functionData.funcCode }}</span>
+                                                <span class="function-item-name" v-bk-overflow-tips>
+                                                    {{ functionData.funcName }}（{{ functionData.funcCode }}）
+                                                </span>
                                                 <i
                                                     class="bk-icon icon-edit-line function-tool mt10"
                                                     @click.stop="handleEditFunction(functionData)"
@@ -318,7 +320,8 @@
             },
 
             handleClear () {
-                this.handleChooseFunction('')
+                this.renderChoosenFunction.methodCode = ''
+                this.$emit('clear')
             }
         }
     }

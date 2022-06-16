@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="stat">{{ page.updateUser || page.createUser }} {{ getRelativeTime(page.updateTime) }}更新</div>
                             </div>
-                            <div class="col">
+                            <div class="col" v-if="page.nocodeType !== 'FLOW'">
                                 <bk-dropdown-menu :ref="`moreActionDropdown${page.id}`">
                                     <span slot="dropdown-trigger" class="more-menu-trigger">
                                         <i class="bk-drag-icon bk-drag-more-dot"></i>
@@ -87,8 +87,8 @@
                                     <ul class="bk-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(page.id)">
                                         <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page.content, page.id, page.styleSetting)">下载源码</a></li>
                                         <li><a href="javascript:;" @click="handleRename(page)">重命名</a></li>
-                                        <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
                                         <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
+                                        <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
                                         <li><a href="javascript:;" @click="handleDelete(page)" :class="{ 'g-no-permission': !getDeletePerm(page) }" v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePerm(page) }">删除</a></li>
                                     </ul>
                                 </bk-dropdown-menu>

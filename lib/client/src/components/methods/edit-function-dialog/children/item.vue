@@ -1,6 +1,8 @@
 <template>
     <li :class="['func-item', { select: functionData.funcName === chosenFunctionName }]" @click="handleChooseFunction">
-        <span class="func-name" :title="`${functionData.funcName}(${functionData.funcCode})`">{{ functionData.funcName }}</span>
+        <span class="func-name" :title="`${functionData.funcName}(${functionData.funcCode})`">
+            {{ functionData.funcName }}（{{ functionData.funcCode }}）
+        </span>
         <template v-if="functionData.id">
             <i
                 class="bk-drag-icon bk-drag-copy item-tool hover-show"

@@ -15,6 +15,7 @@
         :choosen-function="eventValue"
         :function-templates="eventConfig.functionTemplates"
         @change="handleChangeEvent"
+        @clear="handleClearEvent"
     >
         <template v-slot:header>
             <h3 class="event-title">
@@ -56,6 +57,12 @@
             handleChangeEvent (eventValue) {
                 this.$emit('update', {
                     [this.eventName]: eventValue
+                })
+            },
+
+            handleClearEvent () {
+                this.$emit('update', {
+                    [this.eventName]: ''
                 })
             },
 

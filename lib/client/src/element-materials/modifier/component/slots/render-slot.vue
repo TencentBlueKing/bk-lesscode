@@ -81,25 +81,28 @@
             :remote-validate="describe.remoteValidate"
             :slot-val="slotVal"
             :slot-config="describe"
+            :type="formData.valueType"
             :change="handleCodeChange" />
     </variable-select>
 </template>
 
 <script>
     import _ from 'lodash'
+    import { mapActions } from 'vuex'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import variableSelect from '@/components/variable/variable-select'
     import chooseBuildInVariable from '@/components/variable/choose-build-in-variable'
     import {
-        determineShowSlotInnerVariable
+        determineShowSlotInnerVariable,
+        BUILDIN_VARIABLE_TYPE_LIST
     } from 'shared/variable'
 
     import {
         getDefaultValueByType,
         isEmpty,
         toPascal
-    } from '../utils'
+    } from 'shared/util'
 
     import slotList from './components/list'
     import slotRemote from './components/remote'
@@ -336,10 +339,11 @@
             }
         },
         methods: {
+            ...mapActions('variable', ['updateVariable']),
             /**
              * @desc 同步更新用户操作
              */
-            triggerChange (from) {
+            triggerChange () {
                 // 缓存用户本地编辑值
                 this.slotTypeValueMemo[this.formData.valueType] = {
                     val: this.formData.renderValue,
@@ -382,7 +386,7 @@
                     code,
                     renderValue
                 })
-                this.triggerChange('format')
+                this.triggerChange()
             },
             /**
              * @desc slot 组件类型切换
@@ -408,9 +412,9 @@
                     'data-source',
                     'select-data-source'
                 ].includes(valueType)) {
-                    // 配置远程函数类型，
-                    // 此时还没有获取API数据使用默认值
-                    code = _.cloneDeep(this.defaultValue)
+                    // 切换到数据表和远程函数此时还没有获取API数据
+                    // code 和 rendervalue 保持不变
+                    code = _.cloneDeep(this.formData.renderValue)
                 } else {
                     // 切换值类型时，通过类型获取默认值
                     code = getDefaultValueByType(valueType)
@@ -422,12 +426,16 @@
                     renderValue: code
                 })
                 this.triggerChange()
+                this.triggerUpdateVariable()
             },
             /**
              * @desc format 等于 value 时，编辑 code 的值
              * @param { Object } valueData
              */
-            handleCodeChange (valueData) {
+            handleCodeChange (valueData, type) {
+                // 快速切换的情况下，如果type对不上，就不更新
+                if (this.formData.valueType !== type) return
+
                 let code = null
                 let renderValue = this.formData.renderValue
                 
@@ -455,6 +463,7 @@
                 })
                 
                 this.triggerChange()
+                this.triggerUpdateVariable()
             },
             /**
              * 切换展示 slot 配置区域
@@ -472,6 +481,15 @@
                     payload: Object.assign(this.formData.payload, payload)
                 })
                 this.triggerChange()
+                this.triggerUpdateVariable()
+            },
+            // 如果是自定义变量需要更新变量列表
+            triggerUpdateVariable () {
+                if (this.formData.buildInVariableType === BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
+                    this.updateVariable({
+                        [this.formData.payload.customVariableCode]: this.formData.renderValue
+                    })
+                }
             }
         }
     }
