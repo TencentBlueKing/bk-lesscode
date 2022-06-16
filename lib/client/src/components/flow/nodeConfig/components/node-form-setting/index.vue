@@ -124,7 +124,7 @@
         },
         created () {
             // 如果流程生成了提单页并且当前节点为第一个人工节点，则加载页面详情的上下文数据
-            if (this.nodeData.is_first_state && this.flowConfig.pageId === 'number') {
+            if (this.nodeData.is_first_state && typeof this.flowConfig.pageId === 'number') {
                 this.getPageDetail()
             }
         },
