@@ -2,7 +2,7 @@
     <div class="table">
         <bk-table :data="val" size="small" :outer-border="isHaveBorder" :max-height="maxHeight">
             <template v-for="col in field.choice">
-                <bk-table-column :label="col.name" :key="col.key + col.name">
+                <bk-table-column :label="col.name" :key="col.key + col.name" :render-header="(h, data) => renderTableHeader(h, data,col)">
                     <template slot-scope="props">
                         <bk-input
                             v-if="!viewMode && !disabled"
@@ -106,9 +106,29 @@
                 this.val.splice(index, 1)
                 this.change()
             },
+            renderTableHeader (h, data, row) {
+                return (<span >{ data.column.label }{row.required ? <span class="require"></span> : ''}</span>)
+            },
             change () {
                 this.$emit('change', deepClone(this.val))
             }
         }
     }
 </script>
+
+<style lang="postcss">
+.require{
+  &:after{
+    content:'*';
+    display:inline-block;
+    position:absolute;
+    top:50%;
+    height:8px;
+    line-height:1;
+    font-size:12px;
+    color:#ea3636;
+    -webkit-transform:translate(3px, -50%);
+    transform:translate(3px, -50%);
+  }
+}
+</style>

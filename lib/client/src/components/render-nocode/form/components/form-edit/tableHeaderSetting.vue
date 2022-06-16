@@ -57,7 +57,6 @@
                 this.$emit('remove', index)
             },
             handleChange ($event, index) {
-                console.log($event, index)
                 this.$emit('update', $event, index)
             },
             change () {
