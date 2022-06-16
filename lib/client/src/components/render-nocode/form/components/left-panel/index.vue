@@ -1,21 +1,58 @@
 <template>
     <!--    <div>form-material</div>-->
     <div class="side-panel">
-        <div class="search-container">
+        <div class="search-container" v-bk-clickoutside="handleHideDropList">
             <bk-input
                 clearable
                 :placeholder="'组件名称'"
                 :input-style="{ background: '#F5F7FA' }"
                 :right-icon="'bk-icon icon-search'"
-                v-model="searchValue"
-                @enter="handleSearch"
-                @clear="handleResetField">
+                v-model.trim="searchValue"
+                @change="handleSearch"
+                @clear="handleResetField"
+                @keydown="handleKeydown"
+                @focus="handleShowDropList"
+                :native-attributes="{
+                    spellcheck: false
+                }">
             </bk-input>
+            <div
+                v-if="isShowList"
+                class="search-dropdown-list">
+                <ul
+                    v-if="renderList.length"
+                    ref="searchListContainer"
+                    :style="{
+                        'max-height': `${contentMaxHeight}px`
+                    }"
+                    class="outside-ul">
+                    <li
+                        v-for="(data, index) in renderList"
+                        class="search-dropdown-list-item"
+                        :class="{
+                            hover: selectedIndex === index
+                        }"
+                        :key="index"
+                        @click="handleSelect(data)">
+                        {{data.name}}
+                    </li>
+                </ul>
+                <ul
+                    v-else
+                    :style="{
+                        'max-height': `${contentMaxHeight}px`
+                    }"
+                    class="outside-ul">
+                    <li class="search-dropdown-list-item">
+                        <span class="text">没有找到</span>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="fields-list-container">
             <div v-for="(group, index) in list" class="field-group" :key="index">
                 <bk-divider />
-                <div class="group-name">
+                <div class="group-name" v-if="group.items.length">
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                         :class="{
@@ -45,12 +82,6 @@
                         </li>
                     </template>
                 </draggable>
-                <bk-exception
-                    class="exception-wrap-item exception-part"
-                    type="empty"
-                    scene="part"
-                    v-else>
-                </bk-exception>
             </div>
         </div>
     </div>
@@ -59,7 +90,8 @@
 <script>
     import draggable from 'vuedraggable'
     import { FIELDS_TYPES } from '../../constant/forms'
-
+    import _ from 'lodash'
+    const LAYOUT = ['DESC', 'DIVIDER']
     export default {
         components: {
             draggable
@@ -70,12 +102,15 @@
         data () {
             return {
                 list: this.getGroupedFields(FIELDS_TYPES),
-                searchValue: ''
+                searchValue: '',
+                isShowList: '',
+                selectedIndex: 0,
+                contentMaxHeight: 300,
+                renderList: []
             }
         },
         methods: {
             getGroupedFields (fieldsArr) {
-                const layout = ['DESC', 'DIVIDER']
                 const group = [
                     {
                         name: '布局控件',
@@ -89,7 +124,7 @@
                     }
                 ]
                 fieldsArr.forEach(item => {
-                    if (layout.includes(item.type)) {
+                    if (LAYOUT.includes(item.type)) {
                         group[0].items.push(item)
                     } else {
                         group[1].items.push(item)
@@ -106,17 +141,107 @@
             handleToggle (index, isFolded) {
                 this.$set(this.list[index], 'isFolded', !isFolded)
             },
-            handleSearch () {
-                const tempField = FIELDS_TYPES.filter(item => item.name.includes(this.searchValue))
-                this.list = this.getGroupedFields(tempField)
+            handleSearch: _.debounce(function () {
+                if (!this.searchValue) {
+                    this.handleResetField()
+                    return
+                }
+                this.filterRenderList()
+            }, 300),
+            filterRenderList () {
+                this.renderList = FIELDS_TYPES.filter(item => item.name.includes(this.searchValue))
+                this.isShowList = true
             },
             handleResetField () {
                 this.list = this.getGroupedFields(FIELDS_TYPES)
+                this.isShowList = true
+                this.handleHideDropList()
+            },
+            handleShowDropList () {
+                if (this.searchValue) {
+                    this.filterRenderList()
+                }
+            },
+            handleHideDropList () {
+                this.isShowList = false
+                this.selectedIndex = 0
+            },
+            handleKeydown (value, e) {
+                const keyCode = e.keyCode
+                const length = this.renderList.length
+                switch (keyCode) {
+                    // 上
+                    case 38:
+                        e.preventDefault()
+                        if (this.selectedIndex === -1 || this.selectedIndex === 0) {
+                            this.selectedIndex = length - 1
+                            this.$refs.searchListContainer.scrollTop = this.$refs.searchListContainer.scrollHeight
+                        } else {
+                            this.selectedIndex--
+                            this.$nextTick(() => {
+                                const curSelectNode = this.$refs.searchListContainer.querySelector('li.hover')
+                                const offsetTop = curSelectNode.offsetTop
+                                if (offsetTop < this.$refs.searchListContainer.scrollTop) {
+                                    this.$refs.searchListContainer.scrollTop -= 32
+                                }
+                            })
+                        }
+                        break
+                    // 下
+                    case 40:
+                        e.preventDefault()
+                        if (this.selectedIndex < length - 1) {
+                            this.selectedIndex++
+                            this.$nextTick(() => {
+                                const curSelectNode = this.$refs.searchListContainer.querySelector('li.hover')
+                                const offsetTop = curSelectNode.offsetTop
+                                // this.$refs.searchListContainer 上下各有 6px 的 padding
+                                if (offsetTop > this.contentMaxHeight - 2 * 6) {
+                                    // 每一个 item 是 32px height
+                                    this.$refs.searchListContainer.scrollTop += 32
+                                }
+                            })
+                        } else {
+                            this.selectedIndex = 0
+                            this.$refs.searchListContainer.scrollTop = 0
+                        }
+                        break
+                    case 13:
+                        e.preventDefault()
+                        const item = this.renderList[this.selectedIndex]
+                        if (item) {
+                            this.handleSelect(item)
+                        }
+                        break
+                    default:
+                        break
+                }
+            },
+            handleSelect (data) {
+                this.handleHideDropList()
+                this.searchValue = data.name
+                const group = [
+                    {
+                        name: '布局控件',
+                        items: [],
+                        isFolded: false
+                    },
+                    {
+                        name: '基础控件',
+                        items: [],
+                        isFolded: false
+                    }
+                ]
+                LAYOUT.includes(data.type) ? group[0].items.push(data) : group[1].items.push(data)
+                this.list = group
             }
+
         }
     }
 </script>
 <style lang="postcss" scoped>
+@import "@/css/mixins/scroller";
+@import "@/css/mixins/ellipsis";
 .side-panel {
   position: relative;
   height: 100%;
@@ -180,6 +305,62 @@
 }
 .search-container{
   padding: 12px;
+  position: relative;
+  .search-dropdown-list {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    margin-top: 5px;
+    box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    background-color: #fff;
+    z-index: 100;
+    overflow-y: hidden;
+    .outside-ul {
+      @mixin scroller;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+    .search-dropdown-list-item {
+      position: relative;
+      width: 100%;
+      border-left: #c4c6cc;
+      border-right: #c4c6cc;
+      background-color: #fff;
+      cursor: pointer;
+      height: 32px;
+      line-height: 32px;
+      padding: 0 10px;
+      color: #63656E;
+      font-size: 14px;
+      .text {
+        @mixin ellipsis 100%;
+        em {
+          font-style: normal;
+          color: #3a84ff;
+        }
+      }
+      &:first-child {
+        border-top: #c4c6cc;
+      }
+      &:last-child {
+        border-bottom: #c4c6cc;
+      }
+      &:hover,
+      &.hover {
+        background-color: #e1ecff;
+      }
+    }
+  }
+  .bk-tooltip.search-dropdown {
+    display: block;
+    &>.bk-tooltip-ref {
+      display: block;
+    }
+  }
 }
 
 /deep/ .bk-divider {
