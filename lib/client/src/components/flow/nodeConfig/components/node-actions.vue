@@ -138,8 +138,6 @@
             async handleSaveClick (createPage = false) {
                 try {
                     const result = await this.$parent.validate()
-                    console.log('save', result)
-                    debugger
                     if (!result) {
                         return
                     }
