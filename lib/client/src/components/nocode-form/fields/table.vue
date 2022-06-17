@@ -86,9 +86,6 @@
                 this.val = this.getLocalVal(val)
             }
         },
-        created () {
-            console.log(this.field)
-        },
         methods: {
             getLocalVal (value) {
                 const val = deepClone(value)
