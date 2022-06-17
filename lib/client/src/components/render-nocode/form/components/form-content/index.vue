@@ -201,6 +201,7 @@
   @mixin scroller;
   height: 100%;
   overflow: auto;
+  padding-bottom: 24px;
   background: #ffffff;
   &.hover {
     outline: 2px dashed #1768ef;
@@ -230,8 +231,10 @@
 .fields-empty {
   margin: 24px 24px 0;
   height: 48px;
+/*
   background: #FAFBFD;
   border: 1px dashed #C4C6CC;
+  */
   font-size: 12px;
   color: #63656E;
   text-align: center;
