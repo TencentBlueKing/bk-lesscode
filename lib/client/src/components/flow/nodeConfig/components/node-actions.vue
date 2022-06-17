@@ -180,6 +180,7 @@
                     if (typeof pageId === 'number') {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
+                        this.$emit('save')
                     }
                 } catch (e) {
                     messageError(e.message || e)

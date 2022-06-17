@@ -10,21 +10,17 @@
                 <div
                     id="toolActionBox"
                     class="function-and-tool">
-                    <operation-select v-model="operationType" :hide-page-setting="hasCreatedTicketPage"></operation-select>
+                    <operation-select v-model="operationType" :hide-setting="hideSetting"></operation-select>
                     <div class="spilt-line"></div>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
-                    <action-tool :custom-save="true" @save="$emit('save', $event)"></action-tool>
+                    <action-tool :custom-save="true" :hide-save="hideSave" :hide-clear="hideClear" @save="$emit('save', $event)"></action-tool>
                 </div>
                 <extra-links></extra-links>
             </div>
             <div class="edit-content-wrapper">
-                <nocode-form
-                    v-if="operationType === 'edit'"
-                    :content="formConfig.content"
-                    :disabled="formConfig.type === 'USE_FORM'">
-                </nocode-form>
-                <page-setting v-else-if="operationType === 'setting'"></page-setting>
-                <page-json v-else-if="operationType === 'jsonSource'"></page-json>
+                <nocode-form v-show="operationType === 'edit'" :disabled="formConfig.type === 'USE_FORM'"></nocode-form>
+                <page-setting v-if="operationType === 'setting'"></page-setting>
+                <page-json v-else-if="operationType === 'jsonSource'" style="height: 100%;"></page-json>
             </div>
         </div>
     </div>
@@ -50,7 +46,9 @@
             PageJson
         },
         props: {
-            hasCreatedTicketPage: Boolean,
+            hideSetting: Boolean,
+            hideSave: Boolean,
+            hideClear: Boolean,
             flowConfig: {
                 type: Object,
                 default: () => ({})
@@ -64,6 +62,9 @@
             return {
                 operationType: 'edit'
             }
+        },
+        created () {
+            this.$store.commit('nocode/formSetting/setFieldsList', this.formConfig.content)
         },
         methods: {
             close () {

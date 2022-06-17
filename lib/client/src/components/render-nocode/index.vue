@@ -13,6 +13,7 @@
     import RenderDataManage from './data-manage'
 
     export default {
+        name: 'RenderNocode',
         components: {
             RenderFlow,
             RenderForm,
