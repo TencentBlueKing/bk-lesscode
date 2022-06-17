@@ -12,7 +12,7 @@
                 </bk-form-item>
                 <bk-form-item label="处理人" :required="true">
                     <processors
-                        ref="processorForm"
+                        ref="processorsForm"
                         :value="processorData"
                         :workflow-id="nodeData.workflow"
                         :node-id="nodeData.id"
@@ -69,9 +69,7 @@
         },
         computed: {
             ...mapGetters('nocode/flow/', ['flowNodeForms']),
-            ...mapGetters('nocode/nodeConfig', [
-                'processorData'
-            ]),
+            ...mapGetters('nocode/nodeConfig', ['processorData']),
             ...mapState('nocode/nodeConfig', [
                 'nodeData',
                 'formConfig'
@@ -112,7 +110,7 @@
                     const id = this.flowNodeForms[this.nodeData.id]
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
-                    const { code, formName } = data.tableName
+                    const { tableName: code, formName } = data
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                     this.formContentLoading = false
                 } catch (e) {
@@ -126,13 +124,12 @@
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)
             },
             validate () {
-                return this.$refs.basicForm.validate().then(() => {
-                    if (this.$refs.processorForm.validate()) {
-                        return this.$refs.formSetting.validate()
-                    } else {
-                        return false
-                    }
-                }).catch(() => {
+                return Promise.all([
+                    this.$refs.basicForm.validate(),
+                    this.$refs.processorsForm.validate()
+                ]).then((result) => {
+                    return result.every(item => item === true)
+                }).catch((e) => {
                     return false
                 })
             }
