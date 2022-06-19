@@ -16,6 +16,7 @@
         <variable-form
             :is-show.sync="variableFormData.isShow"
             :form-data="variableFormData.formData"
+            @success-save="getList"
         />
     </article>
 </template>

@@ -1,6 +1,11 @@
 <template>
     <div class="table-fields-wrapper">
-        <bk-table ref="fieldsTable" :data="emptyData">
+        <bk-table ref="fieldsTable"
+            header-row-class-name="custom-table-header"
+            :data="emptyData"
+            :outer-border="false">
+            <bk-table-column type="selection" width="60" fixed="left">
+            </bk-table-column>
             <bk-table-column
                 v-for="field in colFields"
                 :key="field.key"
@@ -113,44 +118,67 @@
     }
 </script>
 <style lang="postcss" scoped>
-    >>> .bk-link-text {
-        font-size: 12px;
-        cursor: text;
+>>> .bk-link-text {
+  font-size: 12px;
+  cursor: text;
+}
+>>> .bk-table:before{
+  background-color: #F0F1F5
+}
+
+>>> .bk-table-column-setting{
+  border-left: none;
+}
+.table-setting-wrapper {
+  width: 422px;
+
+  .title {
+    padding: 0 24px;
+    margin: 0;
+    line-height: 32px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #313238;
+  }
+
+  .field-content-wrapper {
+    padding: 24px;
+    max-height: 500px;
+    overflow: auto;
+  }
+
+  .field-title {
+    margin-bottom: 9px;
+    font-size: 14px;
+    color: #313238;
+  }
+
+  .bk-form-checkbox {
+    margin-right: 24px;
+    margin-bottom: 10px;
+  }
+
+  .btn-area {
+    padding: 0 24px;
+    height: 50px;
+    line-height: 50px;
+    text-align: right;
+    border-top: 1px solid #dcdee5;
+    background: #fafbfd;
+
+    .bk-button {
+      margin-left: 4px;
     }
-    .table-setting-wrapper {
-        width: 422px;
-        .title {
-            padding: 0 24px;
-            margin: 0;
-            line-height: 32px;
-            font-size: 16px;
-            font-weight: 400;
-            color: #313238;
-        }
-        .field-content-wrapper {
-            padding: 24px;
-            max-height: 500px;
-            overflow: auto;
-        }
-        .field-title {
-            margin-bottom: 9px;
-            font-size: 14px;
-            color: #313238;
-        }
-        .bk-form-checkbox {
-            margin-right: 24px;
-            margin-bottom: 10px;
-        }
-        .btn-area {
-            padding: 0 24px;
-            height: 50px;
-            line-height: 50px;
-            text-align: right;
-            border-top: 1px solid #dcdee5;
-            background: #fafbfd;
-            .bk-button {
-                margin-left: 4px;
-            }
-        }
-    }
+  }
+}
+
+</style>
+
+<style lang="postcss">
+.custom-table-header {
+  th {
+    background: #F0F1F5 ;
+
+  }
+}
 </style>

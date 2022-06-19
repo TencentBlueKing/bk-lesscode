@@ -12,7 +12,7 @@ import {
 
 const requireRule = {
     required: true,
-    message: '属性名是必填项，请修改后重试',
+    message: '参数名是必填项，请修改后重试',
     trigger: 'blur'
 }
 
@@ -217,12 +217,33 @@ const SingleSchemeComponent = defineComponent({
                             theme="light"
                         >
                             {
-                                this.copyScheme.type === API_PARAM_TYPES.ARRAY.VAL
-                            || (this.copyScheme.name === 'items' && this.copyScheme.type !== API_PARAM_TYPES.OBJECT.VAL)
-                                    ? ''
-                                    : <i
+                                this.copyScheme.type === API_PARAM_TYPES.OBJECT.VAL
+                                && ['root', 'items'].includes(this.copyScheme.name)
+                                    ? <i
+                                        class="bk-icon icon-plus-circle layout-icon"
+                                        onClick={this.plusChildProperty}
+                                    ></i>
+                                    : ''
+                            }
+                            {
+                                [
+                                    API_PARAM_TYPES.BOOLEAN.VAL,
+                                    API_PARAM_TYPES.NUMBER.VAL,
+                                    API_PARAM_TYPES.STRING.VAL
+                                ].includes(this.copyScheme.type)
+                                    ? <i
+                                        class="bk-icon icon-plus-circle layout-icon"
+                                        onClick={this.handlePlusBrotherProperty}
+                                    ></i>
+                                    : ''
+                            }
+                            {
+                                this.copyScheme.type === API_PARAM_TYPES.OBJECT.VAL
+                                && !['root', 'items'].includes(this.copyScheme.name)
+                                    ? <i
                                         class="bk-icon icon-plus-circle layout-icon"
                                     ></i>
+                                    : ''
                             }
                             <div slot="content">
                                 {
@@ -232,7 +253,7 @@ const SingleSchemeComponent = defineComponent({
                                             text
                                             onClick={this.handlePlusBrotherProperty}
                                         >
-                                    添加兄弟节点
+                                            添加参数
                                         </bk-button>
                                         : ''
                                 }
@@ -243,7 +264,7 @@ const SingleSchemeComponent = defineComponent({
                                             text
                                             onClick={this.plusChildProperty}
                                         >
-                                    添加子节点
+                                            添加属性
                                         </bk-button>
                                         : ''
                                 }

@@ -18,14 +18,14 @@
                 :form-data="formData"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">请求参数模型（{{ paramKey }}）</h3>
+            <h3 class="api-form-title">默认请求参数</h3>
             <render-param
                 class="api-form"
                 ref="paramRef"
                 :form-data="formData"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">返回结果模型</h3>
+            <h3 class="api-form-title">请求响应示例</h3>
             <render-response
                 class="api-form"
                 ref="responseRef"
@@ -145,7 +145,7 @@
                             resolve(res)
                         })
                         .catch((err) => {
-                            messageError(err.message || err)
+                            messageError(err.content || err.message || err)
                             reject(err.message || err)
                         })
                 })

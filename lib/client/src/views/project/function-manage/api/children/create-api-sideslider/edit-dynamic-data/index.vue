@@ -50,7 +50,7 @@
 
         setup (props, { emit }) {
             const panels = [
-                { name: 'edit', label: '模板' },
+                { name: 'edit', label: 'query' },
                 { name: 'preview', label: '预览' }
             ]
             const activeTab = ref('edit')

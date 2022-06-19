@@ -7,6 +7,11 @@
                     floded: isFolded
                 }" />
             <span>{{ groupName }}</span>
+            <div
+                v-if="$slots.tag"
+                class="tag">
+                <slot name="tag" />
+            </div>
         </div>
         <template v-if="!isFolded">
             <bk-exception
@@ -145,6 +150,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             cursor: pointer;
+            overflow: hidden;
             .toggle-arrow{
                 position: absolute;
                 top: 7px;
@@ -155,6 +161,18 @@
                 &.floded{
                     transform: rotate(-90deg);
                 }
+            }
+            .tag{
+                position: absolute;
+                top: -8px;
+                left: -26px;
+                width: 64px;
+                height: 30px;
+                font-size: 12px;
+                color: #fff;
+                background: #3A84FF;
+                transform: rotateZ(-45deg) scale(0.667);
+                text-align: center;
             }
         }
         .group-list-empty{

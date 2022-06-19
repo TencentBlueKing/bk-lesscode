@@ -38,7 +38,7 @@
                 </bk-table-column>
                 <bk-table-column label="方法" prop="method" show-overflow-tooltip>
                     <template slot-scope="props">
-                        <span>{{ props.row.method || '--' }}</span>
+                        <span :class="[props.row.method, 'api-type']">{{ firstUpperCase(props.row.method) }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column label="路径" prop="url" show-overflow-tooltip>
@@ -334,6 +334,10 @@
                 this.apiModel.title = title
                 this.apiModel.show = true
                 this.apiModel.jsonValue = JSON.stringify(parseJsonScheme2JsonValue(model), null, 4)
+            },
+
+            firstUpperCase (val) {
+                return val?.replace(/.?/, x => x.toUpperCase())
             }
         }
     }
@@ -421,6 +425,25 @@
                     margin-right: 10px;
                 }
             }
+        }
+    }
+
+    .api-type {
+        display: inline-block;
+        text-align: center;
+        width: 48px;
+        height: 22px;
+        line-height: 22px;
+        border-radius: 2px;
+        background: #cde8fb;
+        &.delete {
+            background: #f8d8d4;
+        }
+        &.put {
+            background: #fff2c9;
+        }
+        &.post {
+            background: #dbd4ed;
         }
     }
 </style>

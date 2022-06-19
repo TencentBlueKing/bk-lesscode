@@ -8,8 +8,9 @@
             @change="trigger">
             <bk-popover
                 v-for="(item, index) in column"
-                class="list-item"
                 :key="`option${index}`"
+                ref="tablePopover"
+                class="list-item"
                 placement="left-start"
                 trigger="click"
                 theme="light"
@@ -38,9 +39,9 @@
                             <div class="template-item">
                                 <div class="label">
                                     <span
-                                        class="show-tip"
+                                        class="g-config-subline"
                                         v-bk-tooltips="{
-                                            content: '可输入html模板或vue template，<br>`props.row`作为内置变量代表表格每一行的数据，如`props.row.id`代表每一行的id字段，<br>也可以在此处调用函数库已有的函数（若使用了函数库函数，需在模板绑定函数项勾选用到的函数），<br>如默认值demo即可实现一项编辑操作列'
+                                            content: '1. 可输入 html模板或 vue template<br>2. `props.row`作为内置变量代表表格每一行的数据，如`props.row.id`代表每一行的id字段<br>3. 可以在此处通过编写函数名来调用函数库已有的函数（若使用了函数库函数，需在模板绑定函数项勾选用到的函数）<br>4. 如默认值demo即可实现一项编辑操作列<br>5. 注意：自定列模板使用手动填写函数名的方式使用函数，如果函数名有变化，需要手动进行修改'
                                         }">
                                         自定义列模板
                                     </span>
@@ -53,9 +54,9 @@
                             <div class="template-item">
                                 <div class="label">
                                     <span
-                                        class="show-tip"
+                                        class="g-config-subline"
                                         v-bk-tooltips="{
-                                            content: '请勾选列模板中使用到的函数库函数，<br>未使用函数则无须勾选'
+                                            content: '1. 请勾选列模板中使用到的函数库函数<br>2. 未使用函数则无须勾选<br>3. 注意：此处系统显示函数标识'
                                         }">
                                         模板绑定函数
                                     </span>
@@ -67,21 +68,27 @@
                                     :popover-options="{ appendTo: 'parent' }"
                                     :value="item.methodCode"
                                     :multiple="true"
+                                    :key="JSON.stringify(item) + index"
                                     @change="val => handleChange(val, 'methodCode', index)">
                                     <bk-option-group
-                                        v-for="(group, funcIndex) in funcGroups"
+                                        v-for="group in funcGroups"
                                         :name="group.groupName"
-                                        :key="funcIndex">
-                                        <bk-option class="function-option"
+                                        :key="group.id">
+                                        <bk-option
                                             v-for="option in group.children"
+                                            class="function-option"
                                             :key="option.id"
                                             :id="option.funcCode"
-                                            :name="option.funcName">
-                                            <span class="funtion-name" :title="option.funcName">{{option.funcName}}</span>
+                                            :name="option.funcCode"
+                                        >
+                                            <span
+                                                class="funtion-name"
+                                                :title="`${option.funcName}（${option.funcCode}）`"
+                                            >{{`${option.funcName}（${option.funcCode}）`}}</span>
                                             <i class="bk-icon icon-info" v-bk-tooltips="option.funcSummary || '该函数暂无描述'"></i>
                                         </bk-option>
                                     </bk-option-group>
-                                    <div slot="extension" style="cursor: pointer;" @click="showMethodDialog">
+                                    <div slot="extension" style="cursor: pointer;" @click="showMethodDialog(index)">
                                         <i class="bk-drag-icon bk-drag-function-fill"></i>函数库
                                     </div>
                                 </bk-select>
@@ -90,7 +97,7 @@
                         <template v-else>
                             <div class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                                 <div class="label">
-                                    <span class="show-tip" v-bk-tooltips="{ content: '该列对应的字段名' }">prop</span>
+                                    <span class="g-config-subline" v-bk-tooltips="{ content: '该列对应的字段名' }">prop</span>
                                 </div>
                                 <bk-input :value="item.prop" @change="val => handleChange(val, 'prop', index)" />
                             </div>
@@ -112,7 +119,7 @@
                         </template>
                         <div class="template-item">
                             <div class="label">
-                                <span class="show-tip" v-bk-tooltips="{ content: '列宽度，请填写正整数，单位为px' }">width</span>
+                                <span class="g-config-subline" v-bk-tooltips="{ content: '列宽度，请填写正整数，单位为px' }">width</span>
                             </div>
                             <bk-input :value="item.width" type="number" @change="val => handleChange(val, 'width', index)">
                                 <template slot="append">
@@ -177,6 +184,9 @@
                 type: Object,
                 default: () => ({})
             },
+            type: {
+                type: String
+            },
             change: {
                 type: Function,
                 default: (slot) => {}
@@ -188,6 +198,7 @@
         },
 
         setup (props) {
+            const type = props.type
             const column = ref([])
             const showMethod = ref(false)
             const typeList = [
@@ -196,6 +207,7 @@
                 // { id: 'expand', name: '展开按钮' },
                 { id: 'index', name: '索引序号列（从 1 开始）' }
             ]
+            const currentInstance = getCurrentInstance()
 
             const handleDelete = (index) => {
                 if (column.value.length === 1) {
@@ -224,14 +236,13 @@
                     ...props.slotVal,
                     val: JSON.parse(JSON.stringify(column.value))
                 }
-                props.change(slot)
+                props.change(slot, type)
             }
 
-            const showMethodDialog = () => {
-                const currentInstance = getCurrentInstance()
-                const eventChooseComp = currentInstance.$refs.eventChooseComp[0]
-                if (eventChooseComp) {
-                    eventChooseComp.close()
+            const showMethodDialog = (index) => {
+                const tablePopover = currentInstance.proxy.$refs.tablePopover[index]
+                if (tablePopover) {
+                    tablePopover.hideHandler()
                 }
                 showMethod.value = true
             }
