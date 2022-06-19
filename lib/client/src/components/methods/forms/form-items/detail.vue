@@ -39,8 +39,7 @@
                 label="Api"
                 property="apiCode"
                 error-display-type="normal"
-                :required="true"
-                :rules="[requireRule('Api')]"
+                desc="使用Api管理的api做为模板，快速生成远程函数"
             >
                 <bk-select
                     :value="form.apiCode"
@@ -49,23 +48,55 @@
                     :disabled="disabled"
                     :loading="isLoading"
                     @toggle="handleToggle"
-                    @selected="(apiCode) => updateValue({ apiCode })"
+                    @selected="handleSelectApi"
                 >
                     <bk-option v-for="api in apiList"
                         :key="api.code"
                         :id="api.code"
-                        :name="`${api.name}（${api.method}）`">
+                        :name="`${api.name}（${api.url}）`">
                     </bk-option>
                 </bk-select>
             </bk-form-item>
             <bk-form-item
-                v-if="METHODS_WITHOUT_DATA.includes(choosenApi.method)"
-                label="Api 请求参数（query）"
+                label="请求地址"
+                property="funcApiUrl"
+                error-display-type="normal"
+                :required="true"
+                :rules="[requireRule('请求地址')]"
+            >
+                <bk-input
+                    :value="form.funcApiUrl"
+                    @change="(funcApiUrl) => updateValue({ funcApiUrl })"
+                ></bk-input>
+            </bk-form-item>
+            <bk-form-item
+                label="请求类型"
+                property="funcMethod"
+                error-display-type="normal"
+                :required="true"
+                :rules="[requireRule('请求类型')]"
+            >
+                <bk-select
+                    :value="form.funcMethod"
+                    :clearable="false"
+                    :popover-options="{ appendTo: 'parent' }"
+                    :disabled="disabled"
+                    @selected="(funcMethod) => updateValue({ funcMethod })"
+                >
+                    <bk-option v-for="(apiMethodKey, apiMethodName) in API_METHOD"
+                        :key="apiMethodKey"
+                        :id="apiMethodKey"
+                        :name="apiMethodName">
+                    </bk-option>
+                </bk-select>
+            </bk-form-item>
+            <bk-form-item
+                v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
+                label="请求参数（query）"
                 property="remoteParams"
                 error-display-type="normal">
                 <query-params
-                    :api="choosenApi"
-                    :value="form.apiQuery"
+                    :query="form.apiQuery"
                     :disabled="disabled"
                     :variable-list="variableList"
                     @change="(apiQuery) => updateValue({ apiQuery })"
@@ -73,12 +104,11 @@
             </bk-form-item>
             <bk-form-item
                 v-else
-                label="Api 请求参数（body）"
+                label="请求参数（body）"
                 property="remoteParams"
                 error-display-type="normal">
                 <body-params
-                    :api="choosenApi"
-                    :value="form.apiBody"
+                    :body="form.apiBody"
                     :disabled="disabled"
                     :variable-list="variableList"
                     @change="(apiBody) => updateValue({ apiBody })"
@@ -86,7 +116,7 @@
                 </body-params>
             </bk-form-item>
             <bk-form-item
-                label="Api 返回数据变量名"
+                label="接口返回数据参数名"
                 ref="remoteParams"
                 property="remoteParams"
                 error-display-type="normal"
@@ -112,7 +142,9 @@
         FUNCTION_TYPE
     } from 'shared/function/'
     import {
-        METHODS_WITHOUT_DATA
+        METHODS_WITHOUT_DATA,
+        API_METHOD,
+        parseScheme2UseScheme
     } from 'shared/api'
 
     export default {
@@ -137,8 +169,6 @@
 
         data () {
             return {
-                monacoHeight: 200,
-                monacoWidth: 200,
                 tempList: [
                     { id: FUNCTION_TYPE.EMPTY, name: '空白函数' },
                     { id: FUNCTION_TYPE.REMOTE, name: '远程函数', info: '建议以下几种情况使用 "远程函数":\n1、远程API需要携带用户登录态认证\n2、远程API无法跨域或纯前端访问' }
@@ -150,7 +180,8 @@
                 },
                 apiList: [],
                 isLoading: false,
-                METHODS_WITHOUT_DATA
+                METHODS_WITHOUT_DATA,
+                API_METHOD
             }
         },
 
@@ -197,6 +228,17 @@
                 this.updateValue({ [key]: val })
                 this.$nextTick(() => {
                     this.$refs[key] && this.$refs[key].validate()
+                })
+            },
+
+            handleSelectApi (apiCode) {
+                const api = this.apiList.find(api => api.code === apiCode)
+                this.updateValue({
+                    apiCode,
+                    funcApiUrl: api.url,
+                    funcMethod: api.method,
+                    apiQuery: api.query.map(parseScheme2UseScheme),
+                    apiBody: parseScheme2UseScheme(api.body)
                 })
             }
         }

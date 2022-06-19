@@ -1,8 +1,9 @@
 <template>
-    <edit-dynamic-data
+    <component
         ref="editObjectRef"
-        :disable-edit-root="true"
-        :param="formData[paramKey]"
+        :params="formData[paramKey]"
+        :is="renderComponent"
+        @change="handleParamsChange"
     />
 </template>
 
@@ -11,15 +12,17 @@
         defineComponent,
         computed
     } from '@vue/composition-api'
-    import EditDynamicData from './edit-dynamic-data/index.vue'
-    import useForm from './use-form'
     import {
         METHODS_WITHOUT_DATA
     } from 'shared/api'
+    import useForm from './use-form'
+    import EditGetScheme from '@/components/api/edit-scheme/get'
+    import EditPostScheme from '@/components/api/edit-scheme/post'
 
     export default defineComponent({
         components: {
-            EditDynamicData
+            EditGetScheme,
+            EditPostScheme
         },
 
         props: {
@@ -40,6 +43,14 @@
                 }
             })
 
+            const renderComponent = computed(() => {
+                if (METHODS_WITHOUT_DATA.includes(props.formData.method)) {
+                    return 'EditGetScheme'
+                } else {
+                    return 'EditPostScheme'
+                }
+            })
+
             const validate = () => {
                 return editObjectRef.value.validate().then((jsonScheme) => {
                     return {
@@ -48,16 +59,20 @@
                 })
             }
 
+            const handleParamsChange = (val) => {
+                emit('update', {
+                    [paramKey.value]: val
+                })
+            }
+
             return {
                 editObjectRef,
                 paramKey,
+                renderComponent,
                 update,
-                validate
+                validate,
+                handleParamsChange
             }
         }
     })
 </script>
-
-<style lang="postcss" scoped>
-    
-</style>
