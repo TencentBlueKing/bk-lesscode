@@ -289,7 +289,7 @@
                 this.canvasData.nodes.splice(index, 1, addedNode)
                 if (node.type === 'NORMAL') {
                     const { x, y } = node
-                    const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' })
+                    const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' }, true)
                     const { id, axis, type, name } = procNode
                     const dataProcNode = {
                         id: `node_${id}`,
@@ -314,7 +314,7 @@
                     })
                 }
             },
-            async saveNode (node) {
+            async saveNode (node, isSystemAdd = false) {
                 try {
                     const { x, y, type } = node
                     const nodeDesc = NODE_TYPE_LIST.find(item => item.type === type)
@@ -343,6 +343,9 @@
                             mapping: [],
                             action: '',
                             worksheet_id: ''
+                        }
+                        if (isSystemAdd) {
+                            params.extras.isSystemAdd = true
                         }
                     } else if (type === 'TASK') {
                         params.extras.node_type = 'TASK'
