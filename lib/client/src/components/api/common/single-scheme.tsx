@@ -1,8 +1,8 @@
 import {
-    getDefaultApiParamEditScheme,
+    getDefaultApiEditScheme,
     API_PARAM_TYPES
 } from 'shared/api'
-import './edit-dynamic.css'
+import './scheme.css'
 import {
     defineComponent,
     toRef,
@@ -21,24 +21,26 @@ const SingleSchemeComponent = defineComponent({
         scheme: Object,
         disable: Boolean,
         typeDisable: Boolean,
-        minusDisable: Boolean
+        minusDisable: Boolean,
+        renderSlot: Function
     },
 
     setup (props, { emit }) {
         const copyScheme = toRef(props, 'scheme')
         const finalDisable = props.disable || copyScheme.value.disable
-        const finalTypeDisable = props.typeDisable
+        const finalTypeDisable = props.typeDisable || finalDisable
+        const disablePlusBrother = copyScheme.value.plusBrotherDisable
         const formRef = ref(null)
         const currentInstance = getCurrentInstance()
 
         // 切换是否展示子节点
         const toggleShowProperty = () => {
-            copyScheme.value.showProperty = !copyScheme.value.showProperty
+            copyScheme.value.showChildren = !copyScheme.value.showChildren
             triggleChange()
         }
         // 增加子节点
         const plusChildProperty = () => {
-            copyScheme.value.properties.push(getDefaultApiParamEditScheme())
+            copyScheme.value.children.push(getDefaultApiEditScheme())
             triggleChange()
         }
         // 增加兄弟节点
@@ -46,7 +48,7 @@ const SingleSchemeComponent = defineComponent({
             emit('plusBrotherNode')
         }
         const plusBrotherProperty = () => {
-            copyScheme.value?.properties?.push(getDefaultApiParamEditScheme())
+            copyScheme.value?.children?.push(getDefaultApiEditScheme())
             triggleChange()
         }
         // 删除节点
@@ -54,27 +56,19 @@ const SingleSchemeComponent = defineComponent({
             emit('minusNode', index)
         }
         const minusProperty = (index) => {
-            copyScheme.value?.properties?.splice(index, 1)
+            copyScheme.value?.children?.splice(index, 1)
             triggleChange()
         }
         // 更新类型
         const updateType = (type) => {
-            // update properties
-            copyScheme.value.properties.splice(0, copyScheme.value.properties.length)
-            if (type === API_PARAM_TYPES.ARRAY.VAL) {
-                copyScheme.value.properties.push(getDefaultApiParamEditScheme({
-                    name: 'items',
-                    description: '数组每个元素的模型',
-                    type: API_PARAM_TYPES.OBJECT.VAL,
-                    disable: true
-                }))
-            }
-            // update default & type
+            // 清空子项
+            copyScheme.value.children = []
+            // update value & type
             Object.keys(API_PARAM_TYPES).forEach((paramTypeKey) => {
                 const paramType = API_PARAM_TYPES[paramTypeKey]
                 if (paramType.VAL === type) {
                     copyScheme.value.type = paramType.VAL
-                    copyScheme.value.default = paramType.DEFAULT
+                    copyScheme.value.value = paramType.DEFAULT
                 }
             })
             triggleChange()
@@ -104,6 +98,7 @@ const SingleSchemeComponent = defineComponent({
             copyScheme,
             finalDisable,
             finalTypeDisable,
+            disablePlusBrother,
             formRef,
             toggleShowProperty,
             plusChildProperty,
@@ -119,6 +114,9 @@ const SingleSchemeComponent = defineComponent({
     },
 
     render () {
+        const renderSlot = (row) => {
+            return this.renderSlot ? this.renderSlot(row) : ''
+        }
         return (
             <section>
                 <section class="object-layout">
@@ -127,7 +125,7 @@ const SingleSchemeComponent = defineComponent({
                             [
                                 'bk-icon icon-down-shape layout-icon',
                                 {
-                                    close: !this.copyScheme.showProperty,
+                                    close: !this.copyScheme.showChildren,
                                     hidden: [
                                         API_PARAM_TYPES.BOOLEAN.VAL,
                                         API_PARAM_TYPES.NUMBER.VAL,
@@ -187,23 +185,28 @@ const SingleSchemeComponent = defineComponent({
                             ))
                         }
                     </bk-select>
-                    {
-                        this.copyScheme.type === API_PARAM_TYPES.BOOLEAN.VAL
-                            ? <bk-checkbox
-                                class="layout-item"
-                                value={this.copyScheme.default}
-                                disabled={this.finalDisable}
-                                onChange={(val) => this.update({ default: val })}
-                            >
-                            </bk-checkbox>
-                            : <bk-input
-                                class="layout-item"
-                                value={this.copyScheme.default}
-                                disabled={this.finalDisable}
-                                onChange={(val) => this.update({ default: val })}
-                            >
-                            </bk-input>
-                    }
+                    <section
+                        class="layout-item"
+                    >
+                        {
+                            this.renderSlot
+                                ? renderSlot(this.copyScheme)
+                                : this.copyScheme.type === API_PARAM_TYPES.BOOLEAN.VAL
+                                    ? <bk-checkbox
+                                        value={this.copyScheme.value}
+                                        disabled={this.finalDisable}
+                                        onChange={(val) => this.update({ value: val })}
+                                    >
+                                    </bk-checkbox>
+                                    : <bk-input
+                                        value={this.copyScheme.value}
+                                        disabled={this.finalDisable}
+                                        onChange={(val) => this.update({ value: val })}
+                                    >
+                                    </bk-input>
+                        
+                        }
+                    </section>
                     <bk-input
                         class="layout-item"
                         value={this.copyScheme.description}
@@ -217,8 +220,10 @@ const SingleSchemeComponent = defineComponent({
                             theme="light"
                         >
                             {
-                                this.copyScheme.type === API_PARAM_TYPES.OBJECT.VAL
-                                && ['root', 'items'].includes(this.copyScheme.name)
+                                [
+                                    API_PARAM_TYPES.OBJECT.VAL,
+                                    API_PARAM_TYPES.ARRAY.VAL
+                                ].includes(this.copyScheme.type) && this.disablePlusBrother
                                     ? <i
                                         class="bk-icon icon-plus-circle layout-icon"
                                         onClick={this.plusChildProperty}
@@ -230,7 +235,7 @@ const SingleSchemeComponent = defineComponent({
                                     API_PARAM_TYPES.BOOLEAN.VAL,
                                     API_PARAM_TYPES.NUMBER.VAL,
                                     API_PARAM_TYPES.STRING.VAL
-                                ].includes(this.copyScheme.type)
+                                ].includes(this.copyScheme.type) && !this.disablePlusBrother
                                     ? <i
                                         class="bk-icon icon-plus-circle layout-icon"
                                         onClick={this.handlePlusBrotherProperty}
@@ -238,8 +243,10 @@ const SingleSchemeComponent = defineComponent({
                                     : ''
                             }
                             {
-                                this.copyScheme.type === API_PARAM_TYPES.OBJECT.VAL
-                                && !['root', 'items'].includes(this.copyScheme.name)
+                                [
+                                    API_PARAM_TYPES.OBJECT.VAL,
+                                    API_PARAM_TYPES.ARRAY.VAL
+                                ].includes(this.copyScheme.type) && !this.disablePlusBrother
                                     ? <i
                                         class="bk-icon icon-plus-circle layout-icon"
                                     ></i>
@@ -247,24 +254,27 @@ const SingleSchemeComponent = defineComponent({
                             }
                             <div slot="content">
                                 {
-                                    !['root', 'items'].includes(this.copyScheme.name)
+                                    !this.disablePlusBrother
                                         ? <bk-button
                                             class="property-icon"
                                             text
                                             onClick={this.handlePlusBrotherProperty}
                                         >
-                                            添加参数
+                                            添加同级参数
                                         </bk-button>
                                         : ''
                                 }
                                 {
-                                    this.copyScheme.type === API_PARAM_TYPES.OBJECT.VAL
+                                    [
+                                        API_PARAM_TYPES.OBJECT.VAL,
+                                        API_PARAM_TYPES.ARRAY.VAL
+                                    ].includes(this.copyScheme.type)
                                         ? <bk-button
                                             class="property-icon"
                                             text
                                             onClick={this.plusChildProperty}
                                         >
-                                            添加属性
+                                            添加子参数
                                         </bk-button>
                                         : ''
                                 }
@@ -284,16 +294,18 @@ const SingleSchemeComponent = defineComponent({
                     </span>
                 </section>
                 {
-                    this.copyScheme.showProperty
-                        ? this.copyScheme.properties.map((property, index) =>
+                    this.copyScheme.showChildren
+                        ? this.copyScheme.children.map((property, index) =>
                             <SingleSchemeComponent
                                 class="pl20"
                                 ref={'childComponentRef' + index}
                                 scheme={property}
+                                renderSlot={renderSlot}
                                 onUpdate={this.triggleChange}
                                 onPlusBrotherNode={this.plusBrotherProperty}
                                 onMinusNode={() => this.minusProperty(index)}
-                            />
+                            >
+                            </SingleSchemeComponent>
                         )
                         : ''
                 }
