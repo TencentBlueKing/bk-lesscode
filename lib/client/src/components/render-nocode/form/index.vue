@@ -42,7 +42,6 @@
             CreatePageDialog
         },
         props: {
-            content: Array, // 表单项列表
             disabled: {
                 type: Boolean,
                 default: false
@@ -75,11 +74,7 @@
             }
         },
         created () {
-            // 如果父组件传content则直接取表单内容，否则走表单页面编辑逻辑
-            if (this.content) {
-                this.fieldsList = cloneDeep(this.content)
-                this.saveFieldList()
-            } else {
+            if (this.pageDetail.formId) {
                 this.getFieldList()
             }
 

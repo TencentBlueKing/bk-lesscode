@@ -12,11 +12,11 @@
                 </bk-form-item>
                 <bk-form-item label="处理人" :required="true">
                     <processors
-                        ref="processorForm"
+                        ref="processorsForm"
                         :value="processorData"
                         :flow-id="nodeData.workflow"
                         :node-id="nodeData.id"
-                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']"
+                        :exclude-type="excludeRoleType"
                         @change="handleProcessorChange">
                     </processors>
                 </bk-form-item>
@@ -37,18 +37,18 @@
                     <end-condition></end-condition>
                 </bk-form-item>
                 <bk-form-item label="是否可转单">
-                    <bk-radio-group v-model="nodeData.can_deliver">
+                    <bk-radio-group v-model="nodeData.can_deliver" @change="handleDeliverableChange">
                         <bk-radio :value="true">是</bk-radio>
                         <bk-radio :value="false">否</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
                 <bk-form-item v-if="nodeData.can_deliver" label="转单人" :required="true">
                     <processors
-                        ref="processorForm"
+                        ref="deliversForm"
                         :value="deliverData"
                         :flow-id="nodeData.workflow"
                         :node-id="nodeData.id"
-                        :exclude-type="['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API']"
+                        :exclude-type="excludeRoleType"
                         @change="handleDeliverChange">
                     </processors>
                 </bk-form-item>
@@ -72,6 +72,7 @@
         data () {
             return {
                 approvalType: this.getApprovalType(this.nodeDetail),
+                excludeRoleType: ['CMDB', 'GENERAL', 'OPEN', 'BY_ASSIGNOR', 'EMPTY', 'IAM', 'API'],
                 rules: {
                     name: [
                         {
@@ -92,6 +93,12 @@
                 'nodeData',
                 'formConfig'
             ])
+        },
+        created () {
+            // webhook节点处理人不能为不限，但是创建节点时默认返回的不限，需要在编辑时清除
+            if (this.excludeRoleType.includes(this.processorData.type)) {
+                this.handleProcessorChange({ type: '', processors: '' })
+            }
         },
         methods: {
             getApprovalType () {
@@ -118,13 +125,28 @@
                 }
                 this.$store.commit('nocode/nodeConfig/setApprovalConfig', { isMulti, isSequential })
             },
+            handleDeliverableChange (val) {
+                if (val) {
+                    this.handleDeliverChange({ type: '', processors: '' })
+                } else {
+                    this.handleDeliverChange({ type: 'EMPTY', processors: '' })
+                }
+            },
             handleDeliverChange (val) {
                 this.$store.commit('nocode/nodeConfig/updateDeliver', val)
             },
             validate () {
-                return this.$refs.basicForm.validate().then(() => {
-                    return true
-                }).catch(() => {
+                const validateForms = [
+                    this.$refs.basicForm.validate,
+                    this.$refs.processorsForm.validate
+                ]
+                if (this.nodeData.can_deliver) {
+                    validateForms.push(this.$refs.deliversForm.validate)
+                }
+                console.log(validateForms)
+                return Promise.all(validateForms.map(func => func.call(this))).then((result) => {
+                    return result.every(item => item === true)
+                }).catch((e) => {
                     return false
                 })
             }
@@ -134,7 +156,7 @@
 <style lang="postcss" scoped>
 .approval-node-form {
   margin-top: 24px;
-  .bk-form >>> .bk-form-item + .bk-form-item {
+  >>> .bk-form-item + .bk-form-item {
       margin-top: 15px;
   }
 }

@@ -21,32 +21,30 @@
                 type: String,
                 default: 'edit'
             },
-            hidePageSetting: Boolean
+            hideSetting: Boolean,
+            hideJson: Boolean
         },
         computed: {
             ...mapGetters('page', ['pageDetail']),
             operationList () {
-                let list = [
-                    {
-                        key: 'edit',
-                        label: '表单设计',
-                        icon: 'bk-drag-huabu'
-                    },
-                    {
+                const list = [{
+                    key: 'edit',
+                    label: ['FLOW_MANAGE', 'FORM_MANAGE'].includes(this.pageDetail.nocodeType) ? '数据管理设计' : '表单设计',
+                    icon: 'bk-drag-huabu'
+                }]
+                if (!this.hideSetting) {
+                    list.push({
                         key: 'setting',
                         label: '页面设置',
                         icon: 'bk-drag-set'
-                    }
-                ]
-                if (['FORM', 'FLOW'].includes(this.pageDetail?.nocodeType)) {
+                    })
+                }
+                if (!this.hideJson) {
                     list.push({
                         key: 'jsonSource',
                         label: 'JSON',
                         icon: 'bk-drag-json'
                     })
-                }
-                if (this.hidePageSetting) {
-                    list = list.filter(item => item.key !== 'setting')
                 }
                 return list
             }
@@ -68,6 +66,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 0 6px;
             font-size: 12px;
             height: 100%;
             cursor: pointer;

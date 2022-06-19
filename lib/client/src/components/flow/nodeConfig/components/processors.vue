@@ -1,16 +1,21 @@
 <template>
     <div class="processors-form">
-        <div :class="['form-container', { 'half-row-form': !hideProcessorsForm }]">
-            <bk-select
-                v-model="formData.type"
-                class="type-form-item"
-                :clearable="false"
-                :loading="roleGroupListLoading"
-                :disabled="roleGroupListLoading"
-                @selected="handleSelectGroup">
-                <bk-option v-for="item in groupTypeList" :key="item.type" :id="item.type" :name="item.name"></bk-option>
-            </bk-select>
-            <div v-if="!hideProcessorsForm" class="role-form-item">
+        <bk-form
+            ref="form"
+            :class="['form-container', { 'half-row-form': !hideProcessorsForm }]"
+            :model="formData"
+            :rules="rules">
+            <bk-form-item class="type-form-item" property="type">
+                <bk-select
+                    v-model="formData.type"
+                    :clearable="false"
+                    :loading="roleGroupListLoading"
+                    :disabled="roleGroupListLoading"
+                    @selected="handleSelectGroup">
+                    <bk-option v-for="item in groupTypeList" :key="item.type" :id="item.type" :name="item.name"></bk-option>
+                </bk-select>
+            </bk-form-item>
+            <bk-form-item v-if="!hideProcessorsForm" class="role-form-item" property="processors">
                 <!-- 人员选择 -->
                 <!-- <member-select
                     v-if="formData.type === 'PERSON'"
@@ -56,8 +61,8 @@
                     @change="handleSelectProcessor">
                     <bk-option v-for="option in roleList" :key="option.id" :id="option.id" :name="option.name"> </bk-option>
                 </bk-select>
-            </div>
-        </div>
+            </bk-form-item>
+        </bk-form>
     </div>
 </template>
 <script>
@@ -117,7 +122,22 @@
                     processors: this.transProcessorsToComp(type, processors)
                 },
                 orgSelectOpen: false,
-                errorTips: false // 显示校验错误
+                rules: {
+                    type: [
+                        {
+                            required: true,
+                            message: '必填项',
+                            trigger: 'blur'
+                        }
+                    ],
+                    processors: [
+                        {
+                            required: true,
+                            message: '必填项',
+                            trigger: 'blur'
+                        }
+                    ]
+                }
             }
         },
         computed: {
@@ -249,20 +269,15 @@
                     processors: ['ORGANIZATION', 'ASSIGN_LEADER'].includes(val) ? '' : []
                 }
                 this.change()
-                if (this.hideProcessorsForm) {
-                    this.validate()
-                }
             },
             // 选择人员
             handleSelectProcessor () {
                 this.change()
-                this.validate()
             },
             // 选择组织架构
             handleSelectOrgan (node) {
                 this.formData.processors = node.id
                 this.change()
-                this.validate()
             },
             // 获取组织架构完整路径
             getOrganizationsPath (id, list) {
@@ -283,14 +298,7 @@
                 return pathStr
             },
             validate () {
-                let result = true
-                if (!this.hideProcessorsForm) {
-                    result = ['ORGANIZATION', 'ASSIGN_LEADER'].includes(this.formData.type)
-                        ? this.formData.processors !== ''
-                        : this.formData.processors.length > 0
-                }
-                this.errorTips = !result
-                return result
+                return this.$refs.form.validate()
             },
             change () {
                 const { type, processors } = this.formData
@@ -298,52 +306,54 @@
                     type,
                     processors: this.transCompValToProcessors(type, processors)
                 }
-                this.validate()
                 this.$emit('change', data)
             }
         }
     }
 </script>
 <style lang="postcss" scoped>
-.form-container {
-  &.half-row-form {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .type-form-item {
-      flex: 1;
-      margin-right: 8px;
+.processors-form {
+    .form-container {
+    &.half-row-form {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .type-form-item {
+        width: calc(50% - 4px);
+        margin-right: 8px;
+        }
+        .role-form-item {
+        margin-top: 0;
+        width: calc(50% - 4px);
+        height: 32px;
+        }
     }
-    .role-form-item {
-      flex: 1;
-      height: 32px;
+    .org-selector-trigger {
+        position: relative;
+        padding: 0 36px 0 10px;
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        font-size: 12px;
+        &.unselected {
+        color: #c3cdd7;
+        }
+        .select-angle-icon {
+        position: absolute;
+        right: 2px;
+        top: 4px;
+        color: #979ba5;
+        font-size: 22px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        &.open {
+            transform: rotate(-180deg);
+        }
+        }
     }
-  }
-  .org-selector-trigger {
-    position: relative;
-    padding: 0 36px 0 10px;
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
+    }
+    /deep/ .bk-big-tree-node .node-content {
     font-size: 12px;
-    &.unselected {
-      color: #c3cdd7;
     }
-    .select-angle-icon {
-      position: absolute;
-      right: 2px;
-      top: 4px;
-      color: #979ba5;
-      font-size: 22px;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      pointer-events: none;
-      &.open {
-        transform: rotate(-180deg);
-      }
-    }
-  }
-}
-/deep/ .bk-big-tree-node .node-content {
-  font-size: 12px;
 }
 </style>

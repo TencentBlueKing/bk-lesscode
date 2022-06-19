@@ -115,11 +115,7 @@
                 // 流程服务校验desc字段不为空，节点上没有可配置desc的地方，故先删除
                 delete data.desc
                 data.is_draft = false
-                if (data.type === 'DATA_PROC') {
-                    // @todo 处理人为不限后台校验不通过，暂时用固定值
-                    data.processors_type = 'STARTER'
-                    data.processors = ''
-                } else if (data.type === 'APPROVAL') {
+                if (data.type === 'APPROVAL') {
                     if (!data.is_multi) {
                         data.finish_condition = {}
                     }
@@ -184,6 +180,7 @@
                     if (typeof pageId === 'number') {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
+                        this.$emit('save')
                     }
                 } catch (e) {
                     messageError(e.message || e)

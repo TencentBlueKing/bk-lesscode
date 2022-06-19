@@ -1,8 +1,8 @@
 <template>
     <div class="action-tool-list">
-        <save :custom="customSave" @save="$emit('save', $event)" />
+        <save v-if="!hideSave" :custom="customSave" @save="$emit('save', $event)" />
         <preview />
-        <clear />
+        <clear v-if="!hideClear" />
     </div>
 </template>
 <script>
@@ -17,7 +17,9 @@
             Clear
         },
         props: {
-            customSave: Boolean
+            customSave: Boolean,
+            hideSave: Boolean,
+            hideClear: Boolean
         }
     }
 </script>

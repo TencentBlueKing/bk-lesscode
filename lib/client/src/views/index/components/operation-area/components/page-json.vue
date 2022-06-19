@@ -42,7 +42,7 @@
             }
         },
         created () {
-            if (this.pageDetail.nocodeType === 'FORM') {
+            if (['FORM', 'FLOW'].includes(this.pageDetail.nocodeType)) {
                 const content = this.$store.state.nocode.formSetting.fieldsList || []
                 this.code = circleJSON(content)
             } else {
@@ -56,7 +56,7 @@
             },
             setImportData (name, data) {
                 if (data && Array.isArray(data)) {
-                    if (this.pageDetail.nocodeType === 'FORM') {
+                    if (['FORM', 'FLOW'].includes(this.pageDetail.nocodeType)) {
                         this.$store.commit('nocode/formSetting/setFieldsList', data)
                         bus.$emit('resetFieldList', data)
                         this.code = circleJSON(data)

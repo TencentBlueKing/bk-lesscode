@@ -9,12 +9,14 @@
                 <div class="type-label">{{ typeNameMap[formConfig.type] }}</div>
             </div>
             <div class="related-info">
-                流程提单页：
-                <span
-                    :class="['related-item', { 'not-empty': flowConfig.pageId }]"
-                    @click="handlePageClick">
-                    {{ pageDetail.pageName || '--' }}
-                </span>
+                <template v-if="nodeData.is_first_state && nodeData.type === 'NORMAL'">
+                    流程提单页：
+                    <span
+                        :class="['related-item', { 'not-empty': flowConfig.pageId }]"
+                        @click="handlePageClick">
+                        {{ pageDetail.pageName || '--' }}
+                    </span>
+                </template>
                 关联数据表：
                 <span
                     :class="['related-item', { 'not-empty': formConfig.id }]"
@@ -55,7 +57,9 @@
         <edit-form-panel
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
-            :has-created-ticket-page="hasCreatedTicketPage"
+            :hide-setting="!isFirstNormalNode || !hasCreatedTicketPage"
+            :hide-save="formConfig.type === 'USE_FORM'"
+            :hide-clear="formConfig.type === 'USE_FORM'"
             :flow-config="flowConfig"
             :form-config="formConfig"
             @save="handleCreateForm"
@@ -118,8 +122,15 @@
         computed: {
             ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
             ...mapGetters('page', ['pageDetail']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            projectId () {
+                return this.$route.params.projectId
+            },
+            isFirstNormalNode () {
+                return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state
+            },
             hasCreatedTicketPage () {
-                return typeof this.flowConfig.pageId === 'number' && this.flowConfig.pageId !== 0
+                return this.isFirstNormalNode && typeof this.flowConfig.pageId === 'number' && this.flowConfig.pageId !== 0
             }
         },
         created () {
@@ -137,7 +148,12 @@
                     this.pageContextLoading = true
                     const [pageDetail] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId }),
-                        this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId })
+                        this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId }),
+                        await this.$store.dispatch('page/getPageSetting', {
+                            pageId: this.flowConfig.pageId,
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        })
                     ])
 
                     this.$store.commit('page/setPageDetail', pageDetail || {})
@@ -206,7 +222,7 @@
             updateFormConfig (data) {
                 this.$store.commit('nocode/nodeConfig/setFormConfig', data)
             },
-            // 清楚page以及layout相关的上下文数据
+            // 清除page以及layout相关的上下文数据
             clearContext () {
                 this.$store.commit('page/setPageDetail', {})
                 this.$store.commit('layout/setPageLayout', {})
