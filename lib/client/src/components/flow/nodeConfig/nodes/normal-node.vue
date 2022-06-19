@@ -34,8 +34,8 @@
 </template>
 <script>
     import { mapState, mapGetters } from 'vuex'
-    import pinyin from 'pinyin'
     import { messageError } from '@/common/bkmagic'
+    
     import FormSection from '../components/form-section.vue'
     import Processors from '../components/processors.vue'
     import NodeFormSetting from '../components/node-form-setting/index.vue'
@@ -46,12 +46,6 @@
             FormSection,
             Processors,
             NodeFormSetting
-        },
-        props: {
-            flowConfig: {
-                type: Object,
-                default: () => ({})
-            }
         },
         data () {
             return {
@@ -70,6 +64,7 @@
         computed: {
             ...mapGetters('nocode/flow/', ['flowNodeForms']),
             ...mapGetters('nocode/nodeConfig', ['processorData']),
+            ...mapState('nocode/flow', ['flowConfig']),
             ...mapState('nocode/nodeConfig', [
                 'nodeData',
                 'formConfig'
@@ -86,20 +81,10 @@
             if (this.nodeData.id in this.flowNodeForms) {
                 // 已生成表单配置
                 this.getFormDetail()
-                const id = this.flowNodeForms[this.nodeData.id]
-                // @todo 如果流程服务保存失败，这里的type会有问题
-                const type = this.nodeData.extras.formConfig.type || 'NEW_FORM'
-                this.$store.commit('nocode/nodeConfig/setFormConfig', { id, type })
-            } else {
-                // 新建空白表单
-                const cnName = pinyin(this.nodeData.name, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                }).join('_')
-
-                const formName = `${this.nodeData.name}_表单`
-                const code = `${cnName}_${this.nodeData.id}`
-                this.$store.commit('nocode/nodeConfig/setFormConfig', { code, formName })
+            }
+            // webhook节点处理人不能为不限，但是创建节点时默认返回的不限，需要在编辑时清除
+            if (this.excludeRoleType.includes(this.processorData.type)) {
+                this.handleProcessorChange({ type: '', processors: '' })
             }
         },
         methods: {
@@ -111,7 +96,10 @@
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
                     const { tableName: code, formName } = data
-                    this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
+                    // @todo 如果流程服务保存失败，这里的type会有问题
+                    const type = this.nodeData.extras.formConfig.type || 'NEW_FORM'
+                    this.$store.commit('nocode/nodeConfig/setFormConfig', { id, type, content, code, formName })
+                    this.$store.commit('nocode/nodeConfig/setInitialFieldIds', content)
                     this.formContentLoading = false
                 } catch (e) {
                     messageError(e.message || e)

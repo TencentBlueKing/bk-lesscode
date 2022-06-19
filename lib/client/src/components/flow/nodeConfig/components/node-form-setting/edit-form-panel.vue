@@ -18,9 +18,13 @@
                 <extra-links></extra-links>
             </div>
             <div class="edit-content-wrapper">
-                <nocode-form v-show="operationType === 'edit'" :disabled="formConfig.type === 'USE_FORM'"></nocode-form>
+                <nocode-form
+                    v-show="operationType === 'edit'"
+                    :content="formConfig.content"
+                    :disabled="formConfig.type === 'USE_FORM'">
+                </nocode-form>
                 <page-setting v-if="operationType === 'setting'"></page-setting>
-                <page-json v-else-if="operationType === 'jsonSource'" style="height: 100%;"></page-json>
+                <page-json v-else-if="operationType === 'jsonSource'" style="height: 100%;" nocode-type="FLOW"></page-json>
             </div>
         </div>
     </div>

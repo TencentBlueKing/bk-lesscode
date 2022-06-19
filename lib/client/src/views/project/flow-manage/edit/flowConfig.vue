@@ -38,13 +38,13 @@
                 :flow-config="flowConfig"
                 :service-data="serviceData"
                 :create-ticket-node-id="createTicketNodeId"
-                @close="closeConfigPanel"
-                @save="handleConfigSave">
+                @close="closeConfigPanel">
             </node-config>
         </div>
     </section>
 </template>
 <script>
+    import { mapState } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import FlowCanvas from '@/components/flow/flow-canvas/index.vue'
     import NodeConfig from '@/components/flow/nodeConfig/index.vue'
@@ -56,10 +56,6 @@
             NodeConfig
         },
         props: {
-            flowConfig: {
-                type: Object,
-                default: () => ({})
-            },
             serviceData: {
                 type: Object,
                 default: () => ({})
@@ -76,6 +72,7 @@
             }
         },
         computed: {
+            ...mapState('nocode/flow', ['flowConfig']),
             editable () {
                 return this.flowConfig.deleteFlag === 0
             }
@@ -114,11 +111,6 @@
             closeConfigPanel () {
                 this.nodeConfigPanelShow = false
                 this.crtNode = null
-            },
-            handleConfigSave (node) {
-                this.closeConfigPanel()
-                // const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
-                // this.canvasData.nodes.splice(index, 1, node)
                 this.getFlowStructData()
             },
             handleNextStep () {

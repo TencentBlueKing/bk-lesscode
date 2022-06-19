@@ -100,7 +100,7 @@
                 }
                 const form = this.formList.find(item => item.id === this.selected)
                 this.selected = ''
-                this.$emit('confirm', form.id, JSON.parse(form.content), form.tableName)
+                this.$emit('confirm', form)
             },
             handleCancel () {
                 this.selected = ''

@@ -11,6 +11,7 @@
             <component
                 v-if="operation !== 'edit'"
                 :is="com"
+                :nocode-type="nocodeType"
                 v-bind="$attrs"
                 :style="oprationItemStyles"
             />
@@ -31,6 +32,10 @@
             operation: {
                 type: String,
                 required: true
+            },
+            nocodeType: {
+                type: String,
+                default: ''
             }
         },
         data () {
