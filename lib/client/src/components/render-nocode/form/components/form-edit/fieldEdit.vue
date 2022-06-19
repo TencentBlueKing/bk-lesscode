@@ -24,13 +24,13 @@
                 </bk-form-item>
             </div>
             <div class="field-container" v-else>
-                <div class="group-name">
+                <div class="group-name" @click="basicIsFolded = !basicIsFolded">
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                         :class="{
                             floded: basicIsFolded
                         }"
-                        @click="basicIsFolded = !basicIsFolded" />
+                    />
                     <span>基础属性</span>
                 </div>
                 <bk-form-item label="字段名称" v-if="!basicIsFolded">
@@ -95,13 +95,13 @@
                     </bk-button>
                 </bk-form-item>
                 <bk-divider />
-                <div class="group-name">
+                <div class="group-name" @click="handleIsFolded = !handleIsFolded">
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                         :class="{
                             floded: handleIsFolded
                         }"
-                        @click="handleIsFolded = !handleIsFolded" />
+                    />
                     <span>填写属性</span>
                 </div>
                 <bk-form-item label="表头配置" v-if="fieldData.type === 'TABLE' && !handleIsFolded">
@@ -675,7 +675,6 @@
 @import "@/css/mixins/scroller";
 .field-edit {
   height: 100%;
-  overflow: auto;
   @mixin scroller;
   /deep/ .bk-form .bk-label{
     font-size: 12px;
@@ -809,6 +808,9 @@
   position: relative;
   display: flex;
   align-items: center;
+  &:hover{
+    cursor: pointer;
+  }
   .toggle-arrow {
     position: absolute;
     display: block;
@@ -819,14 +821,10 @@
     color: #63656E;
     transition: all .1s linear;
   //transform: rotate(-270deg);
-
     &.floded {
       transform: rotate(-90deg);
     }
 
-    &:hover{
-      cursor: pointer;
-    }
   }
   span{
     display: block;

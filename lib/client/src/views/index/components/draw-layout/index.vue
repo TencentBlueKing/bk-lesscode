@@ -11,7 +11,7 @@
         </div>
         <div
             id="lesscodeDrawContent"
-            :class="$style['layout-center']">
+            :class="[$style['layout-center'],{ [$style['nocode-layout-center']]: nocodeType === 'FORM' }]">
             <slot />
         </div>
         <div :class="$style['layout-right']" v-if="!isDataManagePage">
@@ -29,9 +29,7 @@
         </div>
         <div
             v-if="!isDataManagePage"
-            :class="[$style['collapsed-right-btn'],{
-                [ $style['nocode-collapsed-right-btn']]: nocodeType === 'FORM'
-            }]"
+            :class="$style['collapsed-right-btn']"
             v-bk-tooltips.right="{
                 content: '查看组件配置',
                 disabled: !isRightCollapse
@@ -215,16 +213,11 @@
     }
     .collapsed-nocode-left-btn{
       left: 300px !important;
-      width: 16px !important;
-      height: 64px !important;
-      background: #DCDEE5 !important;
-      border-radius: 0 4px  4px 0 !important;
     }
     .nocode-collapsed-right-btn{
-      width: 16px !important;
-      height: 64px !important;
-      background: #DCDEE5 !important;
-      border-radius: 4px 0  0 4px!important;
     }
 
+    .nocode-layout-center{
+      overflow: hidden;
+    }
 </style>
