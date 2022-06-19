@@ -329,7 +329,6 @@
             // 选择表单，清空已选数据
             handleSelectForm (val) {
                 this.localVal.target.worksheet_id = val
-                this.localVal.conditions.connector = ''
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
                 this.getFieldList(val)

@@ -22,7 +22,6 @@
             <div class="steps-container">
                 <bk-steps
                     v-if="!serviceDataLoading"
-                    :controllable="true"
                     :steps="steps"
                     :cur-step="curStep"
                     @step-changed="handleStepChange">

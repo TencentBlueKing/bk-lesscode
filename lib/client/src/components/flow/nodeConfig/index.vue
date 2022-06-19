@@ -8,7 +8,6 @@
             <component
                 ref="nodeComp"
                 :is="formCompDict[nodeData.type]"
-                :flow-config="flowConfig"
                 @close="handleClose">
             </component>
             <!-- <div class="extend-setting-btn">
@@ -22,9 +21,7 @@
             </form-section> -->
             <node-actions
                 :loading="nodeDetailLoading"
-                :flow-config="flowConfig"
                 :service-data="serviceData"
-                @save="$emit('save', $event)"
                 @close="handleClose">
             </node-actions>
         </div>
@@ -53,10 +50,6 @@
         },
         props: {
             nodeId: Number,
-            flowConfig: {
-                type: Object,
-                default: () => ({})
-            },
             serviceData: {
                 type: Object,
                 default: () => ({})
@@ -97,6 +90,7 @@
         },
         beforeDestroy () {
             this.$store.commit('nocode/nodeConfig/clearNodeConfigData')
+            this.$store.commit('nocode/flow/setDeletedPageId', null)
         },
         methods: {
             async getNodeDetail () {

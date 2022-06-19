@@ -28,7 +28,7 @@
             <extra-links :show-help-box="false" :create-form-page="nocodeType === 'FORM'" />
         </div>
         <div class="lesscode-editor-page-content" ref="root" v-if="!isContentLoading">
-            <operation-area :operation="operationType" />
+            <operation-area :operation="operationType" :nocode-type="nocodeType" />
         </div>
     </main>
 </template>

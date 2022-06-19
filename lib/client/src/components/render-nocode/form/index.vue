@@ -42,6 +42,7 @@
             CreatePageDialog
         },
         props: {
+            content: Array,
             disabled: {
                 type: Boolean,
                 default: false
@@ -76,6 +77,9 @@
         created () {
             if (this.pageDetail.formId) {
                 this.getFieldList()
+            } else if (this.content) {
+                this.fieldsList = cloneDeep(this.content)
+                this.saveFieldList()
             }
 
             bus.$on('resetFieldList', (fieldsList = []) => {
