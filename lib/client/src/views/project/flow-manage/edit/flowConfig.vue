@@ -26,8 +26,8 @@
             </bk-button>
             <bk-button
                 theme="primary"
-                :loading="flowPending"
-                :disabled="canvasDataLoading"
+                :loading="flowPending || nextPending"
+                :disabled="canvasDataLoading || nextPending"
                 @click="handleNextStep">
                 下一步
             </bk-button>
@@ -65,6 +65,7 @@
             return {
                 canvasDataLoading: false,
                 flowPending: false,
+                nextPending: false,
                 canvasData: { nodes: [], lines: [] },
                 createTicketNodeId: '',
                 nodeConfigPanelShow: false,
@@ -113,8 +114,25 @@
                 this.crtNode = null
                 this.getFlowStructData()
             },
-            handleNextStep () {
-                this.$router.push({ name: 'flowAdvancedConfig' })
+            async handleNextStep () {
+                try {
+                    this.nextPending = true
+                    const data = {
+                        can_ticket_agency: false,
+                        display_type: 'OPEN',
+                        workflow_config: {
+                            ...this.serviceData,
+                            is_revocable: this.serviceData.revoke_config.type !== 0,
+                            is_auto_approve: false
+                        }
+                    }
+                    await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
+                    this.$router.push({ name: 'flowAdvancedConfig' })
+                } catch (e) {
+                    messageError(e.message || e)
+                } finally {
+                    this.nextPending = false
+                }
             }
         }
     }
