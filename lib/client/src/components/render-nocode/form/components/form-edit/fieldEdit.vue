@@ -593,7 +593,7 @@
                             worksheet_id: ''
                         },
                         conditions: {
-                            connector: '',
+                            connector: 'and',
                             expressions: []
                         }
                     }
