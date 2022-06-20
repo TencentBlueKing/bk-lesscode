@@ -167,7 +167,6 @@
         computed: {
             ...mapGetters(['user']),
             ...mapGetters('member', ['userPerm']),
-            ...mapGetters('projectVersion', ['currentVersionId']),
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
@@ -190,8 +189,8 @@
             initData () {
                 this.isLoadingCategoryList = true
                 Promise.all([
-                    this.getCategoryList({ projectId: this.projectId, versionId: this.currentVersionId }),
-                    this.getApiList({ projectId: this.projectId, versionId: this.currentVersionId })
+                    this.getCategoryList({ projectId: this.projectId }),
+                    this.getApiList({ projectId: this.projectId })
                 ]).then(([categoryList, apiList]) => {
                     this.categoryList = categoryList.map((category) => {
                         const filterApiList = apiList.filter(api => api.categoryId === category.id)
@@ -315,8 +314,7 @@
                     this.isCreatingCategory = true
                     const postData = {
                         categoryName: this.newCategoryName,
-                        projectId: this.projectId,
-                        versionId: this.versionId
+                        projectId: this.projectId
                     }
                     return this.createCategory(postData).then((res) => {
                         this.newCategoryName = ''

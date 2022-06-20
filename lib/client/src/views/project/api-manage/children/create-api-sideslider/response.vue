@@ -2,6 +2,7 @@
     <edit-response-scheme
         ref="editObjectRef"
         :params="formData.response"
+        :response="response"
         @change="handleResponseChange"
     />
 </template>
@@ -19,7 +20,8 @@
         },
 
         props: {
-            formData: Object
+            formData: Object,
+            response: [Object, Array, String, Number]
         },
 
         setup (props, { emit }) {

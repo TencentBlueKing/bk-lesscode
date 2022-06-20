@@ -12,11 +12,12 @@
                 :type-disable="true"
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
-                :render-slot="renderSlot"
                 @plusBrotherNode="handlePlusBrotherNode"
                 @minusNode="handleMinusNode"
                 @update="(param) => handleUpdate(index, param)"
-            />
+            >
+                <slot v-bind:row="renderQueryParam"></slot>
+            </single-scheme>
         </section>
         <monaco
             v-else
@@ -39,7 +40,7 @@
     import SingleScheme from '../common/single-scheme'
     import Monaco from '@/components/monaco'
     import {
-        getDefaultApiUseScheme,
+        getDefaultApiEditScheme,
         parseQueryScheme2QueryString
     } from 'shared/api'
 
@@ -52,9 +53,7 @@
         },
 
         props: {
-            renderSlot: Function,
-            params: Array,
-            getParamVal: Function
+            params: Array
         },
 
         setup (props, { emit }) {
@@ -65,15 +64,10 @@
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')
             const renderQueryParams = ref([])
-            const queryString = computed(() => parseQueryScheme2QueryString(
-                renderQueryParams.value,
-                (param) => {
-                    return props.getParamVal ? props.getParamVal(param) : param.value
-                }
-            ))
+            const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value))
 
             const handlePlusBrotherNode = () => {
-                renderQueryParams.value.push(getDefaultApiUseScheme())
+                renderQueryParams.value.push(getDefaultApiEditScheme())
                 triggleChange()
             }
 
@@ -104,12 +98,14 @@
                 () => props.params,
                 () => {
                     renderQueryParams.value = props.params
+                    if (renderQueryParams.value.length <= 0) {
+                        renderQueryParams.value.push(getDefaultApiEditScheme())
+                    }
                 },
                 {
                     immediate: true
                 }
             )
-
             return {
                 tabs,
                 activeTab,

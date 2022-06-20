@@ -25,11 +25,19 @@
                 :form-data="formData"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">请求响应示例</h3>
+            <h3 class="api-form-title">
+                请求响应示例
+                <bk-button
+                    size="small"
+                    text
+                    @click="getApiResponse"
+                >获取数据</bk-button>
+            </h3>
             <render-response
                 class="api-form"
                 ref="responseRef"
                 :form-data="formData"
+                :response="response"
                 @update="handleUpdate"
             />
         </section>
@@ -62,6 +70,7 @@
         getCurrentInstance
     } from '@vue/composition-api'
     import {
+        parseScheme2Value,
         getDefaultApi,
         METHODS_WITHOUT_DATA
     } from 'shared/api'
@@ -99,6 +108,7 @@
             const isSubmitting = ref(false)
             const formChanged = ref(false)
             const formData = ref({})
+            const response = ref()
             const instance = getCurrentInstance()
             const basicRef = ref(null)
             const paramRef = ref(null)
@@ -161,7 +171,6 @@
                     ]) => {
                         const form = {
                             projectId: route.params.projectId,
-                            versionId: store.getters['projectVersion/currentVersionId'],
                             ...basicData,
                             ...paramData,
                             ...responseData
@@ -190,6 +199,37 @@
                 Object.assign(formData.value, formItem)
             }
 
+            const getApiResponse = () => {
+                validate()
+                    .then(([
+                        basicData,
+                        paramData
+                    ]) => {
+                        let apiData = {}
+                        if (paramKey.value === 'query') {
+                            paramData.query.forEach((queryItem) => {
+                                apiData[queryItem.name] = parseScheme2Value(queryItem)
+                            })
+                        } else {
+                            apiData = parseScheme2Value(paramData.body)
+                        }
+                        const httpData = {
+                            url: basicData.url,
+                            type: basicData.method,
+                            apiData,
+                            withToken: basicData.withToken
+                        }
+                        return store
+                            .dispatch('getApiData', httpData)
+                            .then((res) => {
+                                response.value = res
+                            })
+                            .catch((err) => {
+                                messageError(err.message || err)
+                            })
+                    })
+            }
+
             watch(
                 () => props.form,
                 () => {
@@ -203,6 +243,7 @@
             return {
                 isSubmitting,
                 formData,
+                response,
                 basicRef,
                 paramRef,
                 responseRef,
@@ -210,7 +251,8 @@
                 confirmClose,
                 handleClose,
                 submitApi,
-                handleUpdate
+                handleUpdate,
+                getApiResponse
             }
         }
     })

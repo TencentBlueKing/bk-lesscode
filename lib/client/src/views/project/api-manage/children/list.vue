@@ -46,16 +46,16 @@
                         <span>{{ props.row.url || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="请求参数模型" show-overflow-tooltip>
+                <bk-table-column label="默认请求参数" show-overflow-tooltip>
                     <template slot-scope="props">
                         <bk-button :text="true" title="primary" @click="showParamModel(props.row)">
                             查看
                         </bk-button>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="返回结果模型" show-overflow-tooltip>
+                <bk-table-column label="请求响应示例" show-overflow-tooltip>
                     <template slot-scope="props">
-                        <bk-button :text="true" title="primary" @click="showModel(props.row.response, '返回结果模型')">
+                        <bk-button :text="true" title="primary" @click="showResponseModel(props.row)">
                             查看
                         </bk-button>
                     </template>
@@ -123,7 +123,7 @@
         </bk-dialog>
 
         <bk-dialog
-            width="800"
+            width="1000"
             :title="apiModel.title"
             v-model="apiModel.show"
         >
@@ -141,7 +141,8 @@
     import CreateApiSideslider from './create-api-sideslider/index.vue'
     import {
         METHODS_WITHOUT_DATA,
-        parseJsonScheme2JsonValue
+        parseQueryScheme2QueryString,
+        parseScheme2Value
     } from 'shared/api'
     import monaco from '@/components/monaco'
 
@@ -186,7 +187,6 @@
         computed: {
             ...mapGetters(['user']),
             ...mapGetters('member', ['userPerm']),
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId', versionName: 'currentVersionName' }),
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
@@ -219,8 +219,7 @@
                 this.isLoading = true
                 this.getApiList({
                     categoryId: this.categoryId,
-                    projectId: this.projectId,
-                    versionId: this.versionId
+                    projectId: this.projectId
                 }).then((res) => {
                     this.apiList = res
                 }).catch((err) => {
@@ -324,16 +323,20 @@
 
             showParamModel (row) {
                 if (METHODS_WITHOUT_DATA.includes(row.method)) {
-                    this.showModel(row.query, '请求参数模型（query）')
+                    this.showModel(parseQueryScheme2QueryString(row.query), '默认请求参数（query）')
                 } else {
-                    this.showModel(row.body, '请求参数模型（body）')
+                    this.showModel(parseScheme2Value(row.body), '默认请求参数（body）')
                 }
             },
 
-            showModel (model, title) {
+            showResponseModel (row) {
+                this.showModel(parseScheme2Value(row.response), '请求响应示例')
+            },
+
+            showModel (jsonValue, title) {
                 this.apiModel.title = title
                 this.apiModel.show = true
-                this.apiModel.jsonValue = JSON.stringify(parseJsonScheme2JsonValue(model), null, 4)
+                this.apiModel.jsonValue = JSON.stringify(jsonValue, null, 4)
             },
 
             firstUpperCase (val) {

@@ -177,6 +177,13 @@
                                 toPath: {
                                     name: 'variableManage'
                                 }
+                            },
+                            {
+                                title: 'API 管理',
+                                url: 'apiManage',
+                                toPath: {
+                                    name: 'apiManage'
+                                }
                             }
                         ]
                     },
