@@ -1,11 +1,26 @@
 <template>
     <div class="project-layout-props-modifier">
-        <div class="title">导航布局属性配置</div>
-        <div v-for="prop in propList" :key="prop.name" class="prop-box">
-            <div class="prop-name" v-bk-tooltips="prop.tips">
-                <div class="label">{{ prop.name }}({{ prop.type }})</div>
+        <div v-for="prop in propList" :key="prop.id" class="prop-box">
+            <div class="prop-name">
+                <i
+                    :class="{
+                        'bk-icon icon-angle-down': true,
+                        close: !prop.isShow
+                    }"
+                    @click="toggleShowProp(prop.id)"
+                ></i>
+                <div
+                    :class="{ 'label': true, 'has-tips': prop.tips }"
+                    v-bk-tooltips="{
+                        placements: ['left-start'],
+                        boundary: 'window',
+                        content: prop.tips,
+                        disabled: !prop.tips
+                    }">
+                    {{ prop.name }}({{ prop.type }})
+                </div>
             </div>
-            <div class="prop-action">
+            <div class="prop-action" v-if="prop.isShow">
                 <template v-if="prop.type === 'Boolean'">
                     <bk-switcher
                         theme="primary"
@@ -52,6 +67,23 @@
         },
         data () {
             return {
+                propList: [
+                    {
+                        id: 'theme',
+                        name: '导航主题',
+                        type: 'String',
+                        defaultValue: '#182132',
+                        isShow: true
+                    },
+                    {
+                        id: 'headHeight',
+                        name: 'head-height',
+                        type: 'Number',
+                        tips: this.layoutType === 'left-right' ? 'logo栏的高度' : '顶部导航的高度',
+                        defaultValue: 52,
+                        isShow: true
+                    }
+                ],
                 themeColorList: [
                     { id: '#182132', name: '默认' },
                     { id: '#0549BB', name: '蓝色' },
@@ -66,28 +98,15 @@
             }
         },
         created () {
-            this.propList = []
             // 横向型导航布局不支持 default-open 配置
-            this.propList.push(
-                {
-                    name: '导航主题',
-                    type: 'String',
-                    tips: '导航主题',
-                    defaultValue: '#182132'
-                },
-                {
-                    name: 'head-height',
-                    type: 'Number',
-                    tips: this.layoutType === 'left-right' ? 'logo栏的高度' : '顶部导航的高度',
-                    defaultValue: 52
-                }
-            )
             if (this.panelActive !== 'topMenu') {
                 this.propList.push({
+                    id: 'defaultOpen',
                     name: 'default-open',
                     type: 'Boolean',
                     tips: '是否默认展开左侧栏',
-                    defaultValue: false
+                    defaultValue: false,
+                    isShow: true
                 })
             }
         },
@@ -117,13 +136,21 @@
                     renderProps[name] = value
                 }
                 this.$emit('on-change', 'renderProps', renderProps)
+            },
+            toggleShowProp (id) {
+                this.propList = this.propList.map(item => {
+                    return {
+                        ...item,
+                        isShow: item.id === id ? !item.isShow : item.isShow
+                    }
+                })
             }
         }
     }
 </script>
 <style lang='postcss'>
     .project-layout-props-modifier{
-        padding: 0  10px 10px;
+        padding: 0 10px;
         .title{
             font-size: 12px;
             font-weight: bold;
@@ -134,21 +161,38 @@
             display: flex;
             align-items: flex-start;
             flex-direction: column;
-            margin: 0 10px;
+            border-bottom: 1px solid #EAEBF0;
             .prop-name{
                 display: flex;
                 align-items: center;
-                height: 32px;
-                font-size: 14px;
-                color: #63656E;
+                height: 40px;
+                font-size: 12px;
+                font-weight: bold;
+                color: #313238;
                 word-break: keep-all;
-                .label {
-                    border-bottom: 1px dashed #979ba5;
+                .bk-icon {
+                    margin-left: -5px;
+                    margin-right: 3px;
+                    font-size: 20px;
+                    color: #63656E;
+                    display: inline-block;
+                    transition: transform 200ms;
                     cursor: pointer;
+                    &.close {
+                        transform: rotate(-90deg);
+                    }
+                }
+                .label {
+                    padding-bottom: 1px;
+                    cursor: pointer;
+                    &.has-tips {
+                        border-bottom: 1px dashed #979BA5;
+                    }
                 }
             }
             .prop-action{
                 width: 100%;
+                margin: 4px 0 16px;
             }
         }
     }

@@ -1,27 +1,46 @@
 <template>
     <div class="template-menu-box" :style="styles">
+        <i
+            :class="{
+                'bk-icon': true,
+                'icon-down-shape': true,
+                'close': !showMenu
+            }"
+            @click="() => showMenu = !showMenu"
+        />
         <div class="menu-item-operate">
             <i class="bk-drag-icon bk-drag-drag-small1 item-drag" />
             <i class="bk-icon icon-close item-remove" :class="{ last: lastOne }" @click="handleRemove"></i>
         </div>
         <menu-edit
+            ref="menuEditArea"
             class="menu-edit-area"
             :data="baseInfo"
+            :show-menu="showMenu"
             v-bind="$attrs"
             @on-change="handleChange" />
-        <div v-if="hasChild && isShowChild" class="children-wraper">
+        <div v-if="hasChild && isShowChild && showMenu" class="children-wraper">
             <div
-                class="menu-children-box"
+                :class="[
+                    'menu-children-box',
+                    {
+                        'has-query-code': hasQueryCode,
+                        'is-page-link': isPageLink
+                    }
+                ]"
                 v-for="(childItem, index) in childList"
                 :key="index">
-                <menu-edit :data="childItem" @on-change="value => handleChildrenChange(value, index)" />
+                <menu-edit
+                    :data="childItem"
+                    @on-change="value => handleChildrenChange(value, index)"
+                />
                 <div class="menu-children-remove" @click="handleRemoveChildren(index)">
                     <i class="bk-icon icon-minus-circle" />
                 </div>
             </div>
         </div>
         <div v-if="hasChild" class="menu-children-create" @click="handleAddChildren">
-            <i class="bk-icon icon-plus-circle" />
+            <i class="bk-icon icon-plus-circle" v-bk-tooltips="{ content: '添加二级导航', placement: 'top' }" />
         </div>
     </div>
 </template>
@@ -50,6 +69,7 @@
         },
         data () {
             return {
+                showMenu: true,
                 baseInfo: generatorMenu(),
                 childList: []
             }
@@ -61,12 +81,18 @@
             styles () {
                 if (!this.hasChild) {
                     return {
-                        padding: '1px 20px 12px 6px'
+                        padding: '1px 20px 16px 28px'
                     }
                 }
                 return {
-                    padding: '1px 37px 12px 6px'
+                    padding: '1px 37px 16px 28px'
                 }
+            },
+            hasQueryCode () {
+                return this.$refs.menuEditArea?.isShowPageQuery
+            },
+            isPageLink () {
+                return !this.$refs.menuEditArea?.isPageCode
             }
         },
         created () {
@@ -115,7 +141,7 @@
 <style lang='postcss'>
     .template-menu-box{
         position: relative;
-        background: #f0f1f5;
+        background: #F5F7FA;
         border-radius: 2px;
         transition: all .15s;
         &:hover{
@@ -127,8 +153,19 @@
         &:nth-child(n + 2) {
             margin-top: 10px;
         }
+        .icon-down-shape {
+            position: absolute;
+            top: 24px;
+            left: 8px;
+            color: #979BA5;
+            transition: transform 200ms;
+            cursor: pointer;
+            &.close {
+                transform: rotate(-90deg);
+            }
+        }
         .menu-edit-area {
-            margin-top: 20px;
+            margin-top: 16px;
         }
         .menu-item-operate {
             position: absolute;
@@ -139,6 +176,9 @@
             margin-top: -3px;
             .item-remove {
                 cursor: pointer;
+                &:hover {
+                    color: #63656E;
+                }
                 &.last{
                     color: #EA3636;
                 }
@@ -156,18 +196,18 @@
             &:before{
                 content: '';
                 position: absolute;
-                top: -39px;
-                left: 3px;
+                top: -70px;
+                left: 4px;
                 bottom: 0;
                 width: 1px;
-                background: #C4C6CC;
+                background: #DCDEE5;
             }
             &:last-child{
                 &:before{
                     content: '';
                     position: absolute;
                     bottom: unset;
-                    height: 62px;
+                    height: 92px;
                 }
             }
             .menu-name{
@@ -179,8 +219,24 @@
                     left: 0;
                     width: 16px;
                     height: 1px;
-                    background: #C4C6CC;
+                    background: #DCDEE5;
                     transform: translate(-100%, -50%);
+                }
+            }
+            &.has-query-code {
+                &:before {
+                    top: -80px;
+                }
+                &:last-child::before {
+                    height: 102px;
+                }
+            }
+            &.is-page-link {
+                &:before {
+                    top: -40px;
+                }
+                &:last-child::before {
+                    height: 62px;
                 }
             }
         }
