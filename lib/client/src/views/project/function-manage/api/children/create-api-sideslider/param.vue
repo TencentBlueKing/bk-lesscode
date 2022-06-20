@@ -1,7 +1,7 @@
 <template>
     <component
         ref="editObjectRef"
-        :params="formData[paramKey]"
+        :params="renderParams"
         :is="renderComponent"
         @change="handleParamsChange"
     />
@@ -10,10 +10,14 @@
 <script>
     import {
         defineComponent,
-        computed
+        ref,
+        computed,
+        watch
     } from '@vue/composition-api'
     import {
-        METHODS_WITHOUT_DATA
+        METHODS_WITHOUT_DATA,
+        getDefaultApiEditScheme,
+        API_PARAM_TYPES
     } from 'shared/api'
     import useForm from './use-form'
     import EditGetScheme from '@/components/api/edit-scheme/get'
@@ -34,6 +38,7 @@
                 editObjectRef,
                 update
             } = useForm(emit)
+            const renderParams = ref()
 
             const paramKey = computed(() => {
                 if (METHODS_WITHOUT_DATA.includes(props.formData.method)) {
@@ -65,8 +70,43 @@
                 })
             }
 
+            const initQueryParam = () => {
+                renderParams.value = props.formData.query
+                if (renderParams.value.length <= 0) {
+                    renderParams.value.push(getDefaultApiEditScheme())
+                }
+            }
+
+            const initBodyParam = () => {
+                renderParams.value = props.formData.body
+                if (renderParams.value.name === undefined) {
+                    renderParams.value = getDefaultApiEditScheme({
+                        name: 'root',
+                        type: API_PARAM_TYPES.OBJECT.VAL,
+                        value: API_PARAM_TYPES.OBJECT.DEFAULT,
+                        disable: true,
+                        plusBrotherDisable: true
+                    })
+                }
+            }
+
+            watch(
+                () => props.formData[paramKey.value],
+                () => {
+                    if (paramKey.value === 'query') {
+                        renderParams.value = initQueryParam()
+                    } else {
+                        renderParams.value = initBodyParam()
+                    }
+                },
+                {
+                    immediate: true
+                }
+            )
+
             return {
                 editObjectRef,
+                renderParams,
                 paramKey,
                 renderComponent,
                 update,

@@ -92,7 +92,7 @@
             </bk-form-item>
             <bk-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
-                label="请求参数（query）"
+                label="请求参数"
                 property="remoteParams"
                 error-display-type="normal">
                 <query-params
@@ -104,7 +104,7 @@
             </bk-form-item>
             <bk-form-item
                 v-else
-                label="请求参数（body）"
+                label="请求参数"
                 property="remoteParams"
                 error-display-type="normal">
                 <body-params

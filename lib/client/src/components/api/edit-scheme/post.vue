@@ -11,8 +11,7 @@
                 :minus-disable="true"
                 :render-slot="renderSlot"
                 @update="handleUpdate"
-            >
-            </single-scheme>
+            />
         </section>
         <monaco
             v-else
@@ -35,9 +34,7 @@
     import SingleScheme from '../common/single-scheme'
     import Monaco from '@/components/monaco'
     import {
-        getDefaultApiEditScheme,
-        parseScheme2Value,
-        API_PARAM_TYPES
+        parseScheme2Value
     } from 'shared/api'
 
     export default defineComponent({
@@ -50,7 +47,8 @@
 
         props: {
             renderSlot: Function,
-            params: Object
+            params: Object,
+            getParamVal: Function
         },
 
         setup (props, { emit }) {
@@ -61,7 +59,12 @@
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')
             const renderBodyParam = ref({})
-            const bodyString = computed(() => JSON.stringify(parseScheme2Value(renderBodyParam.value), null, 4))
+            const bodyString = computed(() => {
+                const paramValue = parseScheme2Value(renderBodyParam.value, (param) => {
+                    return props.getParamVal ? props.getParamVal(param) : param.value
+                })
+                return JSON.stringify(paramValue, null, 4)
+            })
 
             const handleUpdate = (param) => {
                 renderBodyParam.value = param
@@ -81,15 +84,6 @@
                 () => props.params,
                 () => {
                     renderBodyParam.value = props.params
-                    if (renderBodyParam.value.name === undefined) {
-                        renderBodyParam.value = getDefaultApiEditScheme({
-                            name: 'root',
-                            type: API_PARAM_TYPES.OBJECT.VAL,
-                            value: API_PARAM_TYPES.OBJECT.DEFAULT,
-                            disable: true,
-                            plusBrotherDisable: true
-                        })
-                    }
                 },
                 {
                     immediate: true
