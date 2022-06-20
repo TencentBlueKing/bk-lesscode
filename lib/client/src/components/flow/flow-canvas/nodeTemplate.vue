@@ -23,14 +23,20 @@
                 <i :class="['bk-drag-icon', nodeTypeList.find(item => item.type === node.type).icon]"></i>
             </div>
             <div class="node-name-area" :title="node.name">
-                <p class="name">{{ node.name }}</p>
+                <div :class="['name-wrapper', { 'has-label': hasCreatedPage }]">
+                    <span class="name">{{ node.name }}</span>
+                    <span v-if="hasCreatedPage" class="create-page-icon">
+                        <i class="bk-drag-icon bk-drag-page" v-bk-tooltips.top="'已生成流程提单页'"></i>
+                    </span>
+                    <span v-if="node.nodeInfo && node.nodeInfo.extras.isSystemAdd" class="system-add-icon">系统</span>
+                </div>
                 <p class="desc">
                     <span v-if="isDraft" style="color: #c4c6cc;">
                         点击配置
                     </span>
                     <template v-else>
-                        <span v-if="node.type === 'NORMAL'">处理人：--</span>
-                        <span v-else-if="node.type === 'APPROVAL'">类型：{{ approvalType }} 处理人: --</span>
+                        <span v-if="node.type === 'NORMAL'">处理人：{{ getProcessorName() }}</span>
+                        <span v-else-if="node.type === 'APPROVAL'">类型：{{ approvalType }} 处理人: {{ getProcessorName() }}</span>
                         <span v-else-if="node.type === 'DATA_PROC'">数据来源节点：-- 目标表： --</span>
                         <span v-else-if="node.type === 'TASK'">API：--</span>
                     </template>
@@ -75,7 +81,9 @@
     </div>
 </template>
 <script>
+    import { mapState } from 'vuex'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
+    import { PROCESSORS } from '../constants/processor.js'
 
     export default {
         name: 'NodeTemplate',
@@ -114,8 +122,12 @@
             }
         },
         computed: {
+            ...mapState('nocode/flow', ['flowConfig']),
             isDraft () {
                 return !this.node.nodeInfo || this.node.nodeInfo.is_draft
+            },
+            hasCreatedPage () {
+                return this.flowConfig.pageId && this.node.nodeInfo?.is_first_state && this.node.nodeInfo?.type === 'NORMAL'
             },
             approvalType () {
                 if (this.node.nodeInfo) {
@@ -132,6 +144,12 @@
         },
 
         methods: {
+            getProcessorName (node) {
+                if (this.node.nodeInfo?.processors_type && ['OPEN', 'STARTER', 'STARTER_LEADER'].includes(this.node.nodeInfo.processors_type)) {
+                    return PROCESSORS[this.node.nodeInfo.processors_type]
+                }
+                return this.node.nodeInfo?.processors || '--'
+            },
             onMousedown (e) {
                 this.moveFlag = { x: e.pageX, y: e.pageY }
             },
@@ -282,19 +300,50 @@
 }
 .node-name-area {
     width: 190px;
-    padding: 7px 16px;
+    padding: 6px 16px;
     height: 100%;
     background: #ffffff;
     font-size: 12px;
     text-align: left;
-  .name {
+  .name-wrapper {
+        display: flex;
+        align-items: center;
         color: #63656e;
         font-weight: bold;
-        height: 16px;
-        line-height: 16px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
+        height: 18px;
+        line-height: 18px;
+        .name {
+            max-width: calc(100% - 40px);
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .create-page-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            font-size: 12px;
+            background: #e1ecff;
+            color: #3d81fe;
+            opacity: 0.9;
+            &:hover {
+                color: #3a84ff;
+            }
+        }
+        .system-add-icon {
+            margin-left: 4px;
+            padding: 0 4px;
+            line-height: 16px;
+            font-size: 12px;
+            font-weight: normal;
+            background: #f0f1f5;
+            border: 1px solid rgba(151, 155, 165, 0.3);
+            border-radius: 2px;
+        }
   }
   .desc {
         color: #979ba5;
