@@ -35,6 +35,7 @@
         getDefaultApiEditScheme,
         parseScheme2Value,
         parseValue2Scheme,
+        LCGetParamsVal,
         API_PARAM_TYPES
     } from 'shared/api'
 
@@ -99,7 +100,11 @@
                     })
                 }
                 // 设置 monaco 内容
-                responseString.value = JSON.stringify(parseScheme2Value(renderResponseParam.value), null, 4)
+                const responseData = parseScheme2Value(
+                    renderResponseParam.value,
+                    (param) => LCGetParamsVal(param, [])
+                )
+                responseString.value = JSON.stringify(responseData, null, 4)
             })
 
             return {

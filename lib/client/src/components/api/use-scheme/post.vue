@@ -10,6 +10,7 @@
                 :scheme="renderBodyParam"
                 :minus-disable="true"
                 :plus-brother-disable="true"
+                :render-slot="renderSlot"
                 @update="handleUpdate"
             />
         </section>
@@ -46,7 +47,9 @@
         },
 
         props: {
-            params: Object
+            renderSlot: Function,
+            params: Object,
+            getParamVal: Function
         },
 
         setup (props, { emit }) {
@@ -57,7 +60,12 @@
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')
             const renderBodyParam = ref({})
-            const bodyString = computed(() => JSON.stringify(parseScheme2Value(renderBodyParam.value), null, 4))
+            const bodyString = computed(() => {
+                const paramValue = parseScheme2Value(renderBodyParam.value, (param) => {
+                    return props.getParamVal ? props.getParamVal(param) : param.value
+                })
+                return JSON.stringify(paramValue, null, 4)
+            })
 
             const handleUpdate = (param) => {
                 renderBodyParam.value = param

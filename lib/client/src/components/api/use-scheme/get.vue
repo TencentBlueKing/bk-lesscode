@@ -12,6 +12,7 @@
                 :type-disable="true"
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
+                :render-slot="renderSlot"
                 @plusBrotherNode="handlePlusBrotherNode"
                 @minusNode="handleMinusNode"
                 @update="(param) => handleUpdate(index, param)"
@@ -38,7 +39,7 @@
     import SingleScheme from '../common/single-scheme'
     import Monaco from '@/components/monaco'
     import {
-        getDefaultApiEditScheme,
+        getDefaultApiUseScheme,
         parseQueryScheme2QueryString
     } from 'shared/api'
 
@@ -51,6 +52,7 @@
         },
 
         props: {
+            renderSlot: Function,
             params: Array,
             getParamVal: Function
         },
@@ -63,10 +65,15 @@
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')
             const renderQueryParams = ref([])
-            const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value))
+            const queryString = computed(() => parseQueryScheme2QueryString(
+                renderQueryParams.value,
+                (param) => {
+                    return props.getParamVal ? props.getParamVal(param) : param.value
+                }
+            ))
 
             const handlePlusBrotherNode = () => {
-                renderQueryParams.value.push(getDefaultApiEditScheme())
+                renderQueryParams.value.push(getDefaultApiUseScheme())
                 triggleChange()
             }
 
@@ -102,6 +109,7 @@
                     immediate: true
                 }
             )
+
             return {
                 tabs,
                 activeTab,

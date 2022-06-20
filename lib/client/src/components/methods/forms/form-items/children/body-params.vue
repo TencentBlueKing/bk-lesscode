@@ -4,8 +4,7 @@
         :disabled="disabled"
         :render-slot="renderSlot"
         :get-param-val="getParamVal"
-    >
-    </use-post-scheme>
+    />
 </template>
 
 <script>
@@ -20,7 +19,7 @@
         getDefaultApiUseScheme,
         API_PARAM_TYPES
     } from 'shared/api'
-    import UsePostScheme from '@/components/api/edit-scheme/post'
+    import UsePostScheme from '@/components/api/use-scheme/post'
     import RenderParamSlot from './render-param-slot'
 
     export default defineComponent({
