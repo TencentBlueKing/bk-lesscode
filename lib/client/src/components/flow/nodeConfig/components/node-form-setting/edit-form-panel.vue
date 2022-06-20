@@ -13,7 +13,13 @@
                     <operation-select v-model="operationType" :hide-setting="hideSetting"></operation-select>
                     <div class="spilt-line"></div>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
-                    <action-tool :custom-save="true" :hide-save="hideSave" :hide-clear="hideClear" @save="$emit('save', $event)"></action-tool>
+                    <action-tool
+                        :custom-save="true"
+                        :hide-save="hideSave"
+                        :hide-preview="hidePreview"
+                        :hide-clear="hideClear"
+                        @save="$emit('save', $event)">
+                    </action-tool>
                 </div>
                 <extra-links></extra-links>
             </div>
@@ -52,6 +58,7 @@
         props: {
             hideSetting: Boolean,
             hideSave: Boolean,
+            hidePreview: Boolean,
             hideClear: Boolean,
             flowConfig: {
                 type: Object,

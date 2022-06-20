@@ -19,8 +19,8 @@
     import { mapGetters } from 'vuex'
     import DrawLayout from '@/views/index/components/draw-layout'
     import Layout from '@/components/render/pc/widget/layout'
-    import FormData from '@/components/flow-form-comp/components/form-data.vue'
-    import FlowData from '@/components/flow-form-comp/components/flow-data.vue'
+    import FormData from './form-data.vue'
+    import FlowData from './flow-data/index.vue'
     import { messageError } from '@/common/bkmagic'
 
     export default {
@@ -54,7 +54,9 @@
             if (Object.keys(this.pageDetail.content).length > 0) {
                 this.config = this.pageDetail.content
             }
-            this.getFormDetail()
+            if (this.nocodeType === 'FORM_MANAGE') {
+                this.getFormDetail()
+            }
         },
         methods: {
             async getFormDetail () {
