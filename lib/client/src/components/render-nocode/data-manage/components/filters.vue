@@ -47,7 +47,6 @@
 </template>
 <script>
     const UN_FILTERABLE_TYPE = ['TABLE', 'RICHTEXT', 'FILE', 'LINK', 'IMAGE']
-
     export default {
         name: 'Filters',
         props: {
@@ -107,7 +106,6 @@
 </script>
 <style lang="postcss" scoped>
     @import "@/css/mixins/scroller";
-
     .data-manage-filters {
         padding: 16px 4px;
         border-radius: 2px;

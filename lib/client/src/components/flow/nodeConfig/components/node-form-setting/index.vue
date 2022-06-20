@@ -64,6 +64,7 @@
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
             :hide-setting="!isFirstNormalNode || !hasCreatedTicketPage"
+            :hide-preview="!isFirstNormalNode || !hasCreatedTicketPage"
             :hide-save="formConfig.type === 'USE_FORM'"
             :hide-clear="formConfig.type === 'USE_FORM'"
             :flow-config="flowConfig"
@@ -168,7 +169,8 @@
                     const [pageDetail] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId }),
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId }),
-                        await this.$store.dispatch('page/getPageSetting', {
+                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId }),
+                        this.$store.dispatch('page/getPageSetting', {
                             pageId: this.flowConfig.pageId,
                             projectId: this.projectId,
                             versionId: this.versionId

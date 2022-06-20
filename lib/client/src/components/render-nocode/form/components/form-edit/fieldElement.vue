@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-    import FieldItem from '@/components/nocode-form/fieldItem.vue'
+    import FieldItem from '@/components/flow-form-comp/form/fieldItem.vue'
 
     export default {
         name: 'FieldElement',
