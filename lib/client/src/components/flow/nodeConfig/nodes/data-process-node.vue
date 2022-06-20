@@ -10,6 +10,16 @@
                 <bk-form-item label="节点名称" property="name" :required="true">
                     <bk-input v-model="dataProcessConfig.name"></bk-input>
                 </bk-form-item>
+                <bk-form-item label="处理人" :required="true">
+                    <processors
+                        ref="processorsForm"
+                        :value="processorData"
+                        :workflow-id="nodeData.workflow"
+                        :node-id="nodeData.id"
+                        :exclude-type="excludeRoleType"
+                        @change="handleProcessorChange">
+                    </processors>
+                </bk-form-item>
                 <div class="action-select-area">
                     <bk-form-item label="节点动作" property="action" :required="true">
                         <bk-select :value="dataProcessConfig.action" :clearable="false" :disabled="!editable" @selected="handleSelectAction">
@@ -305,6 +315,7 @@
     import cloneDeep from 'lodash.clonedeep'
     import { mapState, mapGetters } from 'vuex'
     import FormSection from '../components/form-section.vue'
+    import Processors from '../components/processors.vue'
     import { CONDITION_RELATIONS } from '@/components/nocode-form/constants/forms.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
     import FieldValue from '@/components/render-nocode/form/components/form-edit/fieldValue.vue'
@@ -312,6 +323,7 @@
     export default {
         name: 'DataProcessNode',
         components: {
+            Processors,
             FieldValue,
             FormSection
         },
@@ -340,6 +352,7 @@
                 relationListLoading: false,
                 relationList: [],
                 errorTips: false,
+                excludeRoleType: ['CMDB', 'GENERAL', 'EMPTY', 'OPEN', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION'],
                 rules: {
                     name: [
                         {
@@ -368,6 +381,7 @@
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapState('nocode/nodeConfig', ['nodeData']),
+            ...mapGetters('nocode/nodeConfig', ['processorData']),
             projectId () {
                 return this.$route.params.projectId
             },
@@ -402,7 +416,11 @@
                 deep: true
             }
         },
-        async mounted () {
+        async created () {
+            // webhook节点处理人不能为不限，但是创建节点时默认返回的不限，需要在编辑时清除
+            if (this.excludeRoleType.includes(this.processorData.type)) {
+                this.handleProcessorChange({ type: '', processors: '' })
+            }
             this.getRelationList()
             this.getApprovalNode()
             await this.getFormList()
@@ -528,6 +546,9 @@
                     }
                 }
             },
+            handleProcessorChange (val) {
+                this.$store.commit('nocode/nodeConfig/updateProcessor', val)
+            },
             // 切换表单
             handleSelectForm (val) {
                 this.getFieldList(val)
@@ -615,7 +636,7 @@
                         data.value = ''
                 }
             },
-            validate () {
+            validateConditions () {
                 return this.$refs.dataForm
                     .validate()
                     .then(() => {
@@ -631,6 +652,17 @@
                         return true
                     })
                     .catch(() => false)
+            },
+            validate () {
+                return Promise.all([
+                    this.$refs.dataForm.validate(),
+                    this.$refs.processorsForm.validate(),
+                    this.validateConditions()
+                ]).then((result) => {
+                    return result.every(item => item === true)
+                }).catch((e) => {
+                    return false
+                })
             },
             handleSelectMapValue (mapping, val) {
                 mapping.value = ''

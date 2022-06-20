@@ -15,7 +15,6 @@
             @click="handleSaveClick(false)">
             保存
         </bk-button>
-        <bk-button @click="$emit('close')">取消</bk-button>
         <create-page-dialog
             ref="createPageDialog"
             platform="PC"
@@ -51,14 +50,14 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
-            ...mapState('nocode/flow', ['flowConfig']),
+            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig', 'initialFieldIds']),
+            ...mapState('nocode/flow', ['flowConfig', 'delCreateTicketPageId']),
             projectId () {
                 return this.$route.params.projectId
             },
             // 第一个提单节点并且未生成提单页
             showCreatePageBtn () {
-                return this.nodeData.is_first_state && this.nodeData.type === 'NORMAL' && typeof this.flowConfig.pageId !== 'number'
+                return this.nodeData.is_first_state && this.nodeData.type === 'NORMAL' && !this.flowConfig.pageId
             },
             pageData () {
                 const { id: formId } = this.formConfig
@@ -66,7 +65,7 @@
                 return {
                     formId,
                     flowId,
-                    pageCode: `createTicket${this.flowConfig.id}`,
+                    pageCode: `flowPage${this.flowConfig.id}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
@@ -76,16 +75,24 @@
             saveItsmFields () {
                 const fields = this.formConfig.content.map(item => {
                     const field = cloneDeep(item)
+                    if (typeof item.id !== 'number') {
+                        field.id = null // 新建的字段需要传null
+                    }
                     field.workflow = this.serviceData.workflow_id
-                    field.id = null
-                    field.state_id = this.nodeData.id
+                    field.state = this.nodeData.id
                     delete field.api_instance_id
                     return field
+                })
+                const deletedIds = []
+                this.initialFieldIds.forEach(id => {
+                    if (!fields.find(item => item.id === id)) {
+                        deletedIds.push(id)
+                    }
                 })
                 const params = {
                     fields,
                     state_id: this.nodeData.id,
-                    delete_ids: []
+                    delete_ids: deletedIds
                 }
                 return this.$store.dispatch('nocode/flow/batchSaveFields', params)
             },
@@ -115,11 +122,7 @@
                 // 流程服务校验desc字段不为空，节点上没有可配置desc的地方，故先删除
                 delete data.desc
                 data.is_draft = false
-                if (data.type === 'DATA_PROC') {
-                    // @todo 处理人为不限后台校验不通过，暂时用固定值
-                    data.processors_type = 'STARTER'
-                    data.processors = ''
-                } else if (data.type === 'APPROVAL') {
+                if (data.type === 'APPROVAL') {
                     if (!data.is_multi) {
                         data.finish_condition = {}
                     }
@@ -139,6 +142,10 @@
                 }
                 return this.$store.dispatch('nocode/form/updateForm', params)
             },
+            // 删除流程提单页
+            deleteCreateTicketPage () {
+                return this.$store.dispatch('page/delete', { pageId: this.delCreateTicketPageId })
+            },
             async handleSaveClick (createPage = false) {
                 try {
                     const result = await this.$parent.validate()
@@ -151,8 +158,10 @@
                         this.savePending = true
                     }
                     if (this.nodeData.type === 'NORMAL') {
-                        // itsm 接口校验暂时有问题，先去掉
-                        // await this.saveItsmFields()
+                        // itsm 接口对字段的类型校验有问题，暂时先去掉
+                        // const itsmFields = await this.saveItsmFields()
+                        // this.$store.commit('nocode/nodeConfig/setFormConfig', { content: itsmFields })
+                        // this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
                         const res = await this.saveFormConfig(this.flowConfig.pageId)
                         this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
                         this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
@@ -161,6 +170,11 @@
                         if (createPage) {
                             this.$refs.createPageDialog.isShow = true
                             return
+                        } else if (this.delCreateTicketPageId) { // 流程提单页被删除
+                            await this.deleteCreateTicketPage()
+                            await this.updateFlowPageId()
+                            this.$store.commit('nocode/flow/setDeletedPageId', null)
+                            this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
                         }
                     } else {
                         await this.updateItsmNode()
@@ -170,7 +184,6 @@
                         message: '节点保存成功',
                         theme: 'success'
                     })
-                    this.$emit('save')
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
@@ -178,12 +191,18 @@
                     this.savePending = false
                 }
             },
+            // 创建提单页
             async handleCreatePageConfirm () {
                 try {
                     const pageId = await this.$refs.createPageDialog.save()
-                    if (typeof pageId === 'number') {
+                    if (pageId) {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
+                        this.$refs.createPageDialog.isShow = false
+                        this.$bkMessage({
+                            message: '节点保存并创建提单页成功',
+                            theme: 'success'
+                        })
                     }
                 } catch (e) {
                     messageError(e.message || e)

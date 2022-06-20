@@ -1,0 +1,126 @@
+<template>
+    <scheme-tab
+        :tabs="tabs"
+        :active.sync="activeTab"
+    >
+        <section v-show="activeTab === 'edit'">
+            <scheme-header />
+            <single-scheme
+                ref="singleSchemeRef"
+                :scheme="renderResponseParam"
+                :minus-disable="true"
+                @update="handleUpdate"
+            />
+        </section>
+        <monaco
+            v-show="activeTab === 'response'"
+            :value="responseString"
+            @change="handleMonacoChange"
+        />
+    </scheme-tab>
+</template>
+
+<script>
+    import {
+        defineComponent,
+        ref,
+        onMounted,
+        getCurrentInstance
+    } from '@vue/composition-api'
+    import SchemeTab from '../common/scheme-tab'
+    import SchemeHeader from '../common/scheme-header'
+    import SingleScheme from '../common/single-scheme'
+    import Monaco from '@/components/monaco'
+    import {
+        getDefaultApiEditScheme,
+        parseScheme2Value,
+        parseValue2Scheme,
+        LCGetParamsVal,
+        API_PARAM_TYPES
+    } from 'shared/api'
+
+    export default defineComponent({
+        components: {
+            SchemeTab,
+            SchemeHeader,
+            SingleScheme,
+            Monaco
+        },
+
+        props: {
+            params: Object
+        },
+
+        setup (props, { emit }) {
+            const tabs = [
+                { name: 'response', label: '响应示例' },
+                { name: 'edit', label: '响应结果字段提取' }
+            ]
+            const currentInstance = getCurrentInstance()
+            const activeTab = ref('response')
+            const renderResponseParam = ref({})
+            const responseString = ref('')
+
+            const handleUpdate = (param) => {
+                renderResponseParam.value = param
+                emit('change', renderResponseParam.value)
+            }
+
+            const handleMonacoChange = (value) => {
+                try {
+                    responseString.value = value
+                    const Fn = Function
+                    const responseValue = new Fn(`return ${value}`)()
+                    const responseParam = parseValue2Scheme(responseValue)
+                    handleUpdate(responseParam)
+                } catch (error) {
+                    console.error(`输入有误，请重新输入：${error.message}`)
+                }
+            }
+
+            const validate = () => {
+                return currentInstance
+                    .proxy
+                    .$refs
+                    .singleSchemeRef
+                    .validate()
+                    .then(() => renderResponseParam.value)
+            }
+
+            onMounted(() => {
+                // 设置 params
+                renderResponseParam.value = props.params
+                // 默认显示 root
+                if (renderResponseParam.value.name === undefined) {
+                    renderResponseParam.value = getDefaultApiEditScheme({
+                        name: 'root',
+                        type: API_PARAM_TYPES.OBJECT.VAL,
+                        value: API_PARAM_TYPES.OBJECT.DEFAULT,
+                        plusBrotherDisable: true
+                    })
+                }
+                // 设置 monaco 内容
+                const responseData = parseScheme2Value(
+                    renderResponseParam.value,
+                    (param) => LCGetParamsVal(param, [])
+                )
+                responseString.value = JSON.stringify(responseData, null, 4)
+            })
+
+            return {
+                tabs,
+                activeTab,
+                renderResponseParam,
+                responseString,
+                handleUpdate,
+                handleMonacoChange,
+                validate
+            }
+        }
+    })
+
+</script>
+
+<style lang="postcss" scoped>
+    
+</style>

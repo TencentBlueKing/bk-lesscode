@@ -102,6 +102,7 @@
     </section>
 </template>
 <script>
+    import { mapState } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import { messageError } from '@/common/bkmagic'
 
@@ -113,10 +114,6 @@
                 default: ''
             },
             serviceData: {
-                type: Object,
-                default: () => ({})
-            },
-            flowConfig: {
                 type: Object,
                 default: () => ({})
             }
@@ -155,6 +152,9 @@
                     ]
                 }
             }
+        },
+        computed: {
+            ...mapState('nocode/flow', ['flowConfig'])
         },
         created () {
             if (this.serviceData.revoke_config.type === 3) {

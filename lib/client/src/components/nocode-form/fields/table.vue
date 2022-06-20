@@ -2,32 +2,39 @@
     <div class="table">
         <bk-table :data="val" size="small" :outer-border="isHaveBorder" :max-height="maxHeight">
             <template v-for="col in field.choice">
-                <bk-table-column :label="col.name" :key="col.key + col.name" :render-header="(h, data) => renderTableHeader(h, data,col)">
+                <bk-table-column :label="col.name" :key="col.key + col.name + col.display" :render-header="(h, data) => renderTableHeader(h, data,col)">
                     <template slot-scope="props">
-                        <bk-input
-                            v-if="!viewMode && !disabled"
-                            v-model="props.row[col.key]"
-                            @change="change"></bk-input>
                         <bk-select
                             searchable
-                            v-else-if="!viewMode && !disabled && ['select','multiselect'].includes(col.display)"
+                            :disabled="disabled"
+                            v-if="!viewMode && ['select','multiselect'].includes(col.display)"
                             :multiple="col.display === 'multiselect'"
                             v-model="props.row[col.key]"
                             @change="change">
                         </bk-select>
                         <bk-date-picker
-                            v-else-if="!viewMode && !disabled && col.display === 'datetime'"
+                            v-else-if="!viewMode && col.display === 'datetime'"
+                            style="width: 100%"
                             :transfer="true"
+                            :disabled="disabled"
                             v-model="props.row[col.key]"
                             @change="change">
                         </bk-date-picker>
                         <bk-date-picker
                             v-else-if="!viewMode && !disabled && col.display === 'date'"
+                            style="width: 100%"
                             v-model="props.row[col.key]"
                             :transfer="true"
+                            :disabled="!disabled"
                             :type="'datetime'"
                             @change="change">
                         </bk-date-picker>
+                        <bk-input
+                            v-else-if="!viewMode "
+                            :disabled="disabled"
+                            v-model="props.row[col.key]"
+                            @change="change">
+                        </bk-input>
                         <span v-else>{{ props.row[col.key] || '--' }}</span>
                     </template>
                 </bk-table-column>

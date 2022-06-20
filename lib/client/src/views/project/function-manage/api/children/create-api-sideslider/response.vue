@@ -1,8 +1,8 @@
 <template>
-    <edit-dynamic-data
+    <edit-response-scheme
         ref="editObjectRef"
-        :disable-edit-root="true"
-        :param="formData.response"
+        :params="formData.response"
+        @change="handleResponseChange"
     />
 </template>
 
@@ -10,12 +10,12 @@
     import {
         defineComponent
     } from '@vue/composition-api'
-    import EditDynamicData from './edit-dynamic-data/index.vue'
+    import EditResponseScheme from '@/components/api/edit-scheme/response'
     import useForm from './use-form'
 
     export default defineComponent({
         components: {
-            EditDynamicData
+            EditResponseScheme
         },
 
         props: {
@@ -36,10 +36,17 @@
                 })
             }
 
+            const handleResponseChange = (val) => {
+                emit('update', {
+                    response: val
+                })
+            }
+
             return {
                 editObjectRef,
                 update,
-                validate
+                validate,
+                handleResponseChange
             }
         }
     })

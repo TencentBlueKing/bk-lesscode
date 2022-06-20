@@ -1,25 +1,32 @@
 <template>
-    <edit-dynamic-data
+    <component
         ref="editObjectRef"
-        :disable-edit-root="true"
-        :param="formData[paramKey]"
+        :params="renderParams"
+        :is="renderComponent"
+        @change="handleParamsChange"
     />
 </template>
 
 <script>
     import {
         defineComponent,
-        computed
+        ref,
+        computed,
+        watch
     } from '@vue/composition-api'
-    import EditDynamicData from './edit-dynamic-data/index.vue'
-    import useForm from './use-form'
     import {
-        METHODS_WITHOUT_DATA
+        METHODS_WITHOUT_DATA,
+        getDefaultApiEditScheme,
+        API_PARAM_TYPES
     } from 'shared/api'
+    import useForm from './use-form'
+    import EditGetScheme from '@/components/api/edit-scheme/get'
+    import EditPostScheme from '@/components/api/edit-scheme/post'
 
     export default defineComponent({
         components: {
-            EditDynamicData
+            EditGetScheme,
+            EditPostScheme
         },
 
         props: {
@@ -31,12 +38,21 @@
                 editObjectRef,
                 update
             } = useForm(emit)
+            const renderParams = ref()
 
             const paramKey = computed(() => {
                 if (METHODS_WITHOUT_DATA.includes(props.formData.method)) {
                     return 'query'
                 } else {
                     return 'body'
+                }
+            })
+
+            const renderComponent = computed(() => {
+                if (METHODS_WITHOUT_DATA.includes(props.formData.method)) {
+                    return 'EditGetScheme'
+                } else {
+                    return 'EditPostScheme'
                 }
             })
 
@@ -48,16 +64,55 @@
                 })
             }
 
+            const handleParamsChange = (val) => {
+                emit('update', {
+                    [paramKey.value]: val
+                })
+            }
+
+            const initQueryParam = () => {
+                renderParams.value = props.formData.query
+                if (renderParams.value.length <= 0) {
+                    renderParams.value.push(getDefaultApiEditScheme())
+                }
+            }
+
+            const initBodyParam = () => {
+                renderParams.value = props.formData.body
+                if (renderParams.value.name === undefined) {
+                    renderParams.value = getDefaultApiEditScheme({
+                        name: 'root',
+                        type: API_PARAM_TYPES.OBJECT.VAL,
+                        value: API_PARAM_TYPES.OBJECT.DEFAULT,
+                        disable: true,
+                        plusBrotherDisable: true
+                    })
+                }
+            }
+
+            watch(
+                () => props.formData[paramKey.value],
+                () => {
+                    if (paramKey.value === 'query') {
+                        initQueryParam()
+                    } else {
+                        initBodyParam()
+                    }
+                },
+                {
+                    immediate: true
+                }
+            )
+
             return {
                 editObjectRef,
+                renderParams,
                 paramKey,
+                renderComponent,
                 update,
-                validate
+                validate,
+                handleParamsChange
             }
         }
     })
 </script>
-
-<style lang="postcss" scoped>
-    
-</style>

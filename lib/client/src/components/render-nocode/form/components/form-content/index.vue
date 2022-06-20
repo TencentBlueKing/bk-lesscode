@@ -1,7 +1,7 @@
 <template>
     <div class="form-panel" @click="showFormPanel">
         <draggable
-            filter=".actions-area"
+            :filter="isDisabledClass"
             :class="['fields-container', activeCls]"
             :disabled="disabled"
             :value="fields"
@@ -68,6 +68,7 @@
                 }
                 return ''
             }
+
         },
         methods: {
             ...mapMutations('drag', ['setCurTemplateData']),
@@ -122,6 +123,9 @@
             end (e) {
                 this.$emit('move', e.newIndex, e.oldIndex)
                 this.selectedIndex = e.newIndex
+            },
+            isDisabledClass (evt, item) {
+                return ['fields-empty', 'actions-area'].includes(evt.target.className)
             },
             // 选择、复制、删除操作
             handleFormAction (type, index) {
@@ -201,6 +205,7 @@
   @mixin scroller;
   height: 100%;
   overflow: auto;
+  padding-bottom: 24px;
   background: #ffffff;
   &.hover {
     outline: 2px dashed #1768ef;
@@ -230,8 +235,10 @@
 .fields-empty {
   margin: 24px 24px 0;
   height: 48px;
+/*
   background: #FAFBFD;
   border: 1px dashed #C4C6CC;
+  */
   font-size: 12px;
   color: #63656E;
   text-align: center;

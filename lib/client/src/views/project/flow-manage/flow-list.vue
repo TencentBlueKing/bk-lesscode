@@ -65,7 +65,7 @@
                         </bk-button>
                         <div slot="content" class="archive-tips-content">
                             <h4>确认归档该流程？</h4>
-                            <p>1. 流程归档后，将不能使用，包括流程的表单页面将会被删除，请谨慎操作！</p>
+                            <p>1. 流程归档后，将不能使用，流程的提单页面将会被删除，请谨慎操作！</p>
                             <p>2. 后续可通过归档列表恢复使用。</p>
                         </div>
                     </bk-popconfirm>

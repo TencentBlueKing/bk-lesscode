@@ -22,12 +22,17 @@
     import { circleJSON } from '@/common/util.js'
     import LC from '@/element-materials/core'
     import { bus } from '@/common/bus'
-    import { mapGetters } from 'vuex'
 
     export default {
         components: {
             CodeViewer,
             JsonView
+        },
+        props: {
+            nocodeType: {
+                type: String,
+                default: ''
+            }
         },
         data () {
             return {
@@ -36,13 +41,17 @@
             }
         },
         computed: {
-            ...mapGetters('page', ['pageDetail']),
             pageId () {
                 return this.$route.params.pageId || ''
             }
         },
+        watch: {
+            '$store.state.nocode.formSetting.fieldsList' (val) {
+                this.code = circleJSON(val || [])
+            }
+        },
         created () {
-            if (this.pageDetail.nocodeType === 'FORM') {
+            if (['FORM', 'FLOW'].includes(this.nocodeType)) {
                 const content = this.$store.state.nocode.formSetting.fieldsList || []
                 this.code = circleJSON(content)
             } else {
@@ -56,7 +65,7 @@
             },
             setImportData (name, data) {
                 if (data && Array.isArray(data)) {
-                    if (this.pageDetail.nocodeType === 'FORM') {
+                    if (['FORM', 'FLOW'].includes(this.nocodeType)) {
                         this.$store.commit('nocode/formSetting/setFieldsList', data)
                         bus.$emit('resetFieldList', data)
                         this.code = circleJSON(data)

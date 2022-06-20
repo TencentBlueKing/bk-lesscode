@@ -20,15 +20,15 @@
             <div
                 id="toolActionBox"
                 class="function-and-tool">
-                <operation-select v-model="operationType" />
+                <operation-select v-model="operationType" :hide-json="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" />
                 <div class="spilt-line" />
                 <!-- 保存、预览、快捷键等tool单独抽离 -->
-                <action-tool />
+                <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" />
             </div>
             <extra-links :show-help-box="false" :create-form-page="nocodeType === 'FORM'" />
         </div>
         <div class="lesscode-editor-page-content" ref="root" v-if="!isContentLoading">
-            <operation-area :operation="operationType" />
+            <operation-area :operation="operationType" :nocode-type="nocodeType" />
         </div>
     </main>
 </template>
@@ -42,6 +42,7 @@
     import OperationArea from './components/operation-area'
 
     export default {
+        name: 'NocodePage',
         components: {
             PageList,
             ExtraLinks,
@@ -87,6 +88,7 @@
             })
         },
         beforeDestroy () {
+            this.clearContext()
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
         },
         beforeRouteLeave (to, from, next) {
@@ -147,6 +149,10 @@
                 const confirmationMessage = '...';
                 (event || window.event).returnValue = confirmationMessage
                 return confirmationMessage
+            },
+            clearContext () {
+                this.$store.commit('page/setPageDetail', {})
+                this.$store.commit('layout/setPageLayout', {})
             }
         }
     }
