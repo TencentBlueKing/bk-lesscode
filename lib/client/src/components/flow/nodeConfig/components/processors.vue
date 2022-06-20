@@ -67,7 +67,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    // import MemberSelect from '@/components/nocode-form/components/memberSelect.vue'
+    // import MemberSelect from '@/components/flow-form-comp/form/components/memberSelect.vue'
     import memberSelector from '@/components/member-selector'
 
     export default {

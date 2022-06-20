@@ -15,8 +15,8 @@
 </template>
 
 <script>
-    import FieldItem from '@/components/nocode-form/fieldItem.vue'
-    import { RICHTEXT_FIELD } from '../../../common/field'
+    import FieldItem from '@/components/flow-form-comp/form/fieldItem.vue'
+    import { RICHTEXT_FIELD } from '@/components/flow-form-comp/common/field.js'
 
     export default {
         name: 'configDescCompValue',

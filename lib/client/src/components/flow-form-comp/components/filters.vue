@@ -1,29 +1,33 @@
 <template>
     <div class="data-manage-filters">
         <bk-form class="filters-form" form-type="vertical">
-            <div v-for="(item, index) in filterFields" class="filter-form-item" :key="index">
+            <div
+                v-for="(item, index) in filterFields"
+                :key="index"
+                :class="['filter-form-item', { 'view-mode': viewMode }]">
                 <bk-form-item :label="item.name">
                     <bk-select
                         v-if="isSelectComp(item.type)"
-                        style="pointer-events: none; background: #ffffff"
+                        style="background: #ffffff"
                         :placeholder="`请选择${item.name}`">
                     </bk-select>
                     <bk-date-picker
                         v-else-if="['DATE', 'DATETIME'].includes(item.type)"
-                        style="pointer-events: none; width: 100%;"
+                        style="width: 100%;"
                         :placeholder="`请输入${item.name}`">
                     </bk-date-picker>
                     <bk-input
                         v-else
-                        style="pointer-events: none;"
                         :placeholder="`请输入${item.name}`"
                         :type="item.type === 'INT' ? 'number' : 'text'"
                     />
                 </bk-form-item>
-                <i class="bk-drag-icon bk-drag-close-circle-fill delete-icon" @click="handleDelClick(item.key)"></i>
+                <div class="form-item-mask">
+                    <i class="bk-drag-icon bk-drag-close-circle-fill delete-icon" @click="handleDelClick(item.key)"></i>
+                </div>
             </div>
             <bk-popover
-                v-if="canSelectFields.length > 0"
+                v-if="!viewMode && canSelectFields.length > 0"
                 theme="light"
                 placement="bottom-start"
                 ext-cls="filter-field-popover"
@@ -51,6 +55,7 @@
     export default {
         name: 'Filters',
         props: {
+            viewMode: Boolean,
             fields: {
                 type: Array,
                 default: () => []
@@ -160,12 +165,33 @@
             position: relative;
             padding: 8px;
             width: 320px;
-            border: 1px dashed transparent;
-            &:hover {
+            &:not(.view-mode):hover {
                 background: #eaebf0;
-                border-color: #63656e;
-                .delete-icon {
+                 .form-item-mask {
                     display: block;
+                 }
+            }
+            .form-item-mask {
+                display: none;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background: transparent;
+                border: 1px dashed #63656e;
+            }
+            .delete-icon {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                font-size: 16px;
+                color: #979ba5;
+                background: #ffffff;
+                border-radius: 50%;
+                cursor: pointer;
+                &:hover {
+                    color: #63656e;
                 }
             }
         }
@@ -173,20 +199,6 @@
             width: 100%;
             & + .bk-form-item {
                 margin-top: 0;
-            }
-        }
-        .delete-icon {
-            display: none;
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            font-size: 16px;
-            color: #979ba5;
-            background: #ffffff;
-            border-radius: 50%;
-            cursor: pointer;
-            &:hover {
-                color: #63656e;
             }
         }
     }

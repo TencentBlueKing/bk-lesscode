@@ -36,7 +36,7 @@
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import { messageError } from '@/common/bkmagic'
-    import { FLOW_SYS_FIELD } from '../../common/field.js'
+    import { FLOW_SYS_FIELD } from '../common/field.js'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
 

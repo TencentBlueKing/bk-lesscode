@@ -1,9 +1,11 @@
 <template>
     <div class="form-data-manage">
-        <div class="operate-btns">
+        <div class="operate-btns" @click="handleFilterSwitchClick">
             <i class="bk-icon icon-funnel filter-switch-icon"></i>
         </div>
         <filters
+            v-if="showFilter"
+            :view-mode="viewMode"
             :filters="filters"
             :fields="fields"
             :system-fields="systemFields"
@@ -11,6 +13,7 @@
         </filters>
         <table-fields
             style="margin-top: 16px"
+            :view-mode="viewMode"
             :table-config="tableConfig"
             :fields="fields"
             :system-fields="systemFields"
@@ -19,11 +22,9 @@
     </div>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
     import { FORM_SYS_FIELD } from '../common/field.js'
-    import Filters from './components/filters.vue'
-    import TableFields from './components/table-fields.vue'
+    import Filters from './filters.vue'
+    import TableFields from './table-fields.vue'
 
     export default {
         name: 'formData',
@@ -31,44 +32,37 @@
             Filters,
             TableFields
         },
+        props: {
+            viewMode: Boolean,
+            config: {
+                type: Object,
+                default: () => {
+                    return {
+                        filters: [],
+                        tableConfig: []
+                    }
+                }
+            },
+            fields: {
+                type: Array,
+                default: () => []
+            }
+        },
         data () {
             return {
-                filters: [],
-                tableConfig: [],
-                formDetailLoading: false,
-                formDetail: {},
-                fields: [],
-                systemFields: FORM_SYS_FIELD
+                filters: this.config.filters.slice(0),
+                tableConfig: this.config.tableConfig.slice(0),
+                systemFields: FORM_SYS_FIELD,
+                showFilter: true
             }
-        },
-        computed: {
-            ...mapGetters('page', ['pageDetail'])
-        },
-        created () {
-            // 页面创建时content默认为数组
-            if (Array.isArray(this.pageDetail.content)) {
-                this.filters = []
-                this.tableConfig = []
-            } else {
-                const { filters, tableConfig } = this.pageDetail.content
-                this.filters = filters
-                this.tableConfig = tableConfig
-            }
-            this.getFormDetail()
         },
         beforeDestroy () {
             this.$store.commit('nocode/formSetting/setTableFields', {})
         },
         methods: {
-            async getFormDetail () {
-                try {
-                    this.formDetailLoading = true
-                    this.formDetail = await this.$store.dispatch('nocode/form/formDetail', { formId: this.pageDetail.formId })
-                    this.fields = JSON.parse(this.formDetail.content)
-                } catch (e) {
-                    messageError(e.message || e)
-                } finally {
-                    this.formDetailLoading = false
+            handleFilterSwitchClick () {
+                if (this.viewMode) {
+                    this.showFilter = !this.showFilter
                 }
             },
             handleUpdate (type, val) {
@@ -101,6 +95,10 @@
             border: 1px solid #c4c6cc;
             border-radius: 2px;
             background: #ffffff;
+            cursor: pointer;
+            &:hover {
+                color: #3a84ff;
+            }
         }
     }
 </style>

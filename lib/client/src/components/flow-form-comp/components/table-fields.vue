@@ -51,6 +51,7 @@
     export default {
         name: 'TableFields',
         props: {
+            viewMode: Boolean,
             fields: {
                 type: Array,
                 default: () => []
@@ -88,18 +89,21 @@
             }
         },
         watch: {
-            fields (val) {
-                const selectedSys = []
-                const selectedCustom = []
-                this.tableConfig.forEach(key => {
-                    if (this.systemFields.find(field => field.key === key)) {
-                        selectedSys.push(key)
-                    } else if (val.find(field => field.key === key)) {
-                        selectedCustom.push(key)
-                    }
-                })
-                this.selectedSys = selectedSys
-                this.selectedCustom = selectedCustom
+            fields: {
+                handler (val) {
+                    const selectedSys = []
+                    const selectedCustom = []
+                    this.tableConfig.forEach(key => {
+                        if (this.systemFields.find(field => field.key === key)) {
+                            selectedSys.push(key)
+                        } else if (val.find(field => field.key === key)) {
+                            selectedCustom.push(key)
+                        }
+                    })
+                    this.selectedSys = selectedSys
+                    this.selectedCustom = selectedCustom
+                },
+                immediate: true
             },
             tableConfig (val) {
                 this.cols = val.slice()
@@ -108,11 +112,12 @@
         methods: {
             handleSelectConfirm () {
                 this.cols = [...this.selectedSys, ...this.selectedCustom]
-                this.$emit('update', this.cols)
+                if (!this.viewMode) {
+                    this.$emit('update', this.cols)
+                }
             },
             handleSelectCancel () {
                 console.log(this.$refs.fieldsTable)
-                debugger
             }
         }
     }

@@ -316,7 +316,7 @@
     import { mapState, mapGetters } from 'vuex'
     import FormSection from '../components/form-section.vue'
     import Processors from '../components/processors.vue'
-    import { CONDITION_RELATIONS } from '@/components/nocode-form/constants/forms.js'
+    import { CONDITION_RELATIONS } from '@/components/flow-form-comp/form/constants/forms.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
     import FieldValue from '@/components/render-nocode/form/components/form-edit/fieldValue.vue'
 
