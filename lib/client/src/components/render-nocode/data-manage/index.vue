@@ -2,10 +2,7 @@
     <draw-layout>
         <layout>
             <div class="data-manage-page-wrapper">
-                <form-data
-                    v-if="nocodeType === 'FORM_MANAGE' && !formDetailLoading"
-                    :config="config"
-                    :fields="fields">
+                <form-data v-if="nocodeType === 'FORM_MANAGE'">
                 </form-data>
                 <flow-data v-else-if="nocodeType === 'FLOW_MANAGE'"></flow-data>
             </div>
@@ -16,12 +13,10 @@
     </draw-layout>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
     import DrawLayout from '@/views/index/components/draw-layout'
     import Layout from '@/components/render/pc/widget/layout'
     import FormData from './form-data.vue'
     import FlowData from './flow-data/index.vue'
-    import { messageError } from '@/common/bkmagic'
 
     export default {
         name: 'DataManage',
@@ -35,40 +30,6 @@
             nocodeType: {
                 type: String,
                 default: ''
-            }
-        },
-        data () {
-            return {
-                config: {
-                    filters: [],
-                    tableConfig: []
-                },
-                fields: [],
-                formDetailLoading: true
-            }
-        },
-        computed: {
-            ...mapGetters('page', ['pageDetail'])
-        },
-        created () {
-            if (Object.keys(this.pageDetail.content).length > 0) {
-                this.config = this.pageDetail.content
-            }
-            if (this.nocodeType === 'FORM_MANAGE') {
-                this.getFormDetail()
-            }
-        },
-        methods: {
-            async getFormDetail () {
-                try {
-                    this.formDetailLoading = true
-                    const formDetail = await this.$store.dispatch('nocode/form/formDetail', { formId: this.pageDetail.formId })
-                    this.fields = JSON.parse(formDetail.content)
-                } catch (e) {
-                    messageError(e.message || e)
-                } finally {
-                    this.formDetailLoading = false
-                }
             }
         }
     }
