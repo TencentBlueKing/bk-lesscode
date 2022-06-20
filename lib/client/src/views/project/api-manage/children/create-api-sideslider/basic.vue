@@ -142,8 +142,7 @@
             const getApiList = () => {
                 isLoadingApi.value = true
                 const params = {
-                    projectId: route.params.projectId,
-                    versionId: store.getters['projectVersion/currentVersionId']
+                    projectId: route.params.projectId
                 }
                 return store
                     .dispatch('api/getApiList', params)
@@ -158,8 +157,7 @@
             const getCategoryList = () => {
                 isLoadingCategory.value = true
                 const params = {
-                    projectId: route.params.projectId,
-                    versionId: store.getters['projectVersion/currentVersionId']
+                    projectId: route.params.projectId
                 }
                 return store
                     .dispatch('api/getCategoryList', params)

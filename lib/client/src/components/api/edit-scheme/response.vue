@@ -15,7 +15,7 @@
         <monaco
             v-show="activeTab === 'response'"
             :value="responseString"
-            @change="handleMonacoChange"
+            @change="handleResponseChange"
         />
     </scheme-tab>
 </template>
@@ -25,7 +25,8 @@
         defineComponent,
         ref,
         onMounted,
-        getCurrentInstance
+        getCurrentInstance,
+        watch
     } from '@vue/composition-api'
     import SchemeTab from '../common/scheme-tab'
     import SchemeHeader from '../common/scheme-header'
@@ -47,7 +48,8 @@
         },
 
         props: {
-            params: Object
+            params: Object,
+            response: [Object, Array, String, Number]
         },
 
         setup (props, { emit }) {
@@ -65,7 +67,7 @@
                 emit('change', renderResponseParam.value)
             }
 
-            const handleMonacoChange = (value) => {
+            const handleResponseChange = (value) => {
                 try {
                     responseString.value = value
                     const Fn = Function
@@ -85,6 +87,13 @@
                     .validate()
                     .then(() => renderResponseParam.value)
             }
+
+            watch(
+                () => props.response,
+                () => {
+                    handleResponseChange(JSON.stringify(props.response, null, 4))
+                }
+            )
 
             onMounted(() => {
                 // 设置 params
@@ -108,7 +117,7 @@
                 renderResponseParam,
                 responseString,
                 handleUpdate,
-                handleMonacoChange,
+                handleResponseChange,
                 validate
             }
         }

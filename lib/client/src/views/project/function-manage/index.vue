@@ -1,52 +1,48 @@
 <template>
-    <div class="function-manage-home">
-        <div class="g-page-tab">
-            <div
-                class="tab-item"
-                :class="{ active: page === 'functionComponent' }"
-                @click="handlePage('functionComponent')"
-            >函数管理</div>
-            <div
-                class="tab-item"
-                :class="{ active: page === 'apiComponent' }"
-                @click="handlePage('apiComponent')"
-            >Api 管理</div>
-        </div>
-        <component :is="pageCom" />
-    </div>
+    <layout class="function-manage-home">
+        <function-group
+            slot="left"
+            ref="functionGroup"
+            @groupChange="handleGroupChange"
+        />
+        <function-list
+            :group-id="groupId"
+            :group-name="groupName"
+            @freshList="handleFresh"
+        />
+    </layout>
 </template>
+
 <script>
-    import FunctionComponent from './function'
-    import ApiComponent from './api'
+    import Layout from '@/components/ui/layout'
+    import FunctionGroup from './children/group.vue'
+    import FunctionList from './children/list.vue'
 
     export default {
-        name: '',
         components: {
-            FunctionComponent,
-            ApiComponent
+            Layout,
+            FunctionGroup,
+            FunctionList
         },
         data () {
             return {
-                page: 'functionComponent'
-            }
-        },
-        computed: {
-            pageCom () {
-                const comMap = {
-                    functionComponent: FunctionComponent,
-                    apiComponent: ApiComponent
-                }
-
-                return comMap[this.page]
+                groupId: '',
+                groupName: ''
             }
         },
         methods: {
-            handlePage (page) {
-                this.page = page
+            handleGroupChange ({ id, groupName }) {
+                this.groupId = id
+                this.groupName = groupName
+            },
+
+            handleFresh () {
+                this.$refs.functionGroup.initData()
             }
         }
     }
 </script>
+
 <style lang="postcss" scoped>
     .function-manage-home {
         height: calc(100vh - 120px);

@@ -43,7 +43,6 @@
             >
                 <bk-select
                     :value="form.apiCode"
-                    :clearable="false"
                     :popover-options="{ appendTo: 'parent' }"
                     :disabled="disabled"
                     :loading="isLoading"
