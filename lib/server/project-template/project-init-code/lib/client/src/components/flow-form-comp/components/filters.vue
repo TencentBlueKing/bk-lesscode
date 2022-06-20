@@ -28,7 +28,7 @@
             </div>
         </bk-form>
         <div class="search-area">
-            <bk-button style="margin-right: 12px;" theme="primary">查询</bk-button>
+            <bk-button style="margin-right: 4px;" theme="primary">查询</bk-button>
             <bk-button @click="handleReset">重置</bk-button>
         </div>
     </div>

@@ -28,7 +28,7 @@
                     <bk-table-column label="当前节点"></bk-table-column>
                     <bk-table-column label="状态"></bk-table-column>
                     <bk-table-column label="操作">
-                        <bk-button theme="primary" :text="true" size="small" style="cursor: text;">详情</bk-button>
+                        <bk-button theme="primary" :text="true" size="small" style="padding: 0; cursor: text;">详情</bk-button>
                     </bk-table-column>
                 </bk-table>
             </bk-tab-panel>

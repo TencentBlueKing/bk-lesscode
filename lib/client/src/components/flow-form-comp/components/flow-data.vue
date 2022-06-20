@@ -21,7 +21,7 @@
                         </bk-form-item>
                     </bk-form>
                     <div class="search-btns-wrapper">
-                        <bk-button style="margin-right: 12px;" theme="primary">查询</bk-button>
+                        <bk-button style="margin-right: 4px;" theme="primary">查询</bk-button>
                         <bk-button @click="handleReset">重置</bk-button>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                     <bk-table-column label="当前节点"></bk-table-column>
                     <bk-table-column label="状态"></bk-table-column>
                     <bk-table-column label="操作">
-                        <bk-button theme="primary" :text="true" size="small" style="cursor: text;">详情</bk-button>
+                        <bk-button ext-cls="operate-btn" theme="primary" :text="true" size="small">详情</bk-button>
                     </bk-table-column>
                 </bk-table>
             </bk-tab-panel>
@@ -118,5 +118,8 @@
         >>> .bk-tab-section {
             padding: 16px 0;
         }
+    }
+    .bk-button-text.operate-btn {
+        padding: 0;
     }
 </style>
