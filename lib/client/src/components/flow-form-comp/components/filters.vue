@@ -18,6 +18,7 @@
                     </bk-date-picker>
                     <bk-input
                         v-else
+                        style="width: 100%;"
                         :placeholder="`请输入${item.name}`"
                         :type="item.type === 'INT' ? 'number' : 'text'"
                     />

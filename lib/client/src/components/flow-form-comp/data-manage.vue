@@ -47,8 +47,8 @@
             async getFormDetail () {
                 try {
                     this.formDetailLoading = true
-                    const formDetail = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formIds })
-                    this.fields = JSON.parse(formDetail.content)
+                    const formDetail = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds } })
+                    this.fields = JSON.parse(formDetail.data.content)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {

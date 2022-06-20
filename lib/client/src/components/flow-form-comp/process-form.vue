@@ -2,6 +2,7 @@
     <div class="process-form-comp">
         <template v-if="fields.length > 0">
             <form-fields
+                style="width: 50%"
                 :fields="fields"
                 :value="value"
                 @change="(key,$event) => value = $event">
