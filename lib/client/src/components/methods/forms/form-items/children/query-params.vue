@@ -18,7 +18,7 @@
         LCGetParamsVal,
         getDefaultApiUseScheme
     } from 'shared/api'
-    import UseGetScheme from '@/components/api/edit-scheme/get'
+    import UseGetScheme from '@/components/api/use-scheme/get'
     import RenderParamSlot from './render-param-slot'
 
     export default defineComponent({

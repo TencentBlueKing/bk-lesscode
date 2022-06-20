@@ -94,9 +94,9 @@
                 () => props.formData[paramKey.value],
                 () => {
                     if (paramKey.value === 'query') {
-                        renderParams.value = initQueryParam()
+                        initQueryParam()
                     } else {
-                        renderParams.value = initBodyParam()
+                        initBodyParam()
                     }
                 },
                 {
