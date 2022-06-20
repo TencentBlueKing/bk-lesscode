@@ -136,6 +136,9 @@
     width: calc(50% - 16px);
     margin-right: 16px;
   }
+  >>> .bk-form-control {
+    width: 100%;
+  }
 }
 .field-label {
   position: relative;

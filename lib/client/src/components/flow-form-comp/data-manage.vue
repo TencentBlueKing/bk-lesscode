@@ -2,15 +2,18 @@
     <div class="data-manange-comp">
         <form-data
             v-if="type === 'FORM_MANAGE'"
-            :view-mode="true"
-            :config="config"
-            :fields="fields">
+            :form-ids="formIds"
+            :config="config">
         </form-data>
-        <flow-data v-if="type === 'FLOW_MANGE'"></flow-data>
+        <flow-data
+            v-if="type === 'FLOW_MANAGE'"
+            :form-ids="formIds"
+            :service-id="serviceId"
+            :config="config">
+        </flow-data>
     </div>
 </template>
 <script>
-    import { messageError } from '@/common/bkmagic'
     import FormData from '@/components/flow-form-comp/components/form-data.vue'
     import FlowData from '@/components/flow-form-comp/components/flow-data.vue'
 
@@ -30,30 +33,6 @@
             config: {
                 type: Object,
                 default: () => ({})
-            }
-        },
-        data () {
-            return {
-                fields: [],
-                formDetailLoading: true
-            }
-        },
-        created () {
-            if (this.type === 'FORM_MANAGE') {
-                this.getFormDetail()
-            }
-        },
-        methods: {
-            async getFormDetail () {
-                try {
-                    this.formDetailLoading = true
-                    const formDetail = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds } })
-                    this.fields = JSON.parse(formDetail.data.content)
-                } catch (e) {
-                    messageError(e.message || e)
-                } finally {
-                    this.formDetailLoading = false
-                }
             }
         }
     }
