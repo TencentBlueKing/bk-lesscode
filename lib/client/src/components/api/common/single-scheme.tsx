@@ -1,4 +1,5 @@
 import {
+    getDefaultApiUseScheme,
     getDefaultApiEditScheme,
     API_PARAM_TYPES
 } from 'shared/api'
@@ -40,16 +41,16 @@ const SingleSchemeComponent = defineComponent({
         }
         // 增加子节点
         const plusChildProperty = () => {
-            copyScheme.value.children.push(getDefaultApiEditScheme())
+            if (copyScheme.value.valueType) {
+                copyScheme.value.children.push(getDefaultApiUseScheme())
+            } else {
+                copyScheme.value.children.push(getDefaultApiEditScheme())
+            }
             triggleChange()
         }
         // 增加兄弟节点
         const handlePlusBrotherProperty = () => {
             emit('plusBrotherNode')
-        }
-        const plusBrotherProperty = () => {
-            copyScheme.value?.children?.push(getDefaultApiEditScheme())
-            triggleChange()
         }
         // 删除节点
         const handleMinusProperty = (index) => {
@@ -88,7 +89,8 @@ const SingleSchemeComponent = defineComponent({
             return Promise
                 .all([
                     formRef.value.validate(),
-                    ...Object.keys(childComponents)
+                    ...Object
+                        .keys(childComponents)
                         .map(childComponentRef => (childComponents[childComponentRef] as any).validate())
                 ])
         }
@@ -103,7 +105,6 @@ const SingleSchemeComponent = defineComponent({
             toggleShowProperty,
             plusChildProperty,
             handlePlusBrotherProperty,
-            plusBrotherProperty,
             handleMinusProperty,
             minusProperty,
             updateType,
@@ -302,7 +303,7 @@ const SingleSchemeComponent = defineComponent({
                                 scheme={property}
                                 renderSlot={renderSlot}
                                 onUpdate={this.triggleChange}
-                                onPlusBrotherNode={this.plusBrotherProperty}
+                                onPlusBrotherNode={this.plusChildProperty}
                                 onMinusNode={() => this.minusProperty(index)}
                             >
                             </SingleSchemeComponent>

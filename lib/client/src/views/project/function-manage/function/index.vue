@@ -14,6 +14,7 @@
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex'
     import Layout from '@/components/ui/layout'
     import FunctionGroup from './children/group.vue'
     import FunctionList from './children/list.vue'
@@ -30,7 +31,22 @@
                 groupName: ''
             }
         },
+        computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            projectId () {
+                return this.$route.params.projectId
+            }
+        },
+        created () {
+            this.getAllVariable({
+                projectId: this.projectId,
+                versionId: this.versionId,
+                effectiveRange: 0
+            })
+        },
         methods: {
+            ...mapActions('variable', ['getAllVariable']),
+
             handleGroupChange ({ id, groupName }) {
                 this.groupId = id
                 this.groupName = groupName

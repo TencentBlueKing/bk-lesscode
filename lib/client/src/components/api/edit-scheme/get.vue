@@ -16,8 +16,7 @@
                 @plusBrotherNode="handlePlusBrotherNode"
                 @minusNode="handleMinusNode"
                 @update="(param) => handleUpdate(index, param)"
-            >
-            </single-scheme>
+            />
         </section>
         <monaco
             v-else
@@ -41,6 +40,7 @@
     import Monaco from '@/components/monaco'
     import {
         getDefaultApiEditScheme,
+        getDefaultApiUseScheme,
         parseQueryScheme2QueryString
     } from 'shared/api'
 
@@ -54,7 +54,8 @@
 
         props: {
             renderSlot: Function,
-            params: Array
+            params: Array,
+            getParamVal: Function
         },
 
         setup (props, { emit }) {
@@ -65,10 +66,19 @@
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')
             const renderQueryParams = ref([])
-            const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value))
+            const queryString = computed(() => parseQueryScheme2QueryString(
+                renderQueryParams.value,
+                (param) => {
+                    return props.getParamVal ? props.getParamVal(param) : param.value
+                }
+            ))
 
             const handlePlusBrotherNode = () => {
-                renderQueryParams.value.push(getDefaultApiEditScheme())
+                if (renderQueryParams.value[0].valueType) {
+                    renderQueryParams.value.push(getDefaultApiUseScheme())
+                } else {
+                    renderQueryParams.value.push(getDefaultApiEditScheme())
+                }
                 triggleChange()
             }
 
@@ -99,9 +109,6 @@
                 () => props.params,
                 () => {
                     renderQueryParams.value = props.params
-                    if (renderQueryParams.value.length <= 0) {
-                        renderQueryParams.value.push(getDefaultApiEditScheme())
-                    }
                 },
                 {
                     immediate: true
