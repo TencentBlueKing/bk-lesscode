@@ -85,8 +85,9 @@
 .config-wrapper {
   padding: 0 12px;
   height: 100%;
-  overflow: auto;
+  overflow-y: auto;
   @mixin scroller;
+  overflow-x: hidden;
 }
 .empty-field{
   background: #FFFFFF;

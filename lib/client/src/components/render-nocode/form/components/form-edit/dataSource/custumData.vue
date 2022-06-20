@@ -3,8 +3,8 @@
         <div class="text-area">
             <div class="custom-text">选项名</div>
             <div class="custom-text">选项id</div>
-            <div class="custom-text">默认值</div>
-            <div class="custom-color">标签颜色</div>
+            <div class="custom-text" style="margin-left: 8px">默认值</div>
+            <div class="custom-color" v-show="localValIsDisplayTag">标签颜色</div>
         </div>
         <li v-for="(item, index) in localVal" class="cutsom-data-item" :key="index">
             <bk-checkbox v-if="showRequire" class="required-checkbox" v-model="item.required">必填</bk-checkbox>
@@ -14,7 +14,8 @@
                     placeholder="请输入选项名"
                     :maxlength="120"
                     v-model="item.name"
-                    @change="handleValChange">
+                    @change="handleValChange"
+                    @blur="handleBurChange(item)">
                 </bk-input>
                 <bk-input
                     class="custom-input"
@@ -23,8 +24,15 @@
                     v-model="item.key"
                     @change="handleValChange">
                 </bk-input>
-                <bk-radio :value="item.isDefaultVal" style="margin: 0 8px" @change="handleChangeDefaultVal(index)">设为下拉默认值</bk-radio>
-                <bk-color-picker v-model="item.color" :show-value="false" @change="handleValChange" transfer></bk-color-picker>
+                <bk-radio :value="item.isDefaultVal" style="margin: 0 24px  0 8px;" @change="handleChangeDefaultVal(index)">设为下拉默认值</bk-radio>
+                <bk-color-picker
+                    v-show="localValIsDisplayTag"
+                    v-model="item.color"
+                    style="width: 75px;"
+                    :show-value="false"
+                    @change="handleValChange"
+                    transfer>
+                </bk-color-picker>
             </div>
             <div class="btn-area">
                 <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAddItem(index)"></i>
@@ -38,12 +46,17 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import pinyin from 'pinyin'
 
     export default {
         name: 'CustomData',
         props: {
             value: Array,
             showRequire: {
+                type: Boolean,
+                default: false
+            },
+            localValIsDisplayTag: {
                 type: Boolean,
                 default: false
             }
@@ -92,6 +105,15 @@
                     return { ...item, isDefaultVal: false }
                 })
                 this.$emit('update', cloneDeep(this.localVal))
+            },
+            handleBurChange (item) {
+                const key = pinyin(item.name, {
+                    style: pinyin.STYLE_NORMAL,
+                    heteronym: false
+                })
+                    .join('_')
+                    .toUpperCase()
+                this.$set(item, 'key', key)
             }
         }
     }
@@ -125,13 +147,13 @@
     width: 206px;
 
     &:not(:last-child) {
-      margin-right: 10px;
+      margin-right: 12px;
     }
   }
 }
 .text-area{
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-right: 8px;
 
@@ -145,6 +167,7 @@
 }
 .custom-text{
   margin-bottom: 8px;
+  width: 218px;
 }
 
 .btn-area {
@@ -169,8 +192,8 @@
 
 .custom-color{
   position: relative;
-  top: -6px;
-  right: 105px;
+  top: -4px;
+  right: 76px;
 }
 .common-error-tips{
   color: #ff5656;
