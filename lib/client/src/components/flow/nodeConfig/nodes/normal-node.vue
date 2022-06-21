@@ -80,6 +80,10 @@
         created () {
             if (this.nodeData.id in this.flowNodeForms) {
                 // 已生成表单配置
+                // @todo 如果流程服务保存失败，这里的type会有问题
+                const type = this.nodeData.extras.formConfig.type || 'NEW_FORM'
+                const id = this.flowNodeForms[this.nodeData.id]
+                this.$store.commit('nocode/nodeConfig/setFormConfig', { id, type })
                 this.getFormDetail()
             }
             // webhook节点处理人不能为不限，但是创建节点时默认返回的不限，需要在编辑时清除
@@ -96,9 +100,8 @@
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
                     const { tableName: code, formName } = data
-                    // @todo 如果流程服务保存失败，这里的type会有问题
-                    const type = this.nodeData.extras.formConfig.type || 'NEW_FORM'
-                    this.$store.commit('nocode/nodeConfig/setFormConfig', { id, type, content, code, formName })
+                    
+                    this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                     this.$store.commit('nocode/nodeConfig/setInitialFieldIds', content)
                     this.formContentLoading = false
                 } catch (e) {
