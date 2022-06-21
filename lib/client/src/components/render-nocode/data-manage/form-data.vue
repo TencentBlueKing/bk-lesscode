@@ -1,11 +1,12 @@
 <template>
     <div class="form-data-manage">
-        <div class="operate-btns">
-            <i class="bk-icon icon-funnel filter-switch-icon"></i>
-        </div>
+        <!--        <div class="operate-btns" @click="">-->
+        <!--            <i class="bk-icon icon-funnel filter-switch-icon"></i>-->
+        <!--        </div>-->
         <filters
             :filters="filters"
             :fields="fields"
+            :table-config="tableConfig"
             :system-fields="systemFields"
             @update="handleUpdate('filters', $event)">
         </filters>
@@ -52,6 +53,7 @@
                 const { filters, tableConfig } = this.pageDetail.content
                 this.filters = filters
                 this.tableConfig = tableConfig
+                console.log(filters, tableConfig)
             }
             this.getFormDetail()
         },

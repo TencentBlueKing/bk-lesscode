@@ -61,6 +61,10 @@
             filters: {
                 type: Array,
                 default: () => []
+            },
+            tableConfig: {
+                type: Array,
+                default: () => []
             }
         },
         computed: {
@@ -81,7 +85,7 @@
                 const list = []
                 const fullFields = this.fields.concat(this.systemFields).filter(item => !UN_FILTERABLE_TYPE.includes(item.type))
                 fullFields.forEach(item => {
-                    if (!this.filters.includes(item.key)) {
+                    if (!this.filters.includes(item.key) && this.tableConfig.includes(item.key)) {
                         list.push(item)
                     }
                 })
