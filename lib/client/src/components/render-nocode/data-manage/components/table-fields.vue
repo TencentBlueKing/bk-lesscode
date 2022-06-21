@@ -15,7 +15,9 @@
             <bk-table-column label="操作" :label-width="150">
                 <bk-link theme="primary">详情</bk-link>
             </bk-table-column>
-            <bk-table-column ref="settingCol" type="setting">
+            <bk-table-column type="setting" ref="settingCol1">
+                <bk-table-setting-content ref="settingCol" v-show="false">
+                </bk-table-setting-content>
                 <div class="table-setting-wrapper">
                     <h2 class="title">表格设置</h2>
                     <div class="field-content-wrapper">
@@ -43,6 +45,7 @@
                         <bk-button :theme="'default'" @click="handleSelectCancel">取消</bk-button>
                     </div>
                 </div>
+
             </bk-table-column>
         </bk-table>
     </div>
@@ -109,10 +112,10 @@
             handleSelectConfirm () {
                 this.cols = [...this.selectedSys, ...this.selectedCustom]
                 this.$emit('update', this.cols)
+                this.$refs.settingCol.handleCancel()
             },
             handleSelectCancel () {
-                this.$refs.settingCol.Cancel()
-                console.log(this.$refs.fieldsTable)
+                this.$refs.settingCol.handleCancel()
             }
         }
     }
@@ -133,9 +136,9 @@
   .title {
     padding: 0 24px;
     margin: 0;
-    line-height: 32px;
-    font-size: 16px;
-    font-weight: 400;
+    line-height: 28px;
+    font-size: 20px;
+    font-weight: bold;
     color: #313238;
   }
   .field-content-wrapper {
