@@ -26,7 +26,7 @@
             ref="funcParams"
             property="funcParams"
             error-display-type="normal"
-            :rules="[nameRule]"
+            :rules="[getParamRule('函数调用参数')]"
             :desc="{ width: 350, content: '调用该函数传入的参数列表，如果函数用于组件事件，则这里是组件事件回调的参数，组件事件回调参数具体可见组件文档。' }">
             <dynamic-tag
                 :disabled="disabled"
@@ -114,13 +114,20 @@
                 >
                 </body-params>
             </bk-form-item>
+            <bk-form-item label="获取请求结果">
+                <bk-button
+                    size="small"
+                    :loading="isLoadingResponse"
+                    @click="getRemoteResponse"
+                >执行远程函数</bk-button>
+            </bk-form-item>
             <bk-form-item
                 label="接口返回数据参数名"
                 ref="remoteParams"
                 property="remoteParams"
                 error-display-type="normal"
                 desc="该参数用于接收Api返回数据，在函数中直接可使用该变量名来操作Api返回数据"
-                :rules="[nameRule]">
+                :rules="[getParamRule('接口返回数据参数名')]">
                 <dynamic-tag
                     :disabled="disabled"
                     v-model="form.remoteParams"
@@ -128,6 +135,17 @@
                 </dynamic-tag>
             </bk-form-item>
         </template>
+        <bk-dialog
+            width="1000"
+            title="查看接口返回值"
+            v-model="showFuncResponse.show"
+        >
+            <monaco
+                height="600"
+                :read-only="true"
+                :value="showFuncResponse.code"
+            />
+        </bk-dialog>
     </bk-form>
 </template>
 
@@ -137,20 +155,24 @@
     import DynamicTag from '@/components/dynamic-tag.vue'
     import QueryParams from './children/query-params.vue'
     import BodyParams from './children/body-params.vue'
+    import monaco from '@/components/monaco'
     import {
         FUNCTION_TYPE
     } from 'shared/function/'
     import {
         METHODS_WITHOUT_DATA,
         API_METHOD,
-        parseScheme2UseScheme
+        parseScheme2UseScheme,
+        parseScheme2Value,
+        LCGetParamsVal
     } from 'shared/api'
 
     export default {
         components: {
             DynamicTag,
             QueryParams,
-            BodyParams
+            BodyParams,
+            monaco
         },
 
         mixins: [mixins],
@@ -172,15 +194,15 @@
                     { id: FUNCTION_TYPE.EMPTY, name: '空白函数' },
                     { id: FUNCTION_TYPE.REMOTE, name: '远程函数', info: '建议以下几种情况使用 "远程函数":\n1、远程API需要携带用户登录态认证\n2、远程API无法跨域或纯前端访问' }
                 ],
-                nameRule: {
-                    validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z_0-9]+$/.test(x))),
-                    message: '由大小写英文字母、下划线、数字组成',
-                    trigger: 'blur'
-                },
                 apiList: [],
                 isLoading: false,
+                isLoadingResponse: false,
                 METHODS_WITHOUT_DATA,
-                API_METHOD
+                API_METHOD,
+                showFuncResponse: {
+                    show: false,
+                    code: ''
+                }
             }
         },
 
@@ -239,6 +261,49 @@
                     apiQuery: api.query.map(parseScheme2UseScheme),
                     apiBody: parseScheme2UseScheme(api.body)
                 })
+            },
+
+            getRemoteResponse () {
+                this.$refs.funcForm.validate().then(() => {
+                    this.isLoadingResponse = true
+                    let apiData = {}
+                    if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
+                        this.form.apiQuery.forEach((queryItem) => {
+                            apiData[queryItem.name] = parseScheme2Value(queryItem, LCGetParamsVal(this.variableList))
+                        })
+                    } else {
+                        apiData = parseScheme2Value(this.form.apiBody, LCGetParamsVal(this.variableList))
+                    }
+                    const httpData = {
+                        url: this.form.funcApiUrl,
+                        type: this.form.funcMethod,
+                        apiData,
+                        withToken: this.form.withToken
+                    }
+                    return this
+                        .$store
+                        .dispatch('getApiData', httpData)
+                        .then((res) => {
+                            this.showFuncResponse.show = true
+                            this.showFuncResponse.code = JSON.stringify(res, null, 4)
+                        })
+                        .catch((err) => {
+                            this.messageError(err.message || err)
+                        })
+                        .finally(() => {
+                            this.isLoadingResponse = false
+                        })
+                }).catch((err) => {
+                    this.messageError(err.content || err)
+                })
+            },
+
+            getParamRule (label) {
+                return {
+                    validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z_0-9]+$/.test(x))),
+                    message: `${label}由大小写英文字母、下划线、数字组成`,
+                    trigger: 'blur'
+                }
             }
         }
     }
