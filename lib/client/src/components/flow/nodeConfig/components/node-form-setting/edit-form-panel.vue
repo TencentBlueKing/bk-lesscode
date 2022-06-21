@@ -26,6 +26,7 @@
             <div class="edit-content-wrapper">
                 <nocode-form
                     v-show="operationType === 'edit'"
+                    page-type="FLOW"
                     :content="formConfig.content"
                     :disabled="formConfig.type === 'USE_FORM'">
                 </nocode-form>
@@ -92,7 +93,7 @@
         right: 0;
         bottom: 0;
         left: 0;
-        background: #f5f7fa;
+        background: #fafbfd;
         z-index: 3000;
         overflow: auto;
     }
@@ -157,7 +158,7 @@
         }
     }
     .edit-content-wrapper {
-        height: calc(100% - 72px);
+        height: calc(100% - 52px);
         .lesscode-editor-page-content {
             height: 100%;
         }
