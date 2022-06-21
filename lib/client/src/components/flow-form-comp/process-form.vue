@@ -48,7 +48,6 @@
     .process-form-comp {
         padding: 24px;
         height: 100%;
-        background: #ffffff;
     }
     .empty-form-fields {
         padding: 200px 0 140px;
