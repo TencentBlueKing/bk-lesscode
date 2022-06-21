@@ -9,10 +9,9 @@
                 ref="singleSchemeRef"
                 :scheme="renderBodyParam"
                 :minus-disable="true"
-                :render-slot="renderSlot"
+                :plus-brother-disable="true"
                 @update="handleUpdate"
-            >
-            </single-scheme>
+            />
         </section>
         <monaco
             v-else
@@ -35,9 +34,7 @@
     import SingleScheme from '../common/single-scheme'
     import Monaco from '@/components/monaco'
     import {
-        getDefaultApiEditScheme,
-        parseScheme2Value,
-        API_PARAM_TYPES
+        parseScheme2Value
     } from 'shared/api'
 
     export default defineComponent({
@@ -49,7 +46,6 @@
         },
 
         props: {
-            renderSlot: Function,
             params: Object
         },
 
@@ -81,15 +77,6 @@
                 () => props.params,
                 () => {
                     renderBodyParam.value = props.params
-                    if (renderBodyParam.value.name === undefined) {
-                        renderBodyParam.value = getDefaultApiEditScheme({
-                            name: 'root',
-                            type: API_PARAM_TYPES.OBJECT.VAL,
-                            value: API_PARAM_TYPES.OBJECT.DEFAULT,
-                            disable: true,
-                            plusBrotherDisable: true
-                        })
-                    }
                 },
                 {
                     immediate: true

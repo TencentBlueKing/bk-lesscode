@@ -64,6 +64,7 @@
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
             :hide-setting="!isFirstNormalNode || !hasCreatedTicketPage"
+            :hide-preview="!isFirstNormalNode || !hasCreatedTicketPage"
             :hide-save="formConfig.type === 'USE_FORM'"
             :hide-clear="formConfig.type === 'USE_FORM'"
             :flow-config="flowConfig"
@@ -91,7 +92,6 @@
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import PreviewFormDialog from './preview-form-dialog.vue'
-    import { NOCODE_TYPE_MAP } from '@/common/constant'
 
     export default {
         name: 'NodeFormSetting',
@@ -116,7 +116,7 @@
                     USE_FORM: '复用表单'
                 },
                 pageContextLoading: false,
-                selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
+                selectedType: '',
                 editFormPanelShow: false, // 表单编辑
                 selectFormDialogShow: false, // 选择表单弹窗
                 previewFormContent: [], // 预览表单字段
@@ -168,7 +168,8 @@
                     const [pageDetail] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId }),
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId }),
-                        await this.$store.dispatch('page/getPageSetting', {
+                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId }),
+                        this.$store.dispatch('page/getPageSetting', {
                             pageId: this.flowConfig.pageId,
                             projectId: this.projectId,
                             versionId: this.versionId
@@ -220,7 +221,7 @@
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
-                    title: '确认删除该流程提单页页面',
+                    title: '确认删除？',
                     subHeader: h('div', {
                         style: {
                             'text-align': 'center',
@@ -240,7 +241,10 @@
                                 'text-align': 'left',
                                 'font-size': '14px'
                             }
-                        }, NOCODE_TYPE_MAP.deleteTips['FLOW'])
+                        }, [
+                            h('p', {}, '删除该流程提单页面，对应的流程数据不会删除'),
+                            h('p', { style: { 'margin-top': '8px' } }, '2.确认该信息后，需“保存”该节点配置方可生效')
+                        ])
                     ]),
                     theme: 'danger',
                     confirmFn: () => {
@@ -251,6 +255,7 @@
             },
             // 编辑表单内容
             handleEditClick () {
+                this.selectedType = this.formConfig.type
                 this.editFormPanelShow = true
             },
             // 预览表单内容
@@ -296,7 +301,7 @@
             },
             // 流程提单页点击
             handlePageClick () {
-                if (this.flowConfig.pageId) {
+                if (this.flowConfig.pageId && !this.delCreateTicketPageId) {
                     this.editFormPanelShow = true
                 }
             },
@@ -420,5 +425,11 @@
         color: #ea3636;
         line-height: 18px;
         margin: 2px 0 0;
+    }
+</style>
+<style lang="postcss">
+    .delete-page-dialog .bk-dialog .bk-dialog-sub-header {
+        padding-left: 24px;
+        padding-right: 24px;
     }
 </style>

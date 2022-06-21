@@ -21,10 +21,9 @@
 <script>
     import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
-    import { FORM_SYS_FIELD } from '../common/field.js'
+    import { FORM_SYS_FIELD } from '@/components/flow-form-comp/common/field.js'
     import Filters from './components/filters.vue'
     import TableFields from './components/table-fields.vue'
-
     export default {
         name: 'formData',
         components: {

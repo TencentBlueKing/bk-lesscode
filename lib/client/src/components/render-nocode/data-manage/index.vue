@@ -2,7 +2,8 @@
     <draw-layout>
         <layout>
             <div class="data-manage-page-wrapper">
-                <form-data v-if="nocodeType === 'FORM_MANAGE'"></form-data>
+                <form-data v-if="nocodeType === 'FORM_MANAGE'">
+                </form-data>
                 <flow-data v-else-if="nocodeType === 'FLOW_MANAGE'"></flow-data>
             </div>
         </layout>

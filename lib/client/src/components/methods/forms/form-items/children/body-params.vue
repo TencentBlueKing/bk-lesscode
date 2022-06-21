@@ -3,8 +3,8 @@
         :params="renderBody"
         :disabled="disabled"
         :render-slot="renderSlot"
-    >
-    </use-post-scheme>
+        :get-param-val="getParamVal"
+    />
 </template>
 
 <script>
@@ -14,7 +14,12 @@
         watch,
         h
     } from '@vue/composition-api'
-    import UsePostScheme from '@/components/api/edit-scheme/post'
+    import {
+        LCGetParamsVal,
+        getDefaultApiUseScheme,
+        API_PARAM_TYPES
+    } from 'shared/api'
+    import UsePostScheme from '@/components/api/use-scheme/post'
     import RenderParamSlot from './render-param-slot'
 
     export default defineComponent({
@@ -44,10 +49,22 @@
                 return RenderParamSlot.render(h, row, handleUpdate, props.variableList)
             }
 
+            const getParamVal = (param) => {
+                return LCGetParamsVal(param, props.variableList)
+            }
+
             watch(
                 () => props.body,
                 () => {
                     renderBody.value = props.body
+                    if (renderBody.value.name === undefined) {
+                        renderBody.value = getDefaultApiUseScheme({
+                            name: 'root',
+                            type: API_PARAM_TYPES.OBJECT.VAL,
+                            value: API_PARAM_TYPES.OBJECT.DEFAULT,
+                            plusBrotherDisable: true
+                        })
+                    }
                 },
                 {
                     immediate: true
@@ -57,7 +74,8 @@
             return {
                 renderBody,
                 renderSlot,
-                handleUpdate
+                handleUpdate,
+                getParamVal
             }
         }
     })

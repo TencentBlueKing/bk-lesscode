@@ -32,15 +32,12 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId', currentVersion: 'currentVersion' }),
             projectId () {
                 return this.$route.params.projectId || ''
-            },
-            pageId () {
-                return this.$route.params.pageId
             }
         },
         methods: {
             async handlePreview () {
                 // await this.handleSave()
-                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageId))
+                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageDetail.id))
                 if (!pageRoute.id) {
                     this.messageError('页面未配置路由，请先配置')
                     return

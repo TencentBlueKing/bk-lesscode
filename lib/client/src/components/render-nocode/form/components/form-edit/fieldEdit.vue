@@ -348,7 +348,7 @@
     import DataSourceDialog from './dataSourceDialog.vue'
     import ConfigDescCompValueDialog from './configDescCompValueDialog'
     import TableHeaderSetting from './tableHeaderSetting.vue'
-    import RichText from '../../../../nocode-form/fields/richText.vue'
+    import RichText from '../../../../flow-form-comp/form/fields/richText.vue'
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,

@@ -19,7 +19,7 @@
     </bk-dialog>
 </template>
 <script>
-    import NocodeForm from '@/components/nocode-form/index.vue'
+    import NocodeForm from '@/components/flow-form-comp/form/index.vue'
 
     export default {
         name: 'PreviewFormDialog',

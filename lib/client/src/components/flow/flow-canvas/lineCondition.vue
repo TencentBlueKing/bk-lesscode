@@ -73,7 +73,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import { CONDITION_RELATIONS } from '@/components/nocode-form/constants/forms.js'
+    import { CONDITION_RELATIONS } from '@/components/flow-form-comp/form/constants/forms.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
     import FieldValue from '@/components/render-nocode/form/components/form-edit/fieldValue.vue'
 

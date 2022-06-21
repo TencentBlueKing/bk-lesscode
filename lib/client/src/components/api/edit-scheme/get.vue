@@ -12,12 +12,10 @@
                 :type-disable="true"
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
-                :render-slot="renderSlot"
                 @plusBrotherNode="handlePlusBrotherNode"
                 @minusNode="handleMinusNode"
                 @update="(param) => handleUpdate(index, param)"
-            >
-            </single-scheme>
+            />
         </section>
         <monaco
             v-else
@@ -53,8 +51,8 @@
         },
 
         props: {
-            renderSlot: Function,
-            params: Array
+            params: Array,
+            getParamVal: Function
         },
 
         setup (props, { emit }) {
@@ -99,9 +97,6 @@
                 () => props.params,
                 () => {
                     renderQueryParams.value = props.params
-                    if (renderQueryParams.value.length <= 0) {
-                        renderQueryParams.value.push(getDefaultApiEditScheme())
-                    }
                 },
                 {
                     immediate: true

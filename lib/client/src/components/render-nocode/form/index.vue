@@ -1,6 +1,7 @@
 <template>
     <draw-layout
         class="lesscode-editor-page-content"
+        :page-type="pageType"
         v-bkloading="{ isLoading }">
         <left-panel slot="left" :disabled="disabled" @move="fieldPanelHover = true" @end="fieldPanelHover = false" />
         <layout style="margin: 20px 0;height: 100%">
@@ -42,6 +43,7 @@
             CreatePageDialog
         },
         props: {
+            pageType: String,
             content: Array,
             disabled: {
                 type: Boolean,
@@ -75,11 +77,11 @@
             }
         },
         created () {
-            if (this.pageDetail.formId) {
-                this.getFieldList()
-            } else if (this.content) {
+            if (this.content) {
                 this.fieldsList = cloneDeep(this.content)
                 this.saveFieldList()
+            } else {
+                this.getFieldList()
             }
 
             bus.$on('resetFieldList', (fieldsList = []) => {

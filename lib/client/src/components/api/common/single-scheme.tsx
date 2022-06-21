@@ -1,4 +1,5 @@
 import {
+    getDefaultApiUseScheme,
     getDefaultApiEditScheme,
     API_PARAM_TYPES
 } from 'shared/api'
@@ -22,6 +23,7 @@ const SingleSchemeComponent = defineComponent({
         disable: Boolean,
         typeDisable: Boolean,
         minusDisable: Boolean,
+        plusBrotherDisable: Boolean,
         renderSlot: Function
     },
 
@@ -29,7 +31,7 @@ const SingleSchemeComponent = defineComponent({
         const copyScheme = toRef(props, 'scheme')
         const finalDisable = props.disable || copyScheme.value.disable
         const finalTypeDisable = props.typeDisable || finalDisable
-        const disablePlusBrother = copyScheme.value.plusBrotherDisable
+        const disablePlusBrother = props.plusBrotherDisable || copyScheme.value.plusBrotherDisable
         const formRef = ref(null)
         const currentInstance = getCurrentInstance()
 
@@ -40,16 +42,16 @@ const SingleSchemeComponent = defineComponent({
         }
         // 增加子节点
         const plusChildProperty = () => {
-            copyScheme.value.children.push(getDefaultApiEditScheme())
+            if (copyScheme.value.valueType) {
+                copyScheme.value.children.push(getDefaultApiUseScheme())
+            } else {
+                copyScheme.value.children.push(getDefaultApiEditScheme())
+            }
             triggleChange()
         }
         // 增加兄弟节点
         const handlePlusBrotherProperty = () => {
             emit('plusBrotherNode')
-        }
-        const plusBrotherProperty = () => {
-            copyScheme.value?.children?.push(getDefaultApiEditScheme())
-            triggleChange()
         }
         // 删除节点
         const handleMinusProperty = (index) => {
@@ -88,7 +90,8 @@ const SingleSchemeComponent = defineComponent({
             return Promise
                 .all([
                     formRef.value.validate(),
-                    ...Object.keys(childComponents)
+                    ...Object
+                        .keys(childComponents)
                         .map(childComponentRef => (childComponents[childComponentRef] as any).validate())
                 ])
         }
@@ -103,7 +106,6 @@ const SingleSchemeComponent = defineComponent({
             toggleShowProperty,
             plusChildProperty,
             handlePlusBrotherProperty,
-            plusBrotherProperty,
             handleMinusProperty,
             minusProperty,
             updateType,
@@ -114,9 +116,6 @@ const SingleSchemeComponent = defineComponent({
     },
 
     render () {
-        const renderSlot = (row) => {
-            return this.renderSlot ? this.renderSlot(row) : ''
-        }
         return (
             <section>
                 <section class="object-layout">
@@ -190,7 +189,7 @@ const SingleSchemeComponent = defineComponent({
                     >
                         {
                             this.renderSlot
-                                ? renderSlot(this.copyScheme)
+                                ? this.renderSlot(this.copyScheme)
                                 : this.copyScheme.type === API_PARAM_TYPES.BOOLEAN.VAL
                                     ? <bk-checkbox
                                         value={this.copyScheme.value}
@@ -300,9 +299,9 @@ const SingleSchemeComponent = defineComponent({
                                 class="pl20"
                                 ref={'childComponentRef' + index}
                                 scheme={property}
-                                renderSlot={renderSlot}
+                                renderSlot={this.renderSlot}
                                 onUpdate={this.triggleChange}
-                                onPlusBrotherNode={this.plusBrotherProperty}
+                                onPlusBrotherNode={this.plusChildProperty}
                                 onMinusNode={() => this.minusProperty(index)}
                             >
                             </SingleSchemeComponent>

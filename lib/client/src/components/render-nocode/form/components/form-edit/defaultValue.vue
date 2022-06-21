@@ -43,9 +43,9 @@
     </div>
 </template>
 <script>
-// 表单字段编辑时填写默认值组件
+    // 表单字段编辑时填写默认值组件
     import cloneDeep from 'lodash.clonedeep'
-    import FieldItem from '@/components/nocode-form/fieldItem.vue'
+    import FieldItem from '@/components/flow-form-comp/form/fieldItem.vue'
 
     export default {
         name: 'DefaultValue',

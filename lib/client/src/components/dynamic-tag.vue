@@ -23,7 +23,8 @@
             class="new-tag-input"
             size="small"
             v-model="userInput"
-            @enter="handleAddTag">
+            @enter="handleAddTag"
+            @blur="handleAddTag">
         </bk-input>
     </section>
 </template>
@@ -63,9 +64,9 @@
             addTag () {
                 this.isAddTag = !this.isAddTag
             },
-            handleAddTag (value) {
-                if (value) {
-                    this.defaultTags.push(value)
+            handleAddTag () {
+                if (this.userInput) {
+                    this.defaultTags.push(this.userInput)
                     this.triggleChange()
                 }
                 this.isAddTag = false

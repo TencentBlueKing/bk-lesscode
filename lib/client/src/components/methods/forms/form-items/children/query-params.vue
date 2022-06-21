@@ -3,8 +3,8 @@
         :params="renderQuery"
         :disabled="disabled"
         :render-slot="renderSlot"
-    >
-    </use-get-scheme>
+        :get-param-val="getParamVal"
+    />
 </template>
 
 <script>
@@ -14,7 +14,11 @@
         watch,
         h
     } from '@vue/composition-api'
-    import UseGetScheme from '@/components/api/edit-scheme/get'
+    import {
+        LCGetParamsVal,
+        getDefaultApiUseScheme
+    } from 'shared/api'
+    import UseGetScheme from '@/components/api/use-scheme/get'
     import RenderParamSlot from './render-param-slot'
 
     export default defineComponent({
@@ -44,10 +48,17 @@
                 return RenderParamSlot.render(h, row, handleUpdate, props.variableList)
             }
 
+            const getParamVal = (param) => {
+                return LCGetParamsVal(param, props.variableList)
+            }
+
             watch(
                 () => props.query,
                 () => {
                     renderQuery.value = props.query
+                    if (renderQuery.value.length <= 0) {
+                        renderQuery.value.push(getDefaultApiUseScheme())
+                    }
                 },
                 {
                     immediate: true
@@ -57,7 +68,8 @@
             return {
                 renderQuery,
                 handleUpdate,
-                renderSlot
+                renderSlot,
+                getParamVal
             }
         }
     })
