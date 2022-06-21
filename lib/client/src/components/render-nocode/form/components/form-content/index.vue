@@ -10,6 +10,7 @@
             @end="end">
             <template v-if="fields.length !== 0">
                 <field-element
+                    v-bk-clickoutside="handleClickOutSide"
                     v-for="(item, index) in fields"
                     :key="`${item.key}_${index}_${item.timeStamp}`"
                     :class="{ actived: selectedIndex === index }"
@@ -186,6 +187,12 @@
                     ...this.curTemplateData,
                     panelActive: ''
                 })
+            },
+            handleClickOutSide (e) {
+                if (e?.target?.className === 'fields-container') {
+                    this.selectedIndex = -1
+                    this.$emit('clickOutSide')
+                }
             }
         }
     }

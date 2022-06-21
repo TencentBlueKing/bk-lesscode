@@ -14,6 +14,7 @@
                 @copy="handleCopyField"
                 @delete="handleDeleteField"
                 @move="handleOrderField"
+                @clickOutSide="crtField = {}"
             />
         </layout>
         <right-panel slot="right" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
