@@ -204,10 +204,7 @@
 @import "@/css/mixins/scroller";
 
 .form-panel {
-  height: calc(100vh - 200px);
-  /* background: #ffffff;
-  box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
-  border-radius: 2px; */
+  min-height: calc(100vh - 200px);
 }
 
 .fields-container {
