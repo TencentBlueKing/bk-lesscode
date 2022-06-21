@@ -106,10 +106,11 @@
 
 <style scoped lang='postcss'>
 .template-menu-box {
+  width: 276px;
+  padding: 16px;
   position: relative;
   background: #f0f1f5;
   border-radius: 2px;
-  padding: 1px 20px 12px 6px;
   transition: all .15s;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
 
