@@ -11,6 +11,10 @@
         margin-right: 10px;
         max-height: 32px;
     }
+    .layout-middle {
+        width: 95px;
+        margin-right: 10px;
+    }
     .layout-small {
         min-width: 50px;
         margin-right: 10px;

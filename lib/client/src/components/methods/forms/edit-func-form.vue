@@ -199,7 +199,7 @@
     }
     .func-form-main {
         float: left;
-        width: 650px;
+        width: 750px;
         height: 100%;
         overflow-y: auto;
         margin: 7px 0;
@@ -232,6 +232,6 @@
     .monaco {
         margin: 0;
         height: 100%;
-        margin-left: 650px;
+        margin-left: 750px;
     }
 </style>

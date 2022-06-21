@@ -27,8 +27,19 @@
                 </h5>
                 <field-table ref="fieldTableRef" :data="originTableStatus.data" @change="changeEdit(true)"></field-table>
             </section>
-
-            <bk-button theme="primary" class="mr5" @click="submit" :loading="isSaving" :disabled="!hasEdit">提交</bk-button>
+            <span
+                v-bk-tooltips="{
+                    content: '表单页面自动生成的数据表不可以编辑',
+                    disabled: !originTableStatus.disableEdit
+                }">
+                <bk-button
+                    theme="primary"
+                    class="mr5"
+                    :loading="isSaving"
+                    :disabled="!hasEdit || originTableStatus.disableEdit"
+                    @click="submit"
+                >提交</bk-button>
+            </span>
             <bk-button @click="goBack" :disabled="isSaving">取消</bk-button>
         </main>
 
@@ -184,6 +195,7 @@
                     originTableStatus.basicInfo.tableName = data.tableName
                     originTableStatus.basicInfo.comment = data.comment
                     originTableStatus.data = data.columns
+                    originTableStatus.disableEdit = data.source === 'nocode'
                 }).catch((error) => {
                     messageError(error.message || error)
                 }).finally(() => {
