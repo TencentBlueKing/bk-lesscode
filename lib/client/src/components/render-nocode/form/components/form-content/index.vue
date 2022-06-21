@@ -75,6 +75,7 @@
             // 拖拽添加字段
             add (e) {
                 const { type } = e.item.dataset
+                const columnId = uuid(8)
                 const field = FIELDS_TYPES.find(item => item.type === type)
                 const defaultVal = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE'].includes(type)
                     ? ''
@@ -85,8 +86,9 @@
                 })
                     .join('_')
                     .toUpperCase()
-                    .concat(`_${uuid(4)}`)
+                    .concat(`_${columnId}`)
                 const config = {
+                    columnId, // lesscode特定字段
                     type, // 类型
                     name: field.name, // 名称
                     desc: '', // 描述
