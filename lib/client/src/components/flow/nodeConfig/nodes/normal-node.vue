@@ -22,7 +22,7 @@
                 </bk-form-item>
             </bk-form>
         </form-section>
-        <form-section title="表单配置" style="margin-top: 16px;">
+        <form-section title="表单配置" style="margin-top: 16px;" v-bkloading="{ isLoading: formContentLoading }">
             <node-form-setting
                 ref="formSetting"
                 :flow-config="flowConfig"

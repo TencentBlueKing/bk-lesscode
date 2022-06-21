@@ -99,7 +99,6 @@
         transform: translate(0, 0);
         
         .bk-navigation {
-            padding: 20px 0 0;
             width: auto;
             height: auto;
 

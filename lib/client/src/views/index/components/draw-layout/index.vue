@@ -2,16 +2,16 @@
     <div
         :class="{
             [$style['draw-layout']]: !isDataManagePage,
-            [$style['page-nocode-layout']]: nocodeType === 'FORM',
+            [$style['page-nocode-layout']]: isNocodeForm,
             [$style['is-left-collapsed']]: isLeftCollapse,
             [$style['is-right-collapsed']]: isRightCollapse
         }">
-        <div :class="[$style['layout-left'],{ [$style['page-nocode-left-layout']]: nocodeType === 'FORM' }]" v-if="!isDataManagePage">
+        <div :class="[$style['layout-left'],{ [$style['page-nocode-left-layout']]: isNocodeForm }]" v-if="!isDataManagePage">
             <slot name="left" />
         </div>
         <div
             id="lesscodeDrawContent"
-            :class="[$style['layout-center'],{ [$style['nocode-layout-center']]: nocodeType === 'FORM' }]">
+            :class="[$style['layout-center'],{ [$style['nocode-layout-center']]: isNocodeForm }]">
             <slot />
         </div>
         <div :class="$style['layout-right']" v-if="!isDataManagePage">
@@ -19,7 +19,7 @@
         </div>
         <div
             v-if="!isDataManagePage"
-            :class="[$style['collapsed-left-btn'],{ [$style['collapsed-nocode-left-btn']]: nocodeType === 'FORM' }]"
+            :class="[$style['collapsed-left-btn'],{ [$style['collapsed-nocode-left-btn']]: isNocodeForm }]"
             v-bk-tooltips.right="{
                 content: '查看所有组件',
                 disabled: !isLeftCollapse
@@ -44,6 +44,9 @@
 
     export default {
         name: '',
+        props: {
+            pageType: String
+        },
         data () {
             return {
                 isLeftCollapse: false,
@@ -53,7 +56,10 @@
         computed: {
             ...mapGetters('page', ['pageDetail']),
             nocodeType () {
-                return this.pageDetail.nocodeType || ''
+                return this.pageDetail.nocodeType || this.pageType || ''
+            },
+            isNocodeForm () {
+                return ['FORM', 'FLOW'].includes(this.nocodeType)
             },
             isDataManagePage () {
                 return ['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)
@@ -218,6 +224,7 @@
     }
 
     .nocode-layout-center{
-      overflow: hidden;
+        padding: 20px;
+        overflow: hidden;
     }
 </style>

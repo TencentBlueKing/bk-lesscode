@@ -112,7 +112,6 @@
             },
             handleSelectCancel () {
                 console.log(this.$refs.fieldsTable)
-                debugger
             }
         }
     }
