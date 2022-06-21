@@ -227,7 +227,7 @@
     .lesscode-layout-empty {
         min-height: calc(100vh - 160px);
         .container-content{
-            padding: 20px 24px 0;
+            padding: 20px !important;
         }
     }
     .lesscode-layout-message-theme{
@@ -257,5 +257,8 @@
     }
     .form-page-width{
       margin: 0 !important;
+      .container-content{
+        padding: 20px !important;
+      }
     }
 </style>

@@ -36,7 +36,12 @@
                 <bk-form-item label="字段名称" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.name" :disabled="disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="唯一标识" desc-type="icon" desc=" 用作数据库字段名， 保存成功后不允许修改" v-if="!basicIsFolded">
+                <bk-form-item
+                    label="唯一标识"
+                    desc-type="icon"
+                    :desc="uniqe"
+                    desc-icon="bk-icon icon-question-circle"
+                    v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.key" :disabled="disabled || fieldData.disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="布局" v-if="!basicIsFolded">
@@ -279,7 +284,7 @@
                     <div>
                         <div class="form-tip">
                             <span>  <bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleCheckedChange">添加额外填写说明</bk-checkbox></span>
-                            <span class="tips" v-show="checkTips" v-bk-tooltips.top-start="fieldData.tips">效果预览</span>
+                            <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, 'extCls': 'custom-require-tips' }">效果预览</span>
                         </div>
                         <bk-input
                             v-if="checkTips"
@@ -410,7 +415,15 @@
                     allowHtml: true,
                     width: 232,
                     content: '#require-tips',
-                    placement: 'top-start'
+                    placement: 'top',
+                    extCls: 'custom-require-tips',
+                    appendTo: () => document.body
+                },
+                uniqe: {
+                    content: '用作数据库字段名， 保存成功后不允许修改',
+                    placement: 'top',
+                    extCls: 'custom-require-tips',
+                    appendTo: () => document.body
                 }
             }
         },
@@ -449,6 +462,10 @@
             value (val, oldVal) {
                 if (val.type !== oldVal.type) {
                     this.regexList = this.getRegexList(val)
+                }
+                if (val.key !== oldVal.key) {
+                    this.basicIsFolded = false
+                    this.handleIsFolded = false
                 }
                 if (this.fieldProps.fieldsDataSource.includes(val.type) && val.id !== oldVal.id) {
                     this.getSystems()
@@ -563,8 +580,8 @@
                 this.fieldData.source_type = val
                 if (val === 'CUSTOM') {
                     this.fieldData.choice = [
-                        { key: 'XUANXIANG1', name: '选项1', color: '#FF8C00', isDefaultVal: true },
-                        { key: 'XUANXIANG2', name: '选项2', color: '#3A84FF', isDefaultVal: false }
+                        { key: 'XUANXIANG1', name: '选项1', color: '#3a84ff', isDefaultVal: true },
+                        { key: 'XUANXIANG2', name: '选项2', color: '#2dcb56', isDefaultVal: false }
                     ]
                     this.fieldData.api_info = {}
                     this.fieldData.kv_relation = {}
@@ -704,7 +721,7 @@
   .tips {
     display: block;
     color: #3a84ff;
-
+    font-size: 12px;
     &:hover {
       cursor: pointer;
     }
@@ -731,10 +748,6 @@
       }
     }
   }
-}
-
-.check-tips-input {
-  margin-top: 16px;
 }
 
 .source-data {
@@ -832,9 +845,10 @@
   }
 }
 
-/deep/ .bk-divider {
-  margin: 12px 0 0 !important;
-  width: 300px !important;
+>>> .bk-divider {
+  margin: 12px 0 0 -12px !important;
+  overflow: hidden;
+  width: 298px !important;
 }
 
 .top-start{
@@ -846,7 +860,31 @@
 .field-container{
   padding-bottom: 64px;
 }
-/deep/ .bk-color-picker-show-value{
+>>> .bk-color-picker-show-value{
   width: 100% !important;
+}
+.icon-question-circle{
+  font-size: 14px;
+  color: #c4c6cc !important;
+  &:hover{
+    color: #979ba5 !important;
+  }
+}
+>>> .bk-label-text .bk-icon{
+  color: #c4c6cc !important;
+  &:hover{
+    color: #979ba5  !important;
+  }
+}
+
+</style>
+<style lang="postcss">
+ .custom-require-tips,
+ .custom-form-item{
+   .tippy-tooltip {
+     .tippy-arrow{
+       bottom: -15px !important;
+     }
+   }
 }
 </style>

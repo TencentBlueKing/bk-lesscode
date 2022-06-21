@@ -17,7 +17,7 @@
                         :true-value="true"
                         :false-value="false"
                         v-model="localValIsDisplayTag">
-                        显示为标签
+                        <span v-bk-tooltips="showTagToolTips">显示为标签</span>
                     </bk-checkbox>
                 </div>
             </div>
@@ -30,10 +30,22 @@
             :field-type="fieldType"
             :use-variable="false"
             :value="localVal"
+            :local-val-is-display-tag="localValIsDisplayTag"
             :api-detail="apiDetail"
             :res-array-tree-data="resArrayTreeData"
             @change="localVal = $event">
         </data-source>
+        <div id="showTagToolTips" class="show-tag-tooltips" v-if="sourceType === 'CUSTOM'">
+            <bk-table :data="toolTipData" ref="table" size="small" :outer-border="false">
+                <bk-table-column
+                    label="选项"
+                    prop="status"
+                    :render-header="renderHeader">
+                    <bk-tag ext-cls="choice-one">选项一</bk-tag>
+                    <bk-tag ext-cls="choice-two">选项二</bk-tag>
+                </bk-table-column>
+            </bk-table>
+        </div>
     </bk-dialog>
 </template>
 <script>
@@ -70,7 +82,17 @@
         data () {
             return {
                 localVal: cloneDeep(this.value),
-                localValIsDisplayTag: this.isDisplayTag
+                localValIsDisplayTag: this.isDisplayTag,
+                showTagToolTips: {
+                    allowHtml: true,
+                    width: 210,
+                    content: '#showTagToolTips',
+                    theme: 'light',
+                    placement: 'top',
+                    showOnInit: true,
+                    appendTo: () => document.body
+                },
+                toolTipData: [{}, {}, {}]
             }
         },
         watch: {
@@ -99,7 +121,16 @@
                 } else {
                     return '配置表单数据'
                 }
+            },
+            renderHeader (h, data) {
+                return (
+                <div>
+                  <span class="custom-header-cell">{data.column.label} </span>
+                  <span class="bk-table-column-filter-trigger bk-icon icon-funnel"></span>
+                </div>
+            )
             }
+
         }
     }
 </script>
@@ -116,6 +147,34 @@
 }
 .title-contianer{
   position: relative;
+  span{
+    border-bottom: 1px dashed #C4C6CC;
+  }
+}
+.show-tag-tooltips{
+  >>> .bk-table {
+    &:before {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 0;
+      content: "";
+    }
+  }
+  padding: 8px;
+   .choice-one{
+     background:#3a84ff;
+     color: #ffffff;
+     font-size: 12px;
+
+   }
+    .choice-two{
+      background:#2dcb56;
+      color: #ffffff;
+      font-size: 12px;
+
+    }
 }
 .custom-selection{
   position: absolute;

@@ -59,7 +59,7 @@
   }
   &:hover {
     background: #fafbfd;
-    border: 1px dashed #dcdee5;
+    border: 1px dashed #3a84ff;
 
   }
   &.half-row {

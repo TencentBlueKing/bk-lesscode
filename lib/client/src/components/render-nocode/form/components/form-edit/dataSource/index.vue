@@ -6,6 +6,7 @@
             ref="custom"
             :value="value"
             :show-require="fieldType === 'TABLE'"
+            :local-val-is-display-tag="localValIsDisplayTag"
             @update="$emit('change', $event)">
         </custom-data>
         <!-- 接口数据 -->
@@ -72,6 +73,10 @@
                 // 参数值是否支持引用变量
                 type: Boolean,
                 default: true
+            },
+            localValIsDisplayTag: {
+                type: Boolean,
+                default: false
             },
             value: [Array, Object] // 自定义数据为Array，api数据、表单数据为Object
         },

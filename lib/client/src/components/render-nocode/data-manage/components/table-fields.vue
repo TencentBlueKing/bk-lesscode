@@ -111,6 +111,7 @@
                 this.$emit('update', this.cols)
             },
             handleSelectCancel () {
+                this.$refs.settingCol.Cancel()
                 console.log(this.$refs.fieldsTable)
             }
         }
