@@ -203,6 +203,7 @@
   height: 100%;
   overflow: auto;
   padding-bottom: 24px;
+  background: #ffffff;
   &.hover {
     outline: 2px dashed #1768ef;
     border-radius: 4px;

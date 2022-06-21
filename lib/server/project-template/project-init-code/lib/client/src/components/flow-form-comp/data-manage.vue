@@ -41,5 +41,6 @@
     .data-manange-comp {
         height: 100%;
         padding: 24px;
+        background: #ffffff;
     }
 </style>
