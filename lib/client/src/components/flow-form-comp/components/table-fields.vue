@@ -3,7 +3,7 @@
         <bk-table ref="fieldsTable"
             header-row-class-name="custom-table-header"
             :data="emptyData"
-            :outer-border="false">
+            :outer-border="!emptyData.length > 0">
             <bk-table-column type="selection" width="60" fixed="left">
             </bk-table-column>
             <bk-table-column
@@ -68,7 +68,7 @@
         data () {
             return {
                 cols: this.tableConfig.slice(),
-                emptyData: [{}],
+                emptyData: [],
                 selectedSys: [],
                 selectedCustom: []
             }

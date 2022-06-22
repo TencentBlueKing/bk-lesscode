@@ -123,7 +123,7 @@
     }
 </script>
 
-<style lang="postcss">
+<style lang="postcss" >
 .require{
   &:after{
     content:'*';
@@ -137,5 +137,8 @@
     -webkit-transform:translate(3px, -50%);
     transform:translate(3px, -50%);
   }
+}
+ .bk-table-fixed-right tr.bk-table-row-last td.is-last, .bk-table-fixed tr.bk-table-row-last td.is-last {
+  border-bottom: 1px solid #dfe0e5;
 }
 </style>
