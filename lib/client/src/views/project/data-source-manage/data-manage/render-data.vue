@@ -51,7 +51,7 @@
 
         <bk-sideslider
             :is-show.sync="formStatus.showEditData"
-            :width="640"
+            :width="740"
             :title="formStatus.editTitle"
             :transfer="true"
         >
@@ -59,6 +59,7 @@
                 <bk-form
                     class="edit-data-form"
                     ref="formRef"
+                    form-type="vertical"
                     :model="formStatus.editForm"
                     :label-width="120"
                 >
@@ -458,7 +459,7 @@
         margin: 16px 0;
     }
     .edit-data-form {
-        padding: 25px 40px 25px 10px;
+        padding: 25px;
         min-height: calc(100vh - 60px);
     }
 </style>
