@@ -36,3 +36,8 @@
 
     }
 </script>
+<style lang="postcss" scoped>
+.render-content{
+  height: 100%;
+}
+</style>

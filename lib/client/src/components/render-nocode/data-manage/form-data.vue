@@ -1,9 +1,10 @@
 <template>
     <div class="form-data-manage">
-        <!--        <div class="operate-btns" @click="">-->
-        <!--            <i class="bk-icon icon-funnel filter-switch-icon"></i>-->
-        <!--        </div>-->
+        <div class="operate-btns" @click="isFiltersShow = !isFiltersShow">
+            <i class="bk-icon icon-funnel filter-switch-icon"></i>
+        </div>
         <filters
+            v-show="isFiltersShow"
             :filters="filters"
             :fields="fields"
             :table-config="tableConfig"
@@ -38,7 +39,8 @@
                 formDetailLoading: false,
                 formDetail: {},
                 fields: [],
-                systemFields: FORM_SYS_FIELD
+                systemFields: FORM_SYS_FIELD,
+                isFiltersShow: true
             }
         },
         computed: {
@@ -53,7 +55,6 @@
                 const { filters, tableConfig } = this.pageDetail.content
                 this.filters = filters
                 this.tableConfig = tableConfig
-                console.log(filters, tableConfig)
             }
             this.getFormDetail()
         },
@@ -86,12 +87,16 @@
 </script>
 <style lang="postcss" scoped>
     .form-data-manage {
+      height: calc(100vh - 236px);
         .operate-btns {
             display: flex;
             align-items: center;
             flex-direction: row-reverse;
             margin-bottom: 16px;
             height: 32px;
+          &:hover{
+            cursor: pointer;
+          }
         }
         .filter-switch-icon {
             height: 32px;
@@ -103,5 +108,18 @@
             border-radius: 2px;
             background: #ffffff;
         }
+    }
+    .filters-leave-active,
+    .filters-enter-active {
+      transition: all .01s ease;
+    }
+    .filters-leave-active,
+    .filters-enter{
+      height: 0 !important;
+    }
+
+    .filters-leave,
+    .filters-enter-active {
+      max-height: 500px;
     }
 </style>
