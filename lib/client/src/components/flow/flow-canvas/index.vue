@@ -344,20 +344,14 @@
                             action: '',
                             worksheet_id: ''
                         }
+                        params.extras.webhook_info = {}
                         if (isSystemAdd) {
                             params.extras.isSystemAdd = true
                         }
                     } else if (type === 'TASK') {
                         params.extras.node_type = 'TASK'
-                        params.extras.apiInfo = {
-                            remote_api_id: '',
-                            end_conditions: { poll_interval: 1, poll_time: 3 },
-                            need_poll: false,
-                            getReqData: {},
-                            postReqData: {},
-                            resData: [],
-                            succeed_conditions: { expressions: [], type: 'and' }
-                        }
+                        params.extras.api_info = {}
+                        params.extras.webhook_info = {}
                     }
                     return this.$store.dispatch('nocode/flow/createNode', params)
                 } catch (e) {

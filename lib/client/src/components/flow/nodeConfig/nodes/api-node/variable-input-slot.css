@@ -1,0 +1,7 @@
+.render-param-form {
+    display: flex;
+    align-items: center;
+}
+.render-param-form .hook-checkbox {
+    width: 28px;
+}
