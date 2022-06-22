@@ -230,23 +230,31 @@
                 this.isCustomComponentLoading = true
                 // 包含所有的自定组件
                 window.__innerCustomRegisterComponent__ = {}
-                const script = document.createElement('script')
-                script.src = `/${parseInt(this.projectId)}/${parseInt(this.pageId)}/component/register.js`
-                script.onload = () => {
-                    window.customCompontensPlugin.forEach((callback) => {
-                        const [
-                            config,
-                            componentSource
-                        ] = callback(Vue)
-                        window.__innerCustomRegisterComponent__[config.type] = componentSource
-                        // 注册自定义组件 material
-                        LC.registerMaterial(config.type, config)
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script')
+                    script.src = `/${this.projectId}/${this.pageId}/component/register.js`
+                    script.onload = () => {
+                        window.customCompontensPlugin.forEach((callback) => {
+                            const [
+                                config,
+                                componentSource
+                            ] = callback(Vue)
+                            window.__innerCustomRegisterComponent__[config.type] = componentSource
+                            // 注册自定义组件 material
+                            LC.registerMaterial(config.type, config)
+                        })
+                        this.isCustomComponentLoading = false
+                        resolve()
+                    }
+                    script.onerror = () => {
+                        this.isCustomComponentLoading = false
+                        reject(new Error('自定义组件注册失败'))
+                    }
+                    document.body.appendChild(script)
+                    this.$once('hook:beforeDestroy', () => {
+                        document.body.removeChild(script)
+                        window.__innerCustomRegisterComponent__ = {}
                     })
-                    this.isCustomComponentLoading = false
-                }
-                document.body.appendChild(script)
-                this.$once('hook:beforeDestroy', () => {
-                    document.body.removeChild(script)
                 })
             },
             /**
@@ -273,7 +281,8 @@
                         }),
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId }),
                         this.$store.dispatch('components/componentNameMap'),
-                        this.$store.dispatch('dataSource/list', { projectId: this.projectId })
+                        this.$store.dispatch('dataSource/list', { projectId: this.projectId }),
+                        this.registerCustomComponent()
                     ])
 
                     await this.$store.dispatch('page/getPageSetting', {
