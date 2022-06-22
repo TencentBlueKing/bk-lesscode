@@ -30,8 +30,11 @@
                 <bk-button
                     size="small"
                     text
+                    v-bk-tooltips="{
+                        content: '立即发送请求来获取请求响应，响应示例去除了数组中重复的部分。可以在响应结果字段提取中进行二次编辑'
+                    }"
                     @click="getApiResponse"
-                >获取数据</bk-button>
+                >获取请求响应</bk-button>
             </h3>
             <render-response
                 class="api-form"
@@ -200,6 +203,21 @@
             }
 
             const getApiResponse = () => {
+                // 此处为相应示例，可以去除部分重复的 array 中的数据
+                const processResponse = (response) => {
+                    let result = response
+                    const type = Object.prototype.toString.apply(response)
+                    if (type === '[object Object]') {
+                        result = {}
+                        Object.keys(response).forEach((key) => {
+                            result[key] = processResponse(response[key])
+                        })
+                    }
+                    if (type === '[object Array]') {
+                        result = [processResponse(response[0])]
+                    }
+                    return result
+                }
                 validate()
                     .then(([
                         basicData,
@@ -222,7 +240,7 @@
                         return store
                             .dispatch('getApiData', httpData)
                             .then((res) => {
-                                response.value = res
+                                response.value = processResponse(res)
                             })
                             .catch((err) => {
                                 messageError(err.message || err)

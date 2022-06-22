@@ -128,6 +128,7 @@
             v-model="apiModel.show"
         >
             <monaco
+                height="600"
                 :read-only="true"
                 :value="apiModel.jsonValue"
             />

@@ -117,8 +117,8 @@
                 renderResponseParam,
                 responseString,
                 handleUpdate,
-                handleResponseChange,
-                validate
+                validate,
+                handleResponseChange
             }
         }
     })

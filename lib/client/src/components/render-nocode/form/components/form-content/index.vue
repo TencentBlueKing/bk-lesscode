@@ -76,6 +76,7 @@
             // 拖拽添加字段
             add (e) {
                 const { type } = e.item.dataset
+                const columnId = uuid(8)
                 const field = FIELDS_TYPES.find(item => item.type === type)
                 const defaultVal = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE'].includes(type)
                     ? ''
@@ -86,8 +87,9 @@
                 })
                     .join('_')
                     .toUpperCase()
-                    .concat(`_${uuid(4)}`)
+                    .concat(`_${columnId}`)
                 const config = {
+                    columnId, // lesscode特定字段
                     type, // 类型
                     name: field.name, // 名称
                     desc: '', // 描述
@@ -202,10 +204,7 @@
 @import "@/css/mixins/scroller";
 
 .form-panel {
-  height: calc(100vh - 200px);
-  /* background: #ffffff;
-  box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
-  border-radius: 2px; */
+  min-height: calc(100vh - 200px);
 }
 
 .fields-container {

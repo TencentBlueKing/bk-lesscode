@@ -49,9 +49,7 @@
                 return RenderParamSlot.render(h, row, handleUpdate, props.variableList)
             }
 
-            const getParamVal = (param) => {
-                return LCGetParamsVal(param, props.variableList)
-            }
+            const getParamVal = LCGetParamsVal(props.variableList)
 
             watch(
                 () => props.body,

@@ -168,7 +168,7 @@ const SingleSchemeComponent = defineComponent({
                     >
                     </bk-checkbox>
                     <bk-select
-                        class="layout-item"
+                        class="layout-middle"
                         value={this.copyScheme.type}
                         clearable={false}
                         disabled={this.finalTypeDisable}
@@ -207,7 +207,7 @@ const SingleSchemeComponent = defineComponent({
                         }
                     </section>
                     <bk-input
-                        class="layout-item"
+                        class="layout-middle"
                         value={this.copyScheme.description}
                         disabled={this.finalDisable}
                         onChange={(description) => this.update({ description })}

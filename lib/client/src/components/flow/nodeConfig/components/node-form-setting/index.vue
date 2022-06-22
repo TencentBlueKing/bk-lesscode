@@ -116,7 +116,7 @@
                     USE_FORM: '复用表单'
                 },
                 pageContextLoading: false,
-                selectedType: '',
+                selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
                 editFormPanelShow: false, // 表单编辑
                 selectFormDialogShow: false, // 选择表单弹窗
                 previewFormContent: [], // 预览表单字段
@@ -255,7 +255,6 @@
             },
             // 编辑表单内容
             handleEditClick () {
-                this.selectedType = this.formConfig.type
                 this.editFormPanelShow = true
             },
             // 预览表单内容

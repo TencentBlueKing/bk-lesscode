@@ -28,7 +28,7 @@
                 placement="bottom-start"
                 ext-cls="filter-field-popover"
                 trigger="click"
-                style="margin: 9px 0 9px 4px; align-self: end;"
+                style="margin: 9px 0 9px 4px; align-self: flex-end;"
                 :tippy-options="{
                     arrow: false,
                     distance: 0

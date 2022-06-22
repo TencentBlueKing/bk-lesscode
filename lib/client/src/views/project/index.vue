@@ -136,6 +136,13 @@
                                 }
                             },
                             {
+                                title: 'API 管理',
+                                url: 'apiManage',
+                                toPath: {
+                                    name: 'apiManage'
+                                }
+                            },
+                            {
                                 title: '函数库',
                                 url: 'functionManage',
                                 toPath: {
@@ -176,13 +183,6 @@
                                 url: 'variableManage',
                                 toPath: {
                                     name: 'variableManage'
-                                }
-                            },
-                            {
-                                title: 'API 管理',
-                                url: 'apiManage',
-                                toPath: {
-                                    name: 'apiManage'
                                 }
                             }
                         ]
