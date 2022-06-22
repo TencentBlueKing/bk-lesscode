@@ -2,9 +2,9 @@
     <div class="flow-data">
         <bk-tab type="unborder-card" :active.sync="active">
             <bk-tab-panel label="流程总览" name="flow">
-                <div class="operate-btns">
-                    <bk-button theme="primary" style="width: 88px; cursor: text;">新建</bk-button>
-                </div>
+                <!--                <div class="operate-btns">-->
+                <!--                    <bk-button theme="primary" style="width: 88px; cursor: text;">新建</bk-button>-->
+                <!--                </div>-->
                 <div class="filter-area">
                     <bk-form form-type="vertical" class="filter-form">
                         <bk-form-item label="创建人">
@@ -25,7 +25,7 @@
                         <bk-button @click="handleReset">重置</bk-button>
                     </div>
                 </div>
-                <bk-table :data="emptyData">
+                <bk-table :data="emptyData" :outer-border="!emptyData.length > 0">
                     <bk-table-column label="创建人"></bk-table-column>
                     <bk-table-column label="创建时间"></bk-table-column>
                     <bk-table-column label="当前节点"></bk-table-column>
@@ -64,7 +64,7 @@
         data () {
             return {
                 active: 'flow',
-                emptyData: [{}],
+                emptyData: [],
                 filterData: {
                     creator: '',
                     create_at: '',
