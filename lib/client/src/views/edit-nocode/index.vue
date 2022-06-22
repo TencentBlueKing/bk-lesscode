@@ -67,15 +67,18 @@
                 versionName: 'currentVersionName',
                 getInitialVersion: 'initialVersion'
             }),
-            
+
+            projectId () {
+                return parseInt(this.$route.params.projectId)
+            },
+            pageId () {
+                return parseInt(this.$route.params.pageId)
+            },
             nocodeType () {
                 return this.pageDetail.nocodeType || ''
             }
         },
         async created () {
-            this.projectId = parseInt(this.$route.params.projectId)
-            this.pageId = parseInt(this.$route.params.pageId)
-
             // 获取并设置当前版本信息
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 
