@@ -1,44 +1,21 @@
 <template>
     <div class="worksheet-data-wrapper">
-        <!-- 当前版本只有本应用表单 后续可能加上  暂时保留-->
-        <!--        <bk-radio-group-->
-        <!--            style="margin-bottom: 24px;"-->
-        <!--            :value="localVal.target.project_key === appId"-->
-        <!--            @change="handleChangeFormType">-->
-        <!--            <bk-radio :value="true">本应用表单</bk-radio>-->
-        <!--            <bk-radio :value="false">其他应用表单</bk-radio>-->
-        <!--        </bk-radio-group>-->
-        <bk-radio-group style="margin-bottom: 24px;" :value="true">
-            <bk-radio :value="true">本应用表单</bk-radio>
-        </bk-radio-group>
-        <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="formModel" :rules="sourceRules">
-            <bk-form-item v-if="changeSource" label="数据源" :required="true" error-display-type="normal">
-                <bk-select value="WORKSHEET" :clearable="false" @change="$emit('sourceTypeChange', $event)">
-                    <bk-option v-for="item in sourceTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                </bk-select>
-            </bk-form-item>
-            <bk-form-item v-if="localVal.target.project_key !== appId" label="应用" property="appId" :required="true"
-                error-display-type="normal">
+        <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="localVal" :rules="sourceRules">
+            <bk-form-item label="数据表" property="formId" :required="true" error-display-type="normal">
                 <bk-select
-                    placeholder="请选择应用"
-                    :value="localVal.target.project_key"
-                    :clearable="false"
-                    :disabled="appListLoading"
-                    :loading="appListLoading"
-                    @selected="handleSelectApp">
-                    <bk-option v-for="item in appList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
-                </bk-select>
-            </bk-form-item>
-            <bk-form-item label="表单" property="formId" :required="true" error-display-type="normal">
-                <bk-select
-                    placeholder="请选择表单"
-                    :value="localVal.target.worksheet_id"
+                    placeholder="请选择数据表"
+                    :value="localVal.formId"
                     :clearable="false"
                     :searchable="true"
                     :disabled="formListLoading"
                     :loading="formListLoading"
-                    @selected="handleSelectForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName || item.id"></bk-option>
+                    @selected="handleSelectForm(item)">
+                    <bk-option
+                        v-for="item in formList"
+                        :key="item.id"
+                        :id="item.id"
+                        :name="`${item.formName}(${item.tableName})`">
+                    </bk-option>
                 </bk-select>
             </bk-form-item>
             <bk-form-item label="字段" property="field" :required="true" error-display-type="normal">
@@ -50,7 +27,12 @@
                     :disabled="fieldListLoading"
                     :loading="fieldListLoading"
                     @selected="update">
-                    <bk-option v-for="item in fieldList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
+                    <bk-option
+                        v-for="item in fieldList"
+                        :key="item.key"
+                        :id="item.key"
+                        :name="`${item.name}(${item.key})`">
+                    </bk-option>
                 </bk-select>
             </bk-form-item>
         </bk-form>
@@ -67,10 +49,15 @@
                     <bk-select
                         v-model="expression.key"
                         placeholder="字段"
-                        style="width: 160px; margin-right: 8px"
+                        style="width: 250px; margin-right: 8px"
                         :clearable="false"
                         @selected="handleSelectField(expression)">
-                        <bk-option v-for="item in fieldList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
+                        <bk-option
+                            v-for="item in fieldList"
+                            :key="item.key"
+                            :id="item.key"
+                            :name="`${item.name}(${item.key})`">
+                        </bk-option>
                     </bk-select>
                     <bk-select
                         v-model="expression.condition"
@@ -104,11 +91,16 @@
                         :loading="relationListLoading"
                         :disabled="relationListLoading"
                         @selected="update">
-                        <bk-option v-for="item in relationList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
+                        <bk-option
+                            v-for="item in relationList"
+                            :key="item.key"
+                            :id="item.key"
+                            :name="`${item.name}(${item.key})`">
+                        </bk-option>
                     </bk-select>
                     <field-value
                         v-else
-                        :style="{ width: useVariable ? '140px' : '250px' }"
+                        :style="{ width: useVariable ? '140px' : '320px' }"
                         :field="getField(expression.key)"
                         :value="expression.value"
                         @change="handleValChange(expression, $event)">
@@ -138,10 +130,6 @@
         },
         props: {
             appId: String,
-            changeSource: {
-                type: Boolean,
-                default: false
-            },
             useVariable: {
                 // 参数值是否支持引用变量
                 type: Boolean,
@@ -193,12 +181,7 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            // 传入bk-form用来做表单校验
-            formModel () {
-                const { field, target } = this.localVal
-                return { field, formId: target.worksheet_id }
-            }
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
         },
         watch: {
             value (val, oldVal) {
@@ -211,8 +194,8 @@
         async  created () {
             // this.getAppList()
             await this.getFormList()
-            if (this.value.target.worksheet_id) {
-                this.getFieldList(this.value.target.worksheet_id)
+            if (this.value.formId) {
+                this.getFieldList(this.value.formId)
             }
             // if (this.useVariable) {
             //     this.getRelationList()
@@ -289,46 +272,10 @@
                 }
                 return {}
             },
-            // 切换本应用表单、其他应用表单
-            handleChangeFormType (isCrt) {
-                this.localVal.target.worksheet_id = ''
-                this.localVal.conditions.connector = ''
-                this.localVal.conditions.expressions = []
-                this.localVal.field = ''
-                this.fieldList = []
-                if (isCrt) {
-                    this.localVal.target.project_key = this.appId
-                    this.getFormList()
-                } else {
-                    this.localVal.target.project_key = ''
-                    this.formList = []
-                }
-                this.update()
-                this.$refs.sourceForm.clearError()
-            },
-            // 选择应用
-            handleSelectApp (val) {
-                this.localVal = {
-                    field: '',
-                    source: {
-                        project_key: this.appId
-                    },
-                    target: {
-                        project_key: val,
-                        worksheet_id: ''
-                    },
-                    conditions: {
-                        connector: '',
-                        expressions: []
-                    }
-                }
-                this.fieldList = []
-                this.getFormList()
-                this.update()
-            },
             // 选择表单，清空已选数据
             handleSelectForm (val) {
-                this.localVal.target.worksheet_id = val
+                this.localVal.formId = val.id
+                this.localVal.tableName = val.tableName
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
                 this.getFieldList(val)
@@ -372,7 +319,7 @@
             },
             validate () {
                 this.$refs.sourceForm.validate()
-                const sourceFormValid = this.localVal.target.worksheet_id && this.localVal.field
+                const sourceFormValid = this.localVal.formId && this.localVal.field
                 // const filterRuleValid = this.localVal.conditions.expressions.every((exp) => {
                 //   const { key, condition, type, value } = exp;
                 //   return key !== '' && condition !== '' && type !== '' && value !== '';

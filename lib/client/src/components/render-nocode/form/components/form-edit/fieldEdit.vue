@@ -600,15 +600,9 @@
                     this.fieldData.api_info = {}
                     this.fieldData.kv_relation = {}
                     this.fieldData.meta.data_config = {
-                        // id: '',
+                        formId: '',
+                        tableName: '',
                         field: '',
-                        source: {
-                            project_key: this.appId
-                        },
-                        target: {
-                            project_key: this.appId,
-                            worksheet_id: ''
-                        },
                         conditions: {
                             connector: 'and',
                             expressions: []

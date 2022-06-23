@@ -38,7 +38,9 @@
                         <span v-if="node.type === 'NORMAL'">处理人：{{ getProcessorName() }}</span>
                         <span v-else-if="node.type === 'APPROVAL'">类型：{{ approvalType }} 处理人: {{ getProcessorName() }}</span>
                         <span v-else-if="node.type === 'DATA_PROC'">数据来源节点：-- 目标表： --</span>
-                        <span v-else-if="node.type === 'TASK'">API：--</span>
+                        <span v-else-if="node.type === 'TASK'">
+                            API：{{ (node.nodeInfo && node.nodeInfo.extras.api_info && node.nodeInfo.extras.api_info.url) || '--' }}
+                        </span>
                     </template>
                 </p>
             </div>

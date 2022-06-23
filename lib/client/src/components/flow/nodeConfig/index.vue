@@ -33,7 +33,7 @@
     import { messageError } from '@/common/bkmagic'
     import NormalNode from './nodes/normal-node.vue'
     import DataProcessNode from './nodes/data-process-node.vue'
-    import ApiNode from './nodes/api-node.vue'
+    import ApiNode from './nodes/api-node/index.vue'
     import ApprovalNode from './nodes/approval-node.vue'
     import FormSection from './components/form-section.vue'
     import NodeActions from './components/node-actions.vue'

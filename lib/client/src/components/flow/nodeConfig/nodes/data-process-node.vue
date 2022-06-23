@@ -33,7 +33,12 @@
                             :loading="formListLoading"
                             :disabled="formListLoading || !editable"
                             @selected="handleSelectForm">
-                            <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName"></bk-option>
+                            <bk-option
+                                v-for="item in formList"
+                                :key="item.id"
+                                :id="item.id"
+                                :name="`${item.formName}(${item.tableName})`">
+                            </bk-option>
                         </bk-select>
                     </bk-form-item>
                 </div>
@@ -63,7 +68,7 @@
                                             v-for="item in getSelectableField(fieldList, expression.key, 'condition')"
                                             :key="item.key"
                                             :id="item.key"
-                                            :name="item.name">
+                                            :name="`${item.name}(${item.key})`">
                                         </bk-option>
                                     </bk-select>
                                     <bk-select
@@ -124,7 +129,12 @@
                                             :name="group.name"
                                             :show-collapse="true"
                                             :is-collapse="!group.fields.some(fItm => fItm.id === expression.value)">
-                                            <bk-option v-for="item in group.fields" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                                            <bk-option
+                                                v-for="item in group.fields"
+                                                :key="item.id"
+                                                :id="item.id"
+                                                :name="`${item.name}(${item.key})`">
+                                            </bk-option>
                                         </bk-option-group>
                                     </bk-select>
                                     <bk-select
@@ -198,7 +208,8 @@
                                             v-for="item in getSelectableField(targetFields, mapping.key, 'mapping')"
                                             :key="item.key"
                                             :id="item.key"
-                                            :name="item.name"></bk-option>
+                                            :name="`${item.name}(${item.key})`">
+                                        </bk-option>
                                     </bk-select>
                                     <bk-select
                                         v-model="mapping.type"
@@ -247,7 +258,12 @@
                                             :name="group.name"
                                             :show-collapse="true"
                                             :is-collapse="!group.fields.some(fItm => fItm.id === mapping.value)">
-                                            <bk-option v-for="item in group.fields" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                                            <bk-option
+                                                v-for="item in group.fields"
+                                                :key="item.id"
+                                                :id="item.id"
+                                                :name="`${item.name}(${item.key})`">
+                                            </bk-option>
                                         </bk-option-group>
                                     </bk-select>
                                     <bk-select
@@ -410,7 +426,6 @@
         watch: {
             dataProcessConfig: {
                 handler (val) {
-                    console.log(val)
                     this.$store.commit('nocode/nodeConfig/setDataProcessConfig', val)
                 },
                 deep: true
