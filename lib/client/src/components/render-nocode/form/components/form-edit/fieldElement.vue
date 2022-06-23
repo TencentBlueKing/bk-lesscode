@@ -71,7 +71,6 @@
 }
 .field-container {
   position: relative;
-  padding-bottom: 24px;
   .mask {
     position: absolute;
     top: 0;
