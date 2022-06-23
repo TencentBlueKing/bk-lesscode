@@ -56,32 +56,36 @@
                             :id="option.id"
                             :name="option.pageName">
                             <span>{{option.pageName}}</span>
-                            <i class="bk-drag-icon bk-drag-copy"
+                            <i v-if="!option.nocodeType"
+                                class="bk-drag-icon bk-drag-copy"
                                 style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)"
-                                @click.stop="handleNewPage('copy')"
+                                @click.stop="handleCopyPage(option)"
                                 title="复制页面"></i>
                         </bk-option>
                         
                     </bk-option-group>
-                    <!-- <div slot="extension" class="extension">
+                    <div slot="extension" class="extension">
                         <div
                             class="page-row"
-                            @click="handleNewPage('create')">
-                            <i class="bk-icon icon-plus-circle" /> 新建空白页面
+                            @click="handleCreate('PC', '')">
+                            <i class="bk-icon icon-plus-circle" /> 新建PC自定义页面
                         </div>
                         <div
                             class="page-row"
-                            @click="handlePageFromTemplate">
-                            <i class="bk-icon icon-plus-circle" /> 从模板新建页面
+                            @click="handleCreate('PC', 'FORM')">
+                            <i class="bk-icon icon-plus-circle" /> 新建PC表单页面
                         </div>
-                    </div> -->
+                        <div
+                            class="page-row"
+                            @click="handleCreate('MOBILE', '')">
+                            <i class="bk-icon icon-plus-circle" /> 新建Mobile自定义页面
+                        </div>
+                    </div>
                 </bk-select>
             </div>
         </div>
-        <page-dialog
-            ref="pageDialog"
-            :action="newPageAction" />
-        <page-from-template-dialog ref="pageFromTemplateDialog" />
+        <page-dialog ref="pageDialog" action="copy" />
+        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" />
     </div>
 </template>
 <script>
@@ -91,17 +95,18 @@
     } from 'vuex'
     import { NOCODE_TYPE_MAP } from '@/common/constant'
     import PageDialog from '@/components/project/page-dialog'
-    import PageFromTemplateDialog from '@/components/project/page-from-template-dialog'
+    import createPageDialog from '@/components/project/create-page-dialog'
 
     export default {
         name: '',
         components: {
             PageDialog,
-            PageFromTemplateDialog
+            createPageDialog
         },
         data () {
             return {
-                newPageAction: '',
+                createPlatform: 'PC',
+                createNocodeType: '',
                 classPageList: [
                     {
                         id: 'PC',
@@ -158,8 +163,7 @@
                 this.$router.push({
                     name: 'pageList',
                     params: {
-                        projectId: this.projectId,
-                        pageId: this.pageId
+                        projectId: this.projectId
                     }
                 })
             },
@@ -168,11 +172,7 @@
              */
             handleBackProjectList () {
                 this.$router.push({
-                    name: 'projects',
-                    params: {
-                        projectId: this.projectId,
-                        pageId: this.pageId
-                    }
+                    name: 'projects'
                 })
             },
             /**
@@ -215,28 +215,22 @@
              * - 新建空白页面
              * - 复制指定页面页面新建
              */
-            handleNewPage (action) {
-                this.newPageAction = action
-                if (action === 'create') {
-                    this.$refs.pageDialog.dialog.formData.id = undefined
-                    this.$refs.pageDialog.dialog.formData.pageName = ''
-                } else {
-                    const layoutId = (this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageId)) || {}).layoutId
-                    this.$refs.pageDialog.dialog.formData.id = this.pageId
-                    this.$refs.pageDialog.dialog.formData.layoutId = layoutId
-                    this.$refs.pageDialog.dialog.formData.pageName = `${this.pageDetail.pageName}-copy`
-                }
+            handleCopyPage (page) {
+                const layoutId = (this.layoutPageList.find(({ pageId }) => pageId === Number(page.id)) || {}).layoutId
+                this.$refs.pageDialog.layoutId = layoutId
+                this.$refs.pageDialog.dialog.formData.id = page.id
+                this.$refs.pageDialog.dialog.formData.pageName = `${page.pageName}-copy`
 
                 this.$refs.pageDialog.dialog.formData.pageCode = ''
                 this.$refs.pageDialog.dialog.formData.pageRoute = ''
                 this.$refs.pageDialog.dialog.visible = true
                 this.$refs.pageSelect.close()
             },
-            /**
-             * @desc 通过模板新建页面
-             */
-            handlePageFromTemplate () {
-                this.$refs.pageFromTemplateDialog.isShow = true
+
+            handleCreate (platform, nocodeType) {
+                this.createPlatform = platform
+                this.createNocodeType = nocodeType
+                this.$refs.createPageDialog.isShow = true
             }
         }
     }

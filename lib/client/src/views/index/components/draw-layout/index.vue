@@ -2,6 +2,7 @@
     <div
         :class="{
             [$style['draw-layout']]: !isDataManagePage,
+            [$style['page-data-manage-layout']]: isDataManagePage,
             [$style['page-nocode-layout']]: isNocodeForm,
             [$style['is-left-collapsed']]: isLeftCollapse,
             [$style['is-right-collapsed']]: isRightCollapse
@@ -14,7 +15,7 @@
             :class="[$style['layout-center'],{ [$style['nocode-layout-center']]: isNocodeForm }]">
             <slot />
         </div>
-        <div :class="$style['layout-right']" v-if="!isDataManagePage">
+        <div :class="$style['layout-right']">
             <slot name="right" />
         </div>
         <div
@@ -28,7 +29,6 @@
             <i class="bk-drag-icon bk-drag-angle-left" />
         </div>
         <div
-            v-if="!isDataManagePage"
             :class="$style['collapsed-right-btn']"
             v-bk-tooltips.right="{
                 content: '查看组件配置',
@@ -160,7 +160,7 @@
             &:hover {
                 background: #3A84FF;
             }
-            
+
             :global(.bk-drag-angle-left){
                 transition: transform .15s;
             }
@@ -180,6 +180,72 @@
             }
         }
     }
+    .page-data-manage-layout{
+      max-width: 100vw;
+      position: relative;
+      padding-right:  $layoutRightWidth;
+      transition: all .1s;
+
+      &.is-right-collapsed{
+        padding-right: 0;
+        .layout-right{
+          width: 0 !important;
+          overflow: hidden;
+          height: calc(100vh - 116px);
+        }
+        .collapsed-right-btn{
+          right: 0 !important;
+          :global(.bk-drag-angle-left){
+            transform: rotate(0deg);
+          }
+        }
+      }
+      .layout-right{
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: $layoutRightWidth !important;
+        background: #FFF;
+        box-shadow: -2px 4px 4px 0px rgba(0,0,0,0.1);
+      }
+      .layout-right{
+        transition: all .15s;
+      }
+
+      .layout-center{
+        position: relative;
+        height: 100%;
+      }
+      .collapsed-right-btn{
+        right: 300px !important;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 50%;
+        width: 16px;
+        height: 50px;
+        font-size: 12px;
+        color: #fff;
+        background: #C4C6CC;
+        transform: translateY(-50%);
+        cursor: pointer;
+        &:hover {
+          background: #3A84FF;
+        }
+
+        :global(.bk-drag-angle-left){
+          transition: transform .15s;
+        }
+      }
+      .collapsed-right-btn{
+        border-radius: 8px 0 0 8px;
+        :global(.bk-drag-angle-left) {
+          transform: rotate(180deg);
+        }
+      }
+    }
     .page-nocode-left-layout{
       width: 300px !important;
       height: 100%;
@@ -190,6 +256,7 @@
       @mixin scroller;
     }
     .page-nocode-layout{
+      max-width: 100vw;
       padding-left: 300px !important;
       &.is-left-collapsed{
         padding-left: 0 !important;

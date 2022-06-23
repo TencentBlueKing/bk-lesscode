@@ -13,7 +13,7 @@
                     style="min-width: 88px; margin-right: 4px;">
                     提交
                 </bk-button>
-                <bk-button>暂存</bk-button>
+                <bk-button @click="value = {}">清空</bk-button>
             </div>
         </template>
         <bk-exception v-else type="empty" class="empty-form-fields">暂无数据</bk-exception>
