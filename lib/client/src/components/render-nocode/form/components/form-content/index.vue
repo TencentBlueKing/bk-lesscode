@@ -10,6 +10,7 @@
             @end="end">
             <template v-if="fields.length !== 0">
                 <field-element
+                    v-bk-clickoutside="handleClickOutSide"
                     v-for="(item, index) in fields"
                     :key="`${item.key}_${index}_${item.timeStamp}`"
                     :class="{ actived: selectedIndex === index }"
@@ -188,6 +189,12 @@
                     ...this.curTemplateData,
                     panelActive: ''
                 })
+            },
+            handleClickOutSide (e) {
+                if (e?.target?.className === 'fields-container') {
+                    this.selectedIndex = -1
+                    this.$emit('clickOutSide')
+                }
             }
         }
     }
@@ -198,9 +205,6 @@
 
 .form-panel {
   height: calc(100vh - 200px);
-  /* background: #ffffff;
-  box-shadow: 0 2px 4px 0 rgba(25, 25, 41, 0.05);
-  border-radius: 2px; */
 }
 
 .fields-container {

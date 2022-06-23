@@ -2,7 +2,7 @@
     <section v-bkloading="{ isLoading: isLoading }" style="height: 100%">
         <main class="pages pages-content" v-show="!isLoading">
             <div class="pages-head">
-                <bk-dropdown-menu trigger="click" :align="'left'" :ext-cls="'create-dropdown'">
+                <bk-dropdown-menu :align="'left'" :ext-cls="'create-dropdown'" ref="createDropdown">
                     <div class="dropdown-trigger-btn" slot="dropdown-trigger">
                         <bk-button theme="primary" icon-right="icon-angle-down">新建</bk-button>
                     </div>
@@ -13,7 +13,7 @@
                     </ul>
                 </bk-dropdown-menu>
                 <template>
-                    <bk-dropdown-menu v-if="hasMobilePage" trigger="click" :align="'center'" :ext-cls="'preview-dropdown'">
+                    <bk-dropdown-menu v-if="hasMobilePage" :align="'center'" :ext-cls="'preview-dropdown'">
                         <div class="dropdown-trigger-btn" slot="dropdown-trigger">
                             <bk-button icon-right="icon-angle-down">预览应用</bk-button>
                         </div>
@@ -89,6 +89,7 @@
                                         <li><a href="javascript:;" @click="handleRename(page)">重命名</a></li>
                                         <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
                                         <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
+                                        <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(page)">生成数据管理页</a></li>
                                         <li><a href="javascript:;" @click="handleDelete(page)" :class="{ 'g-no-permission': !getDeletePerm(page) }" v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePerm(page) }">删除</a></li>
                                     </ul>
                                 </bk-dropdown-menu>
@@ -114,7 +115,7 @@
                                             <i class="bk-drag-icon bk-drag-page"></i>
                                             <span class="name">{{item.pageName}}</span>
                                             <i title="预览" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
-                                            <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" @click="handleEditPage(item)"></i>
+                                            <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
                                         </li>
                                     </ul>
                                 </div>
@@ -133,7 +134,7 @@
             <page-dialog ref="pageDialog" :action="action" :current-name="currentName" :refresh-list="getPageList"></page-dialog>
             <download-dialog ref="downloadDialog"></download-dialog>
             <edit-route-dialog ref="editRouteDialog" :route-group="editRouteGroup" :current-route="currentRoute" @success="getPageList" />
-            <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" />
+            <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" :init-page-data="initPageData" />
         </main>
     </section>
 </template>
@@ -167,6 +168,7 @@
             return {
                 createPlatform: '',
                 createNocodeType: '',
+                initPageData: {},
                 action: '',
                 currentName: '',
                 currentRoute: {},
@@ -248,10 +250,20 @@
                     this.isLoading = false
                 }
             },
-            handleCreate (platform, nocodeType) {
+            handleCreate (platform, nocodeType, initPageData = {}) {
                 this.createPlatform = platform
                 this.createNocodeType = nocodeType
+                this.initPageData = initPageData
+                this.$refs.createDropdown.hide()
                 this.$refs.createPageDialog.isShow = true
+            },
+            handleCreateFormManage (page) {
+                const initData = {
+                    formId: page.formId,
+                    pageCode: page.pageCode + 'manage',
+                    pageName: page.pageName + '_数据管理页'
+                }
+                this.handleCreate('PC', 'FORM_MANAGE', initData)
             },
             handlePreviewPcProject () {
                 // 跳转到预览入口页面

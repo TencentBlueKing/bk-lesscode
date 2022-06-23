@@ -34,12 +34,13 @@
 </template>
 <script>
     import LC from '@/element-materials/core'
-    import { mapGetters, mapActions } from 'vuex'
+    import { mapGetters } from 'vuex'
     import ExtraLinks from '@/components/ui/extra-links'
     import PageList from '../index/components/page-list'
     import OperationSelect from './components/operation-select'
     import ActionTool from './components/action-tool'
     import OperationArea from './components/operation-area'
+    import PreviewMixin from './preview-mixin'
 
     export default {
         name: 'NocodePage',
@@ -50,6 +51,7 @@
             ActionTool,
             OperationArea
         },
+        mixins: [PreviewMixin],
         data () {
             return {
                 isContentLoading: true,
@@ -58,7 +60,6 @@
         },
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('drag', ['curTemplateData']),
             ...mapGetters('page', ['pageDetail', 'platform']),
             ...mapGetters('layout', ['pageLayout']),
             ...mapGetters('projectVersion', {
@@ -66,17 +67,18 @@
                 versionName: 'currentVersionName',
                 getInitialVersion: 'initialVersion'
             }),
-            pageRoute () {
-                return this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageId))
+
+            projectId () {
+                return parseInt(this.$route.params.projectId)
+            },
+            pageId () {
+                return parseInt(this.$route.params.pageId)
             },
             nocodeType () {
                 return this.pageDetail.nocodeType || ''
             }
         },
         async created () {
-            this.projectId = parseInt(this.$route.params.projectId)
-            this.pageId = parseInt(this.$route.params.pageId)
-
             // 获取并设置当前版本信息
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 
@@ -101,7 +103,6 @@
             })
         },
         methods: {
-            ...mapActions(['updatePreview']),
             /**
              * @desc 获取页面编辑基础数据
              */

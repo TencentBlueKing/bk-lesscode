@@ -168,6 +168,7 @@
             height: calc(100vh - 300px);
             border: 1px solid transparent;
             overflow-y: scroll;
+            @mixin scroller;
             &:hover{
                 border: 1px dashed #3a84ff;
             }

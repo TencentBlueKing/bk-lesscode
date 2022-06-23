@@ -51,6 +51,7 @@
                     return
                 }
                 if (this.nocodeType === 'FORM') {
+                    // console.log('FORM')
                     this.saveFormList()
                 } else if (['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.saveFormManage()
@@ -82,7 +83,7 @@
                     this.savePreviewImg()
                     this.$bkMessage({
                         theme: 'success',
-                        message: '保存成功'
+                        message: '保存成功，数据表结构变更成功'
                     })
                     action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
                     bus.$emit('saveSuccess')

@@ -672,10 +672,11 @@
                 this.change()
             },
             handleAddTableChoice () {
+                const len = this.fieldData.choice.length
                 this.fieldData.choice.push({
                     choice: [],
                     display: '',
-                    name: '',
+                    name: `列${len + 1}`,
                     required: false
                 })
                 this.change()
