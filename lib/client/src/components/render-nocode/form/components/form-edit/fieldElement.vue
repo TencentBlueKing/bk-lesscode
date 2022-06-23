@@ -11,7 +11,7 @@
         </div>
         <div class="field-container">
             <div class="mask"></div>
-            <field-item :field="field"></field-item>
+            <field-item :use-fixed-data-source="true" :field="field"></field-item>
         </div>
     </div>
 </template>

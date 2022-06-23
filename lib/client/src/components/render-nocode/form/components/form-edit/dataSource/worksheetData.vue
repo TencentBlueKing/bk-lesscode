@@ -9,7 +9,7 @@
                     :searchable="true"
                     :disabled="formListLoading"
                     :loading="formListLoading"
-                    @selected="handleSelectForm(item)">
+                    @selected="handleSelectForm">
                     <bk-option
                         v-for="item in formList"
                         :key="item.id"
@@ -156,17 +156,10 @@
                 relationListLoading: false,
                 errorTips: false,
                 sourceRules: {
-                    appId: [
-                        {
-                            required: true,
-                            message: '应用为必填项',
-                            trigger: 'blur'
-                        }
-                    ],
                     formId: [
                         {
                             required: true,
-                            message: '表单为必填项',
+                            message: '数据表为必填项',
                             trigger: 'blur'
                         }
                     ],
@@ -230,14 +223,6 @@
             },
             async getFieldList (id) {
                 this.fieldList = JSON.parse(this.formList.find(item => item.id === id).content)
-                // try {
-                //     this.fieldListLoading = true
-                //     const res = await this.$store.dispatch('nocode/formSetting/getFormFields', this.localVal.target.worksheet_id)
-                //     this.fieldList = res.data
-                //     this.fieldListLoading = false
-                // } catch (e) {
-                //     console.error(e)
-                // }
             },
             async getRelationList () {
                 try {
@@ -274,8 +259,8 @@
             },
             // 选择表单，清空已选数据
             handleSelectForm (val) {
-                this.localVal.formId = val.id
-                this.localVal.tableName = val.tableName
+                this.localVal.formId = val
+                this.localVal.tableName = this.formList.find(item => item.id === val).tableName
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
                 this.getFieldList(val)
@@ -318,6 +303,7 @@
                 this.$emit('update', cloneDeep(this.localVal))
             },
             validate () {
+                console.log(this.localVal)
                 this.$refs.sourceForm.validate()
                 const sourceFormValid = this.localVal.formId && this.localVal.field
                 // const filterRuleValid = this.localVal.conditions.expressions.every((exp) => {
