@@ -181,7 +181,7 @@
                     }
 
                     this.$bkMessage({
-                        message: '节点保存成功',
+                        message: '节点保存成功，表单配置关联数据表变更成功',
                         theme: 'success'
                     })
                 } catch (e) {

@@ -56,9 +56,6 @@
         created () {
             this.getFormDetail()
         },
-        beforeDestroy () {
-            this.$store.commit('nocode/formSetting/setTableFields', {})
-        },
         methods: {
             async getFormDetail () {
                 try {
@@ -69,15 +66,6 @@
                     messageError(e.message || e)
                 } finally {
                     this.formDetailLoading = false
-                }
-            },
-            handleUpdate (type, val) {
-                if (type === 'filters') {
-                    this.filters = val
-                    this.$store.commit('nocode/formSetting/setTableFields', { filters: val, tableConfig: this.tableConfig })
-                } else {
-                    this.tableConfig = val
-                    this.$store.commit('nocode/formSetting/setTableFields', { filters: this.filters, tableConfig: val })
                 }
             }
         }
