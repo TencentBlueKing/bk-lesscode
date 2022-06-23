@@ -29,16 +29,21 @@
                     <bk-option v-for="item in appList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
                 </bk-select>
             </bk-form-item>
-            <bk-form-item label="表单" property="formId" :required="true" error-display-type="normal">
+            <bk-form-item label="数据表" property="formId" :required="true" error-display-type="normal">
                 <bk-select
-                    placeholder="请选择表单"
+                    placeholder="请选择数据表"
                     :value="localVal.target.worksheet_id"
                     :clearable="false"
                     :searchable="true"
                     :disabled="formListLoading"
                     :loading="formListLoading"
                     @selected="handleSelectForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName || item.id"></bk-option>
+                    <bk-option
+                        v-for="item in formList"
+                        :key="item.id"
+                        :id="item.id"
+                        :name="`${item.formName}(${item.tableName})`">
+                    </bk-option>
                 </bk-select>
             </bk-form-item>
             <bk-form-item label="字段" property="field" :required="true" error-display-type="normal">
@@ -50,7 +55,12 @@
                     :disabled="fieldListLoading"
                     :loading="fieldListLoading"
                     @selected="update">
-                    <bk-option v-for="item in fieldList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
+                    <bk-option
+                        v-for="item in fieldList"
+                        :key="item.key"
+                        :id="item.key"
+                        :name="`${item.name}(${item.key})`">
+                    </bk-option>
                 </bk-select>
             </bk-form-item>
         </bk-form>
@@ -67,10 +77,15 @@
                     <bk-select
                         v-model="expression.key"
                         placeholder="字段"
-                        style="width: 160px; margin-right: 8px"
+                        style="width: 250px; margin-right: 8px"
                         :clearable="false"
                         @selected="handleSelectField(expression)">
-                        <bk-option v-for="item in fieldList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
+                        <bk-option
+                            v-for="item in fieldList"
+                            :key="item.key"
+                            :id="item.key"
+                            :name="`${item.name}(${item.key})`">
+                        </bk-option>
                     </bk-select>
                     <bk-select
                         v-model="expression.condition"
@@ -104,11 +119,16 @@
                         :loading="relationListLoading"
                         :disabled="relationListLoading"
                         @selected="update">
-                        <bk-option v-for="item in relationList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
+                        <bk-option
+                            v-for="item in relationList"
+                            :key="item.key"
+                            :id="item.key"
+                            :name="`${item.name}(${item.key})`">
+                        </bk-option>
                     </bk-select>
                     <field-value
                         v-else
-                        :style="{ width: useVariable ? '140px' : '250px' }"
+                        :style="{ width: useVariable ? '140px' : '320px' }"
                         :field="getField(expression.key)"
                         :value="expression.value"
                         @change="handleValChange(expression, $event)">
