@@ -259,11 +259,12 @@
             },
             // 选择表单，清空已选数据
             handleSelectForm (val) {
-                this.localVal.formId = val
-                this.localVal.tableName = this.formList.find(item => item.id === val).tableName
+                const form = this.formList.find(item => item.id === val)
+                this.localVal.formId = form.id
+                this.localVal.tableName = form.tableName
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
-                this.getFieldList(val)
+                this.fieldList = JSON.parse(form.content)
                 this.update()
             },
             // 选择筛选条件字段
@@ -303,7 +304,6 @@
                 this.$emit('update', cloneDeep(this.localVal))
             },
             validate () {
-                console.log(this.localVal)
                 this.$refs.sourceForm.validate()
                 const sourceFormValid = this.localVal.formId && this.localVal.field
                 // const filterRuleValid = this.localVal.conditions.expressions.every((exp) => {
