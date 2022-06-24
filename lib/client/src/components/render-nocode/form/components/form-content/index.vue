@@ -71,6 +71,13 @@
             }
 
         },
+        watch: {
+            curfield (val) {
+                if (!Object.keys(val).length) {
+                    this.selectedIndex = -1
+                }
+            }
+        },
         methods: {
             ...mapMutations('drag', ['setCurTemplateData']),
             // 拖拽添加字段
