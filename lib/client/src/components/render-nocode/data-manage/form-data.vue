@@ -24,6 +24,7 @@
     import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import { FORM_SYS_FIELD } from '@/components/flow-form-comp/common/field.js'
+    import { NO_VIEWED_FIELD } from '@/components/flow-form-comp/form/constants/forms.js'
     import Filters from './components/filters.vue'
     import TableFields from './components/table-fields.vue'
     export default {
@@ -66,7 +67,7 @@
                 try {
                     this.formDetailLoading = true
                     this.formDetail = await this.$store.dispatch('nocode/form/formDetail', { formId: this.pageDetail.formId })
-                    this.fields = JSON.parse(this.formDetail.content)
+                    this.fields = JSON.parse(this.formDetail.content).filter(field => !NO_VIEWED_FIELD.includes(field.type))
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {

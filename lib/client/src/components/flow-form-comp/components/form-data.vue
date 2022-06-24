@@ -27,6 +27,7 @@
 <script>
     import { formMap } from 'shared/form'
     import { FORM_SYS_FIELD } from '../common/field.js'
+    import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
     import Filters from './filters.vue'
     import TableFields from './table-fields.vue'
 
@@ -76,7 +77,7 @@
                         formDetail = formMap[this.formIds]
                     }
                     const { content = '[]', tableName } = formDetail
-                    this.fields = JSON.parse(content)
+                    this.fields = JSON.parse(content).filter(field => !NO_VIEWED_FIELD.includes(field.type))
                     this.tableName = tableName
                 } catch (e) {
                     console.error(e.message || e)

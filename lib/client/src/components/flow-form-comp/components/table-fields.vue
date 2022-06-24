@@ -15,12 +15,12 @@
                 :label="field.name"
                 :prop="field.key">
                 <template slot-scope="{ row }">
-                    <table-cell-value :field="field" :value="row"></table-cell-value>
+                    <table-cell-value :field="field" :value="row" @viewDetail="handleViewDetail"></table-cell-value>
                 </template>
             </bk-table-column>
             <bk-table-column label="操作" :width="80">
                 <template slot-scope="{ row }">
-                    <bk-button theme="primary" :text="true" @click="cellDetailId = row.id">详情</bk-button>
+                    <bk-button theme="primary" :text="true" @click="handleViewDetail(row.id)">详情</bk-button>
                 </template>
             </bk-table-column>
             <bk-table-column ref="settingCol" type="setting">
@@ -57,7 +57,7 @@
             v-if="cellDetailId"
             :form-id="formId"
             :table-name="tableName"
-            :id="cellDetailId"
+            :id.sync="cellDetailId"
             :fields="colFields">
         </table-cell-detail>
     </div>
@@ -177,6 +177,9 @@
                     }
                 })
                 return query
+            },
+            handleViewDetail (id) {
+                this.cellDetailId = id
             },
             handlePageChange (val) {
                 this.pagination.current = val

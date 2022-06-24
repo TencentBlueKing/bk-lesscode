@@ -3,51 +3,52 @@
         :title="`详情【${tableName}】`"
         ext-cls="table-cell-detail-sidelider"
         :width="800"
-        :transfer="true"
-        :is-show="true"
+        :is-show="show"
         :quick-close="true"
         :show-mask="true"
-        @before-close="$emit('update:id', '')">
-        <bk-form slot="content" :label-width="150" class="custom-detail-form">
-            <bk-form-item v-for="field in fields" :label="`${field.name}:`" :key="field.key">
-                <span v-if="DATA_SOURCE_FIELD.includes(field.type)">
-                    {{ transformFields(field) }}
-                </span>
-                <span v-else-if="field.type === 'RICHTEXT'">
-                    <rich-text :disabled="true" :value="value[field.key] || '--'" />
-                </span>
-                <span v-else-if="field.type === 'IMAGE'">
-                    <image-file :view-mode="true" :value="value[field.key]" v-if="value[field.key] && value[field.key].length !== 0"></image-file>
-                    <span v-else>--</span>
-                </span>
-                <span v-else-if="field.type === 'TABLE'">
-                    <bk-table :data="value[field.key]" v-if="value[field.key] && value[field.key].length !== 0">
-                        <template v-for="col in field.choice">
-                            <bk-table-column :label="col.name" :key="col.key">
-                                <template slot-scope="{ row }">
-                                    <span>{{ row[col.key] }}</span>
-                                </template>
-                            </bk-table-column>
-                        </template>
-                    </bk-table>
-                    <span v-else>--</span>
-                </span>
-                <span v-else-if="field.type === 'FILE'">
-                    <bk-button
-                        v-if="value[field.key]"
-                        theme="primary"
-                        style="margin-right: 8px"
-                        @click="handleDownload(value[field.key])"
-                        text>
-                        点击下载
-                    </bk-button>
-                    <span v-else>--</span>
-                </span>
-                <span v-else-if="field.type === 'TEXT'" v-html="textTrans(value[field.key])">
-                </span>
-                <span v-else>{{ value[field.key] }}</span>
-            </bk-form-item>
-        </bk-form>
+        :before-close="handleClose">
+        <div slot="content" class="custom-detail-form" style="min-height: 400px;" v-bkloading="{ isLoading: loading }">
+            <bk-form v-if="!loading" :label-width="150">
+                <bk-form-item v-for="field in fields" :label="`${field.name}:`" :key="field.key">
+                    <span v-if="DATA_SOURCE_FIELD.includes(field.type)">
+                        {{ transformFields(field) }}
+                    </span>
+                    <div v-else-if="field.type === 'RICHTEXT'">
+                        <rich-text :disabled="true" :value="value[field.key] || '--'" />
+                    </div>
+                    <span v-else-if="field.type === 'IMAGE'">
+                        <image-file :view-mode="true" :value="value[field.key]" v-if="value[field.key] && value[field.key].length !== 0"></image-file>
+                        <span v-else>--</span>
+                    </span>
+                    <span v-else-if="field.type === 'TABLE'">
+                        <bk-table :data="value[field.key]" v-if="value[field.key] && value[field.key].length !== 0">
+                            <template v-for="col in field.choice">
+                                <bk-table-column :label="col.name" :key="col.key">
+                                    <template slot-scope="{ row }">
+                                        <span>{{ row[col.key] }}</span>
+                                    </template>
+                                </bk-table-column>
+                            </template>
+                        </bk-table>
+                        <span v-else>--</span>
+                    </span>
+                    <span v-else-if="field.type === 'FILE'">
+                        <bk-button
+                            v-if="value[field.key]"
+                            theme="primary"
+                            style="margin-right: 8px"
+                            @click="handleDownload(value[field.key])"
+                            text>
+                            点击下载
+                        </bk-button>
+                        <span v-else>--</span>
+                    </span>
+                    <span v-else-if="field.type === 'TEXT'" v-html="textTrans(value[field.key])">
+                    </span>
+                    <span v-else>{{ value[field.key] }}</span>
+                </bk-form-item>
+            </bk-form>
+        </div>
     </bk-sideslider>
 </template>
 <script>
@@ -72,8 +73,10 @@
         },
         data () {
             return {
+                show: true,
                 DATA_SOURCE_FIELD,
-                value: {}
+                value: {},
+                loading: true
             }
         },
         created () {
@@ -85,7 +88,7 @@
                 try {
                     this.loading = true
                     const res = await this.$http.get(`/data-source/user/tableName/${this.tableName}/id/${this.id}`)
-                    this.value = res.data.list
+                    this.value = res.data
                 } catch (e) {
                     console.log(e.message || e)
                 } finally {
@@ -181,14 +184,26 @@
                 } catch (e) {
                     console.error(e)
                 }
+            },
+            handleClose () {
+                this.$emit('update:id', '')
             }
         }
     }
 </script>
-<style lang="postcss">
+<style lang="postcss" scoped>
     .table-cell-detail-sidelider {
         .custom-detail-form {
             padding: 40px;
+            .bk-label-text {
+                font-size: 12px;
+                line-height: 20px;
+                color: #63656e;
+            }
+            .bk-form-content {
+                font-size: 12px;
+                color: #313238;
+            }
         }
     }
 </style>

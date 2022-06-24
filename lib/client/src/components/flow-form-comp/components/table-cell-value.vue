@@ -1,10 +1,10 @@
 <template>
     <div class="table-cell-value">
         <span v-if="isValEmpty">--</span>
-        <bk-button v-else-if="isOpenView" size="small" :text="true">查看</bk-button>
+        <bk-button v-else-if="isOpenView" size="small" :text="true" @click="$emit('viewDetail', value.id)">查看</bk-button>
         <span v-else-if="isShowName">{{ transValToName( value[field.key]) }}</span>
         <bk-button v-else-if="field.type === 'FILE'" size="small" :text="true">下载</bk-button>
-        <a v-else-if="field.type === 'LINK'" :href="value[field.key]" target="_blank">{{ value[field.key] }}</a>
+        <a v-else-if="field.type === 'LINK'" style="color: #3a84ff;" :href="value[field.key]" target="_blank">{{ value[field.key] }}</a>
         <div v-else-if="field.type === 'IMAGE'">
             <img v-for="(item, index) in value[field.key]" :src="item" :key="index">
         </div>
