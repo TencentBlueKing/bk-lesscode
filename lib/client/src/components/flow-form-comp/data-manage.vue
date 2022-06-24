@@ -3,13 +3,15 @@
         <form-data
             v-if="type === 'FORM_MANAGE'"
             :form-ids="formIds"
-            :config="config">
+            :config="config"
+            :view-type="viewType">
         </form-data>
         <flow-data
             v-if="type === 'FLOW_MANAGE'"
             :form-ids="formIds"
             :service-id="serviceId"
-            :config="config">
+            :config="config"
+            :view-type="viewType">
         </flow-data>
     </div>
 </template>
@@ -30,6 +32,10 @@
             },
             formIds: [Number, Object], // 普通表单数据管理为单个id值，流程数据管理为{ nodeId: id }
             serviceId: Number, // itsm流程的id
+            viewType: {
+                type: String,
+                default: 'projectCode'
+            },
             config: {
                 type: Object,
                 default: () => ({})
