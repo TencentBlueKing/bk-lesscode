@@ -11,6 +11,7 @@
             @page-limit-change="handlePageLimitChange">
             <bk-table-column
                 v-for="field in colFields"
+                show-overflow-tooltip
                 :key="field.key"
                 :label="field.name"
                 :prop="field.key">
@@ -158,6 +159,7 @@
                     const params = {
                         pageSize: limit,
                         page: current,
+                        fields: this.cols,
                         query: this.getQueryData()
                     }
                     const res = await this.$http.post(`/nocode/filterTableData/keys/formId/${this.formId}/tableName/${this.tableName}`, params)
@@ -192,6 +194,7 @@
             },
             handleSelectConfirm () {
                 this.cols = [...this.selectedSys, ...this.selectedCustom]
+                this.getTableData()
             },
             handleSelectCancel () {
                 console.log(this.$refs.fieldsTable)
