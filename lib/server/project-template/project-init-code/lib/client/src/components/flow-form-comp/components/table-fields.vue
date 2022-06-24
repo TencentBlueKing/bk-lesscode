@@ -1,19 +1,28 @@
 <template>
     <div class="table-fields-wrapper">
-        <bk-table ref="fieldsTable"
+        <bk-table
+            v-bkloading="{ isLoading: tableDataLoading }"
+            ref="fieldsTable"
             header-row-class-name="custom-table-header"
-            :data="emptyData"
-            :outer-border="!emptyData.length > 0">
-            <bk-table-column type="selection" width="60" fixed="left">
-            </bk-table-column>
+            :pagination="pagination"
+            :data="tableData"
+            :outer-border="!tableData.length > 0"
+            @page-change="handlePageChange"
+            @page-limit-change="handlePageLimitChange">
             <bk-table-column
                 v-for="field in colFields"
+                show-overflow-tooltip
                 :key="field.key"
                 :label="field.name"
                 :prop="field.key">
+                <template slot-scope="{ row }">
+                    <table-cell-value :field="field" :value="row" @viewDetail="handleViewDetail"></table-cell-value>
+                </template>
             </bk-table-column>
-            <bk-table-column label="操作" :label-width="150">
-                <bk-link theme="primary">详情</bk-link>
+            <bk-table-column label="操作" :width="80">
+                <template slot-scope="{ row }">
+                    <bk-button theme="primary" :text="true" @click="handleViewDetail(row.id)">详情</bk-button>
+                </template>
             </bk-table-column>
             <bk-table-column ref="settingCol" type="setting">
                 <div class="table-setting-wrapper">
@@ -45,13 +54,28 @@
                 </div>
             </bk-table-column>
         </bk-table>
+        <table-cell-detail
+            v-if="cellDetailId"
+            :form-id="formId"
+            :table-name="tableName"
+            :id.sync="cellDetailId"
+            :fields="colFields">
+        </table-cell-detail>
     </div>
 </template>
 <script>
+    import TableCellValue from './table-cell-value.vue'
+    import TableCellDetail from './table-cell-detail.vue'
+
     export default {
         name: 'TableFields',
+        components: {
+            TableCellValue,
+            TableCellDetail
+        },
         props: {
-            viewMode: Boolean,
+            formId: Number,
+            tableName: String,
             fields: {
                 type: Array,
                 default: () => []
@@ -63,14 +87,26 @@
             tableConfig: {
                 type: Array,
                 default: () => []
+            },
+            filtersData: {
+                type: Object,
+                default: () => ({})
             }
         },
         data () {
             return {
                 cols: this.tableConfig.slice(),
-                emptyData: [],
                 selectedSys: [],
-                selectedCustom: []
+                selectedCustom: [],
+                tableData: [],
+                tableDataLoading: false,
+                cellDetailId: '',
+                pagination: {
+                    current: 1,
+                    count: 0,
+                    limit: 10,
+                    'show-limit': true
+                }
             }
         },
         computed: {
@@ -107,11 +143,58 @@
             },
             tableConfig (val) {
                 this.cols = val.slice()
+            },
+            filtersData () {
+                this.getTableData()
             }
         },
+        created () {
+            this.getTableData()
+        },
         methods: {
+            async getTableData () {
+                try {
+                    this.tableDataLoading = true
+                    const { current, limit } = this.pagination
+                    const params = {
+                        pageSize: limit,
+                        page: current,
+                        fields: this.cols,
+                        query: this.getQueryData()
+                    }
+                    const res = await this.$http.post(`/nocode/filterTableData/keys/formId/${this.formId}/tableName/${this.tableName}`, params)
+                    this.tableData = res.data.list
+                    this.pagination.count = res.data.count
+                } catch (e) {
+                    console.log(e.message || e)
+                } finally {
+                    this.tableDataLoading = false
+                }
+            },
+            getQueryData () {
+                const query = {}
+                Object.keys(this.filtersData).forEach(key => {
+                    if (this.filtersData[key] !== '') {
+                        query[key] = this.filtersData[key]
+                    }
+                })
+                return query
+            },
+            handleViewDetail (id) {
+                this.cellDetailId = id
+            },
+            handlePageChange (val) {
+                this.pagination.current = val
+                this.getTableData()
+            },
+            handlePageLimitChange (val) {
+                this.pagination.current = 1
+                this.pagination.limit = val
+                this.getTableData()
+            },
             handleSelectConfirm () {
                 this.cols = [...this.selectedSys, ...this.selectedCustom]
+                this.getTableData()
             },
             handleSelectCancel () {
                 console.log(this.$refs.fieldsTable)
