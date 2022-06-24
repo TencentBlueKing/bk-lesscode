@@ -80,7 +80,7 @@
     z-index: 100;
   }
   .field-form-item {
-    margin-top: 0;
+    margin: 0 !important;
     width: 100%;
   }
 }

@@ -134,10 +134,10 @@
   width: 100%;
   &.half-row {
     width: calc(50% - 12px);
-    &:nth-child(odd){
+    &:nth-child(even){
       margin-left: 12px;
     }
-    &:nth-child(even){
+    &:nth-child(odd){
       margin-right: 12px;
     }
   }

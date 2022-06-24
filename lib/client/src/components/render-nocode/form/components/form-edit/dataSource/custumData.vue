@@ -111,9 +111,10 @@
                     style: pinyin.STYLE_NORMAL,
                     heteronym: false
                 })
-                    .join('_')
+                    .join('')
                     .toUpperCase()
                 this.$set(item, 'key', key)
+                this.handleValChange()
             }
         }
     }

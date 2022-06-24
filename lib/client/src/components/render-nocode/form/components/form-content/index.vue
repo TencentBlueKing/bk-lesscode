@@ -184,11 +184,11 @@
                 return []
             },
             getDefaultImageRange (type) {
-                return type === 'IMAGE' ? {
+                return ['MULTISELECT', 'CHECKBOX', 'IMAGE'].includes(type) ? {
                     isMin: false,
                     minNum: 1,
                     isMax: false,
-                    maxNum: 1
+                    maxNum: 2
                 } : ''
             },
             showFormPanel () {
