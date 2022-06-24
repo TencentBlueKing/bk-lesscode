@@ -157,7 +157,6 @@
             },
             // 选中字段
             handleSelectField (field, index) {
-                console.log(field)
                 this.crtField = field
                 this.crtIndex = index
             },
