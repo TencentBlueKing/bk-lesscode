@@ -11,7 +11,7 @@
         </div>
         <div class="field-container">
             <div class="mask"></div>
-            <field-item :field="field"></field-item>
+            <field-item :use-fixed-data-source="true" :field="field"></field-item>
         </div>
     </div>
 </template>
@@ -71,7 +71,6 @@
 }
 .field-container {
   position: relative;
-  padding-bottom: 24px;
   .mask {
     position: absolute;
     top: 0;
@@ -81,7 +80,7 @@
     z-index: 100;
   }
   .field-form-item {
-    margin-top: 0;
+    margin: 0 !important;
     width: 100%;
   }
 }

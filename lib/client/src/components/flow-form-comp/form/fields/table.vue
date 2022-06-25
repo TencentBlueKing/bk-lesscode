@@ -11,6 +11,12 @@
                             :multiple="col.display === 'multiselect'"
                             v-model="props.row[col.key]"
                             @change="change">
+                            <bk-option
+                                v-for="option in col.options"
+                                :key="option.key"
+                                :id="option.id"
+                                :name="option.name">
+                            </bk-option>
                         </bk-select>
                         <bk-date-picker
                             v-else-if="!viewMode && col.display === 'datetime'"
@@ -25,7 +31,7 @@
                             style="width: 100%"
                             v-model="props.row[col.key]"
                             :transfer="true"
-                            :disabled="!disabled"
+                            :disabled="disabled"
                             :type="'datetime'"
                             @change="change">
                         </bk-date-picker>

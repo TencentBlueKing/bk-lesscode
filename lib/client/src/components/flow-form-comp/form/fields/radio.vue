@@ -33,8 +33,11 @@
             }
         },
         watch: {
-            value (val) {
-                this.val = val
+            value: {
+                handler (val) {
+                    this.val = val
+                },
+                immediate: true
             }
         },
         methods: {

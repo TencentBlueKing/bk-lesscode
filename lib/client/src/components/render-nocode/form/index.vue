@@ -105,12 +105,14 @@
                 this.fieldsList = this.fieldsList.map(item => {
                     return { ...item, disabled: true }
                 })
+                this.crtField = {}
+                this.crtIndex = -1
             })
         },
         beforeDestroy () {
             bus.$off('resetFieldList')
-            bus.$off('openCreatPageFrom')
             bus.$off('saveSuccess')
+            bus.$off('openCreatPageFrom')
         },
         methods: {
             // 添加字段
