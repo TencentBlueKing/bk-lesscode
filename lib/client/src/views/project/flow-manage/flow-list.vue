@@ -36,9 +36,15 @@
                     </router-link>
                 </template>
             </bk-table-column>
-            <bk-table-column label="流程描述" property="summary" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip></bk-table-column>
+            <bk-table-column label="流程描述" property="summary" show-overflow-tooltip>
+                <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
+            </bk-table-column>
+            <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip>
+                <template slot-scope="{ row }">{{ row.pageName || '--' }}</template>
+            </bk-table-column>
+            <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip>
+                <template slot-scope="{ row }">{{ row.managePageNames || '--' }}</template>
+            </bk-table-column>
             <bk-table-column label="创建人" property="createUser"></bk-table-column>
             <bk-table-column label="创建时间" show-overflow-tooltip>
                 <template slot-scope="{ row }">
@@ -72,38 +78,13 @@
                 </template>
             </bk-table-column>
         </bk-table>
-        <bk-dialog
-            title="新建流程"
-            header-position="left"
-            ext-cls="create-flow-dialog"
-            :value="isCreateDialogShow"
-            :width="480"
-            :mask-close="false"
-            :auto-close="false"
-            @cancel="handleCreateDialogClose">
-            <bk-form
-                ref="createForm"
-                form-type="vertical"
-                :model="newFlowData"
-                :rules="flowDataRule">
-                <bk-form-item label="流程名称" property="flowName" :required="true">
-                    <bk-input v-model="newFlowData.flowName" />
-                </bk-form-item>
-                <bk-form-item label="流程描述" property="desc">
-                    <bk-input v-model="newFlowData.summary" type="textarea" :row="4" />
-                </bk-form-item>
-            </bk-form>
-            <div class="dialog-footer" slot="footer">
-                <bk-button theme="primary" :loading="createPending" @click="handleCreateConfirm">确认</bk-button>
-                <bk-button :disabled="createPending" @click="handleCreateDialogClose">取消</bk-button>
-            </div>
-        </bk-dialog>
+        <create-flow-dialog :show.sync="isCreateDialogShow"></create-flow-dialog>
     </div>
 </template>
 <script>
     import dayjs from 'dayjs'
     import { messageError } from '@/common/bkmagic'
-    import { INIT_FLOW_STRUCTURE } from 'shared/no-code'
+    import CreateFlowDialog from './create-flow-dialog.vue'
 
     export default {
         name: 'flowList',
@@ -111,6 +92,9 @@
             timeFormatter (val) {
                 return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : '--'
             }
+        },
+        components: {
+            CreateFlowDialog
         },
         data () {
             return {
@@ -121,22 +105,10 @@
                     count: 0,
                     limit: 10
                 },
-                newFlowData: {
-                    flowName: '',
-                    summary: ''
-                },
-                flowDataRule: {
-                    flowName: [{
-                        required: true,
-                        trigger: 'blur',
-                        message: '必填项'
-                    }]
-                },
                 keyword: '',
                 archiveId: null,
                 archivePopover: null,
-                isCreateDialogShow: false,
-                createPending: false
+                isCreateDialogShow: false
             }
         },
         computed: {
@@ -168,37 +140,6 @@
                 } finally {
                     this.listLoading = false
                 }
-            },
-            handleCreateConfirm () {
-                this.$refs.createForm.validate().then(async () => {
-                    this.createPending = true
-                    try {
-                        const { flowName, summary } = this.newFlowData
-                        const params = {
-                            flowName,
-                            summary,
-                            projectId: this.projectId,
-                            meta: Object.assign({}, INIT_FLOW_STRUCTURE, { name: flowName })
-                        }
-                        const res = await this.$store.dispatch('nocode/flow/createFlow', params)
-                        this.handleCreateDialogClose()
-                        this.$router.push({
-                            name: 'flowConfig',
-                            params: {
-                                projectId: this.projectId,
-                                flowId: res.id
-                            }
-                        })
-                    } catch (e) {
-                        console.error(e)
-                    } finally {
-                        this.createPending = false
-                    }
-                })
-            },
-            handleCreateDialogClose () {
-                this.isCreateDialogShow = false
-                this.newFlowData = { flowName: '', summary: '' }
             },
             async handleArchiveConfirm () {
                 try {
@@ -292,12 +233,5 @@
     }
     .link-btn {
         color: #3a84ff;
-    }
-</style>
-<style lang="postcss">
-    .create-flow-dialog {
-        .bk-dialog-header {
-            padding-bottom: 10px;
-        }
     }
 </style>
