@@ -1,6 +1,6 @@
 <template>
     <menu-item
-        v-bkloading="{ isLoading }"
+        v-bkloading="{ isLoading: isLoading,size: 'mini' }"
         :item="item"
         :class="{
             disabled: isLocked
@@ -78,15 +78,22 @@
                 } else {
                     Object.assign(formData, { id: this.pageDetail.formId })
                 }
-                const res = await this.$store.dispatch(`form/${action}`, formData)
-                if (res && res.id) {
-                    this.savePreviewImg()
-                    this.$bkMessage({
-                        theme: 'success',
-                        message: '保存成功，数据表结构变更成功'
-                    })
-                    action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
-                    bus.$emit('saveSuccess')
+                try {
+                    this.isLoading = true
+                    const res = await this.$store.dispatch(`form/${action}`, formData)
+                    if (res && res.id) {
+                        this.savePreviewImg()
+                        this.$bkMessage({
+                            theme: 'success',
+                            message: '保存成功，数据表结构变更成功'
+                        })
+                        action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
+                        bus.$emit('saveSuccess')
+                    }
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.isLoading = false
                 }
             },
             // 保存表单管理页
@@ -98,6 +105,7 @@
                     content
                 }
                 try {
+                    this.isLoading = true
                     const res = await this.$store.dispatch('page/update', {
                         data: {
                             pageData,
@@ -114,6 +122,8 @@
                     }
                 } catch (e) {
                     console.error(e)
+                } finally {
+                    this.isLoading = false
                 }
             },
             // 校验表单配置

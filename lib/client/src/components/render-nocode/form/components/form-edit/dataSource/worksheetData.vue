@@ -156,17 +156,10 @@
                 relationListLoading: false,
                 errorTips: false,
                 sourceRules: {
-                    appId: [
-                        {
-                            required: true,
-                            message: '应用为必填项',
-                            trigger: 'blur'
-                        }
-                    ],
                     formId: [
                         {
                             required: true,
-                            message: '表单为必填项',
+                            message: '数据表为必填项',
                             trigger: 'blur'
                         }
                     ],
@@ -230,14 +223,6 @@
             },
             async getFieldList (id) {
                 this.fieldList = JSON.parse(this.formList.find(item => item.id === id).content)
-                // try {
-                //     this.fieldListLoading = true
-                //     const res = await this.$store.dispatch('nocode/formSetting/getFormFields', this.localVal.target.worksheet_id)
-                //     this.fieldList = res.data
-                //     this.fieldListLoading = false
-                // } catch (e) {
-                //     console.error(e)
-                // }
             },
             async getRelationList () {
                 try {
