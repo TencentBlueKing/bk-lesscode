@@ -28,7 +28,7 @@
                     <span v-if="hasCreatedPage" class="create-page-icon">
                         <i class="bk-drag-icon bk-drag-page" v-bk-tooltips.top="'已生成流程提单页'"></i>
                     </span>
-                    <span v-if="node.nodeInfo && node.nodeInfo.extras.isSystemAdd" class="system-add-icon">系统</span>
+                    <span v-if="node.nodeInfo && node.nodeInfo.extras.is_system_add" class="system-add-icon">系统</span>
                 </div>
                 <p class="desc">
                     <span v-if="isDraft" style="color: #c4c6cc;">

@@ -8,7 +8,7 @@
             <div class="condition-content">
                 <div v-for="(expression, i) in group.expressions" class="expression-item" :key="i">
                     <bk-select
-                        style="width: 172px; margin-right: 8px; background: #fff"
+                        style="width: 200px; margin-right: 8px; background: #fff"
                         :clearable="false"
                         :loading="conditionListLoading"
                         :value="expression.key"
@@ -17,11 +17,11 @@
                     </bk-select>
                     <bk-select
                         v-model="expression.condition"
-                        style="width: 128px; margin-right: 8px; background: #fff"
+                        style="width: 100px; margin-right: 8px; background: #fff"
                         :clearable="false">
                         <bk-option v-for="item in relationList" :key="item.key" :id="item.key" :name="item.name"></bk-option>
                     </bk-select>
-                    <div class="value-wrapper" style="width: 178px; margin-right: 8px; position: relative">
+                    <div class="value-wrapper" style="width: 240px; margin-right: 8px; position: relative">
                         <bk-input
                             v-model="expression.value"
                             v-bk-tooltips="{

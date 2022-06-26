@@ -103,6 +103,7 @@
 <script>
     import dayjs from 'dayjs'
     import { messageError } from '@/common/bkmagic'
+    import { INIT_FLOW_STRUCTURE } from 'shared/no-code'
 
     export default {
         name: 'flowList',
@@ -176,7 +177,8 @@
                         const params = {
                             flowName,
                             summary,
-                            projectId: this.projectId
+                            projectId: this.projectId,
+                            meta: Object.assign({}, INIT_FLOW_STRUCTURE, { name: flowName })
                         }
                         await this.$store.dispatch('nocode/flow/createFlow', params)
                         this.handleCreateDialogClose()

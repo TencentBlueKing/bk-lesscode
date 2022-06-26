@@ -65,6 +65,7 @@
 </script>
 <style lang="postcss" scoped>
 .bk-form-checkbox {
-  margin-right: 24px;
+    margin-right: 24px;
+    margin-bottom: 4px;
 }
 </style>
