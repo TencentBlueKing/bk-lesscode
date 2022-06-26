@@ -180,9 +180,15 @@
                             projectId: this.projectId,
                             meta: Object.assign({}, INIT_FLOW_STRUCTURE, { name: flowName })
                         }
-                        await this.$store.dispatch('nocode/flow/createFlow', params)
+                        const res = await this.$store.dispatch('nocode/flow/createFlow', params)
                         this.handleCreateDialogClose()
-                        this.getFlowList()
+                        this.$router.push({
+                            name: 'flowConfig',
+                            params: {
+                                projectId: this.projectId,
+                                flowId: res.id
+                            }
+                        })
                     } catch (e) {
                         console.error(e)
                     } finally {
