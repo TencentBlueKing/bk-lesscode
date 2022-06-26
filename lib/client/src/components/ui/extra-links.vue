@@ -4,7 +4,12 @@
             <i class="dropdown-trigger-btn bk-icon icon-question-circle-shape" />
         </div>
         <div v-if="createFormPage">
-            <bk-button :text="true" title="primary" @click="handleCreateForm">
+            <bk-button
+                style="padding: 0;"
+                size="small"
+                title="primary"
+                :text="true"
+                @click="handleCreateForm">
                 生成表单数据管理页
             </bk-button>
         </div>
