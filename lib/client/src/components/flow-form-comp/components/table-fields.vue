@@ -6,7 +6,7 @@
             header-row-class-name="custom-table-header"
             :pagination="pagination"
             :data="tableData"
-            :outer-border="!tableData.length > 0"
+            :outer-border="false"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
             <bk-table-column
@@ -144,7 +144,7 @@
             tableConfig (val) {
                 this.cols = val.slice()
             },
-            filtersData () {
+            filtersData (val) {
                 this.getTableData()
             }
         },

@@ -8,12 +8,22 @@
         <div v-else-if="field.type === 'IMAGE'">
             <img v-for="(item, index) in value[field.key]" :src="item" :key="index">
         </div>
-        <span v-else>{{ value[field.key] }}</span>
+        <span v-else>{{ value[field.key]|formatTime(this) }}</span>
     </div>
 </template>
 <script>
+    import dayjs from 'dayjs'
+
     export default {
         name: 'tableCellValue',
+        filters: {
+            formatTime (data, that) {
+                if (that.field.type === 'DATETIME') {
+                    return dayjs(data).format('YYYY-MM-DD HH:mm:ss')
+                }
+                return data
+            }
+        },
         props: {
             field: {
                 type: Object,

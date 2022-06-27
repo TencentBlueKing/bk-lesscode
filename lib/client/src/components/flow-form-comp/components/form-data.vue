@@ -5,12 +5,19 @@
                 <i class="bk-icon icon-funnel filter-switch-icon"></i>
             </div>
             <filters
-                v-if="filters.length > 0 && showFilter"
+                v-show="filters.length > 0 && showFilter"
                 :filters="filters"
                 :fields="fields"
                 :system-fields="systemFields"
                 :value.sync="filtersData">
             </filters>
+            <search-tag
+                v-if="!showFilter"
+                :filters="filters"
+                :fields="fields"
+                :system-fields="systemFields"
+                :value.sync="filtersData">
+            </search-tag>
             <table-fields
                 v-if="!formDetailLoading"
                 style="margin-top: 16px"
@@ -30,12 +37,13 @@
     import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
     import Filters from './filters.vue'
     import TableFields from './table-fields.vue'
-
+    import SearchTag from './search-tag.vue'
     export default {
         name: 'formData',
         components: {
             Filters,
-            TableFields
+            TableFields,
+            SearchTag
         },
         props: {
             formIds: Number,
@@ -60,6 +68,11 @@
                 showFilter: true,
                 tableName: '',
                 filtersData: {}
+            }
+        },
+        watch: {
+            filtersData () {
+                this.showFilter = false
             }
         },
         async created () {

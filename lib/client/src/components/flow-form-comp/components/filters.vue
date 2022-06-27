@@ -37,6 +37,8 @@
     </div>
 </template>
 <script>
+    import { deepClone } from '../form/util'
+
     export default {
         name: 'Filters',
         props: {
@@ -62,6 +64,13 @@
             return {
                 filterFields,
                 localVal
+            }
+        },
+        watch: {
+            value: {
+                handler (val) {
+                    this.localVal = deepClone(val)
+                }
             }
         },
         methods: {
