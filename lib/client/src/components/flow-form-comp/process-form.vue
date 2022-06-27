@@ -38,6 +38,7 @@
     import cloneDeep from 'lodash.clonedeep'
     import FormFields from './form/index.vue'
     import { FIELDS_TYPES } from './form/constants/forms.js'
+    import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'ProcessForm',
@@ -89,9 +90,9 @@
                 return value
             },
             validate () {
-                // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
-                let formValNumRangeValid = true
+                let valid = true
                 this.fields.some((field) => {
+                    // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
                     const fieldVal = this.value[field.key]
                     if ('num_range' in field) {
                         let msg = ''
@@ -102,7 +103,7 @@
                             msg = `${field.name}表单的值数目不能大于${field.num_range[1]}`
                         }
                         if (msg) {
-                            formValNumRangeValid = false
+                            valid = false
                             this.$bkMessage({
                                 theme: 'error',
                                 message: msg
@@ -110,8 +111,16 @@
                             return true
                         }
                     }
+                    if (field.validate_type === 'REQUIRE' && isValEmpty(fieldVal)) {
+                        valid = false
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: `字段【${field.name}】为必填项`
+                        })
+                        return true
+                    }
                 })
-                return formValNumRangeValid
+                return valid
             },
             async handleSubmit () {
                 if (!this.validate()) {
