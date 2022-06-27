@@ -198,7 +198,6 @@
                             <bk-input
                                 class="up-load-input"
                                 type="number"
-                                style="width: 80px"
                                 :max="99"
                                 :min="1"
                                 :disabled="disabled"
@@ -221,7 +220,7 @@
                                 至少选择
                             </bk-checkbox>
                             <bk-input
-                                class="up-load-input"
+                                class="up-load-input check-option"
                                 type="number"
                                 :max="99"
                                 :min="1"
@@ -243,7 +242,6 @@
                             <bk-input
                                 class="up-load-input"
                                 type="number"
-                                style="width: 80px"
                                 :max="99"
                                 :min="1"
                                 :disabled="disabled"
@@ -871,6 +869,12 @@
   color: #c4c6cc !important;
   &:hover{
     color: #979ba5  !important;
+  }
+}
+.check-option{
+  >>> .bk-input-number .input-number-option{
+    top: 2px;
+    bottom: 2px;
   }
 }
 
