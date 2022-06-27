@@ -43,6 +43,11 @@
                     return
                 }
 
+                if (this.pageDetail.nocodeType === 'FORM' && !this.pageDetail.formId) {
+                    this.messageError('新创建的表单类型页面请先保存后再预览')
+                    return
+                }
+
                 const fullPath = getRouteFullPath(pageRoute)
 
                 if (this.platform === 'MOBILE') {

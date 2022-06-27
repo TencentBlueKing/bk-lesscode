@@ -59,8 +59,7 @@
             }
         },
         computed: {
-            ...mapGetters(['user']),
-            ...mapGetters('page', ['pageDetail', 'platform']),
+            ...mapGetters('page', ['pageDetail']),
             ...mapGetters('layout', ['pageLayout']),
             ...mapGetters('projectVersion', {
                 versionId: 'currentVersionId',

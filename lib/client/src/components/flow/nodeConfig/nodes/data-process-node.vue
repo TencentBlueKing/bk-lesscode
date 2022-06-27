@@ -464,7 +464,7 @@
                         projectId: this.projectId,
                         versionId: this.versionId
                     }
-                    this.formList = await this.$store.dispatch('nocode/flow/getFormList', params)
+                    this.formList = await this.$store.dispatch('nocode/form/getFormList', params)
                 } catch (e) {
                     console.error(e)
                 } finally {

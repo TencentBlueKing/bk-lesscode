@@ -85,7 +85,10 @@
                         theme: 'success',
                         message: '保存成功，数据表结构变更成功'
                     })
-                    action === 'createForm' && this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
+                    if (action === 'createForm') {
+                        this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
+                        this.$store.dispatch('nocode/form/getFormList', { projectId: this.projectId, versionId: this.versionId })
+                    }
                     bus.$emit('saveSuccess')
                 }
             },
