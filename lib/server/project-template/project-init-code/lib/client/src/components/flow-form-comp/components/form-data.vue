@@ -25,7 +25,7 @@
     </div>
 </template>
 <script>
-    import { formMap } from 'shared/form'
+    import { formMap } from '../../../../../shared/form'
     import { FORM_SYS_FIELD } from '../common/field.js'
     import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
     import Filters from './filters.vue'
