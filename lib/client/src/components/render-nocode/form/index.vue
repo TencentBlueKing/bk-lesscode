@@ -73,7 +73,8 @@
                 return {
                     formId,
                     pageCode: pageCode + 'manage',
-                    pageName: pageName + '_数据管理页'
+                    pageName: pageName + '_数据管理页',
+                    content: JSON.stringify({ filters: [], tableConfig: ['createUser', 'createTime'] })
                 }
             }
         },
@@ -105,12 +106,14 @@
                 this.fieldsList = this.fieldsList.map(item => {
                     return { ...item, disabled: true }
                 })
+                this.crtField = {}
+                this.crtIndex = -1
             })
         },
         beforeDestroy () {
             bus.$off('resetFieldList')
-            bus.$off('openCreatPageFrom')
             bus.$off('saveSuccess')
+            bus.$off('openCreatPageFrom')
         },
         methods: {
             // 添加字段

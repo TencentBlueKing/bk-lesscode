@@ -20,6 +20,7 @@
                 :filters="filters"
                 :fields="formContents[activeNode]"
                 :system-fields="systemFields"
+                :table-config="tableConfig"
                 @update="handleUpdate('filters', $event)">
             </filters>
             <table-fields

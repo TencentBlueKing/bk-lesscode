@@ -8,7 +8,7 @@
                 :rules="rules"
                 :model="dataProcessConfig">
                 <bk-form-item label="节点名称" property="name" :required="true">
-                    <bk-input v-model="dataProcessConfig.name"></bk-input>
+                    <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="处理人" :required="true">
                     <processors
@@ -262,7 +262,7 @@
                                                 v-for="item in group.fields"
                                                 :key="item.id"
                                                 :id="item.id"
-                                                :name="`${item.name}(${item.key})`">
+                                                :name="`${item.name}(${item.id})`">
                                             </bk-option>
                                         </bk-option-group>
                                     </bk-select>
@@ -441,7 +441,7 @@
             await this.getFormList()
             if (typeof this.nodeData.extras.dataManager?.worksheet_id === 'number') {
                 this.getFieldList(this.nodeData.extras.dataManager.worksheet_id)
-                this.dataProcessConfig = { name: this.nodeData.name, ...cloneDeep(this.nodeData.extras.dataManager) }
+                this.dataProcessConfig = cloneDeep(this.nodeData.extras.dataManager)
             } else {
                 const dataManager = {
                     conditions: {
@@ -450,8 +450,7 @@
                     },
                     mapping: [],
                     action: '',
-                    worksheet_id: '',
-                    name: this.nodeData.name
+                    worksheet_id: ''
                 }
                 this.dataProcessConfig = dataManager
             }
@@ -560,6 +559,9 @@
                         this.fieldList.splice(idsFieldIdx, 1)
                     }
                 }
+            },
+            handleNameChange (val) {
+                this.$store.commit('nocode/nodeConfig/setNodeName', val)
             },
             handleProcessorChange (val) {
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)

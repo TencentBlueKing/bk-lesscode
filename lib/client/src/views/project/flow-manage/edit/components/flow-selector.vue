@@ -23,12 +23,25 @@
                 :id="flow.id"
                 :name="flow.flowName">
             </bk-option>
+            <div slot="extension" class="create-flow-extension">
+                <div
+                    class="create-btn"
+                    @click="isCreateDialogShow = true">
+                    <i class="bk-icon icon-plus-circle" /> 新建流程
+                </div>
+            </div>
         </bk-select>
+        <create-flow-dialog :show.sync="isCreateDialogShow"></create-flow-dialog>
     </div>
 </template>
 <script>
+    import CreateFlowDialog from '../../create-flow-dialog.vue'
+
     export default {
         name: 'FlowSelector',
+        components: {
+            CreateFlowDialog
+        },
         props: {
             list: {
                 type: Array,
@@ -43,6 +56,11 @@
                 default () {
                     return {}
                 }
+            }
+        },
+        data () {
+            return {
+                isCreateDialogShow: false
             }
         },
         methods: {
@@ -110,5 +128,13 @@
         border-radius: 2px;
         font-size: 12px;
         color: #ea3536;
+    }
+    .create-flow-extension {
+        .create-btn {
+            cursor: pointer;
+            &:hover {
+                color: #3a84ff;
+            }
+        }
     }
 </style>

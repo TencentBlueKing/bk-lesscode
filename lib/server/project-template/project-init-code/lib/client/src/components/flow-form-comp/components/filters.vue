@@ -7,19 +7,22 @@
                 <bk-form-item :label="item.name">
                     <bk-select
                         v-if="isSelectComp(item.type)"
-                        v-model="filterData[item.key]"
+                        v-model="localVal[item.key]"
                         style="background: #ffffff"
                         :placeholder="`请选择${item.name}`">
                     </bk-select>
                     <bk-date-picker
                         v-else-if="['DATE', 'DATETIME'].includes(item.type)"
-                        v-model="filterData[item.key]"
+                        :value="localVal[item.key]"
                         style="width: 100%;"
-                        :placeholder="`请输入${item.name}`">
+                        :type="item.type === 'DATE' ? 'date' : 'datetime'"
+                        :format="item.type === 'DATE' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss'"
+                        :placeholder="`请输入${item.name}`"
+                        @change="localVal[item.key] = $event">
                     </bk-date-picker>
                     <bk-input
                         v-else
-                        v-model="filterData[item.key]"
+                        v-model="localVal[item.key]"
                         style="width: 100%;"
                         :placeholder="`请输入${item.name}`"
                         :type="item.type === 'INT' ? 'number' : 'text'"
@@ -28,7 +31,7 @@
             </div>
         </bk-form>
         <div class="search-area">
-            <bk-button style="margin-right: 4px;" theme="primary">查询</bk-button>
+            <bk-button style="margin-right: 4px;" theme="primary" @click="update">查询</bk-button>
             <bk-button @click="handleReset">重置</bk-button>
         </div>
     </div>
@@ -48,47 +51,46 @@
             filters: {
                 type: Array,
                 default: () => []
+            },
+            value: {
+                type: Object,
+                default: () => ({})
             }
         },
         data () {
+            const { filterFields, localVal } = this.getInitData()
             return {
-                filterData: {}
+                filterFields,
+                localVal
             }
         },
-        computed: {
-            filterFields () {
-                const list = []
+        methods: {
+            getInitData () {
+                const filterFields = []
+                const localVal = {}
                 this.filters.forEach(key => {
                     let field = this.systemFields.find(item => item.key === key)
                     if (!field) {
                         field = this.fields.find(item => item.key === key)
                     }
                     if (field) {
-                        list.push(field)
+                        filterFields.push(field)
+                        localVal[field.key] = ''
                     }
                 })
-                return list
-            }
-        },
-        watch: {
-            filterFields (val) {
-                const filterData = {}
-                val.forEach(key => {
-                    filterData[key] = ''
-                })
-                this.filterData = filterData
-            }
-        },
-        methods: {
+                return { filterFields, localVal }
+            },
             isSelectComp (type) {
                 return ['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(type)
             },
             handleReset () {
-                const filterData = {}
-                Object.keys(this.filterData).forEach(key => {
-                    filterData[key] = ''
+                Object.keys(this.localVal).forEach(key => {
+                    this.localVal[key] = ''
                 })
-                this.filterData = filterData
+                this.update()
+            },
+            update () {
+                this.$emit('update:value', { ...this.localVal })
             }
         }
     }

@@ -1,5 +1,5 @@
 <template>
-    <draw-layout>
+    <draw-layout :hide-right-slot="navEmpty">
         <layout>
             <div class="data-manage-page-wrapper">
                 <form-data v-if="nocodeType === 'FORM_MANAGE'">
@@ -7,7 +7,7 @@
                 <flow-data v-else-if="nocodeType === 'FLOW_MANAGE'"></flow-data>
             </div>
         </layout>
-        <div class="data-manage-setting-wrapper" slot="right">
+        <div v-if="!navEmpty" class="data-manage-setting-wrapper" slot="right">
             <layout-setting :template-data="curTemplateData" />
         </div>
     </draw-layout>
@@ -35,7 +35,11 @@
             }
         },
         computed: {
-            ...mapGetters('drag', ['curTemplateData'])
+            ...mapGetters('layout', ['pageLayout']),
+            ...mapGetters('drag', ['curTemplateData']),
+            navEmpty () {
+                return this.pageLayout.layoutType === 'empty'
+            }
         },
         watch: {
             // template没有指定面板，则展示form属性面板
@@ -53,7 +57,7 @@
     .data-manage-page-wrapper {
         padding: 24px;
         height: 100%;
-        min-height: calc(100vh - 200px);
+        min-height: calc(100vh - 190px);
         background: #ffffff;
     }
     .data-manage-setting-wrapper{

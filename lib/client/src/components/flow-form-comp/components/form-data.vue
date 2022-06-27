@@ -1,27 +1,33 @@
 <template>
-    <div class="form-data-manage" v-bkloading="{ isLoading: formDetailLoading }">
-        <div class="operate-btns" @click="showFilter = !showFilter">
-            <i class="bk-icon icon-funnel filter-switch-icon"></i>
-        </div>
-        <filters
-            v-if="filters.length > 0 && showFilter"
-            :filters="filters"
-            :fields="fields"
-            :system-fields="systemFields"
-            @update="handleUpdate('filters', $event)">
-        </filters>
-        <table-fields
-            style="margin-top: 16px"
-            :table-config="tableConfig"
-            :fields="fields"
-            :system-fields="systemFields"
-            @update="handleUpdate('tableConfig', $event)">
-        </table-fields>
+    <div class="form-data-manage">
+        <template v-if="!formDetailLoading">
+            <div class="operate-btns" @click="showFilter = !showFilter">
+                <i class="bk-icon icon-funnel filter-switch-icon"></i>
+            </div>
+            <filters
+                v-if="filters.length > 0 && showFilter"
+                :filters="filters"
+                :fields="fields"
+                :system-fields="systemFields"
+                :value.sync="filtersData">
+            </filters>
+            <table-fields
+                v-if="!formDetailLoading"
+                style="margin-top: 16px"
+                :form-id="formIds"
+                :table-name="tableName"
+                :table-config="tableConfig"
+                :fields="fields"
+                :system-fields="systemFields"
+                :filters-data="filtersData">
+            </table-fields>
+        </template>
     </div>
 </template>
 <script>
-    import { messageError } from '@/common/bkmagic'
+    import { formMap } from 'shared/form'
     import { FORM_SYS_FIELD } from '../common/field.js'
+    import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
     import Filters from './filters.vue'
     import TableFields from './table-fields.vue'
 
@@ -33,6 +39,7 @@
         },
         props: {
             formIds: Number,
+            viewType: String,
             config: {
                 type: Object,
                 default: () => {
@@ -50,20 +57,30 @@
                 fields: [],
                 formDetailLoading: true,
                 systemFields: FORM_SYS_FIELD,
-                showFilter: true
+                showFilter: true,
+                tableName: '',
+                filtersData: {}
             }
         },
-        created () {
+        async created () {
             this.getFormDetail()
         },
         methods: {
             async getFormDetail () {
                 try {
                     this.formDetailLoading = true
-                    const formDetail = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds } })
-                    this.fields = JSON.parse(formDetail.data.content)
+                    let formDetail = {}
+                    if (this.viewType === 'preview') {
+                        const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds } })
+                        formDetail = res.data
+                    } else {
+                        formDetail = formMap[this.formIds]
+                    }
+                    const { content = '[]', tableName } = formDetail
+                    this.fields = JSON.parse(content).filter(field => !NO_VIEWED_FIELD.includes(field.type))
+                    this.tableName = tableName
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.formDetailLoading = false
                 }

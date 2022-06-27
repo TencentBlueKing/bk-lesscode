@@ -1,7 +1,7 @@
 <template>
     <div class="form-data-manage">
-        <div class="operate-btns" @click="isFiltersShow = !isFiltersShow">
-            <i class="bk-icon icon-funnel filter-switch-icon"></i>
+        <div class="operate-btns">
+            <i class="bk-icon icon-funnel filter-switch-icon" @click="isFiltersShow = !isFiltersShow"></i>
         </div>
         <filters
             v-show="isFiltersShow"
@@ -24,6 +24,7 @@
     import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import { FORM_SYS_FIELD } from '@/components/flow-form-comp/common/field.js'
+    import { NO_VIEWED_FIELD } from '@/components/flow-form-comp/form/constants/forms.js'
     import Filters from './components/filters.vue'
     import TableFields from './components/table-fields.vue'
     export default {
@@ -57,6 +58,7 @@
                 this.tableConfig = tableConfig
             }
             this.getFormDetail()
+            this.$store.commit('nocode/formSetting/setTableFields', { filters: this.filters, tableConfig: this.tableConfig })
         },
         beforeDestroy () {
             this.$store.commit('nocode/formSetting/setTableFields', {})
@@ -66,7 +68,7 @@
                 try {
                     this.formDetailLoading = true
                     this.formDetail = await this.$store.dispatch('nocode/form/formDetail', { formId: this.pageDetail.formId })
-                    this.fields = JSON.parse(this.formDetail.content)
+                    this.fields = JSON.parse(this.formDetail.content).filter(field => !NO_VIEWED_FIELD.includes(field.type))
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
@@ -79,6 +81,7 @@
                     this.$store.commit('nocode/formSetting/setTableFields', { filters: val, tableConfig: this.tableConfig })
                 } else {
                     this.tableConfig = val
+                    this.filters = this.filters.filter(item => this.tableConfig.includes(item))
                     this.$store.commit('nocode/formSetting/setTableFields', { filters: this.filters, tableConfig: val })
                 }
             }
@@ -94,9 +97,6 @@
             flex-direction: row-reverse;
             margin-bottom: 16px;
             height: 32px;
-          &:hover{
-            cursor: pointer;
-          }
         }
         .filter-switch-icon {
             height: 32px;
@@ -107,6 +107,10 @@
             border: 1px solid #c4c6cc;
             border-radius: 2px;
             background: #ffffff;
+            cursor: pointer;
+            &:hover {
+                color: #3a84ff;
+            }
         }
     }
     .filters-leave-active,

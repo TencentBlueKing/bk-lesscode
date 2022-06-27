@@ -1,6 +1,6 @@
 <template>
     <div class="process-form-comp">
-        <div v-show="!showSuccess" style="height: 100%">
+        <div v-show="!showSuccess">
             <template v-if="fields.length > 0">
                 <form-fields
                     style="width: 50%"
@@ -123,10 +123,8 @@
                 try {
                     this.submitPending = true
                     const data = this.getFieldsData()
-                    const res = await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
-                    if (res.result) {
-                        this.showSuccess = true
-                    }
+                    await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
+                    this.showSuccess = true
                 } catch (e) {
                     messageError(e.messsage || e)
                 } finally {

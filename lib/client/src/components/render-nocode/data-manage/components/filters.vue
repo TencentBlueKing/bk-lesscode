@@ -42,6 +42,11 @@
                     </li>
                 </ul>
             </bk-popover>
+            <p
+                v-if="filterFields.length === 0 && canSelectFields.length === 0 "
+                style="font-size: 12px;">
+                请先在表格中添加需要展示的字段
+            </p>
         </bk-form>
     </div>
 </template>
