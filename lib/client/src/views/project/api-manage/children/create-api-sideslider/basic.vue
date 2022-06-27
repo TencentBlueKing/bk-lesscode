@@ -1,6 +1,7 @@
 <template>
     <bk-form
         ref="formRef"
+        form-type="vertical"
         :label-width="100"
         :model="formData"
     >
