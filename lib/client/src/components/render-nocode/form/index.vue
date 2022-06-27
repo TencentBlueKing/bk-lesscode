@@ -73,7 +73,8 @@
                 return {
                     formId,
                     pageCode: pageCode + 'manage',
-                    pageName: pageName + '_数据管理页'
+                    pageName: pageName + '_数据管理页',
+                    content: JSON.stringify({ filters: [], tableConfig: ['createUser', 'createTime'] })
                 }
             }
         },

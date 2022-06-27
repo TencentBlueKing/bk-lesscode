@@ -346,7 +346,7 @@
                         }
                         params.extras.webhook_info = {}
                         if (isSystemAdd) {
-                            params.extras.isSystemAdd = true
+                            params.extras.is_system_add = true
                         }
                     } else if (type === 'TASK') {
                         params.extras.node_type = 'TASK'

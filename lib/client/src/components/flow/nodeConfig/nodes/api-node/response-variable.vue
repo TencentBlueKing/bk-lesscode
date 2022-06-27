@@ -1,5 +1,5 @@
 <template>
-    <response :params="responseData" :render-slot="renderSlot"></response>
+    <response :params="responseData" :render-slot="renderSlot" @change="update"></response>
 </template>
 <script>
     import Response from '@/components/api/use-scheme/response.vue'
@@ -43,10 +43,14 @@
         },
         methods: {
             renderSlot (row) {
-                return VariableInputSlot.render(this.$createElement, row, this.handleUpdate)
+                return VariableInputSlot.render(this.$createElement, row, this.handleHookVariableUpdate)
             },
-            handleUpdate (row, key, val) {
+            handleHookVariableUpdate (row, key, val) {
                 this.$set(row, key, val)
+                this.update()
+            },
+            update (val) {
+                this.responseData = val
                 this.$emit('update', this.responseData)
             }
         }

@@ -106,7 +106,7 @@
                 return isMulti ? (isSequential ? 'orderCountersign' : 'randomCountersign') : 'orsign'
             },
             handleNameChange (val) {
-                this.$store.commit('nocode/nodeConfig/setNodeData', { ...this.nodeData, name: val })
+                this.$store.commit('nocode/nodeConfig/setNodeName', val)
             },
             handleProcessorChange (val) {
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)

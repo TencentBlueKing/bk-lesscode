@@ -3,8 +3,7 @@
         v-bk-clickoutside="closeShortcutPanel"
         :class="['process-node-item', { 'configured': !isDraft }]"
         @mousedown="onMousedown"
-        @contextmenu.prevent="handleContextMenuClick"
-        @click="handleNodeClick">
+        @contextmenu.prevent="handleContextMenuClick">
         <!-- 开始节点 -->
         <div v-if="node.type === 'START'" class="start-node"><div class="text">开始</div></div>
         <!-- 结束节点 -->
@@ -28,7 +27,7 @@
                     <span v-if="hasCreatedPage" class="create-page-icon">
                         <i class="bk-drag-icon bk-drag-page" v-bk-tooltips.top="'已生成流程提单页'"></i>
                     </span>
-                    <span v-if="node.nodeInfo && node.nodeInfo.extras.isSystemAdd" class="system-add-icon">系统</span>
+                    <span v-if="node.nodeInfo && node.nodeInfo.extras.is_system_add" class="system-add-icon">系统</span>
                 </div>
                 <p class="desc">
                     <span v-if="isDraft" style="color: #c4c6cc;">
@@ -43,6 +42,7 @@
                         </span>
                     </template>
                 </p>
+                <i class="bk-drag-icon bk-drag-edit node-edit-icon" @click.stop="handleNodeClick"></i>
             </div>
             <div class="action-desc-area" v-if="!single && !hideNodeGuide && node.nodeInfo && node.nodeInfo.is_builtin">
                 <p><span>单击：</span>快速配置节点</p>
@@ -244,11 +244,10 @@
   border-radius: 4px;
   box-shadow: 0 1px 3px 0 rgba(0,0,0,0.20);
   overflow: hidden;
-  cursor: pointer;
   &:hover {
     outline: 1px solid #3a84ff;
-    .node-name-area {
-      color: #3a84ff;
+    .node-edit-icon {
+      display: block;
     }
   }
   .node-icon-area {
@@ -301,6 +300,7 @@
   }
 }
 .node-name-area {
+    position: relative;
     width: 190px;
     padding: 6px 16px;
     height: 100%;
@@ -315,7 +315,7 @@
         height: 18px;
         line-height: 18px;
         .name {
-            max-width: calc(100% - 40px);
+            max-width: calc(100% - 50px);
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -337,7 +337,6 @@
             }
         }
         .system-add-icon {
-            margin-left: 4px;
             padding: 0 4px;
             line-height: 16px;
             font-size: 12px;
@@ -345,6 +344,7 @@
             background: #f0f1f5;
             border: 1px solid rgba(151, 155, 165, 0.3);
             border-radius: 2px;
+            transform: scale(0.83);
         }
   }
   .desc {
@@ -354,6 +354,18 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
+  }
+}
+.node-edit-icon {
+  display: none;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
+  cursor: pointer;
+  &:hover {
+    color: #3a84ff;
   }
 }
 .node-delete-icon {

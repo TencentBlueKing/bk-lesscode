@@ -176,9 +176,10 @@
                 this.handleProcessorChange({ type: '', processors: '' })
             }
             const { api_info: apiInfo } = this.nodeData.extras
-            if (apiInfo.code) {
+            this.formData.nodeName = this.nodeData.name
+            if (apiInfo.url) {
                 const { code, url, method, query, body, response } = apiInfo
-                this.formData = { nodeName: this.nodeData.name, code, url, method }
+                this.formData = { ...this.formData, code, url, method }
                 this.apiQuery = query
                 this.apiBody = body
                 this.apiResponse = response
@@ -218,7 +219,7 @@
                 }
             },
             handleNameChange (val) {
-                this.$store.commit('nocode/nodeConfig/setNodeData', { ...this.nodeData, name: val })
+                this.$store.commit('nocode/nodeConfig/setNodeName', val)
             },
             handleProcessorChange (val) {
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)
