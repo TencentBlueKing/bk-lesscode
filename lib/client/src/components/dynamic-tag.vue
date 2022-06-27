@@ -89,6 +89,9 @@
     .tag-view {
         /deep/ .bk-tag {
             margin: 2px 6px 2px 0;
+            background: #FAFBFD;
+            border: 1px solid #DCDEE5;
+            border-radius: 2px;
         }
         .new-tag-btn {
             color: #979ba5;
