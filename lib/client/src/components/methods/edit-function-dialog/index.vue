@@ -1,11 +1,14 @@
 <template>
     <transition name="fade">
         <article class="function-home" v-if="show">
-            <layout
+            <bk-resize-layout
                 class="function-main method-layout"
                 v-bkloading="{ isLoading }"
+                :border="false"
+                :collapsible="true"
+                :initial-divide="270"
             >
-                <section slot="left" class="func-left">
+                <section slot="aside" class="func-left">
                     <h3 class="left-title">
                         <div class="title-name">
                             <span>函数库</span>
@@ -72,23 +75,22 @@
                         </render-group>
                     </vue-draggable>
                 </section>
-
                 <edit-func-form
                     ref="functionForm"
+                    slot="main"
                     :func-data="chosenFunction"
                     :show-save-use="showSaveUse"
                     @save-use="handleSaveUse"
                     @success-save="refreshStatus"
                     @close="handleCloseDialog"
                 />
-            </layout>
+            </bk-resize-layout>
         </article>
     </transition>
 </template>
 
 <script>
     import { mapActions, mapGetters } from 'vuex'
-    import Layout from '@/components/ui/layout'
     import VersionTag from '@/components/ui/project-version-tag'
     import EditFuncForm from '@/components/methods/forms/edit-func-form'
     import RenderGroup from './children/group.vue'
@@ -96,7 +98,6 @@
 
     export default {
         components: {
-            Layout,
             EditFuncForm,
             VersionTag,
             RenderGroup,
