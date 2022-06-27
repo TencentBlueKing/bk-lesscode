@@ -2,7 +2,7 @@
     <div
         :class="{
             [$style['draw-layout']]: !isDataManagePage,
-            [$style['page-data-manage-layout']]: isDataManagePage,
+            [$style['page-data-manage-layout']]: isDataManagePage && !hideRightSlot,
             [$style['page-nocode-layout']]: isNocodeForm,
             [$style['is-left-collapsed']]: isLeftCollapse,
             [$style['is-right-collapsed']]: isRightCollapse
@@ -15,7 +15,7 @@
             :class="[$style['layout-center'],{ [$style['nocode-layout-center']]: isNocodeForm }]">
             <slot />
         </div>
-        <div :class="$style['layout-right']">
+        <div v-if="!hideRightSlot" :class="$style['layout-right']">
             <slot name="right" />
         </div>
         <div
@@ -29,6 +29,7 @@
             <i class="bk-drag-icon bk-drag-angle-left" />
         </div>
         <div
+            v-if="!hideRightSlot"
             :class="$style['collapsed-right-btn']"
             v-bk-tooltips.right="{
                 content: '查看组件配置',
@@ -45,7 +46,8 @@
     export default {
         name: '',
         props: {
-            pageType: String
+            pageType: String,
+            hideRightSlot: Boolean
         },
         data () {
             return {
