@@ -407,15 +407,14 @@
                 }
             },
             handlePreview (page) {
-                if (!page.content) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: '该页面为空页面，请先编辑页面',
-                        limit: 1
-                    })
-                    return
-                }
-
+                // if (!page.content) {
+                //     this.$bkMessage({
+                //         theme: 'error',
+                //         message: '该页面为空页面，请先编辑页面',
+                //         limit: 1
+                //     })
+                //     return
+                // }
                 const route = this.routeMap[page.id]
                 if (!route.id) {
                     this.$bkMessage({
