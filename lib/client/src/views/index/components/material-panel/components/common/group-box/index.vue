@@ -58,6 +58,10 @@
             dragOptions: {
                 type: Object,
                 default: () => ({})
+            },
+            folded: {
+                type: Boolean,
+                default: false
             }
         },
         data () {
@@ -67,7 +71,7 @@
                     pull: 'clone',
                     put: false
                 },
-                isFolded: false
+                isFolded: this.folded
             }
         },
         computed: {
