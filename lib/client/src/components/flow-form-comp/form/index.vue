@@ -1,17 +1,21 @@
 <template>
     <div class="form-fields">
-        <field-form-item
-            v-for="field in fields"
-            :key="field.key"
-            :field="field"
-            :use-fixed-data-source="useFixedDataSource"
-            :value="localValue[field.key]"
-            @change="handleChange(field.key, $event)">
-        </field-form-item>
+        <template v-for="field in fields">
+            <field-form-item
+                v-if="field.show_type === 0"
+                :key="field.key"
+                :field="field"
+                :use-fixed-data-source="useFixedDataSource"
+                :value="localValue[field.key]"
+                @change="handleChange(field.key, $event)">
+            </field-form-item>
+        </template>
     </div>
 </template>
 <script>
+    import debounce from 'lodash.debounce'
     import { deepClone } from './util/index.js'
+    import conditionMixins from './condition-mixins'
     import FieldFormItem from './fieldItem.vue'
 
     export default {
@@ -19,6 +23,7 @@
         components: {
             FieldFormItem
         },
+        mixins: [conditionMixins],
         props: {
             fields: {
                 type: Array,
@@ -49,6 +54,10 @@
                 deep: true
             }
         },
+        created () {
+            this.handleParseCondition = debounce(this.parseFieldConditions, 300)
+            this.handleParseCondition()
+        },
         methods: {
             // 获取变量value，优先去props传入的value值，若没有则取默认值
             getFieldsValue () {
@@ -71,6 +80,7 @@
             handleChange (key, value) {
                 this.localValue[key] = value
                 this.$emit('change', key, deepClone(this.localValue))
+                this.handleParseCondition()
             }
         }
     }

@@ -33,8 +33,11 @@
             }
         },
         watch: {
-            value (val) {
-                this.val = val
+            value: {
+                handler (val) {
+                    this.val = val
+                },
+                immediate: true
             }
         },
         methods: {
@@ -46,6 +49,7 @@
 </script>
 <style lang="postcss" scoped>
 .bk-form-radio {
-  margin-right: 24px;
+    margin-right: 24px;
+    margin-bottom: 4px;
 }
 </style>

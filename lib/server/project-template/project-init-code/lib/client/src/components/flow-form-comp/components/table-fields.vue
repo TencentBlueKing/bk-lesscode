@@ -159,7 +159,7 @@
                     const params = {
                         pageSize: limit,
                         page: current,
-                        fields: this.cols,
+                        fields: [...this.cols, 'id'],
                         query: this.getQueryData()
                     }
                     const res = await this.$http.post(`/nocode/filterTableData/keys/formId/${this.formId}/tableName/${this.tableName}`, params)
