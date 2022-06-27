@@ -92,6 +92,7 @@
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import PreviewFormDialog from './preview-form-dialog.vue'
+    import PreviewMixin from '@/views/edit-nocode/preview-mixin'
 
     export default {
         name: 'NodeFormSetting',
@@ -100,6 +101,7 @@
             SelectFormDialog,
             PreviewFormDialog
         },
+        mixins: [PreviewMixin],
         props: {
             formContentLoading: Boolean
         },
