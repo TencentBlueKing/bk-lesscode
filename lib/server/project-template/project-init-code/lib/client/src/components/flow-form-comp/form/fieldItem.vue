@@ -133,8 +133,13 @@
   margin-top: 24px;
   width: 100%;
   &.half-row {
-    width: calc(50% - 16px);
-    margin-right: 16px;
+    width: calc(50% - 12px);
+    &:nth-child(even){
+      margin-left: 12px;
+    }
+    &:nth-child(odd){
+      margin-right: 12px;
+    }
   }
   >>> .bk-form-control {
     width: 100%;

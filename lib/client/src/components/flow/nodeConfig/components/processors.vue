@@ -22,7 +22,6 @@
                     v-model="formData.processors"
                     :specify-id-list="specifyRuleList"
                     :disabled="!editable"
-                    :host="memberSelectorHost"
                     @change="handleSelectProcessor">
                 </member-select>
                 <!-- <member-selector
@@ -69,7 +68,6 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import MemberSelect from '@/components/flow-form-comp/form/components/memberSelect.vue'
-    import { getHostUrl } from 'shared/util'
     // import memberSelector from '@/components/member-selector'
 
     export default {
@@ -110,7 +108,6 @@
         data () {
             const { type, processors } = this.value
             return {
-                memberSelectorHost: getHostUrl(),
                 roleGroupListLoading: false,
                 roleGroupList: [],
                 roleListLoading: false,

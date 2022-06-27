@@ -143,7 +143,6 @@
                 if (this.nodeData.can_deliver) {
                     validateForms.push(this.$refs.deliversForm.validate)
                 }
-                console.log(validateForms)
                 return Promise.all(validateForms.map(func => func.call(this))).then((result) => {
                     return result.every(item => item === true)
                 }).catch((e) => {

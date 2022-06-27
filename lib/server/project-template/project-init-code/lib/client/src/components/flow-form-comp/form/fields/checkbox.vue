@@ -47,10 +47,9 @@
                     return true
                 }
                 if (
-                    'num_range' in this.field
-                    && typeof this.field.num_range[1] === 'number'
-                    && Array.isArray(this.value)
-                    && this.value.length >= this.field.num_range[1]
+                    'imageRange' in this.field
+                    && this.field.imageRange.isMax
+                    && this.value.length >= this.field.imageRange.maxNum
                     && !this.value.includes(key)
                 ) {
                     return true
@@ -65,6 +64,7 @@
 </script>
 <style lang="postcss" scoped>
 .bk-form-checkbox {
-  margin-right: 24px;
+    margin-right: 24px;
+    margin-bottom: 4px;
 }
 </style>
