@@ -26,6 +26,7 @@
             event: 'change'
         },
         props: {
+            host: String,
             placeholder: {
                 type: String,
                 default: '请选择'
@@ -58,7 +59,7 @@
         },
         computed: {
             api () {
-                const host = window.BK_USER_MANAGE_HOST || location.origin
+                const host = this.host || location.origin
                 return `${host}/api/c/compapi/v2/usermanage/fs_list_users/`
             }
         },
