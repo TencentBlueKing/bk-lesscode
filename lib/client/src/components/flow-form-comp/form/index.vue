@@ -13,8 +13,7 @@
     </div>
 </template>
 <script>
-    import debounce from 'lodash.debounce'
-    import { deepClone } from './util/index.js'
+    import { debounce, isEqual, cloneDeep } from 'lodash'
     import conditionMixins from './condition-mixins'
     import FieldFormItem from './fieldItem.vue'
 
@@ -24,6 +23,10 @@
             FieldFormItem
         },
         mixins: [conditionMixins],
+        model: {
+            prop: 'value',
+            event: 'change'
+        },
         props: {
             fields: {
                 type: Array,
@@ -40,31 +43,31 @@
         },
         data () {
             return {
-                localValue: this.getFieldsValue(this.fields)
+                localValue: {}
             }
         },
         watch: {
             fields () {
-                this.localValue = this.getFieldsValue()
+                this.initFormValue()
             },
-            value: {
-                handler () {
-                    this.localValue = this.getFieldsValue()
-                },
-                deep: true
+            value (val, oldVal) {
+                if (!isEqual(val, oldVal)) {
+                    this.initFormValue()
+                }
             }
         },
         created () {
+            this.initFormValue()
             this.handleParseCondition = debounce(this.parseFieldConditions, 300)
             this.handleParseCondition()
         },
         methods: {
             // 获取变量value，优先去props传入的value值，若没有则取默认值
-            getFieldsValue () {
+            initFormValue () {
                 const fieldsValue = {}
                 this.fields.map((item) => {
                     if (item.key in this.value) {
-                        fieldsValue[item.key] = deepClone(this.value[item.key])
+                        fieldsValue[item.key] = cloneDeep(this.value[item.key])
                     } else if ('default' in item) {
                         if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE', 'FILE'].includes(item.type)) {
                             fieldsValue[item.key] = item.default ? item.default.split(',') : []
@@ -75,11 +78,12 @@
                         }
                     }
                 })
-                return fieldsValue
+                this.localValue = fieldsValue
+                this.$emit('change', this.localValue)
             },
             handleChange (key, value) {
                 this.localValue[key] = value
-                this.$emit('change', key, deepClone(this.localValue))
+                this.$emit('change', this.localValue)
                 this.handleParseCondition()
             }
         }

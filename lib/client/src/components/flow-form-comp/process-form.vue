@@ -5,8 +5,7 @@
                 <form-fields
                     style="width: 50%"
                     :fields="fields"
-                    :value="value"
-                    @change="(key,$event) => value = $event">
+                    v-model="value">
                 </form-fields>
                 <div class="operate-btns">
                     <bk-button
@@ -139,6 +138,7 @@
         padding: 24px;
         height: 100%;
         background: #ffffff;
+        overflow: auto;
     }
     .empty-form-fields {
         padding: 200px 0 140px;
