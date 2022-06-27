@@ -28,16 +28,14 @@
                     <p class="desc">数据已提交并保持，接下来你可以继续提单</p>
                 </div>
                 <div class="btn-action">
-                    <bk-button theme="primary" @click="showSuccess = false">继续提单</bk-button>
+                    <bk-button theme="primary" @click="handleContinue">继续提单</bk-button>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import cloneDeep from 'lodash.clonedeep'
     import FormFields from './form/index.vue'
-    import { FIELDS_TYPES } from './form/constants/forms.js'
     import { isValEmpty } from '@/common/util'
 
     export default {
@@ -74,20 +72,9 @@
                     return { choice, id, key, type, value }
                 })
             },
-            getDefaultValue () {
-                const value = {}
-                this.fields.forEach((item) => {
-                    if ('default' in item) {
-                        if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE'].includes(item.type)) {
-                            value[item.key] = item.default ? item.default.split(',') : []
-                        } else {
-                            value[item.key] = item.default
-                        }
-                    } else {
-                        value[item.key] = cloneDeep(FIELDS_TYPES.find(item => item.type === this.field.type).default)
-                    }
-                })
-                return value
+            handleContinue () {
+                this.value = {}
+                this.showSuccess = false
             },
             validate () {
                 let valid = true
