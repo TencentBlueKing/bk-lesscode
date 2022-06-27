@@ -28,7 +28,7 @@
             :app-id="appId"
             :source-type="sourceType"
             :field-type="fieldType"
-            :use-variable="false"
+            :use-variable="true"
             :value="localVal"
             :local-val-is-display-tag="localValIsDisplayTag"
             :api-detail="apiDetail"

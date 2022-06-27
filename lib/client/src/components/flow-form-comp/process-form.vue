@@ -38,7 +38,6 @@
     import cloneDeep from 'lodash.clonedeep'
     import FormFields from './form/index.vue'
     import { FIELDS_TYPES } from './form/constants/forms.js'
-    import { messageError } from '@/common/bkmagic'
 
     export default {
         name: 'ProcessForm',
@@ -125,7 +124,7 @@
                     await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     this.showSuccess = true
                 } catch (e) {
-                    messageError(e.messsage || e)
+                    console.error(e.messsage || e)
                 } finally {
                     this.submitPending = false
                 }

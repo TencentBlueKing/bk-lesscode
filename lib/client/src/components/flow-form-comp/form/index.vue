@@ -43,12 +43,14 @@
         },
         data () {
             return {
+                fieldsCopy: cloneDeep(this.fields),
                 localValue: {}
             }
         },
         watch: {
-            fields () {
+            fields (val) {
                 this.initFormValue()
+                this.fieldsCopy = cloneDeep(val)
             },
             value (val, oldVal) {
                 if (!isEqual(val, oldVal)) {
@@ -81,10 +83,31 @@
                 this.localValue = fieldsValue
                 this.$emit('change', this.localValue)
             },
+            // 解析是否有表单依赖变化的表单项，如果有则更新数据源配置，触发重新拉取数据逻辑
+            parseDataSourceRelation (key, val) {
+                this.fieldsCopy.forEach(field => {
+                    if (field.meta?.data_config) {
+                        let hasRelated = false
+                        const { conditions } = cloneDeep(field.meta.data_config)
+                        conditions.expressions.forEach(exp => {
+                            if (exp.type === 'field' && exp.value === key) {
+                                exp.value = val
+                                hasRelated = true
+                            }
+                        })
+                        if (hasRelated) {
+                            const dataConfig = { ...field.meta.data_config, conditions }
+                            const relatedField = this.fields.find(item => item.key === field.key)
+                            this.$set(relatedField.meta, 'data_config', dataConfig)
+                        }
+                    }
+                })
+            },
             handleChange (key, value) {
                 this.localValue[key] = value
                 this.$emit('change', this.localValue)
                 this.handleParseCondition()
+                this.parseDataSourceRelation(key, value)
             }
         }
     }
