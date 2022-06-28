@@ -10,13 +10,14 @@
                 </bk-tab-panel>
             </bk-tab>
             <div class="opereate-btn">
-                <bk-button>导出</bk-button>
-                <bk-button>下载流程附件</bk-button>
-                <i class="bk-icon icon-funnel filter-switch-icon"></i>
+                <!-- <bk-button>导出</bk-button>
+                <bk-button>下载流程附件</bk-button> -->
+                <i class="bk-icon icon-funnel filter-switch-icon" @click="showFilters = !showFilters"></i>
             </div>
         </div>
         <div class="node-data-content">
             <filters
+                v-if="showFilters"
                 :filters="filters"
                 :fields="formContents[activeNode]"
                 :system-fields="systemFields"
@@ -61,7 +62,8 @@
                 nodesConfig: {},
                 filters: [],
                 systemFields: FLOW_SYS_FIELD,
-                tableConfig: []
+                tableConfig: [],
+                showFilters: true
             }
         },
         computed: {
@@ -177,7 +179,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 230px;
+        max-width: 230px;
         .bk-button {
             cursor: inherit;
         }
@@ -190,6 +192,10 @@
             border: 1px solid #c4c6cc;
             border-radius: 2px;
             background: #ffffff;
+            cursor: pointer;
+            &:hover {
+                color: #3a84ff;
+            }
         }
     }
 </style>

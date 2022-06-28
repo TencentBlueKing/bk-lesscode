@@ -39,7 +39,8 @@
                 <node-data-manage
                     :form-ids="formIds"
                     :service-id="serviceId"
-                    :config="config">
+                    :config="config"
+                    :view-type="viewType">
                 </node-data-manage>
             </bk-tab-panel>
         </bk-tab>
@@ -59,7 +60,8 @@
             config: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            viewType: String
         },
         data () {
             return {
