@@ -23,15 +23,15 @@
             <filters
                 v-if="filters.length > 0 && showFilters"
                 :filters="filters"
-                :fields="formDataMap[activeNode]?.content || []"
+                :fields="fields"
                 :system-fields="systemFields">
             </filters>
             <table-fields
                 style="margin-top: 16px"
                 :table-config="tableConfig"
-                :fields="formDataMap[activeNode]?.content || []"
+                :fields="fields"
                 :form-id="formIds[activeNode]"
-                :table-name="formDataMap[activeNode]?.tableName || ''"
+                :table-name="tableName"
                 :system-fields="systemFields">
             </table-fields>
         </div>
@@ -77,7 +77,13 @@
             }
         },
         computed: {
-            ...mapGetters('page', ['pageDetail'])
+            ...mapGetters('page', ['pageDetail']),
+            fields () {
+                return this.formDataMap[this.activeNode]?.content || []
+            },
+            tableName () {
+                return this.formDataMap[this.activeNode]?.tableName || ''
+            }
         },
         async created () {
             await this.getInitData()
