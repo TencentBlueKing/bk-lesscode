@@ -92,6 +92,7 @@
                         conditions.expressions.forEach(exp => {
                             if (exp.type === 'field' && exp.value === key) {
                                 exp.value = val
+                                exp.type = 'const'
                                 hasRelated = true
                             }
                         })
