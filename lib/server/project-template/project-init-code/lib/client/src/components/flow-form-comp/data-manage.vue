@@ -48,5 +48,6 @@
         height: 100%;
         padding: 24px;
         background: #ffffff;
+        overflow: auto;
     }
 </style>
