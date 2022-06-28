@@ -52,11 +52,8 @@
                 return !(this.field.key in this.value)
                     || (['RICHTEXT', 'IMAGE', 'TABLE', 'FILE'].includes(this.field.type) && this.value[this.field.key].length === 0)
             },
-            isOpenTable () {
-                return this.field.type === 'TABLE'
-            },
-            isOpenRichText () {
-                return this.field.type === 'RICHTEXT'
+            isOpenView () {
+                return ['TABLE', 'RICHTEXT'].includes(this.field.type)
             },
             isShowName () {
                 return ['SELECT', 'RADIO', 'CHECKBOX', 'INPUTSELECT', 'MULTISELECT'].includes(this.field.type)
@@ -130,10 +127,6 @@
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
-}
-
->>> .bk-primary  .bk-button-small un1.bk-button-text {
-  padding: 0 !important;
 }
 </style>
 <style lang="postcss">
