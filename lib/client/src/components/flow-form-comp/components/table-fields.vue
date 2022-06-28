@@ -17,7 +17,7 @@
                 :width="getColumn(field)"
                 :prop="field.key">
                 <template slot-scope="{ row }">
-                    <table-cell-value :field="field" :value="row" @viewDetail="handleViewDetail"></table-cell-value>
+                    <table-cell-value :field="field" :value="row" @viewRichText="handleViewRichText"></table-cell-value>
                 </template>
             </bk-table-column>
             <bk-table-column label="操作" :width="80">
@@ -62,17 +62,30 @@
             :id.sync="cellDetailId"
             :fields="colFields">
         </table-cell-detail>
+        <bk-sideslider
+            title="富文本"
+            :width="640"
+            :is-show.sync="showRichText"
+            :quick-close="true"
+            :show-mask="true"
+            v-if="richText"
+            @before-close="richText = ''">
+            <div slot="content">
+                <viewer :initial-value="richText"></viewer>
+            </div>
+        </bk-sideslider>
     </div>
 </template>
 <script>
     import TableCellValue from './table-cell-value.vue'
     import TableCellDetail from './table-cell-detail.vue'
-
+    import { Viewer } from '@toast-ui/vue-editor'
     export default {
         name: 'TableFields',
         components: {
             TableCellValue,
-            TableCellDetail
+            TableCellDetail,
+            Viewer
         },
         props: {
             formId: Number,
@@ -107,7 +120,9 @@
                     count: 0,
                     limit: 10,
                     'show-limit': true
-                }
+                },
+                showRichText: false,
+                richText: ''
             }
         },
         computed: {
@@ -207,6 +222,13 @@
             },
             handleSelectCancel () {
                 console.log(this.$refs.fieldsTable)
+            },
+            handleViewRichText (val) {
+                this.richText = val
+                this.$nextTick(() => {
+                    this.showRichText = true
+                })
+                console.log(this.richText)
             }
         }
     }
