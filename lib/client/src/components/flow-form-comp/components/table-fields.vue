@@ -14,6 +14,7 @@
                 show-overflow-tooltip
                 :key="field.key"
                 :label="field.name"
+                :width="getColumn(field)"
                 :prop="field.key">
                 <template slot-scope="{ row }">
                     <table-cell-value :field="field" :value="row" @viewDetail="handleViewDetail"></table-cell-value>
@@ -179,6 +180,14 @@
                     }
                 })
                 return query
+            },
+            getColumn (field) {
+                const { type } = field
+                if (['MULTISELECT', 'CHECKBOX'].includes(type)) {
+                    return '170'
+                } else if (['SELECT', 'RADIO', 'INPUTSELECT'].includes(type)) {
+                    return '100'
+                }
             },
             handleViewDetail (id) {
                 this.cellDetailId = id
