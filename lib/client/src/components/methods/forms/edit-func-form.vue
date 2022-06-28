@@ -37,6 +37,12 @@
                     ref="detail"
                     form-type="vertical">
                 </form-detail>
+                <form-token
+                    :form.sync="form"
+                    :is-show="isShow"
+                    ref="token"
+                    form-type="vertical">
+                </form-token>
                 <form-summary
                     :form.sync="form"
                     ref="summary"
