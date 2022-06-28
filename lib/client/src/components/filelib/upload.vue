@@ -125,8 +125,8 @@
 
                         emit('success', res, rawFile)
                     },
-                    onError: (err: Error) => {
-                        props.onError(err, rawFile)
+                    onError: (err: Error, res: unknown) => {
+                        props.onError(err, rawFile, res)
                         delete requests.value[uid]
                     },
                     onComplete: () => {
