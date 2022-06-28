@@ -346,13 +346,13 @@
     import DataSourceDialog from './dataSourceDialog.vue'
     import ConfigDescCompValueDialog from './configDescCompValueDialog'
     import TableHeaderSetting from './tableHeaderSetting.vue'
-    import RichText from '../../../../flow-form-comp/form/fields/richText.vue'
+    import RichText from '@/components/flow-form-comp/form/fields/richText.vue'
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
         DATA_SOURCE_FIELD,
         FIELDS_SOURCE_TYPE
-    } from '../../constant/forms'
+    } from '@/components/flow-form-comp/form/constants/forms'
 
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
     import { mapGetters } from 'vuex'

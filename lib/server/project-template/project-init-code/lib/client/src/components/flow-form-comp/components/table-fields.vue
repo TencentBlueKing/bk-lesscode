@@ -19,7 +19,7 @@
                     <table-cell-value :field="field" :value="row" @viewDetail="handleViewDetail"></table-cell-value>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作" :width="80">
+            <bk-table-column label="操作" :max-width="80">
                 <template slot-scope="{ row }">
                     <bk-button theme="primary" :text="true" @click="handleViewDetail(row.id)">详情</bk-button>
                 </template>

@@ -25,7 +25,7 @@
     </div>
 </template>
 <script>
-    import { formMap } from '../../../../../shared/form'
+    import { formMap } from 'shared/form'
     import { FORM_SYS_FIELD } from '../common/field.js'
     import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
     import Filters from './filters.vue'
@@ -52,8 +52,8 @@
         },
         data () {
             return {
-                filters: this.config.filters.slice(0),
-                tableConfig: this.config.tableConfig.slice(0),
+                filters: this.config.filters?.slice(0) || [],
+                tableConfig: this.config.tableConfig?.slice(0) || [],
                 fields: [],
                 formDetailLoading: true,
                 systemFields: FORM_SYS_FIELD,
@@ -72,12 +72,16 @@
                     let formDetail = {}
                     if (this.viewType === 'preview') {
                         const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds } })
-                        formDetail = res.data
+                        const { tableName, content } = res.data
+                        formDetail = {
+                            tableName,
+                            content: JSON.parse(content)
+                        }
                     } else {
                         formDetail = formMap[this.formIds]
                     }
-                    const { content = '[]', tableName } = formDetail
-                    this.fields = JSON.parse(content).filter(field => !NO_VIEWED_FIELD.includes(field.type))
+                    const { content = [], tableName } = formDetail
+                    this.fields = content.filter(field => !NO_VIEWED_FIELD.includes(field.type))
                     this.tableName = tableName
                 } catch (e) {
                     console.error(e.message || e)

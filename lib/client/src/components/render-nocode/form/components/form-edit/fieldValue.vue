@@ -36,8 +36,8 @@
 </template>
 <script>
 // 表单值填写组件，根据传入的field.type来渲染对应类型的表单，用在数据处理节点以及连线的条件配置等地方。
-    import dataSourceMixins from '../mixins/dataSourceMixins'
-    import { DATA_SOURCE_FIELD } from '../../constant/forms'
+    import dataSourceMixins from '@/components/flow-form-comp/form/dataSourceMixins'
+    import { DATA_SOURCE_FIELD } from '@/components/flow-form-comp/form/constants/forms'
 
     export default {
         name: 'FieldValue',

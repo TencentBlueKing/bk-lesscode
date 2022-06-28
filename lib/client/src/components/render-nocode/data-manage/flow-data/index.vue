@@ -2,10 +2,10 @@
     <div class="flow-data">
         <bk-tab type="unborder-card" :active.sync="active">
             <bk-tab-panel label="流程总览" name="flow">
-                <div class="operate-btns">
+                <!-- <div class="operate-btns">
                     <bk-button theme="primary" style="width: 88px; cursor: text;">新建</bk-button>
                     <i class="bk-drag-icon bk-drag"></i>
-                </div>
+                </div> -->
                 <div class="filter-area">
                     <bk-form form-type="vertical" class="filter-form">
                         <bk-form-item label="创建人">

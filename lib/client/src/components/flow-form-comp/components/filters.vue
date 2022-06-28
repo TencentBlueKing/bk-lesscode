@@ -5,12 +5,21 @@
                 v-for="(item, index) in filterFields"
                 :key="index">
                 <bk-form-item :label="item.name">
-                    <bk-select
+                    <!-- <bk-select
                         v-if="isSelectComp(item.type)"
                         v-model="localVal[item.key]"
                         style="background: #ffffff"
                         :placeholder="`请选择${item.name}`">
-                    </bk-select>
+                    </bk-select> -->
+                    <field-item
+                        v-if="isSelectComp(item.type)"
+                        style="background: #ffffff"
+                        :placeholder="`请选择${item.name}`"
+                        :field="item"
+                        :show-label="false"
+                        :value="localVal[item.key]"
+                        @change="localVal[item.key] = $event">
+                    </field-item>
                     <bk-date-picker
                         v-else-if="['DATE', 'DATETIME'].includes(item.type)"
                         :value="localVal[item.key]"
@@ -37,10 +46,14 @@
     </div>
 </template>
 <script>
-    import { deepClone } from '../form/util'
+    import cloneDeep from 'lodash.clonedeep'
+    import FieldItem from '../form/fieldItem.vue'
 
     export default {
         name: 'Filters',
+        components: {
+            FieldItem
+        },
         props: {
             fields: {
                 type: Array,
@@ -83,8 +96,13 @@
                         field = this.fields.find(item => item.key === key)
                     }
                     if (field) {
-                        filterFields.push(field)
-                        localVal[field.key] = ''
+                        const fieldCopy = cloneDeep(field)
+                        // 选择值类型的字段统一用select组件来做筛选
+                        if (this.isSelectComp(fieldCopy.type)) {
+                            fieldCopy.type = 'SELECT'
+                        }
+                        filterFields.push(fieldCopy)
+                        localVal[fieldCopy.key] = ''
                     }
                 })
                 return { filterFields, localVal }

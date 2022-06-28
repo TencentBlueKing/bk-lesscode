@@ -32,7 +32,7 @@
         },
         methods: {
             change (val) {
-                this.$emit('change', val)
+                this.$emit('change', Number(val))
             }
         }
     }
