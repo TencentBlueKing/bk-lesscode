@@ -88,7 +88,7 @@
 
 <script>
     import draggable from 'vuedraggable'
-    import { FIELDS_TYPES } from '../../constant/forms'
+    import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
     import _ from 'lodash'
     const LAYOUT = ['DESC', 'DIVIDER']
     export default {
