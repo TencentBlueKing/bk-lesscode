@@ -23,7 +23,7 @@
             <filters
                 v-if="filters.length > 0 && showFilters"
                 :filters="filters"
-                :fields="formDataMap[activeNode].content"
+                :fields="formDataMap[activeNode]?.content || []"
                 :system-fields="systemFields">
             </filters>
             <table-fields
