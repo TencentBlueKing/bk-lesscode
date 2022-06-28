@@ -5,7 +5,7 @@
             class="ui-user-selector"
             :fixed-height="true"
             :api="api"
-            :disabled="disabled"
+            :disabled="disabled || hostLoading"
             :multiple="multiple"
             :placeholder="placeholder"
             @change="onChange">
@@ -53,16 +53,35 @@
         },
         data () {
             return {
+                host: '',
+                hostLoading: false,
                 users: []
             }
         },
         computed: {
             api () {
-                const host = window.BK_USER_MANAGE_HOST || location.origin
-                return `${host}/api/c/compapi/v2/usermanage/fs_list_users/`
+                return `${this.host}/api/c/compapi/v2/usermanage/fs_list_users/`
+            }
+        },
+        created () {
+            if (process.env.BK_COMPONENT_API_URL) {
+                this.host = process.env.BK_COMPONENT_API_URL
+            } else {
+                this.getUserManageUrl()
             }
         },
         methods: {
+            async getUserManageUrl () {
+                try {
+                    this.hostLoading = true
+                    const res = await this.$http.get('/nocode/userManageUrl')
+                    this.host = res.data
+                    this.hostLoading = false
+                } catch (e) {
+                    this.host = location.origin
+                    this.hostLoading = false
+                }
+            },
             onChange (value) {
                 this.$emit('change', value)
             }

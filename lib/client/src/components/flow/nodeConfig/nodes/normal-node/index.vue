@@ -36,9 +36,9 @@
     import { mapState, mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     
-    import FormSection from '../components/form-section.vue'
-    import Processors from '../components/processors.vue'
-    import NodeFormSetting from '../components/node-form-setting/index.vue'
+    import FormSection from '../../components/form-section.vue'
+    import Processors from '../../components/processors.vue'
+    import NodeFormSetting from './node-form-setting/index.vue'
 
     export default {
         name: 'NormalNode',
@@ -109,7 +109,7 @@
                 }
             },
             handleNameChange (val) {
-                this.$store.commit('nocode/nodeConfig/setNodeData', { ...this.nodeData, name: val })
+                this.$store.commit('nocode/nodeConfig/setNodeName', val)
             },
             handleProcessorChange (val) {
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)
@@ -117,7 +117,8 @@
             validate () {
                 return Promise.all([
                     this.$refs.basicForm.validate(),
-                    this.$refs.processorsForm.validate()
+                    this.$refs.processorsForm.validate(),
+                    this.$refs.formSetting.validate()
                 ]).then((result) => {
                     return result.every(item => item === true)
                 }).catch((e) => {

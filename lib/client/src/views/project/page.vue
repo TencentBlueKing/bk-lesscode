@@ -338,6 +338,7 @@
                         await this.$store.dispatch('page/delete', {
                             pageId: page.id
                         })
+                        // 更新流程表相关字段
                         if (page.flowId && ['FLOW', 'FLOW_MANAGE'].includes(page.nocodeType)) {
                             const params = {
                                 id: page.flowId,
@@ -407,14 +408,15 @@
                 }
             },
             handlePreview (page) {
-                // if (!page.content) {
-                //     this.$bkMessage({
-                //         theme: 'error',
-                //         message: '该页面为空页面，请先编辑页面',
-                //         limit: 1
-                //     })
-                //     return
-                // }
+                if (!page.nocodeType && !page.content) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: '该页面为空页面，请先编辑页面',
+                        limit: 1
+                    })
+                    return
+                }
+
                 const route = this.routeMap[page.id]
                 if (!route.id) {
                     this.$bkMessage({

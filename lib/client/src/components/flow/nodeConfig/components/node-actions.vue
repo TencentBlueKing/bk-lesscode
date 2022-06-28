@@ -180,8 +180,10 @@
                         await this.updateItsmNode()
                     }
 
+                    this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
+
                     this.$bkMessage({
-                        message: '节点保存成功，表单配置关联数据表变更成功',
+                        message: this.nodeData.type === 'NORMAL' ? '节点保存成功，表单配置关联数据表变更成功' : '节点保存成功',
                         theme: 'success'
                     })
                 } catch (e) {

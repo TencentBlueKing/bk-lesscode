@@ -31,7 +31,7 @@
     import { mapState, mapGetters } from 'vuex'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
     import { messageError } from '@/common/bkmagic'
-    import NormalNode from './nodes/normal-node.vue'
+    import NormalNode from './nodes/normal-node/index.vue'
     import DataProcessNode from './nodes/data-process-node.vue'
     import ApiNode from './nodes/api-node/index.vue'
     import ApprovalNode from './nodes/approval-node.vue'
@@ -74,7 +74,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapState('nocode/nodeConfig', ['nodeData']),
+            ...mapState('nocode/nodeConfig', ['nodeData', 'isNodeDataChanged']),
             typeName () {
                 if (this.nodeData.type) {
                     return NODE_TYPE_LIST.find(item => item.type === this.nodeData.type).name
@@ -115,6 +115,10 @@
                 return true
             },
             handleClose () {
+                if (!this.isNodeDataChanged) {
+                    this.$emit('close')
+                    return
+                }
                 this.$bkInfo({
                     title: '此操作会导致您的编辑没有保存，确认吗？',
                     type: 'warning',

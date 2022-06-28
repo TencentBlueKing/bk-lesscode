@@ -106,7 +106,7 @@
                 return isMulti ? (isSequential ? 'orderCountersign' : 'randomCountersign') : 'orsign'
             },
             handleNameChange (val) {
-                this.$store.commit('nocode/nodeConfig/setNodeData', { ...this.nodeData, name: val })
+                this.$store.commit('nocode/nodeConfig/setNodeName', val)
             },
             handleProcessorChange (val) {
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)
@@ -143,7 +143,6 @@
                 if (this.nodeData.can_deliver) {
                     validateForms.push(this.$refs.deliversForm.validate)
                 }
-                console.log(validateForms)
                 return Promise.all(validateForms.map(func => func.call(this))).then((result) => {
                     return result.every(item => item === true)
                 }).catch((e) => {

@@ -1,5 +1,4 @@
 .object-layout {
-    margin-top: 12px;
     display: flex;
     font-size: 12px;
     .layout-flex {
@@ -9,7 +8,10 @@
     .layout-item {
         width: 200px;
         margin-right: 10px;
-        max-height: 32px;
+    }
+    .layout-flex-center {
+        display: flex;
+        align-items: center;
     }
     .layout-middle {
         width: 95px;
@@ -21,7 +23,7 @@
     }
     >.layout-icon {
         color: #979BA5;
-        line-height: 32px;
+        line-height: 42px;
         min-width: 20px;
         cursor: pointer;
         &.close {
@@ -32,8 +34,8 @@
         }
     }
     .layout-icons {
+        line-height: 42px;
         min-width: 36px;
-        max-height: 32px;
         display: flex;
         align-items: center;
         .layout-icon {
@@ -54,8 +56,29 @@
 .property-icon {
     display: block;
     font-size: 12px;
-    color: #63656e;
+    background: #FFFFFF;
+    width: 100%;
+    text-align: left;
+    line-height: 32px;
+    height: 32px;
+    padding: 0 12px;
+    color: #63656e !important;
     &:hover {
-        color: #3a84ff;
+        background: #E1ECFF !important;
+        color: #3A84FF !important;
+    }
+}
+.layout-header {
+    height: 42px;
+    line-height: 42px;
+    background: #F0F1F5;
+}
+.layout-row {
+    height: 60px;
+    border-bottom: 1px solid #DCDEE5;
+    display: flex;
+    align-items: center;
+    .form-error-tip {
+        position: absolute;
     }
 }

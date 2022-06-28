@@ -11,12 +11,6 @@ import {
     getCurrentInstance
 } from '@vue/composition-api'
 
-const requireRule = {
-    required: true,
-    message: '参数名是必填项，请修改后重试',
-    trigger: 'blur'
-}
-
 const SingleSchemeComponent = defineComponent({
     props: {
         scheme: Object,
@@ -34,7 +28,14 @@ const SingleSchemeComponent = defineComponent({
         const disablePlusBrother = props.plusBrotherDisable || copyScheme.value.plusBrotherDisable
         const formRef = ref(null)
         const currentInstance = getCurrentInstance()
-
+        // 校验规则
+        const requireRule = {
+            validator (val) {
+                return val.length >= 1 || props.minusDisable
+            },
+            message: '参数名是必填项，请修改后重试',
+            trigger: 'blur'
+        }
         // 切换是否展示子节点
         const toggleShowProperty = () => {
             copyScheme.value.showChildren = !copyScheme.value.showChildren
@@ -118,7 +119,7 @@ const SingleSchemeComponent = defineComponent({
     render () {
         return (
             <section>
-                <section class="object-layout">
+                <section class="object-layout layout-row">
                     <i
                         class={
                             [
@@ -185,7 +186,7 @@ const SingleSchemeComponent = defineComponent({
                         }
                     </bk-select>
                     <section
-                        class="layout-item"
+                        class="layout-item layout-flex-center"
                     >
                         {
                             this.renderSlot
@@ -215,6 +216,7 @@ const SingleSchemeComponent = defineComponent({
                     </bk-input>
                     <span class="layout-icons">
                         <bk-popover
+                            ext-cls="g-popover-empty-padding"
                             placement="top"
                             theme="light"
                         >

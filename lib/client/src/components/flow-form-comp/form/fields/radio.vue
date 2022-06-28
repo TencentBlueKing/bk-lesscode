@@ -49,6 +49,7 @@
 </script>
 <style lang="postcss" scoped>
 .bk-form-radio {
-  margin-right: 24px;
+    margin-right: 24px;
+    margin-bottom: 4px;
 }
 </style>

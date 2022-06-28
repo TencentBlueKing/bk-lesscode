@@ -100,7 +100,7 @@
                     </bk-select>
                     <field-value
                         v-else
-                        :style="{ width: useVariable ? '140px' : '320px' }"
+                        :style="{ width: useVariable ? '216px' : '320px' }"
                         :field="getField(expression.key)"
                         :value="expression.value"
                         @change="handleValChange(expression, $event)">
@@ -121,7 +121,7 @@
     import cloneDeep from 'lodash.clonedeep'
     import { getFieldConditions } from '../../../../common/form'
     import FieldValue from '../fieldValue'
-    import { mapGetters } from 'vuex'
+    import { mapGetters, mapState } from 'vuex'
 
     export default {
         name: 'WorksheetData',
@@ -146,8 +146,6 @@
         data () {
             return {
                 localVal: cloneDeep(this.value),
-                appList: [],
-                appListLoading: false,
                 formList: [],
                 formListLoading: false,
                 fieldList: [],
@@ -174,7 +172,8 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapState('nocode/formSetting', ['fieldsList'])
         },
         watch: {
             value (val, oldVal) {
@@ -185,28 +184,15 @@
             }
         },
         async  created () {
-            // this.getAppList()
             await this.getFormList()
             if (this.value.formId) {
                 this.getFieldList(this.value.formId)
             }
-            // if (this.useVariable) {
-            //     this.getRelationList()
-            // }
+            if (this.useVariable) {
+                this.getRelationList()
+            }
         },
         methods: {
-            // 获取有访问数据权限的应用列表
-            async getAppList () {
-                try {
-                    this.appListLoading = true
-                    const res = await this.$store.dispatch('nocode/formSetting/getProjectGranted', { project_key: this.appId })
-                    this.appList = res.data
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.appListLoading = false
-                }
-            },
             async getFormList () {
                 try {
                     this.formListLoading = true
@@ -224,23 +210,34 @@
             async getFieldList (id) {
                 this.fieldList = JSON.parse(this.formList.find(item => item.id === id).content)
             },
-            async getRelationList () {
-                try {
-                    this.relationListLoading = true
-                    const params = {
-                        workflow: this.flowId,
-                        state: this.nodeId
+            getRelationList () {
+                // try {
+                //     this.relationListLoading = true
+                //     const params = {
+                //         workflow: this.flowId,
+                //         state: this.nodeId
+                //     }
+                //     const res = await this.$store.dispatch('nocode/formSetting/getNodeVars', params)
+                //     this.relationList = res.data.map((item) => {
+                //         const { key, name } = item
+                //         return { key, name }
+                //     })
+                // } catch (e) {
+                //     console.error(e)
+                // } finally {
+                //     this.relationListLoading = false
+                // }
+                // 引用本表的下拉框和单选框字段
+                const data = []
+                this.fieldsList.forEach(item => {
+                    if (['SELECT', 'RADIO'].includes(item.type)) {
+                        data.push({
+                            key: item.key,
+                            name: item.name
+                        })
                     }
-                    const res = await this.$store.dispatch('nocode/formSetting/getNodeVars', params)
-                    this.relationList = res.data.map((item) => {
-                        const { key, name } = item
-                        return { key, name }
-                    })
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.relationListLoading = false
-                }
+                })
+                this.relationList = data
             },
             // 筛选条件字段逻辑选项，不同类型的字段有不同的逻辑关系
             getConditionOptions (key) {

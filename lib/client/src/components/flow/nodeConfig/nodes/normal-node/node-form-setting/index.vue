@@ -92,6 +92,7 @@
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import PreviewFormDialog from './preview-form-dialog.vue'
+    import PreviewMixin from '@/views/edit-nocode/preview-mixin'
 
     export default {
         name: 'NodeFormSetting',
@@ -100,6 +101,7 @@
             SelectFormDialog,
             PreviewFormDialog
         },
+        mixins: [PreviewMixin],
         props: {
             formContentLoading: Boolean
         },
@@ -242,7 +244,7 @@
                                 'font-size': '14px'
                             }
                         }, [
-                            h('p', {}, '删除该流程提单页面，对应的流程数据不会删除'),
+                            h('p', {}, '1.删除该流程提单页面，对应的流程数据不会删除'),
                             h('p', { style: { 'margin-top': '8px' } }, '2.确认该信息后，需“保存”该节点配置方可生效')
                         ])
                     ]),
