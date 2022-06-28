@@ -171,14 +171,17 @@
                     if (!formId || !tableName) {
                         return
                     }
-                    this.sourceDataLoading = true
+                    // 如果字段配置了表单数据源，并且筛选条件使用了变量，则去掉该条件
+                    const expressions = conditions.expressions.slice()
+                    conditions.expressions = expressions.filter(item => item.type === 'const')
                     const params = {
                         field: fieldId,
+                        group: fieldId,
                         conditions
                     }
                     const resp = await this.$http.post(`/nocode/filterTableData/conditions/formId/${formId}/tableName/${tableName}`, params)
                     field.choice = resp.data.map((item) => {
-                        const val = item[field]
+                        const val = item[fieldId]
                         return { key: val, name: val }
                     })
                 } catch (e) {

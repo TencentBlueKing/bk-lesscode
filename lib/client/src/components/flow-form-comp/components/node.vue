@@ -117,13 +117,17 @@
                     let formDetail = {}
                     if (this.viewType === 'preview') {
                         const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds[this.activeNode] } })
-                        formDetail = res.data
+                        const { tableName, content } = res.data
+                        formDetail = {
+                            tableName,
+                            content: JSON.parse(content)
+                        }
                     } else {
                         formDetail = formMap[this.formIds]
                     }
                     this.$set(this.formDataMap, this.activeNode, {
                         tableName: formDetail.tableName,
-                        content: JSON.parse(formDetail.content)
+                        content: formDetail.content
                     })
                 } catch (e) {
                     messageError(e.message || e)

@@ -30,7 +30,7 @@
     import { mapMutations, mapGetters } from 'vuex'
     import draggable from 'vuedraggable'
     import cloneDeep from 'lodash.clonedeep'
-    import { FIELDS_TYPES } from '../../constant/forms'
+    import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
     import FieldElement from '../form-edit/fieldElement.vue'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
