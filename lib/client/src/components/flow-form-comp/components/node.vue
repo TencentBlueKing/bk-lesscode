@@ -10,8 +10,8 @@
                 </bk-tab-panel>
             </bk-tab>
             <div class="opereate-btn">
-                <bk-button>导出</bk-button>
-                <bk-button>下载流程附件</bk-button>
+                <!-- <bk-button>导出</bk-button>
+                <bk-button>下载流程附件</bk-button> -->
                 <i
                     v-if="filters.length > 0"
                     class="bk-icon icon-funnel filter-switch-icon"
@@ -23,13 +23,15 @@
             <filters
                 v-if="filters.length > 0 && showFilters"
                 :filters="filters"
-                :fields="formContents[activeNode]"
+                :fields="formDataMap[activeNode]?.content || []"
                 :system-fields="systemFields">
             </filters>
             <table-fields
                 style="margin-top: 16px"
                 :table-config="tableConfig"
-                :fields="formContents[activeNode]"
+                :fields="formDataMap[activeNode]?.content || []"
+                :form-id="formIds[activeNode]"
+                :table-name="formDataMap[activeNode]?.tableName || ''"
                 :system-fields="systemFields">
             </table-fields>
         </div>
@@ -38,6 +40,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
+    import { formMap } from 'shared/form'
     import { FLOW_SYS_FIELD } from '../common/field.js'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
@@ -57,7 +60,8 @@
                 type: Object,
                 default: () => ({})
             },
-            serviceId: Number
+            serviceId: Number,
+            viewType: String
         },
         data () {
             return {
@@ -65,7 +69,7 @@
                 formDataLoading: true,
                 nodes: [],
                 activeNode: '',
-                formContents: {},
+                formDataMap: {},
                 filters: [],
                 systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
@@ -104,8 +108,17 @@
             async getFormData () {
                 try {
                     this.formDataLoading = true
-                    const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds[this.activeNode] } })
-                    this.$set(this.formContents, this.activeNode, JSON.parse(res.data.content))
+                    let formDetail = {}
+                    if (this.viewType === 'preview') {
+                        const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds[this.activeNode] } })
+                        formDetail = res.data
+                    } else {
+                        formDetail = formMap[this.formIds]
+                    }
+                    this.$set(this.formDataMap, this.activeNode, {
+                        tableName: formDetail.tableName,
+                        content: JSON.parse(formDetail.content)
+                    })
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
@@ -122,7 +135,7 @@
                     this.tableConfig = []
                     this.$set(this.config, val, { filters: [], tableConfig: [] })
                 }
-                if (!(val in this.formContents)) {
+                if (!(val in this.formDataMap)) {
                     this.getFormData()
                 }
             }

@@ -5,8 +5,7 @@
                 <form-fields
                     style="width: 50%"
                     :fields="fields"
-                    :value="value"
-                    @change="(key,$event) => value = $event">
+                    v-model="value">
                 </form-fields>
                 <div class="operate-btns">
                     <bk-button
@@ -29,17 +28,15 @@
                     <p class="desc">数据已提交并保持，接下来你可以继续提单</p>
                 </div>
                 <div class="btn-action">
-                    <bk-button theme="primary" @click="showSuccess = false">继续提单</bk-button>
+                    <bk-button theme="primary" @click="handleContinue">继续提单</bk-button>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import cloneDeep from 'lodash.clonedeep'
     import FormFields from './form/index.vue'
-    import { FIELDS_TYPES } from './form/constants/forms.js'
-    import { messageError } from '@/common/bkmagic'
+    import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'ProcessForm',
@@ -75,25 +72,14 @@
                     return { choice, id, key, type, value }
                 })
             },
-            getDefaultValue () {
-                const value = {}
-                this.fields.forEach((item) => {
-                    if ('default' in item) {
-                        if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE'].includes(item.type)) {
-                            value[item.key] = item.default ? item.default.split(',') : []
-                        } else {
-                            value[item.key] = item.default
-                        }
-                    } else {
-                        value[item.key] = cloneDeep(FIELDS_TYPES.find(item => item.type === this.field.type).default)
-                    }
-                })
-                return value
+            handleContinue () {
+                this.value = {}
+                this.showSuccess = false
             },
             validate () {
-                // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
-                let formValNumRangeValid = true
+                let valid = true
                 this.fields.some((field) => {
+                    // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
                     const fieldVal = this.value[field.key]
                     if ('num_range' in field) {
                         let msg = ''
@@ -104,7 +90,7 @@
                             msg = `${field.name}表单的值数目不能大于${field.num_range[1]}`
                         }
                         if (msg) {
-                            formValNumRangeValid = false
+                            valid = false
                             this.$bkMessage({
                                 theme: 'error',
                                 message: msg
@@ -112,8 +98,16 @@
                             return true
                         }
                     }
+                    if (field.validate_type === 'REQUIRE' && isValEmpty(fieldVal)) {
+                        valid = false
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: `字段【${field.name}】为必填项`
+                        })
+                        return true
+                    }
                 })
-                return formValNumRangeValid
+                return valid
             },
             async handleSubmit () {
                 if (!this.validate()) {
@@ -126,7 +120,7 @@
                     await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     this.showSuccess = true
                 } catch (e) {
-                    messageError(e.messsage || e)
+                    console.error(e.messsage || e)
                 } finally {
                     this.submitPending = false
                 }
@@ -139,6 +133,7 @@
         padding: 24px;
         height: 100%;
         background: #ffffff;
+        overflow: auto;
     }
     .empty-form-fields {
         padding: 200px 0 140px;
