@@ -1,8 +1,7 @@
 <template>
     <div class="table-cell-value">
         <span v-if="isValEmpty">--</span>
-        <bk-button v-else-if="isOpenTable" size="small" :text="true" @click="$emit('viewTable', { field,value: value[field.key] })">查看</bk-button>
-        <bk-button v-else-if="isOpenRichText" size="small" :text="true" @click="$emit('viewRichText', value[field.key])">查看</bk-button>
+        <bk-button v-else-if="isOpenView" size="small" :text="true" @click="$emit('viewDetail', value.id)">查看</bk-button>
         <div v-else-if="isShowName">
             <div v-if="field.isDisplayTag && transValToTagArray(value[field.key]).length > 0" class="tag-container">
                 <span
@@ -53,11 +52,8 @@
                 return !(this.field.key in this.value)
                     || (['RICHTEXT', 'IMAGE', 'TABLE', 'FILE'].includes(this.field.type) && this.value[this.field.key].length === 0)
             },
-            isOpenTable () {
-                return this.field.type === 'TABLE'
-            },
-            isOpenRichText () {
-                return this.field.type === 'RICHTEXT'
+            isOpenView () {
+                return ['TABLE', 'RICHTEXT'].includes(this.field.type)
             },
             isShowName () {
                 return ['SELECT', 'RADIO', 'CHECKBOX', 'INPUTSELECT', 'MULTISELECT'].includes(this.field.type)
@@ -131,10 +127,6 @@
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
-}
-
->>> .bk-primary  .bk-button-small un1.bk-button-text {
-  padding: 0 !important;
 }
 </style>
 <style lang="postcss">
