@@ -51,7 +51,7 @@
 
         <bk-sideslider
             :is-show.sync="formStatus.showEditData"
-            :width="640"
+            :width="740"
             :title="formStatus.editTitle"
             :transfer="true"
         >
@@ -59,6 +59,7 @@
                 <bk-form
                     class="edit-data-form"
                     ref="formRef"
+                    form-type="vertical"
                     :model="formStatus.editForm"
                     :label-width="120"
                 >
@@ -92,6 +93,18 @@
                             type="number"
                             placeholder="请输入数字"
                         ></bk-input>
+                        <bk-date-picker
+                            v-else-if="column.type === 'date'"
+                            style="width:100%"
+                            :clearable="false"
+                            :value="formStatus.editForm[column.name]"
+                            @change="changeDate(column.name, ...arguments)"
+                        ></bk-date-picker>
+                        <edit-object
+                            v-else-if="column.type === 'json'"
+                            :value.sync="formStatus.editForm[column.name]"
+                        >
+                        </edit-object>
                         <bk-input
                             v-else
                             v-model="formStatus.editForm[column.name]"
@@ -138,10 +151,11 @@
         DataSqlParser,
         generateExportDatas
     } from 'shared/data-source'
-    import exportData from '../common/export.vue'
     import {
         downloadFile
     } from '@/common/util.js'
+    import exportData from '../common/export.vue'
+    import editObject from '@/components/edit-object.vue'
 
     interface ITable {
         tableName: string,
@@ -179,7 +193,8 @@
 
     export default defineComponent({
         components: {
-            exportData
+            exportData,
+            editObject
         },
 
         props: {
@@ -220,9 +235,15 @@
             }
 
             const normalizeData = (data) => {
+                // update datetime
                 const dateTimeColumns = activeTable.value.columns?.filter((column) => (column.type === 'datetime'))
                 dateTimeColumns.forEach((dateTimeColumn) => {
                     data[dateTimeColumn.name] = timeFormatter(data[dateTimeColumn.name])
+                })
+                // update date
+                const dateColumns = activeTable.value.columns?.filter((column) => (column.type === 'date'))
+                dateColumns.forEach((dateColumn) => {
+                    data[dateColumn.name] = dateFormatter(data[dateColumn.name])
                 })
                 return data
             }
@@ -252,10 +273,29 @@
                 return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : ''
             }
 
+            const dateFormatter = (val) => {
+                return val ? dayjs(val).format('YYYY-MM-DD') : ''
+            }
+
             const columnFormatter = (type) => {
                 return (obj, con, val) => {
                     const getValue = () => {
-                        return type === 'datetime' ? timeFormatter(val) : val
+                        let value
+                        switch (type) {
+                            case 'date':
+                                value = dateFormatter(val)
+                                break
+                            case 'datetime':
+                                value = timeFormatter(val)
+                                break
+                            case 'json':
+                                value = JSON.stringify(val)
+                                break
+                            default:
+                                value = val
+                                break
+                        }
+                        return value
                     }
                     return ![null, undefined, ''].includes(val) ? getValue() : '--'
                 }
@@ -264,6 +304,10 @@
             // date-pick 手动格式化
             const changeDateTime = (propName, date) => {
                 formStatus.editForm[propName] = timeFormatter(date)
+            }
+
+            const changeDate = (propName, date) => {
+                formStatus.editForm[propName] = dateFormatter(date)
             }
 
             const closeForm = () => {
@@ -291,7 +335,11 @@
                 formStatus.editTitle = '编辑数据'
                 formStatus.dataParse = new DataParse(data)
                 Object.keys(row).forEach((key) => {
-                    Vue.set(formStatus.editForm, key, row[key])
+                    let value = row[key]
+                    if (Object.prototype.toString.call(value) === '[object Object]') {
+                        value = JSON.stringify(value)
+                    }
+                    Vue.set(formStatus.editForm, key, value)
                 })
             }
 
@@ -388,6 +436,7 @@
                 columnFormatter,
                 timeFormatter,
                 changeDateTime,
+                changeDate,
                 selectionChange,
                 handlePageChange,
                 handlePageLimitChange,
@@ -410,7 +459,7 @@
         margin: 16px 0;
     }
     .edit-data-form {
-        padding: 25px 40px 25px 10px;
+        padding: 25px;
         min-height: calc(100vh - 60px);
     }
 </style>

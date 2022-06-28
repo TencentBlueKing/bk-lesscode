@@ -23,7 +23,8 @@
             class="new-tag-input"
             size="small"
             v-model="userInput"
-            @enter="handleAddTag">
+            @enter="handleAddTag"
+            @blur="handleAddTag">
         </bk-input>
     </section>
 </template>
@@ -63,9 +64,9 @@
             addTag () {
                 this.isAddTag = !this.isAddTag
             },
-            handleAddTag (value) {
-                if (value) {
-                    this.defaultTags.push(value)
+            handleAddTag () {
+                if (this.userInput) {
+                    this.defaultTags.push(this.userInput)
                     this.triggleChange()
                 }
                 this.isAddTag = false
@@ -88,6 +89,9 @@
     .tag-view {
         /deep/ .bk-tag {
             margin: 2px 6px 2px 0;
+            background: #FAFBFD;
+            border: 1px solid #DCDEE5;
+            border-radius: 2px;
         }
         .new-tag-btn {
             color: #979ba5;

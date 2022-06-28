@@ -5,7 +5,20 @@
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
                 查看表【{{tableStatus.basicInfo.tableName}}】
                 <bk-divider direction="vertical"></bk-divider>
-                <bk-button size="small" class="mr10 ml5" @click="goEdit">编辑</bk-button>
+                
+                <span
+                    v-bk-tooltips="{
+                        content: '表单页面自动生成的数据表不可以编辑',
+                        disabled: !tableStatus.disableEdit
+                    }"
+                >
+                    <bk-button
+                        size="small"
+                        class="mr10 ml5"
+                        :disabled="tableStatus.disableEdit"
+                        @click="goEdit"
+                    >编辑</bk-button>
+                </span>
                 <export-table title="导出表" class="mr10" :only-export-all="true" @download="exportTables"></export-table>
                 <bk-button size="small" @click="goRecord">变更记录</bk-button>
             </span>
@@ -82,6 +95,7 @@
                     tableStatus.basicInfo.tableName = data.tableName
                     tableStatus.basicInfo.comment = data.comment
                     tableStatus.data = data.columns
+                    tableStatus.disableEdit = data.source === 'nocode'
                 }).catch((error) => {
                     messageError(error.message || error)
                 }).finally(() => {

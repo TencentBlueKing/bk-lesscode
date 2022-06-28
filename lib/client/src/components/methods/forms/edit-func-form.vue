@@ -1,7 +1,12 @@
 <template>
     <main class="func-main">
-        <section class="func-form-home">
-            <section class="func-form-main">
+        <bk-resize-layout
+            class="func-form-home"
+            :initial-divide="650"
+            :max="750"
+            :border="false"
+        >
+            <section class="func-form-main" slot="aside">
                 <form-market
                     v-if="!form.id"
                     :form.sync="form"
@@ -28,14 +33,16 @@
                 ></form-group>
                 <form-detail
                     :form.sync="form"
+                    :variable-list="variableList"
                     ref="detail"
                     form-type="vertical">
                 </form-detail>
-                <form-api-data
+                <form-token
                     :form.sync="form"
-                    ref="apiData"
+                    :is-show="isShow"
+                    ref="token"
                     form-type="vertical">
-                </form-api-data>
+                </form-token>
                 <form-summary
                     :form.sync="form"
                     ref="summary"
@@ -46,6 +53,7 @@
                 height="100%"
                 class="monaco"
                 ref="monaco"
+                slot="main"
                 :form.sync="form"
                 :function-list="functionList"
                 :variable-list="variableList"
@@ -54,7 +62,7 @@
                     <i class="bk-drag-icon bk-drag-close-line icon-style" @click="handleClose"></i>
                 </template>
             </form-monaco>
-        </section>
+        </bk-resize-layout>
         <footer class="main-footer">
             <bk-button
                 class="mr5"
@@ -196,6 +204,7 @@
 <style lang="postcss" scoped>
     .func-main {
         height: 100%;
+        background: #fff;
         .func-form-home {
             height: calc(100% - 50px);
             overflow: hidden;
@@ -203,7 +212,6 @@
     }
     .func-form-main {
         float: left;
-        width: 350px;
         height: 100%;
         overflow-y: auto;
         margin: 7px 0;
@@ -236,6 +244,5 @@
     .monaco {
         margin: 0;
         height: 100%;
-        margin-left: 350px;
     }
 </style>

@@ -29,7 +29,8 @@ module.exports = {
         ENV: false,
         monaco: false,
         ResizeSensor: false,
-        define: false
+        define: false,
+        BK_USER_MANAGE_HOST: false
     },
     // add your custom rules hered
     rules: {

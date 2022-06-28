@@ -5,7 +5,6 @@
                 <h3 class="func-form-title">源码预览</h3>
                 <form-name :form.sync="form" form-type="vertical" disabled></form-name>
                 <form-detail :form.sync="form" form-type="vertical" disabled></form-detail>
-                <form-api-data :form.sync="form" form-type="vertical" disabled></form-api-data>
                 <form-summary :form.sync="form" form-type="vertical" disabled></form-summary>
             </section>
             <monaco class="monaco" :read-only="true" height="100%" :value="form.funcBody">

@@ -3,6 +3,16 @@
         <div v-if="showHelpBox" class="help-box" @click="helpClick" v-bk-tooltips="helpTooltips">
             <i class="dropdown-trigger-btn bk-icon icon-question-circle-shape" />
         </div>
+        <div v-if="createFormPage">
+            <bk-button
+                style="padding: 0;"
+                size="small"
+                title="primary"
+                :text="true"
+                @click="handleCreateForm">
+                生成表单数据管理页
+            </bk-button>
+        </div>
         <div class="github-link" @click="goGithub" v-bk-tooltips="{ content: 'Github', placements: ['bottom'] }">
             <i class="bk-drag-icon bk-drag-github-logo"></i>
         </div>
@@ -10,6 +20,7 @@
 </template>
 
 <script>
+    import { bus } from '../../common/bus'
     export default {
         props: {
             showHelpBox: {
@@ -26,6 +37,10 @@
                     content: '帮助',
                     placements: ['bottom']
                 })
+            },
+            createFormPage: {
+                type: Boolean,
+                default: false
             }
         },
         data () {
@@ -52,6 +67,9 @@
         methods: {
             goGithub () {
                 window.open('https://github.com/TencentBlueKing/bk-lesscode/blob/master/readme.md')
+            },
+            handleCreateForm () {
+                bus.$emit('openCreatPageFrom')
             }
         }
     }
