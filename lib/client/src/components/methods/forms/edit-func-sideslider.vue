@@ -34,6 +34,11 @@
                 :variable-list="variableList"
                 ref="detail"
             ></form-detail>
+            <form-token
+                :form.sync="form"
+                :is-show="isShow"
+                ref="token">
+            </form-token>
             <form-summary
                 :form.sync="form"
                 ref="summary"

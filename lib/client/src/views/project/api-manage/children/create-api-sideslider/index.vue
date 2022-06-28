@@ -285,19 +285,9 @@
         color: #444;
         font-size: 14px;
         margin: 0;
-        padding-left: 17px;
         position: relative;
         line-height: 40px;
         margin-bottom: 5px;
-        &:before {
-            content: '';
-            background-color: #3a84ff;
-            height: 16px;
-            left: 0;
-            position: absolute;
-            top: 12px;
-            width: 4px;
-        }
     }
     .api-form {
         margin-bottom: 25px;

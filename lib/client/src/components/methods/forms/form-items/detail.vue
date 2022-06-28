@@ -89,6 +89,12 @@
                     </bk-option>
                 </bk-select>
             </bk-form-item>
+            <bk-button
+                class="get-remote-response bk-form-item"
+                size="small"
+                text
+                @click="getRemoteResponse"
+            >获取接口返回数据</bk-button>
             <bk-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
                 label="请求参数"
@@ -113,13 +119,6 @@
                     @change="(apiBody) => updateValue({ apiBody })"
                 >
                 </body-params>
-            </bk-form-item>
-            <bk-form-item label="获取请求结果">
-                <bk-button
-                    size="small"
-                    :loading="isLoadingResponse"
-                    @click="getRemoteResponse"
-                >执行远程函数</bk-button>
             </bk-form-item>
             <bk-form-item
                 label="接口返回数据参数名"
@@ -196,7 +195,6 @@
                 ],
                 apiList: [],
                 isLoading: false,
-                isLoadingResponse: false,
                 METHODS_WITHOUT_DATA,
                 API_METHOD,
                 showFuncResponse: {
@@ -265,7 +263,6 @@
 
             getRemoteResponse () {
                 this.$refs.funcForm.validate().then(() => {
-                    this.isLoadingResponse = true
                     let apiData = {}
                     if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
                         this.form.apiQuery.forEach((queryItem) => {
@@ -290,9 +287,6 @@
                         .catch((err) => {
                             this.messageError(err.message || err)
                         })
-                        .finally(() => {
-                            this.isLoadingResponse = false
-                        })
                 }).catch((err) => {
                     this.messageError(err.content || err)
                 })
@@ -310,7 +304,10 @@
 </script>
 
 <style lang="postcss" scoped>
-    .func-form-item .func-temp {
+    .func-form-item {
+        position: relative;
+    }
+    .func-temp {
         width: 140px;
         max-width: calc(50% - 5px);
         /deep/ .bk-radio-button-text {
@@ -319,5 +316,11 @@
         /deep/ .bk-radio-button-input:disabled+.bk-radio-button-text {
             border-left: 1px solid #dcdee5;
         }
+    }
+    .get-remote-response {
+        position: absolute;
+        left: 60px;
+        line-height: 32px;
+        z-index: 2;
     }
 </style>
