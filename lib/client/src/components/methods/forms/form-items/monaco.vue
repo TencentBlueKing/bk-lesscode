@@ -53,7 +53,6 @@
                     content: '自动修复 Eslint',
                     theme: 'light',
                     placements: ['top'],
-                    appendTo: 'parent',
                     boundary: 'window'
                 },
                 multVal: {
