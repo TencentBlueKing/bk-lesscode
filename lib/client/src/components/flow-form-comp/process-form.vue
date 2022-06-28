@@ -25,7 +25,7 @@
                 <div class="icon-wrapper">
                     <i class="bk-icon icon-check-circle"></i>
                     <p class="title">提单完成</p>
-                    <p class="desc">数据已提交并保持，接下来你可以继续提单</p>
+                    <p class="desc">数据已提交并保存，接下来你可以继续提单</p>
                 </div>
                 <div class="btn-action">
                     <bk-button theme="primary" @click="handleContinue">继续提单</bk-button>
@@ -88,6 +88,23 @@
                         }
                         if (typeof field.num_range[1] === 'number' && fieldVal.length > field.num_range[1]) {
                             msg = `${field.name}表单的值数目不能大于${field.num_range[1]}`
+                        }
+                        if (msg) {
+                            valid = false
+                            this.$bkMessage({
+                                theme: 'error',
+                                message: msg
+                            })
+                            return true
+                        }
+                    }
+                    if ('imageRange' in field && ['MULTISELECT', 'CHECKBOX', 'IMAGE'].includes(field.type)) {
+                        let msg = ''
+                        if (field.imageRange.isMin && fieldVal.length < Number(field.imageRange.minNum)) {
+                            msg = `${field.name}表单的选项值数目不能小于${field.imageRange.maxNum}`
+                        }
+                        if (field.imageRange.isMax === 'number' && fieldVal.length > Number(field.imageRange.maxNum)) {
+                            msg = `${field.name}表单的选项值数目不能大于${field.imageRange.maxNum}`
                         }
                         if (msg) {
                             valid = false
