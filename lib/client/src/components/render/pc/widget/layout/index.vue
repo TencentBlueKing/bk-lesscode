@@ -54,6 +54,7 @@
                         layoutType,
                         ...layoutContent
                     })
+                    this.applyPageSetting()
                 },
                 immediate: true
             }
@@ -75,13 +76,15 @@
              * @desc 引用页面样式配置
              */
             applyPageSetting () {
-                const pageStyle = LC.pageStyle
-                this.style = {}
-                const $pageContentTarget = document.querySelector('.lesscode-editor-layout .container-content')
-                $pageContentTarget && Object.keys(pageStyle).forEach(key => {
-                    if (key !== 'min-width') {
-                        $pageContentTarget.style[key] = pageStyle[key] || ''
-                    }
+                this.$nextTick(() => {
+                    const pageStyle = LC.pageStyle
+                    this.style = {}
+                    const $pageContentTarget = document.querySelector('.lesscode-editor-layout .container-content')
+                    $pageContentTarget && Object.keys(pageStyle).forEach(key => {
+                        if (key !== 'min-width') {
+                            $pageContentTarget.style[key] = pageStyle[key] || ''
+                        }
+                    })
                 })
             },
             fetchPageList () {
