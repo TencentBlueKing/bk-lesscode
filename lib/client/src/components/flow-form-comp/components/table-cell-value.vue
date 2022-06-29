@@ -1,6 +1,6 @@
 <template>
     <div class="table-cell-value">
-        <span v-if="isValEmpty">--</span>
+        <span v-if="valueEmpty">--</span>
         <bk-button v-else-if="isOpenTable" size="small" :text="true" @click="$emit('viewTable', { field,value: value[field.key] })">查看</bk-button>
         <bk-button v-else-if="isOpenRichText" size="small" :text="true" @click="$emit('viewRichText', value[field.key])">查看</bk-button>
         <div v-else-if="isShowName">
@@ -30,6 +30,7 @@
 </template>
 <script>
     import dayjs from 'dayjs'
+    import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'tableCellValue',
@@ -38,6 +39,9 @@
                 if (that.field.type === 'DATETIME') {
                     return dayjs(data).format('YYYY-MM-DD HH:mm:ss')
                 }
+              if (that.field.type === 'DATE') {
+                return dayjs(data).format('YYYY-MM-DD')
+              }
                 return data
             }
         },
@@ -49,9 +53,8 @@
             value: [String, Number, Boolean, Array, Object]
         },
         computed: {
-            isValEmpty () {
-                return !(this.field.key in this.value)
-                    || (['RICHTEXT', 'IMAGE', 'TABLE', 'FILE'].includes(this.field.type) && this.value[this.field.key].length === 0)
+            valueEmpty () {
+                return isValEmpty(this.value[this.field.key])
             },
             isOpenTable () {
                 return this.field.type === 'TABLE'
@@ -112,28 +115,8 @@
     }
 </script>
 <style lang="postcss" scoped>
-.tag-container{
-  display: flex;
-  overflow: hidden;
-}
-.table-cell-tag{
-  border-radius: 2px;
-  display: block;
-  font-size: 12px;
-  width: 68px;
-  height: 22px;
-  color:#FFFFFF;
-  line-height: 22px;
-  text-align: center;
-  margin-right: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex-shrink: 0;
-  cursor: pointer;
-}
 
->>> .bk-primary  .bk-button-small un1.bk-button-text {
+>>> .bk-primary  .bk-button-small .bk-button-text {
   padding: 0 !important;
 }
 </style>

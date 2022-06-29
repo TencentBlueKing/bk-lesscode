@@ -79,6 +79,10 @@
             validate () {
                 let valid = true
                 this.fields.some((field) => {
+                    // 隐藏的表单不校验
+                    if (field.show_type === 1) {
+                        return
+                    }
                     // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
                     const fieldVal = this.value[field.key]
                     if ('num_range' in field) {
