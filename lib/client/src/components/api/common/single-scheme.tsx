@@ -93,7 +93,7 @@ const SingleSchemeComponent = defineComponent({
                     formRef.value.validate(),
                     ...Object
                         .keys(childComponents)
-                        .map(childComponentRef => (childComponents[childComponentRef] as any).validate())
+                        .map(childComponentRef => (childComponents[childComponentRef] as any)?.validate())
                 ])
         }
 
@@ -294,6 +294,9 @@ const SingleSchemeComponent = defineComponent({
                         ></i>
                     </span>
                 </section>
+                {
+                    this.copyScheme.children
+                }
                 {
                     this.copyScheme.showChildren
                         ? this.copyScheme.children.map((property, index) =>

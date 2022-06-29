@@ -54,6 +54,16 @@
                         :id="api.code"
                         :name="`${api.name}（${api.url}）`">
                     </bk-option>
+                    <div slot="extension">
+                        <bk-link
+                            theme="primary"
+                            class="add-api-link"
+                            target="_blank"
+                            :href="`/project/${projectId}/manage-api`"
+                        >
+                            <i class="bk-icon icon-plus-circle"></i>新增 Api
+                        </bk-link>
+                    </div>
                 </bk-select>
             </bk-form-item>
             <bk-form-item
@@ -322,5 +332,13 @@
         left: 60px;
         line-height: 32px;
         z-index: 2;
+    }
+    .add-api-link {
+        /deep/ .bk-link-text {
+            font-size: 12px;
+        }
+        .bk-icon {
+            margin-right: 5px;
+        }
     }
 </style>
