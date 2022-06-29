@@ -1,6 +1,6 @@
 <template>
     <monaco
-        :value="form.funcBody"
+        :value="renderCode"
         :height="height"
         :proposals="proposals"
         ref="monaco"
@@ -53,20 +53,20 @@
                     content: '自动修复 Eslint',
                     theme: 'light',
                     placements: ['top'],
-                    appendTo: 'parent',
                     boundary: 'window'
                 },
                 multVal: {
                     ...FUNCTION_TIPS
                 },
-                proposals: []
+                proposals: [],
+                renderCode: ''
             }
         },
 
         watch: {
             'form.funcBody' (val) {
                 // 由于函数市场选择函数或者切换函数导致的函数体不一致，需要重置状态
-                if (this.multVal[this.form.funcType] !== val) {
+                if (this.renderCode !== val) {
                     this.initMultVal()
                 }
             },
@@ -90,6 +90,7 @@
                     ...FUNCTION_TIPS,
                     [func.funcType]: func.funcBody
                 }
+                this.renderCode = this.multVal[this.form.funcType]
             },
 
             initProposals () {
@@ -235,6 +236,7 @@
 
             change (funcBody) {
                 this.multVal[this.form.funcType] = funcBody
+                this.renderCode = funcBody
                 this.updateValue({ funcBody })
                 this.$emit('change', funcBody)
             }

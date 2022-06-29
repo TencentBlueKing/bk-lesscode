@@ -88,6 +88,8 @@
     import TableCellDetail from './table-cell-detail.vue'
     import TableView from './table-view'
     import { Viewer } from '@toast-ui/vue-editor'
+    import { isValEmpty } from '@/common/util'
+
     export default {
         name: 'TableFields',
         components: {
@@ -202,7 +204,7 @@
             getQueryData () {
                 const query = {}
                 Object.keys(this.filtersData).forEach(key => {
-                    if (this.filtersData[key] !== '') {
+                    if (!isValEmpty(this.filtersData[key])) {
                         query[key] = this.filtersData[key]
                     }
                 })
