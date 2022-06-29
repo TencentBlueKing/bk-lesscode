@@ -93,7 +93,7 @@ const SingleSchemeComponent = defineComponent({
                     formRef.value.validate(),
                     ...Object
                         .keys(childComponents)
-                        .map(childComponentRef => (childComponents[childComponentRef] as any).validate())
+                        .map(childComponentRef => (childComponents[childComponentRef] as any)?.validate())
                 ])
         }
 
