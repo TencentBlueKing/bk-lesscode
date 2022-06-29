@@ -45,7 +45,7 @@
                     </span>
                     <span v-else-if="field.type === 'TEXT'" v-html="textTrans(value[field.key])">
                     </span>
-                    <span v-else>{{ value[field.key] }}</span>
+                    <span v-else>{{ value[field.key] || '--' }}</span>
                 </bk-form-item>
             </bk-form>
         </div>
