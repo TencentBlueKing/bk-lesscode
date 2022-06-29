@@ -50,7 +50,7 @@
                     </bk-form-item>
                     <bk-form-item label="页面ID" required property="pageCode" error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.pageCode"
-                            placeholder="以小写字母开头，由字母与数字组成，创建后不可更改">
+                            placeholder="以小写字母开头，由小写字母与数字组成，创建后不可更改">
                         </bk-input>
                     </bk-form-item>
                     <bk-form-item label="布局模板" error-display-type="normal">
@@ -139,8 +139,8 @@
                             trigger: 'blur'
                         },
                         {
-                            regex: /^[a-z][a-zA-Z0-9]{0,60}$/,
-                            message: '以小写字母开头，由字母与数字组成',
+                            regex: /^[a-z][a-z0-9]{0,60}$/,
+                            message: '以小写字母开头，由小写字母与数字组成,少于60个字符',
                             trigger: 'blur'
                         }
                     ],
