@@ -212,6 +212,7 @@
     .func-form-main {
         float: left;
         height: 100%;
+        width: 100%;
         overflow-y: auto;
         margin: 7px 0;
         padding: 0 20px 20px;
