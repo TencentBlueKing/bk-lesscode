@@ -295,9 +295,6 @@ const SingleSchemeComponent = defineComponent({
                     </span>
                 </section>
                 {
-                    this.copyScheme.children
-                }
-                {
                     this.copyScheme.showChildren
                         ? this.copyScheme.children.map((property, index) =>
                             <SingleSchemeComponent
