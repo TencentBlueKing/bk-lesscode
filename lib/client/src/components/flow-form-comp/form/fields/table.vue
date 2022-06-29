@@ -23,17 +23,17 @@
                             style="width: 100%"
                             :transfer="true"
                             :disabled="disabled"
-                            v-model="props.row[col.key]"
-                            @change="change">
+                            :type="'datetime'"
+                            :value="props.row[col.key]"
+                            @change="(val) => handleSelectDateTime({ val: val,props, key: col.key })">
                         </bk-date-picker>
                         <bk-date-picker
-                            v-else-if="!viewMode && !disabled && col.display === 'date'"
+                            v-else-if="!viewMode && col.display === 'date'"
                             style="width: 100%"
-                            v-model="props.row[col.key]"
+                            :value="props.row[col.key]"
                             :transfer="true"
                             :disabled="disabled"
-                            :type="'datetime'"
-                            @change="change">
+                            @change="(val) => handleSelectDate({ val: val,props, key: col.key })">
                         </bk-date-picker>
                         <bk-input
                             v-else-if="!viewMode "
@@ -41,7 +41,8 @@
                             v-model="props.row[col.key]"
                             @change="change">
                         </bk-input>
-                        <span v-else>{{ props.row[col.key] || '--' }}</span>
+                        <!--                        <span v-else>{{ props.row[col.key] ||  '&#45;&#45;' }}</span>-->
+                        <span v-else>{{ transformSelectValue({ row: props.row,col })}}</span>
                     </template>
                 </bk-table-column>
             </template>
@@ -59,6 +60,11 @@
 
     export default {
         name: 'Table',
+        filters: {
+            transformSelectValue (tah) {
+
+            }
+        },
         props: {
             field: {
                 type: Object,
@@ -121,6 +127,27 @@
             },
             renderTableHeader (h, data, row) {
                 return (<span >{ data.column.label }{row.required ? <span class="require"></span> : ''}</span>)
+            },
+            handleSelectDateTime (params) {
+                const { val, props, key } = params
+                this.$set(props.row, key, val)
+                this.change()
+            },
+            handleSelectDate (params) {
+                const { val, props, key } = params
+                this.$set(props.row, key, val)
+                this.change()
+            },
+            transformSelectValue ({ row, col }) {
+                if (['select', 'multiselect'].includes(col.display)) {
+                    const value = []
+                    col.options.forEach(item => {
+                        if (row[col.key] === item.id) {
+                            value.push(item.name)
+                        }
+                    })
+                    return value.join(',') || '--'
+                } else return row[col.key] || '--'
             },
             change () {
                 this.$emit('change', deepClone(this.val))

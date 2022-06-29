@@ -17,7 +17,12 @@
                 :width="getColumn(field)"
                 :prop="field.key">
                 <template slot-scope="{ row }">
-                    <table-cell-value :field="field" :value="row" @viewRichText="handleViewRichText"></table-cell-value>
+                    <table-cell-value
+                        :field="field"
+                        :value="row"
+                        @viewTable="handleViewTable"
+                        @viewRichText="handleViewRichText"
+                    ></table-cell-value>
                 </template>
             </bk-table-column>
             <bk-table-column label="操作" :max-width="80">
@@ -74,18 +79,22 @@
                 <viewer :initial-value="richText"></viewer>
             </div>
         </bk-sideslider>
+        <table-view :show.sync="showTableDetail" :value="tableValue" :field="tableField">
+        </table-view>
     </div>
 </template>
 <script>
     import TableCellValue from './table-cell-value.vue'
     import TableCellDetail from './table-cell-detail.vue'
+    import TableView from './table-view'
     import { Viewer } from '@toast-ui/vue-editor'
     export default {
         name: 'TableFields',
         components: {
             TableCellValue,
             TableCellDetail,
-            Viewer
+            Viewer,
+            TableView
         },
         props: {
             formId: Number,
@@ -122,7 +131,10 @@
                     'show-limit': true
                 },
                 showRichText: false,
-                richText: ''
+                showTableDetail: false,
+                richText: '',
+                tableField: {},
+                tableValue: []
             }
         },
         computed: {
@@ -228,7 +240,11 @@
                 this.$nextTick(() => {
                     this.showRichText = true
                 })
-                console.log(this.richText)
+            },
+            handleViewTable ({ field, value }) {
+                this.tableField = field
+                this.tableValue = value
+                this.showTableDetail = true
             }
         }
     }
@@ -246,6 +262,7 @@
 >>> .bk-table-column-setting{
     border-left: none;
 }
+
 .table-setting-wrapper {
     width: 422px;
 
