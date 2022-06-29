@@ -52,7 +52,7 @@
 }
 
 .g-popover-empty-padding {
-    .tippy-tooltip {
+    .tippy-tooltip, .tippy-content {
         padding: 0 !important;
     }
 }
