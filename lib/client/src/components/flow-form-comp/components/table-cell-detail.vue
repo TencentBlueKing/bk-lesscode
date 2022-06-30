@@ -63,7 +63,6 @@
             RichText
         },
         props: {
-            formId: Number,
             tableName: String,
             id: Number,
             fields: {
@@ -167,8 +166,8 @@
             },
             async setWorksheetData (field) {
                 try {
-                    const { field: fieldId, conditions, formId, tableName } = field.meta.data_config
-                    if (!formId || !tableName) {
+                    const { field: fieldId, conditions, tableName } = field.meta.data_config
+                    if (!tableName) {
                         return
                     }
                     // 如果字段配置了表单数据源，并且筛选条件使用了变量，则去掉该条件
@@ -179,7 +178,7 @@
                         group: fieldId,
                         conditions
                     }
-                    const resp = await this.$http.post(`/nocode/filterTableData/conditions/formId/${formId}/tableName/${tableName}`, params)
+                    const resp = await this.$http.post(`/nocode/filterTableData/conditions/ztableName/${tableName}`, params)
                     field.choice = resp.data.map((item) => {
                         const val = item[fieldId]
                         return { key: val, name: val }
