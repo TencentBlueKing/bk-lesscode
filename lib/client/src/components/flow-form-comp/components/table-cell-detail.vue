@@ -178,7 +178,7 @@
                         group: fieldId,
                         conditions
                     }
-                    const resp = await this.$http.post(`/nocode/filterTableData/conditions/ztableName/${tableName}`, params)
+                    const resp = await this.$http.post(`/nocode/filterTableData/conditions/tableName/${tableName}`, params)
                     field.choice = resp.data.map((item) => {
                         const val = item[fieldId]
                         return { key: val, name: val }
