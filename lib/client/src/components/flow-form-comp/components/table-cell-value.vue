@@ -1,6 +1,6 @@
 <template>
     <div class="table-cell-value">
-        <span v-if="valueEmpty">--</span>
+        <span v-if="valueEmpty" class="empty-value">--</span>
         <bk-button v-else-if="isOpenTable" size="small" :text="true" @click="$emit('viewTable', { field,value: value[field.key] })">查看</bk-button>
         <bk-button v-else-if="isOpenRichText" size="small" :text="true" @click="$emit('viewRichText', value[field.key])">查看</bk-button>
         <div v-else-if="isShowName">
@@ -39,9 +39,9 @@
                 if (that.field.type === 'DATETIME') {
                     return dayjs(data).format('YYYY-MM-DD HH:mm:ss')
                 }
-              if (that.field.type === 'DATE') {
-                return dayjs(data).format('YYYY-MM-DD')
-              }
+                if (that.field.type === 'DATE') {
+                    return dayjs(data).format('YYYY-MM-DD')
+                }
                 return data
             }
         },
@@ -115,17 +115,27 @@
     }
 </script>
 <style lang="postcss" scoped>
-
->>> .bk-primary  .bk-button-small .bk-button-text {
-  padding: 0 !important;
+.tag-container{
+  display: flex;
+  overflow: hidden;
 }
-</style>
-<style lang="postcss">
-.custom-tooltip{
-  .tippy-tooltip {
-    .tippy-arrow{
-      bottom: -15px !important;
-    }
-  }
+.table-cell-tag{
+  border-radius: 2px;
+  display: block;
+  font-size: 12px;
+  width: 68px;
+  height: 22px;
+  color:#FFFFFF;
+  line-height: 22px;
+  text-align: center;
+  margin-right: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.empty-value{
+  padding: 0 12px;
 }
 </style>
