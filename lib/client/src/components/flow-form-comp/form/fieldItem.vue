@@ -13,6 +13,7 @@
                     :is="fieldComp"
                     :field="field"
                     :disabled="isDisabled"
+                    need-pagination
                     :use-fixed-data-source="useFixedDataSource"
                     :value="value"
                     @change="$emit('change', $event)">

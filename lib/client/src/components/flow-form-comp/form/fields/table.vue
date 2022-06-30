@@ -1,6 +1,13 @@
 <template>
     <div class="table">
-        <bk-table :data="val" size="small" :outer-border="isHaveBorder" :max-height="maxHeight">
+        <bk-table
+            :data="tableData"
+            size="small"
+            :outer-border="isHaveBorder"
+            :max-height="maxHeight"
+            :pagination="pagination"
+            @page-change="handlePageChange"
+            @page-limit-change="handlePageLimitChange">
             <template v-for="col in field.choice">
                 <bk-table-column :label="col.name" :key="col.key + col.name + col.display" :render-header="(h, data) => renderTableHeader(h, data,col)">
                     <template slot-scope="props">
@@ -78,6 +85,10 @@
                 type: Boolean,
                 default: false
             },
+            needPagination: {
+                type: Boolean,
+                default: false
+            },
             disabled: {
                 type: Boolean,
                 default: false
@@ -90,7 +101,29 @@
         },
         data () {
             return {
-                val: this.getLocalVal(this.value)
+                val: this.getLocalVal(this.value),
+                pagingConfig: {
+                    current: 1,
+                    count: '',
+                    limit: 10
+                }
+            }
+        },
+        computed: {
+            pagination () {
+                if (this.needPagination) {
+                    this.pagingConfig.count = this.val.length
+                    return this.pagingConfig
+                }
+                return {}
+            },
+            tableData () {
+                this.val = this.getLocalVal(this.value)
+                if (this.needPagination) {
+                    return this.val.slice((this.pagingConfig.current - 1) * this.pagingConfig.limit,
+                                          this.pagingConfig.current * this.pagingConfig.limit)
+                }
+                return this.val
             }
         },
         watch: {
@@ -151,6 +184,13 @@
             },
             change () {
                 this.$emit('change', deepClone(this.val))
+            },
+            handlePageLimitChange (limit) {
+                this.pagingConfig.limit = limit
+                this.pagingConfig.current = 1
+            },
+            handlePageChange (page) {
+                this.pagingConfig.current = page
             }
         }
     }

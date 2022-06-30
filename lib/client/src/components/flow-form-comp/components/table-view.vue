@@ -10,12 +10,12 @@
         :value="show"
         @confirm="$emit('update:show', false)"
         @cancel="$emit('update:show', false)">
-        <custom-table :value="value" :field="field" :view-mode="true"></custom-table>
+        <custom-table class="table-view" :value="value" :field="field" :view-mode="true" need-pagination></custom-table>
     </bk-dialog>
 </template>
 
 <script>
-    import customTable from '../form/fields/table'
+    import customTable from '../form/fields/table.vue'
     export default {
         name: 'TableView',
         components: {
@@ -38,6 +38,11 @@
     }
 </script>
 
-<style scoped>
-
+<style lang="postcss" scoped>
+@import '@/css/mixins/scroller.css';
+.table-view{
+  max-height: 565px;
+  overflow: auto ;
+  @mixin scroller;
+}
 </style>
