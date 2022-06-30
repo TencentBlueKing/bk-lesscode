@@ -96,7 +96,7 @@
                             fieldCopy.placeholder = `请选择${field.name}`
                         }
                         filterFields.push(fieldCopy)
-                        localVal[fieldCopy.key] = fieldCopy.type === 'INT' ? 0 : ''
+                        localVal[fieldCopy.key] = ''
                     }
                 })
                 return { filterFields, localVal }
