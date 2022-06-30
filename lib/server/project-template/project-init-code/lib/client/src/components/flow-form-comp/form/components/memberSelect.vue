@@ -95,3 +95,15 @@
   width: 100%;
 }
 </style>
+<style lang="postcss">
+    /* 人员选择器使用的tippy，引入了单独的css，会影响到组件库中基于tippy实现的组件样式 */
+    .tippy-tooltip {
+        .tippy-content {
+            padding: 0;
+        }
+        .tippy-arrow {
+            width: 0;
+            height: 0;
+        }
+    }
+</style>

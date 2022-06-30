@@ -8,14 +8,17 @@
             <i v-if="field.tips" v-bk-tooltips="field.tips" class="bk-icon icon-question-circle tips-icon"></i>
         </div>
         <div class="field-form-content">
-            <component
-                :is="fieldComp"
-                :field="field"
-                :disabled="isDisabled"
-                :use-fixed-data-source="useFixedDataSource"
-                :value="value"
-                @change="$emit('change', $event)">
-            </component>
+            <template v-if="fieldComp">
+                <component
+                    :is="fieldComp"
+                    :field="field"
+                    :disabled="isDisabled"
+                    :use-fixed-data-source="useFixedDataSource"
+                    :value="value"
+                    @change="$emit('change', $event)">
+                </component>
+            </template>
+            <span v-else style="font-size: 12px; color: #c3cdd7;">找不到该类型控件，请删除字段</span>
         </div>
     </div>
 </template>
@@ -95,7 +98,7 @@
             value: {
                 type: [String, Number, Boolean, Array],
                 default () {
-                    return deepClone(FIELDS_TYPES.find(item => item.type === this.field.type).default)
+                    return deepClone(FIELDS_TYPES.find(item => item.type === this.field.type)?.default || '')
                 }
             },
             showLabel: {
@@ -113,7 +116,7 @@
         },
         computed: {
             fieldComp () {
-                return FIELDS_TYPES.find(item => item.type === this.field.type).comp
+                return FIELDS_TYPES.find(item => item.type === this.field.type)?.comp || ''
             },
             // 默认规则设置为禁止填写 和 字段设置为禁止编辑的时候禁止编辑
             isDisabled () {

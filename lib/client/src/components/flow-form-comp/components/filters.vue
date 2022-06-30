@@ -22,12 +22,12 @@
                     </field-item>
                     <bk-date-picker
                         v-else-if="['DATE', 'DATETIME'].includes(item.type)"
-                        :value="localVal[item.key]"
                         style="width: 100%;"
-                        :type="item.type === 'DATE' ? 'date' : 'datetime'"
-                        :format="item.type === 'DATE' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss'"
+                        type="daterange"
+                        format="yyyy-MM-dd HH:mm:ss"
                         :placeholder="`请输入${item.name}`"
-                        @change="localVal[item.key] = $event">
+                        :value="localVal[item.key]"
+                        @change="handleDateTypeValChange(item.key, $event)">
                     </bk-date-picker>
                     <bk-input
                         v-else
@@ -93,15 +93,25 @@
                         // 选择值类型的字段统一用select组件来做筛选
                         if (this.isSelectComp(fieldCopy.type)) {
                             fieldCopy.type = 'SELECT'
+                            fieldCopy.placeholder = `请选择${field.name}`
                         }
                         filterFields.push(fieldCopy)
-                        localVal[fieldCopy.key] = ''
+                        localVal[fieldCopy.key] = fieldCopy.type === 'INT' ? 0 : ''
                     }
                 })
                 return { filterFields, localVal }
             },
             isSelectComp (type) {
                 return ['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(type)
+            },
+            handleDateTypeValChange (key, val) {
+                const value = []
+                val.map(item => {
+                    if (item !== '') {
+                        value.push(new Date(item))
+                    }
+                })
+                this.localVal[key] = value
             },
             handleReset () {
                 Object.keys(this.localVal).forEach(key => {
@@ -169,7 +179,7 @@
         .filter-form-item {
             position: relative;
             padding: 8px;
-            width: 320px;
+            width: 330px;
         }
         .bk-form-item {
             margin: 0;

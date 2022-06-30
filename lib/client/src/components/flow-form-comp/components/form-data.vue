@@ -1,8 +1,8 @@
 <template>
     <div class="form-data-manage">
         <template v-if="!formDetailLoading">
-            <div class="operate-btns" @click="showFilter = !showFilter">
-                <i class="bk-icon icon-funnel filter-switch-icon"></i>
+            <div class="operate-btns">
+                <i class="bk-icon icon-funnel filter-switch-icon" @click="showFilter = !showFilter"></i>
             </div>
             <filters
                 v-if="filters.length > 0 && showFilter"

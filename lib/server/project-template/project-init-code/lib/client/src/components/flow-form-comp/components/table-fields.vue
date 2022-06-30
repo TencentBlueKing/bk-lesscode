@@ -66,6 +66,7 @@
 <script>
     import TableCellValue from './table-cell-value.vue'
     import TableCellDetail from './table-cell-detail.vue'
+    import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'TableFields',
@@ -174,7 +175,7 @@
             getQueryData () {
                 const query = {}
                 Object.keys(this.filtersData).forEach(key => {
-                    if (this.filtersData[key] !== '') {
+                    if (!isValEmpty(this.filtersData[key])) {
                         query[key] = this.filtersData[key]
                     }
                 })

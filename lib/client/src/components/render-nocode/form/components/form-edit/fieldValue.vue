@@ -75,7 +75,7 @@
                 this.change(value)
             },
             change (val) {
-                this.$emit('change', val)
+                this.$emit('change', this.field.type === 'INT' ? Number(val) : val)
             }
         }
     }
