@@ -10,7 +10,7 @@
                     :key="groupName"
                     :list="comList"
                     :group-name="groupName">
-                    <render-component
+                    <render-custom-component
                         v-for="component in comList"
                         :key="component.name"
                         :data="component" />
@@ -20,11 +20,14 @@
                 <group-box
                     :list="favoriteComponentList"
                     :group-name="'我的收藏'"
+                    :folded="favoriteComponentList.length < 1"
                     key="favorite">
-                    <render-component
+                    <render-custom-component
                         v-for="component in favoriteComponentList"
                         :key="component.name"
-                        :data="component" />
+                        favourite-group
+                        :data="component"
+                        @on-favorite="handleFavorite" />
                 </group-box>
                 <template v-for="(componentList, groupName) in groupComponentMap">
                     <group-box
@@ -32,20 +35,26 @@
                         :key="groupName"
                         :list="componentList"
                         :group-name="groupName">
-                        <render-component
+                        <render-custom-component
                             v-for="component in componentList"
                             :key="component.name"
-                            :data="component" />
+                            :data="component"
+                            @on-favorite="handleFavorite" />
                     </group-box>
                 </template>
                 <group-box
                     :list="publicComponentList"
                     :group-name="'其他应用公开的组件'"
                     key="publice">
-                    <render-component
+                    <render-custom-component
                         v-for="component in publicComponentList"
                         :key="component.name"
-                        :data="component" />
+                        public-group
+                        :data="component"
+                        @on-favorite="handleFavorite" />
+                    <div slot="tag">
+                        公共
+                    </div>
                 </group-box>
             </template>
         </div>
@@ -64,14 +73,14 @@
     import Vue from 'vue'
     import GroupBox from '../../common/group-box'
     import SearchBox from '../../common/search-box'
-    import RenderComponent from '../../common/group-box/render-component'
+    import RenderCustomComponent from '../../common/group-box/render-custom-component'
 
     export default {
         name: '',
         components: {
             GroupBox,
             SearchBox,
-            RenderComponent
+            RenderCustomComponent
         },
         data () {
             return {
@@ -112,6 +121,8 @@
                             config,,
                             baseInfo
                         ] = registerCallback(Vue)
+                        // 是否收藏tag
+                        baseInfo.favorite = false
                         const realConfig = {
                             ...config,
                             meta: baseInfo
@@ -119,6 +130,7 @@
                         searchList.push(config)
                         if (favoriteIdMap[baseInfo.id]) {
                             favoriteComponentList.push(realConfig)
+                            baseInfo.favorite = true
                             return
                         }
                         if (baseInfo.isPublic) {
@@ -143,7 +155,9 @@
                     this.isLoading = false
                 }
             },
-            
+            handleFavorite () {
+                this.fetchFavoriteList()
+            },
             /**
              * @desc 去新建自定义组件
              */

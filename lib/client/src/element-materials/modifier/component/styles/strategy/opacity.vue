@@ -12,20 +12,27 @@
 <template>
     <style-layout title="透明度">
         <style-item name="opacity">
-            <bk-input
-                :value="opacityValue"
-                type="number"
-                placeholder="请输入"
-                :min="0"
-                :max="1"
-                :native-attributes="{ step: 0.1 }"
-                @change="handleOpacityChange"
-                style="width: 100%" />
+            <div class="bk-form-control" style="width: 100%;">
+                <div class="bk-input-number">
+                    <input type="text"
+                        style="width: 100%"
+                        class="bk-form-input"
+                        @keydown="inputKeydownHandler($event)"
+                        v-model="opacityValue"
+                        @input="handleOpacityChange" />
+                    <span class="input-number-option">
+                        <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
+                        <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
+                    </span>
+                </div>
+            </div>
         </style-item>
     </style-layout>
 </template>
 
 <script>
+    import { accAdd, accSub } from '@/common/util'
+
     import StyleLayout from '../layout/index'
     import StyleItem from '../layout/item'
 
@@ -47,13 +54,66 @@
         data () {
             return {
                 opacityValue: this.value.opacity || 1,
-                isError: false
+                // 数字输入框中允许输入的键盘按钮的 keyCode 集合
+                validKeyCodeList: [
+                    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, // 0-9
+                    8, // backspace
+                    // 189, // -
+                    190, // .
+                    38, 40, 37, 39, // up down left right
+                    46, // del
+                    9 // tab
+                ]
             }
         },
         methods: {
-            handleOpacityChange (val) {
-                this.opacityValue = val
+            handleOpacityChange () {
+                const val = this.opacityValue
                 this.change('opacity', val)
+            },
+
+            /**
+             * 数字文本框获 keydown 事件回调
+             * input type=number 不支持 setSelectionRange
+             *
+             * @param {Object} e 事件对象
+             */
+            inputKeydownHandler (e) {
+                const keyCode = e.keyCode
+                const target = e.currentTarget
+                const value = target.value
+                // 键盘按下不允许的按钮
+                if (this.validKeyCodeList.indexOf(keyCode) < 0
+                    || (value.indexOf('.') >= 0 && keyCode === 190) // 已经有一个小数点了，本次又输入的是小数点
+                ) {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return false
+                }
+
+                if (keyCode === 38) {
+                    e.preventDefault()
+                    this.add()
+                } else if (keyCode === 40) {
+                    e.preventDefault()
+                    this.sub()
+                }
+            },
+
+            add () {
+                if (parseFloat(this.opacityValue) >= 1) {
+                    return
+                }
+                this.opacityValue = accAdd(this.opacityValue, 0.1)
+                this.handleOpacityChange()
+            },
+
+            sub () {
+                if (parseFloat(this.opacityValue) <= 0) {
+                    return
+                }
+                this.opacityValue = accSub(this.opacityValue, 0.1)
+                this.handleOpacityChange()
             }
         }
     }

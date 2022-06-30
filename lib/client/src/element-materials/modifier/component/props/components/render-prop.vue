@@ -15,9 +15,17 @@
             :show="!isReadOnly && variableSelectEnable"
             :options="variableSelectOptions"
             :value="formData"
+            :show-content="isShowProp"
             @change="handleVariableFormatChange">
             <template v-slot:title>
                 <div class="prop-name">
+                    <i
+                        :class="{
+                            'bk-icon icon-angle-down': true,
+                            close: !isShowProp
+                        }"
+                        @click="toggleShowProp"
+                    ></i>
                     <span
                         :class="{ label: describe.tips }"
                         v-bk-tooltips="introTips">
@@ -25,29 +33,50 @@
                     </span>
                 </div>
             </template>
-            <bk-radio-group
-                v-if="renderComponentList.length > 1"
-                :value="selectValueType"
-                style="margin-bottom: 10px;"
-                @change="handleValueTypeChange">
-                <bk-radio-button
-                    v-for="item in renderComponentList"
-                    :key="item.type"
-                    :value="item.type">
-                    {{ item.type | valueTypeTextFormat }}
-                </bk-radio-button>
-            </bk-radio-group>
-            <div class="prop-action">
+
+            <template v-if="showInnerVariable">
+                <span class="g-prop-sub-title g-mb6">变量类型</span>
+                <choose-build-in-variable
+                    class="g-mb4"
+                    :build-in-variable="buildInVariable"
+                    :build-in-variable-type="formData.buildInVariableType"
+                    :component-id="componentId"
+                    :name="name"
+                    :payload="formData.payload"
+                    :render-value="formData.renderValue"
+                    :option="variableSelectOptions"
+                    @change="handleBuildInVariableChange"
+                />
+            </template>
+
+            <template v-if="renderComponentList.length > 1">
+                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性初始值来源</span>
+                <bk-radio-group
+                    class="g-prop-radio-group mb12"
+                    :value="selectValueType"
+                    @change="handleValueTypeChange">
+                    <bk-radio-button
+                        v-for="item in renderComponentList"
+                        :key="item.type"
+                        :value="item.valueType">
+                        {{ item.valueType | valueTypeTextFormat }}
+                    </bk-radio-button>
+                </bk-radio-group>
+            </template>
+            <div
+                v-if="isRenderValueCom"
+                class="prop-action">
                 <template v-for="(renderCom, index) in renderComponentList">
                     <!-- 控件类型或者值的类型匹配都将展示，如：控制类型为 src 值的类型为 string(支持src输入加选择模式之前) 都需展示 -->
                     <template v-if="selectValueType === renderCom.type || selectValueType === renderCom.valueType">
                         <component
                             :is="renderCom.component"
+                            :component-type="componentType"
                             :name="name"
                             :type="renderCom.type"
                             :describe="describe"
                             :default-value="propTypeValueMemo[selectValueType].val"
-                            :payload="propTypeValueMemo[selectValueType].payload"
+                            :payload="formData.payload"
                             :remote-validate="describe.remoteValidate"
                             :key="`${renderCom.type}_${index}`"
                             :readonly="isReadOnly"
@@ -55,25 +84,57 @@
                     </template>
                 </template>
             </div>
+
+            <template v-if="describe.operation">
+                <div
+                    v-bk-tooltips="{
+                        content: describe.operation.tips,
+                        placement: 'left-start',
+                        boundary: 'window'
+                    }"
+                    :class="[
+                        'g-prop-sub-title g-mb6 g-mt12',
+                        {
+                            'g-config-subline': describe.operation.tips
+                        }
+                    ]"
+                >
+                    {{ describe.operation.title }}
+                </div>
+                <bk-button
+                    class="prop-operation"
+                    size="small"
+                    @click="describe.operation.click(formData, syncSlot)"
+                >
+                    {{ describe.operation.name }}
+                </bk-button>
+            </template>
         </variable-select>
     </div>
 </template>
 <script>
+    import _ from 'lodash'
+    import { mapActions } from 'vuex'
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
     import variableSelect from '@/components/variable/variable-select'
+    import chooseBuildInVariable from '@/components/variable/choose-build-in-variable'
+    import {
+        determineShowPropInnerVariable,
+        BUILDIN_VARIABLE_TYPE_LIST
+    } from 'shared/variable'
 
     import {
         getDefaultValueByType,
         isEmpty,
         toPascal
-    } from '../../utils'
+    } from 'shared/util'
 
     import TypeSize from './strategy/size'
     import TypeRemote from './strategy/remote'
     import TypeFunction from './strategy/function'
     import TypeBoolean from './strategy/boolean'
-    import TypeColumn from './strategy/column'
     import TypeNumber from './strategy/number'
     import TypeFloat from './strategy/float'
     import TypeSelect from './strategy/select'
@@ -83,9 +144,9 @@
     import TypeTableColumn from './strategy/table-column'
     import TypeCollapse from './strategy/collapse.vue'
     import TypeJson from './strategy/json-view.vue'
-    import TypeSlot from './strategy/slot.vue'
+    import TypeHtml from './strategy/html.vue'
     import TypeFreeLayoutItem from './strategy/free-layout-item.vue'
-    import TypeSlotWrapper from './strategy/slot-wrapper'
+    import TypeList from './strategy/list.vue'
     import TypeIcon from './strategy/icon'
     import TypeVanIcon from './strategy/van-icon'
     import TypeColor from './strategy/color'
@@ -102,10 +163,30 @@
         return target
     }
 
+    // 属性类型转为该变量接受的值类型
+    const getPropValueType = (type) => {
+        const valueMap = {
+            'size': 'string',
+            'text': 'string',
+            'paragraph': 'string',
+            'html': 'string',
+            'json': 'object',
+            'icon': 'string',
+            'van-icon': 'string',
+            'float': 'number',
+            'src': 'string',
+            'srcset': 'array',
+            // 老数据存在 type = 'hidden' 但是值是 object 的情况
+            'hidden': 'object'
+        }
+        return valueMap[type] || type
+    }
+
     export default {
         name: 'render-prop-modifier',
         components: {
-            variableSelect
+            variableSelect,
+            chooseBuildInVariable
         },
         filters: {
             valueTypeTextFormat (valueType) {
@@ -115,9 +196,9 @@
                     'object': '对象',
                     'string': '字符串',
                     'array': '数组',
-                    'remote': '远程函数',
-                    'data-source': '数据源',
-                    'table-data-source': '数据源',
+                    'remote': '函数',
+                    'data-source': '数据表',
+                    'table-data-source': '数据表',
                     'srcset': '图片列表'
                 }
                 return textMap[valueType] || toPascal(valueType)
@@ -125,6 +206,9 @@
         },
         props: {
             componentType: String,
+            componentId: {
+                type: String
+            },
             // prop 的 name
             name: {
                 type: String,
@@ -139,12 +223,17 @@
             lastValue: {
                 type: [Number, String, Boolean, Object, Array],
                 default: () => ({})
+            },
+            syncSlot: {
+                type: Function
             }
         },
         data () {
             return {
                 selectValueType: '',
-                formData: {}
+                formData: {},
+                isRenderValueCom: false,
+                isShowProp: true
             }
         },
         computed: {
@@ -158,7 +247,6 @@
                     'areatext': TypeTextarea,
                     'boolean': TypeBoolean,
                     'size': TypeSize,
-                    'column': TypeColumn,
                     'number': TypeNumber,
                     'float': TypeFloat,
                     'select': TypeSelect,
@@ -168,18 +256,18 @@
                     'collapse': TypeCollapse,
                     'remote': TypeRemote,
                     'json': TypeJson,
-                    'slot-html': TypeSlot,
+                    'html': TypeHtml,
                     'free-layout-item': TypeFreeLayoutItem,
                     'icon': TypeIcon,
                     'van-icon': TypeVanIcon,
                     'color': TypeColor,
-                    'step': TypeSlotWrapper,
+                    'step': TypeList,
                     'function': TypeFunction,
                     'el-props': TypleElProps,
                     'data-source': TypeDataSource,
                     'table-data-source': TypeTableDataSource,
                     'src': TypeSrc,
-                    'srcset': TypeSlotWrapper
+                    'srcset': TypeList
                 }
 
                 const typeMap = {
@@ -202,7 +290,7 @@
                     'collapse': 'collapse',
                     'remote': 'remote',
                     'json': 'json',
-                    'html': 'slot-html',
+                    'html': 'html',
                     'free-layout-item': 'free-layout-item',
                     'bread-crumb': 'bread-crumb',
                     'icon': 'icon',
@@ -223,20 +311,6 @@
                     'srcset': 'srcset'
                 }
 
-                // 属性“值”的类型映射
-                const valueMap = {
-                    'text': 'string',
-                    'paragraph': 'string',
-                    'html': 'string',
-                    'json': 'object',
-                    'icon': 'string',
-                    'van-icon': 'string',
-                    'float': 'number',
-                    'src': 'string',
-                    'srcset': 'array',
-                    'object': 'hidden'
-                }
-
                 let realType = config.type
                 // 属性type支持配置数组，内部逻辑全部按数组处理
                 if (typeof config.type === 'string') {
@@ -249,7 +323,7 @@
                         res.push({
                             type: propType,
                             component: comMap[renderType],
-                            valueType: valueMap[propType] || propType
+                            valueType: getPropValueType(propType)
                         })
                     }
                     return res
@@ -279,12 +353,18 @@
              */
             introTips () {
                 const tip = transformTipsWidth(this.describe.tips)
-                const disabled = !tip
-                return typeof tip === 'string' ? {
-                    disabled,
-                    content: tip,
-                    interactive: false
-                } : Object.assign(tip, { disabled, interactive: false })
+                const commonOptions = {
+                    disabled: !tip,
+                    interactive: false,
+                    placements: ['left-start'],
+                    boundary: 'window'
+                }
+                return typeof tip === 'string'
+                    ? {
+                        ...commonOptions,
+                        content: tip
+                    }
+                    : Object.assign(tip, commonOptions)
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量
@@ -292,6 +372,27 @@
              */
             variableSelectEnable () {
                 return !this.renderComponentList.some(com => com.type === 'remote')
+            },
+            /**
+             * @desc 是否展示内置变量
+             * @returns { Boolean }
+             */
+            showInnerVariable () {
+                return determineShowPropInnerVariable(this.describe.type, this.name, this.componentType)
+            },
+            /**
+             * 内置变量名
+             */
+            buildInVariable () {
+                const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
+                const isChart = this.componentType === 'chart'
+                let buildInVariable
+                if (isChart) {
+                    buildInVariable = perVariableName
+                } else {
+                    buildInVariable = `${perVariableName}${camelCase(this.name, { transform: camelCaseTransformMerge })}`
+                }
+                return buildInVariable
             }
         },
         watch: {
@@ -307,23 +408,21 @@
                             const lastValueType = Array.isArray(lastValue.valueType)
                                 ? lastValue.valueType[0]
                                 : lastValue.valueType
-                            // fix: 错误数据转换，表达式类型的 format 包存成了 value
-                            const isFixedComputeFormat = lastValue.format === 'value'
-                                && /=/.test(lastValue.code)
-                                && !/</.test(lastValue.code)
                             this.formData = Object.freeze({
                                 ...this.formData,
-                                format: isFixedComputeFormat ? 'expression' : lastValue.format,
+                                format: lastValue.format,
                                 code: lastValue.code,
-                                valueType: lastValueType
+                                valueType: getPropValueType(lastValueType),
+                                buildInVariableType: lastValue.buildInVariableType,
+                                payload: lastValue.payload || {},
+                                renderValue: lastValue.renderValue
                             })
-
                             this.propTypeValueMemo[this.formData.valueType] = {
-                                val: lastValue.code,
-                                payload: lastValue.payload || {}
+                                val: lastValue.renderValue
                             }
                         }
                         this.selectValueType = this.formData.valueType
+                        this.isRenderValueCom = true
                     })
                 },
                 immediate: true
@@ -335,9 +434,11 @@
                 type,
                 val
             } = this.describe
-
-            const defaultValue = val !== undefined ? val : getDefaultValueByType(type)
-            const valueTypeInclude = Array.isArray(type) ? type : [type]
+            // 属性各个交互类型可以接受的值类型
+            const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
+            // 该属性的默认值
+            const defaultValue = val !== undefined ? val : getDefaultValueByType(valueTypes[0])
+            this.defaultValue = _.cloneDeep(defaultValue)
 
             // 构造 variable-select 的配置
             this.variableSelectOptions = {
@@ -346,53 +447,69 @@
                 format: 'value',
                 formatInclude: ['value', 'variable', 'expression'],
                 code: defaultValue,
-                valueTypeInclude: valueTypeInclude
+                valueTypeInclude: valueTypes
             }
 
             // prop 的初始值
             this.formData = Object.freeze({
                 format: 'value',
                 code: defaultValue,
-                valueType: valueTypeInclude[0],
+                valueType: valueTypes[0],
                 renderValue: defaultValue,
+                buildInVariableType: '',
                 payload: this.lastValue.payload || {}
             })
 
             // 编辑状态缓存
             this.propTypeValueMemo = {
                 [this.formData.valueType]: {
-                    val: this.formData.renderValue,
-                    payload: this.formData.payload
+                    val: this.formData.renderValue
                 }
             }
         },
         methods: {
+            ...mapActions('variable', ['updateVariable']),
             /**
              * @desc 同步更新用户操作
              */
-            triggerChange () {
+            triggerChange (formData = this.formData) {
                 this.isInnerChange = true
                 // 缓存用户本地编辑值
-                this.propTypeValueMemo[this.formData.valueType] = {
-                    val: this.formData.code || this.formData.renderValue,
-                    payload: this.formData.payload
+                this.propTypeValueMemo[formData.valueType] = {
+                    val: formData.renderValue
                 }
 
                 this.$emit('on-change', this.name, {
-                    ...this.formData,
+                    ...formData,
                     modifiers: this.describe.modifiers || []
                 })
             },
             /**
-             * @desc 变量切换
+             * @desc 右上角类型切换，format: value | variable | expression
              * @param { Object } variableSelectData
              */
             handleVariableFormatChange (variableSelectData) {
                 const {
-                    format,
+                    format
+                } = variableSelectData
+                let {
                     code,
                     renderValue
                 } = variableSelectData
+
+                // 切换 format 时还没设置具体值 renderValue 取默认配置
+                if (isEmpty(renderValue)) {
+                    if (this.propTypeValueMemo[this.formData.valueType]) {
+                        renderValue = this.propTypeValueMemo[this.formData.valueType].val
+                    } else {
+                        renderValue = _.cloneDeep(this.defaultValue)
+                    }
+                }
+                // format 切换为 value 时，将 renderValue 回调到 code
+                if (format === 'value' && code === '') {
+                    code = renderValue
+                }
+
                 this.formData = Object.freeze({
                     ...this.formData,
                     format,
@@ -402,50 +519,52 @@
                 this.triggerChange()
             },
             /**
-             * @desc prop 值得类型切换
+             * @desc format 等于 value 时 value 的类型切换
              * @param { String } valueType
              */
             handleValueTypeChange (valueType) {
-                this.selectValueType = valueType
+                const realValueType = getPropValueType(valueType)
+                this.selectValueType = realValueType
+
                 let code = null
-                let payload = {}
-                if (this.propTypeValueMemo.hasOwnProperty(valueType)) {
-                    code = this.propTypeValueMemo[valueType].val
-                    payload = this.propTypeValueMemo[valueType].payload
+                if (this.propTypeValueMemo.hasOwnProperty(realValueType)) {
+                    code = this.propTypeValueMemo[realValueType].val
                 } else if ([
                     'remote',
                     'data-source',
                     'table-data-source'
-                ].includes(valueType)) {
-                    // fix:
-                    // 远程函数、数据源类型在没有获取数据前使用配置文件设置的默认值
-                    code = this.describe.val
+                ].includes(realValueType)) {
+                    // 切换到数据表和远程函数此时还没有获取API数据
+                    // code 和 rendervalue 保持不变
+                    code = _.cloneDeep(this.formData.renderValue)
                 } else {
                     // 切换值类型时，通过类型获取默认值
-                    code = getDefaultValueByType(valueType)
+                    code = getDefaultValueByType(getPropValueType(realValueType))
                 }
 
                 this.formData = Object.freeze({
                     ...this.formData,
                     code,
-                    payload,
-                    valueType,
+                    valueType: realValueType,
                     renderValue: code
                 })
 
                 this.triggerChange()
+                this.triggerUpdateVariable()
             },
             /**
-             * @desc 更新 prop value 的配置
+             * @desc format 等于 value 时 编辑 code
              * @param { String } name
              * @param { Any } value
              * @param { String } type
              * @param { Object } payload prop 配置附带的额外信息(eq: type 为 remote 时接口函数相关的配置)
              */
             handleCodeChange (name, value, type, payload = {}) {
+                // 快速切换的情况下，如果type对不上，就不更新
+                if (this.formData.valueType !== getPropValueType(type)) return
                 try {
                     let code = null
-                    let renderValue
+                    let renderValue = this.formData.renderValue
 
                     const val = getRealValue(type, value)
 
@@ -455,6 +574,7 @@
                         // api 返回数据不为空时在画布编辑区才应用 api 数据
                         if (!isEmpty(val)) {
                             renderValue = val
+                            code = val
                         }
                     } else {
                         code = val
@@ -464,16 +584,40 @@
                     this.formData = Object.freeze({
                         ...this.formData,
                         code,
-                        payload,
+                        payload: Object.assign(this.formData.payload, payload),
                         renderValue
                     })
                     this.triggerChange()
+                    this.triggerUpdateVariable()
                 } catch {
                     this.$bkMessage({
                         theme: 'error',
                         message: `属性【${name}】的值设置不正确`
                     })
                 }
+            },
+
+            handleBuildInVariableChange ({ buildInVariableType, payload }) {
+                this.formData = Object.freeze({
+                    ...this.formData,
+                    buildInVariableType,
+                    payload: Object.assign(this.formData.payload, payload)
+                })
+                this.triggerChange()
+                this.triggerUpdateVariable()
+            },
+
+            triggerUpdateVariable () {
+                // 如果是自定义变量需要更新变量列表
+                if (this.formData.buildInVariableType === BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
+                    this.updateVariable({
+                        [this.formData.payload.customVariableCode]: this.formData.renderValue
+                    })
+                }
+            },
+
+            toggleShowProp () {
+                this.isShowProp = !this.isShowProp
             }
         }
     }
@@ -509,41 +653,52 @@
         .option-col-drag {
             cursor: move;
             margin-right: -10px;
-            padding-left: 220px;
+            padding-left: 215px;
         }
     }
     .modifier-prop {
         margin: 0 10px;
         .prop-name {
+            height: 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #313238;
+            word-break: keep-all;
+            width: 100%;
             display: flex;
             align-items: center;
-            height: 32px;
-            font-size: 14px;
-            color: #63656E;
-            word-break: keep-all;
-            max-width: calc(100% - 80px);
+            border-top: 1px solid #EAEBF0;
             .label {
-                border-bottom: 1px dashed #979ba5;
+                border-bottom: 1px dashed #313238;
                 cursor: pointer;
+                max-width: calc(100% - 65px);
+                line-height: 19px;
+                display: inline-block;
             }
             span {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            /* .icon-info-circle {
-                padding: 4px;
-                color: #979BA5;
-                font-size: 16px;
+            .icon-angle-down {
                 cursor: pointer;
-            } */
+                font-size: 20px;
+                margin-left: -5px;
+                margin-right: 3px;
+                transition: transform 200ms;
+                &.close {
+                    transform: rotate(-90deg);
+                }
+            }
         }
         .prop-action {
             width: 100%;
         }
-        &.slots {
-            border-top: 1px solid #ccc;
-            margin-top: 20px;
+        .prop-operation {
+            display: block;
+        }
+        .mb12 {
+            margin-bottom: 12px
         }
     }
 </style>

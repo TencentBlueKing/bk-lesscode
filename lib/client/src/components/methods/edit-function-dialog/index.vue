@@ -1,11 +1,14 @@
 <template>
     <transition name="fade">
         <article class="function-home" v-if="show">
-            <layout
+            <bk-resize-layout
                 class="function-main method-layout"
                 v-bkloading="{ isLoading }"
+                :border="false"
+                :collapsible="true"
+                :initial-divide="270"
             >
-                <section slot="left" class="func-left">
+                <section slot="aside" class="func-left">
                     <h3 class="left-title">
                         <div class="title-name">
                             <span>函数库</span>
@@ -72,23 +75,22 @@
                         </render-group>
                     </vue-draggable>
                 </section>
-
                 <edit-func-form
                     ref="functionForm"
+                    slot="main"
                     :func-data="chosenFunction"
                     :show-save-use="showSaveUse"
                     @save-use="handleSaveUse"
                     @success-save="refreshStatus"
                     @close="handleCloseDialog"
                 />
-            </layout>
+            </bk-resize-layout>
         </article>
     </transition>
 </template>
 
 <script>
     import { mapActions, mapGetters } from 'vuex'
-    import Layout from '@/components/ui/layout'
     import VersionTag from '@/components/ui/project-version-tag'
     import EditFuncForm from '@/components/methods/forms/edit-func-form'
     import RenderGroup from './children/group.vue'
@@ -96,7 +98,6 @@
 
     export default {
         components: {
-            Layout,
             EditFuncForm,
             VersionTag,
             RenderGroup,
@@ -215,7 +216,10 @@
 
             handleInsertFunction (renderGroup, functionData) {
                 // 设置函数名称不重复
-                const functionList = this.groupList.map(group => group.children).flat()
+                const functionList = [
+                    ...this.renderGroupList,
+                    ...this.groupList
+                ].map(group => group.children).flat()
                 while (functionList.some(x => x.funcName === functionData.funcName)) {
                     functionData.funcName += 'Copy'
                 }
@@ -359,10 +363,10 @@
         color: #63656e;
         .function-main {
             position: absolute;
-            width: 86%;
-            height: 74%;
-            top: 13%;
-            left: 7%;
+            width: 90%;
+            height: 80%;
+            top: 10%;
+            left: 5%;
             border-radius: 2px;
             box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.2);
         }

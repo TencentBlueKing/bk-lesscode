@@ -15,10 +15,12 @@
             <render-prop
                 v-if="item.type !== 'hidden'"
                 :component-type="componentType"
+                :component-id="componentId"
                 :describe="item"
                 :last-value="lastProps[key]"
                 :name="key"
                 :key="key"
+                :sync-slot="(val) => syncSlot(val, key)"
                 @on-change="handleChange" />
         </template>
     </div>
@@ -42,8 +44,13 @@
         },
         computed: {
             hasMaterialConfig () {
-                const keys = Object.keys(this.propsConfig).filter(key => this.propsConfig[key].display !== 'hidden')
-                return keys.length
+                let count = 0
+                Object.keys(this.propsConfig).forEach(propName => {
+                    if (this.propsConfig[propName].type !== 'hidden') {
+                        count++
+                    }
+                })
+                return count > 0
             }
         },
         created () {
@@ -56,10 +63,12 @@
             if (this.componentNode) {
                 const {
                     type,
+                    componentId,
                     material,
                     renderProps
                 } = this.componentNode
                 this.componentType = type
+                this.componentId = componentId
                 this.propsConfig = Object.freeze(material.props)
                 this.lastProps = Object.freeze(_.cloneDeep(renderProps))
                 this.material = material
@@ -68,7 +77,6 @@
                 if (event.target.componentId !== this.componentNode.componentId) {
                     return
                 }
-
                 this.lastProps = Object.freeze(_.cloneDeep(this.componentNode.renderProps))
             }, 100)
 
@@ -94,38 +102,84 @@
                 //     })
                 // }
             },
+            syncOtherProp (propName) {
+                if (['bk-charts', 'chart'].includes(this.componentNode.type)
+                    && ['options', 'remoteOptions'].includes(propName)) {
+                    // bk-charts, chart 组件的 remoteOptions 需要和 options 同步
+                    // remoteOptions 覆盖 options 的配置
+                    const propOfOptionsData = this.lastProps['options']
+                    const propOfRemoteOptionsData = this.lastProps['remoteOptions']
+
+                    const realOptionValue = Object.assign(
+                        {},
+                        _.cloneDeep(propOfOptionsData.renderValue),
+                        _.cloneDeep(propOfRemoteOptionsData.renderValue)
+                    )
+
+                    if (propOfOptionsData.format === 'value') {
+                        // format 为 value 替换所有配置
+                        this.componentNode.setProp('options', LC.utils.genPropFormatValue({
+                            ...propOfOptionsData,
+                            format: 'value',
+                            code: realOptionValue,
+                            renderValue: realOptionValue
+                        }))
+                    } else if (propOfOptionsData.format === 'variable') {
+                        // format 为 variable 类型只替换 renderValue
+                        this.componentNode.setProp('options', LC.utils.genPropFormatValue({
+                            ...propOfOptionsData,
+                            format: 'variable',
+                            renderValue: realOptionValue
+                        }))
+                    }
+                }
+            },
             /**
-             * @desc 部分场景需要通过 prop 的配置自动推导 slot 的配置
-             * @param { Object } propData
-             *
-             * eq:
              * 通过 table 的 data 推导出 table 列的配置
              */
-            syncSlot (propData) {
+            syncSlot (propData, key) {
                 const {
                     format,
-                    valueType,
-                    payload
+                    payload,
+                    renderValue = [],
+                    valueType
                 } = propData
 
                 // 需要同步 prop 配置到 slot 的场景
                 // 同时满足下面的条件
                 // - prop format 配置为值类型
-                // - prop 的值类型是数据源
-                if (format !== 'value' || !payload.sourceData) {
+                if (format !== 'value') {
                     return
                 }
-                if (valueType === 'table-data-source') {
-                    // 默认同步 slot.default
-                    const slotName = 'default'
+                // 同步 table 的 columns
+                if (key === 'data' && ['bk-table', 'el-table', 'folding-table', 'search-table'].includes(this.componentType)) {
+                    // 默认同步 第一个 slot
+                    const slotName = Object.keys(this.material.slots)[0]
                     const slotConfig = this.material.slots[slotName]
-                    const columns = payload.sourceData.columns
-                    const slotValue = columns.map(columnName => ({
-                        label: columnName,
-                        prop: columnName,
-                        sortable: false,
-                        type: ''
-                    }))
+                    // 通过数据表配置的 columns
+                    const dataSourceColumns = payload.sourceData?.columns || []
+                    // 通过值类型计算的 columns
+                    const firstValue = renderValue[0] || {}
+                    const valueColumns = Object.keys(firstValue)
+                    // 基于类型设置表头信息
+                    const columns = valueType === 'table-data-source' ? dataSourceColumns : valueColumns
+                    // 获取自定义column配置，这个配置比较复杂不覆盖
+                    const renderSlot = this.componentNode.renderSlots[slotName]
+                    const slotRenderValue = renderSlot.renderValue || []
+                    const customColumns = slotRenderValue.filter(column => column.type === 'customCol')
+                    // 返回 columns 的时候根据返回值渲染，否则渲染配置的值
+                    const newColumns = columns.length > 0
+                        ? columns.map(columnName => ({
+                            label: columnName,
+                            prop: columnName,
+                            sortable: false,
+                            type: ''
+                        }))
+                        : slotConfig.val
+                    const slotValue = [
+                        ...newColumns,
+                        ...customColumns
+                    ]
                     this.componentNode.setRenderSlots({
                         format: 'value',
                         component: Array.isArray(slotConfig.name) ? slotConfig.name[0] : slotConfig.name,
@@ -151,7 +205,7 @@
                     ...this.lastProps,
                     [propName]: propData
                 })
-                this.syncSlot(propData)
+                this.syncOtherProp(propName)
             }, 60)
         }
     }

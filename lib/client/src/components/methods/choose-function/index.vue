@@ -8,6 +8,7 @@
             trigger="click"
             theme="light"
             ext-cls="g-popover-empty-padding"
+            class="choose-function-popover"
             :tippy-options="{ arrow: false }"
             :on-show="getFunctionListFromApi"
         >
@@ -17,6 +18,23 @@
                 :value="renderChoosenFunction.methodCode"
                 readonly
             />
+            <i
+                :class="[
+                    'choose-icon bk-icon icon-angle-down',
+                    {
+                        'hover-hidden': renderChoosenFunction.methodCode
+                    }
+                ]"
+            ></i>
+            <i
+                :class="[
+                    'choose-icon bk-icon icon-close-circle-shape',
+                    {
+                        'hover-show': renderChoosenFunction.methodCode
+                    }
+                ]"
+                @click.stop="handleClear"
+            ></i>
             <div slot="content">
                 <section class="choose-function" v-bkloading="{ isLoading }">
                     <bk-tab
@@ -63,7 +81,9 @@
                                                 :key="functionData.funcName"
                                                 @click="handleChooseFunction(functionData.funcCode)"
                                             >
-                                                <span class="function-item-name" v-bk-overflow-tips>{{ functionData.funcCode }}</span>
+                                                <span class="function-item-name" v-bk-overflow-tips>
+                                                    {{ functionData.funcName }}（{{ functionData.funcCode }}）
+                                                </span>
                                                 <i
                                                     class="bk-icon icon-edit-line function-tool mt10"
                                                     @click.stop="handleEditFunction(functionData)"
@@ -75,7 +95,7 @@
                                 <bk-button
                                     class="function-add"
                                     text
-                                    @click="handleShowFunction"
+                                    @click="handleCreateFunction"
                                 >
                                     <i class="bk-icon icon-plus-circle"></i>新增
                                 </bk-button>
@@ -96,7 +116,7 @@
                                     <span class="function-item-name" v-bk-overflow-tips>{{ functionData.funcName }}</span>
                                     <span
                                         class="function-tool"
-                                        @click="handleCreateFunction(functionData)"
+                                        @click="handleInsertFunction(functionData)"
                                     >引用</span>
                                 </li>
                             </ul>
@@ -267,13 +287,15 @@
                 this.handleClose()
             },
 
-            handleShowFunction () {
-                this.clearStatus()
-                this.showFunctionDialog()
-                this.handleClose()
+            // 新增函数
+            handleCreateFunction () {
+                this.handleInsertFunction({
+                    funcName: 'Untitled'
+                })
             },
 
-            handleCreateFunction ({ id, ...functionData }) {
+            // 打开函数框，新增一条数据
+            handleInsertFunction ({ id, ...functionData }) {
                 this.clearStatus()
                 this.insertFunctionData = {
                     ...getDefaultFunction(),
@@ -295,6 +317,11 @@
 
             handleClose () {
                 this.$refs['mainPopoverRef'].hideHandler()
+            },
+
+            handleClear () {
+                this.renderChoosenFunction.methodCode = ''
+                this.$emit('clear')
             }
         }
     }
@@ -306,37 +333,50 @@
 
     .choose-function-main {
         position: relative;
-        background: #f0f1f5;
-        border-radius: 2px;
-        padding: 8px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+    }
+    .choose-function-popover {
+        width: 100%;
+        ::v-deep .bk-tooltip-ref {
+            width: 100%;
+        }
         &:hover {
-            box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
+            .hover-hidden {
+                display: none;
+            }
+            .hover-show {
+                display: block;
+            }
         }
     }
     .panel-item {
         display: flex;
         align-items: center;
-        margin-top: 10px;
+        margin-top: 8px;
         width: 100%;
     }
     .icon-minus-circle {
-        margin: 0 3px;
+        margin: 0 3px 0 8px;
         cursor: pointer;
+        color: #979ba5;
+        &:hover {
+            color: #63656e;
+        }
     }
     .panel-add {
         font-size: 12px;
-        margin: 10px 0 0;
+        margin: 8px 0 0;
         line-height: 16px;
         cursor: pointer;
-        &:hover {
-            color: #3a84ff;
-        }
+        color: #3A84FF;
         i {
             padding-right: 2px;
-            font-size: 16px;
+        }
+        .icon-plus-circle {
+            margin-right: 4px;
+            font-size: 14px;
         }
     }
     .choose-input {
@@ -345,6 +385,28 @@
         ::v-deep .bk-form-input[readonly] {
             background-color: #ffffff !important;
             border-color: #c4c6cc !important;
+            cursor: pointer;
+        }
+    }
+    .choose-icon {
+        cursor: pointer;
+        position: absolute;
+        right: 4px;
+        top: 4px;
+        color: #979ba5;
+        font-size: 22px;
+        &.icon-close-circle-shape {
+            display: none;
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            text-align: center;
+            font-size: 14px;
+            z-index: 100;
+            color: #c4c6cc;
+            &:hover {
+                color: #979ba5;
+            }
         }
     }
     .choose-function {
@@ -373,6 +435,7 @@
             text-align: left;
             font-size: 12px;
             .icon-plus-circle {
+                font-size: 14px;
                 margin-right: 4px;
                 vertical-align: text-bottom;
             }
@@ -451,10 +514,13 @@
             background-color: #fff;
         }
     }
-    ::v-deep .tippy-active .choose-input .bk-input-text input {
-        border-color: #3a84ff !important;
-    }
-    ::v-deep .bk-tooltip, ::v-deep .bk-tooltip-ref {
-        width: 100%;
+    ::v-deep .tippy-active {
+        .icon-angle-down {
+            transform: rotate(180deg);
+        }
+        .choose-input .bk-input-text input {
+            border-color: #3a84ff !important;
+            box-shadow: 0 0 4px rgb(58 132 255 / 40%);
+        }
     }
 </style>

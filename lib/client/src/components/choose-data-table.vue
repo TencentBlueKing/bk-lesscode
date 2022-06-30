@@ -1,6 +1,13 @@
 <template>
     <section>
-        <bk-select @change="chooseTable" :value="value" searchable>
+        <bk-select
+            searchable
+            :value="value"
+            :loading="isLoadingList"
+            @selected="handleSelectTable"
+            @toggle="handleToggleSelect"
+            @clear="handleClearTable"
+        >
             <bk-option v-for="table in tableList"
                 :key="table.tableName"
                 :id="table.tableName"
@@ -16,7 +23,7 @@
             size="small"
             :disabled="!value"
             :loading="isLoading"
-            @click="chooseTable(value)"
+            @click="handleSelectTable(value)"
         >获取数据</bk-button>
     </section>
 </template>
@@ -24,7 +31,8 @@
 <script lang="ts">
     import {
         defineComponent,
-        ref
+        ref,
+        onBeforeMount
     } from '@vue/composition-api'
     import { messageError } from '@/common/bkmagic'
     import store from '@/store'
@@ -35,12 +43,13 @@
             value: String
         },
 
-        setup (_, { emit }) {
+        setup (props, { emit }) {
             const isLoading = ref(false)
+            const isLoadingList = ref(false)
             const projectId = router?.currentRoute?.params?.projectId
-            const tableList = store?.state?.dataSource?.tableList
+            const tableList = ref([])
 
-            const chooseTable = (tableName) => {
+            const handleSelectTable = (tableName) => {
                 isLoading.value = true
                 const queryData = {
                     projectId,
@@ -48,9 +57,9 @@
                     tableName
                 }
                 store.dispatch('dataSource/getOnlineTableDatas', queryData).then((data) => {
-                    const table = tableList.find((table) => table.tableName === tableName)
+                    const table = tableList.value.find((table) => table.tableName === tableName)
                     emit('update:value', tableName)
-                    emit('choose', tableName, data, table)
+                    emit('choose', { tableName, data, table })
                 }).catch((error) => {
                     messageError(error.message || error)
                 }).finally(() => {
@@ -58,15 +67,45 @@
                 })
             }
 
+            const handleToggleSelect = (isOpen) => {
+                if (isOpen) {
+                    getTableList()
+                }
+            }
+
+            const getTableList = () => {
+                isLoadingList.value = true
+                store.dispatch('dataSource/list', { projectId }).then((data) => {
+                    tableList.value = data.list || []
+                }).finally(() => {
+                    isLoadingList.value = false
+                })
+            }
+
             const handleCreate = () => {
                 window.open(`/project/${projectId}/data-source-manage/`, '_blank')
             }
 
+            const handleClearTable = () => {
+                emit('clear')
+            }
+
+            onBeforeMount(() => {
+                getTableList()
+                // 初始化的时候，需要同步获取最新的表数据
+                if (props.value) {
+                    handleSelectTable(props.value)
+                }
+            })
+
             return {
                 isLoading,
+                isLoadingList,
                 tableList,
-                chooseTable,
-                handleCreate
+                handleSelectTable,
+                handleCreate,
+                handleToggleSelect,
+                handleClearTable
             }
         }
     })

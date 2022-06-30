@@ -41,11 +41,11 @@
                             :required="true"
                             :desc="getItemConfig(item.type, 'desc')">
                             <choose-function
-                                class="choose-function"
                                 v-if="item.type === 'validator'"
                                 :choosen-function="{ methodCode: item[item.type] }"
                                 :show-add-params="false"
                                 @change="val => handleChange(val, item.type, index)"
+                                @clear="handleChange('', item.type, index)"
                             />
                             <bk-input
                                 v-else
@@ -239,12 +239,6 @@
             }
             i {
                 padding-right: 2px;
-            }
-        }
-        .choose-function {
-            padding: 0;
-            &:hover {
-                box-shadow: none;
             }
         }
     }

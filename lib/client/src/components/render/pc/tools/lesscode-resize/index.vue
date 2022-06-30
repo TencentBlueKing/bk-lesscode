@@ -21,15 +21,22 @@
             {{ size.width }} x {{ size.height }}
         </div>
         <div
-            ref="fullWidthRef"
-            v-bk-tooltips="'宽度撑满'"
-            :class="$style['btn']"
-            :style="fullWidthStyles"
-            @click="handleFullWidth">
-            <i class="bk-drag-icon bk-drag-zuoyouchengkai" />
+            :class="$style['width-actions']"
+            :style="fullWidthStyles">
+            <div
+                v-bk-tooltips.right="'宽度随内容自适应'"
+                :class="[$style['btn'], $style['auto-width']]"
+                @click="handleAutoWidth">
+                <i class="bk-drag-icon bk-drag-xiangxiazishiying" />
+            </div>
+            <div
+                v-bk-tooltips.right="'宽度撑满'"
+                :class="$style['btn']"
+                @click="handleFullWidth">
+                <i class="bk-drag-icon bk-drag-zuoyouchengkai" />
+            </div>
         </div>
         <div
-            ref="autoHeightRef"
             v-bk-tooltips.bottom="'高度随内容自适应'"
             :class="$style['btn']"
             :style="autoHeightStyles"
@@ -49,6 +56,7 @@
     import useResize from './hooks/use-resize'
     import useAutoHeight from './hooks/use-auto-height'
     import useFullWidth from './hooks/use-full-width'
+    import useAutoWidth from './hooks/use-auto-width'
 
     const baseStyles = {
         position: 'absolute',
@@ -75,8 +83,6 @@
 
             const resizeRef = ref()
             const tipRef = ref()
-            const fullWidthRef = ref()
-            const autoHeightRef = ref()
 
             /**
              * @desc 选中状态
@@ -133,7 +139,7 @@
                     state.dotWidthStyles = Object.assign({}, dotBaseStyle, {
                         top: `${top - containerTop + height / 2 - halfDotSize}px`,
                         left: `${right - halfDotSize - containerLeft}px`,
-                        cursor: 'ew-resize'
+                        cursor: 'col-resize'
                     })
                     // 100% 宽度按钮的位置
                     let fullWidthBtnLeft = right - containerLeft + actionBtnOffset
@@ -149,7 +155,7 @@
                     state.dotHeightStyles = Object.assign({}, dotBaseStyle, {
                         top: `${top + height - halfDotSize - containerTop}px`,
                         left: `${left - containerLeft + width / 2 - halfDotSize}px`,
-                        cursor: 'ns-resize'
+                        cursor: 'row-resize'
                     })
                     // 高度自适应的按钮
                     // free-layout 不支持该功能，必须给定 height
@@ -187,6 +193,8 @@
 
             const handleFullWidth = useFullWidth()
 
+            const handleAutoWidth = useAutoWidth()
+
             return {
                 ...toRefs(state),
                 size,
@@ -194,14 +202,13 @@
                 activeComponentData,
                 resizeRef,
                 tipRef,
-                fullWidthRef,
-                autoHeightRef,
                 handleResizeWidth,
                 handleResizeHeight,
                 handleResizeBoth,
                 handleShowMenu,
                 handleAutoHeight,
-                handleFullWidth
+                handleFullWidth,
+                handleAutoWidth
             }
         }
     }
@@ -225,6 +232,23 @@
             background: #fff;
         }
     }
+    .width-actions{
+        position: relative;
+        &:hover{
+            .auto-width{
+                transform: translateY(calc(-100% - 6px));
+                opacity: 1;
+                &:after{
+                    content: '';
+                    position: absolute;
+                    height: 10px;
+                    right: 0;
+                    bottom: -10px;
+                    left: 0;
+                }
+            }
+        }
+    }
     .btn{
         display: flex;
         justify-content: center;
@@ -239,6 +263,17 @@
         cursor: pointer;
         &:hover{
             color: #63656E;
+        }
+    }
+    .auto-width{
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: -1;
+        transition: all .15s;
+        :global(.bk-drag-icon){
+            transform: rotateZ(-90deg);
         }
     }
 </style>

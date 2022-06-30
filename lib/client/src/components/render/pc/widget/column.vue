@@ -10,32 +10,30 @@
 -->
 
 <template>
-    <div
+    <draggable
+        ref="draggable"
         :class="{
             [$style['column']]: true,
             [$style['render-grid-empty']]: renderGrid.isColumnEmpty,
             [$style['empty']]: componentData.children.length < 1
+        }"
+        :sort="true"
+        :list="componentData.slot.default"
+        :component-data="componentData"
+        :group="{
+            name: 'component',
+            pull: true,
+            put: [
+                'layout',
+                'component'
+            ]
         }">
-        <draggable
-            ref="draggable"
-            :sort="true"
-            :list="componentData.slot.default"
-            :component-data="componentData"
-            :group="{
-                name: 'component',
-                pull: true,
-                put: [
-                    'layout',
-                    'component'
-                ]
-            }">
-            <resolve-component
-                v-for="slotComponentData in componentData.slot.default"
-                ref="component"
-                :key="slotComponentData.renderKey"
-                :component-data="slotComponentData" />
-        </draggable>
-    </div>
+        <resolve-component
+            v-for="slotComponentData in componentData.slot.default"
+            ref="component"
+            :key="slotComponentData.renderKey"
+            :component-data="slotComponentData" />
+    </draggable>
 </template>
 <script>
     import LC from '@/element-materials/core'
@@ -73,9 +71,11 @@
 
             LC.addEventListener('appendChild', nodeCallback)
             LC.addEventListener('moveChild', nodeCallback)
+            LC.addEventListener('insertAfter', nodeCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('appendChild', nodeCallback)
                 LC.removeEventListener('moveChild', nodeCallback)
+                LC.removeEventListener('insertAfter', nodeCallback)
             })
         },
         methods: {
@@ -90,19 +90,20 @@
                     top: boxTop,
                     left: boxLeft
                 } = this.$refs.draggable.$el.getBoundingClientRect()
-
                 const $childEl = childNode.$elm
-
                 const {
                     top: componentTop,
                     left: componentLeft
                 } = $childEl.getBoundingClientRect()
-                
-                if (componentTop > boxTop) {
-                    childNode.setStyle('marginTop', '10px')
+                const styles = {}
+                if (componentTop > boxTop + 3) {
+                    styles['marginTop'] = '8px'
                 }
-                if (componentLeft > boxLeft) {
-                    childNode.setStyle('marginLeft', '10px')
+                if (componentLeft > boxLeft + 3) {
+                    styles['marginLeft'] = '8px'
+                }
+                if (Object.keys(styles).length > 0) {
+                    childNode.setStyle(styles)
                 }
             }
         }
@@ -113,25 +114,29 @@
         position: relative;
         width: 100% !important;
         height: 100% !important;
+        
         &.render-grid-empty{
             min-height: 34px !important;
         }
-        &.empty{
-            background: #FAFBFD;
-            &::before{
-                content: "请拖入组件";
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 14px;
-                color: #C4C6CC;
-                pointer-events: all;
-            }
+    }
+    .render-grid-empty{
+        min-height: 64px !important;
+    }
+    .empty{
+        background: #FAFBFD;
+        &::before{
+            content: "请拖入组件";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #C4C6CC;
+            pointer-events: all;
         }
     }
 </style>

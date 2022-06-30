@@ -19,7 +19,7 @@
                 width: 290
             }">
             <span :class="{ 'under-line': tips }">
-                {{ title === undefined ? ((name === 'remoteOptions' ? '动态配置' : '远程函数')) : title }}
+                {{ title === undefined ? ((name === 'remoteOptions' ? '动态配置' : '函数')) : title }}
             </span>
             <span
                 class="remote-example"
@@ -31,11 +31,13 @@
             <choose-function
                 :choosen-function="remoteData"
                 @change="changeFunc"
+                @clear="handleClear"
             ></choose-function>
             <bk-button
                 @click="getApiData"
+                :loading="isGettingApiData"
                 theme="primary"
-                class="mt10"
+                class="mt12"
                 size="small">
                 获取数据
             </bk-button>
@@ -50,7 +52,7 @@
     import { mapGetters } from 'vuex'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
     import { bus } from '@/common/bus'
-    import { replaceFuncKeyword, replaceFuncParam } from 'shared/function'
+    import { replaceFuncKeyword, replaceFuncParam, getRemoteFunctionInfo } from 'shared/function'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable'
     import remoteExample from './remote-example'
 
@@ -71,13 +73,11 @@
             },
             change: {
                 type: Function,
-                default: () => {
-                }
+                default: () => {}
             },
             remoteValidate: {
                 type: Function,
-                default: () => {
-                }
+                default: () => {}
             },
             autoGetData: {
                 type: Boolean,
@@ -88,6 +88,9 @@
             },
             tips: {
                 type: String
+            },
+            describe: {
+                type: Object
             }
         },
         data () {
@@ -97,18 +100,22 @@
                     params: []
                 },
                 usedMethodMap: {},
-                usedVariableMap: {}
+                usedVariableMap: {},
+                isGettingApiData: false
             }
         },
         computed: {
             ...mapGetters('functions', ['functionList']),
             ...mapGetters('variable', ['variableList']),
             exampleData () {
-                return { name: this.name, value: this.defaultValue }
+                return { name: this.name, value: this.describe.val }
             }
         },
         created () {
             this.remoteData = Object.assign({}, this.remoteData, this.payload)
+            if (this.autoGetData && this.remoteData.methodCode) {
+                this.getApiData()
+            }
         },
         methods: {
             changeFunc (val) {
@@ -117,6 +124,11 @@
                 if (this.autoGetData) {
                     this.getApiData()
                 }
+            },
+
+            handleClear () {
+                this.remoteData = Object.assign(this.remoteData, { methodCode: '' })
+                this.change(this.name, this.defaultValue, this.type, this.remoteData)
             },
 
             getVariableVal (variable) {
@@ -134,27 +146,29 @@
                 return value
             },
 
+            recordVariable (variableCode, funcName) {
+                const variableCodes = Array.isArray(variableCode) ? variableCode : [variableCode]
+                variableCodes.forEach((code) => {
+                    const curVar = this.variableList.find((variable) => (variable.variableCode === code))
+                    if (curVar) {
+                        this.usedVariableMap[code] = this.getVariableVal(curVar)
+                    } else {
+                        throw new Error(`函数【${funcName}】里引用的变量【${code}】不存在，请检查`)
+                    }
+                })
+            },
+
             processVarInFunApiData (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
-                    const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                    if (curVar) {
-                        this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
-                        return `this.${variableCode}`
-                    } else {
-                        throw new Error(`函数【${funcName}】Api Data里引用的变量【${variableCode}】不存在，请检查`)
-                    }
+                    this.recordVariable(variableCode, funcName)
+                    return `this.${variableCode}`
                 })
             },
 
             processVarInFunApiUrl (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
-                    const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                    if (curVar) {
-                        this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
-                        return `\${this.${variableCode}}`
-                    } else {
-                        throw new Error(`函数【${funcName}】Api Url里引用的变量【${variableCode}】不存在，请检查`)
-                    }
+                    this.recordVariable(variableCode, funcName)
+                    return `\${this.${variableCode}}`
                 })
             },
 
@@ -173,10 +187,15 @@
                 const funcParams = (returnMethod.funcParams || []).join(', ')
                 if (returnMethod.funcType === 1) {
                     const remoteParams = (returnMethod.remoteParams || []).join(', ')
+                    const {
+                        apiDataString,
+                        codes
+                    } = getRemoteFunctionInfo(returnMethod)
+                    this.recordVariable(codes, returnMethod.funcName)
                     const data = `{
                         url: \`${this.processVarInFunApiUrl(returnMethod.funcApiUrl, returnMethod.funcName)}\`,
                         type: '${returnMethod.funcMethod}',
-                        apiData: ${this.processVarInFunApiData(returnMethod.funcApiData, returnMethod.funcName) || '\'\''},
+                        apiData: ${apiDataString},
                         withToken: ${returnMethod.withToken}
                     }`
                     returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { return this.$store.dispatch('getApiData', ${data}).then((${remoteParams}) => { ${returnMethod.funcBody} }) };`
@@ -302,18 +321,20 @@
                 }
                 
                 try {
+                    this.isGettingApiData = true
                     const sandBox = this.createSandBox(this.usedVariableMap)
                     const res = await sandBox.exec(methodStr, this.remoteData.params)
                     let message = this.remoteValidate(res)
                     if (message) {
+                        // 选择函数已经成功设置 payload，rendervalue 因为数据校验问题没有同步过去。所以该函数选择成功，但是有异常提示
                         message = '数据源设置成功，以下问题可能会导致组件表现异常，请检查：' + message
-                        this.$bkMessage({ theme: 'warning', message })
+                        this.messageWarn(message)
                     } else {
                         this.change(this.name, res, this.type, JSON.parse(JSON.stringify(this.remoteData)))
                         if (this.name === 'remoteOptions') {
                             bus.$emit('update-chart-options', res)
                         }
-                        this.$bkMessage({ theme: 'success', message: '获取数据成功', limit: 1 })
+                        // this.$bkMessage({ theme: 'success', message: '获取数据成功', limit: 1 })
                     }
                 } catch (error) {
                     this.$bkMessage({
@@ -321,6 +342,8 @@
                         message: error.message || error || '获取数据失败，请检查函数是否正确',
                         limit: 1
                     })
+                } finally {
+                    this.isGettingApiData = false
                 }
             },
 
@@ -335,14 +358,9 @@
     .remote-title {
         display: flex;
         justify-content: space-between;
-        margin: 10px 0;
-        line-height: 24px;
+        margin: 12px 0 6px;
+        line-height: 20px;
         font-size: 12px;
-
-        &:first-child {
-            margin-top: 0;
-        }
-
     }
     .under-line {
         line-height: 24px;
@@ -364,5 +382,8 @@
             font-weight: normal;
             color: #979ba5;
         }
+    }
+    .mt12 {
+        margin-top: 12px;
     }
 </style>

@@ -1,5 +1,12 @@
 <template>
-    <choose-data-table :value="chooseTableName" @choose="chooseTable"></choose-data-table>
+    <section>
+        <span class="g-prop-sub-title g-mb8">数据表</span>
+        <choose-data-table
+            :value="chooseTableName"
+            @choose="chooseTable"
+            @clear="clearTable"
+        ></choose-data-table>
+    </section>
 </template>
 
 <script lang="ts">
@@ -41,23 +48,43 @@
             batchUpdate: {
                 type: Function,
                 default: () => {}
+            },
+            describe: {
+                type: Object
             }
         },
 
         setup (props) {
+            // copy type 防止响应式更新
+            const type = props.type
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
 
-            const chooseTable = (tableName, result, table) => {
+            const chooseTable = ({ tableName, data, table }) => {
                 chooseTableName.value = tableName
                 propStatus.change.value(
                     props.name,
-                    result.list,
-                    props.type,
+                    data.list,
+                    type,
                     {
                         sourceData: {
                             tableName,
-                            columns: table.columns.map(({ name }) => name)
+                            // 表示数据表的表头信息
+                            columns: table?.columns?.map(column => column.name) || []
+                        }
+                    }
+                )
+            }
+
+            const clearTable = () => {
+                chooseTableName.value = ''
+                propStatus.change.value(
+                    props.name,
+                    props.describe.val,
+                    type,
+                    {
+                        sourceData: {
+                            tableName: ''
                         }
                     }
                 )
@@ -65,7 +92,8 @@
 
             return {
                 chooseTableName,
-                chooseTable
+                chooseTable,
+                clearTable
             }
         }
     })

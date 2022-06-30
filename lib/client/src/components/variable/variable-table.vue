@@ -74,14 +74,24 @@
                 <bk-button @click="handleDeleteCancel" :disabled="deleteObj.loading">取消</bk-button>
             </div>
         </bk-dialog>
+
+        <variable-form
+            :is-show.sync="variableFormData.isShow"
+            :form-data="variableFormData.formData"
+        />
     </section>
 </template>
 
 <script>
     import dayjs from 'dayjs'
     import { mapGetters, mapActions, mapState } from 'vuex'
+    import VariableForm from '@/components/variable/variable-form/index.vue'
 
     export default {
+        components: {
+            VariableForm
+        },
+
         props: {
             simpleDisplay: {
                 type: Boolean,
@@ -105,7 +115,11 @@
                     code: '',
                     loading: false
                 },
-                projectVariableList: []
+                projectVariableList: [],
+                variableFormData: {
+                    isShow: false,
+                    formData: {}
+                }
             }
         },
 
@@ -132,7 +146,7 @@
         },
 
         methods: {
-            ...mapActions('variable', ['deleteVariable', 'setVariableFormData', 'getAllVariable', 'getAllProjectVariable']),
+            ...mapActions('variable', ['deleteVariable', 'getAllVariable', 'getAllProjectVariable']),
 
             // 变量存在页面变量使用全局变量的情况，所以需要获取应用所有变量来展示
             getProjectVariableList () {
@@ -157,11 +171,13 @@
                 return tip
             },
 
-            showVariableForm (form = {}) {
-                const isDisable = this.getEditStatus(form)
+            showVariableForm (formData = {}) {
+                const isDisable = this.getEditStatus(formData)
                 if (isDisable) return
-                const data = { show: true, form }
-                this.setVariableFormData(data)
+                this.variableFormData = {
+                    isShow: true,
+                    formData
+                }
             },
 
             showDeleteVariable (row) {

@@ -33,15 +33,15 @@
                     placements: ['bottom']
                 }" />
         </div>
-        <draw-layout
-            v-if="!isContentLoading && !isCustomComponentLoading"
-            class="lesscode-editor-page-content">
-            <material-panel slot="left" />
-            <operation-area :operation="operationType" />
-            <modifier-panel slot="right" />
-        </draw-layout>
-        <novice-guide ref="guide" :data="guideStep" />
-        <variable-form />
+        <template v-if="!isContentLoading && !isCustomComponentLoading">
+            <draw-layout
+                class="lesscode-editor-page-content">
+                <material-panel slot="left" />
+                <operation-area :operation="operationType" />
+                <modifier-panel slot="right" />
+            </draw-layout>
+            <novice-guide ref="guide" :data="guideStep" />
+        </template>
         <save-template-dialog />
     </main>
 </template>
@@ -51,7 +51,6 @@
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
     import NoviceGuide from '@/components/novice-guide'
-    import VariableForm from '@/components/variable/variable-form'
     import ExtraLinks from '@/components/ui/extra-links'
     import SaveTemplateDialog from '@/components/template/save-template-dialog'
     import DrawLayout from './components/draw-layout'
@@ -64,11 +63,11 @@
     import { syncVariableValue } from './components/utils'
 
     console.dir(LC)
+    window.LC = LC
 
     export default {
         components: {
             NoviceGuide,
-            VariableForm,
             ExtraLinks,
             SaveTemplateDialog,
             DrawLayout,
@@ -148,8 +147,6 @@
                 // 卸载的时候，清除 storage 数据
                 LC.removeEventListener('unload', this.clearPerviewData)
             })
-
-            this.registerCustomComponent()
 
             // 获取并设置当前版本信息
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
@@ -231,23 +228,31 @@
                 this.isCustomComponentLoading = true
                 // 包含所有的自定组件
                 window.__innerCustomRegisterComponent__ = {}
-                const script = document.createElement('script')
-                script.src = `/${parseInt(this.projectId)}/${parseInt(this.pageId)}/component/register.js`
-                script.onload = () => {
-                    window.customCompontensPlugin.forEach((callback) => {
-                        const [
-                            config,
-                            componentSource
-                        ] = callback(Vue)
-                        window.__innerCustomRegisterComponent__[config.type] = componentSource
-                        // 注册自定义组件 material
-                        LC.registerMaterial(config.type, config)
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script')
+                    script.src = `/${this.projectId}/${this.pageId}/component/register.js`
+                    script.onload = () => {
+                        window.customCompontensPlugin.forEach((callback) => {
+                            const [
+                                config,
+                                componentSource
+                            ] = callback(Vue)
+                            window.__innerCustomRegisterComponent__[config.type] = componentSource
+                            // 注册自定义组件 material
+                            LC.registerMaterial(config.type, config)
+                        })
+                        this.isCustomComponentLoading = false
+                        resolve()
+                    }
+                    script.onerror = () => {
+                        this.isCustomComponentLoading = false
+                        reject(new Error('自定义组件注册失败'))
+                    }
+                    document.body.appendChild(script)
+                    this.$once('hook:beforeDestroy', () => {
+                        document.body.removeChild(script)
+                        window.__innerCustomRegisterComponent__ = {}
                     })
-                    this.isCustomComponentLoading = false
-                }
-                document.body.appendChild(script)
-                this.$once('hook:beforeDestroy', () => {
-                    document.body.removeChild(script)
                 })
             },
             /**
@@ -256,7 +261,7 @@
             async fetchData () {
                 try {
                     this.isContentLoading = true
-                    const [pageDetail, pageList, projectDetail, functionData] = await Promise.all([
+                    const [pageDetail, pageList, projectDetail, functionData, apiData] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.pageId }),
                         this.$store.dispatch('page/getList', {
                             projectId: this.projectId,
@@ -267,6 +272,10 @@
                             projectId: this.projectId,
                             versionId: this.versionId
                         }),
+                        this.$store.dispatch('api/getCategoryAndApiList', {
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }),
                         this.$store.dispatch('page/pageLockStatus', { pageId: this.pageId }),
                         this.$store.dispatch('route/getProjectPageRoute', {
                             projectId: this.projectId,
@@ -274,7 +283,8 @@
                         }),
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId }),
                         this.$store.dispatch('components/componentNameMap'),
-                        this.$store.dispatch('dataSource/list', { projectId: this.projectId })
+                        this.$store.dispatch('dataSource/list', { projectId: this.projectId }),
+                        this.registerCustomComponent()
                     ])
 
                     await this.$store.dispatch('page/getPageSetting', {
@@ -294,6 +304,7 @@
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
                     this.$store.commit('functions/setFunctionData', functionData)
+                    this.$store.commit('api/setApiData', apiData)
 
                     syncVariableValue(pageDetail.content, variableList)
 
@@ -336,7 +347,7 @@
             handleUpdatePreviewContent (setting = {}) {
                 const defaultSetting = {
                     isGenerateNav: false,
-                    id: this.projectId + this.pageDetail.pageCode,
+                    id: this.projectId + this.pageDetail.pageCode + this.versionId,
                     curTemplateData: {},
                     storageKey: 'ONLINE_PREVIEW_CONTENT',
                     types: ['reload', 'update_style']
@@ -346,7 +357,7 @@
             handleUpdateNavPerview (setting = {}) {
                 const defaultSetting = {
                     isGenerateNav: true,
-                    id: this.projectId + this.pageRoute.layoutPath,
+                    id: this.projectId + this.pageRoute.layoutPath + this.versionId,
                     curTemplateData: this.curTemplateData,
                     storageKey: 'ONLINE_PREVIEW_NAV',
                     types: ['reload']

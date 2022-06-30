@@ -7,6 +7,10 @@
             SrcInput
         },
         props: {
+            componentType: {
+                type: String,
+                required: true
+            },
             defaultValue: {
                 type: String,
                 required: true
@@ -44,6 +48,11 @@
                     otherProps.triggerText = '选择文件'
                     otherProps.placeholder = '输入或选择文件作为链接地址'
                 }
+
+                if (props.componentType.indexOf('image') !== -1 || props.componentType.indexOf('avatar') !== -1) {
+                    otherProps.fileType = 'img'
+                }
+
                 return otherProps
             })
 

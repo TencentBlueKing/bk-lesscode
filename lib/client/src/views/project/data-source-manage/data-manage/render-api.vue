@@ -75,7 +75,6 @@
     import {
         FUNCTION_METHOD
     } from 'shared/function/'
-    import router from '@/router'
     import copyIcon from '@/components/copy-icon.js'
     import monaco from '@/components/monaco.vue'
 
@@ -85,8 +84,8 @@
     }
 
     // 默认提供的函数
-    const getDataApiList = (tableName, projectId, columns) => {
-        const url = `/data-source/user/projectId/${projectId}/tableName/${tableName}`
+    const getDataApiList = (tableName, columns) => {
+        const url = `/data-source/user/tableName/${tableName}`
         const dataObject = columns.reduce((acc, cur) => {
             acc[cur.name] = `${cur.name}的值`
             return acc
@@ -162,13 +161,12 @@
             activeTable: Object as PropType<ITable>
         },
         setup (props) {
-            const projectId = router?.currentRoute?.params?.projectId
             const activeTable = toRef(props, 'activeTable')
             const isShowDetail = ref(false)
             const showDetailValue = ref('')
             const detailTitle = ref('')
 
-            const apiList = computed(() => getDataApiList(activeTable.value.tableName, projectId, activeTable.value.columns))
+            const apiList = computed(() => getDataApiList(activeTable.value.tableName, activeTable.value.columns))
 
             const showDetail = (title, value) => {
                 detailTitle.value = title

@@ -25,6 +25,14 @@
                 type: Object,
                 default: () => ({})
             },
+            accept: {
+                type: String,
+                default: 'image/*,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.pdf,.zip,.tar,.gz'
+            },
+            showTips: {
+                type: Boolean,
+                default: true
+            },
             maxlength: {
                 type: Number,
                 default: 10
@@ -158,11 +166,11 @@
     <div class="upload">
         <div class="upload-trigger" @click="handleClickUpload">
             <bk-button theme="primary">点击上传</bk-button>
-            <input ref="inputFileEl" type="file" multiple accept="image/*" @change="handleChangeFiles">
+            <input ref="inputFileEl" type="file" multiple :accept="accept" @change="handleChangeFiles">
         </div>
         <slot name="tip" v-bind="{ maxImageSize, maxFileSize }">
-            <div class="tip">
-                支持上传图片大小 {{maxImageSize}}M 以内，格式支持 jpg，png，gif，svg 等
+            <div class="tip" v-if="showTips">
+                支持上传图片大小 {{maxImageSize}}M 以内，文件大小 {{maxFileSize}}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等
             </div>
         </slot>
     </div>

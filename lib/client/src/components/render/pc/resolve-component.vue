@@ -21,7 +21,8 @@
         role="component-root"
         :style="Object.assign({}, componentData.style, safeStyles)"
         v-bind="{
-            [componentData.componentId]: ''
+            [componentData.componentId]: '',
+            ...bindAttrsAlign
         }"
         @mousedown.stop="handleMousedown"
         @mousemove="handleMousemove"
@@ -43,7 +44,7 @@
     const getRenderStyleDisplayValue = display => {
         switch (display) {
             case 'flex':
-            case 'gird':
+            case 'grid':
             case 'block':
                 return 'block'
             case 'inline-flex':
@@ -168,6 +169,7 @@
                 }
             }
             return {
+                bindAttrsAlign: {},
                 // 默认会继承组件的 style 配置，如果直接继承有些样式会造成排版问题需要重置
                 safeStyles: Object.assign({}, safeStyles),
                 // 百分比宽度时需要修正相对父级的值
@@ -184,6 +186,7 @@
             isShadowComponent () {
                 const shadowComMap = {
                     'free-layout': true,
+                    'render-block': true,
                     'render-grid': true,
                     'render-column': true,
                     'widget-form': true,
@@ -204,6 +207,8 @@
                     this.safeStylesOfDisplay()
                     this.safeStyleOfWidth()
                     this.safeStyleOfHeight()
+                    this.safeStyleOfLineHeight()
+                    this.updateAlign()
                     this.$forceUpdate()
                     this.$emit('component-update')
                 }
@@ -218,7 +223,9 @@
             this.safeStylesOfDisplay()
             this.safeStyleOfWidth()
             this.safeStyleOfHeight()
+            this.safeStyleOfLineHeight()
             this.setDefaultStyleWithAttachToFreelayout()
+            this.updateAlign()
             this.componentData.mounted(this.$refs.componentRoot)
             this.$emit('component-mounted')
         },
@@ -254,7 +261,7 @@
                     })
                     return
                 }
-                
+
                 // 继承组件渲染结果的 display
                 const $baseComponentEl = this.$refs.componentRoot.querySelector(':scope > [lesscode-base-component]')
                 if ($baseComponentEl) {
@@ -363,6 +370,43 @@
                 })
             },
             /**
+             * @desc 保证组件的 line-height 渲染正确
+             *
+             * 渲染实际组件时会包裹一层 div 导致 line-height 与预览页面效果不一致
+             */
+            safeStyleOfLineHeight () {
+                if (this.isShadowComponent) {
+                    return
+                }
+                const componentDataStyle = this.componentData.style
+                
+                // 优先使用自定义配置的 line-height
+                if (_.has(componentDataStyle, 'line-height')
+                    && componentDataStyle['line-height'] !== '') {
+                    this.safeStyles = Object.assign({}, this.safeStyles, {
+                        'line-height': componentDataStyle['line-height']
+                    })
+                    return
+                }
+
+                this.$nextTick(() => {
+                    // 因为异步任务执行的时机问题，此时可能组件已经被销毁
+                    if (!this.$refs.componentRoot) {
+                        return
+                    }
+                    const $baseComponentEl = this.$refs.componentRoot
+                        .querySelector(':scope > [lesscode-base-component]')
+                    if ($baseComponentEl) {
+                        const styleLineHeight = document.defaultView.getComputedStyle($baseComponentEl).lineHeight
+                        if (styleLineHeight) {
+                            this.safeStyles = Object.assign({}, this.safeStyles, {
+                                'line-height': styleLineHeight
+                            })
+                        }
+                    }
+                })
+            },
+            /**
              * @desc 当组件在 freelayout 布局中时需要设置一些默认样式
              */
             setDefaultStyleWithAttachToFreelayout () {
@@ -397,15 +441,29 @@
                     }
                 })
             },
+            updateAlign () {
+                this.bindAttrsAlign = {}
+                if (this.componentData.align.horizontal) {
+                    this.bindAttrsAlign[this.componentData.align.horizontal] = ''
+                }
+                if (this.componentData.align.vertical) {
+                    this.bindAttrsAlign[this.componentData.align.vertical] = ''
+                }
+            },
             /**
              * @desc 组件点击事件回调
              */
             handleClick () {
                 LC.clearMenu()
-                this.componentData.active()
+                if (!this.componentData.isActived) {
+                    this.componentData.active()
+                }
             },
             handleDBClick () {
-                console.log('dbdbdb')
+                LC.triggerEventListener('componentDbclick', {
+                    type: 'componentDbclick',
+                    target: this.componentData
+                })
             },
             /**
              * @desc 记录鼠标按下状态，抛出 component-mousedown 事件
@@ -418,7 +476,7 @@
             /**
              * @desc 切换鼠标按下状态
              */
-            handleMouseup (event) {
+            handleMouseup () {
                 setMousedown(false)
             },
             /**
@@ -466,6 +524,67 @@
         &.precent-height{
             & > * {
                 height: 100% !important;
+            }
+        }
+        &[align-horizontal-left],
+        &[align-horizontal-center],
+        &[align-horizontal-right],
+        &[align-horizontal-space-between]{
+            & > div{
+                display: flex !important;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                & > * {
+                    flex-shrink: 0;
+                }
+            }
+
+        }
+        &[align-horizontal-left]{
+            & > div{
+                justify-content: flex-start;
+            }
+        }
+        &[align-horizontal-center]{
+            & > div{
+                justify-content: center;
+            }
+        }
+        &[align-horizontal-right]{
+            & > div{
+                justify-content: flex-end;
+            }
+        }
+        &[align-horizontal-space-between]{
+            & > div{
+                justify-content: space-between;
+            }
+        }
+        &[align-vertical-top],
+        &[align-vertical-center],
+        &[align-vertical-bottom]{
+            & > div{
+                display: flex !important;
+                flex-wrap: wrap;
+                & > * {
+                    flex-shrink: 0;
+                }
+            }
+
+        }
+        &[align-vertical-top]{
+            & > div{
+                align-items: flex-start;
+            }
+        }
+        &[align-vertical-center]{
+            & > div{
+                align-items: center;
+            }
+        }
+        &[align-vertical-bottom]{
+            & > div{
+                align-items: flex-end;
             }
         }
     }

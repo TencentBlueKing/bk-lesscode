@@ -42,6 +42,12 @@
                     </div>
                 </div>
             </bk-big-tree>
+            <bk-exception
+                v-if="isEmpty"
+                type="empty"
+                scene="part">
+                页面为空
+            </bk-exception>
         </div>
     </div>
 </template>
@@ -68,7 +74,8 @@
     export default {
         data () {
             return {
-                allExpanded: false
+                allExpanded: false,
+                isEmpty: false
             }
         },
         computed: {
@@ -81,7 +88,9 @@
         },
         
         mounted () {
-            this.$refs.tree.setData(getDataFromNodeTree(LC.getRoot().children))
+            const data = getDataFromNodeTree(LC.getRoot().children)
+            this.$refs.tree.setData(data)
+            this.isEmpty = data.length < 1
             
             /**
              * @desc 组件树监听 update 回调
@@ -101,7 +110,9 @@
                         return result
                     }, [])
                 }
-                this.$refs.tree.setData(getDataFromNodeTree(LC.getRoot().children))
+                const data = getDataFromNodeTree(LC.getRoot().children)
+                this.$refs.tree.setData(data)
+                this.isEmpty = data.length < 1
                 // 还原展开状态
                 expandIdListMemo.forEach((nodeId) => {
                     if (this.$refs.tree.getNodeById(nodeId)) {
@@ -164,19 +175,14 @@
              */
             handleToggleExpandTree () {
                 this.allExpanded = !this.allExpanded
-                const commandTreeNodes = (nodes, command) => {
-                    if (!nodes || nodes.length < 1) {
-                        return
-                    }
-                    nodes.forEach(node => {
+                this.$refs.tree.nodes.forEach(node => {
+                    if (!node.isLeaf) {
                         this.$refs.tree.setExpanded(node.id, {
-                            expanded: command,
-                            emitEvent: true
+                            expanded: this.allExpanded,
+                            emitEvent: false
                         })
-                        commandTreeNodes(node.children, command)
-                    })
-                }
-                commandTreeNodes(this.data, this.allExpanded)
+                    }
+                })
             },
             /**
              * @desc 切换交互式组件的显示状态
@@ -299,6 +305,7 @@
                 .component-tree-node-item {
                     position: relative;
                     padding-right: 30px;
+                    font-size: 12px;
                     .component-eye-control {
                         position: absolute;
                         right: 18px;

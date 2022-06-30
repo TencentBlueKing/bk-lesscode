@@ -32,26 +32,30 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId', currentVersion: 'currentVersion' }),
             projectId () {
                 return this.$route.params.projectId || ''
-            },
-            pageId () {
-                return this.$route.params.pageId
             }
         },
         methods: {
             async handlePreview () {
                 // await this.handleSave()
-                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageId))
+                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageDetail.id))
                 if (!pageRoute.id) {
                     this.messageError('页面未配置路由，请先配置')
                     return
                 }
-                const versionQuery = `${this.versionId ? `&v=${this.versionId}` : ''}`
+
+                if (this.pageDetail.nocodeType === 'FORM' && !this.pageDetail.formId) {
+                    this.messageError('新创建的表单类型页面请先保存后再预览')
+                    return
+                }
+
                 const fullPath = getRouteFullPath(pageRoute)
 
                 if (this.platform === 'MOBILE') {
-                    window.open(`/preview-mobile/project/${this.projectId}?pagePath=${fullPath}&pageCode=${this.pageDetail.pageCode}`, '_blank')
+                    const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
+                    window.open(`/preview-mobile/project/${this.projectId}?pagePath=${fullPath}&pageCode=${this.pageDetail.pageCode}${versionQuery}`, '_blank')
                 } else {
-                    const routerUrl = `/preview/project/${this.projectId}${fullPath}?pageCode=${this.pageDetail.pageCode}${versionQuery}`
+                    const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                    const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.pageDetail.pageCode}`
                     window.open(routerUrl, '_blank')
                 }
             }

@@ -2,12 +2,15 @@
     <div class="basic page-content" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
         <div class="info-flexible" v-show="!pageLoading">
             <div class="title">基本信息</div>
-            <bk-form class="info-list" :label-width="100">
+            <bk-form class="info-list" :label-width="150">
                 <bk-form-item label="应用名称：">
                     {{projectDetail.projectName}}
                 </bk-form-item>
                 <bk-form-item label="应用ID：">
                     {{projectDetail.projectCode}}
+                </bk-form-item>
+                <bk-form-item label="绑定蓝鲸应用模块" desc="必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改">
+                    <app-module-select :can-edit="true"></app-module-select>
                 </bk-form-item>
                 <bk-form-item label="应用简介：">
                     {{projectDetail.projectDesc}}
@@ -96,6 +99,7 @@
 <script>
     import dayjs from 'dayjs'
     import { bus } from '@/common/bus'
+    import AppModuleSelect from '@/components/project/app-module-select'
 
     export default {
         filters: {
@@ -103,6 +107,9 @@
                 if (!value) return '--'
                 return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
             }
+        },
+        components: {
+            AppModuleSelect
         },
         data () {
             return {

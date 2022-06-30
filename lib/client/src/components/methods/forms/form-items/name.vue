@@ -1,5 +1,5 @@
 <template>
-    <bk-form :label-width="110" :model="form" ref="funcForm" :form-type="formType">
+    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType">
         <bk-form-item
             label="函数名称"
             property="funcName"

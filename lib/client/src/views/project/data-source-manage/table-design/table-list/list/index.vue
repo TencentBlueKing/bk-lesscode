@@ -44,7 +44,19 @@
                 <template slot-scope="props">
                     <bk-button class="mr10" theme="primary" text @click="goToDataDesign(props.row)">表结构设计</bk-button>
                     <bk-button class="mr10" theme="primary" text @click="goToDataManage(props.row)">数据管理</bk-button>
-                    <bk-button class="mr10" theme="primary" text @click="deleteTable([props.row])" :disabled="isDisableDeleteTable(props.row)">删除</bk-button>
+                    <span
+                        v-bk-tooltips="{
+                            content: calcDisableInfo(props.row).tips,
+                            disabled: !calcDisableInfo(props.row).disabled
+                        }">
+                        <bk-button
+                            class="mr10"
+                            theme="primary"
+                            text
+                            :disabled="calcDisableInfo(props.row).disabled"
+                            @click="deleteTable([props.row])"
+                        >删除</bk-button>
+                    </span>
                 </template>
             </bk-table-column>
         </bk-table>
@@ -240,11 +252,23 @@
                 }
             }
 
-            const isDisableDeleteTable = (row) => {
+            const calcDisableInfo = (row) => {
                 const userPerm = store.getters['member/userPerm']
                 const user = store.state.user || {}
                 const username = user.bk_username || user.username
-                return userPerm.roleId !== 1 && username !== row.createUser
+                const result = {
+                    disabled: false,
+                    tips: ''
+                }
+                if (userPerm.roleId !== 1 && username !== row.createUser) {
+                    result.disabled = true
+                    result.tips = '暂无操作权限，请修改后再试'
+                }
+                if (row.source === 'nocode') {
+                    result.disabled = true
+                    result.tips = '表单页面自动生成的数据表不可以删除'
+                }
+                return result
             }
 
             onBeforeMount(getTableList)
@@ -261,7 +285,7 @@
                 deleteTable,
                 confirmDelete,
                 exportTables,
-                isDisableDeleteTable
+                calcDisableInfo
             }
         }
     })
