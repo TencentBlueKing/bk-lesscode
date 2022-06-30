@@ -13,11 +13,11 @@
                 <div class="condition-content">
                     <!-- 选择字段 -->
                     <bk-select
-                        v-model="conditionItem.key"
+                        :value="conditionItem.key"
                         style="width: 30%; margin-right: 8px"
                         :clearable="false"
                         :loading="fieldsLoading"
-                        @selected="handleSelectField(conditionItem)">
+                        @selected="handleSelectField(conditionItem, $event)">
                         <bk-option v-for="field in fields" :key="field.key" :id="field.key" :name="field.name"></bk-option>
                     </bk-select>
                     <!-- 选择逻辑关系 -->
@@ -126,16 +126,19 @@
                 return []
             },
             // 选择表单字段，修改对应值的数据类型
-            handleSelectField (data) {
-                const field = this.fields.find(item => item.key === data.key)
-                data.condition = ''
+            handleSelectField (data, key) {
+                const field = this.fields.find(item => item.key === key)
+                data.key = key
                 data.type = field.type
+                data.condition = ''
                 switch (field.type) {
                     case 'INT':
                         data.value = 0
                         break
                     case 'MULTISELECT':
                     case 'CHECKBOX':
+                    case 'MEMBER':
+                    case 'MEMBERS':
                         data.value = []
                         break
                     default:
