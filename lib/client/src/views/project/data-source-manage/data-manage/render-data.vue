@@ -351,7 +351,7 @@
                     const dateTimeColumns = activeTable.value.columns?.filter((column) => (column.type === 'datetime'))
                     dateTimeColumns.forEach((dateTimeColumn) => {
                         formStatus.editForm[dateTimeColumn.name] = dayjs(formStatus.editForm[dateTimeColumn.name])
-                            .utcOffset(-new Date().getTimezoneOffset())
+                            .utcOffset(0)
                             .format('YYYY-MM-DD HH:mm:ss')
                     })
 
