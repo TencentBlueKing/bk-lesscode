@@ -31,6 +31,8 @@
                 </template>
             </bk-table-column>
             <bk-table-column ref="settingCol" type="setting">
+                <bk-table-setting-content ref="settingCol" v-show="false">
+                </bk-table-setting-content>
                 <div class="table-setting-wrapper">
                     <h2 class="title">表格设置</h2>
                     <div class="field-content-wrapper">
@@ -233,15 +235,14 @@
             handleSelectConfirm () {
                 this.cols = [...this.selectedSys, ...this.selectedCustom]
                 this.getTableData()
+                this.handleSelectCancel()
             },
             handleSelectCancel () {
-                console.log(this.$refs.fieldsTable)
+                this.$refs.settingCol.handleCancel()
             },
             handleViewRichText (val) {
                 this.richText = val
-                this.$nextTick(() => {
-                    this.showRichText = true
-                })
+                this.showRichText = true
             },
             handleViewTable ({ field, value }) {
                 this.tableField = field
