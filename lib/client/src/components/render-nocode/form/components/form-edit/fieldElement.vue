@@ -60,7 +60,6 @@
                     }
                 }
                 this.localValue = fieldsValue
-                console.log(this.localValue)
             }
         }
     }
