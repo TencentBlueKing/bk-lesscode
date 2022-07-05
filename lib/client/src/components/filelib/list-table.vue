@@ -82,8 +82,11 @@
                 <template v-slot="{ row }">
                     <div :class="['upload-status', row.status]">
                         <bk-progress v-if="row.status === UPLOAD_STATUS.UPLOADING" :percent="row.percentage / 100" size="small"></bk-progress>
-                        <span class="status-content" v-if="row.status === UPLOAD_STATUS.SUCCESS">上传成功</span>
-                        <span class="status-content" v-if="row.status === UPLOAD_STATUS.FAIL">上传失败</span>
+                        <div class="status-content" v-if="row.status === UPLOAD_STATUS.SUCCESS">上传成功</div>
+                        <div class="status-content" v-if="row.status === UPLOAD_STATUS.FAIL">
+                            <span class="fail-title">上传失败</span>
+                            <span class="fail-message" v-if="row.statusText">（{{row.statusText}}）</span>
+                        </div>
                     </div>
                 </template>
             </bk-table-column>
@@ -140,6 +143,8 @@
             }
 
             .status-content {
+                display: inline-flex;
+                width: 100%;
                 position: relative;
                 padding-left: 16px;
                 &::before {
@@ -163,6 +168,16 @@
                     &::before {
                         background: #ffe6e6;
                         border: 1px solid #ea3636;
+                    }
+
+                    .fail-title {
+                        white-space: nowrap;
+                    }
+
+                    .fail-message {
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
                     }
                 }
             }
