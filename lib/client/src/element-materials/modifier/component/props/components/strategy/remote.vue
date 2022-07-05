@@ -52,7 +52,7 @@
     import { mapGetters } from 'vuex'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
     import { bus } from '@/common/bus'
-    import { replaceFuncKeyword, replaceFuncParam } from 'shared/function'
+    import { replaceFuncKeyword, replaceFuncParam, getRemoteFunctionInfo } from 'shared/function'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable'
     import remoteExample from './remote-example'
 
@@ -146,27 +146,29 @@
                 return value
             },
 
+            recordVariable (variableCode, funcName) {
+                const variableCodes = Array.isArray(variableCode) ? variableCode : [variableCode]
+                variableCodes.forEach((code) => {
+                    const curVar = this.variableList.find((variable) => (variable.variableCode === code))
+                    if (curVar) {
+                        this.usedVariableMap[code] = this.getVariableVal(curVar)
+                    } else {
+                        throw new Error(`函数【${funcName}】里引用的变量【${code}】不存在，请检查`)
+                    }
+                })
+            },
+
             processVarInFunApiData (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
-                    const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                    if (curVar) {
-                        this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
-                        return `this.${variableCode}`
-                    } else {
-                        throw new Error(`函数【${funcName}】Api Data里引用的变量【${variableCode}】不存在，请检查`)
-                    }
+                    this.recordVariable(variableCode, funcName)
+                    return `this.${variableCode}`
                 })
             },
 
             processVarInFunApiUrl (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
-                    const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                    if (curVar) {
-                        this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
-                        return `\${this.${variableCode}}`
-                    } else {
-                        throw new Error(`函数【${funcName}】Api Url里引用的变量【${variableCode}】不存在，请检查`)
-                    }
+                    this.recordVariable(variableCode, funcName)
+                    return `\${this.${variableCode}}`
                 })
             },
 
@@ -185,10 +187,15 @@
                 const funcParams = (returnMethod.funcParams || []).join(', ')
                 if (returnMethod.funcType === 1) {
                     const remoteParams = (returnMethod.remoteParams || []).join(', ')
+                    const {
+                        apiDataString,
+                        codes
+                    } = getRemoteFunctionInfo(returnMethod)
+                    this.recordVariable(codes, returnMethod.funcName)
                     const data = `{
                         url: \`${this.processVarInFunApiUrl(returnMethod.funcApiUrl, returnMethod.funcName)}\`,
                         type: '${returnMethod.funcMethod}',
-                        apiData: ${this.processVarInFunApiData(returnMethod.funcApiData, returnMethod.funcName) || '\'\''},
+                        apiData: ${apiDataString},
                         withToken: ${returnMethod.withToken}
                     }`
                     returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { return this.$store.dispatch('getApiData', ${data}).then((${remoteParams}) => { ${returnMethod.funcBody} }) };`

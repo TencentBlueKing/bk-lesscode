@@ -21,11 +21,18 @@
     import JsonView from '@/element-materials/modifier/component/props/components/strategy/json-view.vue'
     import { circleJSON } from '@/common/util.js'
     import LC from '@/element-materials/core'
+    import { bus } from '@/common/bus'
 
     export default {
         components: {
             CodeViewer,
             JsonView
+        },
+        props: {
+            nocodeType: {
+                type: String,
+                default: ''
+            }
         },
         data () {
             return {
@@ -38,9 +45,19 @@
                 return this.$route.params.pageId || ''
             }
         },
+        watch: {
+            '$store.state.nocode.formSetting.fieldsList' (val) {
+                this.code = circleJSON(val || [])
+            }
+        },
         created () {
-            const root = LC.getRoot()
-            this.code = circleJSON(root.toJSON().renderSlots.default)
+            if (['FORM', 'FLOW'].includes(this.nocodeType)) {
+                const content = this.$store.state.nocode.formSetting.fieldsList || []
+                this.code = circleJSON(content)
+            } else {
+                const root = LC.getRoot()
+                this.code = circleJSON(root.toJSON().renderSlots.default)
+            }
         },
         methods: {
             showEditData () {
@@ -48,7 +65,13 @@
             },
             setImportData (name, data) {
                 if (data && Array.isArray(data)) {
-                    LC.parseData(data)
+                    if (['FORM', 'FLOW'].includes(this.nocodeType)) {
+                        this.$store.commit('nocode/formSetting/setFieldsList', data)
+                        bus.$emit('resetFieldList', data)
+                        this.code = circleJSON(data)
+                    } else {
+                        LC.parseData(data)
+                    }
                 }
             }
         }

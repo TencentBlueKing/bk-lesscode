@@ -14,7 +14,7 @@
             <div slot="header">
                 <span slot="header">
                     从模板新建应用
-                    <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建lesscode应用时，会同步创建蓝鲸开发者应用的default模块' }"></i>
+                    <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块' }"></i>
                 </span>
             </div>
             <div class="layout-left">
