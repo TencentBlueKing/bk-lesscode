@@ -39,7 +39,7 @@
                 label="Api"
                 property="apiCode"
                 error-display-type="normal"
-                desc="使用Api管理的api做为模板，快速生成远程函数"
+                desc="使用 Api 管理的 api 做为模板，快速生成远程函数"
             >
                 <bk-select
                     :value="form.apiCode"
@@ -70,6 +70,7 @@
                 label="请求地址"
                 property="funcApiUrl"
                 error-display-type="normal"
+                desc="请求地址中可以使用 {变量标识} 的格式来使用变量"
                 :required="true"
                 :rules="[requireRule('请求地址')]"
             >
