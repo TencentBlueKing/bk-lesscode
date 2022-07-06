@@ -166,7 +166,8 @@
     import BodyParams from './children/body-params.vue'
     import monaco from '@/components/monaco'
     import {
-        FUNCTION_TYPE
+        FUNCTION_TYPE,
+        replaceFuncParam
     } from 'shared/function/'
     import {
         METHODS_WITHOUT_DATA,
@@ -175,6 +176,9 @@
         parseScheme2Value,
         LCGetParamsVal
     } from 'shared/api'
+    import {
+        getVariableValue
+    } from 'shared/variable'
 
     export default {
         components: {
@@ -281,8 +285,16 @@
                     } else {
                         apiData = parseScheme2Value(this.form.apiBody, LCGetParamsVal(this.variableList))
                     }
+                    const url = replaceFuncParam(this.form.funcApiUrl, (variableCode) => {
+                        const variable = this.variableList.find((variable) => (variable.variableCode === variableCode))
+                        if (variable) {
+                            return getVariableValue(variable)
+                        } else {
+                            throw new Error(`函数请求地址里引用的变量【${variableCode}】不存在，请检查`)
+                        }
+                    })
                     const httpData = {
-                        url: this.form.funcApiUrl,
+                        url,
                         type: this.form.funcMethod,
                         apiData,
                         withToken: this.form.withToken
