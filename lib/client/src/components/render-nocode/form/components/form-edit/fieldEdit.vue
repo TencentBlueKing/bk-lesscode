@@ -3,7 +3,7 @@
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
-                    <rich-text @change="handleDescValueChange" is-full-screen></rich-text>
+                    <rich-text @change="handleDescValueChange" is-full-screen :value="fieldData.value"></rich-text>
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
