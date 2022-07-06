@@ -67,7 +67,6 @@
                 class="mr5"
                 theme="primary"
                 :loading="isSubmitting"
-                :disabled="!formChanged"
                 @click="handleSaveFunction"
             >保存</bk-button>
             <bk-button
