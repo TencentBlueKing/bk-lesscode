@@ -13,6 +13,7 @@
                     :is="fieldComp"
                     :field="field"
                     :disabled="isDisabled"
+                    :need-pagination="needPagination"
                     :use-fixed-data-source="useFixedDataSource"
                     :value="value"
                     @change="$emit('change', $event)">
@@ -121,6 +122,9 @@
             // 默认规则设置为禁止填写 和 字段设置为禁止编辑的时候禁止编辑
             isDisabled () {
                 return this.field.is_readonly
+            },
+            needPagination () {
+                return this.$route.name !== 'editNocode'
             }
         }
         // beforeCreate() {

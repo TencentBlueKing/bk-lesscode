@@ -6,7 +6,7 @@
             header-row-class-name="custom-table-header"
             :pagination="pagination"
             :data="tableData"
-            :outer-border="!tableData.length > 0"
+            :outer-border="false"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
             <bk-table-column
@@ -16,7 +16,12 @@
                 :label="field.name"
                 :prop="field.key">
                 <template slot-scope="{ row }">
-                    <table-cell-value :field="field" :value="row" @viewDetail="handleViewDetail"></table-cell-value>
+                    <table-cell-value
+                        :field="field"
+                        :value="row"
+                        @viewTable="handleViewTable"
+                        @viewRichText="handleViewRichText">
+                    </table-cell-value>
                 </template>
             </bk-table-column>
             <bk-table-column label="操作" :max-width="80">
@@ -24,7 +29,9 @@
                     <bk-button theme="primary" :text="true" @click="handleViewDetail(row.id)">详情</bk-button>
                 </template>
             </bk-table-column>
-            <bk-table-column ref="settingCol" type="setting">
+            <bk-table-column type="setting">
+                <bk-table-setting-content ref="settingCol" v-show="false">
+                </bk-table-setting-content>
                 <div class="table-setting-wrapper">
                     <h2 class="title">表格设置</h2>
                     <div class="field-content-wrapper">
@@ -60,18 +67,35 @@
             :id.sync="cellDetailId"
             :fields="colFields">
         </table-cell-detail>
+        <bk-sideslider
+            title="富文本"
+            :width="640"
+            :is-show.sync="showRichText"
+            :quick-close="true"
+            :show-mask="true"
+            v-if="richText"
+            @before-close="richText = ''">
+            <div slot="content">
+                <viewer :initial-value="richText"></viewer>
+            </div>
+        </bk-sideslider>
+        <table-view :show.sync="showTableDetail" :value="tableValue" :field="tableField">
+        </table-view>
     </div>
 </template>
 <script>
     import TableCellValue from './table-cell-value.vue'
     import TableCellDetail from './table-cell-detail.vue'
     import { isValEmpty } from '@/common/util'
-
+    import TableView from './table-view'
+    import { Viewer } from '@toast-ui/vue-editor'
     export default {
         name: 'TableFields',
         components: {
             TableCellValue,
-            TableCellDetail
+            TableCellDetail,
+            Viewer,
+            TableView
         },
         props: {
             tableName: String,
@@ -105,7 +129,12 @@
                     count: 0,
                     limit: 10,
                     'show-limit': true
-                }
+                },
+                showRichText: false,
+                showTableDetail: false,
+                richText: '',
+                tableField: {},
+                tableValue: []
             }
         },
         computed: {
@@ -194,9 +223,19 @@
             handleSelectConfirm () {
                 this.cols = [...this.selectedSys, ...this.selectedCustom]
                 this.getTableData()
+                this.$refs.settingCol.handleCancel()
             },
             handleSelectCancel () {
-                console.log(this.$refs.fieldsTable)
+                this.$refs.settingCol.handleCancel()
+            },
+            handleViewRichText (val) {
+                this.richText = val
+                this.showRichText = true
+            },
+            handleViewTable ({ field, value }) {
+                this.tableField = field
+                this.tableValue = value
+                this.showTableDetail = true
             }
         }
     }

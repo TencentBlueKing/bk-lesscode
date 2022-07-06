@@ -1,7 +1,9 @@
 <template>
     <div class="table-cell-value">
         <span v-if="valueEmpty">--</span>
-        <bk-button v-else-if="isOpenView" size="small" :text="true" @click="$emit('viewDetail', value.id)">查看</bk-button>
+        <!--        <bk-button v-else-if="isOpenView" size="small" :text="true" @click="$emit('viewDetail', value.id)">查看</bk-button>-->
+        <bk-button v-else-if="isOpenTable" size="small" :text="true" @click="$emit('viewTable', { field,value: value[field.key] })">查看</bk-button>
+        <bk-button v-else-if="isOpenRichText" size="small" :text="true" @click="$emit('viewRichText', value[field.key])">查看</bk-button>
         <bk-button v-else-if="field.type === 'FILE'" size="small" :text="true">下载</bk-button>
         <a v-else-if="field.type === 'LINK'" style="color: #3a84ff;" :href="value[field.key]" target="_blank">{{ value[field.key] }}</a>
         <div v-else-if="field.type === 'IMAGE'">
@@ -29,6 +31,12 @@
             },
             isOpenView () {
                 return ['TABLE', 'RICHTEXT'].includes(this.field.type)
+            },
+            isOpenTable () {
+                return this.field.type === 'TABLE'
+            },
+            isOpenRichText () {
+                return this.field.type === 'RICHTEXT'
             }
         },
         methods: {
@@ -71,5 +79,7 @@
     }
 </script>
 <style lang="postcss" scoped>
-
+>>> .bk-button-text.bk-button-small{
+  padding: 0 !important;
+}
 </style>
