@@ -30,14 +30,14 @@ export default (row, handleUpdate, variableList) => {
                                 ></bk-option>
                             ))
                         }
-                        <bk-link
+                        {/* <bk-link
                             href={`/project/${router.params.projectId}/manage-api`}
                             slot="extension"
                             target="_blank"
                             class="add-api-link"
                         >
                             <i class="bk-icon icon-plus-circle"></i>新增
-                        </bk-link>
+                        </bk-link> */}
                     </bk-select>
                     : row.type === 'boolean'
                         ? <bk-checkbox
