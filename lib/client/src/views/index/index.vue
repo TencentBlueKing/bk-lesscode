@@ -148,8 +148,6 @@
                 LC.removeEventListener('unload', this.clearPerviewData)
             })
 
-            this.registerCustomComponent()
-
             // 获取并设置当前版本信息
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 

@@ -24,13 +24,13 @@
             @change="change">
             <bk-option v-for="option in sourceData" :key="option.key" :id="option.key" :name="option.name"></bk-option>
         </bk-select>
-        <!--        <member-select-->
-        <!--            v-else-if="['MEMBER', 'MEMBERS'].includes(field.type)"-->
-        <!--            :value="localVal ? localVal.split(',') : []"-->
-        <!--            :multiple="field.type === 'MEMBERS'"-->
-        <!--            :disabled="!editable"-->
-        <!--            @change="handleMemberChange">-->
-        <!--        </member-select>-->
+        <member-select
+            v-else-if="['MEMBER', 'MEMBERS'].includes(field.type)"
+            v-model="localVal"
+            :multiple="field.type === 'MEMBERS'"
+            :disabled="!editable"
+            @change="change">
+        </member-select>
         <bk-input v-else v-model="localVal" :disabled="!editable" @change="change"></bk-input>
     </div>
 </template>
@@ -38,9 +38,11 @@
 // 表单值填写组件，根据传入的field.type来渲染对应类型的表单，用在数据处理节点以及连线的条件配置等地方。
     import dataSourceMixins from '@/components/flow-form-comp/form/dataSourceMixins'
     import { DATA_SOURCE_FIELD } from '@/components/flow-form-comp/form/constants/forms'
+    import MemberSelect from '@/components/flow-form-comp/form/components/memberSelect.vue'
 
     export default {
         name: 'FieldValue',
+        components: { MemberSelect },
         mixins: [dataSourceMixins],
         props: {
             field: {
@@ -69,11 +71,6 @@
             }
         },
         methods: {
-            handleMemberChange (val) {
-                const value = val.join(',')
-                this.localVal = value
-                this.change(value)
-            },
             change (val) {
                 this.$emit('change', this.field.type === 'INT' ? Number(val) : val)
             }

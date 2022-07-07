@@ -182,8 +182,3 @@
         }
     }
 </script>
-<style lang="postcss" >
-.middle{
-  display: none;
-}
-</style>

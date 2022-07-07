@@ -29,7 +29,7 @@
             <i class="bk-drag-icon bk-drag-angle-left" />
         </div>
         <div
-            v-if="!hideRightSlot"
+            v-if="!hideRightSlot && !isDataManagePage"
             :class="$style['collapsed-right-btn']"
             v-bk-tooltips.right="{
                 content: '查看组件配置',
@@ -183,7 +183,7 @@
         }
     }
     .page-data-manage-layout{
-      max-width: 100vw;
+      /* max-width: 100vw; */
       position: relative;
       padding-right:  $layoutRightWidth;
       transition: all .1s;
@@ -258,7 +258,7 @@
       @mixin scroller;
     }
     .page-nocode-layout{
-      max-width: 100vw;
+      /* max-width: 100vw; */
       padding-left: 300px !important;
       &.is-left-collapsed{
         padding-left: 0 !important;

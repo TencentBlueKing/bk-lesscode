@@ -170,8 +170,13 @@
                 box-shadow: none !important;
                 border: 1px solid #C4C6CC;
                 border-radius: 2px;
-                .auto-textarea-input{
+                .auto-textarea-input {
                     min-height: 100px;
+
+                    &::placeholder {
+                        color: #C4C6CC;
+                        font-size: 14px;
+                    }
                 }
 
                 &.fullscreen {
