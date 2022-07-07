@@ -1,58 +1,54 @@
 import './render-param-slot.css'
-import { useRoute } from '@/router'
+import ChooseVariable from '@/components/variable/variable-select/components/variable.vue'
+import {
+    API_PARAM_TYPES
+} from 'shared/api'
 
-export default (row, handleUpdate, variableList) => {
-    const router = useRoute()
+export default (row, handleUpdate) => {
+    const disabled = [
+        API_PARAM_TYPES.ARRAY.VAL,
+        API_PARAM_TYPES.OBJECT.VAL
+    ].includes(row.type)
     return (
-        <bk-compose-form-item class="render-param-form">
-            <bk-select
-                class="render-param-type"
-                value={row.valueType}
-                clearable={false}
-                onChange={(valueType) => handleUpdate(row, { valueType })}
-            >
-                <bk-option id="value" name="值"></bk-option>
-                <bk-option id="variable" name="变量"></bk-option>
-            </bk-select>
-            {
-                row.valueType === 'variable'
-                    ? <bk-select
-                        class="render-param-val"
-                        placeholder="请选择变量"
-                        value={row.code}
-                        onChange={(code) => handleUpdate(row, { code })}
-                    >
-                        {
-                            variableList.map((variable) => (
-                                <bk-option
-                                    id={variable.variableCode}
-                                    name={variable.variableName}
-                                ></bk-option>
-                            ))
-                        }
-                        {/* <bk-link
-                            href={`/project/${router.params.projectId}/manage-api`}
-                            slot="extension"
-                            target="_blank"
-                            class="add-api-link"
-                        >
-                            <i class="bk-icon icon-plus-circle"></i>新增
-                        </bk-link> */}
-                    </bk-select>
-                    : row.type === 'boolean'
-                        ? <bk-checkbox
+        disabled
+            ? '--'
+            : <bk-compose-form-item class="render-param-form">
+                <bk-select
+                    class="render-param-type"
+                    value={row.valueType}
+                    clearable={false}
+                    disabled={disabled}
+                    onChange={(valueType) => handleUpdate(row, { valueType })}
+                >
+                    <bk-option id="value" name="值"></bk-option>
+                    <bk-option id="variable" name="变量"></bk-option>
+                </bk-select>
+                {
+                    row.valueType === 'variable'
+                        ? <ChooseVariable
                             class="render-param-val"
-                            value={row.value}
-                            onChange={(val) => handleUpdate(row, { value: val })}
-                        ></bk-checkbox>
-                        : <bk-input
-                            class="render-param-val"
-                            placeholder="请输入参数值"
-                            value={row.value}
-                            onChange={(val) => handleUpdate(row, { value: val })}
+                            remoteConfig={{}}
+                            options={{ valueTypeInclude: [row.type] }}
+                            formData={{ code: row.code }}
+                            onOn-change={({ code }) => handleUpdate(row, { code })}
                         >
-                        </bk-input>
-            }
-        </bk-compose-form-item>
+                        </ChooseVariable>
+                        : row.type === 'boolean'
+                            ? <bk-checkbox
+                                class="render-param-val pl5"
+                                value={row.value}
+                                disabled={disabled}
+                                onChange={(val) => handleUpdate(row, { value: val })}
+                            ></bk-checkbox>
+                            : <bk-input
+                                class="render-param-val"
+                                placeholder="请输入参数值"
+                                value={row.value}
+                                disabled={disabled}
+                                onChange={(val) => handleUpdate(row, { value: val })}
+                            >
+                            </bk-input>
+                }
+            </bk-compose-form-item>
     )
 }

@@ -1,5 +1,12 @@
 <template>
-    <bk-sideslider :is-show="isShow" :before-close="hidden" :quick-close="true" :width="796" :title="isAdd ? '新增变量' : '编辑变量'">
+    <bk-sideslider
+        :is-show="isShow"
+        :before-close="hidden"
+        :quick-close="true"
+        :width="796"
+        :transfer="true"
+        :title="isAdd ? '新增变量' : '编辑变量'"
+    >
         <section slot="content" class="variable-form-main">
             <bk-form :label-width="84" :model="copyForm" ref="variableForm">
                 <bk-form-item label="变量名称" :required="true" :rules="[requireRule('变量名称'), nameRule]" property="variableName" error-display-type="normal">
