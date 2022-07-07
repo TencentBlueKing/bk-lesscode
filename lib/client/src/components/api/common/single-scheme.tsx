@@ -56,6 +56,7 @@ const SingleSchemeComponent = defineComponent({
         }
         // 删除节点
         const handleMinusProperty = (index) => {
+            if (props.minusDisable) return
             emit('minusNode', index)
         }
         const minusProperty = (index) => {
@@ -226,7 +227,7 @@ const SingleSchemeComponent = defineComponent({
                                     API_PARAM_TYPES.ARRAY.VAL
                                 ].includes(this.copyScheme.type) && this.disablePlusBrother
                                     ? <i
-                                        class="bk-icon icon-plus-circle layout-icon"
+                                        class="bk-drag-icon bk-drag-add-fill layout-icon"
                                         onClick={this.plusChildProperty}
                                     ></i>
                                     : ''
@@ -238,7 +239,7 @@ const SingleSchemeComponent = defineComponent({
                                     API_PARAM_TYPES.STRING.VAL
                                 ].includes(this.copyScheme.type) && !this.disablePlusBrother
                                     ? <i
-                                        class="bk-icon icon-plus-circle layout-icon"
+                                        class="bk-drag-icon bk-drag-add-fill layout-icon"
                                         onClick={this.handlePlusBrotherProperty}
                                     ></i>
                                     : ''
@@ -249,7 +250,7 @@ const SingleSchemeComponent = defineComponent({
                                     API_PARAM_TYPES.ARRAY.VAL
                                 ].includes(this.copyScheme.type) && !this.disablePlusBrother
                                     ? <i
-                                        class="bk-icon icon-plus-circle layout-icon"
+                                        class="bk-drag-icon bk-drag-add-fill layout-icon"
                                     ></i>
                                     : ''
                             }
@@ -284,9 +285,9 @@ const SingleSchemeComponent = defineComponent({
                         <i
                             class={
                                 [
-                                    'bk-icon icon-minus-circle layout-icon',
+                                    'bk-drag-icon bk-drag-reduce-fill layout-icon',
                                     {
-                                        hidden: this.minusDisable
+                                        disabled: this.minusDisable
                                     }
                                 ]
                             }

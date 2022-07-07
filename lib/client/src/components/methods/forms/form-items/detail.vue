@@ -103,7 +103,7 @@
             <bk-button
                 class="get-remote-response bk-form-item"
                 size="small"
-                text
+                :loading="isLoadingResponse"
                 @click="getRemoteResponse"
             >获取接口返回数据</bk-button>
             <bk-form-item
@@ -210,6 +210,7 @@
                 ],
                 apiList: [],
                 isLoading: false,
+                isLoadingResponse: false,
                 METHODS_WITHOUT_DATA,
                 API_METHOD,
                 showFuncResponse: {
@@ -278,6 +279,7 @@
 
             getRemoteResponse () {
                 this.$refs.funcForm.validate().then(() => {
+                    this.isLoadingResponse = true
                     let apiData = {}
                     if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
                         this.form.apiQuery.forEach((queryItem) => {
@@ -310,6 +312,9 @@
                         .catch((err) => {
                             this.messageError(err.message || err)
                         })
+                        .finally(() => {
+                            this.isLoadingResponse = false
+                        })
                 }).catch((err) => {
                     this.messageError(err.content || err)
                 })
@@ -335,6 +340,7 @@
         max-width: calc(50% - 5px);
         /deep/ .bk-radio-button-text {
             width: 140px;
+            font-size: 12px;
         }
         /deep/ .bk-radio-button-input:disabled+.bk-radio-button-text {
             border-left: 1px solid #dcdee5;
@@ -343,8 +349,8 @@
     .get-remote-response {
         position: absolute;
         left: 60px;
-        line-height: 32px;
         z-index: 2;
+        margin-top: 12px !important;
     }
     .add-api-link {
         /deep/ .bk-link-text {

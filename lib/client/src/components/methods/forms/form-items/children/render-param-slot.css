@@ -6,6 +6,8 @@
 }
 .render-param-val {
     width: calc(100% - 72px) !important;
+    display: inline-block;
+    margin-left: -1px;
 }
 .add-api-link {
     display: block;
