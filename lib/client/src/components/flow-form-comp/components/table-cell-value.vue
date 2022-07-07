@@ -1,7 +1,9 @@
 <template>
     <div class="table-cell-value">
         <span v-if="valueEmpty">--</span>
-        <bk-button v-else-if="isOpenView" size="small" :text="true" @click="$emit('viewDetail', value.id)">查看</bk-button>
+        <!--        <bk-button v-else-if="isOpenView" size="small" :text="true" @click="$emit('viewDetail', value.id)">查看</bk-button>-->
+        <bk-button v-else-if="isOpenTable" size="small" :text="true" @click="$emit('viewTable', { field,value: value[field.key] })">查看</bk-button>
+        <bk-button v-else-if="isOpenRichText" size="small" :text="true" @click="$emit('viewRichText', value[field.key])">查看</bk-button>
         <bk-button v-else-if="field.type === 'FILE'" size="small" :text="true">下载</bk-button>
         <div v-else-if="isShowName">
             <div v-if="field.isDisplayTag && transValToTagArray(value[field.key]).length > 0" class="tag-container">
@@ -49,6 +51,12 @@
             },
             isShowName () {
                 return ['SELECT', 'RADIO', 'CHECKBOX', 'INPUTSELECT', 'MULTISELECT'].includes(this.field.type)
+            },
+            isOpenTable () {
+                return this.field.type === 'TABLE'
+            },
+            isOpenRichText () {
+                return this.field.type === 'RICHTEXT'
             }
         },
         methods: {
@@ -128,5 +136,8 @@
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
+}
+.bk-button-text.bk-button-small{
+  padding: 0 !important;
 }
 </style>
