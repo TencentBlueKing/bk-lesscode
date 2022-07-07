@@ -137,7 +137,7 @@
   flex-shrink: 0;
   cursor: pointer;
 }
->>> .bk-button-text.bk-button-small{
+.bk-button-text.bk-button-small{
   padding: 0 !important;
 }
 </style>
