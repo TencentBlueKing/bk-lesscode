@@ -100,9 +100,11 @@
             // 表单配置保存到form表
             saveFormConfig (pageId = null) {
                 const params = {
+                    pageId,
                     id: this.flowConfig.id,
                     nodeId: this.nodeData.id,
                     projectId: this.projectId,
+                    versionId: this.versionId,
                     formData: this.formConfig
                 }
                 return this.$store.dispatch('nocode/flow/editFlowNode', params)
