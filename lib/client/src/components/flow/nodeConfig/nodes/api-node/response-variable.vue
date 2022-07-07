@@ -47,7 +47,10 @@
             },
             handleHookVariableUpdate (row, key, val) {
                 this.$set(row, key, val)
-                this.update()
+                if (key === 'hooked' && !val) {
+                    this.$set(row, 'code', '')
+                }
+                this.$emit('update', this.responseData)
             },
             update (val) {
                 this.responseData = val

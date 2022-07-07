@@ -1,10 +1,10 @@
 <template>
     <div class="worksheet-data-wrapper">
         <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="localVal" :rules="sourceRules">
-            <bk-form-item label="数据表" property="formId" :required="true" error-display-type="normal">
+            <bk-form-item label="数据表" property="tableName" :required="true" error-display-type="normal">
                 <bk-select
                     placeholder="请选择数据表"
-                    :value="localVal.formId"
+                    :value="localVal.tableName"
                     :clearable="false"
                     :searchable="true"
                     :disabled="formListLoading"
@@ -12,8 +12,8 @@
                     @selected="handleSelectForm">
                     <bk-option
                         v-for="item in formList"
-                        :key="item.id"
-                        :id="item.id"
+                        :key="item.tableName"
+                        :id="item.tableName"
                         :name="`${item.formName}(${item.tableName})`">
                     </bk-option>
                 </bk-select>
@@ -129,7 +129,6 @@
             FieldValue
         },
         props: {
-            appId: String,
             useVariable: {
                 // 参数值是否支持引用变量
                 type: Boolean,
@@ -154,7 +153,7 @@
                 relationListLoading: false,
                 errorTips: false,
                 sourceRules: {
-                    formId: [
+                    tableName: [
                         {
                             required: true,
                             message: '数据表为必填项',
@@ -185,8 +184,8 @@
         },
         async  created () {
             await this.getFormList()
-            if (this.value.formId) {
-                this.getFieldList(this.value.formId)
+            if (this.value.tableName) {
+                this.getFieldList(this.value.tableName)
             }
             if (this.useVariable) {
                 this.getRelationList()
@@ -207,8 +206,8 @@
                     console.error(e)
                 }
             },
-            async getFieldList (id) {
-                this.fieldList = JSON.parse(this.formList.find(item => item.id === id).content)
+            async getFieldList (tableName) {
+                this.fieldList = JSON.parse(this.formList.find(item => item.tableName === tableName).content)
             },
             getRelationList () {
                 // try {
@@ -257,7 +256,6 @@
             // 选择表单，清空已选数据
             handleSelectForm (val) {
                 const form = this.formList.find(item => item.id === val)
-                this.localVal.formId = form.id
                 this.localVal.tableName = form.tableName
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
