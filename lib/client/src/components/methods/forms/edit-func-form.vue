@@ -207,16 +207,20 @@
             height: calc(100% - 50px);
             overflow: hidden;
         }
+        /deep/ .bk-label-text {
+            font-size: 12px;
+        }
     }
     .func-form-main {
         float: left;
         height: 100%;
         width: 100%;
+        min-width: 650px;
         overflow-y: auto;
         margin: 7px 0;
         padding: 0 20px 20px;
         /deep/ .func-form-item {
-            margin-top: 8px;
+            margin-top: 12px;
         }
         /deep/ .func-market-home {
             padding: 8px 12px 16px;

@@ -12,7 +12,6 @@
             v-if="!isAddTag"
             ext-cls="new-tag-btn"
             icon="plus"
-            size="small"
             theme="default"
             :disabled="disabled"
             @click="addTag">
@@ -21,7 +20,6 @@
             v-else
             ref="tagInput"
             class="new-tag-input"
-            size="small"
             v-model="userInput"
             @enter="handleAddTag"
             @blur="handleAddTag">
@@ -88,16 +86,19 @@
 <style lang="postcss" scoped>
     .tag-view {
         /deep/ .bk-tag {
+            float: left;
             margin: 2px 6px 2px 0;
             background: #FAFBFD;
             border: 1px solid #DCDEE5;
             border-radius: 2px;
+            height: 32px;
+            line-height: 32px;
         }
         .new-tag-btn {
+            float: left;
             color: #979ba5;
             padding: 0;
-            min-width: 28px;
-            margin-top: -2px;
+            margin: 2px 0;
             position: static !important;
             transform: none !important;
             &.is-disabled {
@@ -106,6 +107,8 @@
         }
     }
     .new-tag-input {
+        float: left;
         width: 100px;
+        margin: 2px 0;
     }
 </style>
