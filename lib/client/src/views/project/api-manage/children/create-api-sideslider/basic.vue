@@ -69,8 +69,7 @@
             error-display-type="normal"
             :required="true"
             :rules="[
-                getRequireRule('接口路径'),
-                getUrlRule()
+                getRequireRule('接口路径')
             ]"
         >
             <bk-compose-form-item class="basic-compose-url">
@@ -227,14 +226,6 @@
                 }
             }
 
-            const getUrlRule = () => {
-                return {
-                    validator: (val) => /^http(s)?\:\/\//.test(val),
-                    message: '接口路径需要是 http:// 或者 https:// 开头',
-                    trigger: 'blur'
-                }
-            }
-
             onBeforeMount(() => {
                 getApiList()
                 getCategoryList()
@@ -253,8 +244,7 @@
                 getRequireRule,
                 getCodeRule,
                 getCodeRepeatRule,
-                getNameRepeatRule,
-                getUrlRule
+                getNameRepeatRule
             }
         }
     })
