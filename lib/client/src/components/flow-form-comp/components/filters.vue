@@ -48,7 +48,6 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import FieldItem from '../form/fieldItem.vue'
-
     export default {
         name: 'Filters',
         components: {
@@ -79,6 +78,13 @@
                 localVal
             }
         },
+        watch: {
+            value: {
+                handler (val) {
+                    this.localVal = cloneDeep(val)
+                }
+            }
+        },
         methods: {
             getInitData () {
                 const filterFields = []
@@ -96,7 +102,7 @@
                             fieldCopy.placeholder = `请选择${field.name}`
                         }
                         filterFields.push(fieldCopy)
-                        localVal[fieldCopy.key] = fieldCopy.type === 'INT' ? 0 : ''
+                        localVal[fieldCopy.key] = ''
                     }
                 })
                 return { filterFields, localVal }

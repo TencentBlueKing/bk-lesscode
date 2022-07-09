@@ -6,4 +6,17 @@
 }
 .render-param-val {
     width: calc(100% - 72px) !important;
+    display: inline-block;
+    margin-left: -1px;
+}
+.add-api-link {
+    display: block;
+    line-height: 33px;
+}
+.add-api-link .bk-link-text {
+    font-size: 12px;
+    color: #3a84ff;
+}
+.add-api-link .bk-icon {
+    margin-right: 2px;
 }

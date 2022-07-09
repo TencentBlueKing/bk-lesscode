@@ -21,8 +21,10 @@ module.exports = process.env.NODE_ENV === 'production'
         loginUrl: '',
         // 用户管理接口前缀，用于获取用户列表
         userManageUrl: '',
-        // itsm网关域名前缀, 使用到流程相关功能时需配置
-        itsmUrl: '',
+        // apiGateWay 请求地址模板
+        apiGateWayUrlTmpl: '',
+        // 环境标识
+        stageName: '',
         // 应用 ID
         appCode: '',
         // 应用 TOKEN
@@ -39,8 +41,10 @@ module.exports = process.env.NODE_ENV === 'production'
         loginUrl: '',
         // 用户管理接口前缀，用于获取用户列表
         userManageUrl: '',
-        // itsm网关域名前缀, 使用到流程相关功能时需配置
-        itsmUrl: '',
+        // apiGateWay 请求地址模板
+        apiGateWayUrlTmpl: '',
+        // 环境标识
+        stageName: '',
         // 应用 ID
         appCode: '',
         // 应用 TOKEN

@@ -39,7 +39,7 @@
                 label="Api"
                 property="apiCode"
                 error-display-type="normal"
-                desc="使用Api管理的api做为模板，快速生成远程函数"
+                desc="使用 Api 管理的 api 做为模板，快速生成远程函数"
             >
                 <bk-select
                     :value="form.apiCode"
@@ -70,6 +70,7 @@
                 label="请求地址"
                 property="funcApiUrl"
                 error-display-type="normal"
+                desc="请求地址中可以使用 {变量标识} 的格式来使用变量"
                 :required="true"
                 :rules="[requireRule('请求地址')]"
             >
@@ -102,7 +103,7 @@
             <bk-button
                 class="get-remote-response bk-form-item"
                 size="small"
-                text
+                :loading="isLoadingResponse"
                 @click="getRemoteResponse"
             >获取接口返回数据</bk-button>
             <bk-form-item
@@ -166,7 +167,8 @@
     import BodyParams from './children/body-params.vue'
     import monaco from '@/components/monaco'
     import {
-        FUNCTION_TYPE
+        FUNCTION_TYPE,
+        replaceFuncParam
     } from 'shared/function/'
     import {
         METHODS_WITHOUT_DATA,
@@ -175,6 +177,9 @@
         parseScheme2Value,
         LCGetParamsVal
     } from 'shared/api'
+    import {
+        getVariableValue
+    } from 'shared/variable'
 
     export default {
         components: {
@@ -205,6 +210,7 @@
                 ],
                 apiList: [],
                 isLoading: false,
+                isLoadingResponse: false,
                 METHODS_WITHOUT_DATA,
                 API_METHOD,
                 showFuncResponse: {
@@ -273,6 +279,7 @@
 
             getRemoteResponse () {
                 this.$refs.funcForm.validate().then(() => {
+                    this.isLoadingResponse = true
                     let apiData = {}
                     if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
                         this.form.apiQuery.forEach((queryItem) => {
@@ -281,8 +288,16 @@
                     } else {
                         apiData = parseScheme2Value(this.form.apiBody, LCGetParamsVal(this.variableList))
                     }
+                    const url = replaceFuncParam(this.form.funcApiUrl, (variableCode) => {
+                        const variable = this.variableList.find((variable) => (variable.variableCode === variableCode))
+                        if (variable) {
+                            return getVariableValue(variable)
+                        } else {
+                            throw new Error(`函数请求地址里引用的变量【${variableCode}】不存在，请检查`)
+                        }
+                    })
                     const httpData = {
-                        url: this.form.funcApiUrl,
+                        url,
                         type: this.form.funcMethod,
                         apiData,
                         withToken: this.form.withToken
@@ -296,6 +311,9 @@
                         })
                         .catch((err) => {
                             this.messageError(err.message || err)
+                        })
+                        .finally(() => {
+                            this.isLoadingResponse = false
                         })
                 }).catch((err) => {
                     this.messageError(err.content || err)
@@ -322,6 +340,7 @@
         max-width: calc(50% - 5px);
         /deep/ .bk-radio-button-text {
             width: 140px;
+            font-size: 12px;
         }
         /deep/ .bk-radio-button-input:disabled+.bk-radio-button-text {
             border-left: 1px solid #dcdee5;
@@ -330,8 +349,8 @@
     .get-remote-response {
         position: absolute;
         left: 60px;
-        line-height: 32px;
         z-index: 2;
+        margin-top: 12px !important;
     }
     .add-api-link {
         /deep/ .bk-link-text {

@@ -56,7 +56,6 @@
         </bk-table>
         <table-cell-detail
             v-if="cellDetailId"
-            :form-id="formId"
             :table-name="tableName"
             :id.sync="cellDetailId"
             :fields="colFields">
@@ -75,7 +74,6 @@
             TableCellDetail
         },
         props: {
-            formId: Number,
             tableName: String,
             fields: {
                 type: Array,
@@ -163,7 +161,7 @@
                         fields: [...this.cols, 'id'],
                         query: this.getQueryData()
                     }
-                    const res = await this.$http.post(`/nocode/filterTableData/keys/formId/${this.formId}/tableName/${this.tableName}`, params)
+                    const res = await this.$http.post(`/nocode/filterTableData/keys/tableName/${this.tableName}`, params)
                     this.tableData = res.data.list
                     this.pagination.count = res.data.count
                 } catch (e) {

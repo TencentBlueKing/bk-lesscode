@@ -34,15 +34,22 @@
         }
     }
     .layout-icons {
-        line-height: 42px;
+        line-height: 1;
         min-width: 36px;
         display: flex;
         align-items: center;
         .layout-icon {
             cursor: pointer;
             margin-right: 4px;
-            &.hidden {
-                visibility: hidden;
+            color: #C4C6CC;
+            font-size: 14px;
+            height: 16px;
+            &:hover {
+                color: #979BA5;
+            }
+            &.disabled {
+                color: #DCDEE5;
+                cursor: not-allowed;
             }
             &.icon-plus-circle, &.icon-minus-circle {
                 font-size: 14px;

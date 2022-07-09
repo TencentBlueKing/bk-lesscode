@@ -11,7 +11,7 @@
         </div>
         <div class="field-container">
             <div class="mask"></div>
-            <field-item :use-fixed-data-source="true" :field="field"></field-item>
+            <field-item :use-fixed-data-source="true" :field="field" :value="localValue[field.key]"></field-item>
         </div>
     </div>
 </template>
@@ -36,7 +36,30 @@
         },
         data () {
             return {
-                isHover: false
+                isHover: false,
+                localValue: {}
+            }
+        },
+        watch: {
+            field: {
+                handler (val) {
+                    this.getDefaultVal(val)
+                },
+                immediate: true
+            }
+        },
+        methods: {
+            getDefaultVal (val) {
+                const fieldsValue = {}
+                console.log(val.default)
+                if ('default' in val) {
+                    if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE', 'FILE'].includes(val.type)) {
+                        fieldsValue[val.key] = val.default ? val.default.split(',') : []
+                    } else {
+                        fieldsValue[val.key] = val.default
+                    }
+                }
+                this.localValue = fieldsValue
             }
         }
     }

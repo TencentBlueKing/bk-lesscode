@@ -7,11 +7,12 @@
                 :border="false"
                 :collapsible="true"
                 :initial-divide="270"
+                :min="270"
             >
                 <section slot="aside" class="func-left">
                     <h3 class="left-title">
                         <div class="title-name">
-                            <span>函数库</span>
+                            <span class="function-lib">函数库</span>
                             <version-tag :version-name="versionName" />
                         </div>
                         <bk-popconfirm
@@ -369,6 +370,7 @@
             left: 5%;
             border-radius: 2px;
             box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.2);
+            background: #fff;
         }
     }
     .func-left {
@@ -421,7 +423,11 @@
         .title-name {
             display: flex;
             align-items: center;
-
+            .function-lib {
+                font-size: 16px;
+                color: #313238;
+                line-height: 28px;
+            }
             ::v-deep .version-tag {
                 margin-left: 8px;
             }
@@ -430,6 +436,7 @@
         .icon-plus {
             cursor: pointer;
             font-size: 26px;
+            color: #979BA5;
             &:hover {
                 color: #3a84ff;
             }

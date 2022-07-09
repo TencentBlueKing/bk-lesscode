@@ -156,6 +156,8 @@
     } from '@/common/util.js'
     import exportData from '../common/export.vue'
     import editObject from '@/components/edit-object.vue'
+    import DayJSUtcPlugin from 'dayjs/plugin/utc'
+    dayjs.extend(DayJSUtcPlugin)
 
     interface ITable {
         tableName: string,
@@ -345,6 +347,14 @@
 
             const confirmSubmitData = () => {
                 formRef.value.validate().then(() => {
+                    // 入库前根据浏览器时间转换时区
+                    const dateTimeColumns = activeTable.value.columns?.filter((column) => (column.type === 'datetime'))
+                    dateTimeColumns.forEach((dateTimeColumn) => {
+                        formStatus.editForm[dateTimeColumn.name] = dayjs(formStatus.editForm[dateTimeColumn.name])
+                            .utcOffset(0)
+                            .format('YYYY-MM-DD HH:mm:ss')
+                    })
+
                     const data = [{ tableName: activeTable.value.tableName, list: [formStatus.editForm] }]
                     const dataJsonParser = new DataJsonParser(data)
                     const dataSqlParser = new DataSqlParser()

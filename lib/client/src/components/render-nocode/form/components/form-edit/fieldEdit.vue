@@ -3,7 +3,7 @@
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
-                    <rich-text @change="handleDescValueChange" is-full-screen></rich-text>
+                    <rich-text @change="handleDescValueChange" is-full-screen :value="fieldData.value"></rich-text>
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
@@ -166,7 +166,7 @@
                 </bk-form-item>
                 <bk-form-item label="控制上传范围" v-if="fieldData.type === 'IMAGE' && !handleIsFolded">
                     <div>
-                        <div>
+                        <div class="range-control">
                             <bk-checkbox
                                 :disabled="disabled || fieldData.validate_type === 'REQUIRE'"
                                 :true-value="true"
@@ -186,7 +186,7 @@
                             </bk-input>
                             张图
                         </div>
-                        <div>
+                        <div class="range-control">
                             <bk-checkbox
                                 :true-value="true"
                                 :false-value="false"
@@ -211,7 +211,7 @@
                 </bk-form-item>
                 <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
                     <div>
-                        <div>
+                        <div class="range-control">
                             <bk-checkbox
                                 :disabled="disabled || fieldData.validate_type === 'REQUIRE'"
                                 :true-value="true"
@@ -231,7 +231,7 @@
                             </bk-input>
                             个选项
                         </div>
-                        <div>
+                        <div class="range-control">
                             <bk-checkbox
                                 :true-value="true"
                                 :false-value="false"
@@ -874,14 +874,8 @@
   }
 }
 
-</style>
-<style lang="postcss">
- .custom-require-tips,
- .custom-form-item{
-   .tippy-tooltip {
-     .tippy-arrow{
-       bottom: -15px !important;
-     }
-   }
+.range-control {
+    font-size: 12px;
 }
+
 </style>
