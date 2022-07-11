@@ -1,6 +1,6 @@
 <template>
-    <div id="app" :class="systemCls">
-        <main>
+    <div id="app" :class="[systemCls, { 'mobile-page': isMobilePage }]">
+        <main :class="{ 'mobile-page': isMobilePage }">
             <router-view :key="routerKey" />
         </main>
     </div>
@@ -19,6 +19,9 @@
             }
         },
         computed: {
+            isMobilePage () {
+                return this.$route.meta.platform === 'MOBILE'
+            },
             ...mapGetters(['mainContentLoading'])
         },
         watch: {
@@ -52,4 +55,8 @@
 <style lang="postcss">
     @import './css/reset.css';
     @import './css/app.css';
+    .mobile-page {
+        height: 100%;
+    }
+    
 </style>

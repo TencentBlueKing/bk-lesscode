@@ -91,6 +91,8 @@
     "@vue/babel-preset-jsx": "^1.2.4",
     "@vue/composition-api": "^1.4.3",
     "@vue/eslint-config-typescript": "^7.0.0",
+    "swiper": "5.2.0",
+    "vue-awesome-swiper": "4.1.1",
     "acorn": "~7.2.0",
     "ansi_up": "^4.0.4",
     "app-root-path": "~3.0.0",
