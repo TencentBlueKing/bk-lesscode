@@ -31,6 +31,7 @@
     } from '@vue/composition-api'
     import useComponentActive from '../hooks/use-component-active'
     import useMargin from './hooks/use-margin'
+    import { isFreeLayoutProperty } from '@/element-materials/core/helper/utils.js'
 
     const baseStyles = {
         position: 'absolute',
@@ -54,7 +55,7 @@
                 state.btnTopStyles = hideStyles
                 state.btnLeftStyles = hideStyles
                 if (!componentData.componentId
-                    || componentData.parentNode.type === 'free-layout') {
+                    || isFreeLayoutProperty(componentData.parentNode.type)) {
                     return
                 }
                 const {

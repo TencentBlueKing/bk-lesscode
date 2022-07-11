@@ -57,6 +57,7 @@
     import useAutoHeight from './hooks/use-auto-height'
     import useFullWidth from './hooks/use-full-width'
     import useAutoWidth from './hooks/use-auto-width'
+    import { isFreeLayoutProperty } from '@/element-materials/core/helper/utils.js'
 
     const baseStyles = {
         position: 'absolute',
@@ -159,7 +160,7 @@
                     })
                     // 高度自适应的按钮
                     // free-layout 不支持该功能，必须给定 height
-                    if (componentData.type !== 'free-layout') {
+                    if (!isFreeLayoutProperty(componentData.type)) {
                         state.autoHeightStyles = Object.assign({}, dotBaseStyle, {
                             top: `${top + height - containerTop + actionBtnOffset}px`,
                             left: `${left - containerLeft + width / 2 - actionBtnSize / 2}px`
