@@ -88,7 +88,7 @@
     "@babel/preset-env": "~7.6.3",
     "@babel/register": "~7.6.2",
     "@babel/runtime": "~7.6.3",
-    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.7",
+    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.10",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
     "@blueking/bkui-vue-complex": "0.0.7",
     "@blueking/bundless": "0.0.8",
