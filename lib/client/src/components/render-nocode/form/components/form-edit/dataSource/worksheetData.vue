@@ -255,7 +255,7 @@
             },
             // 选择表单，清空已选数据
             handleSelectForm (val) {
-                const form = this.formList.find(item => item.id === val)
+                const form = this.formList.find(item => item.tableName === val)
                 this.localVal.tableName = form.tableName
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
@@ -300,7 +300,7 @@
             },
             validate () {
                 this.$refs.sourceForm.validate()
-                const sourceFormValid = this.localVal.formId && this.localVal.field
+                const sourceFormValid = this.localVal.tableName && this.localVal.field
                 // const filterRuleValid = this.localVal.conditions.expressions.every((exp) => {
                 //   const { key, condition, type, value } = exp;
                 //   return key !== '' && condition !== '' && type !== '' && value !== '';
