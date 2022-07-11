@@ -146,7 +146,7 @@
                     if (this.type === 'FLOW') {
                         const params = {
                             fields: data,
-                            creator: this.$state.user.username,
+                            creator: this.$store.state.user.username,
                             service_id: this.serviceId
                         }
                         await this.$http.post('/nocode/v2/itsm/create_ticket/', params)

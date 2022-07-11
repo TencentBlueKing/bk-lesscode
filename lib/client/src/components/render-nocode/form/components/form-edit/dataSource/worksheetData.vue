@@ -300,7 +300,7 @@
             },
             validate () {
                 this.$refs.sourceForm.validate()
-                const sourceFormValid = this.localVal.formId && this.localVal.field
+                const sourceFormValid = this.localVal.tableName && this.localVal.field
                 // const filterRuleValid = this.localVal.conditions.expressions.every((exp) => {
                 //   const { key, condition, type, value } = exp;
                 //   return key !== '' && condition !== '' && type !== '' && value !== '';
