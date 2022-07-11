@@ -17,7 +17,15 @@
                 ext-cls="g-popover-empty-padding"
                 width="320"
             >
-                <span class="item-content">
+                <span
+                    class="item-content"
+                    v-bk-overflow-tips="{
+                        content: item.label,
+                        placement: 'left-start',
+                        width: 200,
+                        boundary: 'window'
+                    }"
+                >
                     <i class="bk-drag-icon bk-drag-grag-fill" />
                     {{ item.label }}
                 </span>
@@ -287,6 +295,9 @@
                 width: calc(100% - 26px);
                 padding: 0 8px;
                 cursor: pointer;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 &:hover {
                     background: #EAEBF0;
                 }
@@ -301,7 +312,8 @@
                 }
             }
             ::v-deep .bk-tooltip-ref {
-                display: block;
+                display: flex;
+                align-items: center;
             }
         }
     }

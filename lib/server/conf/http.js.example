@@ -15,10 +15,16 @@ module.exports = process.env.NODE_ENV === 'production'
         port: 5000,
         protocol: 'http',
 
-        // 企业版/社区版 base url, 如http://bking.com/
+        // 社区版 base url, 如http://bking.com/
         hostUrl: '',
         // 登录跳转url，正常情况值下为hostUrl + '/login/'
         loginUrl: '',
+        // 用户管理接口前缀，用于获取用户列表
+        userManageUrl: '',
+        // itsm网关域名前缀, 使用到流程相关功能时需配置
+        itsmUrl: '',
+        // apiGateWay 请求地址模板
+        apiGateWayUrlTmpl: '',
         // 应用 ID
         appCode: '',
         // 应用 TOKEN
@@ -29,10 +35,16 @@ module.exports = process.env.NODE_ENV === 'production'
         port: 5000,
         protocol: 'http',
 
-        // 企业版/社区版 base url, 如http://bking.com/
+        // 社区版 base url, 如http://bking.com/
         hostUrl: '',
         // 登录跳转url，正常情况值下为hostUrl + '/login/'
         loginUrl: '',
+        // 用户管理接口前缀，用于获取用户列表
+        userManageUrl: '',
+        // itsm网关域名前缀, 使用到流程相关功能时需配置
+        itsmUrl: '',
+        // apiGateWay 请求地址模板
+        apiGateWayUrlTmpl: '',
         // 应用 ID
         appCode: '',
         // 应用 TOKEN

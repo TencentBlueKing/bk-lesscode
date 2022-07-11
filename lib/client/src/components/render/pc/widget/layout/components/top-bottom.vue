@@ -89,7 +89,7 @@
             activeNode.activeClear()
         }
         document.body.querySelectorAll('.component-wrapper').forEach($el => {
-            $el.classList.remove('selectd')
+            $el.classList.remove('selected')
         })
     }
 
@@ -121,7 +121,7 @@
             const activeCallback = () => {
                 this.isTopMenuSelected = false
                 document.body.querySelectorAll('.component-wrapper').forEach($el => {
-                    $el.classList.remove('selectd')
+                    $el.classList.remove('selected')
                 })
             }
             LC.addEventListener('active', activeCallback)

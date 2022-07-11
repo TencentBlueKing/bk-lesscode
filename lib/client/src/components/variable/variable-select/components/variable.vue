@@ -427,6 +427,7 @@
             top: 4px;
             color: #979ba5;
             font-size: 22px;
+            z-index: 2;
             &.icon-close-circle-shape {
                 display: none;
                 position: absolute;

@@ -63,7 +63,7 @@
 
     // 默认提供的函数
     const getDataFuncList = (tableName, projectId) => {
-        const funcApiUrl = `/data-source/user/projectId/${projectId}/tableName/${tableName}`
+        const funcApiUrl = `/data-source/user/tableName/${tableName}`
         return [
             {
                 funcName: 'getDataList',

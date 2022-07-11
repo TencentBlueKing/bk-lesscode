@@ -77,8 +77,8 @@
                         message: '表名是必填项',
                         trigger: 'blur'
                     }, {
-                        regex: /^[a-zA-Z][a-zA-Z-_]*[a-zA-Z]$/,
-                        message: '开头和结尾需是大小写字母，中间可以是大小写字母、连字符和下划线。长度最少为2个字符',
+                        regex: /^[a-z][a-z-_]*[a-z]$/,
+                        message: '开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度最少为2个字符',
                         trigger: 'blur'
                     }, {
                         validator (val) {
