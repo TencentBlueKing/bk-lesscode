@@ -255,7 +255,7 @@
             },
             // 选择表单，清空已选数据
             handleSelectForm (val) {
-                const form = this.formList.find(item => item.id === val)
+                const form = this.formList.find(item => item.tableName === val)
                 this.localVal.tableName = form.tableName
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
