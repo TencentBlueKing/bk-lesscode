@@ -383,10 +383,6 @@
             'latestInfo.status': {
                 handler: function (val) {
                     if (val === 'running') {
-                        this.$bkMessage({
-                            theme: 'primary',
-                            message: '检测到尚未结束的部署任务，正在恢复进度'
-                        })
                         this.checkDeployResult()
                     } else {
                         this.timer && clearInterval(this.timer)
