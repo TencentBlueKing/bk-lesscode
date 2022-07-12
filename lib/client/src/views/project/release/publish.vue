@@ -172,14 +172,24 @@
                             :placeholder="versionLogPlaceholder" />
                         <p :class="$style['version-err-tips']" v-show="versionLogErrTips">{{versionLogErrTips}}</p>
                     </div>
-                    <div :class="[$style['operate-btn'], $style['m-left']]">
-                        <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">{{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? `部署中...` : '部署'}}</bk-button>
+
+                    <div class="release-box"
+                        :class="[releaseStatus === 'successed' ? 'success-box' : 'failed-box']"
+                        v-if="releaseStatus === 'successed' || releaseStatus === 'failed'">
+                        <div class="deploy-text">应用部署{{releaseStatus === 'successed' ? '成功' : '失败'}}</div>
+                        <bk-button style="margin-left: 6px;" :theme="releaseStatus === 'successed' ? 'success' : 'danger'" outline @click="handleSuccessCallback"> 返回 </bk-button>
+                    </div>
+                    <div v-else :class="[$style['operate-btn'], $style['m-left']]">
+                        <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
+                            {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease || releaseStatus === 'running') ? `部署中...` : '部署'}}
+                        </bk-button>
                         <span :class="$style['release-tips']">由蓝鲸开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理</span>
                     </div>
                 </div>
             </div>
-            <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :deploy-id="latestInfo.deployId" :default-content="defaultContent" :status="latestInfo.status" @closeLog="closeLog"></completed-log>
-            <running-log v-if="showRunningLog" :is-show="showRunningLog" :deploy-id="latestInfo.deployId" @closeLog="closeLog" :title="`${envMap[latestInfo.env]}部署执行日志`"></running-log>
+            <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :current-app-info="currentAppInfo" :env="versionForm.env" :deploy-id="latestInfo.deployId" :default-content="defaultContent" :status="latestInfo.status" @closeLog="closeLog"></completed-log>
+            <running-log v-if="showRunningLog" :is-show="showRunningLog" :current-app-info="currentAppInfo" :env="versionForm.env" :deploy-id="latestInfo.deployId" @closeLog="closeLog" :title="`${envMap[latestInfo.env]}部署执行日志`"></running-log>
+            <release-action ref="releaseRef" :current-app-info="currentAppInfo" :env="versionForm.env" :deploy-id="latestInfo.deployId" @handleReleaseStatus="handleReleaseStatus"></release-action>
             <bk-dialog v-model="showOffline"
                 render-directive="if"
                 title="下架版本"
@@ -231,6 +241,7 @@
     import completedLog from './components/completed-log'
     import appModuleSelect from '@/components/project/app-module-select'
     import runningLog from './components/running-log'
+    import releaseAction from './components/release-action'
     import monaco from '@/components/monaco.vue'
     import { execCopy } from '@/common/util'
 
@@ -248,6 +259,7 @@
         components: {
             completedLog,
             runningLog,
+            releaseAction,
             monaco,
             appModuleSelect
         },
@@ -290,7 +302,8 @@
                 isShowReleaseSql: false,
                 isLoadingReleaseSql: false,
                 releaseSqls: [],
-                versionLogPlaceholder: 'eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n'
+                versionLogPlaceholder: 'eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n',
+                releaseStatus: ''
             }
         },
         computed: {
@@ -335,6 +348,7 @@
                     || (this.isProjVersion && this.versionForm.isCreateProjVersion && !this.versionForm.versionLog)
                     || !this.sourceVersion
                     || this.latestInfo.status === 'running'
+                    || this.releaseStatus === 'running'
             },
             showMobileTips () {
                 return this.prodInfo.mobileUrl || this.stagInfo.mobileUrl
@@ -437,10 +451,12 @@
                 execCopy(value)
             },
             async release () {
+                // this.showRunningLog = true
                 if (this.releaseBtnDisabled) {
                     return false
                 }
                 try {
+                    this.releaseStatus = 'running'
                     const { versionForm, projectId } = this
                     this.disabledRelease = true
                     const data = {
@@ -466,10 +482,13 @@
                             message: '部署任务执行中'
                         })
                         await this.resetData()
-                        this.showRunningLog = true
+                        // 显示部署日志
+                        this.$refs.releaseRef.getLogs()
+                        // this.showRunningLog = true
                     }
                 } catch (err) {
                     await this.resetData()
+                    this.releaseStatus = ''
                 } finally {
                     this.disabledRelease = false
                 }
@@ -513,7 +532,10 @@
                 this.timer && clearInterval(this.timer)
                 this.timer = setInterval(() => {
                     this.getLatestDetail()
-                }, 5000)
+                }, 3000)
+                this.timerDeploy = setTimeout(() => {
+                    this.$refs.releaseRef.getLogs()
+                }, 3000)
             },
             async getLatestDetail () {
                 try {
@@ -635,6 +657,15 @@
             },
             showSql () {
                 this.isShowReleaseSql = true
+            },
+
+            handleSuccessCallback () {
+                this.$refs.releaseRef.handleClearDeploy()
+                this.releaseStatus = ''
+            },
+
+            handleReleaseStatus (value) {
+                this.releaseStatus = value
             }
         }
     }
@@ -874,6 +905,26 @@
                     border: none !important;
                 }
             }
+        }
+
+        .release-box {
+            background: #e7fcfa;
+            color: #979ba5;
+            height: 55px;
+            line-height: 55px;
+            border-radius: 2px;
+            padding: 0 10px;
+            max-width: 1300px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .deploy-text{
+                color: #313238;
+                font-weight: 500;
+            }
+        }
+        .failed-box{
+            background: #ffecec;
         }
     }
 </style>
