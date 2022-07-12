@@ -51,9 +51,11 @@ pagination”
 ### 第四步：查询 “按钮”组件事件配置
 
 1、查询函数
+
 <img src="../../../images/help/case-table6.png" alt="grid" width="640" class="help-img">
 
 2、查询按钮绑定事件
+
 <img src="../../../images/help/case-table5.png" alt="grid" width="640" class="help-img">
 
 ### 第五步：表格分页事件配置
