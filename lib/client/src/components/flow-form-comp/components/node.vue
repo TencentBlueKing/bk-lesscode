@@ -97,7 +97,8 @@
                 try {
                     this.initDataLoading = true
                     const serviceRes = await this.$http.get(`/nocode/service/${this.serviceId}/`)
-                    const nodesRes = await this.$http.get('/nocode/state/', { params: { workflow: serviceRes.data.workflow_id, page_size: 1000 } })
+                    const path = this.viewType === 'projectCode' ? '/nocode/v2/itsm/states/' : '/nocode/state/'
+                    const nodesRes = await this.$http.get(path, { params: { workflow: serviceRes.data.workflow_id, page_size: 1000 } })
                     const nodes = []
                     nodesRes.data.items.forEach(node => {
                         if (node.type === 'NORMAL' && node.id in this.formIds) {

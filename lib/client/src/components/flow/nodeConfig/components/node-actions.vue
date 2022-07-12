@@ -64,7 +64,7 @@
                 return {
                     formId,
                     flowId,
-                    pageCode: `flowPage${this.flowConfig.id}`,
+                    pageCode: `flowpage${this.flowConfig.id}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
@@ -160,7 +160,6 @@
                         this.savePending = true
                     }
                     if (this.nodeData.type === 'NORMAL') {
-                        // itsm 接口对字段的类型校验有问题，暂时先去掉
                         const itsmFields = await this.saveItsmFields()
                         const content = itsmFields.map(field => {
                             field.columnId = field.meta.columnId

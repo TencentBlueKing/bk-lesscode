@@ -145,7 +145,7 @@
                     const data = this.getFieldsData()
                     if (this.type === 'FLOW') {
                         const params = {
-                            fields: data,
+                            fields: [{ key: 'title', value: 'lesscode 提单' }, ...data],
                             creator: this.$store.state.username,
                             service_id: this.serviceId
                         }
