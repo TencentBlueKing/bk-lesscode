@@ -220,9 +220,7 @@ bklc build component-project
 ### 使用
 
 #### 指定使用组件的页面
-> 在页面列表中选择将要编辑的页面，或者新建一个页面来编辑
-
-<img src="../../../images/help/page-list.png" alt="grid" width="600" class="help-img" />
+> 在应用页面列表中选择将要编辑的页面，或者新建一个页面来编辑
 
 #### 拖拽组件
 > 上传的组件在页面编辑页面会自动注册

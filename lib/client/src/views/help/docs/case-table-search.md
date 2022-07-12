@@ -1,17 +1,41 @@
 ## 如何开发一个表格查询页面
-### 第一步：拖拽“查询选择”、“表格”、“分页”组件到画布
+### 第一步：拖拽“查询选择”、“表格”组件到画布
 
 <img src="../../../images/help/case-table1.png" alt="grid" width="640" class="help-img">
 
-### 第二步：配置组件指令
+### 第二步：配置组件属性和指令
 
-- 配置“表格”组件属性指令“v-bind:data”，用于设置表格数据
+- 设置表格数据来源：新建变量“tableData”，配置“表格”组件属性“data”，绑定变量“tableData”
 
-- 配置“查询选择”组件属性指令"v-model"，用于获取查询输入关键字
+- 获取查询输入关键字：新建变量“keyWords”，配置“查询选择”组件属性指令"v-model"绑定变量“keyWords”
+- 设置表格分页：新建变量“
+pagination”，变量默认值为：
+```js
+{
+    "current": 1,
+    "count": 3,
+    "limit": 10,
+    "limitList": [
+        10,
+        20,
+        50,
+        100
+    ],
+    "showLimit": false
+}
+```
+- 配置“表格”组件属性“
+pagination”绑定变量“
+pagination”
 
-- 配置“分页”组件属性指令“v-bind:count”，用于设置分页数据总量
 
-- 配置“分页”组件属性指令“v-bind:current.sync”，用于获取当前页
+### 第三步：“表格”组件 “data” 属性及事件配置
+
+1、 配置表格“data”属性数据初始值来源为函数，并绑定函数 “getTableData”
+
+<img src="../../../images/help/case-table2.png" alt="grid" width="640" class="help-img">
+
+2、 根据“data”属性数据返回字段刷新和调整表头配置
 
 
 **注意：**
@@ -24,41 +48,18 @@
 
 <img src="../../../images/help/case-table3.png" alt="grid" width="640" class="help-img">
 
+### 第四步：查询 “按钮”组件事件配置
 
-### 第三步：“表格”组件属性及事件配置
-
-- 配置表格数据源初始加载函数 getTableData
-
-<img src="../../../images/help/case-table2.png" alt="grid" width="640" class="help-img">
-
-- 根据数据源返回字段配置表头
-
-<img src="../../../images/help/case-table4.png" alt="grid" width="640" class="help-img">
-
-### 第四步：“查询选择”组件事件配置
-
-- 表格数据更新函数 updateTableData
-
-<img src="../../../images/help/case-table10.png" alt="grid" width="640" class="help-img">
-
-- 配置“enter”事件函数，触发查询
-
-<img src="../../../images/help/case-table5.png" alt="grid" width="640" class="help-img">
-
-事件函数 selectData
-
+1、查询函数
 <img src="../../../images/help/case-table6.png" alt="grid" width="640" class="help-img">
 
+2、查询按钮绑定事件
+<img src="../../../images/help/case-table5.png" alt="grid" width="640" class="help-img">
 
-### 第五步：“分页”组件事件配置
-
-- 配置“click”事件函数，触发分页查询操作
+### 第五步：表格分页事件配置
 
 <img src="../../../images/help/case-table7.png" alt="grid" width="640" class="help-img">
 
-事件函数 selectData2
-
-<img src="../../../images/help/case-table8.png" alt="grid" width="640" class="help-img">
 
 ### 第六步：预览效果
 
