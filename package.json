@@ -249,13 +249,11 @@
     "webpack": "~4.41.0",
     "webpack-dev-middleware": "~3.7.2",
     "webpack-hot-client": "~4.1.2",
-    "webpack-merge": "~4.2.2"
+    "webpack-merge": "~4.2.2",
+    "ansi_up": "^4.0.4"
   },
   "engines": {
     "node": ">= 14.17.6",
     "npm": "6.14.15"
-  },
-  "devDependencies": {
-    "ansi_up": "^4.0.4"
   }
 }
