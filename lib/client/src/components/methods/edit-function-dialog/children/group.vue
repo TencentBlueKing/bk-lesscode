@@ -56,7 +56,7 @@
             <span class="item-num">{{ (group.children || []).length }}</span>
         </h3>
         <ul v-if="isOpen">
-            <slot />
+            <slot></slot>
         </ul>
     </li>
 </template>
@@ -206,13 +206,13 @@
         position: relative;
         .item-num {
             margin-left: 10px;
-            height: 20px;
+            height: 16px;
             border-radius: 2px;
             background: #f0f1f5;
             color: #979ba5;
             font-size: 12px;
-            line-height: 20px;
-            padding: 0 6px;
+            line-height: 16px;
+            padding: 0 3px;
             position: absolute;
             right: 9px;
             top: 6px;

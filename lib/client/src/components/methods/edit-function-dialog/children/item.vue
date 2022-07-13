@@ -5,11 +5,11 @@
         </span>
         <template v-if="functionData.id">
             <i
-                class="bk-drag-icon bk-drag-copy item-tool hover-show"
+                class="bk-drag-icon bk-drag-copy hover-show"
                 @click.stop="handleCopyFunction"
             ></i>
             <i
-                :class="['bk-drag-icon', 'bk-drag-close-line', 'hover-show', { disable: !computedPermissionInfo.hasPermission }]"
+                :class="['bk-drag-icon', 'bk-drag-delet', 'hover-show', { disable: !computedPermissionInfo.hasPermission }]"
                 v-bk-tooltips="{
                     disabled: computedPermissionInfo.hasPermission,
                     content: computedPermissionInfo.message,

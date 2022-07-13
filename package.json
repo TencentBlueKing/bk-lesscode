@@ -88,6 +88,7 @@
     "@babel/preset-env": "~7.6.3",
     "@babel/register": "~7.6.2",
     "@babel/runtime": "~7.6.3",
+    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.10",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
     "@blueking/bkui-vue-complex": "0.0.7",
     "@blueking/bundless": "0.0.8",
@@ -102,7 +103,6 @@
     "@vue/composition-api": "^1.4.3",
     "@vue/eslint-config-typescript": "^7.0.0",
     "acorn": "~8.5.0",
-    "ansi_up": "^4.0.4",
     "app-root-path": "~3.0.0",
     "async-validator": "~1.8.1",
     "aws-sdk": "^2.736.0",
@@ -250,7 +250,8 @@
     "webpack": "~4.41.0",
     "webpack-dev-middleware": "~3.7.2",
     "webpack-hot-client": "~4.1.2",
-    "webpack-merge": "~4.2.2"
+    "webpack-merge": "~4.2.2",
+    "ansi_up": "^4.0.4"
   },
   "engines": {
     "node": ">= 14.17.6",

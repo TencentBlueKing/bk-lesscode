@@ -91,7 +91,10 @@
                             </bk-round-progress>
                             <div v-if="file.status === UPLOAD_STATUS.FAIL" class="fail-content">
                                 <i class="bk-drag-icon bk-drag-close-circle-fill"></i>
-                                <div class="fail-text">{{file.statusText || '上传失败'}}</div>
+                                <div class="fail-summary">
+                                    <div class="fail-title">上传失败</div>
+                                    <div class="fail-message" v-if="file.statusText" v-bk-overflow-tips>{{file.statusText}}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="use-action" v-if="$scopedSlots['use-action'] && file.status === UPLOAD_STATUS.SUCCESS">
@@ -205,15 +208,26 @@
                     }
 
                     .fail-content {
+                        width: 100%;
                         text-align: center;
                         .bk-drag-icon {
                             font-size: 36px;
                             color: #ea3636;
                         }
-                        .fail-text {
-                            font-size: 12px;
+                        .fail-summary {
                             color: #fff;
-                            margin-top: 4px;
+                            .fail-title {
+                                font-size: 14px;
+                                margin-top: 4px;
+                            }
+                            .fail-message {
+                                font-size: 12px;
+                                margin-top: 4px;
+                                padding: 0 4px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
                         }
                     }
                 }

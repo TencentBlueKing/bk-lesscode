@@ -92,9 +92,12 @@
     }
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
     .token-item {
         margin: 10px 0 -10px;
+        /deep/ .bk-checkbox-text {
+            font-size: 12px;
+        }
     }
     .token-tip {
         font-size: 12px;

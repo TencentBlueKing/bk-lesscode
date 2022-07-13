@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="scheme-main">
         <bk-tab
             class="tab-main"
             type="unborder-card"
@@ -43,6 +43,11 @@
 </script>
 
 <style lang="postcss" scoped>
+    .scheme-main {
+        background: #FAFBFD;
+        padding-bottom: 20px;
+        margin-top: 38px;
+    }
     .tab-main {
         width: 400px;
         /deep/ .bk-tab-section {
@@ -55,6 +60,9 @@
                 height: 42px !important;
                 .bk-tab-label-item {
                     line-height: 42px !important;
+                }
+                .bk-tab-label {
+                    font-size: 12px;
                 }
             }
         }
