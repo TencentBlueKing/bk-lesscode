@@ -48,7 +48,6 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import FieldItem from '../form/fieldItem.vue'
-
     export default {
         name: 'Filters',
         components: {
@@ -77,6 +76,13 @@
             return {
                 filterFields,
                 localVal
+            }
+        },
+        watch: {
+            value: {
+                handler (val) {
+                    this.localVal = cloneDeep(val)
+                }
             }
         },
         methods: {

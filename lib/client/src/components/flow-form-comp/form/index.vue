@@ -73,8 +73,6 @@
                     } else if ('default' in item) {
                         if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE', 'FILE'].includes(item.type)) {
                             fieldsValue[item.key] = item.default ? item.default.split(',') : []
-                        } else if (item.type === 'DATETIME' && item.default === 'curTime') {
-                            fieldsValue[item.key] = JSON.stringify(this.$dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
                         } else {
                             fieldsValue[item.key] = item.default
                         }

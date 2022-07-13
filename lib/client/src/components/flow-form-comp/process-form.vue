@@ -50,7 +50,12 @@
                 default: () => []
             },
             formId: Number,
-            tableName: String
+            serviceId: Number,
+            tableName: String,
+            viewType: {
+                type: String,
+                default: 'projectCode'
+            }
         },
         data () {
             return {
@@ -138,7 +143,16 @@
                 try {
                     this.submitPending = true
                     const data = this.getFieldsData()
-                    await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
+                    if (this.type === 'FLOW') {
+                        const params = {
+                            fields: data,
+                            creator: this.$store.state.username,
+                            service_id: this.serviceId
+                        }
+                        await this.$http.post('/nocode/v2/itsm/create_ticket/', params)
+                    } else {
+                        await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
+                    }
                     this.showSuccess = true
                 } catch (e) {
                     console.error(e.messsage || e)

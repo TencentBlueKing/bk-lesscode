@@ -46,7 +46,6 @@
     .scheme-main {
         background: #FAFBFD;
         padding-bottom: 20px;
-        margin-top: 38px;
     }
     .tab-main {
         width: 400px;

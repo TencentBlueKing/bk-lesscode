@@ -88,6 +88,7 @@
   top:-32px;
   font-size: 12px;
   right: 0;
+  cursor: pointer;
 }
 /deep/ .field-form-item{
   margin-top: 0;

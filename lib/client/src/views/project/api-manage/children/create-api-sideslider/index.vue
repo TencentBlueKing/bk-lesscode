@@ -26,10 +26,11 @@
                 @update="handleUpdate"
             />
             <h3 class="api-form-title">
-                请求响应示例
+                默认请求参数
                 <bk-button
+                    class="api-response-button"
                     size="small"
-                    text
+                    :loading="isLoadingResponse"
                     v-bk-tooltips="{
                         content: '立即发送请求来获取请求响应，响应示例去除了数组中重复的部分。可以在响应结果字段提取中进行二次编辑'
                     }"
@@ -109,6 +110,7 @@
         setup (props, { emit }) {
             // 状态
             const isSubmitting = ref(false)
+            const isLoadingResponse = ref(false)
             const formChanged = ref(false)
             const formData = ref({})
             const response = ref()
@@ -237,6 +239,7 @@
                             apiData,
                             withToken: basicData.withToken
                         }
+                        isLoadingResponse.value = true
                         return store
                             .dispatch('getApiData', httpData)
                             .then((res) => {
@@ -244,6 +247,9 @@
                             })
                             .catch((err) => {
                                 messageError(err.message || err)
+                            })
+                            .finally(() => {
+                                isLoadingResponse.value = false
                             })
                     })
             }
@@ -260,6 +266,7 @@
 
             return {
                 isSubmitting,
+                isLoadingResponse,
                 formData,
                 response,
                 basicRef,
@@ -297,5 +304,8 @@
     }
     .api-footer {
         padding-left: 30px;
+    }
+    .api-response-button {
+        font-weight: normal;
     }
 </style>
