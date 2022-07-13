@@ -1,4 +1,9 @@
 ![](./lib/client/src/images/logo-name.png)
+
+---
+
+[![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/TencentBlueKing/bk-lesscode/blob/develop/LICENSE.txt) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/TencentBlueKing/bk-lesscode/pulls) 
+
 ## 简介
 蓝鲸智云可视化开发平台(LessCode)提供了前端页面在线可视化拖拽组装、配置编辑、源码生成、二次开发等能力。旨在帮助用户通过尽量少的手写代码的方式快速设计和开发SaaS。本次平台开源部分支持基于Vuejs的UI组件拖拽及源码生成，未来我们将持续更新扩充平台能力。
 
