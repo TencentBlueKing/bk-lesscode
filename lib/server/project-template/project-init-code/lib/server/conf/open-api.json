@@ -34,7 +34,7 @@
                         "transformHeaders": {}
                     },
                     "authConfig": {
-                        "userVerifiedRequired": true
+                        "userVerifiedRequired": false
                     },
                     "disabledStages": [],
                     "descriptionEn": null
@@ -65,7 +65,7 @@
                         "transformHeaders": {}
                     },
                     "authConfig": {
-                        "userVerifiedRequired": true
+                        "userVerifiedRequired": false
                     },
                     "disabledStages": [],
                     "descriptionEn": null
@@ -96,7 +96,7 @@
                         "transformHeaders": {}
                     },
                     "authConfig": {
-                        "userVerifiedRequired": true
+                        "userVerifiedRequired": false
                     },
                     "disabledStages": [],
                     "descriptionEn": null
