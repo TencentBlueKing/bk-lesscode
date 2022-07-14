@@ -30,7 +30,8 @@ module.exports = {
         monaco: false,
         ResizeSensor: false,
         define: false,
-        BK_USER_MANAGE_HOST: false
+        BK_USER_MANAGE_HOST: false,
+        BK_API_URL_TMPL: false
     },
     // add your custom rules hered
     rules: {

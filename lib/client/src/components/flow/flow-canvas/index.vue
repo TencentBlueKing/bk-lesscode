@@ -67,7 +67,7 @@
     const endpointOptions = {
         endpoint: 'Dot',
         // connector: ['Flowchart', { stub: [10, 16], alwaysRespectStub: true, gap: 2, cornerRadius: 10 }],
-        connector: ['Bezier', { curviness: 5 }],
+        connector: ['Bezier', { curviness: 10 }],
         connectorOverlays: [['PlainArrow', { width: 8, length: 6, location: 1, id: 'arrow' }]],
         paintStyle: { fill: 'rgba(0, 0, 0, 0)', stroke: '', strokeWidth: 1, radius: 6 },
         hoverPaintStyle: { fill: '#EE8F62', stroke: '#EE8F62', radius: 8 },

@@ -170,6 +170,6 @@
     width: 100%;
     height: 100%;
     background: #fafbfd;
-    z-index: 101;
+    z-index: 120;
 }
 </style>

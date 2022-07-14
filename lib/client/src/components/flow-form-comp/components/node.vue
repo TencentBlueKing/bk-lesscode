@@ -9,7 +9,7 @@
                     :label="node.name">
                 </bk-tab-panel>
             </bk-tab>
-            <div class="opereate-btn">
+            <div class="opereate-btns">
                 <!-- <bk-button>导出</bk-button>
                 <bk-button>下载流程附件</bk-button> -->
                 <i
@@ -19,7 +19,7 @@
                 </i>
             </div>
         </div>
-        <div class="node-data-content" v-bkloading="{ isLoading: formDataLoading }">
+        <div class="node-data-content">
             <filters
                 v-if="filters.length > 0 && showFilters"
                 :filters="filters"
@@ -27,6 +27,7 @@
                 :system-fields="systemFields">
             </filters>
             <table-fields
+                v-if="!formDataLoading"
                 style="margin-top: 16px"
                 :table-config="tableConfig"
                 :fields="fields"
@@ -39,7 +40,6 @@
 </template>
 <script>
     import { mapGetters } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
     import { formMap } from 'shared/form'
     import { FLOW_SYS_FIELD } from '../common/field.js'
     import Filters from '../components/filters.vue'
@@ -87,10 +87,6 @@
         },
         async created () {
             await this.getInitData()
-            if (this.nodes.length > 0) {
-                this.activeNode = this.nodes[0].id
-                this.getFormData()
-            }
         },
         methods: {
             async getInitData () {
@@ -107,7 +103,7 @@
                     })
                     this.nodes = nodes
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.initDataLoading = false
                 }
@@ -131,7 +127,7 @@
                         content: formDetail.content
                     })
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.formDataLoading = false
                 }
@@ -147,7 +143,10 @@
                     this.$set(this.config, val, { filters: [], tableConfig: [] })
                 }
                 if (!(val in this.formDataMap)) {
-                    this.getFormData()
+                    if (this.nodes.length > 0) {
+                        this.activeNode = this.nodes[0].id
+                        this.getFormData()
+                    }
                 }
             }
         }
@@ -188,11 +187,11 @@
             }
         }
     }
-    .opereate-btn {
+    .opereate-btns {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 230px;
+        max-width: 230px;
         .bk-button {
             cursor: inherit;
         }
@@ -210,5 +209,9 @@
                 color: #3a84ff;
             }
         }
+    }
+
+    .node-data-content {
+        min-height: 260px;
     }
 </style>

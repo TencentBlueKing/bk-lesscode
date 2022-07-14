@@ -397,6 +397,7 @@
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapState('nocode/nodeConfig', ['nodeData']),
+            ...mapGetters('project', ['projectDetail']),
             ...mapGetters('nocode/nodeConfig', ['processorData']),
             projectId () {
                 return this.$route.params.projectId
@@ -426,7 +427,11 @@
         watch: {
             dataProcessConfig: {
                 handler (val) {
-                    this.$store.commit('nocode/nodeConfig/setDataProcessConfig', val)
+                    this.$store.commit('nocode/nodeConfig/setDataProcessConfig', {
+                        data: val,
+                        projectId: this.projectId,
+                        projectCode: this.projectDetail.projectCode
+                    })
                 },
                 deep: true
             }

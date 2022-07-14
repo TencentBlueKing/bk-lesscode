@@ -85,7 +85,7 @@
                 let valid = true
                 this.fields.some((field) => {
                     // 隐藏的表单不校验
-                    if (field.show_type === 1) {
+                    if (field.isHide) {
                         return
                     }
                     // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
@@ -145,9 +145,10 @@
                     const data = this.getFieldsData()
                     if (this.type === 'FLOW') {
                         const params = {
-                            fields: [{ key: 'title', value: 'lesscode 提单' }, ...data],
-                            creator: this.$store.state.username,
-                            service_id: this.serviceId
+                            fields: [{ key: 'title', type: 'string', choice: [], value: 'lesscode 提单' }, ...data],
+                            creator: this.$store.state.user.username,
+                            service_id: this.serviceId,
+                            env: ENV
                         }
                         await this.$http.post('/nocode/v2/itsm/create_ticket/', params)
                     } else {

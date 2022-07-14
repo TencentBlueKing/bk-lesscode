@@ -2,7 +2,7 @@
     <div class="form-fields">
         <template v-for="field in fields">
             <field-form-item
-                v-if="field.show_type === 0"
+                v-if="!field.isHide"
                 :key="field.key"
                 :field="field"
                 :use-fixed-data-source="useFixedDataSource"
