@@ -118,6 +118,6 @@
         }
     }
     .lesscode-deploy-log-running{
-        height: 9vh !important;
+        height: 91vh !important;
     }
 </style>
