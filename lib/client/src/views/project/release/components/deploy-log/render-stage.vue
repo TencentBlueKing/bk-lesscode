@@ -125,7 +125,7 @@
 
     .running-cls{
         .content {
-            max-height: 960px !important;
+            max-height: 65vh !important;
         }
     }
 
