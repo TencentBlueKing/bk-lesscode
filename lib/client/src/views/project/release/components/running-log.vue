@@ -304,7 +304,6 @@
                             this.$refs.deployTimelineRef && this.$refs.deployTimelineRef.editNodeStatus(data.name, data.status, content)
                         }
                     })
-                    this.loopLogs()
                     if (res.status === 'end') {
                         this.timer && clearInterval(this.timer)
                     }
