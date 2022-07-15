@@ -64,7 +64,7 @@
                 return {
                     formId,
                     flowId,
-                    pageCode: `flowPage${this.flowConfig.id}`,
+                    pageCode: `flowpage${this.flowConfig.id}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
@@ -128,7 +128,9 @@
                         data.finish_condition = {}
                     }
                 } else if (data.type === 'NORMAL') {
-                    data.fields = this.formConfig.content.map(field => field.id)
+                    const formFieldsId = this.formConfig.content.map(field => field.id)
+                    // itsm新建服务时默认生成一个标题字段，需要保留，默认放到第一个
+                    data.fields = [this.nodeData.fields[0], ...formFieldsId]
                     data.extras.formConfig = {
                         id: formId,
                         type: this.formConfig.type
@@ -160,7 +162,6 @@
                         this.savePending = true
                     }
                     if (this.nodeData.type === 'NORMAL') {
-                        // itsm 接口对字段的类型校验有问题，暂时先去掉
                         const itsmFields = await this.saveItsmFields()
                         const content = itsmFields.map(field => {
                             field.columnId = field.meta.columnId

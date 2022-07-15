@@ -153,14 +153,14 @@
                         </div>
                         <div class="contidion">
                             <bk-checkbox
-                                :true-value="1"
-                                :false-value="0"
+                                :true-value="0"
+                                :false-value="1"
                                 :disabled="disabled"
                                 v-model="fieldData.show_type"
                                 @change="change">
                                 隐藏
                             </bk-checkbox>
-                            <span v-show="fieldData.show_type === 1" @click="showTypeShow = true">条件编辑</span>
+                            <span v-show="fieldData.show_type === 0" @click="showTypeShow = true">条件编辑</span>
                         </div>
                     </div>
                 </bk-form-item>
