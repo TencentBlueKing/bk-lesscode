@@ -1,17 +1,38 @@
 <template>
-    <bk-cascade
-        ext-popover-cls="api-cascade"
-        :value="value"
-        :list="apiData"
-        :is-remote="true"
-        :remote-method="getRemoteApi"
-        @change="chooseApi"
+    <bk-select
+        ref="treeRef"
+        searchable
+        :tag-fixed-height="false"
+        :show-empty="false"
+        :clearable="false"
+        :scroll-height="300"
+        :remote-method="handleSearch"
     >
-    </bk-cascade>
+        <span
+            class="display-value"
+            slot="trigger"
+        >
+            {{ getDisplatName() }}
+            <i class="bk-select-angle bk-icon icon-angle-down"></i>
+        </span>
+        <bk-big-tree
+            ref="bigTreeRef"
+            class="tree-select"
+            :selectable="true"
+            :data="apiData"
+            :default-expanded-nodes="getDefaultExpandedNode()"
+            :lazy-method="getRemoteApi"
+        >
+            <div
+                class="display-option"
+                slot-scope="{ node, data }"
+                @click="chooseApi(data, node)"
+            >{{data.name}}</div>
+        </bk-big-tree>
+    </bk-select>
 </template>
 
 <script>
-    import Vue from 'vue'
     import {
         defineComponent,
         ref
@@ -28,221 +49,235 @@
             }
         },
 
-        setup (_, { emit }) {
+        setup (props, { emit }) {
             const store = useStore()
             const route = useRoute()
             const apiData = ref([
                 {
                     id: 'lesscode-api',
-                    name: 'Lesscode Api',
+                    name: '应用自建 API',
                     type: 'lesscode',
                     children: []
                 },
                 {
-                    id: 'apigateway-api',
-                    name: 'ApiGateWay Api',
-                    type: 'apigateway',
+                    id: 'datasource-api',
+                    name: '数据表操作 API',
+                    type: 'datasource',
                     children: []
                 },
                 {
-                    id: 'datasource-api',
-                    name: 'Data Manage Api',
-                    type: 'datasource',
+                    id: 'apigateway-api',
+                    name: '蓝鲸网关 API',
+                    type: 'apigateway',
+                    isLeaf: false,
                     children: []
                 }
             ])
+            const treeRef = ref(null)
+            const bigTreeRef = ref(null)
             const projectId = route.params.projectId
 
-            const getRemoteApi = (item, resolve) => {
-                switch (item.type) {
+            // 远程获取数据
+            const getRemoteApi = ({ data }) => {
+                switch (data.type) {
                     case 'lesscode':
-                        getLesscodeApiCategoryList(item, resolve)
-                        break
+                        return getLesscodeApiCategoryList(data)
                     case 'lesscode-category':
-                        getLesscodeApiList(item, resolve)
-                        break
+                        return getLesscodeApiList(data)
                     case 'apigateway':
-                        getApigatewayNameList(item, resolve)
-                        break
+                        return getApigatewayNameList(data)
                     case 'apigateway-name':
-                        getApigatewayStageList(item, resolve)
-                        break
+                        return getApigatewayStageList(data)
                     case 'apigateway-stage':
-                        getApigatewayList(item, resolve)
-                        break
+                        return getApigatewayList(data)
                     case 'datasource':
-                        getDataTableList(item, resolve)
-                        break
+                        return getDataTableList(data)
                     case 'datasource-table':
-                        getDataTableApiList(item, resolve)
-                        break
-                    default:
-                        resolve(item)
-                        break
+                        return getDataTableApiList(data)
                 }
             }
 
             // 获取 lesscode 分类
-            const getLesscodeApiCategoryList = (item, resolve) => {
-                Vue.set(item, 'isLoading', true)
-                store
+            const getLesscodeApiCategoryList = () => {
+                return store
                     .dispatch('api/getCategoryList', {
                         projectId
                     })
                     .then((categoryList) => {
-                        const children = categoryList.map((category) => {
+                        const data = categoryList.map((category) => {
                             category.type = 'lesscode-category'
                             category.children = []
                             return category
                         })
-                        Vue.set(item, 'children', children)
-                        apiData.value[0].children = children
-                        resolve(item)
+                        return { data }
                     })
             }
 
             // 获取 lesscode 接口列表
-            const getLesscodeApiList = (item, resolve) => {
-                Vue.set(item, 'isLoading', true)
-                store
+            const getLesscodeApiList = (item) => {
+                return store
                     .dispatch('api/getApiList', {
                         projectId,
                         categoryId: item.id
                     })
-                    .then((apiList) => {
-                        const apiCategory = apiData.value[0].children.find((category) => category.id === item.id)
-                        const children = apiList <= 0 ? [{ disabled: true, name: '无数据' }] : apiList
-                        children.forEach((stag) => {
-                            stag.isLoading = false
-                        })
-                        Vue.set(item, 'children', apiList)
-                        apiCategory.children = apiList
-                        resolve(item)
+                    .then((data) => {
+                        return {
+                            data,
+                            leaf: data.map(api => api.id)
+                        }
                     })
             }
 
             // 获取 apigateway 网关列表
             const getApigatewayNameList = (item, resolve) => {
-                Vue.set(item, 'isLoading', true)
-                store
+                return store
                     .dispatch('api/getApiGateWayNameList')
                     .then((apiNameList) => {
-                        const children = apiNameList.map((apiName) => {
+                        const data = apiNameList.map((apiName) => {
                             apiName.type = 'apigateway-name'
                             apiName.children = []
                             return apiName
                         })
-                        Vue.set(item, 'children', children)
-                        apiData.value[1].children = children
-                        resolve(item)
+                        return { data }
                     })
             }
 
             // 获取 apigateway 环境列表
-            const getApigatewayStageList = (item, resolve) => {
-                Vue.set(item, 'isLoading', true)
-                store
+            const getApigatewayStageList = (item) => {
+                return store
                     .dispatch('api/getApiGateWayStagList', {
                         apiName: item.name
                     })
                     .then((stagList) => {
-                        const apigateWayName = apiData.value[1].children.find((apiName) => apiName.id === item.id)
-                        const children = stagList <= 0 ? [{ disabled: true, name: '无数据' }] : stagList
-                        children.forEach((stag) => {
+                        stagList.forEach((stag) => {
                             stag.apiName = item.name
                             stag.parentId = item.id
                             stag.type = 'apigateway-stage'
                         })
-                        item.children = children
-                        apigateWayName.children = children
-                        resolve(item)
+                        return {
+                            data: stagList
+                        }
                     })
             }
 
             // 获取 apigateway 接口列表
-            const getApigatewayList = (item, resolve) => {
-                Vue.set(item, 'isLoading', true)
-                store
+            const getApigatewayList = (item) => {
+                return store
                     .dispatch('api/getApiGateWayApiList', {
                         apiName: item.apiName,
                         stageName: item.name
                     })
                     .then(({ results: apiList }) => {
-                        const apigateWayName = apiData.value[1].children.find((apiName) => apiName.id === item.parentId)
-                        const apiStage = apigateWayName.children.find((apiStage) => apiStage.id === item.id)
-                        const children = apiList <= 0 ? [{ disabled: true, name: '无数据' }] : apiList
-                        children.forEach((stag) => {
-                            stag.isLoading = false
+                        apiList.forEach((stag) => {
                             stag.summary = stag.description
                         })
-                        item.children = children
-                        apiStage.children = children
-                        resolve(item)
+                        return {
+                            data: apiList,
+                            leaf: apiList.map(api => api.id)
+                        }
                     })
             }
 
             // 获取表列表
-            const getDataTableList = (item, resolve) => {
-                Vue.set(item, 'isLoading', true)
-                store
+            const getDataTableList = () => {
+                return store
                     .dispatch('dataSource/list', {
                         projectId
                     })
                     .then(({ list: tableList }) => {
-                        const children = tableList <= 0 ? [{ disabled: true, name: '无数据' }] : tableList
-                        children.forEach((table) => {
+                        tableList.forEach((table) => {
                             table.type = 'datasource-table'
                             table.children = []
                             table.name = table.tableName
                         })
-                        Vue.set(item, 'children', children)
-                        apiData.value[2].children = children
-                        resolve(item)
+                        return {
+                            data: tableList
+                        }
                     })
             }
 
             // 获取表接口
-            const getDataTableApiList = (item, resolve) => {
-                Vue.set(item, 'isLoading', true)
-                const dataTable = apiData.value[2].children.find(dataTable => dataTable.id === item.id)
+            const getDataTableApiList = (item) => {
                 const apiList = getDataSourceApiList(item.name, item.columns)
-                apiList.forEach((api) => {
-                    api.isLoading = false
-                })
-                item.children = apiList
-                dataTable.children = apiList
-                resolve(item)
+                return {
+                    data: apiList,
+                    leaf: apiList.map(api => api.id)
+                }
             }
 
             // 触发值更新
-            const chooseApi = (path, _, selectList) => {
-                const api = selectList.at(-1)
+            const chooseApi = (data, node) => {
+                if (!node.isLeaf) return
+                const path = []
+                let cur = node
+                do {
+                    const { data } = cur
+                    path.push({
+                        id: data.id,
+                        name: data.name
+                    })
+                    cur = cur.parent
+                } while (cur)
                 emit('change', {
-                    path,
-                    method: api.method.toLowerCase(),
-                    url: api.url,
-                    query: api.query || [],
-                    body: api.body || {},
-                    response: api.response || {},
-                    summary: api.summary
+                    path: path.reverse(),
+                    method: data.method.toLowerCase(),
+                    url: data.url,
+                    query: data.query || [],
+                    body: data.body || {},
+                    response: data.response || {},
+                    summary: data.summary
                 })
+                treeRef
+                    .value
+                    .getPopoverInstance()
+                    .hide()
+            }
+
+            // 计算展示名
+            const getDisplatName = () => {
+                return props
+                    .value
+                    .map((item) => {
+                        return item.name
+                    })
+                    .reduce((acc, cur, index) => {
+                        const divider = index === 0 ? '' : index === 1 ? '：' : ' / '
+                        acc += divider + cur
+                        return acc
+                    }, '')
+            }
+
+            // 获取默认展开的节点
+            const getDefaultExpandedNode = () => {
+                return ['lesscode-api', 'apigateway-api', 'datasource-api']
+            }
+
+            // 远程搜索
+            const handleSearch = (keyword) => {
+                bigTreeRef.value.filter(keyword)
             }
 
             return {
                 apiData,
+                treeRef,
+                bigTreeRef,
                 getRemoteApi,
-                chooseApi
+                chooseApi,
+                getDisplatName,
+                getDefaultExpandedNode,
+                handleSearch
             }
         }
     })
 </script>
 
 <style lang="postcss">
-    .api-cascade {
-        width: auto !important;
-        .bk-option-name {
-            max-width: 100%;
-            display: inline-block;
-        }
+    .display-value {
+        display: inline-block;
+        line-height: 32px;
+        padding: 0 36px 0 10px;
+    }
+    .display-option {
+        font-size: 12px;
     }
 </style>

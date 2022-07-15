@@ -250,7 +250,7 @@
                             if (variable) {
                                 return getVariableValue(variable)
                             } else {
-                                throw new Error(`函数请求地址里引用的变量【${variableCode}】不存在，请检查`)
+                                throw new Error(`函数请求地址里引用的变量【${variableCode}】不存在，请检查并创建该变量`)
                             }
                         })
                         const httpData = {
@@ -271,7 +271,7 @@
                             })
                     })
                     .catch((err) => {
-                        this.messageError(err.content || err)
+                        this.messageError(err.content || err.message || err)
                     })
                     .finally(() => {
                         this.isLoadingResponse = false

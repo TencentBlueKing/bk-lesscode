@@ -18,7 +18,7 @@
         <title>可视化开发平台 | 蓝鲸智云社区版</title>
         <style>
             #app {
-               font-size: 14px; 
+               font-size: 14px;
             }
             #preview-app .bk-loading {
                 width: 100%;
@@ -122,15 +122,12 @@
         <script>
             var BKPAAS_ENVIRONMENT = '<%= htmlWebpackPlugin.options.BKPAAS_ENVIRONMENT %>'
 
-            
-            
             const recalculate = () => {
                 const html = window.document.documentElement
                 const clientWidth = html.clientWidth || 375
                 html.style.fontSize = `${clientWidth / 20}px`
             }
 
-            
             window.addEventListener('resize', recalculate, false)
             window.document.addEventListener('DOMContentLoaded', recalculate, false)
         </script>
