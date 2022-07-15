@@ -148,7 +148,11 @@
                             fields: [{ key: 'title', type: 'string', choice: [], value: 'lesscode 提单' }, ...data],
                             creator: this.$store.state.user.username,
                             service_id: this.serviceId,
-                            env: ENV
+                            meta: {
+                                envs: {
+                                    env: ENV
+                                }
+                            }
                         }
                         await this.$http.post('/nocode/v2/itsm/create_ticket/', params)
                     } else {
