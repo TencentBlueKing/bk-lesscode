@@ -163,10 +163,13 @@
                     }
                     if (this.nodeData.type === 'NORMAL') {
                         const itsmFields = await this.saveItsmFields()
-                        const content = itsmFields.map(field => {
-                            field.columnId = field.meta.columnId
-                            delete field.meta.columnId
-                            return field
+                        const content = []
+                        itsmFields.forEach(field => {
+                            if (field.id !== this.nodeData.fields[0]) {
+                                field.columnId = field.meta.columnId
+                                delete field.meta.columnId
+                                content.push(field)
+                            }
                         })
                         this.$store.commit('nocode/nodeConfig/setFormConfig', { content })
                         this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
