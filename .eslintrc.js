@@ -31,7 +31,8 @@ module.exports = {
         ResizeSensor: false,
         define: false,
         BK_USER_MANAGE_HOST: false,
-        BK_API_URL_TMPL: false
+        BK_API_URL_TMPL: false,
+        BKPAAS_ENVIRONMENT: false
     },
     // add your custom rules hered
     rules: {

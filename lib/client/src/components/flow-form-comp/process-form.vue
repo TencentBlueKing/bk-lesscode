@@ -150,7 +150,7 @@
                             service_id: this.serviceId,
                             meta: {
                                 envs: {
-                                    env: ENV
+                                    env: BKPAAS_ENVIRONMENT
                                 }
                             }
                         }
