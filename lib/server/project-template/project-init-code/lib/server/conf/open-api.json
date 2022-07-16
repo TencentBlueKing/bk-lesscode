@@ -27,7 +27,7 @@
                     "backend": {
                         "type": "HTTP",
                         "method": "post",
-                        "path": "/api/open-api/dataManage",
+                        "path": "{env.subpath}/api/open-api/dataManage",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},
@@ -58,7 +58,7 @@
                     "backend": {
                         "type": "HTTP",
                         "method": "post",
-                        "path": "/api/open-api/filterTableData/keys/tableName/{tableName}",
+                        "path": "{env.subpath}/api/open-api/filterTableData/keys/tableName/{tableName}",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},
@@ -89,7 +89,7 @@
                     "backend": {
                         "type": "HTTP",
                         "method": "post",
-                        "path": "/api/open-api/filterTableData/conditions/tableName/{tableName}",
+                        "path": "{env.subpath}/api/open-api/filterTableData/conditions/tableName/{tableName}",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},
