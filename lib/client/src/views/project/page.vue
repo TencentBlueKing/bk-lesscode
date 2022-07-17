@@ -43,7 +43,7 @@
                 </div>
             </div>
             <div class="pages-body">
-                <div class="page-list">
+                <div class="page-list" v-show="renderList.length">
                     <div class="page-item" v-for="(page, index) in renderList" :key="index">
                         <div class="item-bd">
                             <div class="preview" @click="handleEditPage(page)">
@@ -316,7 +316,7 @@
                 this.$refs.pageDialog.layoutId = null
                 this.$refs.pageDialog.dialog.formData.pageName = page.pageName
                 this.$refs.pageDialog.dialog.formData.id = page.id
-                
+
                 this.$refs.pageDialog.dialog.visible = true
             },
             handleEditRoute (page) {
@@ -488,6 +488,7 @@
     }
 </style>
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
     .form-manage-page-list {
         .form-manage-list {
             font-size: 12px;
@@ -554,7 +555,7 @@
 
         .pages-head {
             display: flex;
-            margin-bottom: 17px;
+            margin-bottom: 8px;
 
             button {
                 width: 86px;
@@ -582,6 +583,8 @@
         .pages-body {
             display: flex;
             flex: 1;
+            height: calc(100% - 40px);
+
              .empty {
                 flex: 1;
                 display: flex;
@@ -592,16 +595,19 @@
                 }
             }
             .page-list {
-                display: flex;
-                flex-wrap: wrap;
+                display: grid;
+                gap: 16px 12px;
+                grid-template-columns: repeat(auto-fill, minmax(312px, 1fr));
+                width: 100%;
                 align-content: flex-start;
+                padding: 8px;
+                overflow-y: auto;
+                @mixin scroller;
 
                 .page-item {
                     position: relative;
-                    flex: none;
-                    width: 304px;
-                    height: 258px;
-                    margin: 0 14px 30px 0;
+                    height: 262px;
+                    margin: 0;
                     padding: 6px;
                     background: #fff;
                     border-radius: 0px 6px 6px 6px;
@@ -644,8 +650,7 @@
                     .item-bd {
                         flex: none;
                         position: relative;
-                        width: 292px;
-                        height: 158px;
+                        height: 166px;
                         background: #fff;
                         border-radius: 4px 4px 0px 0px;
                     }
@@ -653,7 +658,7 @@
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
-                        margin: 16px 10px 0 10px;
+                        margin: 14px 10px 0 10px;
                     }
 
                     .nocode-type-tag {
@@ -674,9 +679,6 @@
                         height: 100%;
                         overflow: hidden;
                         border-radius: 4px 4px 0px 0px;
-                        img {
-                            max-width: 100%;
-                        }
 
                         .mask {
                             position: absolute;
@@ -687,16 +689,15 @@
                             background: rgba(0, 0, 0, 0.1);
                             display: flex;
                             align-items: center;
+                            justify-content: center;
                             .operate-btns {
                                 display: none;
                                 .edit-btn {
                                     width: 86px;
-                                    margin-left: 59px;
                                 }
                                 .preview-btn {
                                     width: 86px;
                                     margin-left: 10px;
-                                    margin-rihgt: 59px;
                                 }
                             }
                         }
@@ -778,7 +779,7 @@
                     .route {
                         display: flex;
                         align-items: center;
-                        margin: 9px 0;
+                        margin: 7px 0;
                         .label {
                             margin-top: 1px;
                             margin-left: -2px;

@@ -614,6 +614,7 @@
 
 <style lang="postcss" scoped>
     @import "@/css/mixins/ellipsis";
+    @import "@/css/mixins/scroller";
 
     .create-dropdown {
         /deep/ .bk-dropdown-trigger .bk-button {
@@ -622,6 +623,7 @@
     }
 
     .page-head {
+        margin-bottom: 8px;
         .total {
             font-size: 12px;
             margin-right: 8px;
@@ -630,6 +632,12 @@
                 margin: 0 .1em;
             }
         }
+    }
+
+    .page-body {
+        display: flex;
+        flex: 1;
+        height: calc(100% - 40px);
     }
 
     .filter-links {
@@ -654,17 +662,20 @@
     }
 
     .project-list {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        gap: 26px 12px;
+        grid-template-columns: repeat(auto-fill, minmax(312px, 1fr));
+        width: 100%;
         align-content: flex-start;
         margin-top: 10px;
+        padding: 8px;
+        overflow-y: auto;
+        @mixin scroller;
 
         .project-item {
             position: relative;
-            flex: none;
-            width: 304px;
-            height: 234px;
-            margin: 0 14px 40px 0;
+            height: 240px;
+            margin: 0;
             padding: 6px;
             background: #fff;
             border-radius: 0px 6px 6px 6px;
@@ -707,6 +718,7 @@
                     top: 0;
                     left: 0;
                     height: 100%;
+                    width: 100%;
                 }
                 .empty {
                     &::before {
@@ -786,8 +798,7 @@
             .item-bd {
                 flex: none;
                 position: relative;
-                width: 292px;
-                height: 158px;
+                height: 166px;
                 background: #fff;
                 border-radius: 4px 4px 0px 0px;
                 overflow: hidden;
@@ -796,7 +807,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                margin: 16px 10px 0 10px;
+                margin: 14px 10px 0 10px;
             }
 
             .preview {
@@ -805,9 +816,6 @@
                 height: 100%;
                 overflow: hidden;
                 border-radius: 4px 4px 0px 0px;
-                img {
-                    max-width: 100%;
-                }
 
                 &::before {
                     content: '';
@@ -823,12 +831,10 @@
                 display: none;
                 .edit-btn {
                     width: 86px;
-                    margin-left: 59px;
                 }
                 .preview-btn {
                     width: 86px;
                     margin-left: 10px;
-                    margin-rihgt: 59px;
                 }
             }
             .empty {
@@ -973,20 +979,6 @@
                     text-align: center;
                     font-size: 12px;
                     color: #63656e;
-                }
-            }
-        }
-    }
-
-    @media screen and (max-width: 1280px) {
-        .project-list {
-            .project-item {
-                width: 304px;
-                height: 234px;
-
-                .item-bd {
-                    width: 292px;
-                    height: 158px;
                 }
             }
         }
