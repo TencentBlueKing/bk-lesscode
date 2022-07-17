@@ -7,6 +7,7 @@
         :clearable="false"
         :scroll-height="300"
         :remote-method="handleSearch"
+        @toggle="handleToggle"
     >
         <span
             class="display-value"
@@ -18,6 +19,7 @@
         <bk-big-tree
             ref="bigTreeRef"
             class="tree-select"
+            :key="bigTreeKey"
             :selectable="true"
             :data="apiData"
             :default-expanded-nodes="getDefaultExpandedNode()"
@@ -27,7 +29,14 @@
                 class="display-option"
                 slot-scope="{ node, data }"
                 @click="chooseApi(data, node)"
-            >{{data.name}}</div>
+            >
+                {{data.name}}
+                <i
+                    class="bk-drag-icon bk-drag-jump-link"
+                    v-if="['lesscode-api', 'datasource-api'].includes(data.id)"
+                    @click="goToCreate(data.id)"
+                ></i>
+            </div>
         </bk-big-tree>
     </bk-select>
 </template>
@@ -75,6 +84,7 @@
             ])
             const treeRef = ref(null)
             const bigTreeRef = ref(null)
+            const bigTreeKey = ref(1)
             const projectId = route.params.projectId
 
             // 远程获取数据
@@ -257,15 +267,39 @@
                 bigTreeRef.value.filter(keyword)
             }
 
+            // 跳转到新建的地方
+            const goToCreate = (id) => {
+                let url
+                switch (id) {
+                    case 'lesscode-api':
+                        url = `/project/${projectId}/manage-api`
+                        break
+                    case 'datasource-api':
+                        url = `/project/${projectId}/data-source-manage/`
+                        break
+                }
+                window.open(url, '_blank')
+            }
+
+            // 折叠展开
+            const handleToggle = (isOpen) => {
+                if (!isOpen) {
+                    bigTreeKey.value += bigTreeKey.value
+                }
+            }
+
             return {
                 apiData,
                 treeRef,
                 bigTreeRef,
+                bigTreeKey,
                 getRemoteApi,
                 chooseApi,
                 getDisplatName,
                 getDefaultExpandedNode,
-                handleSearch
+                handleSearch,
+                goToCreate,
+                handleToggle
             }
         }
     })
@@ -279,5 +313,9 @@
     }
     .display-option {
         font-size: 12px;
+    }
+    .bk-drag-jump-link {
+        color: #3a84ff;
+        margin-left: 3px;
     }
 </style>
