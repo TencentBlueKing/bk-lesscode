@@ -32,7 +32,8 @@ module.exports = {
         define: false,
         BK_USER_MANAGE_HOST: false,
         BK_API_URL_TMPL: false,
-        BKPAAS_ENVIRONMENT: false
+        BKPAAS_ENVIRONMENT: false,
+        BK_ITSM_URL: false
     },
     // add your custom rules hered
     rules: {

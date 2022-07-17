@@ -19,7 +19,7 @@
                 </i>
             </div>
         </div>
-        <div class="node-data-content">
+        <div class="node-data-content" v-bkloading="{ isLoading: formDataLoading }">
             <filters
                 v-if="filters.length > 0 && showFilters"
                 :filters="filters"

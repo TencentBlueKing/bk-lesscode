@@ -54,7 +54,16 @@
                 </template>
             </bk-table-column>
             <bk-table-column label="操作">
-                <bk-button style="padding: 0;" ext-cls="operate-btn" theme="primary" :text="true" size="small">详情</bk-button>
+                <template slot-scope="{ row }">
+                    <bk-button
+                        style="padding: 0;"
+                        theme="primary"
+                        size="small"
+                        :text="true"
+                        @click="goToTicketPage(row)">
+                        详情
+                    </bk-button>
+                </template>
             </bk-table-column>
         </bk-table>
     </section>
@@ -143,6 +152,9 @@
                 this.pagination.current = 1
                 this.pagination.limit = val
                 this.getTicketList()
+            },
+            goToTicketPage (ticket) {
+                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket}&project_id=lesscode`, '__blank')
             }
         }
     }
