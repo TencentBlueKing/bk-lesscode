@@ -142,6 +142,8 @@
             /* eslint-disable vue/no-unused-components */
             FreeLayout: () => import('./widget/free-layout'),
             RenderGrid: () => import('./widget/grid'),
+            h5Container: () => import('./widget/h5-container'),
+            h5Page: () => import('./widget/free-layout.vue'),
             RenderColumn: () => import('./widget/column'),
             RenderBlock: () => import('./widget/block.vue'),
             WidgetForm: () => import('./widget/form'),
@@ -188,6 +190,8 @@
                     'free-layout': true,
                     'render-block': true,
                     'render-grid': true,
+                    'h5-container': true,
+                    'h5-page': true,
                     'render-column': true,
                     'widget-form': true,
                     'widget-form-item': true,
