@@ -1,11 +1,9 @@
 <template>
     <div class="table-fields-wrapper">
         <bk-table ref="fieldsTable"
-            header-row-class-name="custom-table-header"
+            :header-cell-style="{ background: '#f0f1f5' }"
             :data="emptyData"
             :outer-border="false">
-            <bk-table-column type="selection" width="60" fixed="left">
-            </bk-table-column>
             <bk-table-column
                 v-for="field in colFields"
                 :key="field.key"
@@ -165,14 +163,6 @@
     .bk-button {
       margin-left: 4px;
     }
-  }
-}
-</style>
-
-<style lang="postcss">
-.custom-table-header {
-  th {
-    background: #F0F1F5 ;
   }
 }
 </style>
