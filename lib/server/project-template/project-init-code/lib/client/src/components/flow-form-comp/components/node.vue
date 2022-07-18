@@ -15,26 +15,29 @@
                 <i
                     v-if="filters.length > 0"
                     class="bk-icon icon-funnel filter-switch-icon"
-                    @click="showFilters = !showFilters">
+                    @click="showFilter = !showFilter">
                 </i>
             </div>
         </div>
-        <div class="node-data-content">
-            <filters
-                v-if="filters.length > 0 && showFilters"
-                :filters="filters"
-                :fields="fields"
-                :system-fields="systemFields">
-            </filters>
-            <table-fields
-                v-if="!formDataLoading"
-                style="margin-top: 16px"
-                :table-config="tableConfig"
-                :fields="fields"
-                :form-id="formIds[activeNode]"
-                :table-name="tableName"
-                :system-fields="systemFields">
-            </table-fields>
+        <div class="node-data-content" v-bkloading="{ isLoading: formDataLoading }">
+            <template v-if="!formDataLoading">
+                <filters
+                    v-if="filters.length > 0 && showFilter"
+                    :filters="filters"
+                    :fields="fields"
+                    :system-fields="systemFields"
+                    :value.sync="filtersData">
+                </filters>
+                <table-fields
+                    style="margin-top: 16px"
+                    :table-config="tableConfig"
+                    :fields="fields"
+                    :form-id="formIds[activeNode]"
+                    :table-name="tableName"
+                    :system-fields="systemFields"
+                    :filters-data="filtersData">
+                </table-fields>
+            </template>
         </div>
     </div>
 </template>
@@ -73,7 +76,8 @@
                 filters: [],
                 systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
-                showFilters: true
+                showFilter: true,
+                filtersData: {}
             }
         },
         computed: {
@@ -85,6 +89,18 @@
                 return this.formDataMap[this.activeNode]?.tableName || ''
             }
         },
+        // watch: {
+        //     filtersData (val) {
+        //         const isShowField = Object.values(val).every(item => {
+        //             if (Array.isArray(item)) {
+        //                 return !item.every(i => i)
+        //             } else {
+        //                 return !item
+        //             }
+        //         })
+        //         this.showFilter = isShowField
+        //     }
+        // },
         async created () {
             await this.getInitData()
             if (this.nodes.length > 0) {

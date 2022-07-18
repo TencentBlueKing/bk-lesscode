@@ -104,7 +104,6 @@
 <script>
     import { mapState } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
-    import { messageError } from '@/common/bkmagic'
 
     export default {
         name: 'AdvancedConfig',
@@ -235,9 +234,10 @@
                         }
                         await this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })
+                        await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
                         this.$router.push({ name: 'flowList' })
                     } catch (e) {
-                        messageError(e.message || e)
+                        console.error(e.message || e)
                     } finally {
                         this.advancedPending = false
                     }
