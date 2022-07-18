@@ -3,7 +3,7 @@
         <bk-table
             v-bkloading="{ isLoading: tableDataLoading }"
             ref="fieldsTable"
-            header-row-class-name="custom-table-header"
+            :header-cell-style="{ background: '#f0f1f5' }"
             :pagination="pagination"
             :data="tableData"
             :outer-border="false"
@@ -305,13 +305,4 @@
     }
 }
 
-</style>
-
-<style lang="postcss">
-.custom-table-header {
-  th {
-    background: #F0F1F5 ;
-
-  }
-}
 </style>
