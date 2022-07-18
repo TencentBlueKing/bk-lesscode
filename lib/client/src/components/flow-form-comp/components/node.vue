@@ -19,7 +19,7 @@
                 </i>
             </div>
         </div>
-        <div class="node-data-content">
+        <div class="node-data-content" v-bkloading="{ isLoading: formDataLoading }">
             <filters
                 v-if="filters.length > 0 && showFilters"
                 :filters="filters"
@@ -87,14 +87,18 @@
         },
         async created () {
             await this.getInitData()
+            if (this.nodes.length > 0) {
+                this.activeNode = this.nodes[0].id
+                this.getFormData()
+                this.setNodeTabConfig()
+            }
         },
         methods: {
             async getInitData () {
                 try {
                     this.initDataLoading = true
                     const serviceRes = await this.$http.get(`/nocode/service/${this.serviceId}/`)
-                    const path = this.viewType === 'projectCode' ? '/nocode/v2/itsm/states/' : '/nocode/state/'
-                    const nodesRes = await this.$http.get(path, { params: { workflow: serviceRes.data.workflow_id, page_size: 1000 } })
+                    const nodesRes = await this.$http.get('/nocode/state/', { params: { workflow: serviceRes.data.workflow_id, page_size: 1000 } })
                     const nodes = []
                     nodesRes.data.items.forEach(node => {
                         if (node.type === 'NORMAL' && node.id in this.formIds) {
@@ -110,8 +114,13 @@
             },
             async getFormData () {
                 try {
-                    this.formDataLoading = true
                     let formDetail = {}
+                    if (this.activeNode in this.formDataMap) {
+                        formDetail = this.formDataMap[this.activeNode]
+                        return
+                    }
+
+                    this.formDataLoading = true
                     if (this.viewType === 'preview') {
                         const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds[this.activeNode] } })
                         const { tableName, content } = res.data
@@ -120,7 +129,7 @@
                             content: JSON.parse(content)
                         }
                     } else {
-                        formDetail = formMap[this.formIds]
+                        formDetail = formMap[this.formIds[this.activeNode]]
                     }
                     this.$set(this.formDataMap, this.activeNode, {
                         tableName: formDetail.tableName,
@@ -132,22 +141,20 @@
                     this.formDataLoading = false
                 }
             },
-            handleTabChange (val) {
-                this.activeNode = val
-                if (val in this.config) {
-                    this.filters = this.config[val].filters || []
-                    this.tableConfig = this.config[val].tableConfig || []
+            setNodeTabConfig () {
+                if (this.activeNode in this.config) {
+                    this.filters = this.config[this.activeNode].filters || []
+                    this.tableConfig = this.config[this.activeNode].tableConfig || []
                 } else {
                     this.filters = []
                     this.tableConfig = []
-                    this.$set(this.config, val, { filters: [], tableConfig: [] })
+                    this.$set(this.config, this.activeNode, { filters: [], tableConfig: [] })
                 }
-                if (!(val in this.formDataMap)) {
-                    if (this.nodes.length > 0) {
-                        this.activeNode = this.nodes[0].id
-                        this.getFormData()
-                    }
-                }
+            },
+            handleTabChange (val) {
+                this.activeNode = val
+                this.setNodeTabConfig()
+                this.getFormData()
             }
         }
     }

@@ -5,7 +5,7 @@
                 <!--                <div class="operate-btns">-->
                 <!--                    <bk-button theme="primary" style="width: 88px; cursor: text;">新建</bk-button>-->
                 <!--                </div>-->
-                <ticket-list :service-id="serviceId"></ticket-list>
+                <ticket-list :service-id="serviceId" :view-type="viewType"></ticket-list>
             </bk-tab-panel>
             <bk-tab-panel label="节点数据" name="node" render-directive="if">
                 <node-data-manage
