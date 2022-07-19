@@ -5,7 +5,7 @@
             <div class="h5-page"
                 v-for="(page, index) in h5Pages"
                 :key="index"
-                @click="toView(page)">
+                @click="toView(page, index)">
                 <span class="h5-page-title">第{{index + 1}}页</span>
                 <bk-button>{{page.componentId}}</bk-button>
                 <i class="bk-icon icon-minus-circle" @click="handleDelete(page)" />
@@ -59,8 +59,13 @@
             })
         },
         methods: {
-            toView (page) {
+            toView (page, index) {
                 page.$elm.scrollIntoView({ behavior: 'smooth' })
+                page.parentNode.setProp('initialSlide', LC.utils.genPropFormatValue({
+                    format: 'value',
+                    code: index,
+                    renderValue: index
+                }))
             },
             handleDelete (page) {
                 this.componentNode.removeChild(page)
