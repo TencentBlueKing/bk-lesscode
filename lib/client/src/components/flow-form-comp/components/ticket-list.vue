@@ -115,7 +115,10 @@
                         params.create_at__gte = dayjs(val[0]).format('YYYY-MM-DD HH:mm:ss')
                         params.create_at__lte = dayjs(val[1]).format('YYYY-MM-DD HH:mm:ss')
                     }
-                    if (['creator', 'sns', 'status'].includes(key) && val) {
+                    if (key === 'sns' && val) {
+                        params.sns = [val]
+                    }
+                    if (['creator', 'status'].includes(key) && val) {
                         params[key] = val
                     }
                 })
