@@ -11,7 +11,7 @@
     ],
     "paths": {
         "/dataManage": {
-            "get": {
+            "post": {
                 "operationId": "dataManage",
                 "description": "itsm 回调接口",
                 "tags": [],
@@ -42,7 +42,7 @@
             }
         },
         "/filterTableData/keys/tableName/{tableName}": {
-            "get": {
+            "post": {
                 "operationId": "filterTableDataByKeys",
                 "description": "itsm 数据筛选接口",
                 "tags": [],
@@ -73,7 +73,7 @@
             }
         },
         "/filterTableData/conditions/tableName/{tableName}": {
-            "get": {
+            "post": {
                 "operationId": "filterTableDataByConditions",
                 "description": "itsm 表单数据源",
                 "tags": [],
