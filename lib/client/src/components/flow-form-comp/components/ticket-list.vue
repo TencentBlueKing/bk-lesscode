@@ -105,7 +105,8 @@
                 const { current, limit } = this.pagination
                 const params = {
                     page: current,
-                    page_size: limit
+                    page_size: limit,
+                    service_id__in: [this.serviceId]
                 }
                 Object.keys(this.filterData).forEach(key => {
                     const val = this.filterData[key]
