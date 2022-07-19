@@ -151,7 +151,7 @@
                             service_id: this.serviceId,
                             meta: {
                                 envs: {
-                                    env: BKPAAS_ENVIRONMENT
+                                    appApigwPrefix: BK_APP_APIGW_PREFIX
                                 }
                             }
                         }
