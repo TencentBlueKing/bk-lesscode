@@ -46,8 +46,8 @@
                 </bk-table>
             </div>
         </div>
-        <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :deploy-id="deployId" :default-content="defaultContent" :status="status" @closeLog="closeLog"></completed-log>
-        <running-log v-if="showRunningLog" :is-show="showRunningLog" :deploy-id="deployId" @closeLog="closeLog" :title="`${envMap[env]}部署执行日志`"></running-log>
+        <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :current-app-info="currentAppInfo" :env="env" :deploy-id="deployId" :default-content="defaultContent" :status="status" @closeLog="closeLog"></completed-log>
+        <running-log v-if="showRunningLog" :is-show="showRunningLog" :current-app-info="currentAppInfo" :env="env" :deploy-id="deployId" @closeLog="closeLog" :title="`${envMap[env]}部署执行日志`"></running-log>
         <bk-sideslider
             :is-show.sync="isShowSql"
             :quick-close="true"
@@ -107,7 +107,11 @@
                 isLoadingSql: false,
                 isShowSql: false,
                 sqlDetail: '',
-                sqlEnv: ''
+                sqlEnv: '',
+                currentAppInfo: {
+                    appCode: '',
+                    moduleCode: ''
+                }
             }
         },
         computed: {
@@ -168,6 +172,10 @@
                 this.deployId = row.deployId
                 this.env = row.env
                 this.status = row.status
+                this.currentAppInfo = {
+                    appCode: row.appCode,
+                    moduleCode: row.moduleCode
+                }
                 if (row.status !== 'running' || showCompleted) {
                     this.defaultContent = this.defaultContent = row.errorMsg || '日志为空'
                     this.showCompletedLog = true

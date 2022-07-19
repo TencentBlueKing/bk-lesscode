@@ -1,84 +1,70 @@
 <template>
     <section>
-        <bk-sideslider
-            :is-show.sync="isShow"
-            :quick-close="false"
-            :width="896"
-            :before-close="handleClose"
-        >
-            <div slot="header">
-                <svg v-if="status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
-                    <use xlink:href="#bk-drag-loading-2"></use>
-                </svg>
-                {{ title }}
-            </div>
-            <div class="log-content" slot="content" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
-                <div class="deploy-view" :style="{ 'margin-top': `${isScrollFixed ? '104px' : '0'}` }">
-                    <div id="deploy-timeline-box" style="width: 230px">
-                        <deploy-timeline
-                            ref="deployTimelineRef"
-                            :list="timeLineList"
-                            :stage="curDeployStage"
-                            :key="timelineComKey"
-                            :disabled="true"
-                            @select="handleTimelineSelect">
-                        </deploy-timeline>
-                    </div>
-                    <deploy-log
-                        ref="deployLogRef"
-                        :is-running="true"
-                        :build-list="streamLogs"
-                        :ready-list="readyLogs"
-                        :process-list="allProcesses"
-                        :state-process="appearDeployState"
-                        :process-loading="processLoading"
-                        :environment="environment"
-                        v-if="isWatchDeploying || isDeploySuccess || isDeployFail || isDeployInterrupted || isDeployInterrupting">
-                    </deploy-log>
-                    <div class="pre-deploy-detail" v-else-if="curTimeline">
-                        <div class="metadata-card" v-for="metadata of curTimeline.displayBlocks" :key="metadata.key">
-                            <strong class="card-title">
-                                {{metadata.name}}
-                                <router-link
-                                    class="card-edit"
-                                    v-bk-tooltips="metadata.name === '访问地址' ? '查看' : '配置'"
-                                    v-if="metadata.routerName "
-                                    :to="{ name: metadata.routerName, params: { id: appCode, moduleId: curModuleId } }">
-                                </router-link>
-                            </strong>
-                            <ul class="card-list">
-                                <li class="card-item" v-for="(item, index) of metadata.infos" :key="index">
-                                    <template v-if="metadata.type === 'key-value'">
-                                        <div class="card-key">{{item.text}}：</div>
-                                        <template v-if="Array.isArray(item.value)">
-                                            <div class="card-value" v-if="item.value.length">
-                                                <span class="card-value-item mr5" v-for="(subItem, subIndex) of item.value" :key="subIndex">
-                                                    <router-link :to="subItem.route">
-                                                        {{subItem.name}}
-                                                    </router-link>
-                                                </span>
-                                            </div>
-                                            <div class="card-value" v-else>无</div>
-                                        </template>
-                                        <template v-else>
-                                            <div class="card-value">
-                                                {{item.value || '无'}}
-                                                <span v-if="item.value && item.href"><a target="_blank" :href="item.href" style="color: #3a84ff">{{item.hrefText}}</a></span>
-                                                <a class="ml5" href="javascript: void(0);" v-if="item.downloadBtn" @click="item.downloadBtn">{{item.downloadBtnText}}</a>
-                                            </div>
-                                    
-                                        </template>
+        <div class="log-content" slot="content" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
+            <div class="deploy-view" :style="{ 'margin-top': `${isScrollFixed ? '104px' : '0'}` }">
+                <div id="deploy-timeline-box" style="width: 230px">
+                    <deploy-timeline
+                        ref="deployTimelineRef"
+                        :list="timeLineList"
+                        :stage="curDeployStage"
+                        :key="timelineComKey"
+                        :disabled="isWatchDeploying || isDeploySuccess || isDeployFail || isDeployInterrupted || isDeployInterrupting"
+                        @select="handleTimelineSelect">
+                    </deploy-timeline>
+                </div>
+                <deploy-log
+                    ref="deployLogRef"
+                    :build-list="streamLogs"
+                    :ready-list="readyLogs"
+                    :process-list="allProcesses"
+                    :state-process="appearDeployState"
+                    :process-loading="processLoading"
+                    :environment="environment"
+                    v-if="isWatchDeploying || isDeploySuccess || isDeployFail || isDeployInterrupted || isDeployInterrupting">
+                </deploy-log>
+                <div class="pre-deploy-detail" v-else-if="curTimeline">
+                    <div class="metadata-card" v-for="metadata of curTimeline.displayBlocks" :key="metadata.key">
+                        <strong class="card-title">
+                            {{metadata.name}}
+                            <router-link
+                                class="card-edit"
+                                v-bk-tooltips="metadata.name === '访问地址' ? '查看' : '配置'"
+                                v-if="metadata.routerName "
+                                :to="{ name: metadata.routerName, params: { id: appCode, moduleId: curModuleId } }">
+                            </router-link>
+                        </strong>
+                        <ul class="card-list">
+                            <li class="card-item" v-for="(item, index) of metadata.infos" :key="index">
+                                <template v-if="metadata.type === 'key-value'">
+                                    <div class="card-key">{{item.text}}：</div>
+                                    <template v-if="Array.isArray(item.value)">
+                                        <div class="card-value" v-if="item.value.length">
+                                            <span class="card-value-item mr5" v-for="(subItem, subIndex) of item.value" :key="subIndex">
+                                                <router-link :to="subItem.route">
+                                                    {{subItem.name}}
+                                                </router-link>
+                                            </span>
+                                        </div>
+                                        <div class="card-value" v-else>无</div>
                                     </template>
                                     <template v-else>
-                                        <a :href="item.value" target="_blank">{{item.text}}</a>
+                                        <div class="card-value">
+                                            {{item.value || '无'}}
+                                            <span v-if="item.value && item.href"><a target="_blank" :href="item.href" style="color: #3a84ff">{{item.hrefText}}</a></span>
+                                            <a class="ml5" href="javascript: void(0);" v-if="item.downloadBtn" @click="item.downloadBtn">{{item.downloadBtnText}}</a>
+                                        </div>
+                                    
                                     </template>
-                                </li>
-                            </ul>
-                        </div>
+                                </template>
+                                <template v-else>
+                                    <a :href="item.value" target="_blank">{{item.text}}</a>
+                                </template>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </bk-sideslider>
+        </div>
     </section>
 </template>
 
@@ -164,6 +150,7 @@
             isWatchDeploying () {
                 this.$nextTick(() => {
                     this.computedBoxFixed()
+                    // this.stopDeployConf.visiable = false
                 })
             },
             currentAppInfo: {
@@ -188,24 +175,20 @@
                 deep: true
             }
         },
+        beforeDestroy () {
+            window.onscroll = null
+            this.clearPrevDeployData()
+        },
         mounted () {
             // 初始化日志彩色组件
+            // eslint-disable-next-line
             const AU = require('ansi_up')
             // eslint-disable-next-line
             this.ansiUp = new AU.default
         },
-        async created () {
-            this.isLoading = true
-            if (this.deployId) {
-                this.getLogs()
-                this.loopLogs()
-            } else {
-                this.content = '暂无部署日志'
-            }
-        },
-        beforeDestroy () {
-            window.onscroll = null
-            this.clearPrevDeployData()
+        async created () {},
+        destroyed () {
+            this.timer && clearInterval(this.timer)
         },
         methods: {
             loopLogs () {
@@ -219,6 +202,7 @@
                 this.streamPanelShowed = true
                 this.isWatchDeploying = true
                 this.isDeploySseEof = false
+
                 try {
                     this.content = ''
                     const res = await this.$store.dispatch('release/getRunningLog', {
@@ -291,7 +275,6 @@
                             if (data.name === '检测部署结果' && data.status === 'pending') {
                                 this.appearDeployState.push('release')
                                 this.releaseId = data.release_id
-                                // this.getProcessList(item.release_id, true)
                                 this.$nextTick(() => {
                                     this.$refs.deployLogRef && this.$refs.deployLogRef.handleScrollToLocation('release')
                                 })
@@ -304,6 +287,7 @@
                             this.$refs.deployTimelineRef && this.$refs.deployTimelineRef.editNodeStatus(data.name, data.status, content)
                         }
                     })
+                    this.loopLogs()
                     if (res.status === 'end') {
                         this.timer && clearInterval(this.timer)
                     }
@@ -314,7 +298,7 @@
                     this.isLoading = false
                 }
             },
-
+            
             handleClose () {
                 this.$emit('closeLog')
             },
@@ -377,7 +361,6 @@
              */
             async getPreDeployDetail () {
                 if (!this.appCode || !this.curModuleId || !this.environment) return
-                this.isLoading = true
                 try {
                     const res = await this.$store.dispatch('release/deployPhaseResult', {
                         appCode: this.appCode,
@@ -424,8 +407,6 @@
                         theme: 'error',
                         message: e.detail || e.message
                     })
-                } finally {
-                    this.isLoading = false
                 }
             },
 
@@ -630,6 +611,7 @@
     .log-content {
         height: 100%;
         min-height: 500px;
+        padding: 0px 36px;
         line-height: 16px;
         font-size: 12px;
         .log-title {
@@ -647,7 +629,7 @@
         .deploy-view {
             display: flex;
             height: 100%;
-            margin: 0 0px 20px 20px;
+            margin: 0 20px 20px 20px;
             align-items: stretch;
             font-size: 14px;
 
