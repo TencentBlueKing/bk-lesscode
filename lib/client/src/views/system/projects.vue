@@ -22,7 +22,7 @@
             <div class="extra">
                 <span class="total" v-show="projectList.length">共<em class="count">{{projectList.length}}</em>个应用</span>
                 <bk-input
-                    style="width: 400px"
+                    style="width: 260px"
                     placeholder="请输入应用名称或描述"
                     :clearable="true"
                     :right-icon="'bk-icon icon-search'"

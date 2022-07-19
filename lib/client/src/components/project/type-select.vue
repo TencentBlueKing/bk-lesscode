@@ -27,7 +27,7 @@
             name: '移动端'
         }
     ]
-    
+
     export default {
         name: 'type-select',
         data () {
@@ -46,7 +46,7 @@
 
 <style lang="postcss"  scoped>
     .type-select {
-        width: 120px;
+        width: 90px;
         background: #fff;
         display: inline-block;
         margin-right: 10px;
