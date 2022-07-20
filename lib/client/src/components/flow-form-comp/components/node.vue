@@ -69,7 +69,7 @@
         data () {
             return {
                 initDataLoading: true,
-                formDataLoading: true,
+                formDataLoading: false,
                 nodes: [],
                 activeNode: '',
                 formDataMap: {},

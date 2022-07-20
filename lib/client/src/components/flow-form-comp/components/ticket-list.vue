@@ -14,7 +14,7 @@
                     </bk-date-picker>
                 </bk-form-item>
                 <bk-form-item label="单号">
-                    <bk-input v-model="filterData.sn" placeholder="请输入单号"></bk-input>
+                    <bk-input v-model="filterData.sns" placeholder="请输入单号"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="状态">
                     <bk-select v-model="filterData.status" placeholder="请选择状态">
@@ -84,7 +84,7 @@
                 filterData: {
                     creator: '',
                     create_at: [],
-                    sn: '',
+                    sns: '',
                     status: ''
                 },
                 ticketList: [],
@@ -104,9 +104,9 @@
                 this.ticketListLoading = true
                 const { current, limit } = this.pagination
                 const params = {
-                    // service_id__in: this.serviceId
                     page: current,
-                    page_size: limit
+                    page_size: limit,
+                    service_id__in: [this.serviceId]
                 }
                 Object.keys(this.filterData).forEach(key => {
                     const val = this.filterData[key]
@@ -115,7 +115,10 @@
                         params.create_at__gte = dayjs(val[0]).format('YYYY-MM-DD HH:mm:ss')
                         params.create_at__lte = dayjs(val[1]).format('YYYY-MM-DD HH:mm:ss')
                     }
-                    if (['creator', 'sn', 'status'].includes(key) && val) {
+                    if (key === 'sns' && val) {
+                        params.sns = [val]
+                    }
+                    if (['creator', 'status'].includes(key) && val) {
                         params[key] = val
                     }
                 })
@@ -138,7 +141,7 @@
                 this.filterData = {
                     creator: '',
                     create_at: [],
-                    sn: '',
+                    sns: '',
                     status: ''
                 }
                 this.pagination.current = 1
@@ -154,7 +157,7 @@
                 this.getTicketList()
             },
             goToTicketPage (ticket) {
-                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket}&project_id=lesscode`, '__blank')
+                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '__blank')
             }
         }
     }

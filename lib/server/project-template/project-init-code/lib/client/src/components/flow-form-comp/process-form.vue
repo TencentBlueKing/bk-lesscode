@@ -151,14 +151,14 @@
                             service_id: this.serviceId,
                             meta: {
                                 envs: {
-                                    env: BKPAAS_ENVIRONMENT
+                                    appApigwPrefix: BK_APP_APIGW_PREFIX
                                 }
                             }
                         }
                         if (this.versionId) {
                             params.flow_id = this.versionId
                         }
-                        const path = this.versionId ? '/nocode/v2/itsm/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
+                        const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
                         await this.$http.post(path, params)
                     } else {
                         await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
