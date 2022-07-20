@@ -24,6 +24,8 @@ module.exports = process.env.NODE_ENV === 'production'
         userManageUrl: '',
         // apiGateWay 请求地址模板
         apiGateWayUrlTmpl: '',
+        // itsm在paas平台的域名
+        itsmUrl: ''
         // 环境标识
         stageName: '',
         // 应用 ID
@@ -45,6 +47,8 @@ module.exports = process.env.NODE_ENV === 'production'
         userManageUrl: '',
         // apiGateWay 请求地址模板
         apiGateWayUrlTmpl: '',
+        // itsm在paas平台的域名
+        itsmUrl: ''
         // 环境标识
         stageName: '',
         // 应用 ID

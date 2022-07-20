@@ -29,6 +29,7 @@
                     :value.sync="filtersData">
                 </filters>
                 <table-fields
+                    v-if="tableName"
                     style="margin-top: 16px"
                     :table-config="tableConfig"
                     :fields="fields"
