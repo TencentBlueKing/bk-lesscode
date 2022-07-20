@@ -499,7 +499,7 @@
                                         type,
                                         name,
                                         key,
-                                        id: `$\{param_${key}}`
+                                        id: `{{${key}}}`
                                     }
                                 })
                             })
