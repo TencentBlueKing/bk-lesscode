@@ -138,6 +138,7 @@
     "db-migrate-mysql": "^2.1.2",
     "echarts": "~4.8.0",
     "element-ui": "~2.15.1",
+    "moment": "^2.29.1",
     "eslint": "~7.20.0",
     "eslint-config-standard": "~12.0.0",
     "eslint-plugin-import": "~2.22.1",

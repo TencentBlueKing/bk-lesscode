@@ -12,6 +12,7 @@
                         :key="`${item.name}${item.instanceData.display_name}`"
                         :status="item.state"
                         :title="item.name"
+                        :current-app-info="currentAppInfo"
                         :instance-name="item.instanceData.name"
                         :expanded="item.expanded"
                         :sub-title="item.instanceData.display_name">
@@ -51,6 +52,12 @@
             environment: {
                 type: String,
                 default: 'stag'
+            },
+            currentAppInfo: {
+                type: Object,
+                default () {
+                    return {}
+                }
             }
         },
         data () {
