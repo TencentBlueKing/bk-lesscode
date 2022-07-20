@@ -135,9 +135,31 @@
                                 </template>
                             </bk-input>
                         </div>
+                        <div class="template-item">
+                            <div class="label">
+                                <span class="g-config-subline" v-bk-tooltips="{ content: '对齐方式' }">align</span>
+                            </div>
+                            <bk-select
+                                style="width: 100%; background-color: #fff"
+                                :popover-options="{ appendTo: 'parent' }"
+                                v-model="item.align"
+                                @change="val => handleChange(val, 'align', index)"
+                            >
+                                <bk-option v-for="option in alignList"
+                                    :key="option.id"
+                                    :id="option.id"
+                                    :name="option.name">
+                                </bk-option>
+                            </bk-select>
+                        </div>
                         <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.sortable" @change="val => handleChange(val, 'sortable', index)" style="font-size: 12px;">
                                 支持排序
+                            </bk-checkbox>
+                        </div>
+                        <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                            <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
+                                支持过滤
                             </bk-checkbox>
                         </div>
                     </section>
@@ -166,6 +188,8 @@
         label: `选项${index}`,
         prop: `prop${index}`,
         sortable: false,
+        filterable: false,
+        align: '',
         type: ''
     })
     const generateCustomColumn = (index) => ({
@@ -173,7 +197,9 @@
         label: `选项${index}`,
         templateCol: '<span><a style="color:#3A84FF;cursor:pointer" @click="editCallBack(props.row)">编辑</a> <a style="color:red;">获取行数据{{props.row.prop1}}</a></span>',
         methodCode: [],
-        sortable: false
+        align: '',
+        sortable: false,
+        filterable: false
     })
 
     export default defineComponent({
@@ -214,6 +240,11 @@
                 { id: 'selection', name: '多选框列' },
                 // { id: 'expand', name: '展开按钮' },
                 { id: 'index', name: '索引序号列（从 1 开始）' }
+            ]
+            const alignList = [
+                { id: 'left', name: '左对齐' },
+                { id: 'center', name: '居中' },
+                { id: 'right', name: '右对齐' }
             ]
             const currentInstance = getCurrentInstance()
 
@@ -269,6 +300,7 @@
                 column,
                 showMethod,
                 typeList,
+                alignList,
                 handleDelete,
                 handleChange,
                 handleAdd,

@@ -32,6 +32,7 @@
         <plus-event
             :config-events="configEvents"
             :render-events="renderEvents"
+            :node="currentComponentNode"
             @plus-event="handlePlusEvent"
         />
     </section>
@@ -55,7 +56,8 @@
         data () {
             return {
                 configEvents: [],
-                renderEvents: {}
+                renderEvents: {},
+                currentComponentNode: {}
             }
         },
 

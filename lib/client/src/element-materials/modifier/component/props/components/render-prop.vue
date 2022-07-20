@@ -154,6 +154,7 @@
     import TypeDataSource from './strategy/data-source.vue'
     import TypeTableDataSource from './strategy/table-data-source.vue'
     import TypeSrc from './strategy/src.vue'
+    import TypePagination from './strategy/pagination.vue'
 
     const getRealValue = (type, target) => {
         if (type === 'object') {
@@ -177,7 +178,8 @@
             'src': 'string',
             'srcset': 'array',
             // 老数据存在 type = 'hidden' 但是值是 object 的情况
-            'hidden': 'object'
+            'hidden': 'object',
+            'pagination': 'object'
         }
         return valueMap[type] || type
     }
@@ -267,7 +269,8 @@
                     'data-source': TypeDataSource,
                     'table-data-source': TypeTableDataSource,
                     'src': TypeSrc,
-                    'srcset': TypeList
+                    'srcset': TypeList,
+                    'pagination': TypePagination
                 }
 
                 const typeMap = {
@@ -308,7 +311,8 @@
                     'data-source': 'data-source',
                     'table-data-source': 'table-data-source',
                     'src': 'src',
-                    'srcset': 'srcset'
+                    'srcset': 'srcset',
+                    'pagination': 'pagination'
                 }
 
                 let realType = config.type
