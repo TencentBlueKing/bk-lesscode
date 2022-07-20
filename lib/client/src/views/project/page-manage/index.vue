@@ -133,12 +133,11 @@
                 pageType: 'ALL',
                 nocodeTypeMap: NOCODE_TYPE_MAP,
                 displayTypeIcons: [
-                    { name: 'card', icon: 'display-card' },
-                    { name: 'list', icon: 'display-list' }
+                    { name: 'card', icon: 'display-card', title: '卡片' },
+                    { name: 'list', icon: 'display-list', title: '列表' }
                 ],
                 listComponent: listCard.name,
-                sort: 'default',
-                renderListDefaultSort: []
+                sort: 'default'
             }
         },
         provide () {

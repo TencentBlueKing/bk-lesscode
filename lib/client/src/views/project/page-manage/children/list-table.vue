@@ -73,11 +73,6 @@
                 handleDownloadSource,
                 handleCreateFormManage
             }
-        },
-        methods: {
-            hideDropdownMenu (pageId) {
-                this.$refs[`moreActionDropdown${pageId}`][0].hide()
-            }
         }
     })
 </script>
@@ -94,8 +89,8 @@
                 <template v-slot="{ row }">
                     <div class="pagename-content">
                         <span class="page-type">
-                            <i v-if="row.pageType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
-                            <i v-else class="bk-drag-icon bk-drag-pc"> </i>
+                            <i v-if="row.pageType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"></i>
+                            <i v-else class="bk-drag-icon bk-drag-pc"></i>
                         </span>
                         <bk-link theme="primary" class="pagename"
                             @click="handleEditPage(row)">
@@ -109,8 +104,8 @@
                     <span
                         class="nocode-type-tag"
                         :style="{
-                            background: nocodeTypeMap.bgColor[row.nocodeType] || '#F5F7FA',
-                            color: nocodeTypeMap.color[row.nocodeType] || '#8A8A8A'
+                            background: nocodeTypeMap.bgColor[row.nocodeType] || '#eaebf0',
+                            color: nocodeTypeMap.color[row.nocodeType] || '#8a8a8a'
                         }">
                         <bk-popover
                             v-if="row.nocodeType === 'FORM' && getFormManagePages(row.formId).length"
@@ -259,6 +254,9 @@
     }
 
     .more-menu-trigger {
+        position: relative;
+        top: -1px;
+
         .bk-drag-more-dot {
             display: block;
             width: 24px;
@@ -270,7 +268,7 @@
             font-size: 12px;
             color: #979BA5;
             &:hover {
-                background: #F0F1F5;
+                background: #EAEBF0;
             }
         }
     }
@@ -323,7 +321,7 @@
     .page-manage-more-dot-menu-theme {
         &.tippy-tooltip {
             background: #fff !important;
-            padding: 5px 0;
+            padding: 5px 0 !important;
         }
 
         .menu-list {

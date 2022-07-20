@@ -14,8 +14,9 @@
     import { defineComponent, ref, PropType, watch } from '@vue/composition-api'
 
     interface IButton {
-        name: string
-        icon: string
+        name: string,
+        icon: string,
+        title: string
     }
 
     export default defineComponent({

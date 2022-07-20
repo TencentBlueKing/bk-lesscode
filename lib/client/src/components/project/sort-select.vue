@@ -16,12 +16,29 @@
         props: {
             value: {
                 type: String,
-                default: 'default'
+                default: ''
+            },
+            hasDefault: {
+                type: Boolean,
+                default: true
+            },
+            autoSelect: {
+                type: Boolean,
+                default: true
             }
         },
         setup (props, { emit }) {
+            const allSortOptions = [
+                { id: 'default', name: '默认' },
+                { id: 'createTime', name: '按创建时间' },
+                { id: 'updateTime', name: '按更新时间' }
+            ]
+
             const selected = computed({
                 get () {
+                    if (!props.value && props.autoSelect) {
+                        return sortOptions.value?.[0]?.id
+                    }
                     return props.value
                 },
                 set (value) {
@@ -29,8 +46,17 @@
                 }
             })
 
+            const sortOptions = computed(() => {
+                let sortOptions = allSortOptions.slice()
+                if (!props.hasDefault) {
+                    sortOptions = allSortOptions.slice(1)
+                }
+                return sortOptions
+            })
+
             return {
-                selected
+                selected,
+                sortOptions
             }
         }
     })
@@ -42,9 +68,10 @@
         prefix-icon="bk-icon icon-sort"
         :clearable="false"
         v-model="selected">
-        <bk-option id="default" name="默认"></bk-option>
-        <bk-option id="createTime" name="按创建时间"></bk-option>
-        <bk-option id="updateTime" name="按更新时间"></bk-option>
+        <bk-option
+            v-for="option in sortOptions" :id="option.id" :name="option.name"
+            :key="option.id">
+        </bk-option>
     </bk-select>
 </template>
 
