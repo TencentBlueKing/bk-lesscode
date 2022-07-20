@@ -8,6 +8,7 @@
             style="margin-top: 8px;"
             ref="nowStageRef"
             :environment="environment"
+            :current-app-info="currentAppInfo"
             v-if="isShowRelease" />
         <skip-stage-item style="margin-top: 8px;" v-if="isShowSkip" />
     </div>
@@ -56,6 +57,12 @@
             isRunning: {
                 type: Boolean,
                 default: false
+            },
+            currentAppInfo: {
+                type: Object,
+                default () {
+                    return {}
+                }
             }
         },
         data () {
