@@ -20,20 +20,22 @@
                     <h2 class="title">表格设置</h2>
                     <div class="field-content-wrapper">
                         <p class="field-title">系统字段</p>
-                        <bk-checkbox-group v-model="selectedSys">
+                        <bk-checkbox-group :value="selectedFieldKeys">
                             <bk-checkbox
                                 v-for="item in systemFields"
                                 :value="item.key"
-                                :key="item.key">
+                                :key="item.key"
+                                @change="handleSelectField($event, item.key)">
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
                         <p class="field-title" style="margin-top: 6px;">自定义字段</p>
-                        <bk-checkbox-group v-model="selectedCustom">
+                        <bk-checkbox-group :value="selectedFieldKeys">
                             <bk-checkbox
                                 v-for="item in fields"
                                 :value="item.key"
-                                :key="item.key">
+                                :key="item.key"
+                                @change="handleSelectField($event, item.key)">
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
@@ -52,6 +54,7 @@
     export default {
         name: 'TableFields',
         props: {
+            // 选中的字段
             fields: {
                 type: Array,
                 default: () => []
@@ -69,8 +72,7 @@
             return {
                 cols: this.tableConfig.slice(),
                 emptyData: [{}],
-                selectedSys: [],
-                selectedCustom: []
+                selectedFieldKeys: []
             }
         },
         computed: {
@@ -90,25 +92,30 @@
         },
         watch: {
             fields (val) {
-                const selectedSys = []
-                const selectedCustom = []
+                const selectedFieldKeys = []
                 this.tableConfig.forEach(key => {
-                    if (this.systemFields.find(field => field.key === key)) {
-                        selectedSys.push(key)
-                    } else if (val.find(field => field.key === key)) {
-                        selectedCustom.push(key)
+                    if (this.systemFields.find(field => field.key === key)
+                        || val.find(field => field.key === key)
+                    ) {
+                        selectedFieldKeys.push(key)
                     }
                 })
-                this.selectedSys = selectedSys
-                this.selectedCustom = selectedCustom
+                this.selectedFieldKeys = selectedFieldKeys
             },
             tableConfig (val) {
                 this.cols = val.slice()
             }
         },
         methods: {
+            handleSelectField (val, key) {
+                if (val) {
+                    this.selectedFieldKeys.push(key)
+                } else {
+                    this.selectedFieldKeys = this.selectedFieldKeys.filter(item => item !== key)
+                }
+            },
             handleSelectConfirm () {
-                this.cols = [...this.selectedSys, ...this.selectedCustom]
+                this.cols = [...this.selectedFieldKeys]
                 this.$emit('update', this.cols)
                 this.$refs.settingCol.handleCancel()
             },

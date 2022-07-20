@@ -172,8 +172,11 @@
             },
             tableConfig (val) {
                 this.cols = val.slice()
+                this.pagination.current = 1
+                this.getTableData()
             },
             filtersData () {
+                this.pagination.current = 1
                 this.getTableData()
             }
         },
