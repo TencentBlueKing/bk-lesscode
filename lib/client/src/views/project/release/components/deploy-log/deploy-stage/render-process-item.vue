@@ -1,6 +1,7 @@
 <template>
     <div class="lesscode-deploy-process-item-wrapper">
         <section class="header" @click.stop="handleExpanded">
+            <i class="bk-drag-icon" :class="curExpanded ? 'bk-drag-angle-up-fill' : 'bk-drag-angle-right-fill'"></i>
             <span class="process-title">{{ title }}</span>
             <span class="process-sub-title">({{ subTitle }})</span>
             <StatusItem :status="status" />
