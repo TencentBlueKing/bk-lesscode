@@ -9,24 +9,26 @@
  * specific language governing permissions and limitations under the License.
  */
 
-import { Entity, Column } from 'typeorm'
-import Base from './base'
-
-@Entity({ name: 'user', comment: '用户表' })
-export default class extends Base {
-    // 用户名
-    @Column({ type: 'varchar', length: 255 })
-    username
-
-    // QQ
-    @Column({ type: 'int' })
-    qq
-
-    // 微信
-    @Column({ type: 'varchar', length: 255 })
-    wx
-
-    // 社区版账号（外部版）
-    @Column({ type: 'varchar', length: 255 })
-    bk
-}
+module.exports = process.env.NODE_ENV === 'production'
+    // 线上环境配置（npm run build时使用）
+    ? {
+        // 权限中心接口 HOST
+        IAM_HOST: '',
+        // 与对接 v3 一致
+        IAM_APP_ID: '',
+        // 与对接 v3 一致
+        IAM_APP_SECRET: '',
+        // 权限中心查询资源实例接口的 HOST
+        IAM_PROVIDER_HOST: ''
+    }
+    // 本地调试配置（npm run dev时使用）
+    : {
+        // 权限中心接口 HOST
+        IAM_HOST: '',
+        // 与对接 v3 一致
+        IAM_APP_ID: '',
+        // 与对接 v3 一致
+        IAM_APP_SECRET: '',
+        // 权限中心查询资源实例接口的 HOST
+        IAM_PROVIDER_HOST: ''
+    }

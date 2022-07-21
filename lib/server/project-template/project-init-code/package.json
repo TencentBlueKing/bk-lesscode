@@ -81,6 +81,7 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/register": "^7.6.2",
     "@babel/runtime": "~7.6.3",
+    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.10",
     "@blueking/bkui-vue-complex": "latest",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
     "@blueking/user-selector": "^1.0.7",
@@ -192,7 +193,7 @@
     "webpack-merge": "~4.2.2"
   },
   "engines": {
-    "node": ">= 14.16.1",
-    "npm": "6.14.12"
+    "node": ">= 10.12.0",
+    "npm": "~6.9.0"
   }
 }

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo "Post Hook: this runs after build"
+# 数据库migrate
+node node_modules/db-migrate/bin/db-migrate up --config ./lib/server/conf/db-migrate.json --migrations-dir ./lib/server/model/migrations -e prod
+
+echo "finish db-migrate"
