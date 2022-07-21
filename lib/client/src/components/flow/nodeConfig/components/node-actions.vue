@@ -129,8 +129,11 @@
                     }
                 } else if (data.type === 'NORMAL') {
                     const formFieldsId = this.formConfig.content.map(field => field.id)
-                    // itsm新建服务时默认生成一个标题字段，需要保留，默认放到第一个
-                    data.fields = [this.nodeData.fields[0], ...formFieldsId]
+                    data.fields = [...formFieldsId]
+                    // itsm新建服务时,提单节点默认生成一个标题字段，需要保留，默认放到第一个
+                    if (this.nodeData.is_first_state) {
+                        data.fields.unshift(this.nodeData.fields[0])
+                    }
                     data.extras.formConfig = {
                         id: formId,
                         type: this.formConfig.type
@@ -163,10 +166,13 @@
                     }
                     if (this.nodeData.type === 'NORMAL') {
                         const itsmFields = await this.saveItsmFields()
-                        const content = itsmFields.map(field => {
-                            field.columnId = field.meta.columnId
-                            delete field.meta.columnId
-                            return field
+                        const content = []
+                        itsmFields.forEach(field => {
+                            if (field.id !== this.nodeData.fields[0]) {
+                                field.columnId = field.meta.columnId
+                                delete field.meta.columnId
+                                content.push(field)
+                            }
                         })
                         this.$store.commit('nocode/nodeConfig/setFormConfig', { content })
                         this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
