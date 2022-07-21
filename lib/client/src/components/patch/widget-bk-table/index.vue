@@ -8,6 +8,7 @@
             :data="renderData"
             @page-change="handlePageChange"
             @page-limit-change="handleLimitChange"
+            @sort-change="handleSortChange"
         >
             <slot></slot>
             <bk-table-column
@@ -279,7 +280,9 @@
                     'current': 1
                 },
                 renderData: [],
-                isLoading: false
+                isLoading: false,
+                queryObject: {},
+                sortObject: {}
             }
         },
 
@@ -340,7 +343,7 @@
                     .$http
                     .delete(`/data-source/user/tableName/${this.tableName}?id=${this.deleteData.form.id}`)
                     .then(() => {
-                        this.getTableDataByPage()
+                        this.getTableDataFromApi()
                         this.handleCloseDialog()
                     })
             },
@@ -369,7 +372,7 @@
                             .$http
                             .put(`/data-source/user/tableName/${this.tableName}`, this.editData.form)
                             .then(() => {
-                                this.getTableDataByPage()
+                                this.getTableDataFromApi()
                                 this.handleCloseForm()
                             })
                             .finally(() => {
@@ -398,7 +401,7 @@
                 }
             },
 
-            getTableDataByPage () {
+            getTableDataFromApi () {
                 this.isLoading = true
                 this
                     .$http
@@ -407,7 +410,10 @@
                         {
                             params: {
                                 page: this.renderPagination.current,
-                                pageSize: this.renderPagination.limit
+                                pageSize: this.renderPagination.limit,
+                                sortKey: this.sortObject.key,
+                                sortValue: this.sortObject.value,
+                                ...this.queryObject
                             }
                         }
                     )
@@ -425,30 +431,83 @@
                 if (this.paginationType === 'local') {
                     this.calcRenderData()
                 } else if (this.paginationType === 'remote' && this.tableName) {
-                    this.getTableDataByPage()
+                    this.getTableDataFromApi()
                 } else {
                     this.$emit('page-change', page)
                 }
             },
 
             handleLimitChange (limit) {
+                this.renderPagination.current = 1
+                this.renderPagination.limit = limit
                 if (this.paginationType === 'local') {
-                    this.renderPagination.limit = limit
                     this.calcRenderData()
                 } else if (this.paginationType === 'remote' && this.tableName) {
-                    this.getTableDataByPage()
+                    this.getTableDataFromApi()
                 } else {
                     this.$emit('page-limit-change', limit)
                 }
             },
 
+            handleFilter ({ key, value }) {
+                this.renderPagination.current = 1
+                this.queryObject[key] = value
+                if (this.paginationType === 'local') {
+                    this.calcRenderData()
+                } else if (this.paginationType === 'remote' && this.tableName) {
+                    this.getTableDataFromApi()
+                } else {
+                    this.$emit('filter-change', { key, value: [value] })
+                }
+            },
+
+            handleSortChange ({ column, prop, order }) {
+                const sortMap = {
+                    ascending: 'ASC',
+                    descending: 'DESC'
+                }
+                this.renderPagination.current = 1
+                this.sortObject.key = prop
+                this.sortObject.value = sortMap[order]
+                if (this.paginationType === 'local') {
+                    this.calcRenderData()
+                } else if (this.paginationType === 'remote' && this.tableName) {
+                    this.getTableDataFromApi()
+                } else {
+                    this.$emit('sort-change', { column, prop, order })
+                }
+            },
+
             calcRenderData () {
+                // 过滤
+                const filterDataList = this.data.reduce((acc, cur) => {
+                    const isMatch = Object
+                        .keys(this.queryObject)
+                        .every(key => this.queryObject[key] === '' || cur[key].includes(this.queryObject[key]))
+                    if (isMatch) {
+                        acc.push(cur)
+                    }
+                    return acc
+                }, [])
+                // 排序
+                const { key, value } = this.sortObject
+                filterDataList.sort((a, b) => {
+                    if (value === 'ASC') {
+                        return a[key] - b[key]
+                    }
+                    if (value === 'DESC') {
+                        return b[key] - a[key]
+                    }
+                })
                 this.renderData = this.renderPagination
-                    ? this.data.slice(
+                    ? filterDataList.slice(
                         (this.renderPagination.current - 1) * this.renderPagination.limit,
                         this.renderPagination.current * this.renderPagination.limit
                     )
-                    : this.data
+                    : filterDataList
+                if (this.renderPagination) {
+                    this.renderPagination.count = filterDataList.length
+                }
             },
 
             calcCount () {

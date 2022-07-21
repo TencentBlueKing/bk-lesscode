@@ -2,7 +2,8 @@
     <component
         :is="type"
         :formatter="bkTableFormatter"
-        v-bind="getProps()"
+        :render-header="renderHeader"
+        v-bind="item"
     />
 </template>
 
@@ -17,31 +18,63 @@
             item: Object
         },
 
+        data () {
+            return {
+                filterText: ''
+            }
+        },
+
         methods: {
-            getProps () {
-                const props = {
-                    ...this.item
-                }
-                // 排序
-                if (this.item.filterable) {
-                    props.filters = this
-                        .$parent
-                        .data
-                        .reduce((acc, cur) => {
-                            const val = cur[props.prop]
-                            const index = acc.findIndex(x => x.value === val)
-                            if (index <= -1) {
-                                acc.push({
-                                    text: val,
-                                    value: val
-                                })
-                            }
-                            return acc
-                        }, [])
-                    props.filterMethod = this.filterMethod
-                    props.filterMultiple = true
-                }
-                return props
+            renderHeader (h, { column, $index }) {
+                const vm = this
+                return h(
+                    'div',
+                    {},
+                    [
+                        column.label,
+                        this.item.filterable
+                            ? h(
+                                'bk-popover',
+                                {
+                                    props: {
+                                        trigger: 'click',
+                                        theme: 'light',
+                                        extCls: 'g-popover-empty-padding'
+                                    },
+                                    ref: 'popoverRef',
+                                    refInFor: true
+                                },
+                                [
+                                    h(
+                                        'bk-input',
+                                        {
+                                            slot: 'content',
+                                            props: {
+                                                value: vm.filterText,
+                                                placeholder: '请输入并按回车键进行搜索'
+                                            },
+                                            on: {
+                                                enter () {
+                                                    vm.handleFilter(column)
+                                                },
+                                                change (val) {
+                                                    vm.changeFilterText(val)
+                                                }
+                                            }
+                                        }
+                                    ),
+                                    h(
+                                        'i',
+                                        {
+                                            class: 'bk-table-column-filter-trigger bk-icon icon-funnel',
+                                            slot: 'default'
+                                        }
+                                    )
+                                ]
+                            )
+                            : ''
+                    ]
+                )
             },
 
             bkTableFormatter (row, column, cellValue, index) {
@@ -52,6 +85,18 @@
                 } else {
                     return cellValue
                 }
+            },
+
+            handleFilter (column) {
+                this.$parent.$refs.tableHeader.$refs.popoverRef.forEach(refItem => refItem.hideHandler())
+                this.$parent.$parent.handleFilter({
+                    key: column.property,
+                    value: this.filterText
+                })
+            },
+
+            changeFilterText (val) {
+                this.filterText = val
             },
 
             filterMethod (value, row, column) {

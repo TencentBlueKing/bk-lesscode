@@ -154,12 +154,26 @@
                         </div>
                         <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.sortable" @change="val => handleChange(val, 'sortable', index)" style="font-size: 12px;">
-                                支持排序
+                                全局排序
+                                <i
+                                    class="bk-icon icon-info"
+                                    v-bk-tooltips="{
+                                        content: '当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【sort-change】事件中处理排序逻辑。其它情况系统会自动处理',
+                                        width: '400'
+                                    }"
+                                ></i>
                             </bk-checkbox>
                         </div>
                         <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
-                                支持过滤
+                                全局过滤
+                                <i
+                                    class="bk-icon icon-info"
+                                    v-bk-tooltips="{
+                                        content: '当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【filter-change】事件中处理过滤逻辑。其它情况系统会自动处理',
+                                        width: '400'
+                                    }"
+                                ></i>
                             </bk-checkbox>
                         </div>
                     </section>
