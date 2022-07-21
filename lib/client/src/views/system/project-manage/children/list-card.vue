@@ -41,6 +41,7 @@
                                 <li><a href="javascript:;" @click="handleDownloadSource(project)">下载源码</a></li>
                                 <li><a href="javascript:;" @click="handleGotoPage(project.id)">页面管理</a></li>
                                 <li><a href="javascript:;" @click="handleRename(project)">重命名</a></li>
+                                <li><a href="javascript:;" @click="handleRelease(project.id)">部署</a></li>
                                 <li><a href="javascript:;" @click="handleCopy(project)">复制</a></li>
                                 <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li>
                             </ul>
@@ -129,6 +130,9 @@
             },
             handleClickFavorite (project) {
                 this.$emit('collect', project)
+            },
+            handleRelease (projectId) {
+                this.$emit('release', projectId)
             }
         }
     }
@@ -147,6 +151,7 @@
         margin-top: 10px;
         padding: 8px;
         overflow-y: auto;
+        overflow-x: hidden;
         @mixin scroller;
 
         .project-item {
@@ -341,6 +346,12 @@
                 color: #979BA5;
                 padding: 4px 0;
             }
+        }
+    }
+
+    @media screen and (max-width: 1336px) {
+        .list-card {
+            grid-template-columns: repeat(3, minmax(304px, 1fr));
         }
     }
 </style>
