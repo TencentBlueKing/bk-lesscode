@@ -290,7 +290,6 @@
             pagination: {
                 handler (pagination) {
                     this.renderPagination = pagination
-                    this.calcCount()
                 },
                 immediate: true,
                 deep: true
@@ -298,7 +297,6 @@
             data: {
                 handler () {
                     this.calcRenderData()
-                    this.calcCount()
                 },
                 immediate: true,
                 deep: true
@@ -451,7 +449,11 @@
 
             handleFilter ({ key, value }) {
                 this.renderPagination.current = 1
-                this.queryObject[key] = value
+                if (['', undefined, null].includes(value)) {
+                    delete this.queryObject[key]
+                } else {
+                    this.queryObject[key] = value
+                }
                 if (this.paginationType === 'local') {
                     this.calcRenderData()
                 } else if (this.paginationType === 'remote' && this.tableName) {
@@ -507,12 +509,6 @@
                     : filterDataList
                 if (this.renderPagination) {
                     this.renderPagination.count = filterDataList.length
-                }
-            },
-
-            calcCount () {
-                if (this.tableName && this.renderPagination) {
-                    this.renderPagination.count = this.data.length
                 }
             },
 

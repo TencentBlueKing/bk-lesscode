@@ -72,6 +72,7 @@
                         <component
                             :is="renderCom.component"
                             :component-type="componentType"
+                            :component-id="componentId"
                             :name="name"
                             :type="renderCom.type"
                             :describe="describe"
