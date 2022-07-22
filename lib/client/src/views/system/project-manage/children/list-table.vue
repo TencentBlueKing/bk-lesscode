@@ -62,6 +62,9 @@
             const handleClickFavorite = (project) => {
                 emit('collect', project)
             }
+            const handleRelease = (projectId) => {
+                emit('release', projectId)
+            }
 
             return {
                 handleCreate,
@@ -71,7 +74,8 @@
                 handleRename,
                 handleDownloadSource,
                 handleSetTemplate,
-                handleClickFavorite
+                handleClickFavorite,
+                handleRelease
             }
         }
     })
@@ -88,7 +92,6 @@
             <bk-table-column label="应用名称" prop="projectName" min-width="210" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['name-content', { favorite: row.favorite }]">
-                        <i class="bk-drag-icon bk-drag-folder-fill"></i>
                         <bk-link theme="primary" class="projectname"
                             @click="handleGotoPage(row.id)">
                             {{row.projectName}}
@@ -129,6 +132,7 @@
                             <li><a href="javascript:;" @click="handleDownloadSource(row)">下载源码</a></li>
                             <li><a href="javascript:;" @click="handleGotoPage(row.id)">页面管理</a></li>
                             <li><a href="javascript:;" @click="handleRename(row)">重命名</a></li>
+                            <li><a href="javascript:;" @click="handleRelease(row.id)">部署</a></li>
                             <li><a href="javascript:;" @click="handleCopy(row)">复制</a></li>
                             <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a></li>
                         </ul>
@@ -176,7 +180,7 @@
 
             ::v-deep .bk-link {
                 &.projectname {
-                    max-width: calc(100% - 50px);
+                    max-width: calc(100% - 22px);
                     justify-content: flex-start;
                     white-space: nowrap;
                 }

@@ -173,6 +173,7 @@
         align-content: flex-start;
         padding: 8px;
         overflow-y: auto;
+        overflow-x: hidden;
         @mixin scroller;
 
         .page-item {
@@ -412,6 +413,12 @@
                     }
                 }
             }
+        }
+    }
+
+    @media screen and (max-width: 1336px) {
+        .list-card {
+            grid-template-columns: repeat(3, minmax(304px, 1fr));
         }
     }
 </style>

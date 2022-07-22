@@ -64,6 +64,7 @@
                     @download="handleDownloadSource"
                     @set-template="handleSetTemplate"
                     @collect="handleCollect"
+                    @release="handleRelease"
                 />
             </div>
         </div>
@@ -597,6 +598,14 @@
             handleGotoPage (projectId) {
                 this.$router.push({
                     name: 'pageList',
+                    params: {
+                        projectId
+                    }
+                })
+            },
+            handleRelease (projectId) {
+                this.$router.push({
+                    name: 'release',
                     params: {
                         projectId
                     }
