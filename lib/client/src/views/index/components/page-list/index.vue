@@ -25,9 +25,10 @@
                     ext-cls="select-page"
                     ext-popover-cls="select-page-dropdown"
                     ref="pageSelect"
-                    :value="pageDetail.id"
+                    v-model="selectPageId"
                     :clearable="false"
                     :searchable="true"
+                    @toggle="toggleSelect"
                     @change="handlePageChange">
                     <div slot="trigger">
                         <div
@@ -105,6 +106,7 @@
         },
         data () {
             return {
+                selectPageId: '',
                 createPlatform: 'PC',
                 createNocodeType: '',
                 classPageList: [
@@ -145,6 +147,7 @@
         created () {
             this.projectId = parseInt(this.$route.params.projectId)
             this.pageId = parseInt(this.$route.params.pageId)
+            this.selectPageId = parseInt(this.$route.params.pageId)
         },
         methods: {
             initClassPageList () {
@@ -174,6 +177,11 @@
                 this.$router.push({
                     name: 'projects'
                 })
+            },
+            toggleSelect (isShow) {
+                if (isShow) {
+                    this.selectPageId = parseInt(this.$route.params.pageId)
+                }
             },
             /**
              * @desc 页面切换
