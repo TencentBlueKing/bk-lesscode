@@ -51,7 +51,7 @@
                             <span>{{group.name}}</span>
                         </template>
                         <bk-option
-                            v-show="!group.collapse"
+                            v-show="!group.collapse && group.children"
                             v-for="option in group.children"
                             :key="option.id"
                             :id="option.id"
@@ -63,7 +63,7 @@
                                 @click.stop="handleCopyPage(option)"
                                 title="复制页面"></i>
                         </bk-option>
-                        
+                        <li style="padding: 0 28px" v-show="!group.children.length && !group.collapse">暂无页面</li>
                     </bk-option-group>
                     <div slot="extension" class="extension">
                         <div
