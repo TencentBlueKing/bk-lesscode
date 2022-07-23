@@ -148,6 +148,17 @@
                                 })
                             }
                         }
+                        if (propKey === 'pagination'
+                            && ['remote', 'local'].includes(renderProp?.payload?.type)
+                            && renderProp.payload.val.count.buildInVariableType !== BUILDIN_VARIABLE_TYPE_LIST[1].VAL
+                        ) {
+                            this.proposals.push({
+                                label: `lesscode.${node.componentId}.${propKey}.count`,
+                                kind: window.monaco.languages.CompletionItemKind.Property,
+                                documentation: `组件【${node.componentId}】的【${propKey}.count】属性的内置变量`,
+                                insertText: `this.${perVariableName}paginationCount`
+                            })
+                        }
                     })
                     // slots 中需要展示内置变量
                     const renderSlots = node.renderSlots

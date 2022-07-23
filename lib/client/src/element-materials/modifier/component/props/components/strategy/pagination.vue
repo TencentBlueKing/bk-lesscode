@@ -34,56 +34,87 @@
         </section>
 
         <template v-if="paginationPayload.type !== 'none'">
-            <variable-select
-                v-for="config in paginationConfig"
-                :key="config.name"
-                :options="{
-                    valueTypeInclude: [config.type],
-                    formatInclude: ['value', 'variable', 'expression']
-                }"
-                :value="{
-                    format: paginationPayload.val[config.name].format,
-                    code: paginationPayload.val[config.name].code
-                }"
-                @change="handleVariableFormatChange(config.name, ...arguments)">
-                <template v-slot:title>
-                    <div class="g-prop-sub-title pagination-title">
+            <template v-for="config in paginationConfig">
+                <template v-if="config.name === 'count'">
+                    <div
+                        class="g-prop-sub-title pagination-title"
+                        :key="config.name + 'name'"
+                    >
                         <span
                             class="bottom-line"
                             v-bk-tooltips="{
                                 content: config.tips,
                                 placements: ['left-start'],
                                 boundary: 'window'
-                            }">
-                            {{ config.name }}
+                            }"
+                        >
+                            count
                         </span>
                     </div>
+                    <choose-build-in-variable
+                        class="g-mb6"
+                        name="pagination.count"
+                        :key="config.name + 'variable'"
+                        :build-in-variable="buildInVariable"
+                        :component-id="componentId"
+                        :build-in-variable-type="paginationPayload.val.count.buildInVariableType"
+                        :payload="{ customVariableCode: paginationPayload.val.count.customVariableCode }"
+                        :option="{ valueTypeInclude: ['number'] }"
+                        @change="handleBuildInVariableChange"
+                    />
                 </template>
-                <bk-select
-                    v-if="config.options"
-                    :value="paginationPayload.val[config.name].val"
-                    @change="(val) => handleValueChange(config.name, +val)"
-                >
-                    <bk-option v-for="option in config.options"
-                        :key="option"
-                        :id="option"
-                        :name="option">
-                    </bk-option>
-                </bk-select>
-                <bk-input
-                    v-else-if="config.type === 'number'"
-                    type="number"
-                    :value="paginationPayload.val[config.name].val"
-                    @change="(val) => handleValueChange(config.name, +val)"
-                ></bk-input>
-                <bk-switcher
+                <variable-select
                     v-else
-                    theme="primary"
-                    size="small"
-                    :value="paginationPayload.val[config.name].val"
-                    @change="(val) => handleValueChange(config.name, val)"
-                ></bk-switcher>
-            </variable-select>
+                    :key="config.name"
+                    :options="{
+                        valueTypeInclude: [config.type],
+                        formatInclude: ['value', 'variable', 'expression']
+                    }"
+                    :value="{
+                        format: paginationPayload.val[config.name].format,
+                        code: paginationPayload.val[config.name].code
+                    }"
+                    @change="handleVariableFormatChange(config.name, ...arguments)">
+                    <template v-slot:title>
+                        <div class="g-prop-sub-title pagination-title">
+                            <span
+                                class="bottom-line"
+                                v-bk-tooltips="{
+                                    content: config.tips,
+                                    placements: ['left-start'],
+                                    boundary: 'window'
+                                }"
+                            >
+                                {{ config.name }}
+                            </span>
+                        </div>
+                    </template>
+                    <bk-select
+                        v-if="config.options"
+                        :value="paginationPayload.val[config.name].val"
+                        @change="(val) => handleValueChange(config.name, +val)"
+                    >
+                        <bk-option v-for="option in config.options"
+                            :key="option"
+                            :id="option"
+                            :name="option">
+                        </bk-option>
+                    </bk-select>
+                    <bk-input
+                        v-else-if="config.type === 'number'"
+                        type="number"
+                        :value="paginationPayload.val[config.name].val"
+                        @change="(val) => handleValueChange(config.name, +val)"
+                    ></bk-input>
+                    <bk-switcher
+                        v-else
+                        theme="primary"
+                        size="small"
+                        :value="paginationPayload.val[config.name].val"
+                        @change="(val) => handleValueChange(config.name, val)"
+                    ></bk-switcher>
+                </variable-select>
+            </template>
         </template>
     </section>
 </template>
@@ -93,14 +124,17 @@
         defineComponent,
         ref
     } from '@vue/composition-api'
-    import variableSelect from '@/components/variable/variable-select'
     import {
         isEmpty
     } from 'shared/util.js'
+    import variableSelect from '@/components/variable/variable-select'
+    import chooseBuildInVariable from '@/components/variable/choose-build-in-variable'
+    import { camelCase, camelCaseTransformMerge } from 'change-case'
 
     export default defineComponent({
         components: {
-            variableSelect
+            variableSelect,
+            chooseBuildInVariable
         },
 
         props: {
@@ -108,7 +142,8 @@
             type: String,
             defaultValue: Object,
             payload: Object,
-            change: Function
+            change: Function,
+            componentId: String
         },
 
         setup (props) {
@@ -120,7 +155,7 @@
                 },
                 {
                     name: 'count',
-                    tips: '数据总数，当属性【data】的属性初始值来源为【数据表】时，该属性由程序控制',
+                    tips: '数据总数，当属性【data】的属性初始值来源为【函数】时，该属性需要在函数中结合变量进行修改',
                     type: 'number'
                 },
                 {
@@ -154,9 +189,8 @@
                         code: ''
                     },
                     'count': {
-                        format: 'value',
-                        val: 3,
-                        code: ''
+                        buildInVariableType: 'SYSTEM',
+                        customVariableCode: ''
                     },
                     'show-limit': {
                         format: 'value',
@@ -176,6 +210,7 @@
                 },
                 ...props.payload
             })
+            const buildInVariable = `${camelCase(props.componentId, { transform: camelCaseTransformMerge })}paginationCount`
 
             const handleVariableFormatChange = (name, { code, format, renderValue }) => {
                 paginationPayload.value.val[name].format = format
@@ -196,6 +231,12 @@
                 triggleChange()
             }
 
+            const handleBuildInVariableChange = ({ buildInVariableType, payload }) => {
+                paginationPayload.value.val.count.buildInVariableType = buildInVariableType
+                paginationPayload.value.val.count.customVariableCode = payload.customVariableCode
+                triggleChange()
+            }
+
             const triggleChange = () => {
                 props.change(
                     props.name,
@@ -208,9 +249,11 @@
             return {
                 paginationConfig,
                 paginationPayload,
+                buildInVariable,
                 handleVariableFormatChange,
                 handleTypeChange,
-                handleValueChange
+                handleValueChange,
+                handleBuildInVariableChange
             }
         }
     })
@@ -219,10 +262,10 @@
 <style lang="postcss" scoped>
     .pagination-title {
         line-height: 30px;
-        .bottom-line {
-            border-bottom: 1px dashed #313238;
-            cursor: pointer;
-        }
+    }
+    .bottom-line {
+        border-bottom: 1px dashed #313238;
+        cursor: pointer;
     }
     .table-pagination {
         /deep/ .display-content {
