@@ -26,8 +26,11 @@
             :lazy-method="getRemoteApi"
         >
             <div
-                class="display-option"
                 slot-scope="{ node, data }"
+                :class="{
+                    'display-option': true,
+                    'disabled': data.disabled
+                }"
                 @click="chooseApi(data, node)"
             >
                 {{data.name}}
@@ -49,6 +52,7 @@
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import { getDataSourceApiList } from 'shared/data-source'
+    import { isEmpty, uuid } from 'shared/util'
 
     export default defineComponent({
         props: {
@@ -87,6 +91,24 @@
             const bigTreeKey = ref(1)
             const projectId = route.params.projectId
 
+            // 空数据则返回空节点
+            const getNodeValue = (data, isLeaf) => {
+                const node = {
+                    data
+                }
+                if (isEmpty(data)) {
+                    node.data = [{
+                        id: 'lesscode-empty-node' + uuid(),
+                        name: '暂无数据',
+                        disabled: true
+                    }]
+                }
+                if (isLeaf || isEmpty(data)) {
+                    node.leaf = node.data.map(x => x.id)
+                }
+                return node
+            }
+
             // 远程获取数据
             const getRemoteApi = ({ data }) => {
                 switch (data.type) {
@@ -119,7 +141,7 @@
                             category.children = []
                             return category
                         })
-                        return { data }
+                        return getNodeValue(data)
                     })
             }
 
@@ -130,25 +152,25 @@
                         projectId,
                         categoryId: item.id
                     })
-                    .then((data) => {
-                        return {
-                            data,
-                            leaf: data.map(api => api.id)
-                        }
+                    .then((res) => {
+                        return getNodeValue(res, true)
                     })
             }
 
             // 获取 apigateway 网关列表
-            const getApigatewayNameList = (item, resolve) => {
+            const getApigatewayNameList = () => {
                 return store
                     .dispatch('api/getApiGateWayNameList')
                     .then((apiNameList) => {
-                        const data = apiNameList.map((apiName) => {
+                        const data = apiNameList?.map((apiName) => {
                             apiName.type = 'apigateway-name'
                             apiName.children = []
                             return apiName
                         })
-                        return { data }
+                        return getNodeValue(data)
+                    })
+                    .catch(() => {
+                        return getNodeValue()
                     })
             }
 
@@ -164,9 +186,7 @@
                             stag.parentId = item.id
                             stag.type = 'apigateway-stage'
                         })
-                        return {
-                            data: stagList
-                        }
+                        return getNodeValue(stagList)
                     })
             }
 
@@ -177,14 +197,12 @@
                         apiName: item.apiName,
                         stageName: item.name
                     })
-                    .then(({ results: apiList }) => {
-                        apiList.forEach((stag) => {
+                    .then((res) => {
+                        const data = res?.results || []
+                        data.forEach((stag) => {
                             stag.summary = stag.description
                         })
-                        return {
-                            data: apiList,
-                            leaf: apiList.map(api => api.id)
-                        }
+                        return getNodeValue(data, true)
                     })
             }
 
@@ -194,30 +212,26 @@
                     .dispatch('dataSource/list', {
                         projectId
                     })
-                    .then(({ list: tableList }) => {
-                        tableList.forEach((table) => {
+                    .then((res) => {
+                        const data = res?.list || []
+                        data.forEach((table) => {
                             table.type = 'datasource-table'
                             table.children = []
                             table.name = table.tableName
                         })
-                        return {
-                            data: tableList
-                        }
+                        return getNodeValue(data)
                     })
             }
 
             // 获取表接口
             const getDataTableApiList = (item) => {
                 const apiList = getDataSourceApiList(item.name, item.columns)
-                return {
-                    data: apiList,
-                    leaf: apiList.map(api => api.id)
-                }
+                return getNodeValue(apiList, true)
             }
 
             // 触发值更新
             const chooseApi = (data, node) => {
-                if (!node.isLeaf) return
+                if (!node.isLeaf || data.disabled) return
                 const path = []
                 let cur = node
                 do {
@@ -313,6 +327,10 @@
     }
     .display-option {
         font-size: 12px;
+        &.disabled {
+            cursor: not-allowed;
+            color: #c4c6cc;
+        }
     }
     .bk-drag-jump-link {
         color: #3a84ff;
