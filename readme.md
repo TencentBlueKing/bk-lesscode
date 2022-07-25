@@ -1,15 +1,20 @@
-# 蓝鲸智云PaaS平台社区版之可视化开发平台
+![](./lib/client/src/images/logo-name.png)
+
+---
+
+[![license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/TencentBlueKing/bk-lesscode/blob/develop/LICENSE.txt) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/TencentBlueKing/bk-lesscode/pulls) 
 
 ## 简介
-蓝鲸智云可视化开发平台提供了前端页面在线可视化拖拽组装、配置编辑、源码生成、二次开发等能力。旨在帮助用户通过尽量少的手写代码的方式快速设计和开发SaaS。本次平台开源部分支持基于Vuejs的UI组件拖拽及源码生成，未来我们将持续更新扩充平台能力。
+蓝鲸智云可视化开发平台(LessCode)提供了前端页面在线可视化拖拽组装、配置编辑、源码生成、二次开发等能力。旨在帮助用户通过尽量少的手写代码的方式快速设计和开发SaaS。本次平台开源部分支持基于Vuejs的UI组件拖拽及源码生成，未来我们将持续更新扩充平台能力。
 
 ## 功能特性
 - 可视化拖拽布局：集成蓝鲸MagicBox Vue通用组件，支持在线画布拖拽组件进行页面布局编辑、在线预览、查看及下载源码
 - 在线函数库管理：支持在线灵活编写管理事件函数及远程接口返回数据清洗函数
+- 数据源管理：在线建表及数据处理
 - 在线组件配置：支持组件样式、属性、事件在线配置
 - 布局模板：提供多种导航布局模板
 - 支持自定义组件开发：提供自定义组件开发规范及示例，开放自定义组件开发能力，满足业务场景组件集成需求
-- 二次开发能力：生成的Vue源码文件支持无缝集成到蓝鲸前端开发框架([BKUI-CLI](https://bk.tencent.com/docs/document/5.1/19/583))进行二次开发
+- 二次开发能力：生成的Vue源码文件支持无缝集成到蓝鲸前端开发框架([BKUI-CLI](https://bk.tencent.com/docs/document/6.0/130/5940))进行二次开发
 
 ## 代码目录
 
@@ -92,8 +97,11 @@
 > 安装 Node.js 参见[官方文档](https://nodejs.org/)。安装完成后，注意设置 node 到 PATH 中
 
 #### 服务依赖
-- 蓝鲸社区版登录（必须）：可视化平台的登录服务对接的是蓝鲸社区版登录，请事先搭建蓝鲸社区版环境
-- 蓝鲸制品库服务（非必须）： 若需要使用到平台的自定义组件功能开发模块，请事先搭建 [蓝鲸制品库服务](https://github.com/Tencent/bk-ci/tree/master/src/backend/storage/core)， **搭建时并开启npm-registry**
+- 蓝鲸软件基础环境（必须）：可视化平台的登录及权限管理依赖于【蓝鲸软件基础环境】，请事先[下载搭建](https://bk.tencent.com/download/)
+- 蓝鲸网关（非必须）：如需使用可视化平台提供的API网关资源，请事先在【蓝鲸软件7.X环境】更新【蓝鲸网关（bk-apigateway）】的版本到【0.4.41】及以上
+- 蓝鲸制品库服务（非必须）： 若需要使用到可视化平台的自定义组件功能开发模块及文件库能力，请事先搭建 [蓝鲸制品库服务](https://github.com/Tencent/bk-ci/tree/master/src/backend/storage/core)， **搭建时并开启npm-registry**
+- 蓝鲸PaaS3.0（非必须）：可视化平台提供的一键部署能力依赖蓝鲸PaaS3.0平台能力，若需要请事先在【蓝鲸软件7.X环境】更新【蓝鲸PaaS3.0（bkpaas3）】的版本到【0.1.0-beta5】及以上
+- 流程服务（非必须）：若需可视化平台提供的流程类场景服务，请事先在【蓝鲸软件7.X环境】更新【流程服务（bk-itsm）】的版本到【2.6.1】及以上
 
 ## 分支说明
 可视化开发平台使用 develop, master 两个分支进行迭代。其中 master 为稳定版分支，每次 release develop 为日常开发的分支，给可视化开发平台贡献代码统一向主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/tree/master) 的  [develop](https://github.com/TencentBlueKing/bk-lesscode/tree/develop) 分支提 pr。

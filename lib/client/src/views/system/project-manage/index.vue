@@ -1,3 +1,14 @@
+<!--
+  Tencent is pleased to support the open source community by making 蓝鲸智云PaaS平台社区版 (BlueKing PaaS Community Edition) available.
+  Copyright (C) 2017-2019 THL A29 Limited, a Tencent company. All rights reserved.
+  Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://opensource.org/licenses/MIT
+  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+  an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations under the License.
+-->
+
 <template>
     <main class="projects page-content">
         <div class="page-head">
@@ -22,7 +33,7 @@
             <div class="extra">
                 <span class="total" v-show="projectList.length">共<em class="count">{{projectList.length}}</em>个应用</span>
                 <bk-input
-                    style="width: 400px"
+                    style="width: 260px"
                     placeholder="请输入应用名称或描述"
                     :clearable="true"
                     :right-icon="'bk-icon icon-search'"
@@ -30,67 +41,31 @@
                     @clear="handleSearchClear"
                     @enter="handleSearchEnter">
                 </bk-input>
+                <icon-button-toggle
+                    :icons="displayTypeIcons"
+                    @toggle="handleToggleDisplayType"
+                />
+                <sort-select v-model="sort" :has-default="false" @change="handleSortChange" />
             </div>
         </div>
-        <div class="page-body" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
+        <div :class="['page-body', { 'is-empty': !projectList.length }]" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
             <div class="page-body-inner" v-show="!pageLoading">
-                <div class="project-list" v-show="projectList.length">
-                    <div :class="['project-item', { favorite: project.favorite }]" v-for="project in projectList" :key="project.id">
-                        <div class="item-bd">
-                            <template v-if="pageMap[project.id] && pageMap[project.id].length > 0">
-                                <div class="preview">
-                                    <page-preview-thumb alt="应用缩略预览" :project-id="project.id" />
-                                </div>
-                            </template>
-                            <div class="empty" v-else>
-                                暂无页面
-                            </div>
-                            <div class="operate-btns">
-                                <bk-button class="edit-btn" theme="primary" @click="toPage(project.id)">开发应用</bk-button>
-                                <bk-button class="preview-btn" @click="preview(project.id)">预览</bk-button>
-                            </div>
-                        </div>
-                        <div class="item-ft">
-                            <div class="col">
-                                <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
-                                <div class="stat"><vnodes :vnode="getUpdateInfo(project)"></vnodes></div>
-                            </div>
-                            <div class="col">
-                                <bk-dropdown-menu :ref="`moreActionDropdown${project.id}`">
-                                    <span slot="dropdown-trigger" class="more-menu-trigger">
-                                        <i class="bk-drag-icon bk-drag-more-dot"></i>
-                                    </span>
-                                    <ul class="bk-dropdown-list card-operation-list" slot="dropdown-content">
-                                        <li><a href="javascript:;" @click="handleDownloadSource(project)">下载源码</a></li>
-                                        <li><a href="javascript:;" @click="toPage(project.id)">页面管理</a></li>
-                                        <li><a href="javascript:;" @click="handleRename(project)">重命名</a></li>
-                                        <li><a href="javascript:;" @click="handleCopy(project)">复制</a></li>
-                                        <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li>
-                                    </ul>
-                                </bk-dropdown-menu>
-                            </div>
-                        </div>
-                        <span class="favorite-btn">
-                            <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc }"></i>
-                            <i :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                                v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
-                                @click.stop="handleClickFavorite(project)"
-                            ></i>
-                        </span>
-                        <span v-if="project.isOffcial" class="default-tag">应用模板</span>
-                    </div>
-                </div>
-                <div class="empty" v-show="!projectList.length">
-                    <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                        <div v-if="$route.query.q">无搜索结果</div>
-                        <div v-else>
-                            暂无应用
-                            <span v-show="!filter.length || filter === 'my'">
-                                ，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link>
-                            </span>
-                        </div>
-                    </bk-exception>
-                </div>
+                <component
+                    :is="listComponent"
+                    :project-list="projectList"
+                    :page-map="pageMap"
+                    :is-search="isSearch"
+                    :filter="filter"
+                    @create="handleCreate"
+                    @preview="handlePreview"
+                    @to-page="handleGotoPage"
+                    @copy="handleCopy"
+                    @rename="handleRename"
+                    @download="handleDownloadSource"
+                    @set-template="handleSetTemplate"
+                    @collect="handleCollect"
+                    @release="handleRelease"
+                />
             </div>
         </div>
 
@@ -197,7 +172,7 @@
             </div>
         </bk-dialog>
 
-        <template-dialog ref="templateDialog" @preview="preview" @to-page="toPage"></template-dialog>
+        <template-dialog ref="templateDialog" @preview="handlePreview" @to-page="handleGotoPage"></template-dialog>
 
         <download-dialog ref="downloadDialog"></download-dialog>
 
@@ -210,9 +185,13 @@
     import dayjs from 'dayjs'
     import LayoutThumbList from '@/components/project/layout-thumb-list'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
-    import DownloadDialog from './components/download-dialog'
-    import TemplateDialog from './components/template-dialog'
-    import SetTemplateDialog from './components/set-template-dialog.vue'
+    import DownloadDialog from '../components/download-dialog'
+    import TemplateDialog from '../components/template-dialog'
+    import IconButtonToggle from '@/components/ui/icon-button-toggle.vue'
+    import SortSelect from '@/components/project/sort-select'
+    import ListCard from './children/list-card.vue'
+    import ListTable from './children/list-table.vue'
+    import SetTemplateDialog from '../components/set-template-dialog.vue'
     import relativeTime from 'dayjs/plugin/relativeTime'
     import 'dayjs/locale/zh-cn'
 
@@ -228,15 +207,15 @@
 
     export default {
         components: {
-            vnodes: {
-                functional: true,
-                render: (h, ctx) => ctx.props.vnode
-            },
             LayoutThumbList,
             PagePreviewThumb,
             DownloadDialog,
             TemplateDialog,
-            SetTemplateDialog
+            SetTemplateDialog,
+            IconButtonToggle,
+            SortSelect,
+            [ListCard.name]: ListCard,
+            [ListTable.name]: ListTable
         },
         data () {
             return {
@@ -327,7 +306,20 @@
                 pageLoading: true,
                 projectCodeOldValue: '',
                 defaultLayoutList: [],
-                layoutFullList: []
+                layoutFullList: [],
+                displayTypeIcons: [
+                    { name: 'card', icon: 'display-card', title: '卡片' },
+                    { name: 'list', icon: 'display-list', title: '列表' }
+                ],
+                listComponent: ListCard.name,
+                sort: 'createTime', // 应用的默认排序为id相当于创建时间
+                projectListDefaultSort: []
+            }
+        },
+        provide () {
+            return {
+                getUpdateInfoMessage: this.getUpdateInfoMessage,
+                getUpdateInfo: this.getUpdateInfo
             }
         },
         computed: {
@@ -337,6 +329,9 @@
             },
             isCopy () {
                 return this.dialog.create.formData.copyFrom !== null
+            },
+            isSearch () {
+                return this.$route.query?.q?.length > 0
             }
         },
         watch: {
@@ -376,19 +371,34 @@
                     const { projectList, pageMap } = await this.$store.dispatch('project/query', { config: { params } })
                     this.projectList = projectList
                     this.pageMap = pageMap
+
+                    this.projectListDefaultSort = this.projectList.slice()
+
+                    // 当前非默认排序才需要执行一次排序
+                    if (this.sort !== 'createTime') {
+                        this.handleSortChange(this.sort)
+                    }
                 } catch (e) {
                     console.error(e)
                 } finally {
                     this.pageLoading = false
                 }
             },
+            getUpdateInfoMessage (project) {
+                const info = this.getUpdateInfo(project)
+                return `${info.updateUser} ${info.updateTimeFromNow}`
+            },
             getUpdateInfo (project) {
                 const latestPage = this.pageMap[project.id] ? this.pageMap[project.id][0] : null
-                return (
-                    latestPage
-                        ? <span class="user">{latestPage.updateUser || 'admin'} {dayjs(latestPage.updateTime).fromNow()}更新</span>
-                        : <span class="user">{project.createUser || 'admin'} {dayjs(project.createTime).fromNow()}创建</span>
-                )
+                return latestPage ? {
+                    updateUser: latestPage.updateUser || 'admin',
+                    updateTimeFromNow: `${dayjs(latestPage.updateTime).fromNow()}更新`,
+                    updateTime: latestPage.updateTime
+                } : {
+                    updateUser: project.createUser || 'admin',
+                    updateTimeFromNow: `${dayjs(project.createTime).fromNow()}创建`,
+                    updateTime: project.createTime
+                }
             },
             async handleCreateConfirm () {
                 try {
@@ -414,7 +424,7 @@
                     this.dialog.create.visible = false
 
                     setTimeout(() => {
-                        this.toPage(projectId)
+                        this.handleGotoPage(projectId)
                     }, 300)
                 } catch (e) {
                     console.error(e)
@@ -422,7 +432,7 @@
                     this.dialog.create.loading = false
                 }
             },
-            async handleClickFavorite (project) {
+            async handleCollect (project) {
                 try {
                     const favorite = project.favorite ? 0 : 1
                     const data = {
@@ -537,19 +547,16 @@
                 this.dialog.create.visible = true
             },
             async handleCopy (project) {
-                this.hideDropdownMenu(project)
                 defaultCreateFormData.copyFrom = project.id
                 defaultCreateFormData.projectName = `${project.projectName}copy`
                 this.dialog.create.visible = true
             },
             handleDownloadSource (project) {
-                this.hideDropdownMenu(project)
                 this.$refs.downloadDialog.isShow = true
                 this.$refs.downloadDialog.projectId = project.id
                 this.$refs.downloadDialog.projectName = project.projectName
             },
             handleSetTemplate (project) {
-                this.hideDropdownMenu(project)
                 this.$refs.setTemplateDialog.isShow = true
                 this.$refs.setTemplateDialog.projectId = project.id
                 this.$refs.setTemplateDialog.formData = {
@@ -559,7 +566,6 @@
             },
             async handleRename (project) {
                 this.activatedProject = project
-                this.hideDropdownMenu(project)
 
                 this.dialog.rename.visible = true
                 this.dialog.rename.formData.projectName = project.projectName
@@ -570,7 +576,6 @@
             },
             async handleDelete (project) {
                 this.activatedProject = project
-                this.hideDropdownMenu(project)
 
                 this.dialog.delete.visible = true
                 this.dialog.delete.formData.id = project.id
@@ -590,10 +595,7 @@
             updateRoute (location) {
                 this.$router.push(location).catch(e => e)
             },
-            hideDropdownMenu (project) {
-                this.$refs[`moreActionDropdown${project.id}`][0].hide()
-            },
-            toPage (projectId) {
+            handleGotoPage (projectId) {
                 this.$router.push({
                     name: 'pageList',
                     params: {
@@ -601,20 +603,53 @@
                     }
                 })
             },
-            preview (id) {
+            handleRelease (projectId) {
+                this.$router.push({
+                    name: 'release',
+                    params: {
+                        projectId
+                    }
+                })
+            },
+            handlePreview (id) {
                 window.open(`/preview/project/${id}/`, '_blank')
             },
             // 从模板创建
             handleTempCreate () {
                 this.$refs.templateDialog.isShow = true
+            },
+            handleToggleDisplayType (type) {
+                const typeMap = {
+                    'card': ListCard.name,
+                    'list': ListTable.name
+                }
+                this.listComponent = typeMap[type]
+            },
+            handleSortChange (sort) {
+                this.sort = sort
+                if (sort !== 'createTime') {
+                    if (sort === 'updateTime') {
+                        this.sortByUpdateTime()
+                    }
+                } else {
+                    this.projectList = this.projectListDefaultSort.slice()
+                }
+            },
+            sortByCreateTime () {
+                this.projectList.sort((projA, projB) => new Date(projB.createTime).getTime() - new Date(projA.createTime).getTime())
+            },
+            sortByUpdateTime () {
+                this.projectList.sort((projA, projB) => {
+                    const projAUpdateTime = this.getUpdateInfo(projA)?.updateTime
+                    const projBUpdateTime = this.getUpdateInfo(projB)?.updateTime
+                    return new Date(projBUpdateTime).getTime() - new Date(projAUpdateTime).getTime()
+                })
             }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
-    @import "@/css/mixins/ellipsis";
-
     .create-dropdown {
         /deep/ .bk-dropdown-trigger .bk-button {
             font-size: 14px;
@@ -622,12 +657,37 @@
     }
 
     .page-head {
+        margin-bottom: 8px;
+
+        .extra {
+            display: flex;
+            align-items: center;
+            flex: none;
+            margin-left: auto;
+        }
+
         .total {
             font-size: 12px;
             margin-right: 8px;
             .count {
                 font-style: normal;
                 margin: 0 .1em;
+            }
+        }
+    }
+
+    .page-body {
+        display: flex;
+        flex: 1;
+        height: calc(100% - 40px);
+
+        .page-body-inner {
+            overflow: hidden;
+        }
+
+        &.is-empty {
+            ::v-deep .list-card {
+                display: flex;
             }
         }
     }
@@ -649,211 +709,6 @@
             &.active {
                 background: #E1ECFF;
                 color: #3A84FF;
-            }
-        }
-    }
-
-    .project-list {
-        display: flex;
-        flex-wrap: wrap;
-        align-content: flex-start;
-        margin-top: 10px;
-
-        .project-item {
-            position: relative;
-            flex: none;
-            width: 304px;
-            height: 234px;
-            margin: 0 14px 40px 0;
-            padding: 6px;
-            background: #fff;
-            border-radius: 0px 6px 6px 6px;
-            box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.11);
-            cursor: pointer;
-
-            &::before {
-                content: "";
-                position: absolute;
-                top: -10px;
-                left: 0;
-                width: 156px;
-                height: 10px;
-                border-radius: 6px 0px 0px 0px;
-                background: linear-gradient(-160deg, transparent 9px, #dcdee5 0)
-            }
-            &:hover {
-                box-shadow: 1px 2px 8px 2px rgba(0, 0 ,0 , 0.11);
-
-                .desc {
-                    display: block;
-                }
-                .favorite-btn {
-                    opacity: 1;
-                }
-                .default-tag {
-                    display: none;
-                }
-                .preview {
-                    &::before {
-                        background: rgba(0, 0, 0, 0.4);
-                    }
-                }
-                .operate-btns {
-                    opacity: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    height: 100%;
-                }
-                .empty {
-                    &::before {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(0, 0, 0, 0.4);
-                    }
-                }
-            }
-
-            &.favorite {
-                .favorite-btn {
-                    opacity: 1;
-                }
-            }
-
-            .default-tag {
-                position: absolute;
-                right: 6px;
-                top: 6px;
-                height: 22px;
-                line-height: 22px;
-                text-align: center;
-                border-radius: 2px;
-                font-size: 12px;
-                color: #fff;
-                padding: 0 6px;
-                background: #699DF4;
-            }
-
-            .favorite-btn {
-                position: absolute;
-                right: 16px;
-                top: 16px;
-                opacity: 0;
-                transition: all .3s ease;
-                .icon-info-circle {
-                    color: #fff;
-                    font-size: 16px;
-                    margin-right: 4px;
-                }
-
-                .bk-drag-icon {
-                    font-size: 18px;
-                    color: #FAFBFD;
-                    cursor: pointer;
-                }
-                .bk-drag-favorite {
-                    color: #FE9C00;
-                }
-            }
-            .more-menu-trigger {
-                .bk-drag-more-dot {
-                    display: block;
-                    width: 32px;
-                    height: 32px;
-                    line-height: 34px;
-                    text-align: center;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    font-size: 20px;
-                    color: #979BA5;
-                    &:hover {
-                        background: #F0F1F5;
-                    }
-                }
-            }
-
-            .card-operation-list {
-                max-height: 250px;
-            }
-
-            .item-bd {
-                flex: none;
-                position: relative;
-                width: 292px;
-                height: 158px;
-                background: #fff;
-                border-radius: 4px 4px 0px 0px;
-                overflow: hidden;
-            }
-            .item-ft {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin: 16px 10px 0 10px;
-            }
-
-            .preview {
-                position: relative;
-                font-size: 0;
-                height: 100%;
-                overflow: hidden;
-                border-radius: 4px 4px 0px 0px;
-                img {
-                    max-width: 100%;
-                }
-
-                &::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.2);
-                }
-            }
-            .operate-btns {
-                display: none;
-                .edit-btn {
-                    width: 86px;
-                    margin-left: 59px;
-                }
-                .preview-btn {
-                    width: 86px;
-                    margin-left: 10px;
-                    margin-rihgt: 59px;
-                }
-            }
-            .empty {
-                display: flex;
-                position: relative;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px;
-                font-weight: 700;
-                color: #C4C6CC;
-                height: 100%;
-                background: #f0f1f5;
-                border-radius: 4px 4px 0px 0px;
-            }
-            .name {
-                margin: 0;
-                font-size: 14px;
-                font-weight: 700;
-                color: #63656E;
-                @mixin ellipsis 240px, block;
-            }
-            .stat {
-                font-size: 12px;
-                color: #979BA5;
-                padding: 4px 0;
             }
         }
     }
@@ -973,20 +828,6 @@
                     text-align: center;
                     font-size: 12px;
                     color: #63656e;
-                }
-            }
-        }
-    }
-
-    @media screen and (max-width: 1280px) {
-        .project-list {
-            .project-item {
-                width: 304px;
-                height: 234px;
-
-                .item-bd {
-                    width: 292px;
-                    height: 158px;
                 }
             }
         }

@@ -59,6 +59,7 @@
     import ModifierEvents from './events'
     import ModifierDirectives from './directives'
     import ModifierAlign from './align'
+    import H5Page from './h5-page'
 
     export default {
         name: '',
@@ -82,7 +83,7 @@
                 // 当前属性面板的编辑组件
                 const comMap = {
                     styles: [ModifierAlign, ModifierStyles],
-                    props: [ModifierGird, ModifierForm, ModifierSlots, ModifierProps],
+                    props: [ModifierGird, H5Page, ModifierForm, ModifierSlots, ModifierProps],
                     events: [ModifierEvents],
                     directives: [ModifierDirectives]
                 }

@@ -2,6 +2,7 @@
     import Vue from 'vue'
 
     export default {
+        name: 'render-html',
         props: {
             html: {
                 type: String,
