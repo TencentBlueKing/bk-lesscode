@@ -1,5 +1,6 @@
 .area-wrapper {
     position: relative;
+    z-index: 1000;
     .title {
         display: flex;
         justify-content: space-between;
