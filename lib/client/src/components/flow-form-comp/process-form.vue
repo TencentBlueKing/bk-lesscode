@@ -51,6 +51,7 @@
             },
             formId: Number,
             serviceId: Number,
+            versionId: Number,
             tableName: String,
             viewType: {
                 type: String,
@@ -150,11 +151,15 @@
                             service_id: this.serviceId,
                             meta: {
                                 envs: {
-                                    env: ENV
+                                    appApigwPrefix: BK_APP_APIGW_PREFIX
                                 }
                             }
                         }
-                        await this.$http.post('/nocode/v2/itsm/create_ticket/', params)
+                        if (this.versionId) {
+                            params.flow_id = this.versionId
+                        }
+                        const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
+                        await this.$http.post(path, params)
                     } else {
                         await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     }

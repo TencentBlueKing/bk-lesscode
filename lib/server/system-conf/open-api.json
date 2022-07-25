@@ -11,7 +11,7 @@
     ],
     "paths": {
         "/dataManage": {
-            "get": {
+            "post": {
                 "operationId": "dataManage",
                 "description": "itsm 回调接口",
                 "tags": [],
@@ -27,7 +27,7 @@
                     "backend": {
                         "type": "HTTP",
                         "method": "post",
-                        "path": "/api/nocode/dataManage",
+                        "path": "/{env.subpath}api/nocode/dataManage",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},
@@ -42,7 +42,7 @@
             }
         },
         "/filterTableData/keys/tableName/{tableName}": {
-            "get": {
+            "post": {
                 "operationId": "filterTableDataByKeys",
                 "description": "itsm 数据筛选接口",
                 "tags": [],
@@ -58,7 +58,7 @@
                     "backend": {
                         "type": "HTTP",
                         "method": "post",
-                        "path": "/api/nocode/filterTableData/keys/tableName/{tableName}",
+                        "path": "/{env.subpath}api/nocode/filterTableData/keys/tableName/{tableName}",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},
@@ -73,7 +73,7 @@
             }
         },
         "/filterTableData/conditions/tableName/{tableName}": {
-            "get": {
+            "post": {
                 "operationId": "filterTableDataByConditions",
                 "description": "itsm 表单数据源",
                 "tags": [],
@@ -89,7 +89,7 @@
                     "backend": {
                         "type": "HTTP",
                         "method": "post",
-                        "path": "/api/nocode/filterTableData/conditions/tableName/{tableName}",
+                        "path": "/{env.subpath}api/nocode/filterTableData/conditions/tableName/{tableName}",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},

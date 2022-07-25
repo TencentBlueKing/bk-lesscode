@@ -14,7 +14,7 @@
                     </bk-date-picker>
                 </bk-form-item>
                 <bk-form-item label="单号">
-                    <bk-input v-model="filterData.sn" placeholder="请输入单号"></bk-input>
+                    <bk-input v-model="filterData.sns" placeholder="请输入单号"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="状态">
                     <bk-select v-model="filterData.status" placeholder="请选择状态">
@@ -23,30 +23,47 @@
                 </bk-form-item>
             </bk-form>
             <div class="search-btns-wrapper">
-                <bk-button style="margin-right: 4px;" theme="primary" @click="getTicketList">查询</bk-button>
+                <bk-button style="margin-right: 4px;" theme="primary" @click="handleSearch">查询</bk-button>
                 <bk-button @click="handleReset">重置</bk-button>
             </div>
         </div>
         <bk-table
+            v-bkloading="{ isLoading: ticketListLoading }"
             :data="ticketList"
             :outer-border="!ticketList.length > 0"
             :pagination="pagination"
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
+            <bk-table-column label="单号" property="sn"></bk-table-column>
             <bk-table-column label="创建人" property="creator"></bk-table-column>
             <bk-table-column label="创建时间" property="create_at"></bk-table-column>
-            <bk-table-column label="当前节点">
+            <!-- <bk-table-column label="当前节点">
                 <template slot-scope="{ row }">
                     <template v-if="row.current_steps.length > 0">
                         <span v-for="step in row.current_steps" :key="step.id">{{ step.name }}</span>
                     </template>
                     <span v-else>--</span>
                 </template>
+            </bk-table-column> -->
+            <bk-table-column label="状态" property="status_name">
+                <template slot-scope="{ row }">
+                    <span :style="{ padding: '4px 10px', borderRadius: '2px', color: row.color, backgroundColor: row.backgroundColor }">
+                        {{ row.status_name }}
+                    </span>
+                </template>
             </bk-table-column>
-            <bk-table-column label="状态" property="current_status_display"></bk-table-column>
             <bk-table-column label="操作">
-                <bk-button style="padding: 0;" ext-cls="operate-btn" theme="primary" :text="true" size="small">详情</bk-button>
+                <template slot-scope="{ row }">
+                    <bk-button
+                        style="padding: 0;"
+                        theme="primary"
+                        size="small"
+                        :text="true"
+                        @click="goToTicketPage(row)">
+                        详情
+                    </bk-button>
+                </template>
             </bk-table-column>
         </bk-table>
     </section>
@@ -58,7 +75,8 @@
     export default {
         name: 'TicketList',
         props: {
-            serviceId: Number
+            serviceId: Number,
+            viewType: String
         },
         data () {
             return {
@@ -66,7 +84,7 @@
                 filterData: {
                     creator: '',
                     create_at: [],
-                    sn: '',
+                    sns: '',
                     status: ''
                 },
                 ticketList: [],
@@ -85,32 +103,48 @@
             async getTicketList () {
                 this.ticketListLoading = true
                 const { current, limit } = this.pagination
-                const params = {}
+                const params = {
+                    page: current,
+                    page_size: limit,
+                    service_id__in: [this.serviceId]
+                }
                 Object.keys(this.filterData).forEach(key => {
                     const val = this.filterData[key]
-                    if (key === 'creator' && val.length > 0) {
-                        params.creator = val[0]
-                    }
+
                     if (key === 'create_at' && val.join('') !== '') {
                         params.create_at__gte = dayjs(val[0]).format('YYYY-MM-DD HH:mm:ss')
                         params.create_at__lte = dayjs(val[1]).format('YYYY-MM-DD HH:mm:ss')
                     }
-                    if (['sn', 'status'].includes(key) && val) {
+                    if (key === 'sns' && val) {
+                        params.sns = [val]
+                    }
+                    if (['creator', 'status'].includes(key) && val) {
                         params[key] = val
                     }
                 })
-                const res = await this.$http.post(`/nocode/v2/itsm/get_tickets/?page=${current}&page_size=${limit}`, params)
-                this.ticketList = res.data.items
+                const res = await this.$http.post('/nocode/v2/itsm/get_tickets/', params)
+                this.ticketList = res.data.items.map(ticket => {
+                    const statusConfig = TICKET_STATUS.find(item => ticket.current_status === item.key)
+                    ticket.status_name = statusConfig?.name || ticket.current_status
+                    ticket.color = statusConfig?.color || '#63656e'
+                    ticket.backgroundColor = statusConfig?.backgroundColor || 'transparent'
+                    return ticket
+                })
                 this.pagination.count = res.data.count
                 this.ticketListLoading = false
+            },
+            handleSearch () {
+                this.pagination.current = 1
+                this.getTicketList()
             },
             handleReset () {
                 this.filterData = {
                     creator: '',
                     create_at: [],
-                    sn: '',
+                    sns: '',
                     status: ''
                 }
+                this.pagination.current = 1
                 this.getTicketList()
             },
             handlePageChange (val) {
@@ -121,6 +155,9 @@
                 this.pagination.current = 1
                 this.pagination.limit = val
                 this.getTicketList()
+            },
+            goToTicketPage (ticket) {
+                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '__blank')
             }
         }
     }

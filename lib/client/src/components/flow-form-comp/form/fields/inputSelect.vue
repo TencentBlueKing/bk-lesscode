@@ -1,6 +1,6 @@
 <template>
     <div class="input-select">
-        <bk-select v-model="val" :searchable="true" :disabled="disabled" :loading="sourceDataLoading" @change="change">
+        <bk-select v-model="val" :searchable="true" :allow-create="true" :disabled="disabled" :loading="sourceDataLoading" @change="change">
             <bk-option v-for="option in sourceData" :key="option.key" :id="option.key" :name="option.name"> </bk-option>
         </bk-select>
     </div>
