@@ -1,7 +1,7 @@
 <template>
     <div :class="$style['mobile-canvas-wrapper']">
         <edit-area></edit-area>
-        <simulator v-show="showPreview" style="transform: translateX(-40px)"></simulator>
+        <simulator v-show="showPreview" style="transform: translateX(-40px)" :key="previewKey"></simulator>
     </div>
 </template>
 
@@ -17,13 +17,25 @@
         },
         data () {
             return {
-                showPreview: true
+                showPreview: true,
+                previewKey: new Date()
             }
         },
         created () {
-            LC.addEventListener('mobilePreviewSwitch', val => {
+            LC.addEventListener('mobilePreviewSwitch', this.mobilePreviewSwitch)
+            LC.addEventListener('refreshPreview', this.updatePreview)
+        },
+        beforeDestroy () {
+            LC.removeEventListener('mobilePreviewSwitch', this.mobilePreviewSwitch)
+            LC.removeEventListener('refreshPreview', this.updatePreview)
+        },
+        methods: {
+            mobileSwitchCallback (val) {
                 this.showPreview = val
-            })
+            },
+            updatePreview () {
+                this.previewKey = new Date()
+            }
         }
     }
 </script>

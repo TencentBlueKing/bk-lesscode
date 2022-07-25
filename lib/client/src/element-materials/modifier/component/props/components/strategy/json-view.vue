@@ -65,6 +65,7 @@
     import Vue from 'vue'
     import { circleJSON } from '@/common/util.js'
     import JsonViewer from 'vue-json-viewer'
+    import LC from '@/element-materials/core'
     Vue.use(JsonViewer)
     export default {
         props: {
@@ -133,6 +134,7 @@
             triggerChange (name, value, type) {
                 this.isInnerChange = true
                 this.change(name, value, type)
+                LC.triggerEventListener('refreshPreview')
             },
             showEdit () {
                 this.isShow = true
