@@ -32,7 +32,7 @@
                 const { id, flowName } = this.flowConfig
                 return {
                     flowId: id,
-                    pageCode: `flowDataManage${id}`,
+                    pageCode: `flowdatamanage${id}`,
                     pageName: `${flowName}_数据管理页面`
                 }
             },

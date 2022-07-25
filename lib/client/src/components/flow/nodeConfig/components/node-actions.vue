@@ -27,7 +27,6 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import { mapState, mapGetters } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
     export default {
@@ -65,7 +64,7 @@
                 return {
                     formId,
                     flowId,
-                    pageCode: `flowPage${this.flowConfig.id}`,
+                    pageCode: `flowpage${this.flowConfig.id}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
@@ -76,11 +75,13 @@
                 const fields = this.formConfig.content.map(item => {
                     const field = cloneDeep(item)
                     if (typeof item.id !== 'number') {
-                        field.id = null // 新建的字段需要传null
+                        field.id = null // itsm新建的字段需要传null
                     }
                     field.workflow = this.serviceData.workflow_id
                     field.state = this.nodeData.id
+                    field.meta.columnId = field.columnId // 表单字段需要保存columnId，itsm不支持直接添加，存到meta里
                     delete field.api_instance_id
+                    delete field.columnId
                     return field
                 })
                 const deletedIds = []
@@ -127,6 +128,12 @@
                         data.finish_condition = {}
                     }
                 } else if (data.type === 'NORMAL') {
+                    const formFieldsId = this.formConfig.content.map(field => field.id)
+                    data.fields = [...formFieldsId]
+                    // itsm新建服务时,提单节点默认生成一个标题字段，需要保留，默认放到第一个
+                    if (this.nodeData.is_first_state) {
+                        data.fields.unshift(this.nodeData.fields[0])
+                    }
                     data.extras.formConfig = {
                         id: formId,
                         type: this.formConfig.type
@@ -158,10 +165,17 @@
                         this.savePending = true
                     }
                     if (this.nodeData.type === 'NORMAL') {
-                        // itsm 接口对字段的类型校验有问题，暂时先去掉
-                        // const itsmFields = await this.saveItsmFields()
-                        // this.$store.commit('nocode/nodeConfig/setFormConfig', { content: itsmFields })
-                        // this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
+                        const itsmFields = await this.saveItsmFields()
+                        const content = []
+                        itsmFields.forEach(field => {
+                            if (field.id !== this.nodeData.fields[0]) {
+                                field.columnId = field.meta.columnId
+                                delete field.meta.columnId
+                                content.push(field)
+                            }
+                        })
+                        this.$store.commit('nocode/nodeConfig/setFormConfig', { content })
+                        this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
                         const res = await this.saveFormConfig(this.flowConfig.pageId)
                         this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
                         this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
@@ -187,7 +201,7 @@
                         theme: 'success'
                     })
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e || e.message)
                 } finally {
                     this.createPagePending = false
                     this.savePending = false
@@ -207,7 +221,7 @@
                         })
                     }
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e || e.message)
                 } finally {
                     this.createPagePending = false
                 }

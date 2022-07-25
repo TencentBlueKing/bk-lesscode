@@ -116,7 +116,7 @@
                     read_only_conditions: {}, // 只读条件
                     mandatory_conditions: {}, // 必填条件
                     is_readonly: false, // 只读
-                    show_type: 0, // 显隐
+                    show_type: 1, // 为0表示条件隐藏
                     fileTemplate: [], // 存储文件类型组件模板的值
                     imageRange: this.getDefaultImageRange(type),
                     isDisplayTag: false,

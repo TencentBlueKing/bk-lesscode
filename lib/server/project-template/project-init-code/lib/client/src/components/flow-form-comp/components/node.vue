@@ -9,37 +9,41 @@
                     :label="node.name">
                 </bk-tab-panel>
             </bk-tab>
-            <div class="opereate-btn">
+            <div class="opereate-btns">
                 <!-- <bk-button>导出</bk-button>
                 <bk-button>下载流程附件</bk-button> -->
                 <i
                     v-if="filters.length > 0"
                     class="bk-icon icon-funnel filter-switch-icon"
-                    @click="showFilters = !showFilters">
+                    @click="showFilter = !showFilter">
                 </i>
             </div>
         </div>
         <div class="node-data-content" v-bkloading="{ isLoading: formDataLoading }">
-            <filters
-                v-if="filters.length > 0 && showFilters"
-                :filters="filters"
-                :fields="fields"
-                :system-fields="systemFields">
-            </filters>
-            <table-fields
-                style="margin-top: 16px"
-                :table-config="tableConfig"
-                :fields="fields"
-                :form-id="formIds[activeNode]"
-                :table-name="tableName"
-                :system-fields="systemFields">
-            </table-fields>
+            <template v-if="!formDataLoading">
+                <filters
+                    v-if="filters.length > 0 && showFilter"
+                    :filters="filters"
+                    :fields="fields"
+                    :system-fields="systemFields"
+                    :value.sync="filtersData">
+                </filters>
+                <table-fields
+                    v-if="tableName"
+                    style="margin-top: 16px"
+                    :table-config="tableConfig"
+                    :fields="fields"
+                    :form-id="formIds[activeNode]"
+                    :table-name="tableName"
+                    :system-fields="systemFields"
+                    :filters-data="filtersData">
+                </table-fields>
+            </template>
         </div>
     </div>
 </template>
 <script>
     import { mapGetters } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
     import { formMap } from 'shared/form'
     import { FLOW_SYS_FIELD } from '../common/field.js'
     import Filters from '../components/filters.vue'
@@ -66,14 +70,15 @@
         data () {
             return {
                 initDataLoading: true,
-                formDataLoading: true,
+                formDataLoading: false,
                 nodes: [],
                 activeNode: '',
                 formDataMap: {},
                 filters: [],
                 systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
-                showFilters: true
+                showFilter: true,
+                filtersData: {}
             }
         },
         computed: {
@@ -85,11 +90,24 @@
                 return this.formDataMap[this.activeNode]?.tableName || ''
             }
         },
+        // watch: {
+        //     filtersData (val) {
+        //         const isShowField = Object.values(val).every(item => {
+        //             if (Array.isArray(item)) {
+        //                 return !item.every(i => i)
+        //             } else {
+        //                 return !item
+        //             }
+        //         })
+        //         this.showFilter = isShowField
+        //     }
+        // },
         async created () {
             await this.getInitData()
             if (this.nodes.length > 0) {
                 this.activeNode = this.nodes[0].id
                 this.getFormData()
+                this.setNodeTabConfig()
             }
         },
         methods: {
@@ -106,15 +124,20 @@
                     })
                     this.nodes = nodes
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.initDataLoading = false
                 }
             },
             async getFormData () {
                 try {
-                    this.formDataLoading = true
                     let formDetail = {}
+                    if (this.activeNode in this.formDataMap) {
+                        formDetail = this.formDataMap[this.activeNode]
+                        return
+                    }
+
+                    this.formDataLoading = true
                     if (this.viewType === 'preview') {
                         const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds[this.activeNode] } })
                         const { tableName, content } = res.data
@@ -123,31 +146,32 @@
                             content: JSON.parse(content)
                         }
                     } else {
-                        formDetail = formMap[this.formIds]
+                        formDetail = formMap[this.formIds[this.activeNode]]
                     }
                     this.$set(this.formDataMap, this.activeNode, {
                         tableName: formDetail.tableName,
                         content: formDetail.content
                     })
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.formDataLoading = false
                 }
             },
-            handleTabChange (val) {
-                this.activeNode = val
-                if (val in this.config) {
-                    this.filters = this.config[val].filters || []
-                    this.tableConfig = this.config[val].tableConfig || []
+            setNodeTabConfig () {
+                if (this.activeNode in this.config) {
+                    this.filters = this.config[this.activeNode].filters || []
+                    this.tableConfig = this.config[this.activeNode].tableConfig || []
                 } else {
                     this.filters = []
                     this.tableConfig = []
-                    this.$set(this.config, val, { filters: [], tableConfig: [] })
+                    this.$set(this.config, this.activeNode, { filters: [], tableConfig: [] })
                 }
-                if (!(val in this.formDataMap)) {
-                    this.getFormData()
-                }
+            },
+            handleTabChange (val) {
+                this.activeNode = val
+                this.setNodeTabConfig()
+                this.getFormData()
             }
         }
     }
@@ -187,11 +211,11 @@
             }
         }
     }
-    .opereate-btn {
+    .opereate-btns {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 230px;
+        max-width: 230px;
         .bk-button {
             cursor: inherit;
         }
@@ -209,5 +233,9 @@
                 color: #3a84ff;
             }
         }
+    }
+
+    .node-data-content {
+        min-height: 260px;
     }
 </style>

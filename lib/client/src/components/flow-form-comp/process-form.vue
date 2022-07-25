@@ -50,7 +50,13 @@
                 default: () => []
             },
             formId: Number,
-            tableName: String
+            serviceId: Number,
+            versionId: Number,
+            tableName: String,
+            viewType: {
+                type: String,
+                default: 'projectCode'
+            }
         },
         data () {
             return {
@@ -80,7 +86,7 @@
                 let valid = true
                 this.fields.some((field) => {
                     // 隐藏的表单不校验
-                    if (field.show_type === 1) {
+                    if (field.isHide) {
                         return
                     }
                     // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
@@ -138,7 +144,25 @@
                 try {
                     this.submitPending = true
                     const data = this.getFieldsData()
-                    await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
+                    if (this.type === 'FLOW') {
+                        const params = {
+                            fields: [{ key: 'title', type: 'string', choice: [], value: 'lesscode 提单' }, ...data],
+                            creator: this.$store.state.user.username,
+                            service_id: this.serviceId,
+                            meta: {
+                                envs: {
+                                    appApigwPrefix: BK_APP_APIGW_PREFIX
+                                }
+                            }
+                        }
+                        if (this.versionId) {
+                            params.flow_id = this.versionId
+                        }
+                        const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
+                        await this.$http.post(path, params)
+                    } else {
+                        await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
+                    }
                     this.showSuccess = true
                 } catch (e) {
                     console.error(e.messsage || e)

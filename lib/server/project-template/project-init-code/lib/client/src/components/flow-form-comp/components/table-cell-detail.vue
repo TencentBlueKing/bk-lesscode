@@ -86,7 +86,7 @@
             async getData () {
                 try {
                     this.loading = true
-                    const res = await this.$http.get(`/data-source/user/tableName/${this.tableName}/id/${this.id}`)
+                    const res = await this.$http.get(`/data-source/user/tableName/${this.tableName}/detail?id=${this.id}`)
                     this.value = res.data
                 } catch (e) {
                     console.log(e.message || e)

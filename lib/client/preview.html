@@ -20,8 +20,8 @@
             html, body, #app {
                 height: 100%;
             }
-            #app {
-               font-size: 14px; 
+            body {
+               font-size: 14px;
             }
             #preview-app .bk-loading {
                 width: 100%;
@@ -124,7 +124,9 @@
         <div class="preview-tip">未发布<br>请勿分享</div>
         <script>
             var BKPAAS_ENVIRONMENT = '<%= htmlWebpackPlugin.options.BKPAAS_ENVIRONMENT %>'
-            
+            var BK_ITSM_URL = '<%= htmlWebpackPlugin.options.BK_ITSM_URL %>'
+            var BK_APP_APIGW_PREFIX = '<%= htmlWebpackPlugin.options.BK_APP_APIGW_PREFIX %>'
+
             const recalculate = () => {
                 const html = window.document.documentElement
                 const clientWidth = html.clientWidth || 375

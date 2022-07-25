@@ -1,6 +1,13 @@
 <template>
     <div class="table">
-        <bk-table :data="val" size="small" :outer-border="isHaveBorder" :max-height="maxHeight">
+        <bk-table
+            :data="tableData"
+            size="small"
+            :outer-border="isHaveBorder"
+            :max-height="maxHeight"
+            :pagination="pagination"
+            @page-change="handlePageChange"
+            @page-limit-change="handlePageLimitChange">
             <template v-for="col in field.choice">
                 <bk-table-column :label="col.name" :key="col.key + col.name + col.display" :render-header="(h, data) => renderTableHeader(h, data,col)">
                     <template slot-scope="props">
@@ -23,17 +30,18 @@
                             style="width: 100%"
                             :transfer="true"
                             :disabled="disabled"
-                            v-model="props.row[col.key]"
-                            @change="change">
+                            :type="'datetime'"
+                            :value="props.row[col.key]"
+                            @change="(val) => handleSelectDateTime({ val: val,props, key: col.key })">
                         </bk-date-picker>
                         <bk-date-picker
-                            v-else-if="!viewMode && !disabled && col.display === 'date'"
+                            v-else-if="!viewMode && col.display === 'date'"
                             style="width: 100%"
-                            v-model="props.row[col.key]"
+                            :value="props.row[col.key]"
                             :transfer="true"
                             :disabled="disabled"
                             :type="'datetime'"
-                            @change="change">
+                            @change="(val) => handleSelectDate({ val: val,props, key: col.key })">
                         </bk-date-picker>
                         <bk-input
                             v-else-if="!viewMode "
@@ -41,7 +49,7 @@
                             v-model="props.row[col.key]"
                             @change="change">
                         </bk-input>
-                        <span v-else>{{ props.row[col.key] || '--' }}</span>
+                        <span v-else>{{ transformSelectValue({ row: props.row,col })}}</span>
                     </template>
                 </bk-table-column>
             </template>
@@ -72,6 +80,10 @@
                 type: Boolean,
                 default: false
             },
+            needPagination: {
+                type: Boolean,
+                default: false
+            },
             disabled: {
                 type: Boolean,
                 default: false
@@ -84,7 +96,29 @@
         },
         data () {
             return {
-                val: this.getLocalVal(this.value)
+                val: this.getLocalVal(this.value),
+                pagingConfig: {
+                    current: 1,
+                    count: '',
+                    limit: 10
+                }
+            }
+        },
+        computed: {
+            pagination () {
+                if (this.needPagination) {
+                    this.pagingConfig.count = this.val.length
+                    return this.pagingConfig
+                }
+                return {}
+            },
+            tableData () {
+                this.val = this.getLocalVal(this.value)
+                if (this.needPagination) {
+                    return this.val.slice((this.pagingConfig.current - 1) * this.pagingConfig.limit,
+                                          this.pagingConfig.current * this.pagingConfig.limit)
+                }
+                return this.val
             }
         },
         watch: {
@@ -122,8 +156,36 @@
             renderTableHeader (h, data, row) {
                 return (<span >{ data.column.label }{row.required ? <span class="require"></span> : ''}</span>)
             },
+            handleSelectDateTime (params) {
+                const { val, props, key } = params
+                this.$set(props.row, key, val)
+                this.change()
+            },
+            handleSelectDate (params) {
+                const { val, props, key } = params
+                this.$set(props.row, key, val)
+                this.change()
+            },
+            transformSelectValue ({ row, col }) {
+                if (['select', 'multiselect'].includes(col.display)) {
+                    const value = []
+                    col.options.forEach(item => {
+                        if (row[col.key] === item.id) {
+                            value.push(item.name)
+                        }
+                    })
+                    return value.join(',') || '--'
+                } else return row[col.key] || '--'
+            },
             change () {
                 this.$emit('change', deepClone(this.val))
+            },
+            handlePageLimitChange (limit) {
+                this.pagingConfig.limit = limit
+                this.pagingConfig.current = 1
+            },
+            handlePageChange (page) {
+                this.pagingConfig.current = page
             }
         }
     }

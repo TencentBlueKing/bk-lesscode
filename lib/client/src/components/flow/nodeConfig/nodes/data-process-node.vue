@@ -26,24 +26,24 @@
                             <bk-option v-for="item in actions" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
-                    <bk-form-item label="目标表单" property="worksheet_id" :required="true">
+                    <bk-form-item label="目标表单" property="tableName" :required="true">
                         <bk-select
-                            :value="dataProcessConfig.worksheet_id"
+                            :value="dataProcessConfig.tableName"
                             :clearable="false"
                             :loading="formListLoading"
                             :disabled="formListLoading || !editable"
                             @selected="handleSelectForm">
                             <bk-option
                                 v-for="item in formList"
-                                :key="item.id"
-                                :id="item.id"
+                                :key="item.tableName"
+                                :id="item.tableName"
                                 :name="`${item.formName}(${item.tableName})`">
                             </bk-option>
                         </bk-select>
                     </bk-form-item>
                 </div>
                 <bk-form-item label="字段映射规则">
-                    <template v-if="dataProcessConfig.action && dataProcessConfig.worksheet_id !== ''">
+                    <template v-if="dataProcessConfig.action && dataProcessConfig.tableName !== ''">
                         <!-- 满足条件，删除、更新动作存在 -->
                         <div v-if="['DELETE', 'EDIT'].includes(dataProcessConfig.action)" class="rules-section">
                             <div class="logic-radio">
@@ -93,7 +93,7 @@
                                         @selected="expression.value = ''">
                                         <bk-option id="const" name="值"></bk-option>
                                         <bk-option id="field" name="引用变量"></bk-option>
-                                        <bk-option id="department" name="组织架构"></bk-option>
+                                        <!-- <bk-option id="department" name="组织架构"></bk-option> -->
                                         <template v-if="
                                             fieldList.length > 0 &&
                                                 expression.key &&
@@ -220,7 +220,7 @@
                                         @selected="(val) => handleSelectMapValue(mapping,val)">
                                         <bk-option id="const" name="值"></bk-option>
                                         <bk-option id="field" name="引用变量"></bk-option>
-                                        <bk-option id="department" name="组织架构"></bk-option>
+                                        <!-- <bk-option id="department" name="组织架构"></bk-option> -->
                                         <template v-if="
                                             targetFields.length > 0 &&
                                                 mapping.key &&
@@ -262,7 +262,7 @@
                                                 v-for="item in group.fields"
                                                 :key="item.id"
                                                 :id="item.id"
-                                                :name="`${item.name}(${item.id})`">
+                                                :name="`${item.name}(${item.key})`">
                                             </bk-option>
                                         </bk-option-group>
                                     </bk-select>
@@ -384,7 +384,7 @@
                             trigger: 'blur'
                         }
                     ],
-                    worksheet_id: [
+                    tableName: [
                         {
                             required: true,
                             message: '必填项',
@@ -397,6 +397,7 @@
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapState('nocode/nodeConfig', ['nodeData']),
+            ...mapGetters('project', ['projectDetail']),
             ...mapGetters('nocode/nodeConfig', ['processorData']),
             projectId () {
                 return this.$route.params.projectId
@@ -439,8 +440,8 @@
             this.getRelationList()
             this.getApprovalNode()
             await this.getFormList()
-            if (typeof this.nodeData.extras.dataManager?.worksheet_id === 'number') {
-                this.getFieldList(this.nodeData.extras.dataManager.worksheet_id)
+            if (this.nodeData.extras.dataManager?.tableName) {
+                this.getFieldList(this.nodeData.extras.dataManager.tableName)
                 this.dataProcessConfig = cloneDeep(this.nodeData.extras.dataManager)
             } else {
                 const dataManager = {
@@ -450,7 +451,7 @@
                     },
                     mapping: [],
                     action: '',
-                    worksheet_id: ''
+                    tableName: ''
                 }
                 this.dataProcessConfig = dataManager
             }
@@ -470,9 +471,9 @@
                     this.formListLoading = false
                 }
             },
-            getFieldList (id) {
+            getFieldList (tableName) {
                 let fieldData = []
-                const form = this.formList.find(item => item.id === id)
+                const form = this.formList.find(item => item.tableName === tableName)
                 if (form) {
                     fieldData = JSON.parse(form.content)
                 }
@@ -497,7 +498,8 @@
                                     return {
                                         type,
                                         name,
-                                        id: `$\{param_${key}}`
+                                        key,
+                                        id: `{{${key}}}`
                                     }
                                 })
                             })
@@ -543,7 +545,7 @@
                 const idsFieldIdx = this.fieldList.findIndex(item => item.key === 'ids')
                 this.dataProcessConfig = {
                     action: val,
-                    worksheet_id: this.dataProcessConfig.worksheet_id,
+                    tableName: this.dataProcessConfig.tableName,
                     conditions: {
                         connector: 'and',
                         expressions: []
@@ -571,7 +573,7 @@
                 this.getFieldList(val)
                 this.dataProcessConfig = {
                     action: this.dataProcessConfig.action,
-                    worksheet_id: val,
+                    tableName: val,
                     conditions: {
                         connector: 'and',
                         expressions: []
