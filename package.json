@@ -29,7 +29,7 @@
       }
     },
     "dev": {
-      "command": "npm run dll && nodemon --config nodemon.json && node node_modules/db-migrate/bin/db-migrate up --config ./lib/server/conf/db-migrate.json --migrations-dir ./lib/server/model/migrations -e dev",
+      "command": "node node_modules/db-migrate/bin/db-migrate up --config ./lib/server/conf/db-migrate.json --migrations-dir ./lib/server/model/migrations -e dev && npm run dll && nodemon --config nodemon.json",
       "env": {
         "NODE_ENV": "development",
         "APP_CODE": ""
