@@ -313,6 +313,7 @@
                         })
                     })
                 }
+                this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
             },
             async saveNode (node, isSystemAdd = false) {
                 try {
@@ -363,6 +364,7 @@
             async handleCloneNode (nodeId) {
                 try {
                     const res = await this.$store.dispatch('nocode/flow/cloneFlowNode', nodeId)
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                     const { id, axis, type, name } = res
                     const addedNode = {
                         id: `node_${id}`,
@@ -398,6 +400,7 @@
                         to_state: tNode.nodeInfo.id
                     }
                     const res = await this.$store.dispatch('nocode/flow/createLine', params)
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                     const lineData = {
                         source: {
                             arrow: res.axis.start,
@@ -427,10 +430,10 @@
                     console.error(e)
                 }
             },
-            handleDeleteNode (node) {
+            async handleDeleteNode (node) {
                 try {
                     this.$refs.flowCanvas.removeNode(node)
-                    this.$store.dispatch('nocode/flow/delNode', node.nodeInfo.id)
+                    await this.$store.dispatch('nocode/flow/delNode', node.nodeInfo.id)
                     if (node.nodeInfo.id in this.flowNodeForms) {
                         this.$store.commit('nocode/flow/delFlowNodeFormId', node.nodeInfo.id)
                         this.$store.dispatch('nocode/flow/editFlow', {
@@ -438,6 +441,7 @@
                             formIds: JSON.stringify(this.flowNodeForms)
                         })
                     }
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                 } catch (e) {
                     console.log(e)
                 }
@@ -537,6 +541,7 @@
                 try {
                     this.lineSavePending = true
                     const res = await this.$store.dispatch('nocode/flow/updateLine', data)
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                     const line = this.canvasData.lines.find(item => item.lineInfo.id === data.id)
                     this.$refs.flowCanvas.removeLineOverlay(
                         { source: { id: line.source.id }, target: { id: line.target.id } },
@@ -573,6 +578,7 @@
                 try {
                     this.lineDeletePending = true
                     await this.$store.dispatch('nocode/flow/deleteLine', this.lineConfig.id)
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                     this.$refs.flowCanvas.removeConnector({
                         source: { id: this.lineConfig.sNode.id },
                         target: { id: this.lineConfig.tNode.id }
