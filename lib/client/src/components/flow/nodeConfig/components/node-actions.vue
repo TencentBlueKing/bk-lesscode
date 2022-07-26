@@ -26,6 +26,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import dayjs from 'dayjs'
     import { mapState, mapGetters } from 'vuex'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
@@ -64,7 +65,7 @@
                 return {
                     formId,
                     flowId,
-                    pageCode: `flowpage${this.flowConfig.id}`,
+                    pageCode: `flowpage${this.flowConfig.id}${dayjs().format('HHmmss')}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
