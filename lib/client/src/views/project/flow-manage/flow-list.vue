@@ -90,7 +90,6 @@
 <script>
     import dayjs from 'dayjs'
     import { mapGetters } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
     import { getRouteFullPath } from 'shared/route'
     import CreateFlowDialog from './create-flow-dialog.vue'
 
@@ -168,20 +167,16 @@
                 this.listLoading = false
             },
             async handleArchiveConfirm () {
-                try {
-                    const params = {
-                        id: this.archiveId,
-                        deleteFlag: 1
-                    }
-                    await this.$store.dispatch('nocode/flow/archiveFlow', params)
-                    this.archiveId = ''
-                    if (this.flowList.length === 1 && this.pagination.current > 1) {
-                        this.pagination.current -= 1
-                    }
-                    this.getFlowList()
-                } catch (e) {
-                    messageError(e.message || e)
+                const params = {
+                    id: this.archiveId,
+                    deleteFlag: 1
                 }
+                await this.$store.dispatch('nocode/flow/archiveFlow', params)
+                this.archiveId = ''
+                if (this.flowList.length === 1 && this.pagination.current > 1) {
+                    this.pagination.current -= 1
+                }
+                this.getFlowList()
             },
             handlePageChange (val) {
                 this.pagination.current = val
