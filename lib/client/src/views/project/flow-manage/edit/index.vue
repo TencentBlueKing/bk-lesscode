@@ -12,7 +12,7 @@
     <section class="flow-edit-wrapper">
         <div class="page-header-container">
             <div class="nav-container">
-                <back-btn></back-btn>
+                <back-btn :from-page-list="fromPageList"></back-btn>
                 <flow-selector
                     :list="flowList"
                     :list-loading="listLoading"
@@ -66,7 +66,8 @@
                 flowList: [],
                 flowConfigLoading: true,
                 serviceDataLoading: true,
-                serviceData: {}
+                serviceData: {},
+                fromPageList: false // 是否由页面列表页进入
             }
         },
         computed: {
@@ -85,6 +86,13 @@
             this.getFlowList()
             await this.getflowConfig()
             this.getServiceData()
+        },
+        beforeRouteEnter (to, from, next) {
+            next(vm => {
+                if (from.name === 'pageList') {
+                    vm.fromPageList = true
+                }
+            })
         },
         beforeDestroy () {
             this.$store.commit('nocode/flow/clearFlowConfig')

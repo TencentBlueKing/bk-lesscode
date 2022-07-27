@@ -33,7 +33,7 @@
                 return {
                     flowId: id,
                     pageCode: `flowdatamanage${id}`,
-                    pageName: `${flowName}_数据管理页面`
+                    pageName: `${flowName}_流程数据管理页面`
                 }
             },
             projectId () {
