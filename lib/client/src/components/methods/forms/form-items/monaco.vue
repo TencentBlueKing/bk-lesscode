@@ -6,6 +6,7 @@
         ref="monaco"
         @change="change">
         <template v-slot:tools>
+            <i class="bk-drag-icon bk-drag-info-tips icon-style" v-bk-tooltips="functionTips"></i>
             <i class="bk-drag-icon bk-drag-fix icon-style" @click="fixMethod" v-bk-tooltips="fixMethodTips"></i>
             <slot name="tools"></slot>
         </template>
@@ -51,15 +52,27 @@
             return {
                 fixMethodTips: {
                     content: '自动修复 Eslint',
-                    theme: 'light',
-                    placements: ['top'],
-                    boundary: 'window'
+                    appendTo: 'parent',
+                    boundary: 'window',
+                    theme: 'light'
                 },
                 multVal: {
                     ...FUNCTION_TIPS
                 },
                 proposals: [],
                 renderCode: ''
+            }
+        },
+
+        computed: {
+            functionTips () {
+                return {
+                    content: `<pre class="function-tips">${FUNCTION_TIPS[this.form.funcType]}</pre>`,
+                    appendTo: 'parent',
+                    boundary: 'window',
+                    width: 750,
+                    theme: 'light'
+                }
             }
         },
 
@@ -254,3 +267,10 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    /deep/ .function-tips {
+        margin: 0;
+        line-height: 16px;
+    }
+</style>
