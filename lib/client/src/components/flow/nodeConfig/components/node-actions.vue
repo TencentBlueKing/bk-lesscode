@@ -196,6 +196,7 @@
                     }
 
                     this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
 
                     this.$bkMessage({
                         message: this.nodeData.type === 'NORMAL' ? '节点保存成功，表单配置关联数据表变更成功' : '节点保存成功',

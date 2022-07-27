@@ -20,12 +20,12 @@
                 </flow-selector>
             </div>
             <div class="steps-container">
-                <bk-steps
-                    v-if="!serviceDataLoading"
-                    :steps="steps"
-                    :cur-step="curStep"
-                    @step-changed="handleStepChange">
-                </bk-steps>
+                <menu-item
+                    v-for="item in steps"
+                    :key="item.id"
+                    :item="item"
+                    :class="{ active: $route.name === item.id }">
+                </menu-item>
             </div>
             <div class="genarate-action">
                 <generate-data-manage-page v-if="!flowConfigLoading"></generate-data-manage-page>
@@ -42,26 +42,25 @@
 <script>
     import { mapState } from 'vuex'
     import { messageError } from '@/common/bkmagic'
+    import MenuItem from '@/views/index/components/action-tool/components/menu-item'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
     import GenerateDataManagePage from './components/generate-data-manage-page.vue'
 
-    const STEPS = [
-        { id: 'flowDesign', icon: 1, title: '流程设计' },
-        { id: 'flowConfig', icon: 2, title: '流程设置' }
-    ]
-
     export default {
         name: 'flowEdit',
         components: {
+            MenuItem,
             BackBtn,
             FlowSelector,
             GenerateDataManagePage
         },
         data () {
             return {
-                steps: STEPS,
-                curStep: this.getCurStep(),
+                steps: [
+                    { id: 'flowConfig', icon: 'bk-drag-icon bk-drag-flow-fill', text: '流程设计', func: this.handleStepChange('flowConfig') },
+                    { id: 'flowAdvancedConfig', icon: 'bk-drag-icon bk-drag-set', text: '流程设置', func: this.handleStepChange('flowAdvancedConfig') }
+                ],
                 flowId: this.$route.params.flowId,
                 listLoading: true,
                 flowList: [],
@@ -77,9 +76,6 @@
             }
         },
         watch: {
-            '$route.name' () {
-                this.curStep = this.getCurStep()
-            },
             '$route.params.flowId' (val) {
                 this.flowId = val
                 this.getflowConfig()
@@ -129,15 +125,10 @@
                     this.serviceDataLoading = false
                 }
             },
-            getCurStep () {
-                return this.$route.name === 'flowConfig' ? 1 : 2
-            },
-            handleStepChange (val) {
-                if (val === 1) {
-                    this.$router.push({ name: 'flowConfig' })
-                } else {
-                    this.$router.push({ name: 'flowAdvancedConfig' })
-                }
+            handleStepChange (name) {
+                return function () {
+                    this.$router.push({ name })
+                }.bind(this)
             }
         }
     }
@@ -165,7 +156,11 @@
         }
     }
     .steps-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         min-width: 360px;
+        height: 100%;
     }
     .genarate-action {
         position: absolute;
