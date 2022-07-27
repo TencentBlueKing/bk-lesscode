@@ -50,7 +50,7 @@
                     </bk-form-item>
                     <bk-form-item label="页面ID" required property="pageCode" error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.pageCode"
-                            placeholder="以小写字母开头，由小写字母与数字组成，创建后不可更改">
+                            :placeholder="pageCodePlaceholder">
                         </bk-input>
                     </bk-form-item>
                     <bk-form-item label="布局模板" error-display-type="normal">
@@ -202,6 +202,11 @@
             },
             showAddNavListSwitcher () {
                 return this.platform !== 'MOBILE' && this.selectedLayout.type && this.selectedLayout.type !== 'empty'
+            },
+            pageCodePlaceholder () {
+                return ['FORM', 'FLOW'].includes(this.nocodeType)
+                    ? '页面ID将作为数据表表名'
+                    : '以小写字母开头，由小写字母与数字组成，创建后不可更改'
             }
         },
         methods: {
