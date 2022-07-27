@@ -226,7 +226,6 @@
                     { name: '全部应用', value: '' },
                     { name: '我创建的', value: 'my' },
                     { name: '我收藏的', value: 'favorite' }
-                    // { name: '我的共享', value: 'share' }
                 ],
                 dialog: {
                     create: {
