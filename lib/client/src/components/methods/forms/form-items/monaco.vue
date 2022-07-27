@@ -17,7 +17,7 @@
     import monaco from '@/components/monaco'
     import mixins from './form-item-mixins'
     import { mapActions } from 'vuex'
-    import { FUNCTION_TIPS } from 'shared'
+    import { FUNCTION_TIPS, FUNCTION_TYPE } from 'shared/function'
     import LC from '@/element-materials/core'
     import {
         determineShowPropInnerVariable,
@@ -69,11 +69,16 @@
                 if (this.renderCode !== val) {
                     this.initMultVal()
                 }
+                this.initDefaultFunc()
             },
             'form.funcType' (type) {
                 if (this.multVal[type] !== this.form.funcBody) {
                     this.change(this.multVal[type])
                 }
+                this.initDefaultFunc()
+            },
+            functionList () {
+                this.initProposals()
             }
         },
 
@@ -91,6 +96,15 @@
                     [func.funcType]: func.funcBody
                 }
                 this.renderCode = this.multVal[this.form.funcType]
+            },
+
+            initDefaultFunc () {
+                if (!this.form.id
+                    && this.form.funcType === FUNCTION_TYPE.REMOTE
+                    && this.form.funcBody === FUNCTION_TIPS[FUNCTION_TYPE.REMOTE]
+                ) {
+                    this.change(this.form.funcBody + 'return res\n')
+                }
             },
 
             initProposals () {
