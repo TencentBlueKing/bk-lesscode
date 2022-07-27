@@ -205,7 +205,7 @@
             },
             pageCodePlaceholder () {
                 return ['FORM', 'FLOW'].includes(this.nocodeType)
-                    ? '页面ID将作为数据表表名'
+                    ? '页面ID将作为数据表表名，以小写字母开头，由小写字母与数字组成，创建后不可更改'
                     : '以小写字母开头，由小写字母与数字组成，创建后不可更改'
             }
         },
