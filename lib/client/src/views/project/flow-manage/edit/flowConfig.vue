@@ -136,6 +136,10 @@
                     await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
                     await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: '流程部署成功'
+                    })
                 } catch (e) {
                     console.error(e.message || e)
                 } finally {

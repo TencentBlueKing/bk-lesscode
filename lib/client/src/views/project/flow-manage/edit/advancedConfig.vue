@@ -87,10 +87,6 @@
         </div>
         <div class="action-wrapper">
             <bk-button
-                @click="$router.push({ name: 'flowConfig' })">
-                上一步
-            </bk-button>
-            <bk-button
                 theme="primary"
                 :loading="advancedPending"
                 @click="handleSave"

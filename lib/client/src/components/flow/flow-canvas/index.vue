@@ -313,7 +313,7 @@
                         })
                     })
                 }
-                this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                this.setFlowUnDeployed()
             },
             async saveNode (node, isSystemAdd = false) {
                 try {
@@ -364,7 +364,7 @@
             async handleCloneNode (nodeId) {
                 try {
                     const res = await this.$store.dispatch('nocode/flow/cloneFlowNode', nodeId)
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                    this.setFlowUnDeployed()
                     const { id, axis, type, name } = res
                     const addedNode = {
                         id: `node_${id}`,
@@ -400,7 +400,7 @@
                         to_state: tNode.nodeInfo.id
                     }
                     const res = await this.$store.dispatch('nocode/flow/createLine', params)
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                    this.setFlowUnDeployed()
                     const lineData = {
                         source: {
                             arrow: res.axis.start,
@@ -441,7 +441,7 @@
                             formIds: JSON.stringify(this.flowNodeForms)
                         })
                     }
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                    this.setFlowUnDeployed()
                 } catch (e) {
                     console.log(e)
                 }
@@ -541,7 +541,7 @@
                 try {
                     this.lineSavePending = true
                     const res = await this.$store.dispatch('nocode/flow/updateLine', data)
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                    this.setFlowUnDeployed()
                     const line = this.canvasData.lines.find(item => item.lineInfo.id === data.id)
                     this.$refs.flowCanvas.removeLineOverlay(
                         { source: { id: line.source.id }, target: { id: line.target.id } },
@@ -578,7 +578,7 @@
                 try {
                     this.lineDeletePending = true
                     await this.$store.dispatch('nocode/flow/deleteLine', this.lineConfig.id)
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                    this.setFlowUnDeployed()
                     this.$refs.flowCanvas.removeConnector({
                         source: { id: this.lineConfig.sNode.id },
                         target: { id: this.lineConfig.tNode.id }
@@ -591,6 +591,10 @@
                 } finally {
                     this.lineDeletePending = false
                 }
+            },
+            async setFlowUnDeployed () {
+                await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
             },
             hanldeLineConfigPanelClose () {
                 this.showLineConfigPanel = false
