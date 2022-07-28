@@ -35,7 +35,7 @@
             ></choose-function>
             <bk-button
                 @click="getApiData"
-                :loading="isGettingApiData"
+                :loading="isLoading"
                 theme="primary"
                 class="mt12"
                 size="small">
@@ -91,6 +91,9 @@
             },
             describe: {
                 type: Object
+            },
+            isLoading: {
+                type: Boolean
             }
         },
         data () {
@@ -100,8 +103,7 @@
                     params: []
                 },
                 usedMethodMap: {},
-                usedVariableMap: {},
-                isGettingApiData: false
+                usedVariableMap: {}
             }
         },
         computed: {
@@ -321,7 +323,7 @@
                 }
                 
                 try {
-                    this.isGettingApiData = true
+                    this.$emit('update:isLoading', true)
                     const sandBox = this.createSandBox(this.usedVariableMap)
                     const res = await sandBox.exec(methodStr, this.remoteData.params)
                     let message = this.remoteValidate(res)
@@ -343,7 +345,7 @@
                         limit: 1
                     })
                 } finally {
-                    this.isGettingApiData = false
+                    this.$emit('update:isLoading', false)
                 }
             },
 

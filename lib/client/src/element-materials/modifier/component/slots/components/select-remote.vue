@@ -7,10 +7,12 @@
             :remote-validate="slotConfig.remoteValidate"
             :change="remoteChange"
             :describe="slotConfig"
+            :is-loading.sync="isLoading"
         />
         <select-key
             :params="methodPayload.keys"
             :options="optionList"
+            :is-loading="isLoading"
             @change="changeParams"
         />
     </section>
@@ -48,7 +50,8 @@
         data () {
             return {
                 copySlotVal: JSON.parse(safeStringify(this.slotVal)),
-                optionList: []
+                optionList: [],
+                isLoading: false
             }
         },
 
@@ -83,8 +86,8 @@
                             ...this.methodPayload,
                             ...methodData,
                             keys: {
-                                idKey: this.optionList[0],
-                                nameKey: this.optionList[0]
+                                idKey: this.methodPayload?.keys?.idKey || this.optionList[0],
+                                nameKey: this.methodPayload?.keys?.nameKey || this.optionList[0]
                             }
                         }
                     }
