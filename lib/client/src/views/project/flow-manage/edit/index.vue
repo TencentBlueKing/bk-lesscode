@@ -172,8 +172,9 @@
     }
     .genarate-action {
         position: absolute;
-        top: 14px;
-        right: 24px;
+        top: 0;
+        right: 20px;
+        height: 100%;
     }
 }
 .flow-edit-main {

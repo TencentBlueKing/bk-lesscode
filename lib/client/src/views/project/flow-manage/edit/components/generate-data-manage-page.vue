@@ -1,11 +1,30 @@
 <template>
     <div class="generate-data-manage-page-btn">
+        <div v-if="flowConfig.managePageIds" class="manage-page-edit">
+            关联的数据管理页面:
+            <span class="page-name">
+                {{ flowConfig.managePageNames }}
+            </span>
+            <bk-popover
+                style="margin-left: 4px;"
+                ext-cls="manage-page-popover"
+                placement="bottom-end"
+                :tippy-options="{ arrow: false }"
+                theme="light">
+                <i class="bk-drag-icon bk-drag-more-dot operate-icon"></i>
+                <div slot="content" class="manage-page-actions">
+                    <div class="action-item" @click="handleEditPage">编辑</div>
+                    <div class="action-item" @click="handleDeletePage">删除</div>
+                </div>
+            </bk-popover>
+        </div>
         <bk-button
+            v-else
             size="small"
             :text="true"
-            :disabled="!!flowConfig.deleteFlag && !flowConfig.managePageIds"
+            :disabled="!!flowConfig.deleteFlag"
             @click="handleCreateClick">
-            {{ flowConfig.managePageIds ? '编辑' : '生成' }}数据管理页
+            生成数据管理页
         </bk-button>
         <create-page-dialog
             ref="createPageDialog"
@@ -18,6 +37,7 @@
 </template>
 <script>
     import { mapState } from 'vuex'
+    import dayjs from 'dayjs'
     import { messageError } from '@/common/bkmagic'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
@@ -32,7 +52,7 @@
                 const { id, flowName } = this.flowConfig
                 return {
                     flowId: id,
-                    pageCode: `flowdatamanage${id}`,
+                    pageCode: `flowdatamanage${id}${dayjs().format('HHmmss')}`,
                     pageName: `${flowName}_流程数据管理页面`
                 }
             },
@@ -84,7 +104,85 @@
                 } catch (e) {
                     messageError(e.message || e)
                 }
+            },
+            handleEditPage () {
+                const route = this.$router.resolve({
+                    name: 'editNocode',
+                    params: {
+                        projectId: this.projectId,
+                        pageId: this.flowConfig.managePageIds
+                    }
+                })
+                window.open(route.href, '__blank')
+            },
+            handleDeletePage () {
+                this.$bkInfo({
+                    width: 422,
+                    extCls: 'delete-page-dialog',
+                    title: '确认删除该流程数据管理页？',
+                    theme: 'danger',
+                    confirmFn: async () => {
+                        await this.$store.dispatch('page/delete', {
+                            pageId: this.flowConfig.managePageIds
+                        })
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, managePageIds: null })
+                        this.$store.commit('nocode/flow/setFlowConfig', { managePageIds: null })
+                        this.$bkMessage({
+                            theme: 'success',
+                            message: '删除数据管理页成功'
+                        })
+                    }
+                })
             }
         }
     }
 </script>
+<style lang="postcss" scoped>
+    .generate-data-manage-page-btn {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+    .manage-page-edit {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        font-size: 12px;
+        .page-name {
+            margin-left: 4px;
+            max-width: 200px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            color: #3a84ff;
+        }
+    }
+    .operate-icon {
+        color: #63656e;
+        cursor: pointer;
+        &:hover {
+            color: #3a84ff;
+        }
+    }
+</style>
+<style lang="postcss">
+    .manage-page-popover {
+        .tippy-tooltip {
+            padding: 0;
+        }
+        .manage-page-actions {
+            padding: 4px 0;
+            width: 58px;
+            .action-item {
+                padding: 0 12px;
+                line-height: 32px;
+                color: #636563;
+                cursor: pointer;
+                &:hover {
+                    color: #3a84ff;
+                    background: #e1ecff;
+                }
+            }
+        }
+    }
+</style>

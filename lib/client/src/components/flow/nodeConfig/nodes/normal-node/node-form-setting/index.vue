@@ -248,10 +248,8 @@
                     ]),
                     theme: 'danger',
                     confirmFn: () => {
-                        if (typeof delCallback === 'function') {
-                            this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
-                            this.clearContext()
-                        }
+                        this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
+                        this.clearContext()
                     }
                 })
             },
