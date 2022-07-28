@@ -12,13 +12,46 @@
 <template>
     <main class="projects page-content">
         <div class="page-head">
+            <!-- <auth-button
+                theme="primary"
+                auth="script/create"
+                @click="test"
+                style="margin-right: 20px;"
+                class="w120">
+                新建
+            </auth-button> -->
+            <!-- <auth-button
+                theme="primary"
+                auth="script/create"
+                @click="test"
+                style="margin-right: 20px;"
+                permission="sdsd"
+                class="w120">
+                新建11
+            </auth-button> -->
             <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
                 <div class="dropdown-trigger-btn" slot="dropdown-trigger">
                     <bk-button theme="primary" icon-right="icon-angle-down">新建</bk-button>
                 </div>
                 <ul class="bk-dropdown-list" slot="dropdown-content">
-                    <li><a href="javascript:;" @click="handleCreate">空白应用</a></li>
-                    <li><a href="javascript:;" @click="handleTempCreate">从模板新建</a></li>
+                    <!-- <li><a href="javascript:;" @click="handleCreate">空白应用</a></li>
+                    <li><a href="javascript:;" @click="handleTempCreate">从模板新建</a></li> -->
+                    <li>
+                        <a href="javascript:;">
+                            <auth-component auth="script/create">
+                                <span slot="forbid">空白应用</span>
+                                <span @click="handleCreate">空白应用</span>
+                            </auth-component>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <auth-component auth="script/create">
+                                <span slot="forbid">从模板新建</span>
+                                <span @click="handleTempCreate">从模板新建</span>
+                            </auth-component>
+                        </a>
+                    </li>
                 </ul>
             </bk-dropdown-menu>
             <ul class="filter-links">
@@ -348,6 +381,19 @@
             this.getDefaultLayout()
         },
         methods: {
+            test () {
+                console.error('testtesttest')
+            },
+            getCursorData () {
+                return {
+                    active: true,
+                    auth: { type: 'app', relation: [11] },
+                    onclick: this.hideSelectorPanel
+                }
+            },
+            hideSelectorPanel () {
+                console.error('hideSelectorPanel')
+            },
             async getDefaultLayout () {
                 try {
                     const layoutList = await this.$store.dispatch('layout/getPlatformList')
@@ -377,6 +423,7 @@
                     if (this.sort !== 'createTime') {
                         this.handleSortChange(this.sort)
                     }
+                    console.error(this.projectList)
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -829,6 +876,17 @@
                     color: #63656e;
                 }
             }
+        }
+    }
+
+    .permission-disable {
+        color: #fff !important;
+        background-color: #dcdee5 !important;
+        border-color: #dcdee5 !important;
+
+        &.bk-button-text {
+            color: #c4c6cc !important;
+            background: none !important;
         }
     }
 </style>
