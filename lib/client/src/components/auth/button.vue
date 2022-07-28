@@ -103,7 +103,7 @@
                 console.error('fetchPermission')
                 const data = {
                     'pass': false,
-                    'applyUrl': 'http://iam.woa.com/apply-custom-perm?system_id=bk_job&cache_id=33f978b0001a4a609e4a467d3ac377af',
+                    'applyUrl': '',
                     'requiredPermissions': [
                         {
                             'actionName': '脚本新建',
