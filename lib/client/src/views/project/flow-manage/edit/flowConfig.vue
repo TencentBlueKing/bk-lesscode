@@ -41,7 +41,7 @@
                 :node-id="crtNode"
                 :flow-config="flowConfig"
                 :service-data="serviceData"
-                :create-ticket-node-id="createTicketNodeId"
+                :nodes="canvasData.nodes"
                 @close="closeConfigPanel">
             </node-config>
         </div>
