@@ -11,6 +11,7 @@
         <bk-select
             class="g-mb8"
             :value="params.idKey"
+            :loading="isLoading"
             @change="val => changeParams('idKey', val)"
         >
             <bk-option
@@ -30,6 +31,7 @@
         >name 配置</div>
         <bk-select
             :value="params.nameKey"
+            :loading="isLoading"
             @change="val => changeParams('nameKey', val)"
         >
             <bk-option
@@ -56,6 +58,9 @@
             options: {
                 type: Array,
                 default: () => ([])
+            },
+            isLoading: {
+                type: Boolean
             }
         },
 

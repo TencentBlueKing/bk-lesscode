@@ -52,23 +52,17 @@
 
             projectId () {
                 this.judgeDisableToken()
-            },
-
-            isShow: {
-                handler (val) {
-                    if (val) {
-                        this.judgeDisableToken()
-                    }
-                },
-                immediate: true
             }
+        },
+
+        created () {
+            this.judgeDisableToken()
         },
 
         methods: {
             judgeDisableToken () {
                 // 没有项目id，表示是在函数市场下
                 if (!this.projectId) return
-
                 this.$store.dispatch('functions/getTokenList', this.projectId).then((res) => {
                     const tokenList = res.data || []
                     const firstToken = tokenList[0]

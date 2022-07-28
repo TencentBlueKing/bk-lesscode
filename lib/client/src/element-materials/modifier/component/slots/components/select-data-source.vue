@@ -6,12 +6,14 @@
         <choose-data-table
             class="g-mb8"
             :value="sourceData.tableName"
+            :is-loading.sync="isLoading"
             @choose="chooseTable"
             @clear="clearTable"
         />
         <select-key
             :params="sourceData.keys"
             :options="optionList"
+            :is-loading="isLoading"
             @change="changeParams"
         />
     </section>
@@ -64,6 +66,7 @@
                 slotConfig,
                 change
             } = toRefs<Iprop>(props)
+            const isLoading = ref(false)
             // 参数原始值
             const originSourceData = slotVal?.value?.payload?.sourceData
             // 构造此处需要使用的数据
@@ -71,16 +74,16 @@
                 val: [],
                 tableName: originSourceData?.tableName,
                 keys: {
-                    idKey: originSourceData?.keys?.idKey || 'id',
-                    nameKey: originSourceData?.keys?.nameKey || 'name'
+                    idKey: originSourceData?.keys?.idKey,
+                    nameKey: originSourceData?.keys?.nameKey
                 }
             })
             const optionList = ref([])
 
             const chooseTable = ({ tableName, data, table }) => {
                 optionList.value = table?.columns.map(column => column.name)
-                sourceData.value.keys.idKey = optionList.value[0]
-                sourceData.value.keys.nameKey = optionList.value[0]
+                sourceData.value.keys.idKey = sourceData.value.keys.idKey || optionList.value[0]
+                sourceData.value.keys.nameKey = sourceData.value.keys.nameKey || optionList.value[0]
                 sourceData.value.val = data.list
                 sourceData.value.tableName = tableName
                 triggleUpdate()
@@ -116,6 +119,7 @@
             return {
                 sourceData,
                 optionList,
+                isLoading,
                 chooseTable,
                 changeParams,
                 clearTable
