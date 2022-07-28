@@ -217,9 +217,42 @@
             // 删除流程提单页
             handleDelCreatePage () {
                 if (!this.getDeletePagePerm()) return
-                this.deleteCreateTicketPage(() => {
-                    this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
-                    this.clearContext()
+                const h = this.$createElement
+                this.$bkInfo({
+                    width: 422,
+                    extCls: 'delete-page-dialog',
+                    title: '确认删除？',
+                    subHeader: h('div', {
+                        style: {
+                            'text-align': 'center',
+                            'margin-top': '-10px'
+                        }
+                    }, [
+                        h('span', {
+                            style: {
+                                'color': '#979BA5',
+                                'font-size': '12px'
+                            }
+                        }, `页面：${this.pageDetail.pageName}`),
+                        h('div', {
+                            style: {
+                                'color': '#63656E',
+                                'margin-top': '10px',
+                                'text-align': 'left',
+                                'font-size': '14px'
+                            }
+                        }, [
+                            h('p', {}, '1.删除该流程提单页面，对应的流程数据不会删除'),
+                            h('p', { style: { 'margin-top': '8px' } }, '2.确认该信息后，需“保存”该节点配置方可生效')
+                        ])
+                    ]),
+                    theme: 'danger',
+                    confirmFn: () => {
+                        if (typeof delCallback === 'function') {
+                            this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
+                            this.clearContext()
+                        }
+                    }
                 })
             },
             // 编辑表单内容
@@ -238,17 +271,38 @@
             // 删除配置的表单
             // 创建/引用的方式表单配置删除后，清空保存的id、code、type、content
             handleDelClick () {
-                if (this.flowConfig.pageId) {
-                    this.deleteCreateTicketPage(() => {
+                const h = this.$createElement
+                this.$bkInfo({
+                    width: 422,
+                    extCls: 'delete-page-dialog',
+                    subHeader: h('div', {}, [
+                        h('span', {
+                            style: {
+                                'color': '#313238',
+                                'font-size': '20px'
+                            }
+                        }, '该删除操作将有以下影响：'),
+                        h('div', {
+                            style: {
+                                'color': '#63656E',
+                                'margin-top': '10px',
+                                'text-align': 'left',
+                                'font-size': '14px'
+                            }
+                        }, [
+                            h('p', { style: { 'margin': '14px 0 0 10px' } }, '1.已生成的流程提单页将同步被删除'),
+                            h('p', { style: { 'margin': '8px 0 0 10px' } }, '2.已生成的关联数据表及表数据将继续保留'),
+                            h('p', { style: { 'margin': '14px 0 0 0' } }, '确认删除吗？')
+                        ])
+                    ]),
+                    theme: 'danger',
+                    confirmFn: () => {
                         this.isUnset = true
                         this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
                         this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
                         this.clearContext()
-                    })
-                } else {
-                    this.isUnset = true
-                    this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
-                }
+                    }
+                })
             },
             // 选择引用或复用表单
             handleSelectForm (form) {
@@ -287,45 +341,6 @@
             },
             updateFormConfig (data) {
                 this.$store.commit('nocode/nodeConfig/setFormConfig', data)
-            },
-            // 删除提单页二次确认提示
-            deleteCreateTicketPage (delCallback) {
-                const h = this.$createElement
-                this.$bkInfo({
-                    width: 422,
-                    extCls: 'delete-page-dialog',
-                    title: '确认删除？',
-                    subHeader: h('div', {
-                        style: {
-                            'text-align': 'center',
-                            'margin-top': '-10px'
-                        }
-                    }, [
-                        h('span', {
-                            style: {
-                                'color': '#979BA5',
-                                'font-size': '12px'
-                            }
-                        }, `页面：${this.pageDetail.pageName}`),
-                        h('div', {
-                            style: {
-                                'color': '#63656E',
-                                'margin-top': '10px',
-                                'text-align': 'left',
-                                'font-size': '14px'
-                            }
-                        }, [
-                            h('p', {}, '1.删除该流程提单页面，对应的流程数据不会删除'),
-                            h('p', { style: { 'margin-top': '8px' } }, '2.确认该信息后，需“保存”该节点配置方可生效')
-                        ])
-                    ]),
-                    theme: 'danger',
-                    confirmFn: () => {
-                        if (typeof delCallback === 'function') {
-                            delCallback()
-                        }
-                    }
-                })
             },
             // 清除page以及layout相关的上下文数据
             clearContext () {

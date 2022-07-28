@@ -187,16 +187,16 @@
                             return
                         } else if (this.delCreateTicketPageId) { // 流程提单页被删除
                             await this.deleteCreateTicketPage()
-                            await this.updateFlowPageId()
+                            await this.updateFlowPageId(0)
                             this.$store.commit('nocode/flow/setDeletedPageId', null)
                             this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
                         }
                     } else {
                         await this.updateItsmNode()
                     }
-
-                    this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
+                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                    this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
 
                     this.$bkMessage({
                         message: this.nodeData.type === 'NORMAL' ? '节点保存成功，表单配置关联数据表变更成功' : '节点保存成功',
@@ -216,6 +216,9 @@
                     if (pageId) {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                        this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+
                         this.$refs.createPageDialog.isShow = false
                         this.$bkMessage({
                             message: '节点保存并创建提单页成功',
