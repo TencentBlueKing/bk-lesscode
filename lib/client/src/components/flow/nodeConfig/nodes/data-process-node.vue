@@ -763,7 +763,7 @@
         align-items: center;
         margin-top: 15px;
         .bk-form-item {
-            flex: 1;
+            width: 50%;
             margin-top: 0;
             &:first-child {
                 margin-right: 16px;
