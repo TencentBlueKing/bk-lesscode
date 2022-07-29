@@ -289,7 +289,7 @@
                 this.canvasData.nodes.splice(index, 1, addedNode)
                 if (node.type === 'NORMAL') {
                     const { x, y } = node
-                    const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' }, true)
+                    const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' }, res.id)
                     const { id, axis, type, name } = procNode
                     const dataProcNode = {
                         id: `node_${id}`,
@@ -315,7 +315,7 @@
                 }
                 this.setFlowUnDeployed()
             },
-            async saveNode (node, isSystemAdd = false) {
+            async saveNode (node, dataSourceId) {
                 try {
                     const { x, y, type } = node
                     const nodeDesc = NODE_TYPE_LIST.find(item => item.type === type)
@@ -346,8 +346,8 @@
                             worksheet_id: ''
                         }
                         params.extras.webhook_info = {}
-                        if (isSystemAdd) {
-                            params.extras.is_system_add = true
+                        if (dataSourceId) {
+                            params.extras.data_source_id = dataSourceId
                         }
                     } else if (type === 'TASK') {
                         params.extras.node_type = 'TASK'

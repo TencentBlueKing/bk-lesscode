@@ -26,7 +26,17 @@
                             <bk-option v-for="item in actions" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
-                    <bk-form-item label="目标表单" property="tableName" :required="true">
+                    <bk-form-item label="目标表单" property="tableName" class="target-form" :required="true">
+                        <!-- 如果数据处理节点由人工节点生成，且节点可引用变量不为空，则开放同步按钮 -->
+                        <bk-button
+                            v-if="normalNodeData.tableName && normalNodeData.fieldList.length > 0 && relationList.length > 0"
+                            v-bk-tooltips="`将设置【${normalNodeData.name}（${normalNodeData.id}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则`"
+                            class="sync-btn"
+                            size="small"
+                            :text="true"
+                            @click="handleSyncNormalNodeFields">
+                            设置为【{{ `${normalNodeData.name}（${normalNodeData.id}）` }}】节点的表单字段处理
+                        </bk-button>
                         <bk-select
                             :value="dataProcessConfig.tableName"
                             :clearable="false"
@@ -345,6 +355,10 @@
         },
         props: {
             createTicketNodeId: Number,
+            nodes: {
+                type: Array,
+                default: () => []
+            },
             editable: {
                 type: Boolean,
                 default: true
@@ -358,6 +372,13 @@
                     { id: 'DELETE', name: '删除' }
                 ],
                 dataProcessConfig: {},
+                normalNodeData: { // 自动生成的数据处理节点关联的人工节点相关数据
+                    id: '',
+                    name: '',
+                    tableName: '',
+                    fieldList: [],
+                    loading: false
+                },
                 isDepartMent: '',
                 conditionRelations: CONDITION_RELATIONS,
                 formListLoading: false,
@@ -398,6 +419,7 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapState('nocode/nodeConfig', ['nodeData']),
             ...mapGetters('project', ['projectDetail']),
+            ...mapGetters('nocode/flow/', ['flowNodeForms']),
             ...mapGetters('nocode/nodeConfig', ['processorData']),
             projectId () {
                 return this.$route.params.projectId
@@ -427,7 +449,7 @@
         watch: {
             dataProcessConfig: {
                 handler (val) {
-                    this.$store.commit('nocode/nodeConfig/setDataProcessConfig', val)
+                    this.$store.commit('nocode/nodeConfig/setDataProcessConfig', { projectId: this.projectId, data: val })
                 },
                 deep: true
             }
@@ -439,6 +461,14 @@
             }
             this.getRelationList()
             this.getApprovalNode()
+            if (this.nodeData.extras.data_source_id) {
+                const normalNode = this.nodes.find(item => item.id === this.nodeData.extras.data_source_id)
+                if (normalNode) {
+                    this.normalNodeData.id = normalNode.id
+                    this.normalNodeData.name = normalNode.name
+                    this.getNormalNodeForm()
+                }
+            }
             await this.getFormList()
             if (this.nodeData.extras.dataManager?.tableName) {
                 this.getFieldList(this.nodeData.extras.dataManager.tableName)
@@ -522,6 +552,17 @@
                     this.approvalNodeListLoading = false
                 }
             },
+            // 获取人工节点字段列表
+            async getNormalNodeForm () {
+                const id = this.flowNodeForms[this.normalNodeData.id]
+                if (id) {
+                    this.normalNodeData.loading = true
+                    const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
+                    this.normalNodeData.fieldList = JSON.parse(data.content)
+                    this.normalNodeData.tableName = data.tableName
+                    this.normalNodeData.loading = false
+                }
+            },
             getConditionOptions (key) {
                 if (key) {
                     const field = this.fieldList.find(i => i.key === key)
@@ -560,6 +601,27 @@
                     if (idsFieldIdx > -1) {
                         this.fieldList.splice(idsFieldIdx, 1)
                     }
+                }
+            },
+            // 将人工节点的字段默认设置为插入，并设置引用
+            handleSyncNormalNodeFields () {
+                const { tableName, fieldList } = this.normalNodeData
+                this.getFieldList(tableName)
+                const mapping = fieldList.map(field => {
+                    return {
+                        key: field.key,
+                        type: 'field',
+                        value: `{{${field.key}}}`
+                    }
+                })
+                this.dataProcessConfig = {
+                    action: 'ADD',
+                    tableName: tableName,
+                    conditions: {
+                        connector: 'and',
+                        expressions: []
+                    },
+                    mapping
                 }
             },
             handleNameChange (val) {
@@ -708,6 +770,13 @@
     }
     & > .bk-form-item {
         margin-top: 15px;
+    }
+    .sync-btn {
+        position: absolute;
+        top: -29px;
+        left: 80px;
+        padding: 0;
+        white-space: nowrap;
     }
     .bk-select {
         background: #ffffff;

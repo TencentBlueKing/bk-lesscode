@@ -8,6 +8,7 @@
             <component
                 ref="nodeComp"
                 :is="formCompDict[nodeData.type]"
+                :nodes="nodes"
                 @close="handleClose">
             </component>
             <!-- <div class="extend-setting-btn">
@@ -53,6 +54,10 @@
             serviceData: {
                 type: Object,
                 default: () => ({})
+            },
+            nodes: {
+                type: Array,
+                default: () => []
             },
             editable: {
                 type: Boolean,

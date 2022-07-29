@@ -63,6 +63,7 @@
                 <draggable
                     :class="['list-wrap', { 'disabled': disabled }]"
                     handle=".field-item"
+                    filter=".not-available"
                     tag="p"
                     :sort="false"
                     :disabled="disabled"
@@ -76,7 +77,15 @@
                     :move="handleMove"
                     @end="handleEnd">
                     <template v-if="!group.isFolded">
-                        <li v-for="field in group.items" class="field-item drag-entry" :data-type="field.type" :key="field.type">
+                        <li
+                            v-for="field in group.items"
+                            v-bk-tooltips="{
+                                disabled: pageType !== 'FLOW' || !layoutGroup.includes(field.type),
+                                content: '流程表单暂不支持布局类型控件'
+                            }"
+                            :class="['field-item drag-entry', { 'not-available': pageType === 'FLOW' && layoutGroup.includes(field.type) }]"
+                            :data-type="field.type"
+                            :key="field.type">
                             <i :class="['comp-icon',field.icon]"></i> <span>{{ field.name }}</span>
                         </li>
                     </template>
@@ -90,13 +99,14 @@
     import draggable from 'vuedraggable'
     import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
     import _ from 'lodash'
-    const LAYOUT = ['DESC', 'DIVIDER']
+    const LAYOUT_GROUP = ['DESC', 'DIVIDER']
     export default {
         components: {
             draggable
         },
         props: {
-            disabled: Boolean
+            disabled: Boolean,
+            pageType: String
         },
         data () {
             return {
@@ -105,7 +115,8 @@
                 isShowList: '',
                 selectedIndex: 0,
                 contentMaxHeight: 300,
-                renderList: []
+                renderList: [],
+                layoutGroup: LAYOUT_GROUP
             }
         },
         methods: {
@@ -123,7 +134,7 @@
                     }
                 ]
                 fieldsArr.forEach(item => {
-                    if (LAYOUT.includes(item.type)) {
+                    if (LAYOUT_GROUP.includes(item.type)) {
                         group[0].items.push(item)
                     } else {
                         group[1].items.push(item)
@@ -231,7 +242,7 @@
                         isFolded: false
                     }
                 ]
-                LAYOUT.includes(data.type) ? group[0].items.push(data) : group[1].items.push(data)
+                this.layoutGroup.includes(data.type) ? group[0].items.push(data) : group[1].items.push(data)
                 this.list = group
             }
 
@@ -394,9 +405,14 @@
   span{
      font-size: 12px;
   }
-  &:hover {
+  &:not(.not-available):hover {
     color: #3a84ff;
     border-color: #3a84ff;
+  }
+  &.not-available {
+    color: #c4c6cc;
+    border-color: #dcdee5;
+    cursor: not-allowed;
   }
 }
 

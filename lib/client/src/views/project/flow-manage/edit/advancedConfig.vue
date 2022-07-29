@@ -226,7 +226,7 @@
                             },
                             // 以下为流程服务必需字段
                             can_ticket_agency: false,
-                            display_type: 'OPEN'
+                            display_type: 'INVISIBLE'
                         }
                         await this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })

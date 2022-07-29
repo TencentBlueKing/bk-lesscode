@@ -41,7 +41,7 @@
                 :node-id="crtNode"
                 :flow-config="flowConfig"
                 :service-data="serviceData"
-                :create-ticket-node-id="createTicketNodeId"
+                :nodes="canvasData.nodes"
                 @close="closeConfigPanel">
             </node-config>
         </div>
@@ -125,7 +125,7 @@
                     this.deployPending = true
                     const data = {
                         can_ticket_agency: false,
-                        display_type: 'OPEN',
+                        display_type: 'INVISIBLE',
                         workflow_config: {
                             ...this.serviceData,
                             is_revocable: this.serviceData.revoke_config.type !== 0,
