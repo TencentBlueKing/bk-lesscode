@@ -123,11 +123,20 @@
             async handleDeploy () {
                 try {
                     this.deployPending = true
+                    const {
+                        is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
+                    } = this.serviceData
                     const data = {
                         can_ticket_agency: false,
                         display_type: 'INVISIBLE',
                         workflow_config: {
-                            ...this.serviceData,
+                            is_supervise_needed,
+                            notify,
+                            notify_freq,
+                            notify_rule,
+                            revoke_config,
+                            supervise_type,
+                            supervisor,
                             is_revocable: this.serviceData.revoke_config.type !== 0,
                             is_auto_approve: false
                         }
