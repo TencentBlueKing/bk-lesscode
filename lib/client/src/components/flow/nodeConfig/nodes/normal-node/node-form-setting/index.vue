@@ -218,8 +218,6 @@
             handleDelCreatePage () {
                 if (!this.getDeletePagePerm()) return
                 const h = this.$createElement
-                const { pageName, id } = this.pageDetail
-
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
@@ -235,7 +233,7 @@
                                 'color': '#979BA5',
                                 'font-size': '12px'
                             }
-                        }, `页面：${pageName}`),
+                        }, `页面：${this.pageDetail.pageName}`),
                         h('div', {
                             style: {
                                 'color': '#63656E',
@@ -250,7 +248,7 @@
                     ]),
                     theme: 'danger',
                     confirmFn: () => {
-                        this.$store.commit('nocode/flow/setDeletedPageId', id)
+                        this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
                         this.clearContext()
                     }
                 })
@@ -271,17 +269,46 @@
             // 删除配置的表单
             // 创建/引用的方式表单配置删除后，清空保存的id、code、type、content
             handleDelClick () {
-                this.isUnset = true
-                this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
-                if (this.flowConfig.pageId) {
-                    this.$store.commit('nocode/flow/setDeletedPageId', this.flowConfig.pageId)
-                    this.clearContext()
-                }
+                const h = this.$createElement
+                this.$bkInfo({
+                    width: 422,
+                    extCls: 'delete-page-dialog',
+                    subHeader: h('div', {}, [
+                        h('span', {
+                            style: {
+                                'color': '#313238',
+                                'font-size': '20px'
+                            }
+                        }, '该删除操作将有以下影响：'),
+                        h('div', {
+                            style: {
+                                'color': '#63656E',
+                                'margin-top': '10px',
+                                'text-align': 'left',
+                                'font-size': '14px'
+                            }
+                        }, [
+                            h('p', { style: { 'margin': '14px 0 0 10px' } }, '1.已生成的流程提单页将同步被删除'),
+                            h('p', { style: { 'margin': '8px 0 0 10px' } }, '2.已生成的关联数据表及表数据将继续保留'),
+                            h('p', { style: { 'margin': '14px 0 0 0' } }, '确认删除吗？')
+                        ])
+                    ]),
+                    theme: 'danger',
+                    confirmFn: () => {
+                        this.isUnset = true
+                        this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
+                        this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
+                        this.clearContext()
+                    }
+                })
             },
             // 选择引用或复用表单
             handleSelectForm (form) {
                 const { id, content, tableName: code, formName } = form
-                const contentArr = JSON.parse(content)
+                // 引用和复用表单都需要把itsm的字段id清空，保存时重新创建新的字段
+                const contentArr = JSON.parse(content).map(item => {
+                    return { ...item, id: null }
+                })
                 this.isUnset = false
                 this.selectFormDialogShow = false
                 if (this.selectedType === 'COPY_FORM') {

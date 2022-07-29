@@ -3,7 +3,7 @@
         class="lesscode-editor-page-content"
         :page-type="pageType"
         v-bkloading="{ isLoading }">
-        <left-panel slot="left" :disabled="disabled" @move="fieldPanelHover = true" @end="fieldPanelHover = false" />
+        <left-panel slot="left" :page-type="pageType" :disabled="disabled" @move="fieldPanelHover = true" @end="fieldPanelHover = false" />
         <layout style="margin: 20px 0;height: 100%">
             <form-content
                 :fields="fieldsList"
@@ -73,7 +73,7 @@
                 return {
                     formId,
                     pageCode: pageCode + 'manage',
-                    pageName: pageName + '_数据管理页',
+                    pageName: pageName + '_表单数据管理页',
                     content: JSON.stringify({ filters: [], tableConfig: ['createUser', 'createTime'] })
                 }
             }

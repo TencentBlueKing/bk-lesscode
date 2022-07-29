@@ -100,7 +100,7 @@
                     const data = await this.$store.dispatch('nocode/form/formDetail', { formId: id })
                     const content = JSON.parse(data.content)
                     const { tableName: code, formName } = data
-                    
+
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                     this.$store.commit('nocode/nodeConfig/setInitialFieldIds', content)
                     this.formContentLoading = false
