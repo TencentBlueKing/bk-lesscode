@@ -57,7 +57,6 @@
     import { mapGetters, mapState } from 'vuex'
     import { uuid } from '@/common/util.js'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
-    import { messageError } from '@/common/bkmagic'
     import BkFlow from './flow.js'
     import PalettePanel from './palettePanel.vue'
     import NodeTemplate from './nodeTemplate.vue'
@@ -144,7 +143,7 @@
             }
         },
         computed: {
-            ...mapGetters('nocode/flow', ['flowNodeForms']),
+            ...mapGetters('nocode/flow', ['flowNodeForms', 'flowNodes']),
             ...mapState('nocode/flow', ['flowConfig'])
         },
         watch: {
@@ -255,6 +254,9 @@
                     type
                 }
                 this.$refs.flowCanvas.createNode(node)
+                this.$nextTick(() => {
+                    this.updateStoreNodes()
+                })
             },
             handleNodeMoveStop (node) {
                 try {
@@ -287,6 +289,7 @@
                 }
                 const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
                 this.canvasData.nodes.splice(index, 1, addedNode)
+                this.updateStoreNodes()
                 if (node.type === 'NORMAL') {
                     const { x, y } = node
                     const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' }, res.id)
@@ -311,6 +314,7 @@
                                 id: `node_${procNode.id}`
                             }
                         })
+                        this.updateStoreNodes()
                     })
                 }
                 this.setFlowUnDeployed()
@@ -356,9 +360,7 @@
                     }
                     return this.$store.dispatch('nocode/flow/createNode', params)
                 } catch (e) {
-                    // this.$refs.flowCanvas.removeNode(addedNode);
                     console.error(e)
-                    messageError(e.message || e)
                 }
             },
             async handleCloneNode (nodeId) {
@@ -375,6 +377,9 @@
                         nodeInfo: cloneDeep(res)
                     }
                     this.$refs.flowCanvas.createNode(addedNode)
+                    this.$nextTick(() => {
+                        this.updateStoreNodes()
+                    })
                 } catch (e) {
                     console.error(e)
                 }
@@ -442,6 +447,9 @@
                         })
                     }
                     this.setFlowUnDeployed()
+                    this.$nextTick(() => {
+                        this.updateStoreNodes()
+                    })
                 } catch (e) {
                     console.log(e)
                 }
@@ -598,6 +606,10 @@
             },
             hanldeLineConfigPanelClose () {
                 this.showLineConfigPanel = false
+            },
+            updateStoreNodes () {
+                const nodes = this.canvasData.nodes.map(item => item.nodeInfo)
+                this.$store.commit('nocode/flow/setFlowNodes', nodes)
             }
         }
     }
