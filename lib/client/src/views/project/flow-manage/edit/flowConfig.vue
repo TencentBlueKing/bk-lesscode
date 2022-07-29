@@ -125,7 +125,7 @@
                     this.deployPending = true
                     const data = {
                         can_ticket_agency: false,
-                        display_type: 'OPEN',
+                        display_type: 'INVISIBLE',
                         workflow_config: {
                             ...this.serviceData,
                             is_revocable: this.serviceData.revoke_config.type !== 0,
