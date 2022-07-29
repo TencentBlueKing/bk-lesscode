@@ -305,7 +305,10 @@
             // 选择引用或复用表单
             handleSelectForm (form) {
                 const { id, content, tableName: code, formName } = form
-                const contentArr = JSON.parse(content)
+                // 引用和复用表单都需要把itsm的字段id清空，保存时重新创建新的字段
+                const contentArr = JSON.parse(content).map(item => {
+                    return { ...item, id: null }
+                })
                 this.isUnset = false
                 this.selectFormDialogShow = false
                 if (this.selectedType === 'COPY_FORM') {
