@@ -110,11 +110,15 @@
                     const propOfOptionsData = this.lastProps['options']
                     const propOfRemoteOptionsData = this.lastProps['remoteOptions']
 
+                    console.log(this.lastProps['options'], this.lastProps['remoteOptions'], 'last')
+
                     const realOptionValue = Object.assign(
                         {},
                         _.cloneDeep(propOfOptionsData.renderValue),
                         _.cloneDeep(propOfRemoteOptionsData.renderValue)
                     )
+
+                    console.log(realOptionValue, 'real')
 
                     if (propOfOptionsData.format === 'value') {
                         // format 为 value 替换所有配置
@@ -213,7 +217,7 @@
                     ...this.lastProps,
                     [propName]: propData
                 })
-                this.syncOtherProp(propName)
+                // this.syncOtherProp(propName)
             }, 60)
         }
     }

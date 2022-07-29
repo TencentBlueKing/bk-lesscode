@@ -8,6 +8,9 @@
     width: calc(100% - 72px) !important;
     display: inline-block;
     margin-left: -1px;
+    .choose-variable {
+        vertical-align: bottom;
+    }
 }
 .add-api-link {
     display: block;
