@@ -27,7 +27,7 @@
                         </bk-select>
                     </bk-form-item>
                     <bk-form-item label="目标表单" property="tableName" class="target-form" :required="true">
-                        <!-- 如果数据处理节点由人工节点生成，且节点可引用变量不为空，则开放同步按钮 -->
+                        <!-- 如果数据处理节点由人工节点生成，且提供同步按钮 -->
                         <bk-button
                             v-if="normalNodeData.id"
                             v-bk-tooltips="`将设置【${normalNodeData.name}（${normalNodeData.id}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则`"
