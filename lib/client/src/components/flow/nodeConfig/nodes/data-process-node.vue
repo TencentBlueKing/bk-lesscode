@@ -27,9 +27,9 @@
                         </bk-select>
                     </bk-form-item>
                     <bk-form-item label="目标表单" property="tableName" class="target-form" :required="true">
-                        <!-- 如果数据处理节点由人工节点生成，且节点可引用变量不为空，则开放同步按钮 -->
+                        <!-- 如果数据处理节点由人工节点生成，且提供同步按钮 -->
                         <bk-button
-                            v-if="normalNodeData.tableName && normalNodeData.fieldList.length > 0 && relationList.length > 0"
+                            v-if="normalNodeData.id"
                             v-bk-tooltips="`将设置【${normalNodeData.name}（${normalNodeData.id}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则`"
                             class="sync-btn"
                             size="small"
@@ -354,11 +354,6 @@
             FormSection
         },
         props: {
-            createTicketNodeId: Number,
-            nodes: {
-                type: Array,
-                default: () => []
-            },
             editable: {
                 type: Boolean,
                 default: true
@@ -419,7 +414,7 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapState('nocode/nodeConfig', ['nodeData']),
             ...mapGetters('project', ['projectDetail']),
-            ...mapGetters('nocode/flow/', ['flowNodeForms']),
+            ...mapGetters('nocode/flow/', ['flowNodeForms', 'flowNodes']),
             ...mapGetters('nocode/nodeConfig', ['processorData']),
             projectId () {
                 return this.$route.params.projectId
@@ -462,7 +457,7 @@
             this.getRelationList()
             this.getApprovalNode()
             if (this.nodeData.extras.data_source_id) {
-                const normalNode = this.nodes.find(item => item.id === this.nodeData.extras.data_source_id)
+                const normalNode = this.flowNodes.find(item => item.id === this.nodeData.extras.data_source_id)
                 if (normalNode) {
                     this.normalNodeData.id = normalNode.id
                     this.normalNodeData.name = normalNode.name
@@ -605,7 +600,14 @@
             },
             // 将人工节点的字段默认设置为插入，并设置引用
             handleSyncNormalNodeFields () {
-                const { tableName, fieldList } = this.normalNodeData
+                const { id, name, tableName, fieldList } = this.normalNodeData
+                if (!tableName || fieldList.length === 0) {
+                    this.$bkMessage({
+                        theme: 'warning',
+                        message: `【${name}（${id}）】节点表单字段为空，请先配置表单`
+                    })
+                    return
+                }
                 this.getFieldList(tableName)
                 const mapping = fieldList.map(field => {
                     return {

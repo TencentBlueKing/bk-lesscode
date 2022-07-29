@@ -41,7 +41,6 @@
                 :node-id="crtNode"
                 :flow-config="flowConfig"
                 :service-data="serviceData"
-                :nodes="canvasData.nodes"
                 @close="closeConfigPanel">
             </node-config>
         </div>
@@ -70,7 +69,6 @@
                 flowPending: false,
                 deployPending: false,
                 canvasData: { nodes: [], lines: [] },
-                createTicketNodeId: '',
                 nodeConfigPanelShow: false,
                 crtNode: null
             }
@@ -100,7 +98,7 @@
                         nodes: res[0].items,
                         lines: res[1].items
                     }
-                    this.createTicketNodeId = res[0].items.find(item => item.is_first_state && item.is_builtin).id
+                    this.$store.commit('nocode/flow/setFlowNodes', this.canvasData.nodes)
                 } catch (e) {
                     console.error(e.message || e)
                 } finally {
