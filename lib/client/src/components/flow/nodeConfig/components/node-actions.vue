@@ -26,6 +26,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import dayjs from 'dayjs'
     import { mapState, mapGetters } from 'vuex'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
@@ -64,7 +65,7 @@
                 return {
                     formId,
                     flowId,
-                    pageCode: `flowpage${this.flowConfig.id}`,
+                    pageCode: `flowpage${this.flowConfig.id}${dayjs().format('HHmmss')}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
@@ -186,14 +187,15 @@
                             return
                         } else if (this.delCreateTicketPageId) { // 流程提单页被删除
                             await this.deleteCreateTicketPage()
-                            await this.updateFlowPageId()
+                            await this.updateFlowPageId(0)
                             this.$store.commit('nocode/flow/setDeletedPageId', null)
                             this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
                         }
                     } else {
                         await this.updateItsmNode()
                     }
-
+                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                     this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
 
                     this.$bkMessage({
@@ -214,6 +216,9 @@
                     if (pageId) {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                        this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+
                         this.$refs.createPageDialog.isShow = false
                         this.$bkMessage({
                             message: '节点保存并创建提单页成功',
