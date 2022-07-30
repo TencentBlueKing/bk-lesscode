@@ -9,6 +9,7 @@
     import editArea from './edit-area.vue'
     import simulator from './simulator-area.vue'
     import LC from '@/element-materials/core'
+    import { uuid } from '@/common/util'
     
     export default {
         components: {
@@ -18,7 +19,7 @@
         data () {
             return {
                 showPreview: true,
-                previewKey: new Date()
+                previewKey: uuid()
             }
         },
         created () {
@@ -34,7 +35,7 @@
                 this.showPreview = val
             },
             updatePreview () {
-                this.previewKey = new Date()
+                this.previewKey = uuid()
             }
         }
     }
