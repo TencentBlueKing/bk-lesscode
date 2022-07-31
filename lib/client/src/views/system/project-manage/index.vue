@@ -36,7 +36,7 @@
                 <ul class="bk-dropdown-list" slot="dropdown-content">
                     <!-- <li><a href="javascript:;" @click="handleCreate">空白应用</a></li>
                     <li><a href="javascript:;" @click="handleTempCreate">从模板新建</a></li> -->
-                    <li>
+                    <!-- <li>
                         <a href="javascript:;">
                             <auth-component auth="script/create">
                                 <span slot="forbid">空白应用</span>
@@ -51,6 +51,18 @@
                                 <span @click="handleTempCreate">从模板新建</span>
                             </auth-component>
                         </a>
+                    </li> -->
+                    <li>
+                        <auth-component auth="script/create">
+                            <a href="javascript:;" slot="forbid">空白应用</a>
+                            <a href="javascript:;" slot="allow" @click="handleCreate">空白应用</a>
+                        </auth-component>
+                    </li>
+                    <li>
+                        <auth-component auth="script/create">
+                            <a href="javascript:;" slot="forbid">从模板新建</a>
+                            <a href="javascript:;" slot="allow" @click="handleTempCreate">从模板新建</a>
+                        </auth-component>
                     </li>
                 </ul>
             </bk-dropdown-menu>
@@ -423,7 +435,6 @@
                     if (this.sort !== 'createTime') {
                         this.handleSortChange(this.sort)
                     }
-                    console.error(this.projectList)
                 } catch (e) {
                     console.error(e)
                 } finally {
