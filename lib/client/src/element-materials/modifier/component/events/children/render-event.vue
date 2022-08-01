@@ -37,7 +37,7 @@
                         content: '关闭后，该事件不生效',
                         boundary: 'window'
                     }"
-                    :value="eventValue.enable"
+                    :value="eventValue.enable === undefined || eventValue.enable"
                     @change="handleEnableEvent"
                 ></bk-switcher>
             </h3>
