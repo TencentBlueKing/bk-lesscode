@@ -35,7 +35,7 @@
             ></choose-function>
             <bk-button
                 @click="getApiData"
-                :loading="isLoading"
+                :loading="isLoadingData"
                 theme="primary"
                 class="mt12"
                 size="small">
@@ -103,7 +103,8 @@
                     params: []
                 },
                 usedMethodMap: {},
-                usedVariableMap: {}
+                usedVariableMap: {},
+                isLoadingData: false
             }
         },
         computed: {
@@ -111,6 +112,14 @@
             ...mapGetters('variable', ['variableList']),
             exampleData () {
                 return { name: this.name, value: this.describe.val }
+            }
+        },
+        watch: {
+            isLoading: {
+                handler (val) {
+                    this.isLoadingData = val
+                },
+                immediate: true
             }
         },
         created () {
@@ -323,7 +332,7 @@
                 }
                 
                 try {
-                    this.$emit('update:isLoading', true)
+                    this.toggleLoading(true)
                     const sandBox = this.createSandBox(this.usedVariableMap)
                     const res = await sandBox.exec(methodStr, this.remoteData.params)
                     let message = this.remoteValidate(res)
@@ -345,12 +354,17 @@
                         limit: 1
                     })
                 } finally {
-                    this.$emit('update:isLoading', false)
+                    this.toggleLoading(false)
                 }
             },
 
             handleShowExample () {
                 this.$refs.example.isShow = true
+            },
+
+            toggleLoading (val) {
+                this.isLoadingData = val
+                this.$emit('update:isLoading', val)
             }
         }
     }
