@@ -99,7 +99,7 @@
                         <auth-button
                             text
                             :permission="row.hasPerm"
-                            auth="script/execute"
+                            auth="develop_app"
                             :resource-id="row.id"
                             :disabled="row.isExecuteDisable"
                             class="projectname"
@@ -132,7 +132,7 @@
                     <auth-button
                         text
                         :permission="row.hasPerm"
-                        auth="script/execute"
+                        auth="develop_app"
                         :resource-id="row.id"
                         :disabled="row.isExecuteDisable"
                         class="edit-btn"
@@ -142,7 +142,7 @@
                     <auth-button
                         text
                         :permission="row.hasPerm"
-                        auth="script/execute"
+                        auth="develop_app"
                         :resource-id="row.id"
                         :disabled="row.isExecuteDisable"
                         class="preview-btn"
@@ -166,37 +166,37 @@
                             <li><a href="javascript:;" @click="handleCopy(row)">复制</a></li>
                             <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a></li> -->
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="script/create">
+                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">下载源码</a>
                                     <a href="javascript:;" slot="allow" @click="handleDownloadSource(row)">下载源码</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="script/create">
+                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">页面管理</a>
                                     <a href="javascript:;" slot="allow" @click="handleGotoPage(row.id)">页面管理</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="script/create">
+                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">重命名</a>
                                     <a href="javascript:;" slot="allow" @click="handleRename(row)">重命名</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="script/create">
+                                <auth-component :permission="row.hasPerm" auth="deploy_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">部署</a>
                                     <a href="javascript:;" slot="allow" @click="handleRelease(row.id)">部署</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="script/create">
+                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">复制</a>
                                     <a href="javascript:;" slot="allow" @click="handleCopy(row)">复制</a>
                                 </auth-component>
                             </li>
                             <li v-if="isPlatformAdmin">
-                                <auth-component :permission="row.hasPerm" auth="script/create">
+                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">设为模板</a>
                                     <a href="javascript:;" slot="allow" @click="handleSetTemplate(row)">设为模板</a>
                                 </auth-component>

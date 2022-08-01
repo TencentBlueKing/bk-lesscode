@@ -27,7 +27,8 @@
                         <bk-button class="preview-btn" @click="handlePreview(project.id)">预览</bk-button> -->
                         <auth-button
                             :permission="project.hasPerm"
-                            auth="script/execute"
+                            auth="develop_app"
+                            :resource-id="project.id"
                             class="edit-btn"
                             theme="primary"
                             @click="handleGotoPage(project.id)">
@@ -35,10 +36,11 @@
                         </auth-button>
                         <auth-button
                             :permission="project.hasPerm"
-                            auth="script/execute"
+                            auth="develop_app"
+                            :resource-id="project.id"
                             class="preview-btn"
                             @click.stop="handlePreview(project.id)">
-                            开发应用
+                            预览
                         </auth-button>
                     </div>
                 </div>
@@ -60,31 +62,31 @@
                                 <!-- <li><a href="javascript:;" @click="handleCopy(project)">复制</a></li> -->
                                 <!-- <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li> -->
                                 <li>
-                                    <auth-component :permission="project.hasPerm" auth="script/create">
+                                    <auth-component :permission="project.hasPerm" auth="develop_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">下载源码</a>
                                         <a href="javascript:;" slot="allow" @click="handleDownloadSource(project)">下载源码</a>
                                     </auth-component>
                                 </li>
                                 <li>
-                                    <auth-component :permission="project.hasPerm" auth="script/create">
+                                    <auth-component :permission="project.hasPerm" auth="develop_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">页面管理</a>
                                         <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">页面管理</a>
                                     </auth-component>
                                 </li>
                                 <li>
-                                    <auth-component :permission="project.hasPerm" auth="script/create">
+                                    <auth-component :permission="project.hasPerm" auth="develop_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">重命名</a>
                                         <a href="javascript:;" slot="allow" @click="handleRename(project)">重命名</a>
                                     </auth-component>
                                 </li>
                                 <li>
-                                    <auth-component :permission="project.hasPerm" auth="script/create">
+                                    <auth-component :permission="project.hasPerm" auth="deploy_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">部署</a>
                                         <a href="javascript:;" slot="allow" @click="handleRelease(project.id)">部署</a>
                                     </auth-component>
                                 </li>
                                 <li>
-                                    <auth-component :permission="project.hasPerm" auth="script/create">
+                                    <auth-component :permission="project.hasPerm" auth="develop_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">复制</a>
                                         <a href="javascript:;" slot="allow" @click="handleCopy(project)">复制</a>
                                     </auth-component>
@@ -105,7 +107,7 @@
                         v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
                         @click.stop="handleClickFavorite(project)"
                     ></i> -->
-                    <auth-component :permission="project.hasPerm" auth="script/create">
+                    <auth-component :permission="project.hasPerm" auth="develop_app" :resource-id="project.id">
                         <i slot="forbid" custom-forbid-container-cls="forbid-container-cls" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
                             v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
                         ></i>

@@ -61,9 +61,7 @@
                 type: [
                     Number, String
                 ]
-            },
-            scopeType: String,
-            scopeId: String
+            }
         },
         data () {
             return {
@@ -98,34 +96,46 @@
             /**
              * @desc 主动鉴权，指定资源和资源权限
              */
-            fetchPermission () {
+            async fetchPermission () {
                 this.isLoading = true
-                console.error('fetchPermission')
-                const data = {
-                    'pass': false,
-                    'applyUrl': '',
-                    'requiredPermissions': [
-                        {
-                            'actionName': '脚本新建',
-                            'relatedResources': [
-                                {
-                                    'resourceTypeName': '业务',
-                                    'resourceName': '互娱效能协同中心'
-                                }
-                            ]
+                // const data = {
+                //     'pass': false,
+                //     'applyUrl': '',
+                //     'requiredPermissions': [
+                //         {
+                //             'actionName': '脚本新建',
+                //             'relatedResources': [
+                //                 {
+                //                     'resourceTypeName': '业务',
+                //                     'resourceName': '互娱效能协同中心'
+                //                 }
+                //             ]
+                //         }
+                //     ]
+                // }
+                // setTimeout(() => {
+                //     this.isLoading = false
+                //     this.hasPermission = data.pass
+                //     this.authResult = data
+                // }, 3000)
+                try {
+                    const resData = await this.$store.dispatch('iam/getPermForAction', {
+                        data: {
+                            action: this.auth,
+                            resourceId: this.resourceId
                         }
-                    ]
-                }
-                setTimeout(() => {
+                    })
+                    this.hasPermission = resData.pass
+                    this.authResult = resData
+                } catch (e) {
+                    console.error(e)
+                } finally {
                     this.isLoading = false
-                    this.hasPermission = data.pass
-                    this.authResult = data
-                }, 3000)
+                }
+
                 // PermissionCheckService.fetchPermission({
                 //     operation: this.auth,
                 //     resourceId: this.resourceId,
-                //     scopeType: window.PROJECT_CONFIG.SCOPE_TYPE,
-                //     scopeId: window.PROJECT_CONFIG.SCOPE_ID,
                 //     returnPermissionDetail: true
                 // }).then((data) => {
                 //     this.hasPermission = data.pass
@@ -151,10 +161,8 @@
                     return
                 }
                 permissionDialog({
-                    operation: this.auth,
-                    resourceId: this.resourceId,
-                    scopeType: this.scopeType,
-                    scopeId: this.scopeId
+                    action: this.auth,
+                    resourceId: this.resourceId
                 }, this.authResult)
             }
         }

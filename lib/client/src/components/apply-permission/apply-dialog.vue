@@ -62,6 +62,8 @@
     // import PermissionCheckService from '@service/permission-check'
     import AskPermission from './index'
 
+    import store from '@/store'
+
     export default {
         components: {
             AskPermission
@@ -95,16 +97,26 @@
             /**
              * @desc 申请资源权限
              */
-            fetchPermission () {
+            async fetchPermission () {
+                // console.error('apply-dialog handleCheckPermission')
+                // console.warn(this.authParams)
                 this.isLoading = true
-                console.error('fetchPermission')
-                setTimeout(() => {
+                // setTimeout(() => {
+                //     this.isLoading = false
+                // }, 3000)
+                try {
+                    const resData = await store.dispatch('iam/getPermForAction', {
+                        data: this.authParams
+                    })
+                    this.hasPermission = resData.pass
+                    this.authResult = resData
+                } catch (e) {
+                    console.error(e)
+                } finally {
                     this.isLoading = false
-                }, 3000)
+                }
                 // PermissionCheckService.fetchPermission({
                 //     ...this.authParams,
-                //     scopeType: this.authParams.scopeType || window.PROJECT_CONFIG.SCOPE_TYPE,
-                //     scopeId: this.authParams.scopeId || window.PROJECT_CONFIG.SCOPE_ID,
                 //     returnPermissionDetail: true
                 // }).then((data) => {
                 //     this.authResult = data
@@ -117,6 +129,7 @@
              * @desc 供外部调用，显示权限申请弹框
              */
             show () {
+                console.error('show')
                 this.isShowDialog = true
                 if (this.authParams && !this.authResult.requiredPermissions) {
                     this.fetchPermission()
