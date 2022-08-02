@@ -30,7 +30,7 @@
                     <router-link tag="div" class="nav-item" to="/function-market">
                         <i class="bk-drag-icon bk-drag-function-fill"></i>函数市场
                     </router-link>
-                    <div v-if="isPlatformAdmin">
+                    <!-- <div v-if="isPlatformAdmin">
                         <div class="nav-parent" v-if="!asideFolded || asideHover">
                             平台管理
                         </div>
@@ -54,7 +54,29 @@
                         <router-link tag="div" class="nav-item" to="/op/stats/comp">
                             <i class="bk-drag-icon bk-drag-compoment-count"></i>自定义组件数据
                         </router-link>
+                    </div> -->
+                    <div class="nav-parent" v-if="!asideFolded || asideHover">
+                        平台管理
                     </div>
+                    <auth-router-link auth="manage_platform" :permission="false" tag="div" class="nav-item" to="/pm/platform/project-member">
+                        <i class="bk-drag-icon bk-drag-member"></i>平台管理员
+                    </auth-router-link>
+
+                    <div class="nav-parent" v-if="!asideFolded || asideHover">
+                        运营数据
+                    </div>
+                    <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/user">
+                        <i class="bk-drag-icon bk-drag-user-count"></i>用户数据
+                    </auth-router-link>
+                    <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/project">
+                        <i class="bk-drag-icon bk-drag-project-count"></i>应用数据
+                    </auth-router-link>
+                    <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/func">
+                        <i class="bk-drag-icon bk-drag-fc-count"></i>函数数据
+                    </auth-router-link>
+                    <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/comp">
+                        <i class="bk-drag-icon bk-drag-compoment-count"></i>自定义组件数据
+                    </auth-router-link>
                 </nav>
             </div>
             <div class="side-ft">
