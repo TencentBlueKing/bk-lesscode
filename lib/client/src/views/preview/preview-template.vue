@@ -196,7 +196,7 @@
         }
         .simulator-preview {
             z-index: 0;
-            absolute: absolute;
+            position: absolute;
         }
     }
 </style>
