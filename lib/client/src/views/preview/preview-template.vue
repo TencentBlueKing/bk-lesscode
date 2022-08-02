@@ -12,7 +12,10 @@
 <script>
     import Vue from 'vue'
     import httpVueLoader from '@/common/http-vue-loader'
+    import * as swiperAni from '@/common/swiper.animate.min.js'
+    import '@/css/animate.min.css'
 
+    window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []
     window.registerPreview = function (callback) {
         window.previewCustomCompontensPlugin.push(callback)
@@ -141,7 +144,8 @@
                             projectId: projectId,
                             versionId: this.detail.versionId,
                             pageType: 'previewSingle',
-                            fromPageCode: this.detail.fromPageCode
+                            fromPageCode: this.detail.fromPageCode,
+                            platform: this.detail?.templateType
                         })
                         this.renderType = this.detail?.templateType
                     }
@@ -187,5 +191,12 @@
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        .device-phone-frame {
+            z-index: 1;
+        }
+        .simulator-preview {
+            z-index: 0;
+            absolute: absolute;
+        }
     }
 </style>
