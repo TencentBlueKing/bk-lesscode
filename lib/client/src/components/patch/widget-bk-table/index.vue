@@ -294,9 +294,7 @@
                         if (pagination === undefined) {
                             this.renderPagination = undefined
                         } else if (JSON.stringify(pagination) !== JSON.stringify(oldPagination)) {
-                            this.renderPagination = {
-                                ...pagination
-                            }
+                            this.renderPagination = JSON.parse(JSON.stringify(pagination))
                         }
                     } catch (error) {
                         this.renderPagination = undefined
