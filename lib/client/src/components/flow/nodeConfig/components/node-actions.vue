@@ -177,6 +177,7 @@
                                 return
                             }
                             field.columnId = field.meta.columnId
+                            field.disabled = true
                             delete field.meta.columnId
                             if (field.meta.data_config?.source_type === 'WORKSHEET') {
                                 field.source_type = 'WORKSHEET'
