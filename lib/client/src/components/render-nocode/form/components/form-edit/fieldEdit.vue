@@ -585,6 +585,7 @@
                         { key: 'XUANXIANG1', name: '选项1', color: '#3a84ff', isDefaultVal: true },
                         { key: 'XUANXIANG2', name: '选项2', color: '#2dcb56', isDefaultVal: false }
                     ]
+                    delete this.fieldData.meta.data_config
                     this.fieldData.kv_relation = {}
                 } else if (val === 'API') {
                     this.fieldData.choice = []
