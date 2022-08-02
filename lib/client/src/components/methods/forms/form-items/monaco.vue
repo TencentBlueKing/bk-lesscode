@@ -54,7 +54,8 @@
                     content: '自动修复 Eslint',
                     appendTo: 'parent',
                     boundary: 'window',
-                    theme: 'light'
+                    theme: 'light',
+                    placements: ['bottom-end']
                 },
                 multVal: {
                     ...FUNCTION_TIPS
@@ -71,7 +72,8 @@
                     appendTo: 'parent',
                     boundary: 'window',
                     width: 750,
-                    theme: 'light'
+                    theme: 'light',
+                    placements: ['bottom-end']
                 }
             }
         },

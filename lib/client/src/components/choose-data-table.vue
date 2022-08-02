@@ -22,7 +22,7 @@
             theme="primary"
             size="small"
             :disabled="!value"
-            :loading="isLoading"
+            :loading="isLoadingData"
             @click="handleSelectTable(value)"
         >获取数据</bk-button>
     </section>
@@ -46,10 +46,12 @@
 
         setup (props, { emit }) {
             const isLoadingList = ref(false)
+            const isLoadingData = ref(false)
             const projectId = router?.currentRoute?.params?.projectId
             const tableList = ref([])
 
             const toggleLoading = (val) => {
+                isLoadingData.value = val
                 emit('update:isLoading', val)
             }
 
@@ -104,6 +106,7 @@
 
             return {
                 isLoadingList,
+                isLoadingData,
                 tableList,
                 handleSelectTable,
                 handleCreate,
