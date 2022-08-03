@@ -79,7 +79,7 @@
 
             bkTableFormatter (row, column, cellValue, index) {
                 if (typeof cellValue === 'object') {
-                    return JSON.stringify(cellValue)
+                    return cellValue ? JSON.stringify(cellValue) : '--'
                 } else if (/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/.test(cellValue)) {
                     return cellValue ? dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss') : '--'
                 } else {
