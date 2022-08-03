@@ -59,8 +59,7 @@
     </bk-dialog>
 </template>
 <script>
-    // import PermissionCheckService from '@service/permission-check'
-    import AskPermission from './index'
+    import AskPermission from './ask-permission'
 
     import store from '@/store'
 
