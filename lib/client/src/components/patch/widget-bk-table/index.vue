@@ -255,7 +255,8 @@
                 default: () => ({})
             },
             tableName: String,
-            paginationType: String
+            paginationType: String,
+            dataValueType: String
         },
 
         data () {
@@ -288,15 +289,59 @@
 
         watch: {
             pagination: {
-                handler (pagination) {
-                    this.renderPagination = pagination
+                handler (pagination, oldPagination) {
+                    try {
+                        if (pagination === undefined) {
+                            this.renderPagination = undefined
+                        } else if (JSON.stringify(pagination) !== JSON.stringify(oldPagination)) {
+                            this.renderPagination = JSON.parse(JSON.stringify(pagination))
+                        }
+                    } catch (error) {
+                        this.renderPagination = undefined
+                    }
                 },
                 immediate: true,
                 deep: true
             },
+            // fix vue same old value
+            'pagination.count': {
+                handler (count) {
+                    if (this.renderPagination) {
+                        this.renderPagination.count = count
+                    }
+                }
+            },
+            // fix vue same old value
+            'pagination.current': {
+                handler (current) {
+                    if (this.renderPagination) {
+                        this.renderPagination.current = current
+                    }
+                }
+            },
+            // fix vue same old value
+            'pagination.limit': {
+                handler (limit) {
+                    if (this.renderPagination) {
+                        this.renderPagination.limit = limit
+                    }
+                }
+            },
             data: {
                 handler () {
-                    this.calcRenderData()
+                    if (['none', 'local'].includes(this.paginationType)
+                        || !this.pagination
+                        || (this.paginationType === 'remote'
+                            && this.dataValueType === 'table-data-source')) {
+                        this.calcRenderData()
+                    } else {
+                        this.renderData = this.data
+                    }
+                    if (this.paginationType === 'remote'
+                        && ['array', 'table-data-source'].includes(this.dataValueType)
+                        && this.renderPagination) {
+                        this.renderPagination.count = this.data.length
+                    }
                 },
                 immediate: true,
                 deep: true
@@ -407,8 +452,8 @@
                         `/data-source/user/tableName/${this.tableName}`,
                         {
                             params: {
-                                page: this.renderPagination.current,
-                                pageSize: this.renderPagination.limit,
+                                page: this.renderPagination?.current,
+                                pageSize: this.renderPagination?.limit,
                                 sortKey: this.sortObject.key,
                                 sortValue: this.sortObject.value,
                                 ...this.queryObject
@@ -417,7 +462,9 @@
                     )
                     .then(({ data }) => {
                         this.renderData = data.list || []
-                        this.renderPagination.count = data.count || 0
+                        if (this.renderPagination) {
+                            this.renderPagination.count = data.count || 0
+                        }
                     })
                     .finally(() => {
                         this.isLoading = false
@@ -448,13 +495,16 @@
             },
 
             handleFilter ({ key, value }) {
-                this.renderPagination.current = 1
+                if (this.renderPagination) {
+                    this.renderPagination.current = 1
+                }
                 if (['', undefined, null].includes(value)) {
                     delete this.queryObject[key]
                 } else {
                     this.queryObject[key] = value
                 }
-                if (this.paginationType === 'local') {
+                // 远程非数据表情况下需要用户自行处理
+                if (['none', 'local'].includes(this.paginationType) || !this.pagination) {
                     this.calcRenderData()
                 } else if (this.paginationType === 'remote' && this.tableName) {
                     this.getTableDataFromApi()
@@ -468,10 +518,13 @@
                     ascending: 'ASC',
                     descending: 'DESC'
                 }
-                this.renderPagination.current = 1
+                if (this.renderPagination) {
+                    this.renderPagination.current = 1
+                }
                 this.sortObject.key = prop
                 this.sortObject.value = sortMap[order]
-                if (this.paginationType === 'local') {
+                // 远程非数据表情况下需要用户自行处理
+                if (['none', 'local'].includes(this.paginationType) || !this.pagination) {
                     this.calcRenderData()
                 } else if (this.paginationType === 'remote' && this.tableName) {
                     this.getTableDataFromApi()

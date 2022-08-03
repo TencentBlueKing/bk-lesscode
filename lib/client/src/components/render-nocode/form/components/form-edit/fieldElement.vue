@@ -51,7 +51,6 @@
         methods: {
             getDefaultVal (val) {
                 const fieldsValue = {}
-                console.log(val.default)
                 if ('default' in val) {
                     if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE', 'FILE'].includes(val.type)) {
                         fieldsValue[val.key] = val.default ? val.default.split(',') : []

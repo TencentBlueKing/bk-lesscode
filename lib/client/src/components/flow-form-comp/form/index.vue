@@ -60,8 +60,8 @@
         },
         created () {
             this.initFormValue()
+            this.parseFieldConditions()
             this.handleParseCondition = debounce(this.parseFieldConditions, 300)
-            this.handleParseCondition()
         },
         methods: {
             // 获取变量value，优先去props传入的value值，若没有则取默认值

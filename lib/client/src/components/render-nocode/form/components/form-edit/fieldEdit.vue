@@ -585,7 +585,7 @@
                         { key: 'XUANXIANG1', name: '选项1', color: '#3a84ff', isDefaultVal: true },
                         { key: 'XUANXIANG2', name: '选项2', color: '#2dcb56', isDefaultVal: false }
                     ]
-                    this.fieldData.api_info = {}
+                    delete this.fieldData.meta.data_config
                     this.fieldData.kv_relation = {}
                 } else if (val === 'API') {
                     this.fieldData.choice = []
@@ -599,7 +599,6 @@
                     this.fieldData.kv_relation = { key: '', name: '' }
                 } else if (val === 'WORKSHEET') {
                     this.fieldData.choice = []
-                    this.fieldData.api_info = {}
                     this.fieldData.kv_relation = {}
                     this.fieldData.meta.data_config = {
                         formId: '',

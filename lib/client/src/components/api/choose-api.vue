@@ -98,11 +98,14 @@
                 }
                 if (isEmpty(data)) {
                     node.data = [{
-                        id: 'lesscode-empty-node' + uuid(),
                         name: '暂无数据',
                         disabled: true
                     }]
                 }
+                node.data.forEach((item) => {
+                    item.originId = item.id
+                    item.id = uuid()
+                })
                 if (isLeaf || isEmpty(data)) {
                     node.leaf = node.data.map(x => x.id)
                 }
@@ -150,7 +153,7 @@
                 return store
                     .dispatch('api/getApiList', {
                         projectId,
-                        categoryId: item.id
+                        categoryId: item.originId
                     })
                     .then((res) => {
                         return getNodeValue(res, true)
