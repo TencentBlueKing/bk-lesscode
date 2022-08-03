@@ -118,10 +118,10 @@
                     }
                     if ('imageRange' in field && ['MULTISELECT', 'CHECKBOX', 'IMAGE'].includes(field.type)) {
                         let msg = ''
-                        if (field.imageRange.isMin && fieldVal.length < Number(field.imageRange.minNum)) {
+                        if (field.imageRange?.isMin && fieldVal.length < Number(field.imageRange.minNum)) {
                             msg = `${field.name}表单的选项值数目不能小于${field.imageRange.minNum}`
                         }
-                        if (field.imageRange.isMax && fieldVal.length > Number(field.imageRange.maxNum)) {
+                        if (field.imageRange?.isMax && fieldVal.length > Number(field.imageRange.maxNum)) {
                             msg = `${field.name}表单的选项值数目不能大于${field.imageRange.maxNum}`
                         }
                         if (msg) {

@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        :title="`表格【${[title]}】必填条件设置`"
+        :title="`【${[title]}】字段必填条件设置`"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"
