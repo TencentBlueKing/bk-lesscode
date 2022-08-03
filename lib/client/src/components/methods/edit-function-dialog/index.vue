@@ -360,7 +360,7 @@
         bottom: 0;
         right: 0;
         background: rgba(0, 0, 0, 0.6);
-        z-index: 2000;
+        z-index: 1000;
         color: #63656e;
         .function-main {
             position: absolute;

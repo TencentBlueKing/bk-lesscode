@@ -88,13 +88,7 @@
                 const defaultVal = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE'].includes(type)
                     ? ''
                     : cloneDeep(field.default)
-                const key = pinyin(field.name, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                })
-                    .join('_')
-                    .toUpperCase()
-                    .concat(`_${columnId}`)
+                const key = this.generateKey(field.name, columnId)
                 const config = {
                     columnId, // lesscode特定字段
                     type, // 类型
@@ -144,14 +138,11 @@
                     this.$emit('select', field, index)
                     this.selectedIndex = index
                 } else if (type === 'copy') {
-                    const key = pinyin(field.name, {
-                        style: pinyin.STYLE_NORMAL,
-                        heteronym: false
-                    })
-                        .join('_')
-                        .toUpperCase()
-                        .concat(uuid(4))
+                    const columnId = uuid(8)
+                    const key = this.generateKey(field.name, columnId)
+                    field.columnId = columnId
                     field.key = key
+                    field.id = null
                     this.$emit('copy', field, index)
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
@@ -190,6 +181,15 @@
                     isMax: false,
                     maxNum: 2
                 } : ''
+            },
+            generateKey (name, columnId) {
+                return pinyin(name, {
+                    style: pinyin.STYLE_NORMAL,
+                    heteronym: false
+                })
+                    .join('_')
+                    .toUpperCase()
+                    .concat(`_${columnId}`)
             },
             showFormPanel () {
                 this.curTemplateData.layoutType !== 'empty' && this.setCurTemplateData({

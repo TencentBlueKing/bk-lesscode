@@ -136,7 +136,7 @@
                     this.nodesConfig[this.activeNode].tableConfig = val
                     this.tableConfig = val
                 }
-                this.$store.commit('nocode/formSetting/setTableFields', this.nodesConfig)
+                this.$store.commit('nocode/formSetting/setTableFields', cloneDeep(this.nodesConfig))
             }
         }
     }
