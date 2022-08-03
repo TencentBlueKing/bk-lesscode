@@ -346,6 +346,10 @@
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
     import FieldValue from '@/components/render-nocode/form/components/form-edit/fieldValue.vue'
 
+    const CAN_NOT_USE_CITE_VAR_TYPE = [
+        'TABLE', 'LINK', 'IMAGE', 'DESC', 'DIVIDER', 'FORMULA', 'AUTO-NUMBER'
+    ]
+
     export default {
         name: 'DataProcessNode',
         components: {
@@ -609,7 +613,7 @@
                     return
                 }
                 this.getFieldList(tableName)
-                const mapping = fieldList.map(field => {
+                const mapping = fieldList.filter(item => !CAN_NOT_USE_CITE_VAR_TYPE.includes(item.type)).map(field => {
                     return {
                         key: field.key,
                         type: 'field',
