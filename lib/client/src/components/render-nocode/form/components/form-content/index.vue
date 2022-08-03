@@ -142,6 +142,7 @@
                     const key = this.generateKey(field.name, columnId)
                     field.columnId = columnId
                     field.key = key
+                    field.id = null
                     this.$emit('copy', field, index)
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
