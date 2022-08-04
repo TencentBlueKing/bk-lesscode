@@ -244,6 +244,7 @@
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
                         this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
 
                         this.$refs.createPageDialog.isShow = false

@@ -2,7 +2,7 @@
     <div class="generate-data-manage-page-btn">
         <div v-if="flowConfig.managePageIds" class="manage-page-edit">
             关联的数据管理页面:
-            <span class="page-name">
+            <span class="page-name" @click="handlePreviewPage">
                 {{ flowConfig.managePageNames }}
             </span>
             <bk-popover
@@ -36,8 +36,9 @@
     </div>
 </template>
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import dayjs from 'dayjs'
+    import { getRouteFullPath } from 'shared/route'
     import { messageError } from '@/common/bkmagic'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
@@ -48,6 +49,8 @@
         },
         computed: {
             ...mapState('nocode/flow', ['flowConfig']),
+            ...mapState('route', ['layoutPageList']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             pageData () {
                 const { id, flowName } = this.flowConfig
                 return {
@@ -88,7 +91,10 @@
                     const pageId = await this.$refs.createPageDialog.save()
                     if (typeof pageId === 'number') {
                         this.$store.commit('nocode/flow/setFlowConfig', { managePageIds: pageId })
-                        await this.updateDataManageId(pageId)
+                        await Promise.all([
+                            this.updateDataManageId(pageId),
+                            this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
+                        ])
                         this.$bkMessage({
                             theme: 'success',
                             message: '新建页面成功'
@@ -114,6 +120,13 @@
                     }
                 })
                 window.open(route.href, '__blank')
+            },
+            handlePreviewPage () {
+                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.pageId))
+                const fullPath = getRouteFullPath(pageRoute)
+                const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.pageCode}`
+                window.open(routerUrl, '_blank')
             },
             handleDeletePage () {
                 this.$bkInfo({
@@ -155,6 +168,7 @@
             text-overflow: ellipsis;
             overflow: hidden;
             color: #3a84ff;
+            cursor: pointer;
         }
     }
     .operate-icon {

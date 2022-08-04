@@ -29,7 +29,8 @@
                     @fastCreateNode="handleFastCreateNode"
                     @cloneNode="handleCloneNode"
                     @onNodeClick="handleNodeClick"
-                    @delete="handleDeleteNode">
+                    @delete="handleDeleteNode"
+                    @preview="$emit('preview')">
                 </node-template>
             </template>
         </bk-flow>

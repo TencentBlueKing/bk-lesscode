@@ -24,8 +24,19 @@
             <div class="node-name-area" :title="node.name">
                 <div :class="['name-wrapper', { 'has-label': hasCreatedPage }]">
                     <span class="name">{{ node.name }}</span>
-                    <span v-if="hasCreatedPage" class="create-page-icon">
-                        <i class="bk-drag-icon bk-drag-page" v-bk-tooltips.top="'已生成流程提单页'"></i>
+                    <span v-if="hasCreatedPage" class="create-ticket-page-icon">
+                        <i
+                            class="bk-drag-icon bk-drag-page"
+                            v-bk-tooltips.top="{
+                                allowHtml: true,
+                                content: '#create-ticket-page-tips'
+                            }"
+                            @click="$emit('preview')">
+                        </i>
+                        <div id="create-ticket-page-tips">
+                            <span>已生成流程提单页</span>
+                            <bk-button style="padding: 0" size="small" :text="true" @click="$emit('preview')">预览</bk-button>
+                        </div>
                     </span>
                     <span v-if="node.nodeInfo && node.nodeInfo.extras.data_source_id" class="system-add-icon">系统</span>
                 </div>
@@ -322,7 +333,7 @@
             white-space: nowrap;
             overflow: hidden;
         }
-        .create-page-icon {
+        .create-ticket-page-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -334,6 +345,7 @@
             background: #e1ecff;
             color: #3d81fe;
             opacity: 0.9;
+            cursor: pointer;
             &:hover {
                 color: #3a84ff;
             }
