@@ -40,7 +40,7 @@
                         :id="menuItem.url"
                         @click="handleSelect">
                         <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
-                        <span class="item-title">{{menuItem.title}}</span>
+                        <span class="item-title">{{menuItem.title}}--d</span>
                         <div slot="child" class="menu-child">
                             <bk-navigation-menu-item
                                 v-for="(childrenItem) in menuItem.children"
@@ -350,7 +350,7 @@
                 this.setCurrentVersion(version)
             },
             async getProjectList () {
-                const projectList = await this.$store.dispatch('project/my', { config: {} })
+                const projectList = await this.$store.dispatch('iam/myProject', { config: {} })
                 this.projectList = projectList
             },
             changeProject (id) {

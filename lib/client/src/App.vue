@@ -11,15 +11,21 @@
 
 <template>
     <section v-if="emptyPage" class="preview-page">
-        <apply-page v-if="isNotPermission" :auth-result="authResult" />
-        <router-view v-if="!isNotPermission" :name="topView" />
+        <not-exist v-if="isNotExist" :message="notExistMsg" />
+        <template v-else>
+            <apply-page v-if="isNotPermission" :auth-result="authResult" />
+            <router-view v-if="!isNotPermission" :name="topView" />
+        </template>
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
             <home-header v-if="homeHeaderNav"></home-header>
             <app-header v-else></app-header>
-            <apply-page v-if="isNotPermission" :auth-result="authResult" />
-            <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
+            <not-exist v-if="isNotExist" :message="notExistMsg" />
+            <template v-else>
+                <apply-page v-if="isNotPermission" :auth-result="authResult" />
+                <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
+            </template>
         </div>
         <bk-fixed-navbar v-if="!isCanvas"
             :position="position"
@@ -66,7 +72,9 @@
                 isNotPermission: false,
                 authResult: {
                     requiredPermissions: []
-                }
+                },
+                isNotExist: false,
+                notExistMsg: ''
             }
         },
 
@@ -94,6 +102,7 @@
                         this.homeHeaderNav = this.routerNameData.includes(value.matched[0].path) || this.routerNameData.includes(value.fullPath + value.name)
                     }
                     this.isNotPermission = false
+                    this.isNotExist = false
                 },
                 immediate: true
             }
@@ -103,6 +112,11 @@
             bus.$on('permission-page', this.permissionHold)
             this.$once('hook:beforeDestroy', () => {
                 bus.$off('permission-page', this.permissionHold)
+            })
+
+            bus.$on('not-exist', this.notExistHold)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('not-exist', this.notExistHold)
             })
             await this.$store.dispatch('isPlatformAdmin')
         },
@@ -121,6 +135,11 @@
             permissionHold (authResult) {
                 this.isNotPermission = true
                 this.authResult = authResult
+            },
+
+            notExistHold (msg) {
+                this.isNotExist = true
+                this.notExistMsg = msg
             }
         }
     }
