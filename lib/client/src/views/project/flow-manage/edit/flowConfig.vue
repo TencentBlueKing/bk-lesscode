@@ -23,6 +23,7 @@
                 :lines="canvasData.lines"
                 :flow-id="serviceData.workflow_id"
                 :editable="editable"
+                @preview="handleCreateTicktetPagePreview"
                 @onNodeClick="handleNodeClick">
             </flow-canvas>
         </div>
@@ -48,6 +49,7 @@
 </template>
 <script>
     import { mapState } from 'vuex'
+    import { getRouteFullPath } from 'shared/route'
     import FlowCanvas from '@/components/flow/flow-canvas/index.vue'
     import NodeConfig from '@/components/flow/nodeConfig/index.vue'
 
@@ -75,6 +77,10 @@
         },
         computed: {
             ...mapState('nocode/flow', ['flowConfig']),
+            ...mapState('route', ['layoutPageList']),
+            projectId () {
+                return this.$route.params.projectId
+            },
             editable () {
                 return this.flowConfig.deleteFlag === 0
             },
@@ -117,6 +123,15 @@
                 this.nodeConfigPanelShow = false
                 this.crtNode = null
                 this.getFlowStructData()
+            },
+            handleCreateTicktetPagePreview () {
+                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.pageId))
+                if (pageRoute) {
+                    const fullPath = getRouteFullPath(pageRoute)
+                    const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                    const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.pageCode}`
+                    window.open(routerUrl, '_blank')
+                }
             },
             async handleDeploy () {
                 try {

@@ -40,7 +40,7 @@
     </section>
 </template>
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
     import BackBtn from './components/back-btn.vue'
@@ -72,6 +72,7 @@
         },
         computed: {
             ...mapState('nocode/flow', ['flowConfig']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
             }
@@ -114,15 +115,18 @@
             async getflowConfig () {
                 try {
                     this.flowConfigLoading = true
-                    const res = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
-                    this.$store.commit('nocode/flow/setFlowConfig', res)
+                    const [flowConfig] = await Promise.all([
+                        this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId }),
+                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
+                    ])
+                    this.$store.commit('nocode/flow/setFlowConfig', flowConfig)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
                     this.flowConfigLoading = false
                 }
             },
-            // 保存到流程服务的配置
+            // 获取存到itsm的流程配置
             async getServiceData () {
                 try {
                     this.serviceDataLoading = true

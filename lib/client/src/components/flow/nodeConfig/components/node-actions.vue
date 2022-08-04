@@ -28,6 +28,7 @@
     import cloneDeep from 'lodash.clonedeep'
     import dayjs from 'dayjs'
     import { mapState, mapGetters } from 'vuex'
+    import { METHODS_WITHOUT_DATA } from 'shared/api'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
     export default {
@@ -143,6 +144,23 @@
                         id: formId,
                         type: this.formConfig.type
                     }
+                } else if (data.type === 'TASK') {
+                    if (METHODS_WITHOUT_DATA.includes(data.extras.api_info.method)) {
+                        data.extras.api_info.body = {
+                            children: [],
+                            code: '',
+                            showChildren: true,
+                            valueType: 'value'
+                        }
+                        data.extras.webhook_info.body = {
+                            content: '',
+                            raw_type: 'JSON',
+                            type: 'raw'
+                        }
+                    } else {
+                        data.extras.api_info.query = []
+                        data.extras.webhook_info.query_params = []
+                    }
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
             },
@@ -226,6 +244,7 @@
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
                         this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
 
                         this.$refs.createPageDialog.isShow = false
