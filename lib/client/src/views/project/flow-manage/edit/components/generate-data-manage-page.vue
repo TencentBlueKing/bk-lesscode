@@ -122,11 +122,13 @@
                 window.open(route.href, '__blank')
             },
             handlePreviewPage () {
-                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.pageId))
-                const fullPath = getRouteFullPath(pageRoute)
-                const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
-                const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.pageCode}`
-                window.open(routerUrl, '_blank')
+                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.managePageIds))
+                if (pageRoute) {
+                    const fullPath = getRouteFullPath(pageRoute)
+                    const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                    const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.managePageCodes}`
+                    window.open(routerUrl, '_blank')
+                }
             },
             handleDeletePage () {
                 this.$bkInfo({
