@@ -68,14 +68,18 @@
         methods: {
             getFieldsData () {
                 return this.fields.map((item) => {
-                    const { choice, id, key, type } = item
+                    const { choice, key, type } = item
                     let value = this.value[key]
                     if (type === 'IMAGE') {
                         value = this.value[key].map(item => item.path)
                     } else if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(type)) {
                         value = Array.isArray(this.value[key]) ? this.value[key].join(',') : this.value[key]
                     }
-                    return { choice, id, key, type, value }
+                    const dataItem = { key, value }
+                    if (['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO', 'TABLE'].includes(type)) {
+                        dataItem.choice = choice
+                    }
+                    return dataItem
                 })
             },
             handleContinue () {
@@ -146,7 +150,7 @@
                     const data = this.getFieldsData()
                     if (this.type === 'FLOW') {
                         const params = {
-                            fields: [{ key: 'title', type: 'string', choice: [], value: 'lesscode 提单' }, ...data],
+                            fields: [{ key: 'title', value: 'lesscode 提单' }, ...data],
                             creator: this.$store.state.user.username,
                             service_id: this.serviceId,
                             meta: {

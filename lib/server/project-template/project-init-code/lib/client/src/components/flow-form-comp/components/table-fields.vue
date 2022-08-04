@@ -173,10 +173,12 @@
             tableConfig (val) {
                 this.cols = val.slice()
                 this.pagination.current = 1
+                this.pagination.count = 0
                 this.getTableData()
             },
             filtersData () {
                 this.pagination.current = 1
+                this.pagination.count = 0
                 this.getTableData()
             }
         },
@@ -198,6 +200,7 @@
                     this.tableData = res.data.list
                     this.pagination.count = res.data.count
                 } catch (e) {
+                    this.tableData = []
                     console.log(e.message || e)
                 } finally {
                     this.tableDataLoading = false

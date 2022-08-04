@@ -11,6 +11,7 @@
                 :minus-disable="true"
                 :plus-brother-disable="true"
                 :render-slot="renderSlot"
+                @minusNode="handleMinusNode"
                 @update="handleUpdate"
             />
         </section>
@@ -62,6 +63,10 @@
             const renderBodyParam = ref({})
             const bodyString = computed(() => JSON.stringify(parseScheme2Value(renderBodyParam.value, props.getParamVal), null, 4))
 
+            const handleMinusNode = (index) => {
+                emit('change', renderBodyParam.value)
+            }
+
             const handleUpdate = (param) => {
                 renderBodyParam.value = param
                 emit('change', renderBodyParam.value)
@@ -90,6 +95,7 @@
                 activeTab,
                 renderBodyParam,
                 bodyString,
+                handleMinusNode,
                 handleUpdate,
                 validate
             }
