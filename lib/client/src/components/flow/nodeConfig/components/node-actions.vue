@@ -28,6 +28,7 @@
     import cloneDeep from 'lodash.clonedeep'
     import dayjs from 'dayjs'
     import { mapState, mapGetters } from 'vuex'
+    import { METHODS_WITHOUT_DATA } from 'shared/api'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
     export default {
@@ -142,6 +143,23 @@
                     data.extras.formConfig = {
                         id: formId,
                         type: this.formConfig.type
+                    }
+                } else if (data.type === 'TASK') {
+                    if (METHODS_WITHOUT_DATA.includes(data.extras.api_info.method)) {
+                        data.extras.api_info.body = {
+                            children: [],
+                            code: '',
+                            showChildren: true,
+                            valueType: 'value'
+                        }
+                        data.extras.webhook_info.body = {
+                            content: '',
+                            raw_type: 'JSON',
+                            type: 'raw'
+                        }
+                    } else {
+                        data.extras.api_info.query = []
+                        data.extras.webhook_info.query_params = []
                     }
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
