@@ -175,7 +175,7 @@
         created () {
             const activeCallback = () => {
                 document.body.querySelectorAll('.component-wrapper').forEach($el => {
-                    $el.classList.remove('selectd')
+                    $el.classList.remove('selected')
                 })
                 this.isSideMenuSelected = false
             }

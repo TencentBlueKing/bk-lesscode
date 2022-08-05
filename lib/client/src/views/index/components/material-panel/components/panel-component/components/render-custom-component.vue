@@ -20,6 +20,7 @@
                 <group-box
                     :list="favoriteComponentList"
                     :group-name="'我的收藏'"
+                    :folded="favoriteComponentList.length < 1"
                     key="favorite">
                     <render-custom-component
                         v-for="component in favoriteComponentList"

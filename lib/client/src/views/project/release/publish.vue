@@ -172,14 +172,17 @@
                             :placeholder="versionLogPlaceholder" />
                         <p :class="$style['version-err-tips']" v-show="versionLogErrTips">{{versionLogErrTips}}</p>
                     </div>
+                    
                     <div :class="[$style['operate-btn'], $style['m-left']]">
-                        <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">{{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? `部署中...` : '部署'}}</bk-button>
+                        <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
+                            {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? `部署中...` : '部署'}}
+                        </bk-button>
                         <span :class="$style['release-tips']">由蓝鲸开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理</span>
                     </div>
                 </div>
             </div>
-            <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :deploy-id="latestInfo.deployId" :default-content="defaultContent" :status="latestInfo.status" @closeLog="closeLog"></completed-log>
-            <running-log v-if="showRunningLog" :is-show="showRunningLog" :deploy-id="latestInfo.deployId" @closeLog="closeLog" :title="`${envMap[latestInfo.env]}部署执行日志`"></running-log>
+            <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :current-app-info="currentAppInfo" :env="versionForm.env" :deploy-id="latestInfo.deployId" :default-content="defaultContent" :status="latestInfo.status" @closeLog="closeLog"></completed-log>
+            <running-log v-if="showRunningLog" :is-show="showRunningLog" :current-app-info="currentAppInfo" :env="versionForm.env" :deploy-id="latestInfo.deployId" @closeLog="closeLog" :title="`${envMap[latestInfo.env]}部署执行日志`"></running-log>
             <bk-dialog v-model="showOffline"
                 render-directive="if"
                 title="下架版本"
@@ -437,6 +440,7 @@
                 execCopy(value)
             },
             async release () {
+                // this.showRunningLog = true
                 if (this.releaseBtnDisabled) {
                     return false
                 }
@@ -466,6 +470,7 @@
                             message: '部署任务执行中'
                         })
                         await this.resetData()
+                        // 显示部署日志
                         this.showRunningLog = true
                     }
                 } catch (err) {
@@ -513,7 +518,7 @@
                 this.timer && clearInterval(this.timer)
                 this.timer = setInterval(() => {
                     this.getLatestDetail()
-                }, 5000)
+                }, 3000)
             },
             async getLatestDetail () {
                 try {
@@ -846,8 +851,13 @@
                 box-shadow: none !important;
                 border: 1px solid #C4C6CC !important;
                 border-radius: 2px;
-                .auto-textarea-input{
+                .auto-textarea-input {
                     min-height: 100px;
+
+                    &::placeholder {
+                        color: #C4C6CC;
+                        font-size: 14px;
+                    }
                 }
 
                 &.fullscreen {
@@ -869,6 +879,26 @@
                     border: none !important;
                 }
             }
+        }
+
+        .release-box {
+            background: #e7fcfa;
+            color: #979ba5;
+            height: 55px;
+            line-height: 55px;
+            border-radius: 2px;
+            padding: 0 10px;
+            max-width: 1300px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .deploy-text{
+                color: #313238;
+                font-weight: 500;
+            }
+        }
+        .failed-box{
+            background: #ffecec;
         }
     }
 </style>

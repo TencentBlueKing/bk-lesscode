@@ -69,20 +69,9 @@
 
 ## 5. 发布部署
 应用页面编辑完成后，可以直接发布部署到蓝鲸PaaS平台。
+选择需要部署的环境及版本进行部署
 
-- 第一步：需要先在蓝鲸PaaS平台创建“源码管理”类型为“蓝鲸可视化开发平台提供源码”的应用或应用模块
-
-    例如：应用名为“lesscodeapp10”，模块名为“lesscodedemo”
-
-    <img src="../../../images/help/page4.png" alt="grid" width="540" class="help-img">
-
-- 第二步：在"应用" -> "发布部署"页面，绑定第一步创建的蓝鲸应用及模块
-
-    <img src="../../../images/help/page7.png" alt="grid" width="540" class="help-img">
-
-- 第三步：选择需要部署的环境及版本进行部署
-
-    <img src="../../../images/help/page8.png" alt="grid" width="540" class="help-img">
+<img src="../../../images/help/page8.png" alt="grid" width="540" class="help-img">
 
 ## 6. 二次开发
 如果你对拖拽出来的页面需要进行二次开发，可参考如下方式进行：

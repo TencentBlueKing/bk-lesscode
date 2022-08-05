@@ -1,11 +1,12 @@
 <template>
     <monaco
-        :value="form.funcBody"
+        :value="renderCode"
         :height="height"
         :proposals="proposals"
         ref="monaco"
         @change="change">
         <template v-slot:tools>
+            <i class="bk-drag-icon bk-drag-info-tips icon-style" v-bk-tooltips="functionTips"></i>
             <i class="bk-drag-icon bk-drag-fix icon-style" @click="fixMethod" v-bk-tooltips="fixMethodTips"></i>
             <slot name="tools"></slot>
         </template>
@@ -17,7 +18,7 @@
     import monaco from '@/components/monaco'
     import mixins from './form-item-mixins'
     import { mapActions } from 'vuex'
-    import { FUNCTION_TIPS } from 'shared'
+    import { FUNCTION_TIPS, FUNCTION_TYPE } from 'shared/function'
     import LC from '@/element-materials/core'
     import {
         determineShowPropInnerVariable,
@@ -51,29 +52,48 @@
             return {
                 fixMethodTips: {
                     content: '自动修复 Eslint',
-                    theme: 'light',
-                    placements: ['top'],
                     appendTo: 'parent',
-                    boundary: 'window'
+                    boundary: 'window',
+                    theme: 'light',
+                    placements: ['bottom-end']
                 },
                 multVal: {
                     ...FUNCTION_TIPS
                 },
-                proposals: []
+                proposals: [],
+                renderCode: ''
+            }
+        },
+
+        computed: {
+            functionTips () {
+                return {
+                    content: `<pre class="function-tips">${FUNCTION_TIPS[this.form.funcType]}</pre>`,
+                    appendTo: 'parent',
+                    boundary: 'window',
+                    width: 750,
+                    theme: 'light',
+                    placements: ['bottom-end']
+                }
             }
         },
 
         watch: {
             'form.funcBody' (val) {
                 // 由于函数市场选择函数或者切换函数导致的函数体不一致，需要重置状态
-                if (this.multVal[this.form.funcType] !== val) {
+                if (this.renderCode !== val) {
                     this.initMultVal()
                 }
+                this.initDefaultFunc()
             },
             'form.funcType' (type) {
                 if (this.multVal[type] !== this.form.funcBody) {
                     this.change(this.multVal[type])
                 }
+                this.initDefaultFunc()
+            },
+            functionList () {
+                this.initProposals()
             }
         },
 
@@ -89,6 +109,16 @@
                 this.multVal = {
                     ...FUNCTION_TIPS,
                     [func.funcType]: func.funcBody
+                }
+                this.renderCode = this.multVal[this.form.funcType]
+            },
+
+            initDefaultFunc () {
+                if (!this.form.id
+                    && this.form.funcType === FUNCTION_TYPE.REMOTE
+                    && this.form.funcBody === FUNCTION_TIPS[FUNCTION_TYPE.REMOTE]
+                ) {
+                    this.change(this.form.funcBody + 'return res\n')
                 }
             },
 
@@ -146,6 +176,17 @@
                                     insertText: `this.${perVariableName}${camelCase(propKey, { transform: camelCaseTransformMerge })}`
                                 })
                             }
+                        }
+                        if (propKey === 'pagination'
+                            && ['remote', 'local'].includes(renderProp?.payload?.type)
+                            && renderProp.payload.val.count.buildInVariableType !== BUILDIN_VARIABLE_TYPE_LIST[1].VAL
+                        ) {
+                            this.proposals.push({
+                                label: `lesscode.${node.componentId}.${propKey}.count`,
+                                kind: window.monaco.languages.CompletionItemKind.Property,
+                                documentation: `组件【${node.componentId}】的【${propKey}.count】属性的内置变量`,
+                                insertText: `this.${perVariableName}paginationCount`
+                            })
                         }
                     })
                     // slots 中需要展示内置变量
@@ -235,9 +276,17 @@
 
             change (funcBody) {
                 this.multVal[this.form.funcType] = funcBody
+                this.renderCode = funcBody
                 this.updateValue({ funcBody })
                 this.$emit('change', funcBody)
             }
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    /deep/ .function-tips {
+        margin: 0;
+        line-height: 16px;
+    }
+</style>

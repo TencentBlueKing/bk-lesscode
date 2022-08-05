@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "pre Hook: this runs before npm install"
+echo `npm config list`

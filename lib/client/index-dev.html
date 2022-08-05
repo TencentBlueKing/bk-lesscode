@@ -29,6 +29,7 @@
         <script>
             var STATIC_URL = '<%= htmlWebpackPlugin.options.staticUrl %>'
             var BKPAAS_ENVIRONMENT = '<%= htmlWebpackPlugin.options.BKPAAS_ENVIRONMENT %>'
+            var BK_API_URL_TMPL = '{{ BK_API_URL_TMPL }}'
         </script>
 
         <%= require('html-loader!./require-monaco.html') %>

@@ -6,33 +6,15 @@
         <choose-data-table
             class="g-mb8"
             :value="sourceData.tableName"
+            :is-loading.sync="isLoading"
             @choose="chooseTable"
             @clear="clearTable"
         />
-        <div
-            class="g-prop-sub-title g-mb6 g-mt8 subline"
-            v-bk-tooltips="{
-                content: '用于赋值的字段名，默认为 id',
-                placements: ['left-start'],
-                boundary: 'window'
-            }"
-        >id 配置</div>
-        <bk-input
-            class="g-mb8"
-            :value="sourceData.params.idKey"
-            @change="val => changeParams('idKey', val)"
-        />
-        <div
-            class="g-prop-sub-title g-mb6 g-mt8 subline"
-            v-bk-tooltips="{
-                content: '用于展示的字段名，默认为 name',
-                placements: ['left-start'],
-                boundary: 'window'
-            }"
-        >name 配置</div>
-        <bk-input
-            :value="sourceData.params.nameKey"
-            @change="val => changeParams('nameKey', val)"
+        <select-key
+            :params="sourceData.keys"
+            :options="optionList"
+            :is-loading="isLoading"
+            @change="changeParams"
         />
     </section>
 </template>
@@ -44,6 +26,7 @@
         toRefs
     } from '@vue/composition-api'
     import chooseDataTable from '@/components/choose-data-table.vue'
+    import SelectKey from './common/select-key.vue'
 
     interface Iprop {
         slotVal?: any,
@@ -53,7 +36,8 @@
 
     export default defineComponent({
         components: {
-            chooseDataTable
+            chooseDataTable,
+            SelectKey
         },
 
         props: {
@@ -82,26 +66,31 @@
                 slotConfig,
                 change
             } = toRefs<Iprop>(props)
+            const isLoading = ref(false)
             // 参数原始值
             const originSourceData = slotVal?.value?.payload?.sourceData
             // 构造此处需要使用的数据
             const sourceData = ref({
                 val: [],
                 tableName: originSourceData?.tableName,
-                params: {
-                    idKey: originSourceData?.params?.idKey || 'id',
-                    nameKey: originSourceData?.params?.nameKey || 'name'
+                keys: {
+                    idKey: originSourceData?.keys?.idKey,
+                    nameKey: originSourceData?.keys?.nameKey
                 }
             })
+            const optionList = ref([])
 
-            const chooseTable = ({ tableName, data }) => {
+            const chooseTable = ({ tableName, data, table }) => {
+                optionList.value = table?.columns.map(column => column.name)
+                sourceData.value.keys.idKey = sourceData.value.keys.idKey || optionList.value[0]
+                sourceData.value.keys.nameKey = sourceData.value.keys.nameKey || optionList.value[0]
                 sourceData.value.val = data.list
                 sourceData.value.tableName = tableName
                 triggleUpdate()
             }
 
-            const changeParams = (key, value) => {
-                sourceData.value.params[key] = value
+            const changeParams = ({ key, value }) => {
+                sourceData.value.keys[key] = value
                 triggleUpdate()
             }
 
@@ -118,8 +107,8 @@
                     payload: {
                         sourceData: {
                             tableName: sourceData.value.tableName,
-                            params: {
-                                ...sourceData.value.params
+                            keys: {
+                                ...sourceData.value.keys
                             }
                         }
                     }
@@ -129,6 +118,8 @@
 
             return {
                 sourceData,
+                optionList,
+                isLoading,
                 chooseTable,
                 changeParams,
                 clearTable
@@ -136,10 +127,3 @@
         }
     })
 </script>
-
-<style lang="postcss" scoped>
-    .subline {
-        cursor: pointer;
-        border-bottom: 1px dashed #63656E;
-    }
-</style>

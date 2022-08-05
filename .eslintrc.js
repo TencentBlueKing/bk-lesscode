@@ -29,7 +29,12 @@ module.exports = {
         ENV: false,
         monaco: false,
         ResizeSensor: false,
-        define: false
+        define: false,
+        BK_USER_MANAGE_HOST: false,
+        BK_API_URL_TMPL: false,
+        BKPAAS_ENVIRONMENT: false,
+        BK_ITSM_URL: false,
+        BK_APP_APIGW_PREFIX: false
     },
     // add your custom rules hered
     rules: {

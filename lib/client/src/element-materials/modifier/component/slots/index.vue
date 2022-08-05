@@ -53,7 +53,7 @@
                     return result
                 }
                 const config = slotConfig[slotName]
-                if (config.name.includes('layout') || config.display !== 'hidden') {
+                if (config.name?.includes('layout') || config.display !== 'hidden') {
                     result[slotName] = config
                 }
                 return result

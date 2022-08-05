@@ -464,6 +464,7 @@
                 // 调用更新方法
                 const pageData = {
                     id: this.page.id,
+                    pageName: this.page?.pageName,
                     ...fieldData
                 }
                 const res = await this.$store.dispatch('page/update', {
@@ -488,7 +489,8 @@
             },
             async saveStyle () {
                 const pageData = {
-                    id: this.page.id
+                    id: this.page.id,
+                    pageName: this.page?.pageName
                 }
                 pageData.styleSetting = JSON.stringify(this.page.styleSetting)
                 const res = await this.$store.dispatch('page/update', {

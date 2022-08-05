@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div ref="componentToolRef">
         <div
             ref="hoverRef"
             :class="$style['tools-hover']"
@@ -42,10 +42,12 @@
     </div>
 </template>
 <script>
+    import store from '@/store'
     import {
         reactive,
         toRefs,
-        ref
+        ref,
+        onMounted
     } from '@vue/composition-api'
     import useActiveParent from './hooks/use-active-parent'
     import useSaveTemplate from './hooks/use-save-template'
@@ -66,6 +68,10 @@
 
     export default {
         setup () {
+            const platform = store.getters['page/platform']
+
+            const toolContainer = platform === 'MOBILE' ? '#mobileDrawContent' : '#drawTarget'
+
             const state = reactive({
                 hoverStyles: hideStyles,
                 activeStyles: hideStyles
@@ -73,6 +79,7 @@
 
             const hoverRef = ref()
             const activeRef = ref()
+            const componentToolRef = ref()
 
             // 选中父级容器组件
             const handleSelectParent = useActiveParent()
@@ -101,7 +108,7 @@
                     top: containerTop,
                     right: containerRight,
                     left: containerLeft
-                } = document.body.querySelector('#drawTarget').getBoundingClientRect()
+                } = document.body.querySelector(toolContainer).getBoundingClientRect()
 
                 const {
                     top,
@@ -140,7 +147,7 @@
                 const {
                     top: containerTop,
                     left: containerLeft
-                } = document.body.querySelector('#drawTarget').getBoundingClientRect()
+                } = document.body.querySelector(toolContainer).getBoundingClientRect()
                 const {
                     top,
                     left
@@ -153,6 +160,12 @@
                     zIndex: hoverZIndex
                 }
             })
+
+            /** transfer dom 防止移动端overflow: hidden导致的无法显示问题 */
+            onMounted(() => {
+                const wrapper = document.querySelector(toolContainer)
+                wrapper.append(componentToolRef.value)
+            })
             
             return {
                 ...toRefs(state),
@@ -160,6 +173,7 @@
                 activeComponentData,
                 hoverRef,
                 activeRef,
+                componentToolRef,
                 handleSaveTemplate,
                 handleSelectParent,
                 handleRemove,
