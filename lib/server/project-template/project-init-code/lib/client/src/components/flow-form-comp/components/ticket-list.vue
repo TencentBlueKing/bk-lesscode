@@ -118,7 +118,10 @@
                     if (key === 'sns' && val) {
                         params.sns = [val]
                     }
-                    if (['creator', 'status'].includes(key) && val) {
+                    if (key === 'status' && val) {
+                        params.current_status__in = [val]
+                    }
+                    if (key === 'creator' && val) {
                         params[key] = val
                     }
                 })

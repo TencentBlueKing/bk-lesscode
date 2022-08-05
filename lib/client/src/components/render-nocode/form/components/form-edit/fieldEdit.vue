@@ -605,7 +605,7 @@
                         tableName: '',
                         field: '',
                         conditions: {
-                            connector: 'and',
+                            type: 'and',
                             expressions: []
                         }
                     }
