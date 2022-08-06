@@ -207,7 +207,15 @@
                     <div v-else>
                         暂无应用
                         <span v-show="!filter.length || filter === 'my'">
-                            ，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link>
+                            ，
+                            <!-- <bk-link theme="primary" @click="handleCreate">立即创建</bk-link> -->
+                            <auth-button
+                                text
+                                theme="primary"
+                                auth="create_app"
+                                @click="handleCreate">
+                                立即创建
+                            </auth-button>
                         </span>
                     </div>
                 </bk-exception>
