@@ -38,13 +38,13 @@
     }
 }
 
-.g-no-permission {
+/* .g-no-permission {
     color: #b9bbc1 !important;
     cursor: not-allowed !important;
     &:hover {
         color: #b9bbc1 !important;
     }
-}
+} */
 
 .g-page-tab{
     position: relative;

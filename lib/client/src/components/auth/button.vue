@@ -98,26 +98,6 @@
              */
             async fetchPermission () {
                 this.isLoading = true
-                // const data = {
-                //     'pass': false,
-                //     'applyUrl': '',
-                //     'requiredPermissions': [
-                //         {
-                //             'actionName': '脚本新建',
-                //             'relatedResources': [
-                //                 {
-                //                     'resourceTypeName': '业务',
-                //                     'resourceName': '互娱效能协同中心'
-                //                 }
-                //             ]
-                //         }
-                //     ]
-                // }
-                // setTimeout(() => {
-                //     this.isLoading = false
-                //     this.hasPermission = data.pass
-                //     this.authResult = data
-                // }, 3000)
                 try {
                     const resData = await this.$store.dispatch('iam/getPermForAction', {
                         data: {
@@ -132,18 +112,6 @@
                 } finally {
                     this.isLoading = false
                 }
-
-                // PermissionCheckService.fetchPermission({
-                //     operation: this.auth,
-                //     resourceId: this.resourceId,
-                //     returnPermissionDetail: true
-                // }).then((data) => {
-                //     this.hasPermission = data.pass
-                //     this.authResult = data
-                // })
-                //     .finally(() => {
-                //         this.isLoading = false
-                //     })
             },
             /**
              * @desc 判断预鉴权逻辑

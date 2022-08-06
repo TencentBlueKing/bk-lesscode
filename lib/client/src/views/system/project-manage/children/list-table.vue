@@ -92,13 +92,9 @@
             <bk-table-column label="应用名称" prop="projectName" min-width="210" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['name-content', { favorite: row.favorite }]">
-                        <!-- <bk-link theme="primary" class="projectname"
-                            @click="handleGotoPage(row.id)">
-                            {{row.projectName}}--{{row.hasPerm}}
-                        </bk-link> -->
                         <auth-button
                             text
-                            :permission="row.hasPerm"
+                            :permission="row.canDevelop"
                             auth="develop_app"
                             :resource-id="row.id"
                             :disabled="row.isExecuteDisable"
@@ -106,7 +102,7 @@
                             @click="handleGotoPage(row.id)">
                             {{row.projectName}}
                         </auth-button>
-                        <span class="favorite-btn" v-if="row.hasPerm">
+                        <span class="favorite-btn" v-if="row.canDevelop">
                             <i :class="['bk-drag-icon', `bk-drag-favorite${row.favorite ? '' : '-o' }`]"
                                 v-bk-tooltips.top="{ content: row.favorite ? '取消收藏' : '添加收藏' }"
                                 @click.stop="handleClickFavorite(row)"
@@ -131,7 +127,7 @@
                     <bk-button class="preview-btn" text @click.stop="handlePreview(row.id)">预览</bk-button> -->
                     <auth-button
                         text
-                        :permission="row.hasPerm"
+                        :permission="row.canDevelop"
                         auth="develop_app"
                         :resource-id="row.id"
                         :disabled="row.isExecuteDisable"
@@ -141,7 +137,7 @@
                     </auth-button>
                     <auth-button
                         text
-                        :permission="row.hasPerm"
+                        :permission="row.canDevelop"
                         auth="develop_app"
                         :resource-id="row.id"
                         :disabled="row.isExecuteDisable"
@@ -166,37 +162,37 @@
                             <li><a href="javascript:;" @click="handleCopy(row)">复制</a></li>
                             <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a></li> -->
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
+                                <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">下载源码</a>
                                     <a href="javascript:;" slot="allow" @click="handleDownloadSource(row)">下载源码</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
+                                <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">页面管理</a>
                                     <a href="javascript:;" slot="allow" @click="handleGotoPage(row.id)">页面管理</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
+                                <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">重命名</a>
                                     <a href="javascript:;" slot="allow" @click="handleRename(row)">重命名</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="deploy_app" :resource-id="row.id">
+                                <auth-component :permission="row.canDeploy" auth="deploy_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">部署</a>
                                     <a href="javascript:;" slot="allow" @click="handleRelease(row.id)">部署</a>
                                 </auth-component>
                             </li>
                             <li>
-                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
+                                <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">复制</a>
                                     <a href="javascript:;" slot="allow" @click="handleCopy(row)">复制</a>
                                 </auth-component>
                             </li>
                             <li v-if="isPlatformAdmin">
-                                <auth-component :permission="row.hasPerm" auth="develop_app" :resource-id="row.id">
+                                <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">设为模板</a>
                                     <a href="javascript:;" slot="allow" @click="handleSetTemplate(row)">设为模板</a>
                                 </auth-component>

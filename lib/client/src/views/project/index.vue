@@ -48,7 +48,16 @@
                                 :id="childrenItem.url"
                                 :url="childrenItem.url"
                                 @click="handleSelect">
-                                <span>{{ childrenItem.title }}</span>
+                                <!-- <span>{{ childrenItem.title }}</span> -->
+                                <template v-if="childrenItem.iamAction === 'deploy_app'">
+                                    <auth-component :permission="false" auth="deploy_app" @before-show-permission-dialog="beforeShowPermissionDialog">
+                                        <a href="javascript:;" slot="forbid" custom-forbid-container-cls="forbid-container-cls">{{childrenItem.title}}</a>
+                                        <a href="javascript:;" slot="allow">{{childrenItem.title}}</a>
+                                    </auth-component>
+                                </template>
+                                <template v-else>
+                                    <span>{{ childrenItem.title }}</span>
+                                </template>
                             </bk-navigation-menu-item>
                         </div>
                     </bk-navigation-menu-item>
@@ -196,6 +205,7 @@
                                 title: '发布部署',
                                 icon: 'list-fill',
                                 url: 'release',
+                                iamAction: 'deploy_app',
                                 toPath: {
                                     name: 'release'
                                 }
@@ -204,6 +214,7 @@
                                 title: '版本管理',
                                 icon: 'version',
                                 url: 'versions',
+                                iamAction: 'deploy_app',
                                 toPath: {
                                     name: 'versions'
                                 }
@@ -320,6 +331,10 @@
             this.setDefaultActive()
         },
         methods: {
+            beforeShowPermissionDialog (e) {
+                e.preventDefault()
+                e.stopPropagation()
+            },
             setDefaultActive () {
                 let name = this.$route.name
                 // 数据源管理子页面，左侧数据源管理依然高亮选中
@@ -583,6 +598,13 @@
                     &:hover {
                         background: #f0f1f5;
                     }
+                }
+                .forbid-container-cls {
+                    height: 40px;
+                    line-height: 40px;
+                    width: 207px;
+                    padding-left: 30px;
+                    margin-left: -30px;
                 }
             }
             .nav-item {
