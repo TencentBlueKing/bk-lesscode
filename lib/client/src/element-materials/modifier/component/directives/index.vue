@@ -29,7 +29,7 @@
                     <template v-slot:title>
                         <span
                             v-bk-tooltips="{
-                                content: directive.tips && directive.tips(directive),
+                                content: directive.tips && directive.tips(lastDirectiveMap[genDirectiveKey(directive)]),
                                 disabled: !directive.tips,
                                 width: 290
                             }"
@@ -136,7 +136,9 @@
                             code: '',
                             valueTypeInclude,
                             renderValue,
-                            tips: tips
+                            tips () {
+                                return '双向绑定：该指令绑定变量后，通过输入改变组件的值会同步改变变量的值，该变量的值变化也会影响组件的值'
+                            }
                         })
                     }
                 }
@@ -164,8 +166,8 @@
                     valueTypeInclude: ['array'],
                     renderValue: 1,
                     tips: (dir) => {
-                        return dir.val
-                            ? `可以使用 【${this.id}Item】 为当前组件和子组件的指令赋值，当前组件的 v-if 和 v-show 除外`
+                        return dir.code
+                            ? `可以使用 【${this.id}Item】 为当前组件和子组件的指令或者属性赋值，当前组件的 v-if 和 v-show 除外`
                             : '可以使用 v-for 指令， 把一个数组转换为一组元素'
                     }
                 }

@@ -1,5 +1,12 @@
 <template>
-    <bk-sideslider :is-show="isShow" :before-close="hidden" :quick-close="true" :width="796" :title="isAdd ? '新增变量' : '编辑变量'">
+    <bk-sideslider
+        :is-show="isShow"
+        :before-close="hidden"
+        :quick-close="true"
+        :width="796"
+        :transfer="true"
+        :title="isAdd ? '新增变量' : '编辑变量'"
+    >
         <section slot="content" class="variable-form-main">
             <bk-form :label-width="84" :model="copyForm" ref="variableForm">
                 <bk-form-item label="变量名称" :required="true" :rules="[requireRule('变量名称'), nameRule]" property="variableName" error-display-type="normal">
@@ -10,12 +17,22 @@
                 </bk-form-item>
                 <bk-form-item label="初始类型" :required="true" property="valueType" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.valueType" @change="resetValue">
-                        <template v-for="type in renderJsTypes">
+                        <template v-for="renderJsType in renderJsTypes">
                             <bk-radio-button
-                                :key="type.id"
-                                :value="type.id"
-                                v-if="!type.hidden"
-                            >{{ type.label }}</bk-radio-button>
+                                :key="renderJsType.id"
+                                :value="renderJsType.id"
+                                v-if="!renderJsType.hidden"
+                            >
+                                {{ renderJsType.label }}
+                                <i
+                                    class="bk-icon icon-info"
+                                    v-if="renderJsType.tips"
+                                    v-bk-tooltips="{
+                                        content: renderJsType.tips,
+                                        width: '400px'
+                                    }"
+                                ></i>
+                            </bk-radio-button>
                         </template>
                     </bk-radio-group>
                 </bk-form-item>
@@ -201,7 +218,12 @@
                     { label: 'Array', id: 3 },
                     { label: 'Object', id: 4 },
                     // { label: '图片地址', id: 5 },
-                    { label: '计算变量', id: 6, hidden: this.copyForm.effectiveRange === 0 }
+                    {
+                        label: '计算变量',
+                        id: 6,
+                        hidden: this.copyForm.effectiveRange === 0,
+                        tips: '计算属性内部可以执行函数和变量，最后需将执行结果返回。如果内部使用的变量发生变化，计算属性也会实时重新计算。注意：计算属性必须有返回值，不能给计算属性设置值'
+                    }
                 ].map((jsType) => {
                     return {
                         ...jsType,

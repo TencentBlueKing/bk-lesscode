@@ -35,7 +35,7 @@
             ></choose-function>
             <bk-button
                 @click="getApiData"
-                :loading="isGettingApiData"
+                :loading="isLoadingData"
                 theme="primary"
                 class="mt12"
                 size="small">
@@ -52,7 +52,7 @@
     import { mapGetters } from 'vuex'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
     import { bus } from '@/common/bus'
-    import { replaceFuncKeyword, replaceFuncParam } from 'shared/function'
+    import { replaceFuncKeyword, replaceFuncParam, getRemoteFunctionInfo } from 'shared/function'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable'
     import remoteExample from './remote-example'
 
@@ -91,6 +91,9 @@
             },
             describe: {
                 type: Object
+            },
+            isLoading: {
+                type: Boolean
             }
         },
         data () {
@@ -101,7 +104,7 @@
                 },
                 usedMethodMap: {},
                 usedVariableMap: {},
-                isGettingApiData: false
+                isLoadingData: false
             }
         },
         computed: {
@@ -109,6 +112,14 @@
             ...mapGetters('variable', ['variableList']),
             exampleData () {
                 return { name: this.name, value: this.describe.val }
+            }
+        },
+        watch: {
+            isLoading: {
+                handler (val) {
+                    this.isLoadingData = val
+                },
+                immediate: true
             }
         },
         created () {
@@ -146,27 +157,29 @@
                 return value
             },
 
+            recordVariable (variableCode, funcName) {
+                const variableCodes = Array.isArray(variableCode) ? variableCode : [variableCode]
+                variableCodes.forEach((code) => {
+                    const curVar = this.variableList.find((variable) => (variable.variableCode === code))
+                    if (curVar) {
+                        this.usedVariableMap[code] = this.getVariableVal(curVar)
+                    } else {
+                        throw new Error(`函数【${funcName}】里引用的变量【${code}】不存在，请检查`)
+                    }
+                })
+            },
+
             processVarInFunApiData (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
-                    const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                    if (curVar) {
-                        this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
-                        return `this.${variableCode}`
-                    } else {
-                        throw new Error(`函数【${funcName}】Api Data里引用的变量【${variableCode}】不存在，请检查`)
-                    }
+                    this.recordVariable(variableCode, funcName)
+                    return `this.${variableCode}`
                 })
             },
 
             processVarInFunApiUrl (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
-                    const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                    if (curVar) {
-                        this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
-                        return `\${this.${variableCode}}`
-                    } else {
-                        throw new Error(`函数【${funcName}】Api Url里引用的变量【${variableCode}】不存在，请检查`)
-                    }
+                    this.recordVariable(variableCode, funcName)
+                    return `\${this.${variableCode}}`
                 })
             },
 
@@ -186,11 +199,15 @@
                 const hasAwait = /await\s/.test(returnMethod.funcBody)
                 if (returnMethod.funcType === 1) {
                     const remoteParams = (returnMethod.remoteParams || []).join(', ')
-                    /* eslint-disable @typescript-eslint/quotes */
+                    const {
+                        apiDataString,
+                        codes
+                    } = getRemoteFunctionInfo(returnMethod)
+                    this.recordVariable(codes, returnMethod.funcName)
                     const data = `{
                         url: \`${this.processVarInFunApiUrl(returnMethod.funcApiUrl, returnMethod.funcName)}\`,
                         type: '${returnMethod.funcMethod}',
-                        apiData: ${this.processVarInFunApiData(returnMethod.funcApiData, returnMethod.funcName) || '\'\''},
+                        apiData: ${apiDataString},
                         withToken: ${returnMethod.withToken}
                     }`
                     returnMethod.funcStr = `const ${returnMethod.funcName} = ${hasAwait ? 'async ' : ''}(${funcParams}) => { return this.$store.dispatch('getApiData', ${data}).then((${remoteParams}) => { ${returnMethod.funcBody} }) };`
@@ -316,7 +333,7 @@
                 }
                 
                 try {
-                    this.isGettingApiData = true
+                    this.toggleLoading(true)
                     const sandBox = this.createSandBox(this.usedVariableMap)
                     const res = await sandBox.exec(methodStr, this.remoteData.params)
                     let message = this.remoteValidate(res)
@@ -338,12 +355,17 @@
                         limit: 1
                     })
                 } finally {
-                    this.isGettingApiData = false
+                    this.toggleLoading(false)
                 }
             },
 
             handleShowExample () {
                 this.$refs.example.isShow = true
+            },
+
+            toggleLoading (val) {
+                this.isLoadingData = val
+                this.$emit('update:isLoading', val)
             }
         }
     }

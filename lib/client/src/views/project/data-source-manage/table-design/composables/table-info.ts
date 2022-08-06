@@ -32,7 +32,8 @@ export interface ITableField {
 }
 export interface ITableStatus {
     basicInfo: IBasicInfo,
-    data: ITableField[]
+    data: ITableField[],
+    disableEdit: boolean
 }
 
 /**
@@ -48,7 +49,8 @@ export function useTableStatus (status = {}) {
             character: 'utf8mb4',
             comment: ''
         },
-        data: []
+        data: [],
+        disableEdit: false
     }, status)
     return {
         tableStatus: reactive<ITableStatus>(finalStatus),

@@ -51,6 +51,7 @@
     import Drag from '../../common/drag'
     import Draggable from '../components/draggable'
     import ResolveComponent from '../resolve-component'
+    import { unitFilter } from 'shared/util.js'
 
     export default {
         name: 'free-layout',
@@ -168,31 +169,31 @@
                     // top 位置计算
 
                     if (childNode.style.top) {
-                        top = parseInt(childNode.style.top)
+                        top = unitFilter(childNode.style.top)
                     } else {
                         if (originalTop + componentHeight > containerBottom) {
                             top = containerBottom - containerTop - componentHeight
                         } else {
                             top = originalTop - containerTop - 15
                         }
-                        top = Math.max(top, 10)
+                        top = Math.max(top, 10) + 'px'
                     }
                     // left 位置计算
                     if (childNode.style.left) {
-                        left = parseInt(childNode.style.left)
+                        left = unitFilter(childNode.style.left)
                     } else {
                         if (originalLeft + componentWidth > containerRight) {
                             left = containerRight - containerLeft - componentWidth
                         } else {
                             left = originalLeft - containerLeft - 15
                         }
-                        left = Math.max(left, 10)
+                        left = Math.max(left, 10) + 'px'
                     }
 
                     childNode.setStyle({
                         position: 'absolute',
-                        top: `${top}px`,
-                        left: `${left}px`
+                        top,
+                        left
                     })
                 })
             },

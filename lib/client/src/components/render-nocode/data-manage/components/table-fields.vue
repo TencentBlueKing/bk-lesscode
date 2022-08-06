@@ -1,0 +1,175 @@
+<template>
+    <div class="table-fields-wrapper">
+        <bk-table ref="fieldsTable"
+            :header-cell-style="{ background: '#f0f1f5' }"
+            :data="emptyData"
+            :outer-border="false">
+            <bk-table-column
+                v-for="field in colFields"
+                :key="field.key"
+                :label="field.name"
+                :prop="field.key">
+            </bk-table-column>
+            <bk-table-column label="操作" :label-width="150">
+                <bk-link theme="primary">详情</bk-link>
+            </bk-table-column>
+            <bk-table-column type="setting" ref="settingCol1">
+                <bk-table-setting-content ref="settingCol" v-show="false">
+                </bk-table-setting-content>
+                <div class="table-setting-wrapper">
+                    <h2 class="title">表格设置</h2>
+                    <div class="field-content-wrapper">
+                        <p class="field-title">系统字段</p>
+                        <bk-checkbox-group :value="selectedFieldKeys">
+                            <bk-checkbox
+                                v-for="item in systemFields"
+                                :value="item.key"
+                                :key="item.key"
+                                @change="handleSelectField($event, item.key)">
+                                {{ item.name }}
+                            </bk-checkbox>
+                        </bk-checkbox-group>
+                        <p class="field-title" style="margin-top: 6px;">自定义字段</p>
+                        <bk-checkbox-group :value="selectedFieldKeys">
+                            <bk-checkbox
+                                v-for="item in fields"
+                                :value="item.key"
+                                :key="item.key"
+                                @change="handleSelectField($event, item.key)">
+                                {{ item.name }}
+                            </bk-checkbox>
+                        </bk-checkbox-group>
+                    </div>
+                    <div class="btn-area">
+                        <bk-button :theme="'primary'" @click="handleSelectConfirm">确定</bk-button>
+                        <bk-button :theme="'default'" @click="handleSelectCancel">取消</bk-button>
+                    </div>
+                </div>
+
+            </bk-table-column>
+        </bk-table>
+    </div>
+</template>
+<script>
+    export default {
+        name: 'TableFields',
+        props: {
+            // 选中的字段
+            fields: {
+                type: Array,
+                default: () => []
+            },
+            systemFields: {
+                type: Array,
+                default: () => []
+            },
+            tableConfig: {
+                type: Array,
+                default: () => []
+            }
+        },
+        data () {
+            return {
+                cols: this.tableConfig.slice(),
+                emptyData: [{}],
+                selectedFieldKeys: []
+            }
+        },
+        computed: {
+            colFields () {
+                const list = []
+                this.cols.forEach(key => {
+                    let field = this.systemFields.find(item => item.key === key)
+                    if (!field) {
+                        field = this.fields.find(item => item.key === key)
+                    }
+                    if (field) {
+                        list.push(field)
+                    }
+                })
+                return list
+            }
+        },
+        watch: {
+            fields (val) {
+                const selectedFieldKeys = []
+                this.tableConfig.forEach(key => {
+                    if (this.systemFields.find(field => field.key === key)
+                        || val.find(field => field.key === key)
+                    ) {
+                        selectedFieldKeys.push(key)
+                    }
+                })
+                this.selectedFieldKeys = selectedFieldKeys
+            },
+            tableConfig (val) {
+                this.cols = val.slice()
+            }
+        },
+        methods: {
+            handleSelectField (val, key) {
+                if (val) {
+                    this.selectedFieldKeys.push(key)
+                } else {
+                    this.selectedFieldKeys = this.selectedFieldKeys.filter(item => item !== key)
+                }
+            },
+            handleSelectConfirm () {
+                this.cols = [...this.selectedFieldKeys]
+                this.$emit('update', this.cols)
+                this.$refs.settingCol.handleCancel()
+            },
+            handleSelectCancel () {
+                this.$refs.settingCol.handleCancel()
+            }
+        }
+    }
+</script>
+<style lang="postcss" scoped>
+>>> .bk-link-text {
+  font-size: 12px;
+  cursor: text;
+}
+>>> .bk-table:before{
+  background-color: #F0F1F5
+}
+>>> .bk-table-column-setting{
+  border-left: none;
+}
+.table-setting-wrapper {
+  width: 422px;
+  .title {
+    padding: 0 24px;
+    margin: 0;
+    line-height: 28px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #313238;
+  }
+  .field-content-wrapper {
+    padding: 24px;
+    max-height: 500px;
+    overflow: auto;
+  }
+  .field-title {
+    margin-bottom: 9px;
+    font-size: 14px;
+    color: #313238;
+  }
+  .bk-form-checkbox {
+    margin-right: 24px;
+    margin-bottom: 10px;
+  }
+  .btn-area {
+    padding: 0 24px;
+    height: 50px;
+    line-height: 50px;
+    text-align: right;
+    border-top: 1px solid #dcdee5;
+    background: #fafbfd;
+    .bk-button {
+      margin-left: 4px;
+    }
+  }
+}
+</style>

@@ -4,7 +4,7 @@
         :is-show="isShow"
         :quick-close="true"
         :title="title"
-        :width="796"
+        :width="1200"
         :before-close="handleClose"
     >
         <section class="func-form-home" slot="content">
@@ -31,12 +31,13 @@
             ></form-group>
             <form-detail
                 :form.sync="form"
+                :variable-list="variableList"
                 ref="detail"
             ></form-detail>
-            <form-api-data
+            <form-token
                 :form.sync="form"
-                ref="apiData"
-            ></form-api-data>
+                ref="token">
+            </form-token>
             <form-summary
                 :form.sync="form"
                 ref="summary"
@@ -86,8 +87,12 @@
             }
         },
 
-        created () {
-            this.freshFunctionList()
+        watch: {
+            isShow (val) {
+                if (val) {
+                    this.freshFunctionList()
+                }
+            }
         },
 
         methods: {
@@ -112,15 +117,18 @@
             },
 
             handleSubmit () {
-                this.validate().then((form) => {
-                    if (this.isEdit) {
-                        this.submitEdit(form)
-                    } else {
-                        this.submitCreate(form)
-                    }
-                }).catch((validator) => {
-                    this.$bkMessage({ message: validator.content || validator, theme: 'error' })
-                })
+                this
+                    .validate()
+                    .then((form) => {
+                        if (this.isEdit) {
+                            this.submitEdit(form)
+                        } else {
+                            this.submitCreate(form)
+                        }
+                    })
+                    .catch((validator) => {
+                        this.$bkMessage({ message: validator.content || validator, theme: 'error' })
+                    })
             },
 
             submitEdit (form) {

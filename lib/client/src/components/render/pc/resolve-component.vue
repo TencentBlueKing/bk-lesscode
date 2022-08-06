@@ -142,6 +142,8 @@
             /* eslint-disable vue/no-unused-components */
             FreeLayout: () => import('./widget/free-layout'),
             RenderGrid: () => import('./widget/grid'),
+            h5Container: () => import('./widget/h5-container'),
+            h5Page: () => import('./widget/free-layout.vue'),
             RenderColumn: () => import('./widget/column'),
             RenderBlock: () => import('./widget/block.vue'),
             WidgetForm: () => import('./widget/form'),
@@ -188,6 +190,8 @@
                     'free-layout': true,
                     'render-block': true,
                     'render-grid': true,
+                    'h5-container': true,
+                    'h5-page': true,
                     'render-column': true,
                     'widget-form': true,
                     'widget-form-item': true,
@@ -429,10 +433,34 @@
                         'bk-cascade': '200px',
                         'bk-process': '600px',
                         'bk-steps': '500px',
-                        'bk-divider': '500px'
+                        'bk-divider': '500px',
+                        'van-slider': '50%',
+                        'van-cell': '100%',
+                        'van-datetime-picker': '100%',
+                        'van-picker': '100%',
+                        'van-nav-bar': '100%',
+                        'van-steps': '100%',
+                        'van-tabs': '100%',
+                        'van-skeleton': '100%',
+                        'van-progress': '100%',
+                        'van-notice-bar': '100%',
+                        'van-divider': '100%'
+
                     },
                     pointerEvents: {
                         'bk-badge': 'none'
+                    },
+                    left: {
+                        'van-cell': '0px',
+                        'van-nav-bar': '0px',
+                        'van-datetime-picker': '0px',
+                        'van-picker': '0px',
+                        'van-tabs': '0px',
+                        'van-steps': '0px',
+                        'van-skeleton': '0px',
+                        'van-progress': '0px',
+                        'van-notice-bar': '0px',
+                        'van-divider': '0px'
                     }
                 }
                 Object.keys(defaultStyle).forEach(styleName => {

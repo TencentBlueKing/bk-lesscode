@@ -1,6 +1,6 @@
 <template>
     <component
-        class="lesscode-editor-layout"
+        :class="['lesscode-editor-layout',{ 'form-page-width': pageDetail.nocodeType === 'FORM' }]"
         :style="style"
         :is="layoutCom">
         <slot />
@@ -33,6 +33,7 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapGetters('layout', ['pageLayout']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('page', ['pageDetail']),
             layoutCom () {
                 if (!componentMap[this.layout]) {
                     return 'div'
@@ -55,6 +56,7 @@
                         layoutType,
                         ...layoutContent
                     })
+                    this.applyPageSetting()
                 },
                 immediate: true
             },
@@ -78,7 +80,6 @@
         created () {
             this.projectId = this.$route.params.projectId
             this.fetchPageList()
-            
             LC.addEventListener('setPageStyle', this.applyPageSetting)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('setPageStyle', this.applyPageSetting)
@@ -93,13 +94,15 @@
              * @desc 引用页面样式配置
              */
             applyPageSetting () {
-                const pageStyle = LC.pageStyle
-                this.style = {}
-                const $pageContentTarget = document.querySelector('.lesscode-editor-layout .container-content')
-                $pageContentTarget && Object.keys(pageStyle).forEach(key => {
-                    if (key !== 'min-width') {
-                        $pageContentTarget.style[key] = pageStyle[key] || ''
-                    }
+                this.$nextTick(() => {
+                    const pageStyle = LC.pageStyle
+                    this.style = {}
+                    const $pageContentTarget = document.querySelector('.lesscode-editor-layout .container-content')
+                    $pageContentTarget && Object.keys(pageStyle).forEach(key => {
+                        if (key !== 'min-width') {
+                            $pageContentTarget.style[key] = pageStyle[key] || ''
+                        }
+                    })
                 })
             },
             fetchPageList () {
@@ -119,6 +122,7 @@
         .bk-navigation {
             width: auto;
             height: auto;
+
             .bk-navigation-wrapper {
                 flex: initial;
                 .nav-slider {
@@ -185,6 +189,7 @@
             height: calc(100vh - 300px);
             border: 1px solid transparent;
             overflow-y: scroll;
+            @mixin scroller;
             &:hover{
                 border: 1px dashed #3a84ff;
             }
@@ -244,7 +249,7 @@
     .lesscode-layout-empty {
         min-height: calc(100vh - 160px);
         .container-content{
-            padding: 20px 24px 0;
+            padding: 20px !important;
         }
     }
     .lesscode-layout-message-theme{
@@ -271,5 +276,11 @@
                 cursor: pointer;
             }
         }
+    }
+    .form-page-width{
+      margin: 0 !important;
+      .container-content{
+        padding: 20px !important;
+      }
     }
 </style>
