@@ -38,13 +38,13 @@
     }
 }
 
-.g-no-permission {
+/* .g-no-permission {
     color: #b9bbc1 !important;
     cursor: not-allowed !important;
     &:hover {
         color: #b9bbc1 !important;
     }
-}
+} */
 
 .g-page-tab{
     position: relative;
@@ -121,4 +121,11 @@
             margin: 0 250px;
         }
     }
+}
+
+.cursor-element {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 12px 16px;
+    background-image: url("../images/lock.svg");
 }

@@ -11,13 +11,21 @@
 
 <template>
     <section v-if="emptyPage" class="preview-page">
-        <router-view :name="topView" />
+        <not-exist v-if="isNotExist" :message="notExistMsg" />
+        <template v-else>
+            <apply-page v-if="isNotPermission" :auth-result="authResult" />
+            <router-view v-if="!isNotPermission" :name="topView" />
+        </template>
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
             <home-header v-if="homeHeaderNav"></home-header>
             <app-header v-else></app-header>
-            <router-view :name="topView" v-show="!mainContentLoading" />
+            <not-exist v-if="isNotExist" :message="notExistMsg" />
+            <template v-else>
+                <apply-page v-if="isNotPermission" :auth-result="authResult" />
+                <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
+            </template>
         </div>
         <bk-fixed-navbar v-if="!isCanvas"
             :position="position"
@@ -28,10 +36,13 @@
     import { mapGetters } from 'vuex'
 
     import { bus } from './common/bus'
+    import ApplyPage from './components/apply-permission/apply-page.vue'
 
     export default {
         name: 'app',
-
+        components: {
+            ApplyPage
+        },
         data () {
             return {
                 systemCls: 'mac',
@@ -57,7 +68,13 @@
                 ],
                 routerNameData: ['/home', '/help'],
                 homeHeaderNav: true,
-                appTabData: [{ name: '产品介绍', url: '/', routerName: 'home' }, { name: '帮助文档', url: '/help', routerName: 'intro' }]
+                appTabData: [{ name: '产品介绍', url: '/', routerName: 'home' }, { name: '帮助文档', url: '/help', routerName: 'intro' }],
+                isNotPermission: false,
+                authResult: {
+                    requiredPermissions: []
+                },
+                isNotExist: false,
+                notExistMsg: ''
             }
         },
 
@@ -84,12 +101,23 @@
                     if (value.matched[0]) {
                         this.homeHeaderNav = this.routerNameData.includes(value.matched[0].path) || this.routerNameData.includes(value.fullPath + value.name)
                     }
+                    this.isNotPermission = false
+                    this.isNotExist = false
                 },
                 immediate: true
             }
         },
 
         async created () {
+            bus.$on('permission-page', this.permissionHold)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('permission-page', this.permissionHold)
+            })
+
+            bus.$on('not-exist', this.notExistHold)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('not-exist', this.notExistHold)
+            })
             await this.$store.dispatch('isPlatformAdmin')
         },
 
@@ -101,6 +129,18 @@
             bus.$on('redirect-login', data => {
                 window.location.replace(data.loginUrl)
             })
+        },
+
+        methods: {
+            permissionHold (authResult) {
+                this.isNotPermission = true
+                this.authResult = authResult
+            },
+
+            notExistHold (msg) {
+                this.isNotExist = true
+                this.notExistMsg = msg
+            }
         }
     }
 </script>

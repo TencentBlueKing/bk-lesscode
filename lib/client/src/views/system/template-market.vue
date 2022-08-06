@@ -36,9 +36,31 @@
                                         </div>
                                     </template>
                                     <div class="operate-btns">
-                                        <bk-button style="margin-left: 7px;width: 106px" theme="primary" @click="handleApply(project)">创建为新应用</bk-button>
+                                        <!-- <bk-button style="margin-left: 7px;width: 106px" theme="primary" @click="handleApply(project)">创建为新应用</bk-button>
                                         <bk-button style="margin-left: 10px;width: 76px" @click="handlePreviewProject(project.id)">预览</bk-button>
-                                        <bk-button style="margin-left: 10px;width: 76px" @click="handleDownloadProject(project)">下载源码</bk-button>
+                                        <bk-button style="margin-left: 10px;width: 76px" @click="handleDownloadProject(project)">下载源码</bk-button> -->
+                                        <auth-button
+                                            theme="primary"
+                                            auth="create_app_with_template"
+                                            @click="handleApply(project)"
+                                            style="margin-left: 7px;width: 106px"
+                                            :permission="false">
+                                            创建为新应用
+                                        </auth-button>
+                                        <auth-button
+                                            auth="preview_app_template"
+                                            @click="handlePreviewProject(project.id)"
+                                            style="margin-left: 10px;width: 76px"
+                                            :permission="false">
+                                            预览
+                                        </auth-button>
+                                        <auth-button
+                                            auth="download_app_template_source"
+                                            @click="handleDownloadProject(project)"
+                                            style="margin-left: 10px;width: 76px"
+                                            :permission="false">
+                                            下载源码
+                                        </auth-button>
                                     </div>
                                 </div>
                                 <div class="item-ft">
@@ -513,7 +535,7 @@
                     // 解析出模板targetData绑定的变量和函数
                     const { varList = [], funcList = [] } = parseFuncAndVar(templateNode, variableList, funcGroups)
                     Object.assign(data, { varList, funcList })
-                    
+
                     const res = await this.$store.dispatch('pageTemplate/apply', data)
                     if (res) {
                         this.$bkMessage({

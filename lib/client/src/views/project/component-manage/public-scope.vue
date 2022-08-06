@@ -95,7 +95,7 @@
             }
         },
         async created () {
-            const projectList = await this.$store.dispatch('project/my', { config: {} })
+            const projectList = await this.$store.dispatch('iam/myProject', { config: {} })
             projectList.splice(projectList.findIndex(item => item.id === this.projectId), 1)
             this.sourceProjectList = projectList
         },

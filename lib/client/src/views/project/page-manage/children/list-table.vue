@@ -32,7 +32,7 @@
                 default: false
             }
         },
-        inject: ['getDeletePerm', 'getRelativeTime', 'getFormManagePages'],
+        inject: ['getRelativeTime', 'getFormManagePages'],
         setup (props, { emit }) {
             const handleCreate = () => {
                 emit('create')
@@ -173,7 +173,7 @@
                             <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleCopy(row)">复制</a></li>
                             <li><a href="javascript:;" @click="handleEditRoute(row)">修改路由</a></li>
                             <li v-if="row.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(row)">生成数据管理页</a></li>
-                            <li><a href="javascript:;" @click="handleDelete(row)" :class="{ 'g-no-permission': !getDeletePerm(row) }" v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePerm(row) }">删除</a></li>
+                            <li><a href="javascript:;" @click="handleDelete(row)">删除</a></li>
                         </ul>
                     </bk-popover>
                 </template>
