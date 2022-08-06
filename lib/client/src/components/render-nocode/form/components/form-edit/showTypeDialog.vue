@@ -35,7 +35,7 @@
                 type: Object,
                 default () {
                     return {
-                        connector: 'and',
+                        type: 'and',
                         expressions: [
                             {
                                 key: '',
