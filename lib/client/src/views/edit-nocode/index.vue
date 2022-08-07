@@ -115,7 +115,7 @@
                             versionId: this.versionId
                         }),
                         this.$store.dispatch('project/detail', { projectId: this.projectId }),
-                        
+
                         this.$store.dispatch('page/pageLockStatus', { pageId: this.pageId }),
                         this.$store.dispatch('route/getProjectPageRoute', {
                             projectId: this.projectId,
@@ -183,7 +183,7 @@
             height: 1px;
             box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
         }
-        
+
         .function-and-tool {
             position: relative;
             display: flex;
