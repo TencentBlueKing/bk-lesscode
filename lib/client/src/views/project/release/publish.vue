@@ -172,7 +172,7 @@
                             :placeholder="versionLogPlaceholder" />
                         <p :class="$style['version-err-tips']" v-show="versionLogErrTips">{{versionLogErrTips}}</p>
                     </div>
-                    
+
                     <div :class="[$style['operate-btn'], $style['m-left']]">
                         <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
                             {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? `部署中...` : '部署'}}

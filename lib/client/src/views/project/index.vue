@@ -40,7 +40,18 @@
                         :id="menuItem.url"
                         @click="handleSelect">
                         <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
-                        <span class="item-title">{{menuItem.title}}--d</span>
+                        <template v-if="menuItem.iamAction">
+                            <auth-component
+                                :auth="menuItem.iamAction"
+                                :resource-id="$route.params.projectId"
+                                @before-show-permission-dialog="beforeShowPermissionDialog">
+                                <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-forbid-container-cls">{{menuItem.title}}</a>
+                                <span class="item-title" slot="allow">{{menuItem.title}}</span>
+                            </auth-component>
+                        </template>
+                        <template v-else>
+                            <span class="item-title">{{menuItem.title}}</span>
+                        </template>
                         <div slot="child" class="menu-child">
                             <bk-navigation-menu-item
                                 v-for="(childrenItem) in menuItem.children"
@@ -49,10 +60,13 @@
                                 :url="childrenItem.url"
                                 @click="handleSelect">
                                 <!-- <span>{{ childrenItem.title }}</span> -->
-                                <template v-if="childrenItem.iamAction === 'deploy_app'">
-                                    <auth-component :permission="false" auth="deploy_app" @before-show-permission-dialog="beforeShowPermissionDialog">
-                                        <a href="javascript:;" slot="forbid" custom-forbid-container-cls="forbid-container-cls">{{childrenItem.title}}</a>
-                                        <a href="javascript:;" slot="allow">{{childrenItem.title}}</a>
+                                <template v-if="childrenItem.iamAction">
+                                    <auth-component
+                                        :auth="childrenItem.iamAction"
+                                        :resource-id="$route.params.projectId"
+                                        @before-show-permission-dialog="beforeShowPermissionDialog">
+                                        <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-child-forbid-container-cls">{{childrenItem.title}}</a>
+                                        <span slot="allow">{{childrenItem.title}}</span>
                                     </auth-component>
                                 </template>
                                 <template v-else>
@@ -104,6 +118,7 @@
                         title: '页面管理',
                         icon: 'page',
                         url: 'pageList',
+                        iamAction: 'develop_app',
                         toPath: {
                             name: 'pageList'
                         }
@@ -112,6 +127,7 @@
                         title: '路由管理',
                         icon: 'router',
                         url: 'routes',
+                        iamAction: 'develop_app',
                         toPath: {
                             name: 'routes'
                         }
@@ -120,6 +136,7 @@
                         title: '流程管理',
                         icon: 'flow',
                         url: 'flowList',
+                        iamAction: 'develop_app',
                         toPath: {
                             name: 'flowList'
                         }
@@ -128,6 +145,7 @@
                         title: '数据源管理',
                         icon: 'data-source-manage',
                         url: 'tableList',
+                        iamAction: 'develop_app',
                         toPath: {
                             name: 'tableList'
                         }
@@ -140,6 +158,7 @@
                             {
                                 title: '自定义组件库',
                                 url: 'componentManage',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'componentManage'
                                 }
@@ -147,6 +166,7 @@
                             {
                                 title: 'API 管理',
                                 url: 'apiManage',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'apiManage'
                                 }
@@ -154,6 +174,7 @@
                             {
                                 title: '函数库',
                                 url: 'functionManage',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'functionManage'
                                 }
@@ -161,6 +182,7 @@
                             {
                                 title: '凭证管理',
                                 url: 'credential',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'credential'
                                 }
@@ -168,6 +190,7 @@
                             {
                                 title: '页面模板库',
                                 url: 'templateManage',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'templateManage'
                                 },
@@ -176,6 +199,7 @@
                             {
                                 title: '文件库',
                                 url: 'fileManage',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'fileManage'
                                 }
@@ -183,6 +207,7 @@
                             {
                                 title: '布局模板实例',
                                 url: 'layout',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'layout'
                                 }
@@ -190,6 +215,7 @@
                             {
                                 title: '变量管理',
                                 url: 'variableManage',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'variableManage'
                                 }
@@ -231,6 +257,7 @@
                                 title: '权限管理',
                                 icon: 'user-group',
                                 url: 'memberManage',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'memberManage'
                                 }
@@ -239,6 +266,7 @@
                                 title: '基本信息',
                                 icon: 'info-fill',
                                 url: 'basicInfo',
+                                iamAction: 'develop_app',
                                 toPath: {
                                     name: 'basicInfo'
                                 }
@@ -250,11 +278,11 @@
                         title: '操作审计',
                         icon: 'audit',
                         url: 'logs',
+                        iamAction: 'develop_app',
                         toPath: {
                             name: 'logs'
                         }
                     }
-
                 ],
                 projectList: [],
                 countdown: 3,
@@ -589,6 +617,22 @@
 
         .nav-list {
             background: #fff !important;
+            .menu-forbid-container-cls {
+                display: inline-block;
+                height: 40px;
+                line-height: 40px;
+                width: 187px;
+                padding-left: 30px;
+                margin-left: -30px;
+            }
+
+            .menu-child-forbid-container-cls {
+                height: 40px;
+                line-height: 40px;
+                width: 207px;
+                padding-left: 30px;
+                margin-left: -30px;
+            }
             .bk-drag-icon {
                 font-size: 16px;
                 margin-right: 16px;
@@ -598,13 +642,6 @@
                     &:hover {
                         background: #f0f1f5;
                     }
-                }
-                .forbid-container-cls {
-                    height: 40px;
-                    line-height: 40px;
-                    width: 207px;
-                    padding-left: 30px;
-                    margin-left: -30px;
                 }
             }
             .nav-item {
