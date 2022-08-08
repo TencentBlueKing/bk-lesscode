@@ -139,7 +139,6 @@
         watch: {
             isShow (val) {
                 if (val) {
-                    console.log(this.dialog.formData, 135)
                     if (this.actionType === 'apply') {
                         this.dialog.formData.categoryId = (this.categoryList[0] && this.categoryList[0].id) || ''
                     }
@@ -155,7 +154,6 @@
         methods: {
             handleImgChange (value) {
                 this.dialog.formData.previewImg = value
-                console.log(value, 442)
             },
             toggleCategory (open = false) {
                 if (open) {
