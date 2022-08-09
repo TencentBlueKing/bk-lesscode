@@ -458,6 +458,7 @@
         }
 
         .footer {
+            z-index: 2022;
             width: 100%;
             font-size: 12px;
             color: #7f7c97;

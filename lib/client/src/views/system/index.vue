@@ -274,6 +274,7 @@
         }
 
         .footer {
+            z-index: 2022;
             position: fixed;
             bottom: 0;
             width: 100%;
