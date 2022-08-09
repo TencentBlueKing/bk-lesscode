@@ -40,6 +40,7 @@
     import OperationSelect from './components/operation-select'
     import ActionTool from './components/action-tool'
     import OperationArea from './components/operation-area'
+    import { syncVariableValue } from '@/views/index/components/utils'
     import PreviewMixin from './preview-mixin'
 
     export default {
@@ -108,31 +109,44 @@
             async fetchData () {
                 try {
                     this.isContentLoading = true
-                    const [pageDetail, pageList, projectDetail] = await Promise.all([
+                    const [pageDetail, pageList, projectDetail, functionData] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.pageId }),
                         this.$store.dispatch('page/getList', {
                             projectId: this.projectId,
                             versionId: this.versionId
                         }),
                         this.$store.dispatch('project/detail', { projectId: this.projectId }),
+                        this.$store.dispatch('functions/getAllGroupAndFunction', {
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }),
                         
                         this.$store.dispatch('page/pageLockStatus', { pageId: this.pageId }),
                         this.$store.dispatch('route/getProjectPageRoute', {
                             projectId: this.projectId,
                             versionId: this.versionId
                         }),
-                        this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId })
+                        this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId }),
+                        this.$store.dispatch('page/getPageSetting', {
+                            pageId: this.pageId,
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        })
                     ])
 
-                    await this.$store.dispatch('page/getPageSetting', {
-                        pageId: this.pageId,
+                    const variableList = await this.$store.dispatch('variable/getAllVariable', {
                         projectId: this.projectId,
-                        versionId: this.versionId
+                        pageCode: pageDetail.pageCode,
+                        versionId: this.versionId,
+                        effectiveRange: 0
                     })
 
                     this.$store.commit('page/setPageDetail', pageDetail || {})
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
+                    this.$store.commit('functions/setFunctionData', functionData)
+
+                    syncVariableValue(pageDetail.content, variableList)
 
                     LC.pageStyle = pageDetail.styleSetting
                 } catch (e) {
