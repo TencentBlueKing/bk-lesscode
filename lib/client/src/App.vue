@@ -19,12 +19,12 @@
             <app-header v-else></app-header>
             <router-view :name="topView" v-show="!mainContentLoading" />
         </div>
-        <bk-fixed-navbar v-if="!isCanvas"
+        <bk-fixed-navbar
             :ext-cls="hasFooterBar ? 'nav-footer-bar' : 'no-footer-bar'"
             :style="showFixedNavBar ? 'transform: translateY(-50%); opacity: 1' : 'transform: translateY(100%); opacity: 0'"
             :position="position"
             :nav-items="navItems"></bk-fixed-navbar>
-        <div class="nav-icon" @click="toggerNavbar" :class="hasFooterBar ? 'nav-icon-footer' : 'nav-icon-bottom'" v-if="!isCanvas">
+        <div class="nav-icon" @click="toggerNavbar" :class="hasFooterBar ? 'nav-icon-footer' : 'nav-icon-bottom'">
             <i class="bk-drag-icon bk-drag-arrow-down toggle-arrow" :class="showFixedNavBar ? 'nav-icon-down' : 'nav-icon-up'" />
         </div>
     </section>
@@ -151,12 +151,14 @@
 
     .nav-footer-bar.middle {
         transition:transform .5s, opacity .5s;
-        top: 88%
+        top: auto;
+        bottom: 1%;
     }
 
     .no-footer-bar.middle {
         transition:transform .5s, opacity .5s;
-        top: 92%
+        top: auto;
+        bottom: -3%;
     }
 
     .nav-icon{
