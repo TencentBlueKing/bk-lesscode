@@ -31,6 +31,7 @@
                     :disabled="formConfig.type === 'USE_FORM'">
                 </nocode-form>
                 <page-setting v-if="operationType === 'setting'"></page-setting>
+                <page-function v-if="operationType === 'pageFunction'"></page-function>
                 <page-json v-else-if="operationType === 'jsonSource'" style="height: 100%;" nocode-type="FLOW"></page-json>
             </div>
         </div>
@@ -43,6 +44,7 @@
     import ActionTool from '@/views/edit-nocode/components/action-tool'
     import NocodeForm from '@/components/render-nocode/form/index.vue'
     import PageSetting from '@/views/index/components/operation-area/components/page-setting'
+    import PageFunction from '@/views/index/components/operation-area/components/page-function'
     import PageJson from '@/views/index/components/operation-area/components/page-json'
 
     export default {
@@ -54,6 +56,7 @@
             ActionTool,
             NocodeForm,
             PageSetting,
+            PageFunction,
             PageJson
         },
         props: {
