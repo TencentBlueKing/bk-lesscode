@@ -3,10 +3,12 @@
         <bk-table
             v-bkloading="{ isLoading: tableDataLoading }"
             ref="fieldsTable"
+            class="hairless-table"
+            :header-border="false"
+            :outer-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :pagination="pagination"
             :data="tableData"
-            :outer-border="false"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
             <bk-table-column
@@ -288,7 +290,7 @@
     }
 
     .field-content-wrapper {
-        padding: 24px;
+        padding: 10px 24px 24px;
         max-height: 500px;
         overflow: auto;
     }
@@ -315,6 +317,11 @@
         .bk-button {
         margin-left: 4px;
         }
+    }
+}
+.hairless-table {
+    &:before {
+        height: 0;
     }
 }
 

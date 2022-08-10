@@ -20,6 +20,7 @@
         </div>
         <bk-table
             v-bkloading="{ isLoading: listLoading || pageRouteListLoading }"
+            class="g-hairless-table"
             :data="flowList"
             :pagination="pagination"
             :outer-border="false"
@@ -42,13 +43,13 @@
             <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.pageId" class="link-btn" @click="handlePreviewPage(row.pageId, row.pageCode)">{{ row.pageName }}</span>
-                    <span v-else>--</span>
+                    <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
             <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
-                    <span v-else>--</span>
+                    <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
             <bk-table-column label="创建人" property="createUser"></bk-table-column>
