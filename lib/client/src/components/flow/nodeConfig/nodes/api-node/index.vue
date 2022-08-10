@@ -263,7 +263,7 @@
                     apiInfo = { ...api, ...apiInfo }
                 }
 
-                this.$store.commit('nocode/nodeConfig/setApiNodeConfig', apiInfo)
+                this.$store.commit('nocode/nodeConfig/setApiNodeConfig', { projectId: this.projectId, data: apiInfo })
             }
         }
     }
