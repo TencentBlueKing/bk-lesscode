@@ -1,7 +1,7 @@
 <template>
     <div class="node-data-manage">
         <div v-if="!initDataLoading" class="node-tab-wrapper">
-            <bk-tab :active.sync="activeNode" :label-height="32" @tab-change="handleTabChange">
+            <bk-tab :active.sync="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
                     :key="node.id"
@@ -184,7 +184,10 @@
         margin-bottom: 16px;
     }
     .bk-tab {
+        padding: 4px;
         max-width: calc(100% - 250px);
+        background: #f0f1f5;
+        border-radius: 2px;
         >>> .bk-tab-section {
             display: none;
         }

@@ -30,7 +30,9 @@
         <bk-table
             v-bkloading="{ isLoading: ticketListLoading }"
             :data="ticketList"
-            :outer-border="!ticketList.length > 0"
+            class="hairless-table"
+            :header-border="false"
+            :outer-border="false"
             :pagination="pagination"
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
@@ -189,6 +191,11 @@
         .search-btns-wrapper {
             margin-top: 16px;
             padding: 0 8px;
+        }
+    }
+    .hairless-table {
+        &:before {
+            height: 0;
         }
     }
 </style>

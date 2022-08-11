@@ -127,9 +127,12 @@
     display: block;
     text-align: center;
     margin-right: 2px;
-    background: #3A84FF;
+    background: #3a84ff;
     color: #fff;
     border-radius: 2px;
+    &:hover {
+      background: #1964e1;
+    }
   }
   .icon-area{
     width: 20px;

@@ -376,7 +376,7 @@
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 22px;
+  font-size: 26px;
   cursor: pointer;
   &:hover {
     color: #3a84ff;
