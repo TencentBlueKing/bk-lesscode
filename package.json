@@ -29,7 +29,7 @@
       }
     },
     "dev": {
-      "command": "npm run dll && nodemon --config nodemon.json && node node_modules/db-migrate/bin/db-migrate up --config ./lib/server/conf/db-migrate.json --migrations-dir ./lib/server/model/migrations -e dev",
+      "command": "node node_modules/db-migrate/bin/db-migrate up --config ./lib/server/conf/db-migrate.json --migrations-dir ./lib/server/model/migrations -e dev && npm run dll && nodemon --config nodemon.json",
       "env": {
         "NODE_ENV": "development",
         "APP_CODE": ""
@@ -89,7 +89,7 @@
     "@babel/preset-env": "~7.6.3",
     "@babel/register": "~7.6.2",
     "@babel/runtime": "~7.6.3",
-    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.10",
+    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.25",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
     "@blueking/bkui-vue-complex": "0.0.7",
     "@blueking/bundless": "0.0.8",

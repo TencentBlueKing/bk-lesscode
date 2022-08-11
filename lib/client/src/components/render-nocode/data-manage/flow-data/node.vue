@@ -73,7 +73,8 @@
             }
         },
         async created () {
-            this.nodesConfig = Array.isArray(this.pageDetail.content) ? {} : cloneDeep(this.pageDetail.content)
+            this.nodesConfig = Array.isArray(this.pageDetail.content) ? { filters: [], tableConfig: [] } : cloneDeep(this.pageDetail.content)
+            this.$store.commit('nocode/formSetting/setTableFields', this.nodesConfig)
             await this.getInitData()
             if (this.nodes.length > 0) {
                 this.activeNode = this.nodes[0].id
@@ -135,7 +136,7 @@
                     this.nodesConfig[this.activeNode].tableConfig = val
                     this.tableConfig = val
                 }
-                this.$store.commit('nocode/formSetting/setTableFields', this.nodesConfig)
+                this.$store.commit('nocode/formSetting/setTableFields', cloneDeep(this.nodesConfig))
             }
         }
     }

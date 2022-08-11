@@ -5,12 +5,19 @@
                 <i class="bk-icon icon-funnel filter-switch-icon" @click="showFilter = !showFilter"></i>
             </div>
             <filters
-                v-if="filters.length > 0 && showFilter"
+                v-show="filters.length > 0 && showFilter"
                 :filters="filters"
                 :fields="fields"
                 :system-fields="systemFields"
                 :value.sync="filtersData">
             </filters>
+            <search-tag
+                v-if="!showFilter"
+                :filters="filters"
+                :fields="fields"
+                :system-fields="systemFields"
+                :value.sync="filtersData">
+            </search-tag>
             <table-fields
                 v-if="!formDetailLoading"
                 style="margin-top: 16px"
@@ -25,6 +32,7 @@
     </div>
 </template>
 <script>
+    import SearchTag from './search-tag.vue'
     import { formMap } from 'shared/form'
     import { FORM_SYS_FIELD } from '../common/field.js'
     import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
@@ -35,7 +43,8 @@
         name: 'formData',
         components: {
             Filters,
-            TableFields
+            TableFields,
+            SearchTag
         },
         props: {
             formIds: Number,
@@ -60,6 +69,18 @@
                 showFilter: true,
                 tableName: '',
                 filtersData: {}
+            }
+        },
+        watch: {
+            filtersData (val) {
+                const isShowField = Object.values(val).every(item => {
+                    if (Array.isArray(item)) {
+                        return !item.every(i => i)
+                    } else {
+                        return !item
+                    }
+                })
+                this.showFilter = isShowField
             }
         },
         async created () {
@@ -93,27 +114,29 @@
     }
 </script>
 <style lang="postcss" scoped>
-    .form-data-manage {
-        .operate-btns {
-            display: flex;
-            align-items: center;
-            flex-direction: row-reverse;
-            margin-bottom: 16px;
-            height: 32px;
-        }
-        .filter-switch-icon {
-            height: 32px;
-            line-height: 32px;
-            width: 32px;
-            text-align: center;
-            color: #979ba5;
-            border: 1px solid #c4c6cc;
-            border-radius: 2px;
-            background: #ffffff;
-            cursor: pointer;
-            &:hover {
-                color: #3a84ff;
-            }
-        }
+.form-data-manage {
+  .operate-btns {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    margin-bottom: 16px;
+    height: 32px;
+  }
+
+  .filter-switch-icon {
+    height: 32px;
+    line-height: 32px;
+    width: 32px;
+    text-align: center;
+    color: #979ba5;
+    border: 1px solid #c4c6cc;
+    border-radius: 2px;
+    background: #ffffff;
+    cursor: pointer;
+
+    &:hover {
+      color: #3a84ff;
     }
+  }
+}
 </style>

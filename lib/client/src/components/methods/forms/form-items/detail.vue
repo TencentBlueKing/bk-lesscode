@@ -37,40 +37,21 @@
         <template v-if="form.funcType === 1">
             <bk-form-item
                 label="Api"
-                property="apiCode"
+                property="apiChoosePath"
                 error-display-type="normal"
                 desc="使用 Api 管理的 api 做为模板，快速生成远程函数"
             >
-                <bk-select
-                    :value="form.apiCode"
-                    :popover-options="{ appendTo: 'parent' }"
+                <choose-api
+                    :value="form.apiChoosePath"
                     :disabled="disabled"
-                    :loading="isLoading"
-                    @toggle="handleToggle"
-                    @selected="handleSelectApi"
-                >
-                    <bk-option v-for="api in apiList"
-                        :key="api.code"
-                        :id="api.code"
-                        :name="`${api.name}（${api.url}）`">
-                    </bk-option>
-                    <div slot="extension">
-                        <bk-link
-                            theme="primary"
-                            class="add-api-link"
-                            target="_blank"
-                            :href="`/project/${projectId}/manage-api`"
-                        >
-                            <i class="bk-icon icon-plus-circle"></i>新增 Api
-                        </bk-link>
-                    </div>
-                </bk-select>
+                    @change="handleSelectApi"
+                ></choose-api>
             </bk-form-item>
             <bk-form-item
                 label="请求地址"
                 property="funcApiUrl"
                 error-display-type="normal"
-                desc="请求地址中可以使用 {变量标识} 的格式来使用变量"
+                desc="请求地址中可以使用 {变量标识} 的格式来使用变量。注意：如果地址中有*，表示可以匹配任意字符串，请替换成真实的路径"
                 :required="true"
                 :rules="[requireRule('请求地址')]"
             >
@@ -112,6 +93,7 @@
                 property="remoteParams"
                 error-display-type="normal">
                 <query-params
+                    class="mt38"
                     :query="form.apiQuery"
                     :disabled="disabled"
                     :variable-list="variableList"
@@ -124,6 +106,7 @@
                 property="remoteParams"
                 error-display-type="normal">
                 <body-params
+                    class="mt38"
                     :body="form.apiBody"
                     :disabled="disabled"
                     :variable-list="variableList"
@@ -160,12 +143,13 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
     import mixins from './form-item-mixins'
     import DynamicTag from '@/components/dynamic-tag.vue'
     import QueryParams from './children/query-params.vue'
     import BodyParams from './children/body-params.vue'
     import monaco from '@/components/monaco'
+    import ChooseApi from '@/components/api/choose-api.vue'
     import {
         FUNCTION_TYPE,
         replaceFuncParam
@@ -186,7 +170,8 @@
             DynamicTag,
             QueryParams,
             BodyParams,
-            monaco
+            monaco,
+            ChooseApi
         },
 
         mixins: [mixins],
@@ -208,8 +193,6 @@
                     { id: FUNCTION_TYPE.EMPTY, name: '空白函数' },
                     { id: FUNCTION_TYPE.REMOTE, name: '远程函数', info: '建议以下几种情况使用 "远程函数":\n1、远程API需要携带用户登录态认证\n2、远程API无法跨域或纯前端访问' }
                 ],
-                apiList: [],
-                isLoading: false,
                 isLoadingResponse: false,
                 METHODS_WITHOUT_DATA,
                 API_METHOD,
@@ -225,40 +208,10 @@
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
-            },
-
-            choosenApi () {
-                return this.apiList.find(api => {
-                    return api.code === this.form.apiCode
-                }) || {}
             }
         },
 
-        created () {
-            this.getApiListFromApi()
-        },
-
         methods: {
-            ...mapActions('api', ['getApiList']),
-
-            handleToggle (isOpen) {
-                if (isOpen) {
-                    this.getApiListFromApi()
-                }
-            },
-
-            getApiListFromApi () {
-                this.isLoading = true
-                this.getApiList({
-                    projectId: this.projectId,
-                    versionId: this.currentVersionId
-                }).then((res) => {
-                    this.apiList = res
-                }).finally(() => {
-                    this.isLoading = false
-                })
-            },
-
             tagChange (key, val) {
                 this.updateValue({ [key]: val })
                 this.$nextTick(() => {
@@ -266,58 +219,63 @@
                 })
             },
 
-            handleSelectApi (apiCode) {
-                const api = this.apiList.find(api => api.code === apiCode)
+            handleSelectApi (api) {
                 this.updateValue({
-                    apiCode,
+                    apiChoosePath: api.path,
                     funcApiUrl: api.url,
                     funcMethod: api.method,
+                    funcSummary: api.summary,
                     apiQuery: api.query.map(parseScheme2UseScheme),
                     apiBody: parseScheme2UseScheme(api.body)
                 })
             },
 
             getRemoteResponse () {
-                this.$refs.funcForm.validate().then(() => {
-                    this.isLoadingResponse = true
-                    let apiData = {}
-                    if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
-                        this.form.apiQuery.forEach((queryItem) => {
-                            apiData[queryItem.name] = parseScheme2Value(queryItem, LCGetParamsVal(this.variableList))
-                        })
-                    } else {
-                        apiData = parseScheme2Value(this.form.apiBody, LCGetParamsVal(this.variableList))
-                    }
-                    const url = replaceFuncParam(this.form.funcApiUrl, (variableCode) => {
-                        const variable = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                        if (variable) {
-                            return getVariableValue(variable)
+                this
+                    .$refs
+                    .funcForm
+                    .validate()
+                    .then(() => {
+                        this.isLoadingResponse = true
+                        let apiData = {}
+                        if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
+                            this.form.apiQuery.forEach((queryItem) => {
+                                apiData[queryItem.name] = parseScheme2Value(queryItem, LCGetParamsVal(this.variableList))
+                            })
                         } else {
-                            throw new Error(`函数请求地址里引用的变量【${variableCode}】不存在，请检查`)
+                            apiData = parseScheme2Value(this.form.apiBody, LCGetParamsVal(this.variableList))
                         }
+                        const url = replaceFuncParam(this.form.funcApiUrl, (variableCode) => {
+                            const variable = this.variableList.find((variable) => (variable.variableCode === variableCode))
+                            if (variable) {
+                                return getVariableValue(variable)
+                            } else {
+                                throw new Error(`函数请求地址里引用的变量【${variableCode}】不存在，请检查并创建该变量`)
+                            }
+                        })
+                        const httpData = {
+                            url,
+                            type: this.form.funcMethod,
+                            apiData,
+                            withToken: this.form.withToken
+                        }
+                        return this
+                            .$store
+                            .dispatch('getApiData', httpData)
+                            .then((res) => {
+                                this.showFuncResponse.show = true
+                                this.showFuncResponse.code = JSON.stringify(res, null, 4)
+                            })
+                            .catch((err) => {
+                                this.messageError(err.message || err)
+                            })
                     })
-                    const httpData = {
-                        url,
-                        type: this.form.funcMethod,
-                        apiData,
-                        withToken: this.form.withToken
-                    }
-                    return this
-                        .$store
-                        .dispatch('getApiData', httpData)
-                        .then((res) => {
-                            this.showFuncResponse.show = true
-                            this.showFuncResponse.code = JSON.stringify(res, null, 4)
-                        })
-                        .catch((err) => {
-                            this.messageError(err.message || err)
-                        })
-                        .finally(() => {
-                            this.isLoadingResponse = false
-                        })
-                }).catch((err) => {
-                    this.messageError(err.content || err)
-                })
+                    .catch((err) => {
+                        this.messageError(err.content || err.message || err)
+                    })
+                    .finally(() => {
+                        this.isLoadingResponse = false
+                    })
             },
 
             getParamRule (label) {
@@ -350,7 +308,7 @@
         position: absolute;
         left: 60px;
         z-index: 2;
-        margin-top: 12px !important;
+        margin-top: 10px !important;
     }
     .add-api-link {
         /deep/ .bk-link-text {
@@ -359,5 +317,8 @@
         .bk-icon {
             margin-right: 5px;
         }
+    }
+    .mt38 {
+        margin-top: 38px;
     }
 </style>

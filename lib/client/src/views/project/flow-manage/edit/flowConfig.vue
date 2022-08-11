@@ -11,25 +11,30 @@
 <template>
     <section class="flow-config" style="height: 100%">
         <div class="flow-container" v-bkloading="{ isLoading: canvasDataLoading }">
+            <bk-alert
+                v-if="showDeployTips"
+                class="deploy-tips"
+                type="warning"
+                title="流程有改动，需要部署后生效">
+            </bk-alert>
             <flow-canvas
                 v-if="!canvasDataLoading"
                 :nodes="canvasData.nodes"
                 :lines="canvasData.lines"
                 :flow-id="serviceData.workflow_id"
                 :editable="editable"
+                @preview="handleCreateTicktetPagePreview"
                 @onNodeClick="handleNodeClick">
             </flow-canvas>
         </div>
         <div class="action-wrapper">
-            <bk-button @click="$router.push({ name: 'flowList' })">
-                取消
-            </bk-button>
             <bk-button
                 theme="primary"
-                :loading="flowPending || nextPending"
-                :disabled="canvasDataLoading || nextPending"
-                @click="handleNextStep">
-                下一步
+                style="min-width: 88px"
+                :loading="flowPending || deployPending"
+                :disabled="canvasDataLoading || deployPending"
+                @click="handleDeploy">
+                部署
             </bk-button>
         </div>
         <div v-if="nodeConfigPanelShow" class="node-config-wrapper">
@@ -37,7 +42,6 @@
                 :node-id="crtNode"
                 :flow-config="flowConfig"
                 :service-data="serviceData"
-                :create-ticket-node-id="createTicketNodeId"
                 @close="closeConfigPanel">
             </node-config>
         </div>
@@ -45,7 +49,7 @@
 </template>
 <script>
     import { mapState } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
+    import { getRouteFullPath } from 'shared/route'
     import FlowCanvas from '@/components/flow/flow-canvas/index.vue'
     import NodeConfig from '@/components/flow/nodeConfig/index.vue'
 
@@ -65,17 +69,23 @@
             return {
                 canvasDataLoading: false,
                 flowPending: false,
-                nextPending: false,
+                deployPending: false,
                 canvasData: { nodes: [], lines: [] },
-                createTicketNodeId: '',
                 nodeConfigPanelShow: false,
                 crtNode: null
             }
         },
         computed: {
             ...mapState('nocode/flow', ['flowConfig']),
+            ...mapState('route', ['layoutPageList']),
+            projectId () {
+                return this.$route.params.projectId
+            },
             editable () {
                 return this.flowConfig.deleteFlag === 0
+            },
+            showDeployTips () {
+                return this.flowConfig.deployed === 0
             }
         },
         created () {
@@ -94,9 +104,9 @@
                         nodes: res[0].items,
                         lines: res[1].items
                     }
-                    this.createTicketNodeId = res[0].items.find(item => item.is_first_state && item.is_builtin).id
+                    this.$store.commit('nocode/flow/setFlowNodes', this.canvasData.nodes)
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.canvasDataLoading = false
                 }
@@ -114,24 +124,48 @@
                 this.crtNode = null
                 this.getFlowStructData()
             },
-            async handleNextStep () {
+            handleCreateTicktetPagePreview () {
+                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.pageId))
+                if (pageRoute) {
+                    const fullPath = getRouteFullPath(pageRoute)
+                    const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                    const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.pageCode}`
+                    window.open(routerUrl, '_blank')
+                }
+            },
+            async handleDeploy () {
                 try {
-                    this.nextPending = true
+                    this.deployPending = true
+                    const {
+                        is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
+                    } = this.serviceData
                     const data = {
                         can_ticket_agency: false,
-                        display_type: 'OPEN',
+                        display_type: 'INVISIBLE',
                         workflow_config: {
-                            ...this.serviceData,
+                            is_supervise_needed,
+                            notify,
+                            notify_freq,
+                            notify_rule,
+                            revoke_config,
+                            supervise_type,
+                            supervisor,
                             is_revocable: this.serviceData.revoke_config.type !== 0,
                             is_auto_approve: false
                         }
                     }
                     await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
-                    this.$router.push({ name: 'flowAdvancedConfig' })
+                    await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: '流程部署成功'
+                    })
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
-                    this.nextPending = false
+                    this.deployPending = false
                 }
             }
         }
@@ -142,8 +176,14 @@
     position: relative;
 }
 .flow-container {
-    height: 100%;
     position: relative;
+    height: 100%;
+}
+.deploy-tips {
+    position: absolute;
+    top: 14px;
+    left: 70px;
+    z-index: 110;
 }
 .action-wrapper {
     position: absolute;
@@ -153,13 +193,9 @@
     padding: 0 24px;
     height: 52px;
     line-height: 52px;
-    text-align: right;
+    text-align: center;
     background: #fafbfd;
     border-top: 1px solid #dcdee5;
-    .bk-button {
-        margin-left: 4px;
-        min-width: 88px;
-    }
 }
 .node-config-wrapper {
     position: absolute;
@@ -170,6 +206,6 @@
     width: 100%;
     height: 100%;
     background: #fafbfd;
-    z-index: 1100;
+    z-index: 120;
 }
 </style>

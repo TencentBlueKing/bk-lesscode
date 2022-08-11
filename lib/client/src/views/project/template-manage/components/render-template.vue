@@ -183,7 +183,8 @@
                     categoryId: template.categoryId,
                     templateName: template.templateName,
                     isOffcial: template.isOffcial,
-                    offcialType: template.offcialType
+                    offcialType: template.offcialType,
+                    previewImg: template?.previewImg.startsWith('http:') ? template.previewImg : ''
                 }
             },
             async handleImport () {
@@ -399,6 +400,8 @@
                         height: 100%;
                         overflow: hidden;
                         border-radius: 4px 4px 0px 0px;
+                        display: flex;
+                        justify-content: center;
                         img {
                             max-width: 100%;
                             height: 100%;

@@ -88,13 +88,7 @@
                 const defaultVal = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE'].includes(type)
                     ? ''
                     : cloneDeep(field.default)
-                const key = pinyin(field.name, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                })
-                    .join('_')
-                    .toUpperCase()
-                    .concat(`_${columnId}`)
+                const key = this.generateKey(field.name, columnId)
                 const config = {
                     columnId, // lesscode特定字段
                     type, // 类型
@@ -116,7 +110,7 @@
                     read_only_conditions: {}, // 只读条件
                     mandatory_conditions: {}, // 必填条件
                     is_readonly: false, // 只读
-                    show_type: 0, // 显隐
+                    show_type: 1, // 为0表示条件隐藏
                     fileTemplate: [], // 存储文件类型组件模板的值
                     imageRange: this.getDefaultImageRange(type),
                     isDisplayTag: false,
@@ -144,14 +138,11 @@
                     this.$emit('select', field, index)
                     this.selectedIndex = index
                 } else if (type === 'copy') {
-                    const key = pinyin(field.name, {
-                        style: pinyin.STYLE_NORMAL,
-                        heteronym: false
-                    })
-                        .join('_')
-                        .toUpperCase()
-                        .concat(uuid(4))
+                    const columnId = uuid(8)
+                    const key = this.generateKey(field.name, columnId)
+                    field.columnId = columnId
                     field.key = key
+                    field.id = null
                     this.$emit('copy', field, index)
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
@@ -190,6 +181,15 @@
                     isMax: false,
                     maxNum: 2
                 } : ''
+            },
+            generateKey (name, columnId) {
+                return pinyin(name, {
+                    style: pinyin.STYLE_NORMAL,
+                    heteronym: false
+                })
+                    .join('_')
+                    .toUpperCase()
+                    .concat(`_${columnId}`)
             },
             showFormPanel () {
                 this.curTemplateData.layoutType !== 'empty' && this.setCurTemplateData({

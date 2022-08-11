@@ -25,7 +25,7 @@
                     <i
                         class="bk-icon icon-info"
                         v-bk-tooltips="{
-                            content: '远程分页下，如果属性【data】的属性初始值来源是【数据表】，系统会通过远程接口自动处理分页逻辑。否则需要用户在【page-change和page-limit-change】事件中处理分页逻辑',
+                            content: '远程分页下，如果属性【data】的属性初始值来源是【数据表】，系统会通过远程接口自动处理分页逻辑。否则需要用户在【page-change和page-limit-change】事件中处理分页逻辑。注意：当属性【data】的属性初始值来源是【数组、函数】，表格会展示整个data的数据，用户需要传递正确的分页数据',
                             width: 300
                         }"
                     ></i>

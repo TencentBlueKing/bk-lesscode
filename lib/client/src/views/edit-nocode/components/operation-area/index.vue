@@ -22,6 +22,7 @@
     import RenderNocode from '@/components/render-nocode/index'
     import PageSetting from '@/views/index/components/operation-area/components/page-setting'
     import PageJson from '@/views/index/components/operation-area/components/page-json'
+    import PageFunction from '@/views/index/components/operation-area/components/page-function'
 
     export default {
         name: '',
@@ -50,7 +51,8 @@
             com () {
                 const comMap = {
                     setting: PageSetting,
-                    jsonSource: PageJson
+                    jsonSource: PageJson,
+                    pageFunction: PageFunction
                 }
                 return comMap[this.operation]
             }

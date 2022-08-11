@@ -26,8 +26,9 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
+    import dayjs from 'dayjs'
     import { mapState, mapGetters } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
+    import { METHODS_WITHOUT_DATA } from 'shared/api'
     import CreatePageDialog from '@/components/project/create-page-dialog.vue'
 
     export default {
@@ -65,7 +66,7 @@
                 return {
                     formId,
                     flowId,
-                    pageCode: `flowPage${this.flowConfig.id}`,
+                    pageCode: `flowpage${this.flowConfig.id}${dayjs().format('HHmmss')}`,
                     pageName: `${this.flowConfig.flowName}_提单页面`
                 }
             }
@@ -76,11 +77,17 @@
                 const fields = this.formConfig.content.map(item => {
                     const field = cloneDeep(item)
                     if (typeof item.id !== 'number') {
-                        field.id = null // 新建的字段需要传null
+                        field.id = null // itsm新建的字段需要传null
+                    }
+                    if (field.source_type === 'WORKSHEET') {
+                        field.source_type = 'CUSTOM_API'
+                        field.meta.data_config.source_type = 'WORKSHEET'
                     }
                     field.workflow = this.serviceData.workflow_id
                     field.state = this.nodeData.id
+                    field.meta.columnId = field.columnId // 表单字段需要保存columnId，itsm不支持直接添加，存到meta里
                     delete field.api_instance_id
+                    delete field.columnId
                     return field
                 })
                 const deletedIds = []
@@ -127,9 +134,32 @@
                         data.finish_condition = {}
                     }
                 } else if (data.type === 'NORMAL') {
+                    const formFieldsId = this.formConfig.content.map(field => field.id)
+                    data.fields = [...formFieldsId]
+                    // itsm新建服务时,提单节点默认生成一个标题字段，需要保留，默认放到第一个
+                    if (this.nodeData.is_first_state) {
+                        data.fields.unshift(this.nodeData.fields[0])
+                    }
                     data.extras.formConfig = {
                         id: formId,
                         type: this.formConfig.type
+                    }
+                } else if (data.type === 'TASK') {
+                    if (METHODS_WITHOUT_DATA.includes(data.extras.api_info.method)) {
+                        data.extras.api_info.body = {
+                            children: [],
+                            code: '',
+                            showChildren: true,
+                            valueType: 'value'
+                        }
+                        data.extras.webhook_info.body = {
+                            content: '',
+                            raw_type: 'JSON',
+                            type: 'raw'
+                        }
+                    } else {
+                        data.extras.api_info.query = []
+                        data.extras.webhook_info.query_params = []
                     }
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
@@ -158,10 +188,22 @@
                         this.savePending = true
                     }
                     if (this.nodeData.type === 'NORMAL') {
-                        // itsm 接口对字段的类型校验有问题，暂时先去掉
-                        // const itsmFields = await this.saveItsmFields()
-                        // this.$store.commit('nocode/nodeConfig/setFormConfig', { content: itsmFields })
-                        // this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
+                        const itsmFields = await this.saveItsmFields()
+                        const content = []
+                        itsmFields.forEach(field => {
+                            if (this.nodeData.is_first_state && field.id === this.nodeData.fields[0]) {
+                                return
+                            }
+                            field.columnId = field.meta.columnId
+                            field.disabled = true
+                            delete field.meta.columnId
+                            if (field.meta.data_config?.source_type === 'WORKSHEET') {
+                                field.source_type = 'WORKSHEET'
+                            }
+                            content.push(field)
+                        })
+                        this.$store.commit('nocode/nodeConfig/setFormConfig', { content })
+                        this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
                         const res = await this.saveFormConfig(this.flowConfig.pageId)
                         this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
                         this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
@@ -172,14 +214,15 @@
                             return
                         } else if (this.delCreateTicketPageId) { // 流程提单页被删除
                             await this.deleteCreateTicketPage()
-                            await this.updateFlowPageId()
+                            await this.updateFlowPageId(0)
                             this.$store.commit('nocode/flow/setDeletedPageId', null)
                             this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
                         }
                     } else {
                         await this.updateItsmNode()
                     }
-
+                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                     this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
 
                     this.$bkMessage({
@@ -187,7 +230,7 @@
                         theme: 'success'
                     })
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e || e.message)
                 } finally {
                     this.createPagePending = false
                     this.savePending = false
@@ -200,6 +243,10 @@
                     if (pageId) {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId })
                         await this.updateFlowPageId(pageId)
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
+                        this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+
                         this.$refs.createPageDialog.isShow = false
                         this.$bkMessage({
                             message: '节点保存并创建提单页成功',
@@ -207,7 +254,7 @@
                         })
                     }
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e || e.message)
                 } finally {
                     this.createPagePending = false
                 }

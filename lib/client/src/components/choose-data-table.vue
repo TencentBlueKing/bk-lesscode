@@ -22,7 +22,7 @@
             theme="primary"
             size="small"
             :disabled="!value"
-            :loading="isLoading"
+            :loading="isLoadingData"
             @click="handleSelectTable(value)"
         >获取数据</bk-button>
     </section>
@@ -40,17 +40,23 @@
 
     export default defineComponent({
         props: {
-            value: String
+            value: String,
+            isLoading: Boolean
         },
 
         setup (props, { emit }) {
-            const isLoading = ref(false)
             const isLoadingList = ref(false)
+            const isLoadingData = ref(false)
             const projectId = router?.currentRoute?.params?.projectId
             const tableList = ref([])
 
+            const toggleLoading = (val) => {
+                isLoadingData.value = val
+                emit('update:isLoading', val)
+            }
+
             const handleSelectTable = (tableName) => {
-                isLoading.value = true
+                toggleLoading(true)
                 const queryData = {
                     projectId,
                     environment: 'preview',
@@ -63,7 +69,7 @@
                 }).catch((error) => {
                     messageError(error.message || error)
                 }).finally(() => {
-                    isLoading.value = false
+                    toggleLoading(false)
                 })
             }
 
@@ -99,8 +105,8 @@
             })
 
             return {
-                isLoading,
                 isLoadingList,
+                isLoadingData,
                 tableList,
                 handleSelectTable,
                 handleCreate,

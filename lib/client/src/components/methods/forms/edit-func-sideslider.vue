@@ -87,8 +87,12 @@
             }
         },
 
-        created () {
-            this.freshFunctionList()
+        watch: {
+            isShow (val) {
+                if (val) {
+                    this.freshFunctionList()
+                }
+            }
         },
 
         methods: {
@@ -113,15 +117,18 @@
             },
 
             handleSubmit () {
-                this.validate().then((form) => {
-                    if (this.isEdit) {
-                        this.submitEdit(form)
-                    } else {
-                        this.submitCreate(form)
-                    }
-                }).catch((validator) => {
-                    this.$bkMessage({ message: validator.content || validator, theme: 'error' })
-                })
+                this
+                    .validate()
+                    .then((form) => {
+                        if (this.isEdit) {
+                            this.submitEdit(form)
+                        } else {
+                            this.submitCreate(form)
+                        }
+                    })
+                    .catch((validator) => {
+                        this.$bkMessage({ message: validator.content || validator, theme: 'error' })
+                    })
             },
 
             submitEdit (form) {

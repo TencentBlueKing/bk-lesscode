@@ -9,6 +9,7 @@
     import editArea from './edit-area.vue'
     import simulator from './simulator-area.vue'
     import LC from '@/element-materials/core'
+    import { uuid } from '@/common/util'
     
     export default {
         components: {
@@ -18,15 +19,15 @@
         data () {
             return {
                 showPreview: true,
-                previewKey: new Date()
+                previewKey: uuid()
             }
         },
         created () {
-            LC.addEventListener('mobilePreviewSwitch', this.mobilePreviewSwitch)
+            LC.addEventListener('mobilePreviewSwitch', this.mobileSwitchCallback)
             LC.addEventListener('refreshPreview', this.updatePreview)
         },
         beforeDestroy () {
-            LC.removeEventListener('mobilePreviewSwitch', this.mobilePreviewSwitch)
+            LC.removeEventListener('mobilePreviewSwitch', this.mobileSwitchCallback)
             LC.removeEventListener('refreshPreview', this.updatePreview)
         },
         methods: {
@@ -34,7 +35,7 @@
                 this.showPreview = val
             },
             updatePreview () {
-                this.previewKey = new Date()
+                this.previewKey = uuid()
             }
         }
     }

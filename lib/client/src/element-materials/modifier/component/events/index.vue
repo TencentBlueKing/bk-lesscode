@@ -73,6 +73,7 @@
                 const renderEvent = renderEvents[key]
                 if (typeof renderEvent === 'string') {
                     this.renderEvents[key] = {
+                        enable: true,
                         methodCode: renderEvent,
                         params: []
                     }
@@ -104,6 +105,7 @@
                 this.renderEvents = {
                     ...this.renderEvents,
                     [event.name]: {
+                        enable: true,
                         methodCode: '',
                         params: []
                     }

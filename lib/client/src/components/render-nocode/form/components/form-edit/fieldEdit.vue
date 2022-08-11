@@ -3,7 +3,7 @@
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
-                    <rich-text @change="handleDescValueChange" is-full-screen></rich-text>
+                    <rich-text @change="handleDescValueChange" is-full-screen :value="fieldData.value"></rich-text>
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
@@ -153,14 +153,14 @@
                         </div>
                         <div class="contidion">
                             <bk-checkbox
-                                :true-value="1"
-                                :false-value="0"
+                                :true-value="0"
+                                :false-value="1"
                                 :disabled="disabled"
                                 v-model="fieldData.show_type"
                                 @change="change">
                                 隐藏
                             </bk-checkbox>
-                            <span v-show="fieldData.show_type === 1" @click="showTypeShow = true">条件编辑</span>
+                            <span v-show="fieldData.show_type === 0" @click="showTypeShow = true">条件编辑</span>
                         </div>
                     </div>
                 </bk-form-item>
@@ -585,7 +585,7 @@
                         { key: 'XUANXIANG1', name: '选项1', color: '#3a84ff', isDefaultVal: true },
                         { key: 'XUANXIANG2', name: '选项2', color: '#2dcb56', isDefaultVal: false }
                     ]
-                    this.fieldData.api_info = {}
+                    delete this.fieldData.meta.data_config
                     this.fieldData.kv_relation = {}
                 } else if (val === 'API') {
                     this.fieldData.choice = []
@@ -599,14 +599,13 @@
                     this.fieldData.kv_relation = { key: '', name: '' }
                 } else if (val === 'WORKSHEET') {
                     this.fieldData.choice = []
-                    this.fieldData.api_info = {}
                     this.fieldData.kv_relation = {}
                     this.fieldData.meta.data_config = {
                         formId: '',
                         tableName: '',
                         field: '',
                         conditions: {
-                            connector: 'and',
+                            type: 'and',
                             expressions: []
                         }
                     }

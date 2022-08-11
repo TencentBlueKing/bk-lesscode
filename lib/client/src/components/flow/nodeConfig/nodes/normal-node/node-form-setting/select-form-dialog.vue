@@ -99,6 +99,17 @@
                     return
                 }
                 const form = this.formList.find(item => item.id === this.selected)
+                const formContent = JSON.parse(form.content)
+                const hasNotAvailable = formContent.some(item => {
+                    return ['DESC', 'DIVIDER'].includes(item.type)
+                })
+                if (hasNotAvailable) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: '已选表单包含流程不支持的字段控件【描述文本】或【分割线】类型'
+                    })
+                    return
+                }
                 this.selected = ''
                 this.$emit('confirm', form)
             },

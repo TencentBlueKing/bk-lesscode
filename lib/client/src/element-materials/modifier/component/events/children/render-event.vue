@@ -20,7 +20,7 @@
         <template v-slot:header>
             <h3 class="event-title">
                 <span
-                    class="label"
+                    class="label mr10"
                     v-bk-tooltips="{
                         content: eventConfig.tips,
                         disabled: !eventConfig.tips,
@@ -31,6 +31,15 @@
                 >
                     {{ eventName }}
                 </span>
+                <bk-switcher
+                    size="small"
+                    v-bk-tooltips="{
+                        content: '关闭后，该事件不生效',
+                        boundary: 'window'
+                    }"
+                    :value="eventValue.enable === undefined || eventValue.enable"
+                    @change="handleEnableEvent"
+                ></bk-switcher>
             </h3>
             <i class="bk-icon icon-close-line panel-minus" @click="handleDeleteEvent"></i>
         </template>
@@ -56,7 +65,10 @@
         methods: {
             handleChangeEvent (eventValue) {
                 this.$emit('update', {
-                    [this.eventName]: eventValue
+                    [this.eventName]: {
+                        ...this.eventValue,
+                        ...eventValue
+                    }
                 })
             },
 
@@ -68,6 +80,15 @@
 
             handleDeleteEvent () {
                 this.$emit('minus', this.eventName)
+            },
+
+            handleEnableEvent (enable) {
+                this.$emit('update', {
+                    [this.eventName]: {
+                        ...this.eventValue,
+                        enable
+                    }
+                })
             }
         }
     }

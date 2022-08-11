@@ -3,7 +3,7 @@
         <i v-if="showDeleteIcon" class="bk-icon icon-close close-btn" @click="$emit('delete')"></i>
         <div class="connector-rule">
             <label>字段间关系</label>
-            <bk-radio-group v-model="localVal.connector" @change="change">
+            <bk-radio-group v-model="localVal.type" @change="change">
                 <bk-radio value="and">且</bk-radio>
                 <bk-radio value="or">或</bk-radio>
             </bk-radio-group>
@@ -80,7 +80,7 @@
                 type: Object,
                 default () {
                     return {
-                        connector: 'and',
+                        type: 'and',
                         expressions: [
                             {
                                 key: '',
@@ -107,7 +107,7 @@
             getLocalVal (val) {
                 const expressions = [{ key: '', condition: '', value: '' }]
                 let defaultVal
-                this.type === 'show_conditions' ? defaultVal = { type: 'and', expressions } : defaultVal = { connector: 'and', expressions }
+                this.type === 'show_conditions' ? defaultVal = { type: 'and', expressions } : defaultVal = { type: 'and', expressions }
                 return Object.assign({}, defaultVal, cloneDeep(val))
             },
             // 筛选条件字段
