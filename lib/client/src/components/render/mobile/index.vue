@@ -23,11 +23,11 @@
             }
         },
         created () {
-            LC.addEventListener('mobilePreviewSwitch', this.mobilePreviewSwitch)
+            LC.addEventListener('mobilePreviewSwitch', this.mobileSwitchCallback)
             LC.addEventListener('refreshPreview', this.updatePreview)
         },
         beforeDestroy () {
-            LC.removeEventListener('mobilePreviewSwitch', this.mobilePreviewSwitch)
+            LC.removeEventListener('mobilePreviewSwitch', this.mobileSwitchCallback)
             LC.removeEventListener('refreshPreview', this.updatePreview)
         },
         methods: {

@@ -89,6 +89,7 @@
     import { mapState, mapGetters } from 'vuex'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
+    import { syncVariableValue } from '@/views/index/components/utils'
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import PreviewFormDialog from './preview-form-dialog.vue'
@@ -167,8 +168,12 @@
             async getPageDetail () {
                 try {
                     this.pageContextLoading = true
-                    const [pageDetail] = await Promise.all([
+                    const [pageDetail, functionData] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId }),
+                        this.$store.dispatch('functions/getAllGroupAndFunction', {
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }),
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId }),
                         this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId }),
                         this.$store.dispatch('page/getPageSetting', {
@@ -178,7 +183,16 @@
                         })
                     ])
 
+                    const variableList = await this.$store.dispatch('variable/getAllVariable', {
+                        projectId: this.projectId,
+                        pageCode: pageDetail.pageCode,
+                        versionId: this.versionId,
+                        effectiveRange: 0
+                    })
+
                     this.$store.commit('page/setPageDetail', pageDetail || {})
+                    this.$store.commit('functions/setFunctionData', functionData)
+                    syncVariableValue(pageDetail.content, variableList)
                 } catch (e) {
                     console.error(e)
                 } finally {
