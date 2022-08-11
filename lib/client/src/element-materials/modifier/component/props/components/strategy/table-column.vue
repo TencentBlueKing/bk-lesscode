@@ -96,6 +96,9 @@
                                 <bk-checkbox :checked="item.sortable" @change="val => handleChange(val, 'sortable', index)" style="font-size: 12px;">
                                     支持排序
                                 </bk-checkbox>
+                                <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
+                                    支持过滤
+                                </bk-checkbox>
                             </div>
                         </section>
                     </div>
@@ -117,6 +120,7 @@
         label: `选项${index}`,
         prop: `prop${index}`,
         sortable: false,
+        filterable: false,
         type: ''
     })
     const generateCustomColumn = (index) => ({
@@ -124,7 +128,8 @@
         label: `选项${index}`,
         templateCol: '<a style="color:#3A84FF;cursor:pointer" @click="editCallBack(props.row)">编辑</a>',
         methodCode: [],
-        sortable: false
+        sortable: false,
+        filterable: false
     })
     export default {
         name: '',

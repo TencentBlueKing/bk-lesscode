@@ -2,7 +2,8 @@
     <use-post-scheme
         :params="bodyData"
         :render-slot="renderSlot"
-        :get-param-val="LCGetParamsVal(variableList)">
+        :get-param-val="LCGetParamsVal(variableList)"
+        @change="$emit('update', $event)">
     </use-post-scheme>
 </template>
 <script>

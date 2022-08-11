@@ -2,7 +2,7 @@
     <div class="form-fields">
         <template v-for="field in fields">
             <field-form-item
-                v-if="field.show_type === 0"
+                v-if="!field.isHide"
                 :key="field.key"
                 :field="field"
                 :use-fixed-data-source="useFixedDataSource"
@@ -60,8 +60,8 @@
         },
         created () {
             this.initFormValue()
+            this.parseFieldConditions()
             this.handleParseCondition = debounce(this.parseFieldConditions, 300)
-            this.handleParseCondition()
         },
         methods: {
             // 获取变量value，优先去props传入的value值，若没有则取默认值
@@ -73,8 +73,6 @@
                     } else if ('default' in item) {
                         if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE', 'FILE'].includes(item.type)) {
                             fieldsValue[item.key] = item.default ? item.default.split(',') : []
-                        } else if (item.type === 'DATETIME' && item.default === 'curTime') {
-                            fieldsValue[item.key] = JSON.stringify(this.$dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
                         } else {
                             fieldsValue[item.key] = item.default
                         }

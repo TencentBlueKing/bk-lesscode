@@ -1,6 +1,7 @@
 <template>
     <div class="lesscode-deploy-process-item-wrapper">
         <section class="header" @click.stop="handleExpanded">
+            <i class="bk-drag-icon" :class="curExpanded ? 'bk-drag-angle-up-fill' : 'bk-drag-angle-right-fill'"></i>
             <span class="process-title">{{ title }}</span>
             <span class="process-sub-title">({{ subTitle }})</span>
             <StatusItem :status="status" />
@@ -66,6 +67,12 @@
             instanceName: {
                 type: String,
                 default: ''
+            },
+            currentAppInfo: {
+                type: Object,
+                default () {
+                    return {}
+                }
             }
         },
         data () {
@@ -73,12 +80,24 @@
                 curExpanded: this.expanded,
                 instanceLogLoading: false,
                 logs: [],
-                fullDialogVisiable: false
+                fullDialogVisiable: false,
+                appCode: '',
+                curModuleId: ''
             }
         },
         computed: {
             canFullScreen () {
                 return this.logs.length > 0
+            }
+        },
+        watch: {
+            currentAppInfo: {
+                handler (v) {
+                    this.appCode = v.appCode
+                    this.curModuleId = v.moduleCode
+                },
+                immediate: true,
+                deep: true
             }
         },
         methods: {
@@ -105,7 +124,7 @@
                             }
                         }
                     }
-                    const res = await this.$store.dispatch('processes/getInstanceLog', params)
+                    const res = await this.$store.dispatch('release/processDetailResult', params)
                     this.logs = JSON.parse(JSON.stringify(res.data.logs)).reverse()
                 } catch (e) {
                     this.$bkMessage({

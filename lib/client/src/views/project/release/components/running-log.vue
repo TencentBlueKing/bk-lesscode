@@ -32,6 +32,7 @@
                         :process-list="allProcesses"
                         :state-process="appearDeployState"
                         :process-loading="processLoading"
+                        :current-app-info="currentAppInfo"
                         :environment="environment"
                         v-if="isWatchDeploying || isDeploySuccess || isDeployFail || isDeployInterrupted || isDeployInterrupting">
                     </deploy-log>
@@ -85,6 +86,7 @@
 <script>
     import deployTimeline from './deploy-timeline'
     import deployLog from './deploy-log'
+    import moment from 'moment'
     export default {
         components: {
             deployTimeline,
@@ -148,7 +150,8 @@
                 isLogError: false,
                 ansiUp: null,
                 serverProcessEvent: null,
-                link: ''
+                link: '',
+                processLoadingLocal: false
             }
         },
         computed: {
@@ -291,7 +294,7 @@
                             if (data.name === '检测部署结果' && data.status === 'pending') {
                                 this.appearDeployState.push('release')
                                 this.releaseId = data.release_id
-                                // this.getProcessList(item.release_id, true)
+                                this.getProcessList(data.release_id, !this.processLoadingLocal)
                                 this.$nextTick(() => {
                                     this.$refs.deployLogRef && this.$refs.deployLogRef.handleScrollToLocation('release')
                                 })
@@ -304,7 +307,6 @@
                             this.$refs.deployTimelineRef && this.$refs.deployTimelineRef.editNodeStatus(data.name, data.status, content)
                         }
                     })
-                    this.loopLogs()
                     if (res.status === 'end') {
                         this.timer && clearInterval(this.timer)
                     }
@@ -316,7 +318,93 @@
                 }
             },
 
+            // 获取进程列表
+            async getProcessList (releaseId, isLoading = false) {
+                this.processLoading = isLoading
+                if (this.processLoading) {
+                    this.processLoadingLocal = this.processLoading
+                }
+                try {
+                    const res = await this.$store.dispatch('release/processListResult', {
+                        appCode: this.appCode,
+                        moduleId: this.curModuleId,
+                        env: this.environment
+                    })
+                    this.formatProcesses(res)
+                } catch (e) {
+                    // 无法获取进程目前状态
+                    console.error(e)
+                } finally {
+                    this.processLoading = false
+                }
+            },
+
+            // 对数据进行处理
+            formatProcesses (processesData) {
+                const allProcesses = []
+
+                // 保存上次的版本号
+                this.prevProcessVersion = processesData.processes.metadata.resource_version
+                this.prevInstanceVersion = processesData.instances.metadata.resource_version
+
+                // 遍历进行数据组装
+                const extraInfos = processesData.processes.extra_infos
+                const packages = processesData.process_packages
+                const instances = processesData.instances.items
+
+                processesData.processes.items.forEach(processItem => {
+                    const type = processItem.type
+                    const version = processItem.version.toString()
+                    const extraInfo = extraInfos.find(item => item.type === type)
+                    const packageInfo = packages.find(item => item.name === type)
+
+                    const processInfo = {
+                        ...processItem,
+                        ...packageInfo,
+                        ...extraInfo,
+                        instances: []
+                    }
+
+                    instances.forEach(instance => {
+                        if (instance.process_type === type && instance.version === version) {
+                            processInfo.instances.push(instance)
+                        }
+                    })
+
+                    // 作数据转换，以兼容原逻辑
+                    const process = {
+                        name: processInfo.name,
+                        instance: processInfo.instances.length,
+                        instances: processInfo.instances,
+                        targetReplicas: processInfo.target_replicas,
+                        isStopTrigger: false,
+                        targetStatus: processInfo.target_status,
+                        isActionLoading: false, // 用于记录进程启动/停止接口是否已完成
+                        maxReplicas: processInfo.max_replicas,
+                        status: 'Stopped',
+                        cmd: processInfo.command,
+                        desired_replicas: processInfo.replicas,
+                        available_instance_count: processInfo.success,
+                        failed: processInfo.failed,
+                        resourceLimit: processInfo.resource_limit,
+                        clusterLink: processInfo.cluster_link
+
+                    }
+
+                    this.$set(process, 'expanded', false)
+
+                    // 日期转换
+                    process.instances.forEach(item => {
+                        item.date_time = moment(item.start_time).startOf('minute').fromNow()
+                    })
+
+                    allProcesses.push(process)
+                })
+                this.allProcesses = JSON.parse(JSON.stringify(allProcesses))
+            },
+
             handleClose () {
+                this.processLoadingLocal = false
                 this.$emit('closeLog')
             },
 

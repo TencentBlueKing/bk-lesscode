@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        :title="`表格【${[title]}】展示条件设置`"
+        :title="`【${[title]}】字段隐藏条件设置`"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"
@@ -35,7 +35,7 @@
                 type: Object,
                 default () {
                     return {
-                        connector: 'and',
+                        type: 'and',
                         expressions: [
                             {
                                 key: '',

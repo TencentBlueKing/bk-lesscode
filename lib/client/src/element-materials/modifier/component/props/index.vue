@@ -110,11 +110,15 @@
                     const propOfOptionsData = this.lastProps['options']
                     const propOfRemoteOptionsData = this.lastProps['remoteOptions']
 
+                    console.log(this.lastProps['options'], this.lastProps['remoteOptions'], 'last')
+
                     const realOptionValue = Object.assign(
                         {},
                         _.cloneDeep(propOfOptionsData.renderValue),
                         _.cloneDeep(propOfRemoteOptionsData.renderValue)
                     )
+
+                    console.log(realOptionValue, 'real')
 
                     if (propOfOptionsData.format === 'value') {
                         // format 为 value 替换所有配置
@@ -152,7 +156,15 @@
                     return
                 }
                 // 同步 table 的 columns
-                if (key === 'data' && ['bk-table', 'el-table', 'folding-table', 'search-table'].includes(this.componentType)) {
+                if (key === 'data'
+                    && [
+                        'bk-table',
+                        'el-table',
+                        'folding-table',
+                        'search-table',
+                        'widget-bk-table',
+                        'widget-el-table'
+                    ].includes(this.componentType)) {
                     // 默认同步 第一个 slot
                     const slotName = Object.keys(this.material.slots)[0]
                     const slotConfig = this.material.slots[slotName]
@@ -205,7 +217,7 @@
                     ...this.lastProps,
                     [propName]: propData
                 })
-                this.syncOtherProp(propName)
+                // this.syncOtherProp(propName)
             }, 60)
         }
     }

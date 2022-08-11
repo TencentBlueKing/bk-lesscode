@@ -14,15 +14,15 @@
                         <bk-form-item label="创建时间">
                             <bk-date-picker size="small"></bk-date-picker>
                         </bk-form-item>
-                        <bk-form-item label="当前节点">
-                            <bk-select></bk-select>
+                        <bk-form-item label="单号">
+                            <bk-input></bk-input>
                         </bk-form-item>
                         <bk-form-item label="状态">
                             <bk-select></bk-select>
                         </bk-form-item>
                     </bk-form>
                 </div>
-                <bk-table :data="emptyData">
+                <bk-table :data="emptyData" :outer-border="false" :header-cell-style="{ background: '#f0f1f5' }">
                     <bk-table-column label="创建人"></bk-table-column>
                     <bk-table-column label="创建时间"></bk-table-column>
                     <bk-table-column label="当前节点"></bk-table-column>

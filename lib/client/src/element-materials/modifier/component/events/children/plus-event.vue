@@ -60,7 +60,8 @@
     export default {
         props: {
             configEvents: Array,
-            renderEvents: Object
+            renderEvents: Object,
+            node: Object
         },
 
         data () {
@@ -74,7 +75,8 @@
                 return this.configEvents.reduce((acc, cur) => {
                     const hasExist = this.renderEvents[cur.name]
                     const isMatchSearch = cur.name.includes(this.searchEventName)
-                    if (!hasExist && isMatchSearch) {
+                    const hidden = cur.calcHidden && cur.calcHidden(this.node)
+                    if (!hasExist && isMatchSearch && !hidden) {
                         acc.push(cur)
                     }
                     return acc

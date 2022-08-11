@@ -1,4 +1,4 @@
-# 蓝鲸智云PaaS平台社区版之可视化开发平台
+# 蓝鲸智云可视化开发平台（LessCode）
 
 ## 配置文件说明
 
@@ -37,6 +37,3 @@
 
 在 `lesscode/lib/server/conf` 中新建 `encrypt-secret-key.js` 文件（复制 `encrypt-secret-key.js.example`，并删除 `.example`即可）。然后依照 [encrypt-secret-key.js.example](../../lib/server/conf/encrypt-secret-key.js.example) 的注释填写加密的key。
 
-#### no-code.js (用于nocode配置，不可忽略)
-
-在 `lesscode/lib/server/conf` 中新建 `no-code.js` 文件（复制 `no-code.js.example`，并删除 `.example`即可）。然后依照 [no-code.js.example](../../lib/server/conf/no-code.js.example) 的注释填写。

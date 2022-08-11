@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div ref="componentToolRef">
         <div
             ref="hoverRef"
             :class="$style['tools-hover']"
@@ -42,10 +42,12 @@
     </div>
 </template>
 <script>
+    import store from '@/store'
     import {
         reactive,
         toRefs,
-        ref
+        ref,
+        onMounted
     } from '@vue/composition-api'
     import useActiveParent from './hooks/use-active-parent'
     import useSaveTemplate from './hooks/use-save-template'
@@ -54,6 +56,8 @@
     import useComponentActive from '../hooks/use-component-active'
     import useComponentHover from '../hooks/use-component-hover'
     import useSlot from './hooks/use-slot'
+    import _ from 'lodash'
+    import { miniLimited } from 'shared/util.js'
 
     const hideStyles = {
         display: 'none'
@@ -66,13 +70,27 @@
 
     export default {
         setup () {
+            const platform = store.getters['page/platform']
+
+            const toolContainer = platform === 'MOBILE' ? '#mobileDrawContent' : '#drawTarget'
+
             const state = reactive({
                 hoverStyles: hideStyles,
                 activeStyles: hideStyles
             })
 
+            const initStyle = reactive({
+                activeScrollTop: 0,
+                activeTop: 0,
+                hoverTop: 0,
+                hoverScrollTop: 0
+            })
+
+            const minimalTop = 7.5
+
             const hoverRef = ref()
             const activeRef = ref()
+            const componentToolRef = ref()
 
             // 选中父级容器组件
             const handleSelectParent = useActiveParent()
@@ -85,13 +103,29 @@
             // 编辑slot文字
             useSlot()
 
+            const scrollHandleGenerator = (type) => {
+                return _.throttle(() => {
+                    const keyMap = type === 'active' ? ['activeTop', 'activeScrollTop', 'activeStyles'] : ['hoverTop', 'hoverScrollTop', 'hoverStyles']
+                    const container = document.body.querySelector('#lesscodeMobileDraw')
+                    const calculateActiveTop = `${parseInt(initStyle[keyMap[0]]) - (container.scrollTop - initStyle[keyMap[1]])}px`
+                    state[keyMap[2]].top = miniLimited(calculateActiveTop, minimalTop) + 'px'
+                }, 50)
+            }
+            
+            // 移动端页面滚动，需要动态调整标签位置
+            const mobileScrollHandler = scrollHandleGenerator('active')
+
+            const mobileHoverScrollHandler = scrollHandleGenerator('hover')
+
             /**
              * @desc acitve状态
              * @param { Node } componentData
              */
             const { activeComponentData } = useComponentActive((componentData) => {
+                const mobileContainer = document.body.querySelector('#lesscodeMobileDraw')
                 if (!componentData || !componentData.componentId) {
                     state.activeStyles = hideStyles
+                    mobileContainer.removeEventListener('scroll', mobileScrollHandler)
                     return
                 }
                 if (componentData === hoverComponentData.value) {
@@ -101,7 +135,7 @@
                     top: containerTop,
                     right: containerRight,
                     left: containerLeft
-                } = document.body.querySelector('#drawTarget').getBoundingClientRect()
+                } = document.body.querySelector(toolContainer).getBoundingClientRect()
 
                 const {
                     top,
@@ -123,6 +157,11 @@
                     left: `${realLeft}px`,
                     zIndex: activeZIndex
                 }
+
+                initStyle.activeTop = state.activeStyles.top
+                initStyle.activeScrollTop = mobileContainer.scrollTop
+
+                mobileContainer && mobileContainer.addEventListener('scroll', mobileScrollHandler)
             })
 
             /**
@@ -130,17 +169,19 @@
              * @param { Node } componentData
              */
             const { hoverComponentData } = useComponentHover((componentData) => {
+                const mobileContainer = document.body.querySelector('#lesscodeMobileDraw')
                 if (!componentData
                     || !componentData.componentId
                     || componentData === activeComponentData.value) {
                     state.hoverStyles = hideStyles
+                    mobileContainer.removeEventListener('scroll', mobileHoverScrollHandler)
                     return
                 }
 
                 const {
                     top: containerTop,
                     left: containerLeft
-                } = document.body.querySelector('#drawTarget').getBoundingClientRect()
+                } = document.body.querySelector(toolContainer).getBoundingClientRect()
                 const {
                     top,
                     left
@@ -152,6 +193,17 @@
                     left: `${left - containerLeft}px`,
                     zIndex: hoverZIndex
                 }
+
+                initStyle.hoverTop = state.hoverStyles.top
+                initStyle.hoverScrollTop = mobileContainer.scrollTop
+
+                mobileContainer && mobileContainer.addEventListener('scroll', mobileHoverScrollHandler)
+            })
+
+            /** transfer dom 防止移动端overflow: hidden导致的无法显示问题 */
+            onMounted(() => {
+                const wrapper = document.querySelector(toolContainer)
+                wrapper.append(componentToolRef.value)
             })
             
             return {
@@ -160,10 +212,12 @@
                 activeComponentData,
                 hoverRef,
                 activeRef,
+                componentToolRef,
                 handleSaveTemplate,
                 handleSelectParent,
                 handleRemove,
-                handleShowMenu
+                handleShowMenu,
+                initStyle
             }
         }
     }

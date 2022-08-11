@@ -95,6 +95,10 @@
                     color: #63656e;
                 }
             }
+            pre {
+               white-space: pre-wrap;
+                word-wrap: break-word;
+            }
         }
         .content {
             padding: 15px 20px;
@@ -121,7 +125,7 @@
 
     .running-cls{
         .content {
-            max-height: 100% !important;
+            max-height: 65vh !important;
         }
     }
 

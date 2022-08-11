@@ -80,10 +80,11 @@
                 </bk-table-column>
                 <bk-table-column label="更新人" prop="updateUser"></bk-table-column>
                 <bk-table-column label="更新时间" prop="updateTime" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
-                <bk-table-column label="操作" width="180">
+                <bk-table-column label="操作" width="240">
                     <template slot-scope="props">
                         <span class="table-btn" @click="handleEditApi(props.row)">编辑</span>
                         <span class="table-btn" @click="handleCopyApi(props.row)">复制</span>
+                        <span class="table-btn" @click="handleCreateFunction(props.row)">生成函数</span>
                         <span @click="handleDeleteApi(props.row)"
                             v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
                             :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
@@ -99,6 +100,13 @@
             :form.sync="apiData.form"
             :is-show.sync="apiData.isShow"
             @success-submit="freshList"
+        />
+
+        <edit-func-sideslider
+            title="添加函数"
+            :is-show="editFuncObj.isShow"
+            :func-data="editFuncObj.funcData"
+            @close="handleCloseFunction"
         />
 
         <bk-dialog
@@ -140,17 +148,25 @@
     import { mapActions, mapGetters } from 'vuex'
     import dayjs from 'dayjs'
     import CreateApiSideslider from './create-api-sideslider/index.vue'
+    import Monaco from '@/components/monaco'
+    import EditFuncSideslider from '@/components/methods/forms/edit-func-sideslider.vue'
     import {
         METHODS_WITHOUT_DATA,
         parseQueryScheme2QueryString,
-        parseScheme2Value
+        parseScheme2Value,
+        parseScheme2UseScheme
     } from 'shared/api'
-    import monaco from '@/components/monaco'
+    import {
+        getDefaultFunction,
+        FUNCTION_TYPE,
+        FUNCTION_TIPS
+    } from 'shared/function'
 
     export default {
         components: {
             CreateApiSideslider,
-            monaco
+            Monaco,
+            EditFuncSideslider
         },
 
         props: {
@@ -181,6 +197,10 @@
                     title: '',
                     show: false,
                     jsonValue: ''
+                },
+                editFuncObj: {
+                    isShow: false,
+                    funcData: {}
                 }
             }
         },
@@ -228,6 +248,24 @@
                 }).finally(() => {
                     this.isLoading = false
                 })
+            },
+
+            handleCreateFunction (row) {
+                this.editFuncObj.isShow = true
+                this.editFuncObj.funcData = getDefaultFunction({
+                    projectId: this.projectId,
+                    funcType: FUNCTION_TYPE.REMOTE,
+                    funcBody: FUNCTION_TIPS[FUNCTION_TYPE.REMOTE] + 'return res\n',
+                    funcApiUrl: row.url,
+                    funcMethod: row.method,
+                    apiQuery: row.query.map(parseScheme2UseScheme),
+                    apiBody: parseScheme2UseScheme(row.body)
+                })
+            },
+
+            handleCloseFunction () {
+                this.editFuncObj.isShow = false
+                this.editFuncObj.funcData = {}
             },
 
             handleCreateApi () {

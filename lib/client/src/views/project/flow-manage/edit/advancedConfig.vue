@@ -87,10 +87,6 @@
         </div>
         <div class="action-wrapper">
             <bk-button
-                @click="$router.push({ name: 'flowConfig' })">
-                上一步
-            </bk-button>
-            <bk-button
                 theme="primary"
                 :loading="advancedPending"
                 @click="handleSave"
@@ -104,7 +100,6 @@
 <script>
     import { mapState } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
-    import { messageError } from '@/common/bkmagic'
 
     export default {
         name: 'AdvancedConfig',
@@ -231,13 +226,13 @@
                             },
                             // 以下为流程服务必需字段
                             can_ticket_agency: false,
-                            display_type: 'OPEN'
+                            display_type: 'INVISIBLE'
                         }
                         await this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })
                         this.$router.push({ name: 'flowList' })
                     } catch (e) {
-                        messageError(e.message || e)
+                        console.error(e.message || e)
                     } finally {
                         this.advancedPending = false
                     }

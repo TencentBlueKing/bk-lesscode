@@ -1,12 +1,13 @@
 <template>
-    <bk-table-column
+    <component
+        :is="type"
         :label="item.label"
         :prop="item.prop"
         :sortable="item.sortable"
         :type="item.type"
         :width="item.width"
         :formatter="bkTableFormatter"
-    ></bk-table-column>
+    />
 </template>
 
 <script>
@@ -14,6 +15,7 @@
 
     export default {
         props: {
+            type: String,
             item: Object
         },
 

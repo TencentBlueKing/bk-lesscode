@@ -45,7 +45,9 @@
     .preview-thumb {
         height: 100%;
         img {
-            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
     }
     .empty-preview-img {

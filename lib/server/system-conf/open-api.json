@@ -1,0 +1,231 @@
+{
+    "swagger": "2.0",
+    "basePath": "/",
+    "info": {
+        "version": "1.1.0",
+        "title": "bk-lesscode",
+        "description": "bk-lesscode 对外接口"
+    },
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/create_project_by_app": {
+            "post": {
+                "operationId": "create_project_by_app",
+                "description": "开发者中心创建lesscode类型应用时同步创建lesscode应用",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "post",
+                        "path": "/{env.subpath}api/open/create-project-by-app",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/find-project-by-app": {
+            "get": {
+                "operationId": "find_project_by_app",
+                "description": "根据 appCode 和 moduleCode 获取项目id和名称",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/find-project-by-app",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/project/release/package": {
+            "get": {
+                "operationId": "project_release_package",
+                "description": "根据项目id和版本号获取项目源码包",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/project/release/package",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/project/releases": {
+            "get": {
+                "operationId": "project_releases",
+                "description": "获取用户有权限的项目列表及项目版本号列表",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/project/releases",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/dataManage": {
+            "post": {
+                "operationId": "dataManage",
+                "description": "itsm 回调接口",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "post",
+                        "path": "/{env.subpath}api/nocode/dataManage",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": false
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/filterTableData/keys/tableName/{tableName}": {
+            "post": {
+                "operationId": "filterTableDataByKeys",
+                "description": "itsm 数据筛选接口",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "post",
+                        "path": "/{env.subpath}api/nocode/filterTableData/keys/tableName/{tableName}",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": false
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/filterTableData/conditions/tableName/{tableName}": {
+            "post": {
+                "operationId": "filterTableDataByConditions",
+                "description": "itsm 表单数据源",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "post",
+                        "path": "/{env.subpath}api/nocode/filterTableData/conditions/tableName/{tableName}",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": false
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        }
+    }
+}
