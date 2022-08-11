@@ -139,7 +139,7 @@
 <script>
     import { mapActions, mapGetters } from 'vuex'
     import dayjs from 'dayjs'
-    import CreateApiSideslider from './create-api-sideslider/index.vue'
+    import CreateApiSideslider from '@/components/api/create-api-sideslider/index.vue'
     import {
         METHODS_WITHOUT_DATA,
         parseQueryScheme2QueryString,

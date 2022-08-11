@@ -167,6 +167,7 @@
             handleClose () {
                 const confirmFn = () => {
                     this.$emit('close')
+                    this.$emit('update:isShow', false)
                 }
                 if (this.formChanged) {
                     this.$bkInfo({

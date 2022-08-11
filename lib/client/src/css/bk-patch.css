@@ -82,3 +82,10 @@
         }
     }
 }
+
+.g-small-link {
+    font-size: 12px;
+    &.bk-link .bk-link-icon, .bk-link-text {
+        font-size: 12px;
+    }
+}
