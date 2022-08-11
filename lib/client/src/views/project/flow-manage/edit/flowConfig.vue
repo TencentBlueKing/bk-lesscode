@@ -14,8 +14,13 @@
             <bk-alert
                 v-if="showDeployTips"
                 class="deploy-tips"
-                type="warning"
-                title="流程有改动，需要部署后生效">
+                type="warning">
+                <div class="tips-content" slot="title">
+                    当前流程未部署，需部署后，预览环境才生效；如想应用至生产环境或预览环境，需将整个应用部署至对应环境，
+                    <bk-button style="padding: 0;" size="small" :text="true" :disabled="deployPending" @click="handleDeploy">立即部署流程</bk-button>
+                    或
+                    <router-link class="deploy-project-btn" :to="{ name: 'release', params: { projectId } }">部署应用</router-link>
+                </div>
             </bk-alert>
             <flow-canvas
                 v-if="!canvasDataLoading"
@@ -183,7 +188,18 @@
     position: absolute;
     top: 14px;
     left: 70px;
+    right: 70px;
     z-index: 110;
+    >>> .bk-alert-wraper {
+        display: flex;
+        align-items: center;
+    }
+}
+.deploy-project-btn {
+    color: #3a84ff;
+    &:hover {
+        color: #699df4;
+    }
 }
 .action-wrapper {
     position: absolute;

@@ -1,5 +1,10 @@
 <template>
     <div class="flow-manage-home">
+        <bk-alert
+            style="margin-bottom: 16px;"
+            type="warning"
+            title="流程设计完成后需要手动部署，预览环境方可生效；如想应用至预发布环境或生产环境，需将整个应用部署至对应环境。">
+        </bk-alert>
         <div class="operation-area">
             <bk-button theme="primary" @click="isCreateDialogShow = true">新建</bk-button>
             <div class="search-wrapper">
@@ -50,6 +55,14 @@
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
                     <span v-else style="color: #3a84ff">--</span>
+                </template>
+            </bk-table-column>
+            <bk-table-column label="预览环境部署状态">
+                <template slot-scope="{ row }">
+                    <div class="deploy-status">
+                        <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>
+                        {{ row.deployed ? '已部署' : '未部署' }}
+                    </div>
                 </template>
             </bk-table-column>
             <bk-table-column label="创建人" property="createUser"></bk-table-column>
@@ -241,6 +254,22 @@
                 font-size: 14px;
                 transform: rotateY(180deg);
                 color: #63656e;
+            }
+        }
+    }
+    .deploy-status {
+        display: flex;
+        align-items: center;
+        .deploy-status-icon {
+            margin-right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #ffe8c3;
+            border-radius: 50%;
+            border: 1px solid #ff9c01;
+            &.deployed {
+                background: #e5f6ea;
+                border-color: #3fc06d;
             }
         }
     }
