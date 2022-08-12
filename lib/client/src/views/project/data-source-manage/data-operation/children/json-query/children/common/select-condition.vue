@@ -37,6 +37,7 @@
             />
             <bk-input
                 class="select-value"
+                placeholder="请输入值，可以输入逗号分隔的字符串表示数组"
                 :value="condition.value"
                 @change="(val) => handleChange(index, val, 'value')"
             >

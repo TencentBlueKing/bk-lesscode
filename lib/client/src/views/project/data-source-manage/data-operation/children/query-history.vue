@@ -16,6 +16,7 @@
             label="查询时间"
             prop="createTime"
             width="300"
+            :formatter="timeFormatter"
         />
         <bk-table-column
             label="状态"
@@ -62,6 +63,7 @@
 
 <script>
     import store from '@/store'
+    import dayjs from 'dayjs'
     import {
         defineComponent,
         onBeforeMount,
@@ -143,6 +145,10 @@
                 }
             }
 
+            const timeFormatter = (row, column, cellValue, index) => {
+                return cellValue ? dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss') : '--'
+            }
+
             onBeforeMount(getHistory)
 
             return {
@@ -156,7 +162,8 @@
                 handlePageLimitChange,
                 handleLoad,
                 spendTimeFormatter,
-                conditionFormatter
+                conditionFormatter,
+                timeFormatter
             }
         }
     })
