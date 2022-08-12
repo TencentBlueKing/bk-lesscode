@@ -57,7 +57,8 @@
     import {
         defineComponent,
         ref,
-        PropType
+        PropType,
+        watch
     } from '@vue/composition-api'
     import {
         getDefaultGroupBy,
@@ -86,7 +87,7 @@
         },
 
         setup (props, { emit }) {
-            const renderQueryGroup = ref(props.queryGroup || { having: [], fields: [] })
+            const renderQueryGroup = ref()
 
             const handleAdd = () => {
                 renderQueryGroup.value = getDefaultGroupBy()
@@ -126,6 +127,16 @@
             const triggleUpdate = () => {
                 emit('change', renderQueryGroup.value)
             }
+
+            watch(
+                () => props.queryGroup,
+                () => {
+                    renderQueryGroup.value = props.queryGroup || { having: [], fields: [] }
+                },
+                {
+                    immediate: true
+                }
+            )
 
             return {
                 renderQueryGroup,
