@@ -152,7 +152,7 @@
                         .value[index]
                         .splice(
                             0,
-                            pagination.limit,
+                            displayResult.value[index].length,
                             ...item.slice(
                                 (pagination.current - 1) * pagination.limit,
                                 pagination.current * pagination.limit
