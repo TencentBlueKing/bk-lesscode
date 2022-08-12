@@ -155,7 +155,8 @@
                             service_id: this.serviceId,
                             meta: {
                                 envs: {
-                                    appApigwPrefix: BK_APP_APIGW_PREFIX
+                                    appApigwPrefix: BK_APP_APIGW_PREFIX,
+                                    creatorUsername: this.$store.state.user.username
                                 }
                             }
                         }
