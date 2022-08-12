@@ -147,7 +147,7 @@
 <script>
     import { mapActions, mapGetters } from 'vuex'
     import dayjs from 'dayjs'
-    import CreateApiSideslider from './create-api-sideslider/index.vue'
+    import CreateApiSideslider from '@/components/api/create-api-sideslider/index.vue'
     import Monaco from '@/components/monaco'
     import EditFuncSideslider from '@/components/methods/forms/edit-func-sideslider.vue'
     import {

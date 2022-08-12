@@ -119,9 +119,22 @@
                         title: '数据源管理',
                         icon: 'data-source-manage',
                         url: 'tableList',
-                        toPath: {
-                            name: 'tableList'
-                        }
+                        children: [
+                            {
+                                title: '数据表管理',
+                                url: 'tableList',
+                                toPath: {
+                                    name: 'tableList'
+                                }
+                            },
+                            {
+                                title: '数据操作',
+                                url: 'dataOperation',
+                                toPath: {
+                                    name: 'dataOperation'
+                                }
+                            }
+                        ]
                     },
                     {
                         title: '资源库',
