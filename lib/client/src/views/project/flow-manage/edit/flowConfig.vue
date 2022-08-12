@@ -17,7 +17,7 @@
                 type="warning">
                 <div class="tips-content" slot="title">
                     当前流程未部署，需部署后，预览环境才生效；如想应用至生产环境或预览环境，需将整个应用部署至对应环境，
-                    <bk-button style="padding: 0;" size="small" :text="true" :disabled="deployPending" @click="handleDeploy">立即部署流程</bk-button>
+                    <bk-button style="padding: 0;" size="small" :text="true" :disabled="deployPending" @click="$emit('deploy')">立即部署流程</bk-button>
                     或
                     <router-link class="deploy-project-btn" :to="{ name: 'release', params: { projectId } }">部署应用</router-link>
                 </div>
@@ -38,7 +38,7 @@
                 style="min-width: 88px"
                 :loading="flowPending || deployPending"
                 :disabled="canvasDataLoading || deployPending"
-                @click="handleDeploy">
+                @click="$emit('deploy')">
                 部署
             </bk-button>
         </div>
@@ -68,13 +68,13 @@
             serviceData: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            deployPending: Boolean
         },
         data () {
             return {
                 canvasDataLoading: false,
                 flowPending: false,
-                deployPending: false,
                 canvasData: { nodes: [], lines: [] },
                 nodeConfigPanelShow: false,
                 crtNode: null
@@ -136,41 +136,6 @@
                     const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
                     const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.pageCode}`
                     window.open(routerUrl, '_blank')
-                }
-            },
-            async handleDeploy () {
-                try {
-                    this.deployPending = true
-                    const {
-                        is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
-                    } = this.serviceData
-                    const data = {
-                        can_ticket_agency: false,
-                        display_type: 'INVISIBLE',
-                        workflow_config: {
-                            is_supervise_needed,
-                            notify,
-                            notify_freq,
-                            notify_rule,
-                            revoke_config,
-                            supervise_type,
-                            supervisor,
-                            is_revocable: this.serviceData.revoke_config.type !== 0,
-                            is_auto_approve: false
-                        }
-                    }
-                    await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
-                    await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
-                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
-                    this.$bkMessage({
-                        theme: 'success',
-                        message: '流程部署成功'
-                    })
-                } catch (e) {
-                    console.error(e.message || e)
-                } finally {
-                    this.deployPending = false
                 }
             }
         }

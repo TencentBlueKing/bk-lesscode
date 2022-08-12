@@ -14,6 +14,7 @@
                 <div class="name-wrapper">
                     <div class="flow-name" :title="flowConfig.flowName">{{ flowConfig.flowName }}</div>
                     <span v-if="flowConfig.deleteFlag" class="archive-tag">已归档</span>
+                    <span v-else-if="'deployed' in flowConfig && !flowConfig.deployed" class="deployed-status-tag">未部署</span>
                 </div>
                 <i class="bk-select-angle bk-icon icon-angle-down" />
             </div>
@@ -128,6 +129,16 @@
         border-radius: 2px;
         font-size: 12px;
         color: #ea3536;
+    }
+    .deployed-status-tag {
+        margin-left: 4px;
+        padding: 0 10px;
+        line-height: 22px;
+        font-size: 12px;
+        color: #fe9c00;
+        background: rgba(255,232,195,0.60);
+        border: 1px solid rgba(254,156,0,0.30);
+        border-radius: 2px;
     }
     .create-flow-extension {
         .create-btn {
