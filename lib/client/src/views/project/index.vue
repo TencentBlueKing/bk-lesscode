@@ -148,7 +148,23 @@
                         iamAction: 'develop_app',
                         toPath: {
                             name: 'tableList'
-                        }
+                        },
+                        children: [
+                            {
+                                title: '数据表管理',
+                                url: 'tableList',
+                                toPath: {
+                                    name: 'tableList'
+                                }
+                            },
+                            {
+                                title: '数据操作',
+                                url: 'dataOperation',
+                                toPath: {
+                                    name: 'dataOperation'
+                                }
+                            }
+                        ]
                     },
                     {
                         title: '资源库',
