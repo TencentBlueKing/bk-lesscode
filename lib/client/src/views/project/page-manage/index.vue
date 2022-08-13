@@ -157,9 +157,6 @@
             pageId () {
                 return this.$route.params.pageId || ''
             },
-            userPerm () {
-                return this.$store.getters['member/userPerm'] || { roleId: 2 }
-            },
             routeMap () {
                 const routeMap = {}
                 this.pageRouteList.forEach((route) => {

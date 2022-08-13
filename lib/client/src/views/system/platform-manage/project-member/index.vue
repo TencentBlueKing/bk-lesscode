@@ -176,7 +176,6 @@
             async editManager (projectId) {
                 this.projectId = projectId
                 this.sideObj.isShow = true
-                await this.$store.dispatch('member/setCurUserPermInfo', { id: this.projectId, needCheckAdmin: true })
                 this.getMember()
             },
 

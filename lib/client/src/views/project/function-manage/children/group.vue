@@ -144,7 +144,6 @@
 
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('member', ['userPerm']),
             ...mapGetters('projectVersion', ['currentVersionId']),
 
             projectId () {
@@ -208,13 +207,6 @@
             },
 
             getDeletePermission (group) {
-                if (this.userPerm.roleId === 2 && this.user.username !== group.createUser) {
-                    return {
-                        hasPermission: false,
-                        message: '无删除权限'
-                    }
-                }
-
                 if (group.funcCount > 0) {
                     return {
                         hasPermission: false,
