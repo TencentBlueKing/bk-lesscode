@@ -402,7 +402,6 @@
             async setCurrentProject () {
                 const project = this.projectList.find(item => item.id === this.projectId)
                 this.$store.commit('project/setCurrentProject', project)
-                await this.$store.dispatch('member/setCurUserPermInfo', project)
             },
             updateCurrentVersion (version) {
                 this.projectVersionId = version.id
@@ -413,7 +412,6 @@
                 this.projectList = projectList
             },
             changeProject (id) {
-                this.$store.dispatch('member/setCurUserPermInfo', { id })
                 this.$router.replace({
                     params: {
                         projectId: id

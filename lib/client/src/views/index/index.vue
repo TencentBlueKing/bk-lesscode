@@ -153,11 +153,6 @@
 
             this.fetchData()
 
-            // 设置权限相关的信息
-            this.$store.dispatch('member/setCurUserPermInfo', {
-                id: this.projectId
-            })
-
             this.debounceUpdatePreview = debounce(this.updatePreview)
 
             this.guideStep = [

@@ -253,16 +253,9 @@
             }
 
             const calcDisableInfo = (row) => {
-                const userPerm = store.getters['member/userPerm']
-                const user = store.state.user || {}
-                const username = user.bk_username || user.username
                 const result = {
                     disabled: false,
                     tips: ''
-                }
-                if (userPerm.roleId !== 1 && username !== row.createUser) {
-                    result.disabled = true
-                    result.tips = '暂无操作权限，请修改后再试'
                 }
                 if (row.source === 'nocode') {
                     result.disabled = true

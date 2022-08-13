@@ -83,11 +83,6 @@
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 
             this.fetchData()
-
-            // 设置权限相关的信息
-            this.$store.dispatch('member/setCurUserPermInfo', {
-                id: this.projectId
-            })
         },
         beforeDestroy () {
             this.clearContext()

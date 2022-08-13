@@ -207,7 +207,6 @@
 
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('member', ['userPerm']),
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
@@ -352,10 +351,7 @@
             },
 
             getDeleteStatus (row) {
-                const user = this.user || {}
-                const username = user.bk_username || user.username
                 let tip = ''
-                if (this.userPerm.roleId !== 1 && username !== row.createUser) tip = '只有管理员或自己创建的才有删除权限'
                 if (row.useInfo?.funcCodes?.length > 0) tip = '该 API 被函数引用，无法删除'
                 return tip
             },

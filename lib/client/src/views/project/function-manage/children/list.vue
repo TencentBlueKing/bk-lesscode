@@ -154,7 +154,6 @@
 
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('member', ['userPerm']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId', versionName: 'currentVersionName' }),
 
             projectId () {
@@ -295,10 +294,7 @@
             },
 
             getDeleteStatus (row) {
-                const user = this.user || {}
-                const username = user.bk_username || user.username
                 let tip = ''
-                if (this.userPerm.roleId !== 1 && username !== row.createUser) tip = '只有管理员或自己创建的才有删除权限'
                 if (row.useInfo?.funcCodes?.length > 0) tip = '该函数被函数引用，无法删除'
                 if (row.useInfo?.pageNames?.length > 0) tip = '该函数被页面引用，无法删除'
                 if (row.useInfo?.variableCodes?.length > 0) tip = '该函数被变量引用，无法删除'
