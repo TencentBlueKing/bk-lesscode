@@ -90,8 +90,14 @@
   padding: 0 16px;
   color: #63656e;
   font-size: 12px;
-  font-size: 12px;
   font-size: var(--font-size);
   text-decoration: none;
   white-space: nowrap;
+}
+
+.g-small-link {
+    font-size: 12px;
+    &.bk-link .bk-link-icon, .bk-link-text {
+        font-size: 12px;
+    }
 }
