@@ -45,7 +45,7 @@
                                 @click="editManager(row.id)"
                             >编辑应用管理员</bk-button>
                         </template>
-                        
+
                     </bk-table-column>
                 </bk-table>
             </div>

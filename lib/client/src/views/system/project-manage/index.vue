@@ -367,7 +367,7 @@
             }
         },
         computed: {
-            ...mapGetters(['isPlatformAdmin']),
+            ...mapGetters(['iamNoResourcesPerm']),
             filter () {
                 return this.$route.query.filter || ''
             },

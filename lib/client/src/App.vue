@@ -128,7 +128,7 @@
             this.$once('hook:beforeDestroy', () => {
                 bus.$off('not-exist', this.notExistHold)
             })
-            await this.$store.dispatch('isPlatformAdmin')
+            await this.$store.dispatch('checkIamNoResourcesPerm')
         },
 
         mounted () {

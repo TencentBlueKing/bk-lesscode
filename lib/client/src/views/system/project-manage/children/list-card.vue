@@ -60,7 +60,7 @@
                                 <!-- <li><a href="javascript:;" @click="handleRename(project)">重命名</a></li> -->
                                 <!-- <li><a href="javascript:;" @click="handleRelease(project.id)">部署</a></li> -->
                                 <!-- <li><a href="javascript:;" @click="handleCopy(project)">复制</a></li> -->
-                                <!-- <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li> -->
+                                <!-- <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li> -->
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">下载源码</a>
@@ -91,11 +91,12 @@
                                         <a href="javascript:;" slot="allow" @click="handleCopy(project)">复制</a>
                                     </auth-component>
                                 </li>
-                                <li v-if="isPlatformAdmin">
-                                    <auth-component :permission="project.canDevelop" auth="script/create">
+                                <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
+                                    <!-- <auth-component :permission="project.canDevelop" auth="script/create">
                                         <a href="javascript:;" slot="forbid">设为模板</a>
                                         <a href="javascript:;" slot="allow" @click="handleSetTemplate(project)">设为模板</a>
-                                    </auth-component>
+                                    </auth-component> -->
+                                    <a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a>
                                 </li>
                             </ul>
                         </bk-dropdown-menu>
@@ -171,7 +172,7 @@
         },
         inject: ['getUpdateInfoMessage'],
         computed: {
-            ...mapGetters(['isPlatformAdmin'])
+            ...mapGetters(['iamNoResourcesPerm'])
         },
         methods: {
             hideDropdownMenu (projectId) {

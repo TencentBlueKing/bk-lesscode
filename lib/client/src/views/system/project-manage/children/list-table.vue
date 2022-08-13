@@ -35,7 +35,7 @@
         },
         inject: ['getUpdateInfo'],
         computed: {
-            ...mapGetters(['isPlatformAdmin'])
+            ...mapGetters(['iamNoResourcesPerm'])
         },
         setup (props, { emit }) {
             const handleCreate = () => {
@@ -160,7 +160,7 @@
                             <li><a href="javascript:;" @click="handleRename(row)">重命名</a></li>
                             <li><a href="javascript:;" @click="handleRelease(row.id)">部署</a></li>
                             <li><a href="javascript:;" @click="handleCopy(row)">复制</a></li>
-                            <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a></li> -->
+                            <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]"><a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a></li> -->
                             <li>
                                 <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">下载源码</a>
@@ -191,11 +191,12 @@
                                     <a href="javascript:;" slot="allow" @click="handleCopy(row)">复制</a>
                                 </auth-component>
                             </li>
-                            <li v-if="isPlatformAdmin">
-                                <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
+                            <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
+                                <!-- <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">设为模板</a>
                                     <a href="javascript:;" slot="allow" @click="handleSetTemplate(row)">设为模板</a>
-                                </auth-component>
+                                </auth-component> -->
+                                <a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a>
                             </li>
                         </ul>
                     </bk-popover>

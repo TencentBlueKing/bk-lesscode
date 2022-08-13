@@ -1,7 +1,7 @@
 <template>
     <article class="function-market-home">
         <section class="function-market-title">
-            <section v-if="isPlatformAdmin">
+            <section v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]">
                 <bk-button
                     class="mr5"
                     theme="primary"
@@ -30,7 +30,7 @@
                 <h3 class="card-title">{{ card.funcName }}</h3>
                 <p class="card-body" v-bk-overflow-tips>{{ card.funcSummary }}</p>
                 <bk-popconfirm
-                    v-if="isPlatformAdmin"
+                    v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]"
                     content="确定删除该函数？"
                     width="280"
                     @confirm="handleDeleteFunc(card)">
@@ -41,7 +41,7 @@
                     <bk-button text class="foot-btn" @click.stop="handleShowSource(card)">查看源码</bk-button>
                     <bk-divider direction="vertical"></bk-divider>
                     <bk-button text class="foot-btn" @click.stop="handleShowAddFuncFromMarket(card)">添加至应用</bk-button>
-                    <template v-if="isPlatformAdmin">
+                    <template v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]">
                         <bk-divider direction="vertical"></bk-divider>
                         <bk-button text class="foot-btn" @click.stop="handleShowEditFunc(card)">编辑</bk-button>
                     </template>
@@ -71,7 +71,7 @@
         <show-func-dialog
             :is-show.sync="showSource.isShow"
             :func-data="showSource.func"
-            :is-show-export="isPlatformAdmin"
+            :is-show-export="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]"
         />
 
         <import-function-dialog
@@ -126,7 +126,7 @@
         },
 
         computed: {
-            ...mapGetters(['isPlatformAdmin']),
+            ...mapGetters(['iamNoResourcesPerm']),
             computedCardList () {
                 return this.cardList.filter(card => (card.funcName || '').includes(this.searchStr))
             }
