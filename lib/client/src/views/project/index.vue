@@ -40,8 +40,18 @@
                         :id="menuItem.url"
                         @click="handleSelect">
                         <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
+                        <!-- <span class="item-title">{{menuItem.title}}</span> -->
                         <template v-if="menuItem.iamAction">
+                            <!-- <auth-component
+                                :permission="menuItem.iamAction === 'develop_app' ? curProject.canDevelop : curProject.canDeploy"
+                                :auth="menuItem.iamAction"
+                                :resource-id="$route.params.projectId"
+                                @before-show-permission-dialog="beforeShowPermissionDialog">
+                                <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-forbid-container-cls">{{menuItem.title}}</a>
+                                <span class="item-title" slot="allow">{{menuItem.title}}</span>
+                            </auth-component> -->
                             <auth-component
+                                :permission="menuItem.permission"
                                 :auth="menuItem.iamAction"
                                 :resource-id="$route.params.projectId"
                                 @before-show-permission-dialog="beforeShowPermissionDialog">
@@ -61,7 +71,16 @@
                                 @click="handleSelect">
                                 <!-- <span>{{ childrenItem.title }}</span> -->
                                 <template v-if="childrenItem.iamAction">
+                                    <!-- <auth-component
+                                        :permission="childrenItem.iamAction === 'develop_app' ? curProject.canDevelop : curProject.canDeploy"
+                                        :auth="childrenItem.iamAction"
+                                        :resource-id="$route.params.projectId"
+                                        @before-show-permission-dialog="beforeShowPermissionDialog">
+                                        <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-child-forbid-container-cls">{{childrenItem.title}}</a>
+                                        <span slot="allow">{{childrenItem.title}}</span>
+                                    </auth-component> -->
                                     <auth-component
+                                        :permission="childrenItem.permission"
                                         :auth="childrenItem.iamAction"
                                         :resource-id="$route.params.projectId"
                                         @before-show-permission-dialog="beforeShowPermissionDialog">
@@ -112,13 +131,16 @@
                 pageLoading: false,
                 projectId: '',
                 projectVersionId: '',
+                curProject: {},
                 defaultActive: '',
+                // navList: [],
                 navList: [
                     {
                         title: '页面管理',
                         icon: 'page',
                         url: 'pageList',
                         iamAction: 'develop_app',
+                        permission: false,
                         toPath: {
                             name: 'pageList'
                         }
@@ -128,6 +150,7 @@
                         icon: 'router',
                         url: 'routes',
                         iamAction: 'develop_app',
+                        permission: false,
                         toPath: {
                             name: 'routes'
                         }
@@ -137,6 +160,7 @@
                         icon: 'flow',
                         url: 'flowList',
                         iamAction: 'develop_app',
+                        permission: false,
                         toPath: {
                             name: 'flowList'
                         }
@@ -145,7 +169,6 @@
                         title: '数据源管理',
                         icon: 'data-source-manage',
                         url: 'tableList',
-                        iamAction: 'develop_app',
                         toPath: {
                             name: 'tableList'
                         },
@@ -153,6 +176,8 @@
                             {
                                 title: '数据表管理',
                                 url: 'tableList',
+                                iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'tableList'
                                 }
@@ -160,6 +185,8 @@
                             {
                                 title: '数据操作',
                                 url: 'dataOperation',
+                                iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'dataOperation'
                                 }
@@ -175,6 +202,7 @@
                                 title: '自定义组件库',
                                 url: 'componentManage',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'componentManage'
                                 }
@@ -183,6 +211,7 @@
                                 title: 'API 管理',
                                 url: 'apiManage',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'apiManage'
                                 }
@@ -191,6 +220,7 @@
                                 title: '函数库',
                                 url: 'functionManage',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'functionManage'
                                 }
@@ -199,6 +229,7 @@
                                 title: '凭证管理',
                                 url: 'credential',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'credential'
                                 }
@@ -207,6 +238,7 @@
                                 title: '页面模板库',
                                 url: 'templateManage',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'templateManage'
                                 },
@@ -216,6 +248,7 @@
                                 title: '文件库',
                                 url: 'fileManage',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'fileManage'
                                 }
@@ -224,6 +257,7 @@
                                 title: '布局模板实例',
                                 url: 'layout',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'layout'
                                 }
@@ -232,6 +266,7 @@
                                 title: '变量管理',
                                 url: 'variableManage',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'variableManage'
                                 }
@@ -248,6 +283,7 @@
                                 icon: 'list-fill',
                                 url: 'release',
                                 iamAction: 'deploy_app',
+                                permission: false,
                                 toPath: {
                                     name: 'release'
                                 }
@@ -257,6 +293,7 @@
                                 icon: 'version',
                                 url: 'versions',
                                 iamAction: 'deploy_app',
+                                permission: false,
                                 toPath: {
                                     name: 'versions'
                                 }
@@ -274,6 +311,7 @@
                                 icon: 'user-group',
                                 url: 'memberManage',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'memberManage'
                                 }
@@ -283,18 +321,19 @@
                                 icon: 'info-fill',
                                 url: 'basicInfo',
                                 iamAction: 'develop_app',
+                                permission: false,
                                 toPath: {
                                     name: 'basicInfo'
                                 }
                             }
                         ]
                     },
-
                     {
                         title: '操作审计',
                         icon: 'audit',
                         url: 'logs',
                         iamAction: 'develop_app',
+                        permission: false,
                         toPath: {
                             name: 'logs'
                         }
@@ -364,6 +403,27 @@
                 this.projectId = parseInt(this.$route.params.projectId)
                 await this.getProjectList()
                 await this.setCurrentProject()
+
+                // 在 setCurrentProject 请求之后再赋值，因为 setCurrentProject 请求会给 curProject 设置 canXXXX 等操作的属性
+                const dealPermission = (item) => {
+                    if (item.iamAction === this.$IAM_ACTION.develop_app[0]) {
+                        item.permission = this.curProject.canDevelop
+                    }
+                    if (item.iamAction === this.$IAM_ACTION.deploy_app[0]) {
+                        item.permission = this.curProject.canDeploy
+                    }
+                }
+                const navList = []
+                navList.splice(0, 0, ...this.navList)
+                navList.forEach(item => {
+                    dealPermission(item)
+                    if (item.children) {
+                        item.children.forEach(child => {
+                            dealPermission(child)
+                        })
+                    }
+                })
+                this.navList.splice(0, this.navList.length, ...this.navList)
             } catch (e) {
                 console.error(e)
             } finally {
@@ -402,6 +462,7 @@
             async setCurrentProject () {
                 const project = this.projectList.find(item => item.id === this.projectId)
                 this.$store.commit('project/setCurrentProject', project)
+                this.curProject = Object.assign({}, project)
             },
             updateCurrentVersion (version) {
                 this.projectVersionId = version.id

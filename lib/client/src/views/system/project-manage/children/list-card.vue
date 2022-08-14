@@ -36,11 +36,19 @@
                         </auth-button>
                         <auth-button
                             :permission="project.canDevelop"
-                            auth="develop_app"
+                            auth="deploy_app"
                             :resource-id="project.id"
                             class="preview-btn"
                             @click.stop="handlePreview(project.id)">
                             预览
+                        </auth-button>
+                        <auth-button
+                            :permission="project.canDeploy"
+                            auth="develop_app"
+                            :resource-id="project.id"
+                            class="preview-btn"
+                            @click.stop="handleRelease(project.id)">
+                            部署
                         </auth-button>
                     </div>
                 </div>

@@ -97,14 +97,9 @@
              * @desc 申请资源权限
              */
             async fetchPermission () {
-                // console.error('apply-dialog handleCheckPermission')
-                // console.warn(this.authParams)
                 this.isLoading = true
-                // setTimeout(() => {
-                //     this.isLoading = false
-                // }, 3000)
                 try {
-                    const resData = await store.dispatch('iam/getPermForAction', {
+                    const resData = await store.dispatch('iam/check', {
                         data: this.authParams
                     })
                     this.hasPermission = resData.pass
@@ -114,21 +109,11 @@
                 } finally {
                     this.isLoading = false
                 }
-                // PermissionCheckService.fetchPermission({
-                //     ...this.authParams,
-                //     returnPermissionDetail: true
-                // }).then((data) => {
-                //     this.authResult = data
-                // })
-                //     .finally(() => {
-                //         this.isLoading = false
-                //     })
             },
             /**
              * @desc 供外部调用，显示权限申请弹框
              */
             show () {
-                console.error('show')
                 this.isShowDialog = true
                 if (this.authParams && !this.authResult.requiredPermissions) {
                     this.fetchPermission()

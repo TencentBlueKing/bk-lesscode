@@ -99,7 +99,7 @@
             async fetchPermission () {
                 this.isLoading = true
                 try {
-                    const resData = await this.$store.dispatch('iam/getPermForAction', {
+                    const resData = await this.$store.dispatch('iam/check', {
                         data: {
                             action: this.auth,
                             resourceId: this.resourceId
