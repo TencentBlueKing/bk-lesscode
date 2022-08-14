@@ -145,6 +145,14 @@
                         @click.stop="handlePreview(row.id)">
                         预览
                     </auth-button>
+                    <auth-button
+                        text
+                        :permission="row.canDeploy"
+                        auth="deploy_app"
+                        :resource-id="row.id"
+                        @click.stop="handleRelease(row.id)">
+                        部署
+                    </auth-button>
                     <bk-popover class="more-dot-menu"
                         placement="bottom-start"
                         theme="project-manage-more-dot-menu light"
