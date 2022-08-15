@@ -47,15 +47,20 @@
     import store from '@/store'
     import router from '@/router'
     import dayjs from 'dayjs'
+    import { messageError } from '@/common/bkmagic'
     import {
         isEmpty
     } from 'shared/util'
+    import {
+        generateSqlByCondition
+    } from 'shared/data-source'
 
     export default defineComponent({
         props: {
             queryType: String,
             condition: Object,
-            sql: String
+            sql: String,
+            tableList: Array
         },
 
         setup (props) {
@@ -65,14 +70,15 @@
             const paginationList = ref([])
 
             const formatter = (row, column, cellValue, index) => {
-                if (isEmpty(cellValue)) {
+                const value = row[column.property]
+                if (isEmpty(value)) {
                     return '--'
-                } else if (typeof cellValue === 'object') {
-                    return JSON.stringify(cellValue)
-                } else if (/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/.test(cellValue)) {
-                    return dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss')
+                } else if (typeof value === 'object') {
+                    return JSON.stringify(value)
+                } else if (/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/.test(value)) {
+                    return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
                 } else {
-                    return cellValue
+                    return value
                 }
             }
 
@@ -94,15 +100,13 @@
                 }
                 if (props.queryType === 'json-query') {
                     queryRecord.condition = props.condition
+                    queryRecord.sql = generateSqlByCondition(props.condition, props.tableList)
                 } else {
                     queryRecord.sql = props.sql
                 }
                 // 执行查询
-                const queryMethodMap = {
-                    'json-query': () => store.dispatch('dataSource/queryByJson', props.condition),
-                    'sql-query': () => store.dispatch('dataSource/queryBySql', { sql: props.sql })
-                }
-                return queryMethodMap[props.queryType]()
+                return store
+                    .dispatch('dataSource/queryBySql', { sql: queryRecord.sql })
                     .then(({ data, spendTime }) => {
                         // 存储总数
                         queryResult.value = data
@@ -125,6 +129,8 @@
                         queryErrorMessage.value = err.message
                         queryRecord.status = 1
                         queryRecord.message = err.message
+                        // 提示消息
+                        messageError(err.message)
                     })
                     .finally(() => {
                         // 记录本次查询

@@ -236,7 +236,7 @@
 
 <style lang="postcss" scoped>
     .query-main {
-        padding: 0 100px 0 150px;
+        padding: 0 50px 0 150px;
     }
     .query-join {
         position: relative;

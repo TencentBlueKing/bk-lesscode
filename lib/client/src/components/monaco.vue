@@ -135,6 +135,9 @@
                     readOnly: this.readOnly,
                     minimap: {
                         enabled: false // 关闭小地图
+                    },
+                    scrollbar: {
+                        alwaysConsumeMouseWheel: false
                     }
                 }, this.options)
 
