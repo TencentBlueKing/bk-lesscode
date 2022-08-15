@@ -8,7 +8,7 @@
         <span
             slot="title"
             class="sql-title"
-        >SQL</span>
+        >SQL 编辑器（仅支持 SELECT 查询语句）</span>
     </monaco>
 </template>
 
@@ -39,6 +39,8 @@
             const validate = () => {
                 if (isEmpty(props.sql)) {
                     return Promise.reject(new Error('Sql 语句不能为空'))
+                } else if (!/;$/.test(props.sql?.trim())) {
+                    return Promise.reject(new Error('Sql 语句不完整，需要是【;】号结尾'))
                 } else {
                     return Promise.resolve()
                 }
