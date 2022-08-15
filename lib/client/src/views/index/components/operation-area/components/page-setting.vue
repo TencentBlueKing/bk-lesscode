@@ -80,6 +80,9 @@
                                         :change="changeStyle" />
                                 </div>
                             </template>
+                            <template v-else-if="field.type === 'link'">
+                                <router-link class="route-link" target="_blank" :to="field.route">{{ field.value }}</router-link>
+                            </template>
                             <div v-else class="field-content">
                                 <div
                                     class="route"
@@ -238,6 +241,16 @@
                             editable: false
                         }
                     ]
+                }
+                if (this.page.nocodeType === 'FLOW_MANAGE') {
+                    baseSettings.settingFields.push({
+                        id: 'relatedFlow',
+                        name: '关联流程',
+                        type: 'link',
+                        editable: false,
+                        value: this.page.flowName,
+                        route: { name: 'flowConfig', params: { projectId: this.projectId, flowId: this.page.flowId } }
+                    })
                 }
 
                 const routeSelect = Object.keys(this.routeGroup).map((group, groupIndex) => {
@@ -700,6 +713,12 @@
                     position: relative;
                     flex: none;
                     width: 410px;
+                    
+                    .route-link {
+                        font-size: 12px;
+                        color: #3a84ff;
+                        word-break: break-all;
+                    }
 
                     .field-content {
                         display: flex;
