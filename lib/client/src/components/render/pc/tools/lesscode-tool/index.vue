@@ -125,7 +125,7 @@
                 const mobileContainer = document.body.querySelector('#lesscodeMobileDraw')
                 if (!componentData || !componentData.componentId) {
                     state.activeStyles = hideStyles
-                    mobileContainer.removeEventListener('scroll', mobileScrollHandler)
+                    mobileContainer?.removeEventListener('scroll', mobileScrollHandler)
                     return
                 }
                 if (componentData === hoverComponentData.value) {
@@ -159,9 +159,9 @@
                 }
 
                 initStyle.activeTop = state.activeStyles.top
-                initStyle.activeScrollTop = mobileContainer.scrollTop
+                initStyle.activeScrollTop = mobileContainer?.scrollTop
 
-                mobileContainer && mobileContainer.addEventListener('scroll', mobileScrollHandler)
+                mobileContainer?.addEventListener('scroll', mobileScrollHandler)
             })
 
             /**
@@ -174,7 +174,7 @@
                     || !componentData.componentId
                     || componentData === activeComponentData.value) {
                     state.hoverStyles = hideStyles
-                    mobileContainer.removeEventListener('scroll', mobileHoverScrollHandler)
+                    mobileContainer?.removeEventListener('scroll', mobileHoverScrollHandler)
                     return
                 }
 
@@ -195,9 +195,9 @@
                 }
 
                 initStyle.hoverTop = state.hoverStyles.top
-                initStyle.hoverScrollTop = mobileContainer.scrollTop
+                initStyle.hoverScrollTop = mobileContainer?.scrollTop
 
-                mobileContainer && mobileContainer.addEventListener('scroll', mobileHoverScrollHandler)
+                mobileContainer?.addEventListener('scroll', mobileHoverScrollHandler)
             })
 
             /** transfer dom 防止移动端overflow: hidden导致的无法显示问题 */
