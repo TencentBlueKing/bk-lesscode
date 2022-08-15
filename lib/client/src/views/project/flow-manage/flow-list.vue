@@ -3,7 +3,7 @@
         <bk-alert
             style="margin-bottom: 16px;"
             type="warning"
-            title="流程设计完成后需要手动部署，预览环境方可生效；如想应用至预发布环境或生产环境，需将整个应用部署至对应环境。"
+            title="流程设计完成后需要手动部署，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。"
             :closable="true">
         </bk-alert>
         <div class="operation-area">
