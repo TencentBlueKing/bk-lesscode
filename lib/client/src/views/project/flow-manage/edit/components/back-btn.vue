@@ -11,7 +11,7 @@
             :show-footer="false"
             @cancel="isShow = false">
             <div class="deploy-tips-content">
-                当前流程未部署，需部署后，预览环境方可生效；如想应用至生产环境或预览环境，需将整个应用部署至对应环境。
+                当前流程未部署，需部署后，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。
                 <div class="action-btns">
                     <bk-button
                         style="margin-right: 4px"
