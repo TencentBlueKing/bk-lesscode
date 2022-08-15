@@ -15,13 +15,13 @@
         <bk-table-column
             label="查询时间"
             prop="createTime"
-            width="300"
+            width="170"
             :formatter="timeFormatter"
         />
         <bk-table-column
             label="状态"
             prop="status"
-            width="150"
+            width="100"
         >
             <template slot-scope="props">
                 <span v-if="+props.row.status === 0" class="query-status success">成功</span>
@@ -31,13 +31,19 @@
         <bk-table-column
             label="耗时"
             prop="spendTime"
-            width="150"
+            width="100"
             :formatter="spendTimeFormatter"
         />
         <bk-table-column
-            label="条件"
+            label="查询描述"
             show-overflow-tooltip
+            prop="condition"
             :formatter="conditionFormatter"
+        />
+        <bk-table-column
+            label="SQL"
+            prop="sql"
+            show-overflow-tooltip
         />
         <bk-table-column
             show-overflow-tooltip
@@ -138,11 +144,7 @@
             }
 
             const conditionFormatter = (row, column, cellValue, index) => {
-                if (row.type === 'json-query') {
-                    return JSON.stringify(row.condition) || '--'
-                } else {
-                    return row.sql || '--'
-                }
+                return cellValue ? JSON.stringify(cellValue) : '--'
             }
 
             const timeFormatter = (row, column, cellValue, index) => {

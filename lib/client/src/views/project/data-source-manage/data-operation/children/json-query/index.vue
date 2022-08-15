@@ -23,7 +23,6 @@
 
         <template
             v-if="isShowCondition"
-            v-bkloading="{ isLoading }"
         >
             <bk-divider />
             <render-table
@@ -64,11 +63,9 @@
         defineComponent,
         ref,
         computed,
-        onBeforeMount
+        PropType
     } from '@vue/composition-api'
-    import store from '@/store'
-    import router from '@/router'
-    import RenderTable from './children/render-table.vue'
+    import RenderTable, { ITable } from './children/render-table.vue'
     import RenderWhere from './children/render-where.vue'
     import RenderGroup from './children/render-group.vue'
     import RenderOrder from './children/render-order.vue'
@@ -76,7 +73,6 @@
     import {
         getDefaultCondition
     } from 'shared/data-source'
-    import { messageError } from '@/common/bkmagic'
     import validateContainer from './children/composables/validate'
 
     export default defineComponent({
@@ -89,13 +85,11 @@
         },
 
         props: {
-            condition: Object
+            condition: Object,
+            tableList: Array as PropType<ITable[]>
         },
 
         setup (props, { emit }) {
-            const projectId = router?.currentRoute?.params?.projectId
-            const tableList = ref([])
-            const isLoading = ref(false)
             const isShowCondition = ref(true)
             const renderCondition = ref(Object.assign({}, getDefaultCondition(), props.condition))
 
@@ -106,7 +100,7 @@
                     .reduce((acc, cur) => {
                         const isUsed = acc.find(table => table.tableName === cur.tableName)
                         if (cur.tableName && !isUsed) {
-                            const table = tableList.value.find(table => table.tableName === cur.tableName)
+                            const table = props.tableList.find(table => table.tableName === cur.tableName)
                             acc.push({
                                 id: table.id,
                                 tableName: table.tableName,
@@ -144,28 +138,7 @@
                 return validateContainer.validate()
             }
 
-            const getTableList = () => {
-                isLoading.value = true
-                return store
-                    .dispatch('dataSource/list', {
-                        projectId
-                    })
-                    .then((res) => {
-                        tableList.value = res.list
-                    })
-                    .catch((err) => {
-                        messageError(err.message || err)
-                    })
-                    .finally(() => {
-                        isLoading.value = false
-                    })
-            }
-
-            onBeforeMount(getTableList)
-
             return {
-                tableList,
-                isLoading,
                 isShowCondition,
                 renderCondition,
                 usedTableList,
