@@ -300,33 +300,42 @@
                             }
                         ]
                     },
-
                     {
-                        title: '基础设置',
-                        icon: 'set-fill',
-                        url: 'memberManage',
+                        title: '权限管理',
+                        icon: 'auth-set',
+                        url: 'authManage',
                         children: [
                             {
-                                title: '权限管理',
+                                title: '应用管理权限',
                                 icon: 'user-group',
-                                url: 'memberManage',
-                                iamAction: 'develop_app',
+                                url: 'authManage',
+                                iamAction: 'manage_perms_in_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'memberManage'
-                                }
-                            },
-                            {
-                                title: '基本信息',
-                                icon: 'info-fill',
-                                url: 'basicInfo',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'basicInfo'
+                                    name: 'authManage'
                                 }
                             }
+                            // {
+                            //     title: '应用权限模型',
+                            //     icon: 'info-fill',
+                            //     url: 'basicInfo',
+                            //     iamAction: 'develop_app',
+                            //     permission: false,
+                            //     toPath: {
+                            //         name: 'basicInfo'
+                            //     }
+                            // }
                         ]
+                    },
+                    {
+                        title: '基本信息',
+                        icon: 'set-fill',
+                        url: 'basicInfo',
+                        iamAction: 'develop_app',
+                        permission: false,
+                        toPath: {
+                            name: 'basicInfo'
+                        }
                     },
                     {
                         title: '操作审计',
@@ -411,6 +420,12 @@
                     }
                     if (item.iamAction === this.$IAM_ACTION.deploy_app[0]) {
                         item.permission = this.curProject.canDeploy
+                    }
+                    if (item.iamAction === this.$IAM_ACTION.manage_perms_in_app[0]) {
+                        item.permission = this.curProject.canManagePerms
+                    }
+                    if (item.iamAction === this.$IAM_ACTION.manage_app[0]) {
+                        item.permission = this.curProject.canManage
                     }
                 }
                 const navList = []

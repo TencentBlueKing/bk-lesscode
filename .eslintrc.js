@@ -34,7 +34,8 @@ module.exports = {
         BK_API_URL_TMPL: false,
         BKPAAS_ENVIRONMENT: false,
         BK_ITSM_URL: false,
-        BK_APP_APIGW_PREFIX: false
+        BK_APP_APIGW_PREFIX: false,
+        BK_IAM_HOST: false
     },
     // add your custom rules hered
     rules: {
