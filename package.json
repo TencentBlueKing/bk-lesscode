@@ -21,7 +21,7 @@
       "command": "npm run clean-dll && node lib/client/build/build-dll.js"
     },
     "build": {
-      "command": "npm run clean && npm run dll && node --max-old-space-size=3072 lib/client/build/build.js",
+      "command": "npm run clean && npm run dll && node --max-old-space-size=2048 lib/client/build/build.js",
       "env": {
         "NODE_ENV": "production",
         "APP_CODE": "",
