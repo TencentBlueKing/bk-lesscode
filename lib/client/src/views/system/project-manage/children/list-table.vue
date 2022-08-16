@@ -187,12 +187,12 @@
                                     <a href="javascript:;" slot="allow" @click="handleRename(row)">重命名</a>
                                 </auth-component>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <auth-component :permission="row.canDeploy" auth="deploy_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">部署</a>
                                     <a href="javascript:;" slot="allow" @click="handleRelease(row.id)">部署</a>
                                 </auth-component>
-                            </li>
+                            </li> -->
                             <li>
                                 <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                     <a href="javascript:;" slot="forbid">复制</a>
