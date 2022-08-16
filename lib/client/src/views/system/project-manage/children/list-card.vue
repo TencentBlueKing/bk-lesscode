@@ -36,7 +36,7 @@
                         </auth-button>
                         <auth-button
                             :permission="project.canDevelop"
-                            auth="deploy_app"
+                            auth="develop_app"
                             :resource-id="project.id"
                             class="preview-btn"
                             @click.stop="handlePreview(project.id)">
@@ -44,7 +44,7 @@
                         </auth-button>
                         <auth-button
                             :permission="project.canDeploy"
-                            auth="develop_app"
+                            auth="deploy_app"
                             :resource-id="project.id"
                             class="preview-btn"
                             @click.stop="handleRelease(project.id)">
@@ -87,12 +87,12 @@
                                         <a href="javascript:;" slot="allow" @click="handleRename(project)">重命名</a>
                                     </auth-component>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <auth-component :permission="project.canDeploy" auth="deploy_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">部署</a>
                                         <a href="javascript:;" slot="allow" @click="handleRelease(project.id)">部署</a>
                                     </auth-component>
-                                </li>
+                                </li> -->
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">复制</a>
