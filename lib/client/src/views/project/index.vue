@@ -309,7 +309,7 @@
                                 title: '应用管理权限',
                                 icon: 'user-group',
                                 url: 'authManage',
-                                iamAction: 'manage_perms_in_app',
+                                iamAction: 'manage_app',
                                 permission: false,
                                 toPath: {
                                     name: 'authManage'
