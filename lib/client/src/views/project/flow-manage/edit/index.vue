@@ -201,14 +201,15 @@
     height: 52px;
     background: #ffffff;
     box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.04);
+    z-index: 1;
     .nav-container {
         position: absolute;
         top: 10px;
-        left: 35px;
+        left: 0;
         display: flex;
         align-items: center;
         .go-back-icon-wrapper {
-            margin-right: 10px;
+            margin: 0 21px;
         }
     }
     .steps-container {
