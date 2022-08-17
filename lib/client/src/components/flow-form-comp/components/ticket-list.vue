@@ -159,7 +159,7 @@
                 this.getTicketList()
             },
             goToTicketPage (ticket) {
-                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '__blank')
+                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '_blank')
             }
         }
     }
