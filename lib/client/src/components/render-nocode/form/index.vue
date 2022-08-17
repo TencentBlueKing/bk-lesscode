@@ -18,7 +18,6 @@
             />
         </layout>
         <right-panel slot="right" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
-        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" :init-page-data="initManagePageData" />
     </draw-layout>
 
 </template>
@@ -32,7 +31,6 @@
     import RightPanel from './components/right-panel'
     import Layout from '@/components/render/pc/widget/layout'
     import FormContent from './components/form-content'
-    import CreatePageDialog from '@/components/project/create-page-dialog.vue'
     import { bus } from '@/common/bus'
     export default {
         components: {
@@ -40,8 +38,7 @@
             LeftPanel,
             RightPanel,
             Layout,
-            FormContent,
-            CreatePageDialog
+            FormContent
         },
         props: {
             pageType: String,
@@ -92,16 +89,6 @@
                 this.crtField = {}
                 this.crtIndex = -1
             })
-            bus.$on('openCreatPageFrom', () => {
-                if (this.formId) {
-                    this.$refs.createPageDialog.isShow = true
-                } else {
-                    this.$bkMessage({
-                        theme: 'warning',
-                        message: '请先保存表单页面再生成数据管理页'
-                    })
-                }
-            })
             bus.$on('saveSuccess', () => {
                 this.fieldsList = this.fieldsList.map(item => {
                     return { ...item, disabled: true }
@@ -113,7 +100,6 @@
         beforeDestroy () {
             bus.$off('resetFieldList')
             bus.$off('saveSuccess')
-            bus.$off('openCreatPageFrom')
         },
         methods: {
             // 添加字段

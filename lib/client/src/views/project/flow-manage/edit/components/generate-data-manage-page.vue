@@ -81,7 +81,7 @@
                             pageId: this.flowConfig.managePageIds
                         }
                     })
-                    window.open(route.href, '__blank')
+                    window.open(route.href, '_blank')
                 } else {
                     this.$refs.createPageDialog.isShow = true
                 }
@@ -119,7 +119,7 @@
                         pageId: this.flowConfig.managePageIds
                     }
                 })
-                window.open(route.href, '__blank')
+                window.open(route.href, '_blank')
             },
             handlePreviewPage () {
                 const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.managePageIds))

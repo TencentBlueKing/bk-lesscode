@@ -133,8 +133,7 @@
                 const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.pageId))
                 if (pageRoute) {
                     const fullPath = getRouteFullPath(pageRoute)
-                    const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
-                    const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.pageCode}`
+                    const routerUrl = `/preview/project/${this.projectId}${fullPath}?pageCode=${this.flowConfig.pageCode}`
                     window.open(routerUrl, '_blank')
                 }
             }
