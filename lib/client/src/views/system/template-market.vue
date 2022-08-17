@@ -44,21 +44,21 @@
                                             auth="create_app_with_template"
                                             @click="handleApply(project)"
                                             style="margin-left: 7px;width: 106px"
-                                            :permission="false">
+                                            :permission="iamNoResourcesPerm[$IAM_ACTION.create_app_with_template[0]]">
                                             创建为新应用
                                         </auth-button>
                                         <auth-button
                                             auth="preview_app_template"
                                             @click="handlePreviewProject(project.id)"
                                             style="margin-left: 10px;width: 76px"
-                                            :permission="false">
+                                            :permission="iamNoResourcesPerm[$IAM_ACTION.preview_app_template[0]]">
                                             预览
                                         </auth-button>
                                         <auth-button
                                             auth="download_app_template_source"
                                             @click="handleDownloadProject(project)"
                                             style="margin-left: 10px;width: 76px"
-                                            :permission="false">
+                                            :permission="iamNoResourcesPerm[$IAM_ACTION.download_app_template_source[0]]">
                                             下载源码
                                         </auth-button>
                                     </div>
@@ -251,11 +251,12 @@
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex'
+
     import preivewErrImg from '@/images/preview-error.png'
     import DownloadDialog from './components/download-dialog'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import { PROJECT_TEMPLATE_TYPE, PAGE_TEMPLATE_TYPE } from '@/common/constant'
-    import { mapActions } from 'vuex'
     import { parseFuncAndVar } from '@/common/parse-function-var'
     import LC from '@/element-materials/core'
 
@@ -351,6 +352,9 @@
                 pageLoading: false,
                 formLoading: false
             }
+        },
+        computed: {
+            ...mapGetters(['iamNoResourcesPerm'])
         },
         watch: {
             'template.project.keyword' (val) {
