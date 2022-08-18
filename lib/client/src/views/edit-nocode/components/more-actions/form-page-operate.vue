@@ -11,6 +11,7 @@
 <template>
     <div class="form-page-operate">
         <bk-button
+            v-if="dataManagePages.length === 0"
             style="padding: 0"
             size="small"
             :text="true"
@@ -18,23 +19,33 @@
             生成表单数据管理页
         </bk-button>
         <bk-popover
-            v-if="dataManagePages.length"
+            v-else
             ext-cls="form-data-manage-pages-popover"
             placement="bottom-end"
             theme="light"
             width="300">
-            <span style="display: flex; align-items: center; cursor: pointer">
-                <i class="bk-drag-icon bk-drag-data-source-manage" style="margin: 0 2px 0 6px"></i>
-                <span v-if="dataManagePages.length">{{ dataManagePages.length }}</span>
+            <span style="color: #3a84ff; cursor: pointer;">
+                关联的数据管理页面（{{ dataManagePages.length }}）
             </span>
             <div slot="content" class="manage-page-list">
-                <div class="list-title"><span>关联的表单数据管理页</span></div>
+                <div class="list-title">
+                    <span>
+                        已生成
+                        <span style="font-weight: bold">{{ dataManagePages.length }}</span>
+                        个数据管理页
+                    </span>
+                    <i
+                        v-bk-tooltips="'继续添加'"
+                        class="bk-drag-icon bk-drag-add-line create-page-icon"
+                        @click="handleCreateManagePage">
+                    </i>
+                </div>
                 <ul class="list-ul">
                     <li v-for="item in dataManagePages" :key="item.id">
                         <i class="bk-drag-icon bk-drag-page"></i>
                         <span class="name">{{item.pageName}}</span>
                         <i title="预览" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
-                        <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
+                        <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 20px;" @click="handleEditPage(item)"></i>
                     </li>
                 </ul>
             </div>
@@ -123,14 +134,25 @@
             color: #63656E;
             cursor: default;
             .list-title {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
                 height: 24px;
-                font-weight: bold;
+                .create-page-icon {
+                    color: #979ba5;
+                    cursor: pointer;
+                    &:hover {
+                        color: #3a84ff;
+                    }
+                }
             }
             .list-ul {
                 li {
                     display: flex;
                     align-items: center;
+                    padding-left: 10px;
                     height: 28px;
+                    border-radius: 2px;
                     i {
                         margin-right: 6px;
                     }
@@ -139,7 +161,7 @@
                     }
                     .name {
                         display: inline-block;
-                        width: 220px;
+                        width: 200px;
                         text-overflow: ellipsis;
                         white-space: nowrap;
                         overflow: hidden;
