@@ -23,7 +23,6 @@
             ext-cls="form-data-manage-pages-popover"
             placement="bottom-end"
             theme="light"
-            :always="true"
             width="300">
             <span style="color: #3a84ff; cursor: pointer;">
                 关联的数据管理页面（{{ dataManagePages.length }}）

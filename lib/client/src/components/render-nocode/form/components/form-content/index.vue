@@ -78,6 +78,12 @@
                 }
             }
         },
+        mounted () {
+            window.addEventListener('keydown', this.handleKeyboardEvent)
+        },
+        beforeDestroy () {
+            window.removeEventListener('keydown', this.handleKeyboardEvent)
+        },
         methods: {
             ...mapMutations('drag', ['setCurTemplateData']),
             // 拖拽添加字段
@@ -201,6 +207,18 @@
                 if (e?.target?.className === 'fields-container') {
                     this.selectedIndex = -1
                     this.$emit('clickOutSide')
+                }
+            },
+            handleKeyboardEvent (event) {
+                if (this.selectedIndex < 0) {
+                    return
+                }
+                const vKey = 86
+                const delKey = [8, 46]
+                if (event.metaKey && event.keyCode === vKey) {
+                    this.handleFormAction('copy', this.selectedIndex)
+                } else if (delKey.includes(event.keyCode)) {
+                    this.handleFormAction('delete', this.selectedIndex)
                 }
             }
         }
