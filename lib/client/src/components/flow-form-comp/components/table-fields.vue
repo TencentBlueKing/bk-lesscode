@@ -38,18 +38,20 @@
                 <div class="table-setting-wrapper">
                     <h2 class="title">表格设置</h2>
                     <div class="field-content-wrapper">
-                        <p class="field-title">系统字段</p>
-                        <bk-checkbox-group :value="selectedFieldKeys">
-                            <bk-checkbox
-                                v-for="item in systemFields"
-                                :value="item.key"
-                                :key="item.key"
-                                @change="handleSelectField($event, item.key)">
-                                {{ item.name }}
-                            </bk-checkbox>
-                        </bk-checkbox-group>
+                        <template v-if="systemFields.length > 0">
+                            <p class="field-title">系统字段</p>
+                            <bk-checkbox-group :value="selectedFieldKeys">
+                                <bk-checkbox
+                                    v-for="item in systemFields"
+                                    :value="item.key"
+                                    :key="item.key"
+                                    @change="handleSelectField($event, item.key)">
+                                    {{ item.name }}
+                                </bk-checkbox>
+                            </bk-checkbox-group>
+                        </template>
                         <p class="field-title" style="margin-top: 6px;">自定义字段</p>
-                        <bk-checkbox-group :value="selectedFieldKeys">
+                        <bk-checkbox-group v-if="fields.length > 0" :value="selectedFieldKeys">
                             <bk-checkbox
                                 v-for="item in fields"
                                 :value="item.key"
@@ -58,6 +60,7 @@
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
+                        <bk-exception v-else type="empty" scene="part">暂无可展示字段，请在节点表单中配置</bk-exception>
                     </div>
                     <div class="btn-area">
                         <bk-button :theme="'primary'" @click="handleSelectConfirm">确定</bk-button>
