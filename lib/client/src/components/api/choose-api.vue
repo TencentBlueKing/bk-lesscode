@@ -59,33 +59,47 @@
             value: {
                 type: Array,
                 default: () => ([])
+            },
+            // 用来设置指定的api类型隐藏
+            excluded: {
+                type: Array,
+                default: () => ([])
             }
         },
 
         setup (props, { emit }) {
+            // 可使用的api类型
+            const getApiClassify = () => {
+                const DEFAULT_CLASSIFY = [
+                    {
+                        id: 'lesscode-api',
+                        name: '应用自建 API',
+                        type: 'lesscode',
+                        children: []
+                    },
+                    {
+                        id: 'datasource-api',
+                        name: '数据表操作 API',
+                        type: 'datasource',
+                        children: []
+                    },
+                    {
+                        id: 'apigateway-api',
+                        name: '蓝鲸网关 API',
+                        type: 'apigateway',
+                        isLeaf: false,
+                        children: []
+                    }
+                ]
+                if (Array.isArray(props.excluded) && props.excluded.length) {
+                    return DEFAULT_CLASSIFY.filter(item => !props.excluded.includes(item.id))
+                }
+                return DEFAULT_CLASSIFY
+            }
+
             const store = useStore()
             const route = useRoute()
-            const apiData = ref([
-                {
-                    id: 'lesscode-api',
-                    name: '应用自建 API',
-                    type: 'lesscode',
-                    children: []
-                },
-                {
-                    id: 'datasource-api',
-                    name: '数据表操作 API',
-                    type: 'datasource',
-                    children: []
-                },
-                {
-                    id: 'apigateway-api',
-                    name: '蓝鲸网关 API',
-                    type: 'apigateway',
-                    isLeaf: false,
-                    children: []
-                }
-            ])
+            const apiData = ref(getApiClassify())
             const treeRef = ref(null)
             const bigTreeRef = ref(null)
             const bigTreeKey = ref(1)
