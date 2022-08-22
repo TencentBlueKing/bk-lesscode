@@ -213,8 +213,6 @@
                 }
             },
             handleFormFocus (e) {
-                console.log(e.target)
-                console.log(e.target.classList.contains('field-container-mask'))
                 this.isFormFocused = e.target.classList.contains('field-container-mask')
             },
             handleKeyboardEvent (event) {
