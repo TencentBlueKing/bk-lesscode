@@ -58,7 +58,8 @@
         },
         data () {
             return {
-                selectedIndex: -1
+                selectedIndex: -1,
+                isFormFocused: false
             }
         },
         computed: {
@@ -79,9 +80,11 @@
             }
         },
         mounted () {
+            window.addEventListener('click', this.handleFormFocus)
             window.addEventListener('keydown', this.handleKeyboardEvent)
         },
         beforeDestroy () {
+            window.removeEventListener('click', this.handleFormFocus)
             window.removeEventListener('keydown', this.handleKeyboardEvent)
         },
         methods: {
@@ -209,8 +212,13 @@
                     this.$emit('clickOutSide')
                 }
             },
+            handleFormFocus (e) {
+                console.log(e.target)
+                console.log(e.target.classList.contains('field-container-mask'))
+                this.isFormFocused = e.target.classList.contains('field-container-mask')
+            },
             handleKeyboardEvent (event) {
-                if (this.selectedIndex < 0) {
+                if (this.selectedIndex < 0 || !this.isFormFocused) {
                     return
                 }
                 const vKey = 86
