@@ -25,7 +25,6 @@
                     v-if="filters.length > 0 && showFilter"
                     :filters="filters"
                     :fields="fields"
-                    :system-fields="systemFields"
                     :value.sync="filtersData">
                 </filters>
                 <table-fields
@@ -35,7 +34,6 @@
                     :fields="fields"
                     :form-id="formIds[activeNode]"
                     :table-name="tableName"
-                    :system-fields="systemFields"
                     :filters-data="filtersData">
                 </table-fields>
             </template>
@@ -45,7 +43,6 @@
 <script>
     import { mapGetters } from 'vuex'
     import { formMap } from 'shared/form'
-    import { FLOW_SYS_FIELD } from '../common/field.js'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
 
@@ -75,7 +72,6 @@
                 activeNode: '',
                 formDataMap: {},
                 filters: [],
-                systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
                 showFilter: true,
                 filtersData: {}
