@@ -82,7 +82,7 @@
         <!-- 返回数据 -->
         <form-section
             title="请求响应"
-            desc="（调用成功后API将会返回的参数信息）"
+            desc="（设置API调用成功后，响应数据中的字段引用为全局变量，可在本流程节点之后的节点使用）"
             class="no-content-padding"
             style="margin-top: 16px;">
             <div class="response-data" style="width: 83%; margin-top: 22px;">
