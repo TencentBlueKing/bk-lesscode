@@ -341,7 +341,7 @@
 
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import DefaultValue from './defaultValue.vue'
+    import DefaultValue from './default-value/index.vue'
     import ReadOnlyDialog from './readOnlyDialog.vue'
     import RequireDialog from './requireDialog.vue'
     import ShowTypeDialog from './showTypeDialog.vue'

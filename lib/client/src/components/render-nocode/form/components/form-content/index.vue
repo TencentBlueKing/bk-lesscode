@@ -111,7 +111,7 @@
                     default: defaultVal, // 默认值
                     choice: this.getDefaultChoice(type), // 选项
                     worksheet_id: this.formId, // 表单id
-                    meta: {}, // 复杂描述信息
+                    meta: {}, // 复杂描述信息，data_config描述数据源，default_val_config描述默认值关联规则
                     show_conditions: {}, // 显隐藏条件
                     read_only_conditions: {}, // 只读条件
                     mandatory_conditions: {}, // 必填条件
