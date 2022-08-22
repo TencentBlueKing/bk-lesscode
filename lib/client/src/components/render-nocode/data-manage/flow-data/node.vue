@@ -20,7 +20,6 @@
                 v-if="showFilters"
                 :filters="filters"
                 :fields="formContents[activeNode]"
-                :system-fields="systemFields"
                 :table-config="tableConfig"
                 @update="handleUpdate('filters', $event)">
             </filters>
@@ -28,7 +27,6 @@
                 style="margin-top: 16px"
                 :table-config="tableConfig"
                 :fields="formContents[activeNode]"
-                :system-fields="systemFields"
                 @update="handleUpdate('tableConfig', $event)">
             </table-fields>
         </div>
@@ -38,7 +36,6 @@
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import { messageError } from '@/common/bkmagic'
-    import { FLOW_SYS_FIELD } from '@/components/flow-form-comp/common/field.js'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
     export default {
@@ -61,7 +58,6 @@
                 formContents: {},
                 nodesConfig: {},
                 filters: [],
-                systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
                 showFilters: true
             }

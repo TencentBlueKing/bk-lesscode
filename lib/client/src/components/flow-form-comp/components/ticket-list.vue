@@ -108,7 +108,8 @@
                 const params = {
                     page: current,
                     page_size: limit,
-                    service_id__in: [this.serviceId]
+                    service_id__in: [this.serviceId],
+                    tag: this.viewType === 'preview' ? 'preview' : BKPAAS_ENVIRONMENT
                 }
                 Object.keys(this.filterData).forEach(key => {
                     const val = this.filterData[key]
