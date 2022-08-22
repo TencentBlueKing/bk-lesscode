@@ -14,7 +14,11 @@
                 <div class="name-wrapper">
                     <div class="flow-name" :title="flowConfig.flowName">{{ flowConfig.flowName }}</div>
                     <span v-if="flowConfig.deleteFlag" class="flow-status-tag archived">已归档</span>
-                    <span v-else-if="'deployed' in flowConfig" :class="['flow-status-tag', flowConfig.deployed ? 'deployed' : 'undeployed']">未部署</span>
+                    <span
+                        v-else-if="'deployed' in flowConfig"
+                        :class="['flow-status-tag', flowConfig.deployed ? 'deployed' : 'undeployed']">
+                        {{ flowConfig.deployed ? '已部署' : '未部署' }}
+                    </span>
                 </div>
                 <i class="bk-select-angle bk-icon icon-angle-down" />
             </div>
