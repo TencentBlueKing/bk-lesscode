@@ -33,7 +33,7 @@
                         <src-input v-model="dialog.formData.previewImg" file-type="img" @change="handleImgChange" />
                     </bk-form-item>
                 </section>
-                <section v-if="isPlatformAdmin && actionType === 'update'" style="margin-top: 20px;">
+                <section v-if="iamNoResourcesPerm[$IAM_ACTION.manage_platform[0]] && actionType === 'update'" style="margin-top: 20px;">
                     <bk-form-item label="设为公开模板" required property="isOffcial" error-display-type="normal">
                         <bk-radio-group v-model="dialog.formData.isOffcial">
                             <bk-radio :value="1" style="margin-right: 20px;">是</bk-radio>
@@ -124,7 +124,7 @@
             }
         },
         computed: {
-            ...mapGetters(['isPlatformAdmin']),
+            ...mapGetters(['iamNoResourcesPerm']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
@@ -179,7 +179,7 @@
                         fromPageCode: this.fromTemplate.fromPageCode,
                         previewImg: formData.previewImg || undefined
                     }
-                    if (this.actionType !== 'apply' && this.isPlatformAdmin) {
+                    if (this.actionType !== 'apply' && this.iamNoResourcesPerm[this.$IAM_ACTION.manage_platform[0]]) {
                         if (formData.isOffcial && !formData.offcialType) {
                             this.$bkMessage({
                                 theme: 'error',

@@ -37,7 +37,6 @@
 
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('member', ['userPerm']),
             ...mapGetters('projectVersion', ['currentVersionId']),
 
             projectId () {
@@ -45,15 +44,6 @@
             },
 
             computedPermissionInfo () {
-                const username = this.user?.bk_username || this.user?.username
-
-                if (this.userPerm.roleId !== 1 && username !== this.functionData.createUser) {
-                    return {
-                        hasPermission: false,
-                        message: '只有管理员或自己创建的才有删除权限'
-                    }
-                }
-
                 if (this.functionData.useInfo?.funcCodes?.length > 0) {
                     return {
                         hasPermission: false,

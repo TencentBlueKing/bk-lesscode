@@ -142,7 +142,6 @@
         },
         provide () {
             return {
-                getDeletePerm: this.getDeletePerm,
                 getRelativeTime: this.getRelativeTime,
                 getFormManagePages: this.getFormManagePages
             }
@@ -157,9 +156,6 @@
             },
             pageId () {
                 return this.$route.params.pageId || ''
-            },
-            userPerm () {
-                return this.$store.getters['member/userPerm'] || { roleId: 2 }
             },
             routeMap () {
                 const routeMap = {}
@@ -293,8 +289,6 @@
                 this.currentRoute = this.routeMap[page.id]
             },
             handleDelete (page) {
-                if (!this.getDeletePerm(page)) return
-
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
@@ -341,9 +335,6 @@
                         }
                     }, deleteTips)
                 ])
-            },
-            getDeletePerm (page) {
-                return this.userPerm.roleId === 1 || this.user.username === page.createUser
             },
             handleEditPage (page) {
                 if (page.nocodeType) {
