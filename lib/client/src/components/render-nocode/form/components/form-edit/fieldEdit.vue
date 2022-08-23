@@ -280,9 +280,9 @@
                     v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
                     <default-value
                         :key="fieldData.type"
-                        :field="defaultData"
+                        :field="fieldData"
                         :disabled="disabled"
-                        @change="handleDefaultValChange">
+                        @change="updateFieldData">
                     </default-value>
                 </bk-form-item>
                 <bk-form-item label="填写说明" v-if="!handleIsFolded">
@@ -398,7 +398,6 @@
                 fieldData: cloneDeep(this.value),
                 checkTips: '',
                 regexList: this.getRegexList(this.value),
-                defaultData: this.getDefaultData(),
                 basicIsFolded: false,
                 handleIsFolded: false,
                 fieldProps: {
@@ -476,7 +475,6 @@
                 if (this.fieldProps.fieldsDataSource.includes(val.type) && val.id !== oldVal.id) {
                     this.getSystems()
                 }
-                this.defaultData = this.getDefaultData()
                 this.fieldData = cloneDeep(val)
             }
         },
@@ -531,28 +529,6 @@
             },
             handleCheckedChange () {
                 this.fieldData.tips = ''
-                this.change()
-            },
-            getDefaultData () {
-                const { type, default: defaultVal, choice, meta } = this.value
-                let dftVal
-                if (['MULTISELECT', 'CHECKBOX', 'MEMBERS', 'MEMBER'].includes(type)) {
-                    dftVal = defaultVal ? defaultVal.split(',') : []
-                } else {
-                    dftVal = cloneDeep(defaultVal)
-                }
-                return {
-                    type,
-                    choice,
-                    value: dftVal,
-                    meta,
-                    multiple: ['MULTISELECT', 'CHECKBOX'].includes(type)
-                }
-            },
-            handleDefaultValChange (val) {
-                this.fieldData.default = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
-                    ? val.join(',')
-                    : cloneDeep(val)
                 this.change()
             },
             onConfirm (type, val) {
@@ -680,6 +656,10 @@
                     name: `列${len + 1}`,
                     required: false
                 })
+                this.change()
+            },
+            updateFieldData (val) {
+                this.fieldData = val
                 this.change()
             },
             change () {

@@ -14,6 +14,7 @@
 </template>
 <script>
     import { debounce, isEqual, cloneDeep } from 'lodash'
+    import dayjs from 'dayjs'
     import conditionMixins from './condition-mixins'
     import FieldFormItem from './fieldItem.vue'
 
@@ -61,24 +62,56 @@
         created () {
             this.initFormValue()
             this.parseFieldConditions()
+            // 解析字段显隐、必填、只读条件
             this.handleParseCondition = debounce(this.parseFieldConditions, 300)
+            this.handleDefaultValAssociation = debounce(this.parseDefaultValRules, 300)
         },
         methods: {
-            // 获取变量value，优先去props传入的value值，若没有则取默认值
+            // 获取变量value，优先取props传入的value值，若没有则取默认值
             initFormValue () {
                 const fieldsValue = {}
-                this.fields.map((item) => {
+                const fieldsWithRules = []
+                this.fields.forEach((item) => {
+                    let value
                     if (item.key in this.value) {
-                        fieldsValue[item.key] = cloneDeep(this.value[item.key])
+                        value = cloneDeep(this.value[item.key])
                     } else if ('default' in item) {
                         if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE', 'FILE'].includes(item.type)) {
-                            fieldsValue[item.key] = item.default ? item.default.split(',') : []
+                            value = item.default ? item.default.split(',') : []
                         } else {
-                            fieldsValue[item.key] = item.default
+                            value = item.default
                         }
                     }
+                    if (item.meta.default_val_config?.enable) {
+                        fieldsWithRules.push(item)
+                    }
+                    fieldsValue[item.key] = value
                 })
                 this.localValue = fieldsValue
+                fieldsWithRules.forEach(async field => {
+                    const { type, rules, end_value: endValue, can_modify: canModify } = field.meta.default_val_config
+                    if (type === 'currentTable') {
+                        const rule = this.getFulfillAssociationRule(rules)
+                        if (rule) {
+                            const value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
+                            this.localValue[field.key] = value
+                        } else {
+                            this.localValue[field.key] = endValue
+                        }
+                    } else if (type === 'otherTable') {
+                        const res = await this.getAssociationFilterData(field.key)
+                        if (res.data.list.length === 1) {
+                            this.localValue[field.key] = res.data.list[0][rules[0].target.value]
+                        } else {
+                            this.localValue[field.key] = endValue
+                        }
+                    } else if (type === 'createTicketTime') {
+                        this.localValue[field.key] = field.type === 'DATE' ? dayjs().format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                    if (!canModify) {
+                        field.is_readonly = true
+                    }
+                })
                 this.$emit('change', this.localValue)
             },
             // 解析是否有表单依赖变化的表单项，如果有则更新数据源配置，触发重新拉取数据逻辑
@@ -102,11 +135,84 @@
                     }
                 })
             },
+            // 解析表单字段间的默认值联动
+            parseDefaultValRules (key) {
+                const associatedFields = this.getValAssociatedFields(key)
+                associatedFields.forEach(async field => {
+                    const { type, rules } = field.meta.default_val_config
+                    if (type === 'currentTable') {
+                        const rule = this.getFulfillAssociationRule(rules)
+                        if (rule) {
+                            const value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
+                            this.localValue[field.key] = value
+                        }
+                    } else {
+                        const res = await this.getAssociationFilterData(field.key)
+                        if (res.data.list.length === 1) {
+                            this.localValue[field.key] = res.data.list[0][rules[0].target.value]
+                        }
+                    }
+                })
+            },
+            // 获取关联规则中包含当前字段key的字段列表
+            getValAssociatedFields (key) {
+                return this.fields.filter(field => {
+                    if (field.meta.default_val_config?.enable) {
+                        const { type, rules } = field.meta.default_val_config
+                        return rules.some(group => {
+                            return group.relations.find(item => {
+                                if (type === 'currentTable') {
+                                    return item.field === key
+                                } else {
+                                    return item.type === 'VAR' && item.value === key
+                                }
+                            })
+                        })
+                    }
+                })
+            },
+            // 获取当前表单满足联动规则设置的生效规则项
+            getFulfillAssociationRule (rules) {
+                let fulfillRule = null
+                rules.forEach(group => {
+                    const isfullFill = group.relations.every(relation => {
+                        const { field: relFieldKey, type, value } = relation
+                        if (!(relFieldKey in this.localValue)) {
+                            return
+                        }
+                        if (type === 'CONST') {
+                            return isEqual(this.localValue[relFieldKey], value)
+                        } else {
+                            return value in this.localValue && isEqual(this.localValue[relFieldKey], this.localValue[value])
+                        }
+                    })
+                    if (isfullFill) {
+                        fulfillRule = group
+                    }
+                })
+                return fulfillRule
+            },
+            // 获取关联他表字段的筛选数据
+            getAssociationFilterData (key) {
+                const field = this.fieldsCopy.find(item => item.key === key)
+                const { tableName, rules } = field.meta.default_val_config
+                const query = {}
+                rules[0].relations.forEach(item => {
+                    const val = item.type === 'CONST' ? item.value : this.localValue[item.value]
+                    query[item.field] = val
+                })
+                const params = {
+                    fields: [rules[0].target.value, 'id'],
+                    query
+                }
+                return this.$http.post(`/nocode/filterTableData/keys/tableName/${tableName}`, params)
+            },
             handleChange (key, value) {
                 this.localValue[key] = value
                 this.$emit('change', this.localValue)
                 this.handleParseCondition()
                 this.parseDataSourceRelation(key, value)
+                this.handleDefaultValAssociation(key)
             }
         }
     }

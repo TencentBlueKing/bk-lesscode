@@ -1,41 +1,57 @@
 <template>
     <div class="determine-value">
-        <bk-select
-            v-if="['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(field.type)"
-            :value="field.value"
-            :multiple="field.multiple"
+        <bk-input
+            v-if="!field.type"
+            v-model="localVal"
             :disabled="disabled"
-            @selected="handleSelect">
+            @change="update">
+        </bk-input>
+        <bk-select
+            v-else-if="['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(field.type)"
+            v-model="localVal"
+            :multiple="['MULTISELECT', 'CHECKBOX'].includes(field.type)"
+            :disabled="disabled"
+            @change="update">
             <bk-option v-for="choice in field.choice" :key="choice.key" :id="choice.key" :name="choice.name"> </bk-option>
         </bk-select>
         <bk-input
             v-else-if="field.type === 'DESC'"
             type="textarea"
-            :value="field.value"
+            v-model="localVal"
             :disabled="disabled"
-            @change="$emit('change', $event)">
+            @change="update">
         </bk-input>
-        <span v-else-if="field.type === 'RICHTEXT'" class="setting" @click="richTextVisible = true">前往设置</span>
+        <bk-button
+            v-else-if="field.type === 'RICHTEXT'"
+            style="padding: 0"
+            size="small"
+            theme="primary"
+            :text="true"
+            @click="richTextVisible = true">
+            前往设置
+        </bk-button>
         <field-item
             v-else
             :field="field"
             :use-fixed-data-source="true"
-            :value="field.value"
+            :value="localVal"
             :disabled="disabled"
             :show-label="false"
-            @change="$emit('change', $event)">
+            @change="handleFieldValueChange">
         </field-item>
-        <bk-dialog v-model="richTextVisible"
+        <bk-dialog
+            v-model="richTextVisible"
             theme="primary"
-            :mask-close="false"
-            :header-position="'left'"
-            :width="'960'"
             title="内容配置"
-            @confirm="$emit('change', localVal)">
+            header-position="left"
+            :width="960"
+            :mask-close="false"
+            @confirm="update"
+            @cancel="localVal = ''">
             <field-item
                 :field="field"
                 :use-fixed-data-source="true"
-                :value="field.value"
+                :value="localVal"
                 :disabled="disabled"
                 :show-label="false"
                 @change="localVal = $event">
@@ -49,7 +65,7 @@
     import FieldItem from '@/components/flow-form-comp/form/fieldItem.vue'
 
     export default {
-        name: 'DefaultValue',
+        name: 'DetermineValue',
         components: {
             FieldItem
         },
@@ -66,7 +82,7 @@
         data () {
             return {
                 richTextVisible: false,
-                localVal: ''
+                localVal: this.getLocalVal()
             }
         },
         computed: {
@@ -74,24 +90,37 @@
                 return ['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(this.field.type)
             }
         },
+        watch: {
+            field () {
+                this.localVal = this.getLocalVal()
+            }
+        },
         methods: {
-            handleSelect (val) {
-                this.$emit('change', cloneDeep(val))
+            getLocalVal () {
+                const { type, default: defaultVal } = this.field
+                let dftVal
+                if (['MULTISELECT', 'CHECKBOX', 'MEMBERS', 'MEMBER'].includes(type) && !Array.isArray(defaultVal)) {
+                    dftVal = defaultVal ? defaultVal.split(',') : []
+                } else {
+                    dftVal = cloneDeep(defaultVal)
+                }
+                return dftVal
+            },
+            handleFieldValueChange (val) {
+                this.localVal = val
+                this.update()
+            },
+            update () {
+                this.$emit('change', this.localVal)
             }
         }
     }
 </script>
 <style lang="postcss" scoped>
-    .setting{
-        position: absolute;
-        color: #3a84ff;
-        display: block;
-        top:-32px;
-        font-size: 12px;
-        right: 0;
-        cursor: pointer;
-    }
     /deep/ .field-form-item{
         margin-top: 0;
+    }
+    .bk-select {
+        background: #ffffff;
     }
 </style>
