@@ -59,6 +59,7 @@
 </template>
 
 <script lang="ts">
+    import Vue from 'vue'
     import {
         defineComponent,
         ref,
@@ -121,7 +122,7 @@
             }
 
             const handleChange = (key, value) => {
-                renderCondition.value[key] = value
+                Vue.set(renderCondition.value, key, value)
                 triggleChange()
             }
 
