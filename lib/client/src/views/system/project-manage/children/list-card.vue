@@ -54,7 +54,7 @@
                 </div>
                 <div class="item-ft">
                     <div class="col">
-                        <h3 class="name" :title="project.projectName">{{project.projectName}}--{{project.id}}--{{project.canDevelop}}</h3>
+                        <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
                         <div class="stat">{{getUpdateInfoMessage(project)}}</div>
                     </div>
                     <div class="col">
