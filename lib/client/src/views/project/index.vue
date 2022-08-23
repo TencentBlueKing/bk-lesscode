@@ -430,6 +430,11 @@
                 }
                 const navList = []
                 navList.splice(0, 0, ...this.navList)
+
+                if (NODE_ENV === 'development') {
+                    navList.splice(6, 1)
+                }
+
                 navList.forEach(item => {
                     dealPermission(item)
                     if (item.children) {
@@ -438,7 +443,7 @@
                         })
                     }
                 })
-                this.navList.splice(0, this.navList.length, ...this.navList)
+                this.navList.splice(0, this.navList.length, ...navList)
             } catch (e) {
                 console.error(e)
             } finally {
@@ -484,7 +489,8 @@
                 this.setCurrentVersion(version)
             },
             async getProjectList () {
-                const projectList = await this.$store.dispatch('iam/myProject', { config: {} })
+                const url = NODE_ENV === 'development' ? 'project/my' : 'iam/myProject'
+                const projectList = await this.$store.dispatch(url, { config: {} })
                 this.projectList = projectList
             },
             changeProject (id) {
