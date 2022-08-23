@@ -28,7 +28,7 @@
                     <i class="bk-drag-icon bk-drag-grag-fill" />
                     {{ item[currentConfig.displayKey] }}
                 </span>
-                <i class="bk-icon icon-minus-circle" @click="handleDelete(index)"></i>
+                <i class="bk-icon icon-minus-circle" @click.stop="handleDelete(index)"></i>
                 <section slot="content">
                     <section class="template-item-list">
                         <div
