@@ -22,15 +22,11 @@
                         </processors>
                     </bk-form-item>
                     <bk-form-item label="API">
-                        <bk-select
-                            v-model="formData.code"
-                            placeholder="请选择API"
-                            :searchable="true"
-                            :disabled="apiListLoading || !editable"
-                            :loading="apiListLoading"
-                            @selected="handleSelectApi">
-                            <bk-option v-for="item in apiList" :key="item.code" :id="item.code" :name="item.name"></bk-option>
-                        </bk-select>
+                        <choose-api
+                            :excluded="['lesscode-api', 'datasource-api']"
+                            :value="formData.selectedApi"
+                            @change="handleSelectApi">
+                        </choose-api>
                     </bk-form-item>
                     <bk-form-item
                         label="请求地址"
@@ -82,7 +78,7 @@
         <!-- 返回数据 -->
         <form-section
             title="请求响应"
-            desc="（调用成功后API将会返回的参数信息）"
+            desc="（设置API调用成功后，响应数据中的字段为全局变量，全局变量可在本流程节点之后的节点中使用）"
             class="no-content-padding"
             style="margin-top: 16px;">
             <div class="response-data" style="width: 83%; margin-top: 22px;">
@@ -98,6 +94,7 @@
     import { mapState, mapGetters } from 'vuex'
     import FormSection from '../../components/form-section.vue'
     import Processors from '../../components/processors.vue'
+    import ChooseApi from '@/components/api/choose-api.vue'
     import QueryParams from './query-params.vue'
     import BodyParams from './body-params.vue'
     import ResponseVariable from './response-variable.vue'
@@ -109,6 +106,7 @@
         components: {
             FormSection,
             Processors,
+            ChooseApi,
             QueryParams,
             BodyParams,
             ResponseVariable
@@ -129,7 +127,7 @@
                 variableListLoading: false,
                 formData: {
                     nodeName: '',
-                    code: '',
+                    selectedApi: [],
                     url: '',
                     method: 'get'
                 },
@@ -178,8 +176,8 @@
             const { api_info: apiInfo } = this.nodeData.extras
             this.formData.nodeName = this.nodeData.name
             if (apiInfo.url) {
-                const { code, url, method, query, body, response } = apiInfo
-                this.formData = { ...this.formData, code, url, method }
+                const { selectedApi, url, method, query, body, response } = apiInfo
+                this.formData = { ...this.formData, selectedApi, url, method }
                 this.apiQuery = query
                 this.apiBody = body
                 this.apiResponse = response
@@ -225,10 +223,10 @@
                 this.$store.commit('nocode/nodeConfig/updateProcessor', val)
             },
             // 选择接口
-            handleSelectApi (val) {
-                const api = this.apiList.find(item => item.code === val)
-                const { code, url, method, query, body, response } = api
-                this.formData = { ...this.formData, code, url, method }
+            handleSelectApi (api) {
+                const { path, url, method, query, body, response } = api
+                this.formData.selectedApi = path
+                this.formData = { ...this.formData, url, method }
                 this.apiQuery = query.map(parseScheme2UseScheme)
                 this.apiBody = parseScheme2UseScheme(body)
                 response.disabled = true
@@ -250,17 +248,14 @@
                 })
             },
             update () {
-                const { code, url, method } = this.formData
-                let apiInfo = {
+                const { selectedApi, url, method } = this.formData
+                const apiInfo = {
+                    selectedApi,
                     method,
                     url,
                     query: this.apiQuery,
                     body: this.apiBody,
                     response: this.apiResponse
-                }
-                if (code) {
-                    const api = this.apiList.find(item => item.code === this.formData.code)
-                    apiInfo = { ...api, ...apiInfo }
                 }
 
                 this.$store.commit('nocode/nodeConfig/setApiNodeConfig', { projectId: this.projectId, data: apiInfo })

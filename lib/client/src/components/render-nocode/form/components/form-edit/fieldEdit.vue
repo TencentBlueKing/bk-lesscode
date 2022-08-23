@@ -95,7 +95,13 @@
                     <!--                        @selected="handleSelectApi">-->
                     <!--                        <bk-option v-for="item in apiList" :key="item.id" :id="item.id" :name="item.name"></bk-option>-->
                     <!--                    </bk-select>-->
-                    <bk-button class="mt8" :theme="'primary'" :title="'配置'" @click="dataSourceDialogShow = true" :disabled="isConfigDataSourceDisabled">
+                    <bk-button
+                        style="margin-top: 8px;"
+                        theme="primary"
+                        size="small"
+                        :title="'配置'"
+                        :disabled="isConfigDataSourceDisabled"
+                        @click="dataSourceDialogShow = true">
                         配置数据源
                     </bk-button>
                 </bk-form-item>

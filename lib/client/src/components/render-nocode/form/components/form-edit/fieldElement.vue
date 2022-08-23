@@ -19,7 +19,7 @@
             <span class="operate-btn"> <i class="bk-drag-icon bk-drag-shanchu" @click.stop="$emit('action', 'delete')"></i></span>
         </div>
         <div class="field-container">
-            <div class="mask"></div>
+            <div class="field-container-mask"></div>
             <field-item :use-fixed-data-source="true" :field="field" :value="localValue[field.key]"></field-item>
         </div>
     </div>
@@ -127,8 +127,7 @@
         }
     }
     .field-container {
-        position: relative;
-        .mask {
+        .field-container-mask {
             position: absolute;
             top: 0;
             right: 0;

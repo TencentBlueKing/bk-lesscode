@@ -153,6 +153,7 @@
                             fields: [{ key: 'title', value: 'lesscode 提单' }, ...data],
                             creator: this.$store.state.user.username,
                             service_id: this.serviceId,
+                            tag: this.viewType === 'preview' ? 'preview' : BKPAAS_ENVIRONMENT,
                             meta: {
                                 envs: {
                                     appApigwPrefix: BK_APP_APIGW_PREFIX,
