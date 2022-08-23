@@ -20,6 +20,7 @@
 </template>
 
 <script>
+    import LC from '@/element-materials/core'
     import ResolveComponent from '../resolve-component'
 
     export default {
@@ -33,6 +34,19 @@
                 type: Object,
                 default: () => ({})
             }
+        },
+        created () {
+            const updateCallback = ({ target }) => {
+                if (target.componentId === this.componentData.componentId) {
+                    console.log('update tab', this.componentData.componentId)
+                    this.$forceUpdate()
+                }
+            }
+
+            LC.addEventListener('update', updateCallback)
+            this.$once('hook:beforeDestroy', () => {
+                LC.removeEventListener('update', updateCallback)
+            })
         }
     }
 </script>
