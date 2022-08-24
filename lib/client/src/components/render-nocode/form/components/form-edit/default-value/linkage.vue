@@ -7,6 +7,7 @@
         header-position="left"
         :position="{ top: 100 }"
         :value="show"
+        :close-icon="false"
         :auto-close="false"
         :mask-close="false"
         @confirm="handleConfirm"
@@ -113,6 +114,13 @@
             },
             endValueField () {
                 return { ...this.field, default: this.configData.end_value }
+            }
+        },
+        watch: {
+            show (val) {
+                if (val) {
+                    this.configData = cloneDeep(this.field.meta.default_val_config)
+                }
             }
         },
         created () {
