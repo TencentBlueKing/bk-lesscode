@@ -16,7 +16,7 @@
                 <div class="item-bd">
                     <template v-if="pageMap[project.id] && pageMap[project.id].length > 0">
                         <div class="preview">
-                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" />
+                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" :img-src="project.templateImg" />
                         </div>
                     </template>
                     <div class="empty" v-else>
