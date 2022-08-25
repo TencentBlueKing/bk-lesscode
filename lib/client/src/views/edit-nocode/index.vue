@@ -88,11 +88,6 @@
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 
             this.fetchData()
-
-            // 设置权限相关的信息
-            this.$store.dispatch('member/setCurUserPermInfo', {
-                id: this.projectId
-            })
         },
         beforeDestroy () {
             this.clearContext()
@@ -125,7 +120,7 @@
                             projectId: this.projectId,
                             versionId: this.versionId
                         }),
-                        
+
                         this.$store.dispatch('page/pageLockStatus', { pageId: this.pageId }),
                         this.$store.dispatch('route/getProjectPageRoute', {
                             projectId: this.projectId,
@@ -202,7 +197,7 @@
             height: 1px;
             box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
         }
-        
+
         .function-and-tool {
             position: relative;
             display: flex;

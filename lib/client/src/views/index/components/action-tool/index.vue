@@ -2,13 +2,15 @@
     <div class="action-tool-list">
         <save-canvas />
         <preview />
-        <save-as-template />
+        <save-as-template v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]" />
         <clear-canvas />
         <show-function />
         <quick-operation />
     </div>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
+
     import SaveCanvas from './components/save-canvas'
     import Preview from './components/preview'
     import SaveAsTemplate from './components/save-as-template'
@@ -24,6 +26,9 @@
             ClearCanvas,
             ShowFunction,
             QuickOperation
+        },
+        computed: {
+            ...mapGetters(['iamNoResourcesPerm'])
         }
     }
 </script>

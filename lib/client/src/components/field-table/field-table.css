@@ -19,7 +19,7 @@
       .disable-row {
         .bk-select.is-disabled, .bk-form-input[disabled] {
           background-color: #fff !important;
-      }
+        }
       }
       > td {
         background-color: #fff;

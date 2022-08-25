@@ -166,7 +166,6 @@
 
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('member', ['userPerm']),
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
@@ -234,13 +233,6 @@
             },
 
             getDeletePermission (category) {
-                if (this.userPerm.roleId === 2 && this.user.username !== category.createUser) {
-                    return {
-                        hasPermission: false,
-                        message: '无删除权限'
-                    }
-                }
-
                 if (category.apiCount > 0) {
                     return {
                         hasPermission: false,
