@@ -31,6 +31,8 @@
                     <bk-form-item
                         label="请求地址"
                         property="url"
+                        desc-type="icon"
+                        :desc="apiURLTips"
                         :required="true">
                         <bk-input v-model="formData.url" @change="update"></bk-input>
                     </bk-form-item>
@@ -78,7 +80,7 @@
         <!-- 返回数据 -->
         <form-section
             title="请求响应"
-            desc="（设置API调用成功后，响应数据中的字段为全局变量，全局变量可在本流程节点之后的节点中使用）"
+            desc="（设置该API请求响应数据中的字段为全局变量，全局变量可在该API节点之后的流程节点中使用）"
             class="no-content-padding"
             style="margin-top: 16px;">
             <div class="response-data" style="width: 83%; margin-top: 22px;">
@@ -135,6 +137,13 @@
                 apiBody: {},
                 apiResponse: {},
                 excludeRoleType: ['CMDB', 'GENERAL', 'EMPTY', 'OPEN', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION'],
+                apiURLTips: {
+                    placement: 'right',
+                    content: `
+                        <p>1.非蓝鲸网关API，请先接入【蓝鲸网关】</p>
+                        <p>2.确保选择的蓝鲸网关API给蓝鲸应用ID【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】已授权并设置了用户免认证策略</p>
+                    `
+                },
                 rules: {
                     nodeName: [
                         {
