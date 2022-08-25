@@ -69,20 +69,8 @@
 
         setup (props, { emit }) {
             // 可使用的api类型
-            const getApiClassify = () => {
-                const DEFAULT_CLASSIFY = [
-                    {
-                        id: 'lesscode-api',
-                        name: '应用自建 API',
-                        type: 'lesscode',
-                        children: []
-                    },
-                    {
-                        id: 'datasource-api',
-                        name: '数据表操作 API',
-                        type: 'datasource',
-                        children: []
-                    },
+            const getApiClassify = (projectId) => {
+                const defaultClassify = [
                     {
                         id: 'apigateway-api',
                         name: '蓝鲸网关 API',
@@ -91,19 +79,37 @@
                         children: []
                     }
                 ]
-                if (Array.isArray(props.excluded) && props.excluded.length) {
-                    return DEFAULT_CLASSIFY.filter(item => !props.excluded.includes(item.id))
+                if (!isEmpty(projectId)) {
+                    defaultClassify.unshift(
+                        ...[
+                            {
+                                id: 'lesscode-api',
+                                name: '应用自建 API',
+                                type: 'lesscode',
+                                children: []
+                            },
+                            {
+                                id: 'datasource-api',
+                                name: '数据表操作 API',
+                                type: 'datasource',
+                                children: []
+                            }
+                        ]
+                    )
                 }
-                return DEFAULT_CLASSIFY
+                if (Array.isArray(props.excluded) && props.excluded.length) {
+                    return defaultClassify.filter(item => !props.excluded.includes(item.id))
+                }
+                return defaultClassify
             }
 
             const store = useStore()
             const route = useRoute()
-            const apiData = ref(getApiClassify())
+            const projectId = route.params.projectId
+            const apiData = ref(getApiClassify(projectId))
             const treeRef = ref(null)
             const bigTreeRef = ref(null)
             const bigTreeKey = ref(1)
-            const projectId = route.params.projectId
 
             // 空数据则返回空节点
             const getNodeValue = (data, isLeaf) => {
