@@ -91,6 +91,8 @@
     .tippy-arrow {
         width: 0;
         height: 0;
+    }
+}
 
 .bk-dropdown-menu .bk-dropdown-list>li a {
   display: block;
