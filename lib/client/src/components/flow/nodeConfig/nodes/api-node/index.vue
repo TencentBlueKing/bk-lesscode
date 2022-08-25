@@ -32,13 +32,7 @@
                         label="请求地址"
                         property="url"
                         desc-type="icon"
-                        :desc="{
-                            placement: 'right',
-                            content: `
-                                <p>1.非蓝鲸网关API，请先接入【蓝鲸网关】</p>
-                                <p>2.确保选择的蓝鲸网关API给蓝鲸应用ID【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】已授权并设置了用户免认证策略</p>
-                            `
-                        }"
+                        :desc="apiURLTips"
                         :required="true">
                         <bk-input v-model="formData.url" @change="update"></bk-input>
                     </bk-form-item>
@@ -143,6 +137,13 @@
                 apiBody: {},
                 apiResponse: {},
                 excludeRoleType: ['CMDB', 'GENERAL', 'EMPTY', 'OPEN', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION'],
+                apiURLTips: {
+                    placement: 'right',
+                    content: `
+                        <p>1.非蓝鲸网关API，请先接入【蓝鲸网关】</p>
+                        <p>2.确保选择的蓝鲸网关API给蓝鲸应用ID【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】已授权并设置了用户免认证策略</p>
+                    `
+                },
                 rules: {
                     nodeName: [
                         {
