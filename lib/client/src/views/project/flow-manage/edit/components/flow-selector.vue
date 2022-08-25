@@ -13,7 +13,12 @@
                 <i class="prefix-icon bk-drag-icon bk-drag-flow-fill"></i>
                 <div class="name-wrapper">
                     <div class="flow-name" :title="flowConfig.flowName">{{ flowConfig.flowName }}</div>
-                    <span v-if="flowConfig.deleteFlag" class="archive-tag">已归档</span>
+                    <span v-if="flowConfig.deleteFlag" class="flow-status-tag archived">已归档</span>
+                    <span
+                        v-else-if="'deployed' in flowConfig"
+                        :class="['flow-status-tag', flowConfig.deployed ? 'deployed' : 'undeployed']">
+                        {{ flowConfig.deployed ? '已部署' : '未部署' }}
+                    </span>
                 </div>
                 <i class="bk-select-angle bk-icon icon-angle-down" />
             </div>
@@ -120,14 +125,30 @@
             text-overflow: ellipsis;
         }
     }
-    .archive-tag {
+    .flow-status-tag {
         margin-left: 4px;
-        padding: 0 10px;
-        line-height: 22px;
-        background: #feebea;
-        border-radius: 2px;
+        padding: 0 7px;
+        line-height: 18px;
         font-size: 12px;
-        color: #ea3536;
+        color: #fe9c00;
+        background: rgba(255,232,195,0.60);
+        border: 1px solid rgba(254,156,0,0.30);
+        border-radius: 2px;
+        &.archived {
+            color: #ea3536;
+            background: rgba(254,221,220,0.60);
+            border: 1px solid rgba(234,53,54,0.30);
+        }
+        &.undeployed {
+            color: #fe9c00;
+            background: rgba(255,232,195,0.60);
+            border: 1px solid rgba(254,156,0,0.30);
+        }
+        &.deployed {
+            color: #14a568;
+            background: #e4faf0;
+            border: 1px solid rgba(20,165,104,0.30);
+        }
     }
     .create-flow-extension {
         .create-btn {

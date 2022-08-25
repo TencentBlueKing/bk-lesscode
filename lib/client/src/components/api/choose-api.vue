@@ -59,22 +59,53 @@
             value: {
                 type: Array,
                 default: () => ([])
+            },
+            // 用来设置指定的api类型隐藏
+            excluded: {
+                type: Array,
+                default: () => ([])
             }
         },
 
         setup (props, { emit }) {
+            // 可使用的api类型
+            const getApiClassify = (projectId) => {
+                const defaultClassify = [
+                    {
+                        id: 'apigateway-api',
+                        name: '蓝鲸网关 API',
+                        type: 'apigateway',
+                        isLeaf: false,
+                        children: []
+                    }
+                ]
+                if (!isEmpty(projectId)) {
+                    defaultClassify.unshift(
+                        ...[
+                            {
+                                id: 'lesscode-api',
+                                name: '应用自建 API',
+                                type: 'lesscode',
+                                children: []
+                            },
+                            {
+                                id: 'datasource-api',
+                                name: '数据表操作 API',
+                                type: 'datasource',
+                                children: []
+                            }
+                        ]
+                    )
+                }
+                if (Array.isArray(props.excluded) && props.excluded.length) {
+                    return defaultClassify.filter(item => !props.excluded.includes(item.id))
+                }
+                return defaultClassify
+            }
             const store = useStore()
             const route = useRoute()
             const projectId = route.params.projectId
-            const apiData = ref([
-                {
-                    id: 'apigateway-api',
-                    name: '蓝鲸网关 API',
-                    type: 'apigateway',
-                    isLeaf: false,
-                    children: []
-                }
-            ])
+            const apiData = ref(getApiClassify(projectId))
             const treeRef = ref(null)
             const bigTreeRef = ref(null)
             const bigTreeKey = ref(1)

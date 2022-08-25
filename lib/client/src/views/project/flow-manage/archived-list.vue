@@ -21,6 +21,7 @@
             </div>
             <bk-table
                 v-bkloading="{ isLoading: listLoading }"
+                class="g-hairless-table"
                 :data="flowList"
                 :pagination="pagination"
                 :outer-border="false"
