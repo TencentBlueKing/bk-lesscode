@@ -13,7 +13,8 @@
             type="textarea"
             :value="field.value"
             :disabled="disabled"
-            @change="$emit('change', $event)"></bk-input>
+            @change="$emit('change', $event)">
+        </bk-input>
         <span v-else-if="field.type === 'RICHTEXT'" class="setting" @click="richTextVisible = true">前往设置</span>
         <field-item
             v-else

@@ -1,6 +1,6 @@
 <template>
     <div class="datetime">
-        <bk-date-picker v-model="val" type="datetime" :disabled="disabled" @change="change"></bk-date-picker>
+        <bk-date-picker v-model="val" type="datetime" :transfer="true" :disabled="disabled" @change="change"></bk-date-picker>
     </div>
 </template>
 <script>
