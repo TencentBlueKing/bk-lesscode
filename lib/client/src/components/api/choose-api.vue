@@ -109,25 +109,6 @@
             const treeRef = ref(null)
             const bigTreeRef = ref(null)
             const bigTreeKey = ref(1)
-            
-            if (!isEmpty(projectId)) {
-                apiData.value.unshift(
-                    ...[
-                        {
-                            id: 'lesscode-api',
-                            name: '应用自建 API',
-                            type: 'lesscode',
-                            children: []
-                        },
-                        {
-                            id: 'datasource-api',
-                            name: '数据表操作 API',
-                            type: 'datasource',
-                            children: []
-                        }
-                    ]
-                )
-            }
 
             // 空数据则返回空节点
             const getNodeValue = (data, isLeaf) => {
