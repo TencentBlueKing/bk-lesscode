@@ -95,7 +95,7 @@
             }
         },
         async created () {
-            const url = NODE_ENV === 'development' ? 'project/my' : 'iam/myProject'
+            const url = IAM_ENABLE ? 'iam/myProject' : 'project/my'
             const projectList = await this.$store.dispatch(url, { config: {} })
             projectList.splice(projectList.findIndex(item => item.id === this.projectId), 1)
             this.sourceProjectList = projectList
