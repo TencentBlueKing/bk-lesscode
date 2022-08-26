@@ -431,7 +431,7 @@
                 const navList = []
                 navList.splice(0, 0, ...this.navList)
 
-                if (NODE_ENV === 'development') {
+                if (!IAM_ENABLE) {
                     navList.splice(6, 1)
                 }
 
@@ -489,7 +489,7 @@
                 this.setCurrentVersion(version)
             },
             async getProjectList () {
-                const url = NODE_ENV === 'development' ? 'project/my' : 'iam/myProject'
+                const url = IAM_ENABLE ? 'iam/myProject' : 'project/my'
                 const projectList = await this.$store.dispatch(url, { config: {} })
                 this.projectList = projectList
             },
