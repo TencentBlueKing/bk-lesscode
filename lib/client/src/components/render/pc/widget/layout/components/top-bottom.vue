@@ -5,7 +5,7 @@
             :need-menu="false"
             @toggle="handleToggle"
             v-bind="curTemplateData.renderProps || {}"
-            :head-theme-color="curTemplateData.theme"
+            :head-theme-color="backgroundColor"
             :class="{ 'white-theme': isWhiteTheme }">
             <div
                 slot="side-header"
@@ -37,10 +37,7 @@
                             :tippy-options="{ 'hideOnClick': false, flipBehavior: ['bottom'] }">
                             <div
                                 class="navigation-header-item"
-                                :class="{
-                                    'theme-item': !isDefaultTheme,
-                                    'item-active': topMemu.pageCode === navActive
-                                }">
+                                :style="getActiveItemStyle(topMemu.pageCode)">
                                 {{topMemu.name}}
                             </div>
                             <template slot="content">
@@ -81,6 +78,14 @@
     import LC from '@/element-materials/core'
     import { bus } from '@/common/bus'
 
+    const DEFAULT_COLOR = '#96a2b9'
+    const DEFAULT_BACKGROUND_COLOR = '#182132'
+    const DEFAULT_ACTIVE_COLOR = '#ffffff'
+    const WHITE_ACTIVE_COLOR = '#d3d9e4'
+    const WHITE_DEFAULT_COLOR = '#63656E'
+    const NORMAL_DEFAULT_COLOR = '#ffffffad'
+    const NORMAL_ACTIVE_COLOR = '#ffffffe6'
+
     const unselectComponent = () => {
         const activeNode = LC.getActiveNode()
         if (activeNode) {
@@ -108,11 +113,26 @@
             navActive () {
                 return this.pageDetail.pageCode
             },
-            isDefaultTheme () {
-                return !this.curTemplateData?.theme || this.curTemplateData?.theme === '#182132'
+            // 顶部导航背景色
+            backgroundColor () {
+                return this.curTemplateData.themeConfig?.topMenuBackground || DEFAULT_BACKGROUND_COLOR
             },
+            // 顶部导航主题色 选中字体色
+            activeTheme () {
+                return this.curTemplateData.themeConfig?.topMenuTheme || DEFAULT_ACTIVE_COLOR
+            },
+            // 菜单字体hover颜色
+            defaultHoverTheme () {
+                const activeColor = this.isDefaultTheme ? WHITE_ACTIVE_COLOR : NORMAL_ACTIVE_COLOR
+                return this.activeTheme === DEFAULT_ACTIVE_COLOR ? activeColor : `${this.activeTheme}ad`
+            },
+            // 默认背景主题
+            isDefaultTheme () {
+                return this.backgroundColor === DEFAULT_BACKGROUND_COLOR
+            },
+            // 白色背景主题
             isWhiteTheme () {
-                return this.curTemplateData?.theme && this.curTemplateData?.theme === '#FFFFFF'
+                return this.backgroundColor === DEFAULT_ACTIVE_COLOR
             }
         },
         created () {
@@ -165,6 +185,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig,
                     topMenuList,
                     renderProps
                 } = payload
@@ -173,6 +194,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig,
                     topMenuList,
                     renderProps
                 })
@@ -189,6 +211,16 @@
                     ...this.curTemplateData,
                     panelActive: 'base'
                 })
+            },
+            getActiveItemStyle (code) {
+                const defaultColor = this.isDefaultTheme
+                    ? DEFAULT_COLOR : this.isWhiteTheme
+                        ? WHITE_DEFAULT_COLOR : NORMAL_DEFAULT_COLOR
+                return {
+                    '--color': code === this.navActive ? this.activeTheme : defaultColor,
+                    '--hover-color': code === this.navActive ? this.activeTheme : this.defaultHoverTheme,
+                    opacity: 1
+                }
             }
         }
     }
@@ -246,18 +278,11 @@
         .theme-desc {
             color: #fff;
         }
-        .navigation-header-item{
+        .navigation-header-item {
             white-space: nowrap;
-            &.theme-item {
-                color: #fff;
-                opacity: 0.68;
-                &:hover {
-                    opacity: 1;
-                }
-            }
-            &.item-active {
-                color: #fff;
-                opacity: 1;
+            color: var(--color) !important;
+            &:hover {
+                color: var(--hover-color) !important;
             }
         }
         .message-box{
@@ -267,19 +292,6 @@
     .white-theme {
         .theme-desc {
             color: #313238;
-        }
-        .navigation-header-item {
-            &.theme-item {
-                color: #63656e;
-                opacity: 1;
-                &:hover {
-                    color: #000000;
-                }
-            }
-            &.item-active {
-                color: #000;
-                opacity: 1;
-            }
         }
         .header-user.theme-header {
             color: #63656E;

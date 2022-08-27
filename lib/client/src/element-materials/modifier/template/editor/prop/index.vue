@@ -17,7 +17,8 @@
                         content: prop.tips,
                         disabled: !prop.tips
                     }">
-                    {{ prop.name }}({{ prop.type }})
+                    {{ prop.name }}
+                    <span v-if="prop.type">({{ prop.type }})</span>
                 </div>
             </div>
             <div class="prop-action" v-if="prop.isShow">
@@ -34,19 +35,70 @@
                         :value="calcValue(prop)"
                         @change="value => handleValueChange(prop.name, value, prop.defaultValue)" />
                 </template>
-                <template v-else-if="prop.type === 'String'">
-                    <bk-select
-                        :clearable="false"
-                        :value="calcValue(prop)"
-                        @change="value => handleValueChange(prop.name, value, prop.defaultValue)">
-                        <bk-option
-                            v-for="option in themeColorList"
-                            :key="option.id"
-                            :id="option.id"
-                            :name="option.name">
-                            <span>{{option.name}}</span>
-                        </bk-option>
-                    </bk-select>
+                <template v-else>
+                    <template v-if="isTopNav || isComplexNav">
+                        <div class="prop-subTitle">顶部导航背景色</div>
+                        <bk-select
+                            style="margin-bottom:12px;"
+                            :clearable="false"
+                            :value="calcValue(prop, 'topMenuBackground')"
+                            @change="value => handleValueChange(prop.name, value, prop.defaultValue, 'topMenuBackground')">
+                            <bk-option
+                                v-for="option in backgroundColorList"
+                                :key="option.id"
+                                :id="option.id"
+                                :name="option.name">
+                                <span>{{option.name}}</span>
+                            </bk-option>
+                        </bk-select>
+                    </template>
+                    <template v-if="isTopNav || isComplexNav">
+                        <div class="prop-subTitle">顶部导航主色调</div>
+                        <bk-select
+                            style="margin-bottom:12px;"
+                            :clearable="false"
+                            :value="calcValue(prop, 'topMenuTheme')"
+                            @change="value => handleValueChange(prop.name, value, prop.defaultValue, 'topMenuTheme')">
+                            <bk-option
+                                v-for="option in themeColorList"
+                                :key="option.id"
+                                :id="option.id"
+                                :name="option.name">
+                                <span>{{option.name}}</span>
+                            </bk-option>
+                        </bk-select>
+                    </template>
+                    <template v-if="isSideNav || isComplexNav">
+                        <div class="prop-subTitle">侧边导航背景</div>
+                        <bk-select
+                            style="margin-bottom:12px;"
+                            :clearable="false"
+                            :value="calcValue(prop, 'sideMenuBackground')"
+                            @change="value => handleValueChange(prop.name, value, prop.defaultValue, 'sideMenuBackground')">
+                            <bk-option
+                                v-for="option in backgroundColorList"
+                                :key="option.id"
+                                :id="option.id"
+                                :name="option.name">
+                                <span>{{option.name}}</span>
+                            </bk-option>
+                        </bk-select>
+                    </template>
+                    <template v-if="isSideNav || isComplexNav">
+                        <div class="prop-subTitle">侧边导航主色调</div>
+                        <bk-select
+                            :clearable="false"
+                            :value="calcValue(prop, 'sideMenuTheme')"
+                            @change="value => handleValueChange(prop.name, value, prop.defaultValue, 'sideMenuTheme')">
+                            <bk-option
+                                v-for="option in themeColorList"
+                                :key="option.id"
+                                :id="option.id"
+                                :name="option.name">
+                                <span>{{option.name}}</span>
+                            </bk-option>
+                        </bk-select>
+                    </template>
                 </template>
             </div>
         </div>
@@ -60,6 +112,10 @@
             panelActive: String,
             theme: String,
             layoutType: String, // top-bottom | left-right | complex
+            themeConfig: {
+                type: Object,
+                default: () => ({})
+            },
             renderProps: {
                 type: Object,
                 default: () => ({})
@@ -70,9 +126,14 @@
                 propList: [
                     {
                         id: 'theme',
-                        name: '导航主题',
-                        type: 'String',
-                        defaultValue: '#182132',
+                        name: '主题配置',
+                        type: '',
+                        defaultValue: {
+                            topMenuBackground: '#182132',
+                            topMenuTheme: '#ffffff',
+                            sideMenuBackground: '#182132',
+                            sideMenuTheme: '#3c96ff'
+                        },
                         isShow: true
                     },
                     {
@@ -84,17 +145,38 @@
                         isShow: true
                     }
                 ],
-                themeColorList: [
-                    { id: '#182132', name: '默认' },
+                backgroundColorList: [
+                    { id: '#182132', name: '科技蓝' },
                     { id: '#0549BB', name: '蓝色' },
+                    { id: '#1a1a1a', name: '黑色' },
+                    { id: '#7C0000', name: '红色' },
+                    { id: '#815E01', name: '棕黄色' },
+                    { id: '#1C8D50', name: '绿色' },
+                    { id: '#266994', name: '青色' },
+                    { id: '#374DC6', name: '紫色' },
+                    { id: '#ffffff', name: '白色' }
+                ],
+                themeColorList: [
+                    { id: '#3c96ff', name: '蓝色' },
                     { id: '#1A1A1A', name: '黑色' },
                     { id: '#7C0000', name: '红色' },
                     { id: '#815E01', name: '棕黄色' },
                     { id: '#1C8D50', name: '绿色' },
                     { id: '#266994', name: '青色' },
                     { id: '#374DC6', name: '紫色' },
-                    { id: '#FFFFFF', name: '白色' }
+                    { id: '#ffffff', name: '白色' }
                 ]
+            }
+        },
+        computed: {
+            isTopNav () {
+                return this.layoutType === 'top-bottom'
+            },
+            isSideNav () {
+                return this.layoutType === 'left-right'
+            },
+            isComplexNav () {
+                return this.layoutType === 'complex'
             }
         },
         created () {
@@ -111,22 +193,24 @@
             }
         },
         methods: {
-            calcValue (prop) {
+            calcValue (prop, option = '') {
                 const {
                     name,
                     defaultValue
                 } = prop
-                if (name === '导航主题') {
-                    return this.theme || defaultValue
+                if (name === '主题配置') {
+                    return this.themeConfig[option] || defaultValue[option]
                 }
                 if (this.renderProps.hasOwnProperty(name)) {
                     return this.renderProps[name]
                 }
                 return defaultValue
             },
-            handleValueChange (name, value, defaultValue) {
-                if (name === '导航主题') {
-                    this.$emit('on-change', 'theme', value)
+            handleValueChange (name, value, defaultValue, prop) {
+                if (name === '主题配置') {
+                    const themeConfig = Object.assign({}, this.themeConfig)
+                    themeConfig[prop] = value
+                    this.$emit('on-change', 'themeConfig', themeConfig)
                     return
                 }
                 const renderProps = Object.assign({}, this.renderProps)
@@ -193,6 +277,10 @@
             .prop-action{
                 width: 100%;
                 margin: 4px 0 16px;
+            }
+            .prop-subTitle {
+                margin-bottom: 6px;
+                font-size: 12px;
             }
         }
     }
