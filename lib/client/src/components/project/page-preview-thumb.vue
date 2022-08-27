@@ -11,7 +11,8 @@
     export default {
         props: {
             projectId: Number,
-            pageId: Number
+            pageId: Number,
+            imgSrc: String
         },
         data () {
             return {
@@ -36,7 +37,7 @@
                 this.src = preivewErrImg
                 this.onerror = null
             }
-            img.src = this.src
+            img.src = this.imgSrc || this.src
         }
     }
 </script>

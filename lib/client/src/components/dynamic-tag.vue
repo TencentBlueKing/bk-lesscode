@@ -9,7 +9,7 @@
             </bk-tag>
         </template>
         <bk-button
-            v-if="!isAddTag"
+            v-show="!isAddTag"
             ext-cls="new-tag-btn"
             icon="plus"
             theme="default"
@@ -17,7 +17,7 @@
             @click="addTag">
         </bk-button>
         <bk-input
-            v-else
+            v-show="isAddTag"
             ref="tagInput"
             class="new-tag-input"
             v-model="userInput"
@@ -61,6 +61,9 @@
         methods: {
             addTag () {
                 this.isAddTag = !this.isAddTag
+                setTimeout(() => {
+                    this.$refs?.tagInput?.$refs?.input?.focus()
+                })
             },
             handleAddTag () {
                 if (this.userInput) {

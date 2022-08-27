@@ -18,8 +18,7 @@
                     </span>
                     <i
                         v-if="hasCreatedTicketPage"
-                        v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePagePerm() }"
-                        :class="['bk-icon', 'icon-delete', 'delete-page-icon', { 'g-no-permission': !getDeletePagePerm() }]"
+                        :class="['bk-icon', 'icon-delete', 'delete-page-icon']"
                         @click="handleDelCreatePage">
                     </i>
                 </template>
@@ -136,9 +135,6 @@
             projectId () {
                 return this.$route.params.projectId
             },
-            userPerm () {
-                return this.$store.getters['member/userPerm'] || { roleId: 2 }
-            },
             isFirstNormalNode () {
                 return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state
             },
@@ -199,9 +195,6 @@
                     this.pageContextLoading = false
                 }
             },
-            getDeletePagePerm () {
-                return this.userPerm.roleId === 1 || this.user.username === this.pageDetail.createUser
-            },
             // 新建空白或者引用表单时的初始化配置
             getNewFormConfig () {
                 // 新建空白表单
@@ -230,7 +223,6 @@
             },
             // 删除流程提单页
             handleDelCreatePage () {
-                if (!this.getDeletePagePerm()) return
                 const h = this.$createElement
                 this.$bkInfo({
                     width: 422,
@@ -351,7 +343,7 @@
             handleTableClick () {
                 if (this.formConfig.code) {
                     const route = this.$router.resolve({ name: 'dataManage', query: { tableName: this.formConfig.code } })
-                    window.open(route.href, '__blank')
+                    window.open(route.href, '_blank')
                 }
             },
             updateFormConfig (data) {

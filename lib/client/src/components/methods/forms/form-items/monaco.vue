@@ -45,6 +45,12 @@
             variableList: {
                 type: Array,
                 default: () => ([])
+            },
+            tips: {
+                type: String
+            },
+            tipWidth: {
+                type: Number
             }
         },
 
@@ -68,10 +74,10 @@
         computed: {
             functionTips () {
                 return {
-                    content: `<pre class="function-tips">${FUNCTION_TIPS[this.form.funcType]}</pre>`,
+                    content: `<pre class="function-tips">${this.tips || FUNCTION_TIPS[this.form.funcType]}</pre>`,
                     appendTo: 'parent',
                     boundary: 'window',
-                    width: 750,
+                    width: this.tipWidth || 750,
                     theme: 'light',
                     placements: ['bottom-end']
                 }

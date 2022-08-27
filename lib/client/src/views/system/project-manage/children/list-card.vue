@@ -16,15 +16,40 @@
                 <div class="item-bd">
                     <template v-if="pageMap[project.id] && pageMap[project.id].length > 0">
                         <div class="preview">
-                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" />
+                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" :img-src="project.templateImg" />
                         </div>
                     </template>
                     <div class="empty" v-else>
                         暂无页面
                     </div>
                     <div class="operate-btns">
-                        <bk-button class="edit-btn" theme="primary" @click="handleGotoPage(project.id)">开发应用</bk-button>
-                        <bk-button class="preview-btn" @click="handlePreview(project.id)">预览</bk-button>
+                        <!-- <bk-button class="edit-btn" theme="primary" @click="handleGotoPage(project.id)">开发应用</bk-button>
+                        <bk-button class="preview-btn" @click="handlePreview(project.id)">预览</bk-button> -->
+                        <auth-button
+                            :permission="project.canDevelop"
+                            auth="develop_app"
+                            :resource-id="project.id"
+                            class="edit-btn"
+                            theme="primary"
+                            @click="handleGotoPage(project.id)">
+                            开发应用
+                        </auth-button>
+                        <auth-button
+                            :permission="project.canDevelop"
+                            auth="develop_app"
+                            :resource-id="project.id"
+                            class="preview-btn"
+                            @click.stop="handlePreview(project.id)">
+                            预览
+                        </auth-button>
+                        <auth-button
+                            :permission="project.canDeploy"
+                            auth="deploy_app"
+                            :resource-id="project.id"
+                            class="preview-btn"
+                            @click.stop="handleRelease(project.id)">
+                            部署
+                        </auth-button>
                     </div>
                 </div>
                 <div class="item-ft">
@@ -38,22 +63,68 @@
                                 <i class="bk-drag-icon bk-drag-more-dot"></i>
                             </span>
                             <ul class="bk-dropdown-list card-operation-list" slot="dropdown-content" @click="hideDropdownMenu(project.id)">
-                                <li><a href="javascript:;" @click="handleDownloadSource(project)">下载源码</a></li>
-                                <li><a href="javascript:;" @click="handleGotoPage(project.id)">页面管理</a></li>
-                                <li><a href="javascript:;" @click="handleRename(project)">重命名</a></li>
-                                <li><a href="javascript:;" @click="handleRelease(project.id)">部署</a></li>
-                                <li><a href="javascript:;" @click="handleCopy(project)">复制</a></li>
-                                <li v-if="isPlatformAdmin"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li>
+                                <!-- <li><a href="javascript:;" @click="handleDownloadSource(project)">下载源码</a></li> -->
+                                <!-- <li><a href="javascript:;" @click="handleGotoPage(project.id)">页面管理</a></li> -->
+                                <!-- <li><a href="javascript:;" @click="handleRename(project)">重命名</a></li> -->
+                                <!-- <li><a href="javascript:;" @click="handleRelease(project.id)">部署</a></li> -->
+                                <!-- <li><a href="javascript:;" @click="handleCopy(project)">复制</a></li> -->
+                                <!-- <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li> -->
+                                <li>
+                                    <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
+                                        <a href="javascript:;" slot="forbid">下载源码</a>
+                                        <a href="javascript:;" slot="allow" @click="handleDownloadSource(project)">下载源码</a>
+                                    </auth-component>
+                                </li>
+                                <li>
+                                    <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
+                                        <a href="javascript:;" slot="forbid">页面管理</a>
+                                        <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">页面管理</a>
+                                    </auth-component>
+                                </li>
+                                <li>
+                                    <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
+                                        <a href="javascript:;" slot="forbid">重命名</a>
+                                        <a href="javascript:;" slot="allow" @click="handleRename(project)">重命名</a>
+                                    </auth-component>
+                                </li>
+                                <!-- <li>
+                                    <auth-component :permission="project.canDeploy" auth="deploy_app" :resource-id="project.id">
+                                        <a href="javascript:;" slot="forbid">部署</a>
+                                        <a href="javascript:;" slot="allow" @click="handleRelease(project.id)">部署</a>
+                                    </auth-component>
+                                </li> -->
+                                <li>
+                                    <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
+                                        <a href="javascript:;" slot="forbid">复制</a>
+                                        <a href="javascript:;" slot="allow" @click="handleCopy(project)">复制</a>
+                                    </auth-component>
+                                </li>
+                                <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
+                                    <!-- <auth-component :permission="project.canDevelop" auth="script/create">
+                                        <a href="javascript:;" slot="forbid">设为模板</a>
+                                        <a href="javascript:;" slot="allow" @click="handleSetTemplate(project)">设为模板</a>
+                                    </auth-component> -->
+                                    <a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a>
+                                </li>
                             </ul>
                         </bk-dropdown-menu>
                     </div>
                 </div>
                 <span class="favorite-btn">
                     <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc }"></i>
-                    <i :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
+                    <!-- <i :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
                         v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
                         @click.stop="handleClickFavorite(project)"
-                    ></i>
+                    ></i> -->
+                    <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
+                        <i slot="forbid" custom-forbid-container-cls="forbid-container-cls" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
+                            v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
+                        ></i>
+                        <i slot="allow" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
+                            v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
+                            @click.stop="handleClickFavorite(project)"
+                        ></i>
+                    </auth-component>
                 </span>
                 <span v-if="project.isOffcial" class="default-tag">应用模板</span>
             </div>
@@ -64,7 +135,15 @@
                 <div v-else>
                     暂无应用
                     <span v-show="!filter.length || filter === 'my'">
-                        ，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link>
+                        ，
+                        <!-- <bk-link theme="primary" @click="handleCreate">立即创建</bk-link> -->
+                        <auth-button
+                            text
+                            theme="primary"
+                            auth="create_app"
+                            @click="handleCreate">
+                            立即创建
+                        </auth-button>
                     </span>
                 </div>
             </bk-exception>
@@ -101,7 +180,7 @@
         },
         inject: ['getUpdateInfoMessage'],
         computed: {
-            ...mapGetters(['isPlatformAdmin'])
+            ...mapGetters(['iamNoResourcesPerm'])
         },
         methods: {
             hideDropdownMenu (projectId) {
@@ -239,7 +318,7 @@
                 position: absolute;
                 right: 16px;
                 top: 16px;
-                opacity: 0;
+                opacity: 1;
                 transition: all .3s ease;
                 .icon-info-circle {
                     color: #fff;
@@ -254,6 +333,10 @@
                 }
                 .bk-drag-favorite {
                     color: #FE9C00;
+                }
+
+                .forbid-container-cls {
+                    display: inline-block;
                 }
             }
             .more-menu-trigger {

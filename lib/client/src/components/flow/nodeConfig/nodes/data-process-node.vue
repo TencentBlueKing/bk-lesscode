@@ -27,16 +27,6 @@
                         </bk-select>
                     </bk-form-item>
                     <bk-form-item label="目标表单" property="tableName" class="target-form" :required="true">
-                        <!-- 如果数据处理节点由人工节点生成，且提供同步按钮 -->
-                        <bk-button
-                            v-if="normalNodeData.id"
-                            v-bk-tooltips="`将设置【${normalNodeData.name}（${normalNodeData.id}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则`"
-                            class="sync-btn"
-                            size="small"
-                            :text="true"
-                            @click="handleSyncNormalNodeFields">
-                            设置为【{{ `${normalNodeData.name}（${normalNodeData.id}）` }}】节点的表单字段处理
-                        </bk-button>
                         <bk-select
                             :value="dataProcessConfig.tableName"
                             :clearable="false"
@@ -50,6 +40,13 @@
                                 :name="`${item.formName}(${item.tableName})`">
                             </bk-option>
                         </bk-select>
+                        <!-- 如果数据处理节点由人工节点生成，则提供同步按钮 -->
+                        <i
+                            v-if="normalNodeData.id"
+                            v-bk-tooltips="`将设置【${normalNodeData.name}（${normalNodeData.id}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则`"
+                            class="bk-drag-icon bk-drag-refill sync-btn"
+                            @click="handleSyncNormalNodeFields">
+                        </i>
                     </bk-form-item>
                 </div>
                 <bk-form-item label="字段映射规则">
@@ -779,10 +776,18 @@
     }
     .sync-btn {
         position: absolute;
-        top: -29px;
-        left: 80px;
-        padding: 0;
-        white-space: nowrap;
+        top: 0;
+        right: -40px;
+        padding: 3px;
+        font-size: 24px;
+        color: #c4c6cc;
+        border: 1px solid #c4c6cc;
+        border-radius: 2px;
+        cursor: pointer;
+        &:hover {
+            color: #3a84ff;
+            border-color: #3a84ff;
+        }
     }
     .bk-select {
         background: #ffffff;

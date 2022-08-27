@@ -17,15 +17,20 @@
                         <bk-radio :value="0">否</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item label="应用模板分类" required property="offcialType" error-display-type="normal">
-                    <bk-select
-                        :clearable="false"
-                        v-model="formData.offcialType"
-                    >
-                        <bk-option v-for="item in offcialTypeList" :id="item.id" :name="item.name" :key="item.id">
-                        </bk-option>
-                    </bk-select>
-                </bk-form-item>
+                <section v-if="formData.isOffcial">
+                    <bk-form-item label="模板封面" property="templateImg" error-display-type="normal" style="margin-top: 20px">
+                        <src-input v-model="formData.templateImg" :project-id="projectId" file-type="img" @change="handleImgChange" />
+                    </bk-form-item>
+                    <bk-form-item label="应用模板分类" required property="offcialType" error-display-type="normal">
+                        <bk-select
+                            :clearable="false"
+                            v-model="formData.offcialType"
+                        >
+                            <bk-option v-for="item in offcialTypeList" :id="item.id" :name="item.name" :key="item.id">
+                            </bk-option>
+                        </bk-select>
+                    </bk-form-item>
+                </section>
             </bk-form>
             <div class="dialog-footer" slot="footer">
                 <bk-button
@@ -40,9 +45,13 @@
 
 <script>
     import { PROJECT_TEMPLATE_TYPE } from '@/common/constant'
+    import SrcInput from '@/components/src-input/index.vue'
 
     export default {
         name: 'template-dialog',
+        components: {
+            SrcInput
+        },
         props: {
             refreshList: {
                 type: Function
@@ -56,11 +65,15 @@
                 offcialTypeList: PROJECT_TEMPLATE_TYPE,
                 formData: {
                     isOffcial: 0,
-                    offcialType: ''
+                    offcialType: '',
+                    templateImg: ''
                 }
             }
         },
         methods: {
+            handleImgChange (value) {
+                this.formData.templateImg = value
+            },
             async handleDialogConfirm () {
                 try {
                     this.isLoading = true
@@ -74,7 +87,8 @@
                     } else {
                         params = {
                             isOffcial: this.formData.isOffcial,
-                            offcialType: this.formData.isOffcial ? this.formData.offcialType : ''
+                            offcialType: this.formData.isOffcial ? this.formData.offcialType : '',
+                            templateImg: this.formData.isOffcial ? this.formData.templateImg : ''
                         }
                     }
                     const data = {

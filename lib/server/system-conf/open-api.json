@@ -226,6 +226,37 @@
                     "descriptionEn": null
                 }
             }
+        },
+        "/executeApi": {
+            "post": {
+                "operationId": "executeApi",
+                "description": "api节点调用执行api的方法",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "post",
+                        "path": "/{env.subpath}api/nocode/executeApi",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": false
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
         }
     }
 }

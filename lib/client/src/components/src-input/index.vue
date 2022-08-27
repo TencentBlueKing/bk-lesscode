@@ -34,6 +34,10 @@
                 validator (value) {
                     return ['*', 'img', 'zip', 'doc'].includes(value)
                 }
+            },
+            projectId: {
+                type: [String, Number],
+                default: ''
             }
         },
         setup (props, { emit }) {
@@ -58,7 +62,8 @@
             }
 
             const modalProps = {
-                fileType: props.fileType
+                fileType: props.fileType,
+                projectId: props.projectId
             }
 
             function handleSelectFile (file) {

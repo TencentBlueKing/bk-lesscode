@@ -152,14 +152,8 @@
                             showChildren: true,
                             valueType: 'value'
                         }
-                        data.extras.webhook_info.body = {
-                            content: '',
-                            raw_type: 'JSON',
-                            type: 'raw'
-                        }
                     } else {
                         data.extras.api_info.query = []
-                        data.extras.webhook_info.query_params = []
                     }
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
