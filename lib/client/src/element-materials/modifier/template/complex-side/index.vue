@@ -1,22 +1,49 @@
 <template>
     <div class="project-complex-side-menu-modifier">
         <div class="top-menu-info">
-            <div>{{ localTopMenu.name || '--' }}</div>
-            <div class="top-menu-action">
-                <bk-button size="small" @click="handleRemoveTopMenu">删除</bk-button>
+            <div>
+                <span class="label">{{ localTopMenu.name || '--' }}</span>
+                <!-- <span class="bk-icon icon-delete"></span> -->
             </div>
+            <!-- <div class="top-menu-action">
+                <bk-button size="small" @click="handleRemoveTopMenu">删除</bk-button>
+            </div> -->
         </div>
         <div class="wraper" :key="menuActive">
-            <div class="action-title side-menu-title">
-                <div>侧边导航配置</div>
-                <bk-switcher
-                    v-bk-tooltips="hasSideMenu ? '清空侧边导航' : '添加侧边导航'"
-                    size="small"
-                    :value="hasSideMenu"
-                    @change="handleCreateSideMenu" />
+            <div class="complex-action-title side-menu-title">
+                <div class="info-title">
+                    <i
+                        :class="{
+                            'bk-icon icon-angle-down': true,
+                            close: !showContent
+                        }"
+                        @click="() => showContent = !showContent"
+                    ></i>
+                    <span>开启侧边导航</span>
+                </div>
+                <div class="info-content" v-if="showContent">
+                    <bk-switcher
+                        v-bk-tooltips="hasSideMenu ? '清空侧边导航' : '添加侧边导航'"
+                        size="small"
+                        theme="primary"
+                        :value="hasSideMenu"
+                        @change="handleCreateSideMenu"
+                    />
+                </div>
             </div>
-            <div class="side-menu-wraper">
+            <div class="side-menu-wraper" v-if="hasSideMenu">
+                <div class="info-title">
+                    <i
+                        :class="{
+                            'bk-icon icon-angle-down': true,
+                            close: !showMenuContent
+                        }"
+                        @click="() => showMenuContent = !showMenuContent"
+                    ></i>
+                    <span>导航菜单</span>
+                </div>
                 <vue-draggable
+                    v-if="showMenuContent"
                     class="group-list"
                     ghost-class="menu-ghost-item"
                     :list="localSideMenu"
@@ -35,7 +62,7 @@
                     </transition-group>
                 </vue-draggable>
             </div>
-            <div v-if="hasSideMenu" class="footer">
+            <div v-if="hasSideMenu && showMenuContent" class="footer">
                 <bk-button size="small" text @click="handleAddSideMenu">继续添加</bk-button>
             </div>
         </div>
@@ -66,8 +93,9 @@
             return {
                 localTopMenu: {},
                 localSideMenu: [],
-                hasSideMenu: false
-
+                hasSideMenu: false,
+                showContent: true,
+                showMenuContent: true
             }
         },
         watch: {
@@ -149,19 +177,52 @@
 
     .project-complex-side-menu-modifier{
         .top-menu-info{
-            padding: 15px 0;
+            padding: 12px 0;
             font-size: 14px;
             line-height: 17px;
             text-align: center;
-            border-bottom: 1px solid #dcdee5;
+            border-bottom: 1px solid #EAEBF0;
+            .label {
+                color: #313238;
+            }
+            .bk-icon {
+                margin-left: 12px;
+                font-size: 12px;
+                cursor: pointer;
+            }
+        }
+        .wraper {
+            padding: 0 12px;
         }
         .top-menu-action{
             margin-top: 10px;
         }
         .side-menu-title{
+            border-bottom: 1px solid #EAEBF0;
+        }
+        .info-title {
             display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+            align-items: center;
+            height: 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #313238;
+            .bk-icon {
+                margin-left: -5px;
+                margin-right: 3px;
+                font-size: 20px;
+                color: #63656E;
+                display: inline-block;
+                transition: transform 200ms;
+                cursor: pointer;
+                &.close {
+                    transform: rotate(-90deg);
+                }
+            }
+        }
+        .info-content {
+            width: 100%;
+            margin: 4px 0 16px;
         }
         .side-menu-wraper{
             margin-bottom:  10px;
