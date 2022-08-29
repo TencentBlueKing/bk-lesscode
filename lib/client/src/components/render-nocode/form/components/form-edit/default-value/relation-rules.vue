@@ -175,13 +175,13 @@
         methods: {
             // 规则字段可选列表
             getRelFieldList () {
-                return this.isCurrentTable ? this.fieldsList : this.otherTableFields
+                return this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
             },
             // 规则字段值为变量时只能选本表字段
             // 字段可选列表只能是可比较值类型的字段，并排除已选中字段
             getRelValVarList () {
                 return this.fieldsList.filter(item => {
-                    return COMPARABLE_VALUE_TYPES.includes(item.type)
+                    return item.key !== this.field.key && COMPARABLE_VALUE_TYPES.includes(item.type)
                 })
             },
             // 返回关联字段值类型为常量的字段配置
