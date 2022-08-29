@@ -149,21 +149,21 @@
                     { id: '#182132', name: '科技蓝' },
                     { id: '#0549BB', name: '蓝色' },
                     { id: '#1a1a1a', name: '黑色' },
-                    { id: '#7C0000', name: '红色' },
-                    { id: '#815E01', name: '棕黄色' },
-                    { id: '#1C8D50', name: '绿色' },
+                    { id: '#7c0000', name: '红色' },
+                    { id: '#815e01', name: '棕黄色' },
+                    { id: '#1c8d50', name: '绿色' },
                     { id: '#266994', name: '青色' },
-                    { id: '#374DC6', name: '紫色' },
+                    { id: '#374dc6', name: '紫色' },
                     { id: '#ffffff', name: '白色' }
                 ],
                 themeColorList: [
                     { id: '#3c96ff', name: '蓝色' },
-                    { id: '#1A1A1A', name: '黑色' },
-                    { id: '#7C0000', name: '红色' },
-                    { id: '#815E01', name: '棕黄色' },
-                    { id: '#1C8D50', name: '绿色' },
+                    { id: '#1a1a1a', name: '黑色' },
+                    { id: '#7c0000', name: '红色' },
+                    { id: '#815e01', name: '棕黄色' },
+                    { id: '#1c8d50', name: '绿色' },
                     { id: '#266994', name: '青色' },
-                    { id: '#374DC6', name: '紫色' },
+                    { id: '#374dc6', name: '紫色' },
                     { id: '#ffffff', name: '白色' }
                 ]
             }
