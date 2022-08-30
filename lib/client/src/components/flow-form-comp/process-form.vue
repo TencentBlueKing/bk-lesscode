@@ -164,8 +164,7 @@
                         if (this.versionId) {
                             params.flow_id = this.versionId
                         }
-                        const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
-                        await this.$http.post(path, params)
+                        await this.$http.post('/nocode/ticket/create_ticket_with_version/', params)
                     } else {
                         await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     }
