@@ -13,7 +13,7 @@
             class="display-value"
             slot="trigger"
         >
-            {{ getDisplatName() }}
+            {{ getDisplayName() }}
             <i class="bk-select-angle bk-icon icon-angle-down"></i>
         </span>
         <bk-big-tree
@@ -299,7 +299,7 @@
             }
 
             // 计算展示名
-            const getDisplatName = () => {
+            const getDisplayName = () => {
                 return props
                     .value
                     .map((item) => {
@@ -350,7 +350,7 @@
                 bigTreeKey,
                 getRemoteApi,
                 chooseApi,
-                getDisplatName,
+                getDisplayName,
                 getDefaultExpandedNode,
                 handleSearch,
                 goToCreate,
@@ -360,7 +360,7 @@
     })
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
     .display-value {
         display: inline-block;
         line-height: 32px;

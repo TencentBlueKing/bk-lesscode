@@ -105,6 +105,12 @@ export default defineComponent({
                             return !tableList.find((table) => table.name === val && row.columnId !== table.columnId)
                         },
                         message: '字段名称不能重复'
+                    },
+                    {
+                        validator (val, row) {
+                            return !/^bk/.test(val)
+                        },
+                        message: '字段名称不能以 bk 开头'
                     }
                 ]
             },

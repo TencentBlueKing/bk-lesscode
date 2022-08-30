@@ -12,7 +12,7 @@
         >
             <slot></slot>
             <bk-table-column
-                v-if="tableName"
+                v-if="tableName && bkDataSourceType === 'preview'"
                 label="操作"
                 width="120"
             >
@@ -256,7 +256,8 @@
             },
             tableName: String,
             paginationType: String,
-            dataValueType: String
+            dataValueType: String,
+            bkDataSourceType: String
         },
 
         data () {
@@ -454,8 +455,9 @@
                             params: {
                                 page: this.renderPagination?.current,
                                 pageSize: this.renderPagination?.limit,
-                                sortKey: this.sortObject.key,
-                                sortValue: this.sortObject.value,
+                                bkSortKey: this.sortObject.key,
+                                bkSortValue: this.sortObject.value,
+                                bkDataSourceType: this.bkDataSourceType,
                                 ...this.queryObject
                             }
                         }
