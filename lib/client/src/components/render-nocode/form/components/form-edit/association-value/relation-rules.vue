@@ -17,6 +17,7 @@
                             style="width: 130px;"
                             size="small"
                             placeholder="表单字段"
+                            :loading="!isCurrentTable && formListLoading"
                             @change="change">
                             <bk-option
                                 v-for="item in getRelFieldList()"
@@ -48,12 +49,13 @@
                                     :name="item.name">
                                 </bk-option>
                             </bk-select>
-                            <determine-val
+                            <default-value
                                 v-else
+                                class="determine-value"
                                 :field="getDeterminValField(relation)"
                                 :disabled="disabled"
                                 @change="handleRelVarValChange(relation, $event)">
-                            </determine-val>
+                            </default-value>
                                 
                         </div>
                         <div class="operate-btns">
@@ -80,6 +82,7 @@
                             v-model="rule.target.value"
                             size="small"
                             :placeholder="isCurrentTable ? '请选择本表字段' : '请选择他表字段'"
+                            :loading="!isCurrentTable && formListLoading"
                             @change="change">
                             <bk-option
                                 v-for="item in targetValVarList"
@@ -88,12 +91,12 @@
                                 :name="item.name">
                             </bk-option>
                         </bk-select>
-                        <determine-val
+                        <default-value
                             v-else
                             :field="getFulfillRuleField(rule.target.value)"
                             :disabled="disabled"
                             @change="handleTargetVarValChange(rule.target, $event)">
-                        </determine-val>
+                        </default-value>
                     </div>
                 </div>
             </div>
@@ -104,13 +107,13 @@
 <script>
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
-    import DetermineVal from './determine.vue'
+    import DefaultValue from '../default-value.vue'
     import { getTypeDefaultVal, COMPARABLE_VALUE_TYPES, MULTIPLE_VALUE_TYPES } from 'shared/no-code'
 
     export default {
         name: 'RelationRules',
         components: {
-            DetermineVal
+            DefaultValue
         },
         props: {
             disabled: Boolean,
@@ -136,6 +139,7 @@
                     ]
                 }
             },
+            formListLoading: Boolean,
             isCurrentTable: { // 是否为本表字段联动
                 type: Boolean,
                 default: true
@@ -270,11 +274,13 @@
         padding: 8px;
         background: #f5f7fa;
         &:hover {
+            .drag-icon,
             .del-group-icon {
                 display: block;
             }
         }
         .drag-icon {
+            display: none;
             position: absolute;
             top: 50%;
             left: 2px;

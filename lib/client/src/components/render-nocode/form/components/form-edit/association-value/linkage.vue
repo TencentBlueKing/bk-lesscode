@@ -46,18 +46,20 @@
                     :disabled="disabled"
                     :rules="configData.rules"
                     :field="field"
+                    :form-list-loading="formListLoading"
                     :other-table-fields="otherTableFields"
                     :is-current-table="configData.type === 'currentTable'"
                     @change="configData.rules = $event">
                 </relation-rules>
                 <div class="end-value">
                     <span style="margin-right: 8px; white-space: nowrap;">若以上规则都不满足，初始默认值为</span>
-                    <determine-val
+                    <default-value
                         style="width: 200px;"
+                        class="dete"
                         :field="endValueField"
                         :disabled="disabled"
                         @change="configData.end_value = $event">
-                    </determine-val>
+                    </default-value>
                 </div>
             </bk-form-item>
             <bk-form-item label="支持用户修改值">
@@ -73,13 +75,13 @@
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import RelationRules from './relation-rules.vue'
-    import DetermineVal from './determine.vue'
+    import DefaultValue from '../default-value.vue'
 
     export default {
         name: 'Linkage',
         components: {
             RelationRules,
-            DetermineVal
+            DefaultValue
         },
         props: {
             show: Boolean,
@@ -295,6 +297,9 @@
         }
         .bk-select-angle {
             top: 1px;
+        }
+        .bk-select-loading {
+            top: 4px;
         }
     }
 </style>
