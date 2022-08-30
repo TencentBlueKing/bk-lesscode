@@ -41,26 +41,28 @@
             <bk-form-item
                 v-if="configData.type !== 'createTicketTime'"
                 label="关联规则"
-                :desc="configData.type === 'otherTable' ? '若设置的条件无法检索到单条数据，则默认值将无法正常带出' : ''">
+                :desc="configData.type === 'otherTable' ? '若设置的条件无法检索到单条数据，则关联值将无法正常带出' : ''">
                 <relation-rules
                     :disabled="disabled"
                     :rules="configData.rules"
                     :field="field"
+                    :form-list-loading="formListLoading"
                     :other-table-fields="otherTableFields"
                     :is-current-table="configData.type === 'currentTable'"
                     @change="configData.rules = $event">
                 </relation-rules>
                 <div class="end-value">
-                    <span style="margin-right: 8px; white-space: nowrap;">若以上规则都不满足，则默认值为</span>
-                    <determine-val
+                    <span style="margin-right: 8px; white-space: nowrap;">若以上规则都不满足，初始默认值为</span>
+                    <default-value
                         style="width: 200px;"
+                        class="dete"
                         :field="endValueField"
                         :disabled="disabled"
                         @change="configData.end_value = $event">
-                    </determine-val>
+                    </default-value>
                 </div>
             </bk-form-item>
-            <bk-form-item label="支持用户修改默认值">
+            <bk-form-item label="支持用户修改值">
                 <bk-radio-group v-model="configData.can_modify">
                     <bk-radio :value="true">是</bk-radio>
                     <bk-radio :value="false">否</bk-radio>
@@ -73,13 +75,13 @@
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import RelationRules from './relation-rules.vue'
-    import DetermineVal from './determine.vue'
+    import DefaultValue from '../default-value.vue'
 
     export default {
         name: 'Linkage',
         components: {
             RelationRules,
-            DetermineVal
+            DefaultValue
         },
         props: {
             show: Boolean,
@@ -195,14 +197,14 @@
                         if (!group.target.type) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: `请选择【规则${index + 1}】默认值类型`
+                                message: `请选择【规则${index + 1}】值类型`
                             })
                             return true
                         }
                         if (group.target.type === 'VAR' && !group.target.value) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: `请选择【规则${index + 1}】默认值变量`
+                                message: `请选择【规则${index + 1}】值变量`
                             })
                             return true
                         }
@@ -239,7 +241,7 @@
                     if (!this.configData.rules[0].target.value) {
                         this.$bkMessage({
                             theme: 'error',
-                            message: '请选择满足关联规则时的默认值变量'
+                            message: '请选择满足关联规则时的值变量'
                         })
                         return false
                     }
@@ -295,6 +297,9 @@
         }
         .bk-select-angle {
             top: 1px;
+        }
+        .bk-select-loading {
+            top: 4px;
         }
     }
 </style>

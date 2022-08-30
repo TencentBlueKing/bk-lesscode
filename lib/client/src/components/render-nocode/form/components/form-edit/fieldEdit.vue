@@ -274,17 +274,22 @@
                         <bk-option v-for="option in regexList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item
-                    ext-cls="default-val"
-                    label="默认值"
-                    v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
-                    <default-value
-                        :key="fieldData.type"
-                        :field="fieldData"
-                        :disabled="disabled"
-                        @change="updateFieldData">
-                    </default-value>
-                </bk-form-item>
+                <template v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
+                    <bk-form-item ext-cls="default-val" label="默认值">
+                        <default-value
+                            :field="fieldData"
+                            :disabled="disabled"
+                            @change="handleDefaultValChange">
+                        </default-value>
+                    </bk-form-item>
+                    <bk-form-item label="值联动规则">
+                        <association-value
+                            :field="fieldData"
+                            :disabled="disabled"
+                            @change="updateFieldData">
+                        </association-value>
+                    </bk-form-item>
+                </template>
                 <bk-form-item label="填写说明" v-if="!handleIsFolded">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
@@ -347,7 +352,8 @@
 
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import DefaultValue from './default-value/index.vue'
+    import DefaultValue from './default-value.vue'
+    import AssociationValue from './association-value/index.vue'
     import ReadOnlyDialog from './readOnlyDialog.vue'
     import RequireDialog from './requireDialog.vue'
     import ShowTypeDialog from './showTypeDialog.vue'
@@ -369,6 +375,7 @@
     export default {
         name: 'formEdit',
         components: {
+            AssociationValue,
             DefaultValue,
             TableHeaderSetting,
             ReadOnlyDialog,
@@ -615,6 +622,13 @@
             setFormData (apiId) {
                 this.apiDetail = this.systemList.find(item => item.id === apiId)
                 this.resArrayTreeData = transSchemeToArrayTypeTree(this.apiDetail.response)
+            },
+            handleDefaultValChange (val) {
+                const formattedValue = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
+                    ? val.join(',')
+                    : val
+                this.fieldData.default = formattedValue
+                this.change()
             },
             // 设置描述组件的值
             handleDescValueChange (val) {

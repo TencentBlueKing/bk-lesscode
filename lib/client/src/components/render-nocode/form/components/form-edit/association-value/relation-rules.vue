@@ -17,6 +17,7 @@
                             style="width: 130px;"
                             size="small"
                             placeholder="表单字段"
+                            :loading="!isCurrentTable && formListLoading"
                             @change="change">
                             <bk-option
                                 v-for="item in getRelFieldList()"
@@ -48,12 +49,13 @@
                                     :name="item.name">
                                 </bk-option>
                             </bk-select>
-                            <determine-val
+                            <default-value
                                 v-else
+                                class="determine-value"
                                 :field="getDeterminValField(relation)"
                                 :disabled="disabled"
                                 @change="handleRelVarValChange(relation, $event)">
-                            </determine-val>
+                            </default-value>
                                 
                         </div>
                         <div class="operate-btns">
@@ -63,7 +65,7 @@
                     </div>
                 </div>
                 <div class="target-value">
-                    <span style="white-space: nowrap;">默认值为</span>
+                    <span style="white-space: nowrap;">值为</span>
                     <bk-select
                         v-if="isCurrentTable"
                         :value="rule.target.type"
@@ -80,6 +82,7 @@
                             v-model="rule.target.value"
                             size="small"
                             :placeholder="isCurrentTable ? '请选择本表字段' : '请选择他表字段'"
+                            :loading="!isCurrentTable && formListLoading"
                             @change="change">
                             <bk-option
                                 v-for="item in targetValVarList"
@@ -88,12 +91,12 @@
                                 :name="item.name">
                             </bk-option>
                         </bk-select>
-                        <determine-val
+                        <default-value
                             v-else
                             :field="getFulfillRuleField(rule.target.value)"
                             :disabled="disabled"
                             @change="handleTargetVarValChange(rule.target, $event)">
-                        </determine-val>
+                        </default-value>
                     </div>
                 </div>
             </div>
@@ -104,13 +107,13 @@
 <script>
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
-    import DetermineVal from './determine.vue'
+    import DefaultValue from '../default-value.vue'
     import { getTypeDefaultVal, COMPARABLE_VALUE_TYPES, MULTIPLE_VALUE_TYPES } from 'shared/no-code'
 
     export default {
         name: 'RelationRules',
         components: {
-            DetermineVal
+            DefaultValue
         },
         props: {
             disabled: Boolean,
@@ -128,7 +131,7 @@
                                 type: '', // CONST常量、VAR变量
                                 value: ''
                             }],
-                            target: { // 满足规则时的默认值配置
+                            target: { // 满足规则时的联动值配置
                                 type: '', // CONST常量、VAR变量
                                 value: ''
                             }
@@ -136,6 +139,7 @@
                     ]
                 }
             },
+            formListLoading: Boolean,
             isCurrentTable: { // 是否为本表字段联动
                 type: Boolean,
                 default: true
@@ -152,12 +156,12 @@
         },
         computed: {
             ...mapGetters('nocode/formSetting', ['fieldsList']),
-            // 满足规则的默认值类型为变量时，可选变量列表，变量分别根据当前选中的联动内容从本表字段或他表字段中取
+            // 满足规则的联动值类型为变量时，可选变量列表，变量分别根据当前选中的联动内容从本表字段或他表字段中取
             // 本字段为多值文本类型时，类型不限（不包括附件、图片、富文本等不可比较值的类型），为单值类型时不能选择多值类型
             // 本字段为数字时，只能选择数字、计算控件
             // 本字段为日期、时间、单选人员、多选人员时，只能选择对应的类型
             targetValVarList () {
-                const fields = this.isCurrentTable ? this.fieldsList : this.otherTableFields
+                const fields = this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
                 const type = this.field.type
                 if (['INT', 'DATE', 'DATETIME', 'MEMBER', 'MEMBERS'].includes(type)) {
                     return fields.filter(item => item.type === type)
@@ -175,13 +179,13 @@
         methods: {
             // 规则字段可选列表
             getRelFieldList () {
-                return this.isCurrentTable ? this.fieldsList : this.otherTableFields
+                return this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
             },
             // 规则字段值为变量时只能选本表字段
             // 字段可选列表只能是可比较值类型的字段，并排除已选中字段
             getRelValVarList () {
                 return this.fieldsList.filter(item => {
-                    return COMPARABLE_VALUE_TYPES.includes(item.type)
+                    return item.key !== this.field.key && COMPARABLE_VALUE_TYPES.includes(item.type)
                 })
             },
             // 返回关联字段值类型为常量的字段配置
@@ -192,7 +196,7 @@
                 }
                 return {}
             },
-            // 返回满足规则时默认值类型为常量的字段配置
+            // 返回满足规则的联动值类型为常量的字段配置
             getFulfillRuleField (val) {
                 return { ...this.field, default: val }
             },
@@ -203,7 +207,7 @@
                         type: '', // CONST常量、VAR变量
                         value: ''
                     }],
-                    target: { // 满足关联条件的默认值
+                    target: { // 满足关联条件的联动值
                         type: this.isCurrentTable ? '' : 'VAR',
                         value: ''
                     }
@@ -270,11 +274,13 @@
         padding: 8px;
         background: #f5f7fa;
         &:hover {
+            .drag-icon,
             .del-group-icon {
                 display: block;
             }
         }
         .drag-icon {
+            display: none;
             position: absolute;
             top: 50%;
             left: 2px;

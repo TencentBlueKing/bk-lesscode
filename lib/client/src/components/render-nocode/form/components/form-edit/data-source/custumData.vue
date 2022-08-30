@@ -2,7 +2,7 @@
     <div class="custom-data-wrapper">
         <div class="text-area">
             <div class="custom-text">选项名</div>
-            <div class="custom-text">选项id</div>
+            <div class="custom-text">选项ID</div>
             <div class="custom-text" style="margin-left: 8px">默认值</div>
             <div class="custom-color" v-show="localValIsDisplayTag">标签颜色</div>
         </div>
@@ -14,8 +14,7 @@
                     placeholder="请输入选项名"
                     :maxlength="120"
                     v-model="item.name"
-                    @change="handleValChange"
-                    @blur="handleBurChange(item)">
+                    @change="handleValChange">
                 </bk-input>
                 <bk-input
                     class="custom-input"
@@ -41,12 +40,10 @@
                     @click="handleDeleteItem(index)"></i>
             </div>
         </li>
-        <div v-if="!isValid" class="common-error-tips">选项名、ID为必填项，请检查配置</div>
     </div>
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import pinyin from 'pinyin'
 
     export default {
         name: 'CustomData',
@@ -63,8 +60,7 @@
         },
         data () {
             return {
-                localVal: cloneDeep(this.value),
-                isValid: true
+                localVal: cloneDeep(this.value)
             }
         },
         watch: {
@@ -89,13 +85,27 @@
                 this.handleValChange()
             },
             handleValChange () {
-                this.validate()
                 this.$emit('update', cloneDeep(this.localVal))
             },
             validate () {
-                const result = !this.localVal.some(item => item.name === '' || item.key === '')
-                this.isValid = result
-                return result
+                let isValid = true
+                let msg = ''
+                this.localVal.some(item => {
+                    if (!item.name) {
+                        msg = '选项名为必填项，请检查配置'
+                    } else if (!item.key) {
+                        msg = '选项ID为必填项，请检查配置'
+                    }
+                    if (msg) {
+                        isValid = false
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: msg
+                        })
+                        return true
+                    }
+                })
+                return isValid
             },
             handleChangeDefaultVal (index) {
                 this.localVal = this.localVal.map((item, ind) => {
@@ -105,16 +115,6 @@
                     return { ...item, isDefaultVal: false }
                 })
                 this.$emit('update', cloneDeep(this.localVal))
-            },
-            handleBurChange (item) {
-                const key = pinyin(item.name, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                })
-                    .join('')
-                    .toUpperCase()
-                this.$set(item, 'key', key)
-                this.handleValChange()
             }
         }
     }
