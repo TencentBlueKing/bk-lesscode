@@ -50,7 +50,7 @@
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import DataSource from './dataSource/index.vue'
+    import DataSource from './data-source/index.vue'
 
     export default {
         name: 'DataSourceDialog',
