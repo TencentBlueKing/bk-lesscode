@@ -166,6 +166,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig = {},
                     menuList = [],
                     topMenuList = [],
                     renderProps = {}
@@ -175,6 +176,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig,
                     menuList,
                     topMenuList,
                     renderProps
