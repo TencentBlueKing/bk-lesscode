@@ -41,7 +41,7 @@
             <bk-form-item
                 v-if="configData.type !== 'createTicketTime'"
                 label="关联规则"
-                :desc="configData.type === 'otherTable' ? '若设置的条件无法检索到单条数据，则默认值将无法正常带出' : ''">
+                :desc="configData.type === 'otherTable' ? '若设置的条件无法检索到单条数据，则关联值将无法正常带出' : ''">
                 <relation-rules
                     :disabled="disabled"
                     :rules="configData.rules"
@@ -51,7 +51,7 @@
                     @change="configData.rules = $event">
                 </relation-rules>
                 <div class="end-value">
-                    <span style="margin-right: 8px; white-space: nowrap;">若以上规则都不满足，则默认值为</span>
+                    <span style="margin-right: 8px; white-space: nowrap;">若以上规则都不满足，初始默认值为</span>
                     <determine-val
                         style="width: 200px;"
                         :field="endValueField"
@@ -60,7 +60,7 @@
                     </determine-val>
                 </div>
             </bk-form-item>
-            <bk-form-item label="支持用户修改默认值">
+            <bk-form-item label="支持用户修改值">
                 <bk-radio-group v-model="configData.can_modify">
                     <bk-radio :value="true">是</bk-radio>
                     <bk-radio :value="false">否</bk-radio>
@@ -195,14 +195,14 @@
                         if (!group.target.type) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: `请选择【规则${index + 1}】默认值类型`
+                                message: `请选择【规则${index + 1}】值类型`
                             })
                             return true
                         }
                         if (group.target.type === 'VAR' && !group.target.value) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: `请选择【规则${index + 1}】默认值变量`
+                                message: `请选择【规则${index + 1}】值变量`
                             })
                             return true
                         }
@@ -239,7 +239,7 @@
                     if (!this.configData.rules[0].target.value) {
                         this.$bkMessage({
                             theme: 'error',
-                            message: '请选择满足关联规则时的默认值变量'
+                            message: '请选择满足关联规则时的值变量'
                         })
                         return false
                     }

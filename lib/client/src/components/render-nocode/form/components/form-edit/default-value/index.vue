@@ -57,9 +57,14 @@
             }
         },
         computed: {
-            // 默认值类型
+            // 联动值类型
             defaultValType () {
                 return this.field.meta.default_val_config?.enable ? 'linkage' : 'determine'
+            }
+        },
+        watch: {
+            field (val) {
+                this.fieldData = cloneDeep(this.field)
             }
         },
         methods: {

@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="target-value">
-                    <span style="white-space: nowrap;">默认值为</span>
+                    <span style="white-space: nowrap;">值为</span>
                     <bk-select
                         v-if="isCurrentTable"
                         :value="rule.target.type"
@@ -128,7 +128,7 @@
                                 type: '', // CONST常量、VAR变量
                                 value: ''
                             }],
-                            target: { // 满足规则时的默认值配置
+                            target: { // 满足规则时的联动值配置
                                 type: '', // CONST常量、VAR变量
                                 value: ''
                             }
@@ -152,12 +152,12 @@
         },
         computed: {
             ...mapGetters('nocode/formSetting', ['fieldsList']),
-            // 满足规则的默认值类型为变量时，可选变量列表，变量分别根据当前选中的联动内容从本表字段或他表字段中取
+            // 满足规则的联动值类型为变量时，可选变量列表，变量分别根据当前选中的联动内容从本表字段或他表字段中取
             // 本字段为多值文本类型时，类型不限（不包括附件、图片、富文本等不可比较值的类型），为单值类型时不能选择多值类型
             // 本字段为数字时，只能选择数字、计算控件
             // 本字段为日期、时间、单选人员、多选人员时，只能选择对应的类型
             targetValVarList () {
-                const fields = this.isCurrentTable ? this.fieldsList : this.otherTableFields
+                const fields = this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
                 const type = this.field.type
                 if (['INT', 'DATE', 'DATETIME', 'MEMBER', 'MEMBERS'].includes(type)) {
                     return fields.filter(item => item.type === type)
@@ -192,7 +192,7 @@
                 }
                 return {}
             },
-            // 返回满足规则时默认值类型为常量的字段配置
+            // 返回满足规则的联动值类型为常量的字段配置
             getFulfillRuleField (val) {
                 return { ...this.field, default: val }
             },
@@ -203,7 +203,7 @@
                         type: '', // CONST常量、VAR变量
                         value: ''
                     }],
-                    target: { // 满足关联条件的默认值
+                    target: { // 满足关联条件的联动值
                         type: this.isCurrentTable ? '' : 'VAR',
                         value: ''
                     }
