@@ -416,7 +416,7 @@
                         item.disabled = isEmptyType
                     })
                     this.layoutFullList = layoutList
-                    this.defaultLayoutList = this.layoutFullList.filter(item => item.layoutType !== 'MOBILE')
+                    this.defaultLayoutList = this.layoutFullList.filter(item => item.type !== 'mobile-empty')
                 } catch (e) {
                     console.error(e)
                 }

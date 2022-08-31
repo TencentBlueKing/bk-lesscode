@@ -194,7 +194,7 @@
             async getDefaultLayout () {
                 try {
                     const res = await this.$store.dispatch('layout/getPlatformList')
-                    const layoutList = res.filter(item => item.type !== 'empty' && item.layoutType !== 'MOBILE')
+                    const layoutList = res.filter(item => item.type !== 'empty')
                     layoutList.forEach((item, index) => {
                         item.checked = index === 0
                     })

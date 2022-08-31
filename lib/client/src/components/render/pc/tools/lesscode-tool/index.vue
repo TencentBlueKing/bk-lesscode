@@ -106,7 +106,7 @@
             const scrollHandleGenerator = (type) => {
                 return _.throttle(() => {
                     const keyMap = type === 'active' ? ['activeTop', 'activeScrollTop', 'activeStyles'] : ['hoverTop', 'hoverScrollTop', 'hoverStyles']
-                    const container = document.body.querySelector('#lesscodeMobileDraw')
+                    const container = document.body.querySelector('.mobile-layout-wrapper')
                     const calculateActiveTop = `${parseInt(initStyle[keyMap[0]]) - (container.scrollTop - initStyle[keyMap[1]])}px`
                     state[keyMap[2]].top = miniLimited(calculateActiveTop, minimalTop) + 'px'
                 }, 50)
@@ -122,7 +122,7 @@
              * @param { Node } componentData
              */
             const { activeComponentData } = useComponentActive((componentData) => {
-                const mobileContainer = document.body.querySelector('#lesscodeMobileDraw')
+                const mobileContainer = document.body.querySelector('.mobile-layout-wrapper')
                 if (!componentData || !componentData.componentId) {
                     state.activeStyles = hideStyles
                     mobileContainer?.removeEventListener('scroll', mobileScrollHandler)
@@ -169,7 +169,7 @@
              * @param { Node } componentData
              */
             const { hoverComponentData } = useComponentHover((componentData) => {
-                const mobileContainer = document.body.querySelector('#lesscodeMobileDraw')
+                const mobileContainer = document.body.querySelector('.mobile-layout-wrapper')
                 if (!componentData
                     || !componentData.componentId
                     || componentData === activeComponentData.value) {
