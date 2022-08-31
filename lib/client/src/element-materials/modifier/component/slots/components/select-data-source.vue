@@ -6,8 +6,10 @@
         <choose-data-table
             class="g-mb8"
             :value="sourceData.tableName"
+            :data-source-type="sourceData.dataSourceType"
             :is-loading.sync="isLoading"
-            @choose="chooseTable"
+            @choose-table="chooseTable"
+            @fetch-data="handleFetchData"
             @clear="clearTable"
         />
         <select-key
@@ -73,6 +75,7 @@
             const sourceData = ref({
                 val: [],
                 tableName: originSourceData?.tableName,
+                dataSourceType: originSourceData?.dataSourceType,
                 keys: {
                     idKey: originSourceData?.keys?.idKey,
                     nameKey: originSourceData?.keys?.nameKey
@@ -80,12 +83,20 @@
             })
             const optionList = ref([])
 
-            const chooseTable = ({ tableName, data, table }) => {
+            const chooseTable = ({ tableName, table, dataSourceType }) => {
                 optionList.value = table?.columns.map(column => column.name)
-                sourceData.value.keys.idKey = sourceData.value.keys.idKey || optionList.value[0]
-                sourceData.value.keys.nameKey = sourceData.value.keys.nameKey || optionList.value[0]
-                sourceData.value.val = data.list
+                if (sourceData.value.tableName !== tableName) {
+                    sourceData.value.keys.idKey = optionList.value[0]
+                    sourceData.value.keys.nameKey = optionList.value[0]
+                }
+                sourceData.value.val = []
                 sourceData.value.tableName = tableName
+                sourceData.value.dataSourceType = dataSourceType
+                triggleUpdate()
+            }
+
+            const handleFetchData = ({ list }) => {
+                sourceData.value.val = list
                 triggleUpdate()
             }
 
@@ -97,6 +108,7 @@
             const clearTable = () => {
                 sourceData.value.val = slotConfig?.value?.val
                 sourceData.value.tableName = ''
+                sourceData.value.dataSourceType = ''
                 triggleUpdate()
             }
 
@@ -107,6 +119,7 @@
                     payload: {
                         sourceData: {
                             tableName: sourceData.value.tableName,
+                            dataSourceType: sourceData.value.dataSourceType,
                             keys: {
                                 ...sourceData.value.keys
                             }
@@ -121,6 +134,7 @@
                 optionList,
                 isLoading,
                 chooseTable,
+                handleFetchData,
                 changeParams,
                 clearTable
             }

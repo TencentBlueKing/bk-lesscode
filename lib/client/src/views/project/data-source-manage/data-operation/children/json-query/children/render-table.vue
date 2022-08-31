@@ -164,11 +164,13 @@
                         if (cur.tableName && !acc.find(table => table.tableName === cur.tableName)) {
                             // 表格配置
                             const table = props.tableList.find(table => table.tableName === cur.tableName)
-                            acc.push({
-                                id: cur.tableName,
-                                tableName: cur.tableName,
-                                columns: table.columns
-                            })
+                            if (table) {
+                                acc.push({
+                                    id: cur.tableName,
+                                    tableName: cur.tableName,
+                                    columns: table.columns
+                                })
+                            }
                         }
                         return acc
                     }, [])
@@ -178,9 +180,9 @@
                 const table = props.tableList.find(table => table.tableName === tableName) || { columns: [] }
                 const columns = [...table.columns]
                 // 默认字段添加 *
-                if (!functionName && tableName) {
-                    columns.unshift({ name: '*', columnId: '*' })
-                }
+                // if (!functionName && tableName) {
+                //     columns.unshift({ name: '*', columnId: '*' })
+                // }
                 return columns
             }
 

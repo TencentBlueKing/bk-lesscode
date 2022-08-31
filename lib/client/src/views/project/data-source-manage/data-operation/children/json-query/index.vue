@@ -102,11 +102,13 @@
                         const isUsed = acc.find(table => table.tableName === cur.tableName)
                         if (cur.tableName && !isUsed) {
                             const table = props.tableList.find(table => table.tableName === cur.tableName)
-                            acc.push({
-                                id: table.id,
-                                tableName: table.tableName,
-                                columns: table.columns
-                            })
+                            if (table) {
+                                acc.push({
+                                    id: table.id,
+                                    tableName: table.tableName,
+                                    columns: table.columns
+                                })
+                            }
                         }
                         return acc
                     }, [])
