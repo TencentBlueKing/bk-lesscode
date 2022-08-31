@@ -35,7 +35,7 @@
     }
     .layout-icons {
         line-height: 1;
-        min-width: 36px;
+        min-width: 45px;
         display: flex;
         align-items: center;
         .layout-icon {
@@ -43,7 +43,6 @@
             margin-right: 4px;
             color: #C4C6CC;
             font-size: 14px;
-            height: 16px;
             &:hover {
                 color: #979BA5;
             }
@@ -81,7 +80,7 @@
     background: #F0F1F5;
 }
 .layout-row {
-    height: 60px;
+    height: 50px;
     border-bottom: 1px solid #DCDEE5;
     display: flex;
     align-items: center;
