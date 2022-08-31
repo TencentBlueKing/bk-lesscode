@@ -1,7 +1,7 @@
 <template>
     <article class="member-manage-main">
         <section class="member-manage-head">
-            <bk-button theme="primary" @click="handleCreate" :disabled="userPerm.roleId === 2" :title="userPerm.roleId === 1 ? '' : '仅管理员可操作'">添加</bk-button>
+            <bk-button theme="primary" @click="handleCreate">添加</bk-button>
             <bk-input class="member-manage-head-input" placeholder="请输入" :clearable="true" right-icon="bk-icon icon-search" v-model="name"></bk-input>
         </section>
 
@@ -67,7 +67,6 @@
                     theme="danger"
                     :loading="deleteObj.loading"
                     @click="requestDeleteMember(deleteObj.id)"
-                    :disabled="userPerm.roleId === 2"
                 >删除</bk-button>
                 <bk-button @click="handleDeleteCancel" :disabled="deleteObj.loading">取消</bk-button>
             </div>
@@ -115,10 +114,6 @@
                 return this.$route.params.projectId
             },
 
-            userPerm () {
-                return this.$store.getters['member/userPerm'] || { roleId: 2 }
-            },
-
             filterUserList: {
                 get () {
                     const memberNameList = this.memberList.map(member => member.username)
@@ -142,12 +137,10 @@
 
         methods: {
             operateTip (row) {
-                const hasPerm = this.userPerm.roleId === 1
                 const manageMemberList = this.memberList.filter(member => member.roleId === 1)
                 const isManage = row.roleId === 1
                 let tip = ''
-                if (!hasPerm) tip = '仅管理员可操作'
-                else if (manageMemberList.length <= 1 && isManage) tip = '不允许对最后一个管理员进行操作'
+                if (manageMemberList.length <= 1 && isManage) tip = '不允许对最后一个管理员进行操作'
                 return tip
             },
 
@@ -185,7 +178,6 @@
                     this.$bkMessage({ message: '操作成功', theme: 'success' })
                     this.sideObj.isShow = false
                     this.getMember()
-                    this.$store.dispatch('member/setCurUserPermInfo', { id: this.projectId })
                 }).catch((err) => {
                     this.$bkMessage({ message: err.message || err, theme: 'error' })
                 }).finally(() => {

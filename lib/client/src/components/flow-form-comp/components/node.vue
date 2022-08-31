@@ -1,7 +1,7 @@
 <template>
     <div class="node-data-manage">
         <div v-if="!initDataLoading" class="node-tab-wrapper">
-            <bk-tab :active.sync="activeNode" :label-height="32" @tab-change="handleTabChange">
+            <bk-tab :active.sync="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
                     :key="node.id"
@@ -25,7 +25,6 @@
                     v-if="filters.length > 0 && showFilter"
                     :filters="filters"
                     :fields="fields"
-                    :system-fields="systemFields"
                     :value.sync="filtersData">
                 </filters>
                 <table-fields
@@ -35,7 +34,6 @@
                     :fields="fields"
                     :form-id="formIds[activeNode]"
                     :table-name="tableName"
-                    :system-fields="systemFields"
                     :filters-data="filtersData">
                 </table-fields>
             </template>
@@ -45,7 +43,6 @@
 <script>
     import { mapGetters } from 'vuex'
     import { formMap } from 'shared/form'
-    import { FLOW_SYS_FIELD } from '../common/field.js'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
 
@@ -75,7 +72,6 @@
                 activeNode: '',
                 formDataMap: {},
                 filters: [],
-                systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
                 showFilter: true,
                 filtersData: {}
@@ -184,7 +180,10 @@
         margin-bottom: 16px;
     }
     .bk-tab {
+        padding: 4px;
         max-width: calc(100% - 250px);
+        background: #f0f1f5;
+        border-radius: 2px;
         >>> .bk-tab-section {
             display: none;
         }

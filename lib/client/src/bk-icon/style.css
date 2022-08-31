@@ -23,6 +23,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
   -moz-osx-font-smoothing: grayscale;
 }
 
+.bk-drag-assembly-line:before {
+	content: "\e240";
+}
 .bk-drag-home:before {
 	content: "\e15d";
 }
@@ -946,4 +949,16 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-zidingyibiaoge:before {
 	content: "\e23b";
+}
+.bk-drag-sort:before {
+	content: "\e23c";
+}
+.bk-drag-liebiao:before {
+	content: "\e23d";
+}
+.bk-drag-kapian:before {
+	content: "\e23f";
+}
+.bk-drag-refill:before {
+	content: "\e241";
 }

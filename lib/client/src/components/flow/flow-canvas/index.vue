@@ -629,7 +629,7 @@
       width: 56px;
       height: 100%;
       background-color: #fff;
-      border-right: 1px 0 0 0 #dcdee5;
+      border-right: 1px solid #dcdee5;
     }
     .tool-panel-wrap {
       top: 14px;

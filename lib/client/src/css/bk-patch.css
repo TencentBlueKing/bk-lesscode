@@ -82,3 +82,33 @@
         }
     }
 }
+
+/* 人员选择器使用的tippy，引入了单独的css，会影响到组件库中基于tippy实现的组件样式 */
+.tippy-tooltip {
+    .tippy-content {
+        padding: 0;
+    }
+    .tippy-arrow {
+        width: 0;
+        height: 0;
+    }
+}
+
+.bk-dropdown-menu .bk-dropdown-list>li a {
+  display: block;
+  height: 32px;
+  line-height: 33px;
+  padding: 0 16px;
+  color: #63656e;
+  font-size: 12px;
+  font-size: var(--font-size);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.g-small-link {
+    font-size: 12px;
+    &.bk-link .bk-link-icon, .bk-link-text {
+        font-size: 12px;
+    }
+}

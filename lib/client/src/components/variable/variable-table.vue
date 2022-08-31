@@ -126,7 +126,6 @@
         computed: {
             ...mapGetters('variable', ['variableList']),
             ...mapState(['user']),
-            ...mapGetters('member', ['userPerm']),
             ...mapGetters('page', ['pageDetail']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
 
@@ -162,10 +161,7 @@
             },
 
             getDeleteStatus (row) {
-                const user = this.user || {}
-                const username = user.bk_username || user.username
                 let tip = ''
-                if (this.userPerm.roleId !== 1 && username !== row.createUser) tip = '只有管理员或自己创建的才有删除权限'
                 if (this.getUseInfoTips(row.useInfo).length > 0) tip = '该变量被引用，无法删除'
                 if (this.simpleDisplay && row.effectiveRange === 0) tip = '应用级变量，请到变量管理进行删除'
                 return tip

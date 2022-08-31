@@ -18,8 +18,7 @@
                     </span>
                     <i
                         v-if="hasCreatedTicketPage"
-                        v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePagePerm() }"
-                        :class="['bk-icon', 'icon-delete', 'delete-page-icon', { 'g-no-permission': !getDeletePagePerm() }]"
+                        :class="['bk-icon', 'icon-delete', 'delete-page-icon']"
                         @click="handleDelCreatePage">
                     </i>
                 </template>
@@ -89,6 +88,7 @@
     import { mapState, mapGetters } from 'vuex'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
+    import { syncVariableValue } from '@/views/index/components/utils'
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import PreviewFormDialog from './preview-form-dialog.vue'
@@ -135,9 +135,6 @@
             projectId () {
                 return this.$route.params.projectId
             },
-            userPerm () {
-                return this.$store.getters['member/userPerm'] || { roleId: 2 }
-            },
             isFirstNormalNode () {
                 return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state
             },
@@ -167,8 +164,12 @@
             async getPageDetail () {
                 try {
                     this.pageContextLoading = true
-                    const [pageDetail] = await Promise.all([
+                    const [pageDetail, functionData] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId }),
+                        this.$store.dispatch('functions/getAllGroupAndFunction', {
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }),
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId }),
                         this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId }),
                         this.$store.dispatch('page/getPageSetting', {
@@ -178,15 +179,21 @@
                         })
                     ])
 
+                    const variableList = await this.$store.dispatch('variable/getAllVariable', {
+                        projectId: this.projectId,
+                        pageCode: pageDetail.pageCode,
+                        versionId: this.versionId,
+                        effectiveRange: 0
+                    })
+
                     this.$store.commit('page/setPageDetail', pageDetail || {})
+                    this.$store.commit('functions/setFunctionData', functionData)
+                    syncVariableValue(pageDetail.content, variableList)
                 } catch (e) {
                     console.error(e)
                 } finally {
                     this.pageContextLoading = false
                 }
-            },
-            getDeletePagePerm () {
-                return this.userPerm.roleId === 1 || this.user.username === this.pageDetail.createUser
             },
             // 新建空白或者引用表单时的初始化配置
             getNewFormConfig () {
@@ -216,7 +223,6 @@
             },
             // 删除流程提单页
             handleDelCreatePage () {
-                if (!this.getDeletePagePerm()) return
                 const h = this.$createElement
                 this.$bkInfo({
                     width: 422,
@@ -337,7 +343,7 @@
             handleTableClick () {
                 if (this.formConfig.code) {
                     const route = this.$router.resolve({ name: 'dataManage', query: { tableName: this.formConfig.code } })
-                    window.open(route.href, '__blank')
+                    window.open(route.href, '_blank')
                 }
             },
             updateFormConfig (data) {

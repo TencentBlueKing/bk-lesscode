@@ -135,6 +135,9 @@
                     readOnly: this.readOnly,
                     minimap: {
                         enabled: false // 关闭小地图
+                    },
+                    scrollbar: {
+                        alwaysConsumeMouseWheel: false
                     }
                 }, this.options)
 
@@ -256,7 +259,7 @@
     .monaco-head {
         line-height: 30px;
         height: 30px;
-        background-color: #1e1e1e;
+        background-color: #2E2E2E;
         display: flex;
         justify-content: space-between;
         align-items: center;

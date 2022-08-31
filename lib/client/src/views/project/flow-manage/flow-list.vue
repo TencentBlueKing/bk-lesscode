@@ -1,5 +1,11 @@
 <template>
     <div class="flow-manage-home">
+        <bk-alert
+            style="margin-bottom: 16px;"
+            type="warning"
+            title="流程设计完成后需要手动部署，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。"
+            :closable="true">
+        </bk-alert>
         <div class="operation-area">
             <bk-button theme="primary" @click="isCreateDialogShow = true">新建</bk-button>
             <div class="search-wrapper">
@@ -20,6 +26,7 @@
         </div>
         <bk-table
             v-bkloading="{ isLoading: listLoading || pageRouteListLoading }"
+            class="g-hairless-table"
             :data="flowList"
             :pagination="pagination"
             :outer-border="false"
@@ -42,13 +49,21 @@
             <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.pageId" class="link-btn" @click="handlePreviewPage(row.pageId, row.pageCode)">{{ row.pageName }}</span>
-                    <span v-else>--</span>
+                    <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
             <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
-                    <span v-else>--</span>
+                    <span v-else style="color: #3a84ff">--</span>
+                </template>
+            </bk-table-column>
+            <bk-table-column label="预览环境部署状态">
+                <template slot-scope="{ row }">
+                    <div class="deploy-status">
+                        <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>
+                        {{ row.deployed ? '已部署' : '未部署' }}
+                    </div>
                 </template>
             </bk-table-column>
             <bk-table-column label="创建人" property="createUser"></bk-table-column>
@@ -240,6 +255,22 @@
                 font-size: 14px;
                 transform: rotateY(180deg);
                 color: #63656e;
+            }
+        }
+    }
+    .deploy-status {
+        display: flex;
+        align-items: center;
+        .deploy-status-icon {
+            margin-right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #ffe8c3;
+            border-radius: 50%;
+            border: 1px solid #ff9c01;
+            &.deployed {
+                background: #e5f6ea;
+                border-color: #3fc06d;
             }
         }
     }
