@@ -11,27 +11,43 @@
 
 <template>
     <section v-if="emptyPage" class="preview-page">
-        <router-view :name="topView" />
+        <not-exist v-if="isNotExist" :message="notExistMsg" />
+        <template v-else>
+            <apply-page v-if="isNotPermission" :auth-result="authResult" />
+            <router-view v-if="!isNotPermission" :name="topView" />
+        </template>
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
             <home-header v-if="homeHeaderNav"></home-header>
             <app-header v-else></app-header>
-            <router-view :name="topView" v-show="!mainContentLoading" />
+            <not-exist v-if="isNotExist" :message="notExistMsg" />
+            <template v-else>
+                <apply-page v-if="isNotPermission" :auth-result="authResult" />
+                <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
+            </template>
         </div>
-        <bk-fixed-navbar v-if="!isCanvas"
+        <bk-fixed-navbar
+            :ext-cls="hasFooterBar ? 'nav-footer-bar' : 'no-footer-bar'"
+            :style="showFixedNavBar ? 'transform: translateY(-50%); opacity: 1' : 'transform: translateY(100%); opacity: 0'"
             :position="position"
             :nav-items="navItems"></bk-fixed-navbar>
+        <div class="nav-icon" @click="toggerNavbar" :class="hasFooterBar ? 'nav-icon-footer' : 'nav-icon-bottom'">
+            <i class="bk-drag-icon bk-drag-arrow-down toggle-arrow" :class="showFixedNavBar ? 'nav-icon-down' : 'nav-icon-up'" />
+        </div>
     </section>
 </template>
 <script>
     import { mapGetters } from 'vuex'
 
     import { bus } from './common/bus'
+    import ApplyPage from './components/apply-permission/apply-page.vue'
 
     export default {
         name: 'app',
-
+        components: {
+            ApplyPage
+        },
         data () {
             return {
                 systemCls: 'mac',
@@ -57,7 +73,15 @@
                 ],
                 routerNameData: ['/home', '/help'],
                 homeHeaderNav: true,
-                appTabData: [{ name: '产品介绍', url: '/', routerName: 'home' }, { name: '帮助文档', url: '/help', routerName: 'intro' }]
+                appTabData: [{ name: '产品介绍', url: '/', routerName: 'home' }, { name: '帮助文档', url: '/help', routerName: 'intro' }],
+                isNotPermission: false,
+                authResult: {
+                    requiredPermissions: []
+                },
+                isNotExist: false,
+                notExistMsg: '',
+                hasFooterBar: false,
+                showFixedNavBar: true
             }
         },
 
@@ -82,15 +106,29 @@
             '$route': {
                 handler (value) {
                     if (value.matched[0]) {
+                        this.$nextTick(() => {
+                            this.hasFooterBar = !!document.getElementsByClassName('footer').length
+                        })
                         this.homeHeaderNav = this.routerNameData.includes(value.matched[0].path) || this.routerNameData.includes(value.fullPath + value.name)
                     }
+                    this.isNotPermission = false
+                    this.isNotExist = false
                 },
                 immediate: true
             }
         },
 
         async created () {
-            await this.$store.dispatch('isPlatformAdmin')
+            bus.$on('permission-page', this.permissionHold)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('permission-page', this.permissionHold)
+            })
+
+            bus.$on('not-exist', this.notExistHold)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('not-exist', this.notExistHold)
+            })
+            await this.$store.dispatch('checkIamNoResourcesPerm')
         },
 
         mounted () {
@@ -101,6 +139,21 @@
             bus.$on('redirect-login', data => {
                 window.location.replace(data.loginUrl)
             })
+        },
+        methods: {
+            permissionHold (authResult) {
+                this.isNotPermission = true
+                this.authResult = authResult
+            },
+
+            notExistHold (msg) {
+                this.isNotExist = true
+                this.notExistMsg = msg
+            },
+
+            toggerNavbar () {
+                this.showFixedNavBar = !this.showFixedNavBar
+            }
         }
     }
 </script>
@@ -132,6 +185,54 @@
 
     .bk-fixed-navbar-wrapper {
         z-index: 9999;
+    }
+
+    .nav-footer-bar.middle {
+        transition:transform .5s, opacity .5s;
+        top: auto;
+        bottom: 1%;
+    }
+
+    .no-footer-bar.middle {
+        transition:transform .5s, opacity .5s;
+        top: auto;
+        bottom: -3%;
+    }
+
+    .nav-icon{
+        z-index: 2009;
+        position: fixed;
+        right: 10px;
+        width: 52px;
+        height: 20px;
+        background: #3A84FF;
+        box-shadow: 0 -2px 8px 0 rgba(0,0,0,0.12);
+        border-radius: 15px 15px 0 0;
+        bottom: 50px;
+        text-align: center;
+        color: #fff;
+        font-size: 24px;
+        cursor: pointer;
+        i {
+            position: absolute;
+            top: -1px;
+            left: 14px;
+            transition:transform 0.5s;
+        }
+        .nav-icon-down{
+            transform: rotate(0deg);
+        }
+        .nav-icon-up{
+            transform: rotate(180deg);
+        }
+    }
+
+    .nav-icon-footer{
+        bottom: 50px;
+    }
+
+    .nav-icon-bottom{
+        bottom: 0px;
     }
 
     .win {

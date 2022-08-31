@@ -58,7 +58,8 @@
         },
         data () {
             return {
-                selectedIndex: -1
+                selectedIndex: -1,
+                isFormFocused: false
             }
         },
         computed: {
@@ -77,6 +78,14 @@
                     this.selectedIndex = -1
                 }
             }
+        },
+        mounted () {
+            window.addEventListener('click', this.handleFormFocus)
+            window.addEventListener('keydown', this.handleKeyboardEvent)
+        },
+        beforeDestroy () {
+            window.removeEventListener('click', this.handleFormFocus)
+            window.removeEventListener('keydown', this.handleKeyboardEvent)
         },
         methods: {
             ...mapMutations('drag', ['setCurTemplateData']),
@@ -201,6 +210,21 @@
                 if (e?.target?.className === 'fields-container') {
                     this.selectedIndex = -1
                     this.$emit('clickOutSide')
+                }
+            },
+            handleFormFocus (e) {
+                this.isFormFocused = e.target.classList.contains('field-container-mask')
+            },
+            handleKeyboardEvent (event) {
+                if (this.selectedIndex < 0 || !this.isFormFocused) {
+                    return
+                }
+                const vKey = 86
+                const delKey = [8, 46]
+                if (event.metaKey && event.keyCode === vKey) {
+                    this.handleFormAction('copy', this.selectedIndex)
+                } else if (delKey.includes(event.keyCode)) {
+                    this.handleFormAction('delete', this.selectedIndex)
                 }
             }
         }

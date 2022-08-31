@@ -58,7 +58,7 @@
                                 <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
                                 <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
                                 <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(page)">生成数据管理页</a></li>
-                                <li><a href="javascript:;" @click="handleDelete(page)" :class="{ 'g-no-permission': !getDeletePerm(page) }" v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePerm(page) }">删除</a></li>
+                                <li><a href="javascript:;" @click="handleDelete(page)">删除</a></li>
                             </ul>
                         </bk-dropdown-menu>
                     </div>
@@ -126,7 +126,7 @@
                 default: false
             }
         },
-        inject: ['getDeletePerm', 'getRelativeTime', 'getFormManagePages'],
+        inject: ['getRelativeTime', 'getFormManagePages'],
         methods: {
             hideDropdownMenu (pageId) {
                 this.$refs[`moreActionDropdown${pageId}`][0].hide()

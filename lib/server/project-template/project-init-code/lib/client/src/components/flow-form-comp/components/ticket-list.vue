@@ -30,7 +30,9 @@
         <bk-table
             v-bkloading="{ isLoading: ticketListLoading }"
             :data="ticketList"
-            :outer-border="!ticketList.length > 0"
+            class="hairless-table"
+            :header-border="false"
+            :outer-border="false"
             :pagination="pagination"
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
@@ -106,7 +108,8 @@
                 const params = {
                     page: current,
                     page_size: limit,
-                    service_id__in: [this.serviceId]
+                    service_id__in: [this.serviceId],
+                    tag: this.viewType === 'preview' ? 'preview' : BKPAAS_ENVIRONMENT
                 }
                 Object.keys(this.filterData).forEach(key => {
                     const val = this.filterData[key]
@@ -114,9 +117,6 @@
                     if (key === 'create_at' && val.join('') !== '') {
                         params.create_at__gte = dayjs(val[0]).format('YYYY-MM-DD HH:mm:ss')
                         params.create_at__lte = dayjs(val[1]).format('YYYY-MM-DD HH:mm:ss')
-                    }
-                    if (key === 'sns' && val) {
-                        params.sns = [val]
                     }
                     if (key === 'status' && val) {
                         params.current_status__in = [val]
@@ -160,7 +160,7 @@
                 this.getTicketList()
             },
             goToTicketPage (ticket) {
-                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '__blank')
+                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '_blank')
             }
         }
     }
@@ -192,6 +192,11 @@
         .search-btns-wrapper {
             margin-top: 16px;
             padding: 0 8px;
+        }
+    }
+    .hairless-table {
+        &:before {
+            height: 0;
         }
     }
 </style>

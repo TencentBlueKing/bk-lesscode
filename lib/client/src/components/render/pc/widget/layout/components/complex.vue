@@ -5,9 +5,9 @@
             default-open
             :need-menu="isShowSideMenu"
             v-bind="curTemplateData.renderProps || {}"
-            :head-theme-color="curTemplateData.theme"
-            :theme-color="curThemeColor"
-            :class="{ 'white-theme': isWhiteTheme }">
+            :head-theme-color="topBackgroundColor"
+            :theme-color="sideThemeColor"
+            :class="{ 'white-theme': isWhiteTopTheme }">
             <div
                 slot="side-header"
                 class="component-wrapper"
@@ -18,7 +18,7 @@
                 <span class="title-icon">
                     <img style="width: 28px; height: 28px" :src="curTemplateData.logo" />
                 </span>
-                <span :class="{ 'title-desc': true, 'theme-desc': !isDefaultTheme }">{{ curTemplateData.siteName }}</span>
+                <span :class="{ 'title-desc': true, 'theme-desc': !isDefaultTopTheme }">{{ curTemplateData.siteName }}</span>
             </div>
             <template slot="header">
                 <div
@@ -33,9 +33,10 @@
                         class="navigation-header-item"
                         :class="{
                             selected: selectTopMenuId === topMemu.id,
-                            'theme-item': !isDefaultTheme,
+                            'theme-item': !isDefaultTopTheme,
                             'item-active': topMemu.pageCode === navActive
                         }"
+                        :style="getActiveItemStyle(topMemu.pageCode)"
                         @click.stop="handleTopMenuSelect(topMemu)">
                         {{topMemu.name}}
                     </div>
@@ -46,7 +47,7 @@
                     placement="bottom-start"
                     offset="-20, 10"
                     :tippy-options="{ 'hideOnClick': false }">
-                    <div class="message-box" :class="{ 'theme-header': !isDefaultTheme }" @click.stop>
+                    <div class="message-box" :class="{ 'theme-header': !isDefaultTopTheme }" @click.stop>
                         <span class="user-name">{{ user.username }}</span>
                         <i class="bk-icon icon-down-shape"></i>
                     </div>
@@ -67,7 +68,7 @@
                         :unique-opened="false"
                         :default-active="navActive"
                         :toggle-active="true"
-                        v-bind="curThemeColorProps">
+                        v-bind="themeColorProps">
                         <bk-navigation-menu-item
                             v-for="(menuItem) in currentSideMenuList"
                             ref="item"
@@ -101,6 +102,22 @@
     import LC from '@/element-materials/core'
     import { bus } from '@/common/bus'
 
+    const TOP_DEFAULT_BACKGROUND_COLOR = '#182132'
+    const TOP_DEFAULT_ACTIVE_COLOR = '#ffffff'
+    const TOP_DEFAULT_COLOR = '#96a2b9'
+    const TOP_WHITE_ACTIVE_COLOR = '#d3d9e4'
+    const TOP_NORMAL_ACTIVE_COLOR = '#ffffffe6'
+    const SIDE_DEFAULT_BACKGROUND_COLOR = '#2c354d'
+    const SIDE_DEFAULT_ACTIVE_BACKGROUND_COLOR = '#3c96ff'
+    const SIDE_HOVER_ACTIVE_BG_COLOR = '#f5f7fa'
+    const SIDE_DEFAULT_NORMAL_COLOR = '#63656e'
+    const SIDE_WHITE_SUB_BG_COLOR = '#fafbfd'
+    const SIDE_NORMAL_HOVER_BG_COLOR = '#ffffff14'
+    const SIDE_DEFAULT_COLOR = '#acb5c6'
+    const SIDE_DEFAULT_SUB_BG_COLOR = '#272F45'
+    const SIDE_DEFAULT_BG_COLOR = '#3a4561'
+    const SIDE_NORMAL_DEFAULT_COLOR = '#ffffffad'
+
     const unselectComponent = () => {
         const activeNode = LC.getActiveNode()
         if (activeNode) {
@@ -118,51 +135,7 @@
                 selectTopMenuId: '',
                 activeTopMenuId: '',
                 isTopMenuSelected: false,
-                isSideMenuSelected: false,
-                defaultThemeColorProps: {
-                    'item-hover-bg-color': '#3a4561',
-                    'item-hover-color': '#FFFFFF',
-                    'item-active-bg-color': '#0083FF',
-                    'item-active-color': '#FFFFFF',
-                    'item-default-bg-color': '#2C354D',
-                    'item-default-color': '#acb5c6',
-                    'item-default-icon-color': '#acb5c6',
-                    'item-child-icon-default-color': '#acb5c6;',
-                    'item-child-icon-hover-color': '#acb5c6;',
-                    'item-active-icon-color': '#FFFFFF',
-                    'item-hover-icon-color': '#FFFFFF',
-                    'item-child-icon-active-color': '#FFFFFF',
-                    'sub-menu-open-bg-color': '#272F45'
-                },
-                otherThemeColorProps: {
-                    'item-hover-bg-color': '#ffffff14',
-                    'item-hover-color': '#FFFFFF',
-                    'item-active-bg-color': '#ffffff33',
-                    'item-active-color': '#FFFFFF',
-                    'item-default-bg-color': '#1E1E1E',
-                    'item-default-color': '#ffffffad',
-                    'item-default-icon-color': '#ffffffad',
-                    'item-child-icon-default-color': '#ffffffad',
-                    'item-child-icon-hover-color': '#FFFFFF',
-                    'item-active-icon-color': '#FFFFFF',
-                    'item-hover-icon-color': '#FFFFFF',
-                    'item-child-icon-active-color': '#FFFFFF',
-                    'sub-menu-open-bg-color': '#000000e6'
-                },
-                whiteThemeColorProps: {
-                    'item-default-bg-color': 'white',
-                    'item-hover-bg-color': '#f0f1f5',
-                    'sub-menu-open-bg-color': '#f5f7fa',
-                    'item-hover-color': '#63656e',
-                    'item-active-color': '#699df4',
-                    'item-default-color': '#63656e',
-                    'item-default-icon-color': '#63656ead',
-                    'item-child-icon-default-color': '#63656ead',
-                    'item-child-icon-hover-color': '#313238',
-                    'item-active-icon-color': '#699df4',
-                    'item-hover-icon-color': '#63656e',
-                    'item-child-icon-active-color': '#699df4'
-                }
+                isSideMenuSelected: false
             }
         },
         computed: {
@@ -186,35 +159,80 @@
                 }
                 return topMenu.children
             },
-            isDefaultTheme () {
-                return !this.curTemplateData?.theme || this.curTemplateData?.theme === '#182132'
+            // 顶部导航背景色
+            topBackgroundColor () {
+                return this.curTemplateData.themeConfig?.topMenuBackground || TOP_DEFAULT_BACKGROUND_COLOR
             },
-            isWhiteTheme () {
-                return this.curTemplateData?.theme && this.curTemplateData?.theme === '#FFFFFF'
+            // 顶部导航主题色 选中字体色
+            topActiveTheme () {
+                return this.curTemplateData.themeConfig?.topMenuTheme || TOP_DEFAULT_ACTIVE_COLOR
             },
-            curThemeColorProps () {
-                let props = {}
-
-                if (this.isDefaultTheme) {
-                    props = {
-                        ...this.defaultThemeColorProps,
-                        'item-active-bg-color': '#0083FF'
-                    }
-                } else if (this.isWhiteTheme) {
-                    props = {
-                        ...this.whiteThemeColorProps,
-                        'item-active-bg-color': '#e1ecff'
-                    }
+            // 左侧导航背景色
+            sideBackgroundColor () {
+                return this.curTemplateData.themeConfig?.sideMenuBackground || TOP_DEFAULT_BACKGROUND_COLOR
+            },
+            // 左侧导航菜单主题色 选中项背景色
+            sideActiveTheme () {
+                return this.curTemplateData.themeConfig?.sideMenuTheme || SIDE_DEFAULT_ACTIVE_BACKGROUND_COLOR
+            },
+            // 顶部默认背景主题
+            isDefaultTopTheme () {
+                return this.topBackgroundColor === TOP_DEFAULT_BACKGROUND_COLOR
+            },
+            // 顶部白色背景主题
+            isWhiteTopTheme () {
+                return this.topBackgroundColor === TOP_DEFAULT_ACTIVE_COLOR
+            },
+            // 顶部导航菜单字体hover颜色
+            defaultHoverTheme () {
+                const activeColor = this.isDefaultTopTheme ? TOP_WHITE_ACTIVE_COLOR : TOP_NORMAL_ACTIVE_COLOR
+                return this.topActiveTheme === TOP_DEFAULT_ACTIVE_COLOR ? activeColor : `${this.topActiveTheme}ad`
+            },
+            // 侧边导航背景色
+            sideThemeColor () {
+                return this.sideBackgroundColor === TOP_DEFAULT_BACKGROUND_COLOR ? SIDE_DEFAULT_BACKGROUND_COLOR : this.sideBackgroundColor
+            },
+            themeColorProps () {
+                const props = {}
+                if (this.sideBackgroundColor === TOP_DEFAULT_ACTIVE_COLOR) { // 白色主题需要设置以下属性
+                    props['item-active-color'] = this.sideActiveTheme
+                    props['item-active-icon-color'] = this.sideActiveTheme
+                    props['item-child-icon-active-color'] = this.sideActiveTheme
+                    props['item-default-bg-color'] = this.sideBackgroundColor
+                    props['item-active-bg-color'] = `${this.sideActiveTheme}1a` // 1a 代表十六进制色值的0.1透明度
+                    props['item-hover-bg-color'] = SIDE_HOVER_ACTIVE_BG_COLOR
+                    props['item-hover-color'] = SIDE_DEFAULT_NORMAL_COLOR
+                    props['item-hover-icon-color'] = SIDE_DEFAULT_NORMAL_COLOR
+                    props['item-default-color'] = SIDE_DEFAULT_NORMAL_COLOR
+                    props['item-default-icon-color'] = SIDE_DEFAULT_NORMAL_COLOR
+                    props['item-child-icon-default-color'] = SIDE_DEFAULT_NORMAL_COLOR
+                    props['sub-menu-open-bg-color'] = SIDE_WHITE_SUB_BG_COLOR
+                } else if (this.sideBackgroundColor !== TOP_DEFAULT_BACKGROUND_COLOR) { // 非默认背景色
+                    props['item-active-bg-color'] = this.sideActiveTheme
+                    props['item-default-bg-color'] = this.sideBackgroundColor
+                    props['sub-menu-open-bg-color'] = this.sideBackgroundColor
+                    props['item-hover-bg-color'] = SIDE_NORMAL_HOVER_BG_COLOR
+                    props['item-default-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['item-default-icon-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['item-child-icon-default-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['item-child-icon-active-color'] = TOP_DEFAULT_ACTIVE_COLOR
                 } else {
-                    props = {
-                        ...this.otherThemeColorProps,
-                        'item-active-bg-color': this.curTemplateData.theme
-                    }
+                    props['item-active-bg-color'] = this.sideActiveTheme
+                    props['item-default-bg-color'] = SIDE_DEFAULT_BACKGROUND_COLOR
+                    props['item-hover-bg-color'] = SIDE_DEFAULT_BG_COLOR
+                    props['item-hover-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['item-active-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['item-default-color'] = SIDE_DEFAULT_COLOR
+                    props['item-default-icon-color'] = SIDE_DEFAULT_COLOR
+                    props['item-child-icon-default-color'] = SIDE_DEFAULT_COLOR
+                    props['item-child-icon-hover-color'] = SIDE_DEFAULT_COLOR
+                    props['item-active-icon-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['item-hover-icon-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['item-child-icon-active-color'] = TOP_DEFAULT_ACTIVE_COLOR
+                    props['sub-menu-open-bg-color'] = SIDE_DEFAULT_SUB_BG_COLOR
                 }
+                
                 return props
-            },
-            curThemeColor () {
-                return this.isWhiteTheme ? '#ffffff' : this.isDefaultTheme ? '#2C354D' : '#1E1E1E'
             }
         },
         watch: {
@@ -314,6 +332,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig,
                     topMenuList,
                     renderProps
                 } = templateData
@@ -334,6 +353,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig,
                     topMenuList,
                     panelActive,
                     renderProps
@@ -350,6 +370,16 @@
                     ...this.curTemplateData,
                     panelActive: 'base'
                 })
+            },
+            getActiveItemStyle (code) {
+                const defaultColor = this.isDefaultTopTheme
+                    ? TOP_DEFAULT_COLOR : this.isWhiteTopTheme
+                        ? SIDE_DEFAULT_NORMAL_COLOR : SIDE_NORMAL_DEFAULT_COLOR
+                return {
+                    '--color': code === this.navActive ? this.topActiveTheme : defaultColor,
+                    '--hover-color': code === this.navActive ? this.topActiveTheme : this.defaultHoverTheme,
+                    opacity: 1
+                }
             }
         }
     }
@@ -382,43 +412,15 @@
         }
         .navigation-header-item{
             white-space: nowrap;
-            border: 1px  solid transparent;
-            &.theme-item {
-                color: #fff;
-                opacity: 0.68;
-                &:hover {
-                    opacity: 1;
-                }
-            }
-            &:hover{
-                border: 1px dashed #3a84ff;
-            }
-            &.selected {
-                color: #fff;
-                border: 1px solid #3a84ff;
-            }
-            &.item-active {
-                color: #fff;
-                opacity: 1;
+            color: var(--color) !important;
+            &:hover {
+                color: var(--hover-color) !important;
             }
         }
     }
     .white-theme {
         .theme-desc {
             color: #313238;
-        }
-        .navigation-header-item {
-            &.theme-item {
-                color: #63656e;
-                opacity: 1;
-                &:hover {
-                    color: #000000;
-                }
-            }
-            &.item-active {
-                color: #000;
-                opacity: 1;
-            }
         }
         .message-box.theme-header {
             color: #63656E;

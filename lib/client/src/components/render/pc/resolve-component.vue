@@ -146,6 +146,7 @@
             h5Page: () => import('./widget/free-layout.vue'),
             RenderColumn: () => import('./widget/column'),
             RenderBlock: () => import('./widget/block.vue'),
+            WidgetTab: () => import('./widget/tab'),
             WidgetForm: () => import('./widget/form'),
             WidgetFormItem: () => import('./widget/form-item'),
             ResolveComponent: () => import('./resolve-component'),
@@ -195,6 +196,7 @@
                     'render-column': true,
                     'widget-form': true,
                     'widget-form-item': true,
+                    'widget-tab': true,
                     'resolve-component': true
                 }
                 return shadowComMap[this.componentData.type] || false

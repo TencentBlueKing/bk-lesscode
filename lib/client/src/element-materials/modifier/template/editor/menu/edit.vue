@@ -12,7 +12,7 @@
                 </div>
             </bk-input>
         </div>
-        <div class="menu-page-wraper">
+        <div class="menu-page-wraper" v-if="showMenu">
             <div v-if="isPageCode">
                 <bk-select
                     class="menu-page"
@@ -32,11 +32,11 @@
                     <bk-input
                         v-if="isShowPageQuery"
                         :value="baseInfo.query"
-                        style="margin-top: 10px"
                         placeholder="name=zhangsan&age=18"
                         @change="handlePageQueryChange" />
                     <bk-button
                         v-else
+                        class="add-query"
                         text
                         style="font-size: 12px;"
                         @click="handleShowEditPageQuery">
@@ -127,6 +127,10 @@
             showIcon: {
                 type: Boolean,
                 default: false
+            },
+            showMenu: {
+                type: Boolean,
+                default: true
             }
         },
         data () {
@@ -350,13 +354,13 @@
         }
         .menu-page-wraper{
             position: relative;
-            padding-left: 42px;
-            margin-top: 6px;
+            padding-left: 32px;
+            margin-top: 8px;
             .menu-type{
                 position: absolute;
                 top: 8px;
-                left: 7px;
-                padding: 2px 3px;
+                left: 4px;
+                padding: 3px 2px;
                 font-size: 12px;
                 color: #3A84FF;
                 line-height: 1;
@@ -372,6 +376,8 @@
             }
             .menu-page-query{
                 position: relative;
+                top: 8px;
+                margin-bottom: 8px;
                 .query-remove{
                     position: absolute;
                     top: 0;
@@ -381,6 +387,9 @@
                     font-size: 16px;
                     color: #979BA5;
                     cursor: pointer;
+                }
+                .bk-button-text.bk-primary:hover {
+                    color: #1964E1;
                 }
             }
         }
