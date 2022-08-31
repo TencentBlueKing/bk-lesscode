@@ -12,7 +12,6 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import LinkageRules from './linkage.vue'
-    import { getTypeDefaultVal } from 'shared/no-code'
 
     // 可设置联动规则的字段类型
     const CAN_SETTING_LINKAGE_FIELD_TYPES = ['STRING', 'TEXT', 'INT', 'DATE', 'DATETIME', 'SELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO', 'MEMBER', 'MEMBERS']
@@ -46,7 +45,6 @@
             }
         },
         created () {
-            console.log('created')
             this.initDefaultValConfig()
         },
         methods: {
@@ -67,9 +65,7 @@
                                     value: ''
                                 }
                             }
-                        ],
-                        end_value: getTypeDefaultVal(this.field.type),
-                        can_modify: true
+                        ]
                     })
                 }
             },

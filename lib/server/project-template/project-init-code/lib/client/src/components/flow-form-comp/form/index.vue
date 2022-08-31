@@ -62,9 +62,11 @@
         created () {
             this.initFormValue()
             this.parseFieldConditions()
+            this.parseAssociationValRules()
             // 解析字段显隐、必填、只读条件
             this.handleParseCondition = debounce(this.parseFieldConditions, 300)
-            this.handleDefaultValAssociation = debounce(this.parseDefaultValRules, 300)
+            // 解析值联动规则
+            this.handleParseAssociation = debounce(this.parseAssociationValRules, 300)
         },
         methods: {
             // 获取变量value，优先取props传入的value值，若没有则取默认值
@@ -82,34 +84,27 @@
                             value = item.default
                         }
                     }
-                    if (item.meta.default_val_config?.enable) {
+                    if (item.meta.default_val_config) {
                         fieldsWithRules.push(item)
                     }
                     fieldsValue[item.key] = value
                 })
                 this.localValue = fieldsValue
                 fieldsWithRules.forEach(async field => {
-                    const { type, rules, end_value: endValue, can_modify: canModify } = field.meta.default_val_config
+                    const { type, rules } = field.meta.default_val_config
                     if (type === 'currentTable') {
                         const rule = this.getFulfillAssociationRule(rules)
                         if (rule) {
                             const value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
                             this.localValue[field.key] = value
-                        } else {
-                            this.localValue[field.key] = endValue
                         }
                     } else if (type === 'otherTable') {
                         const res = await this.getAssociationFilterData(field.key)
                         if (res.data.list.length === 1) {
                             this.localValue[field.key] = res.data.list[0][rules[0].target.value]
-                        } else {
-                            this.localValue[field.key] = endValue
                         }
                     } else if (type === 'createTicketTime') {
                         this.localValue[field.key] = field.type === 'DATE' ? dayjs().format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD HH:mm:ss')
-                    }
-                    if (!canModify) {
-                        field.is_readonly = true
                     }
                 })
                 this.$emit('change', this.localValue)
@@ -136,7 +131,7 @@
                 })
             },
             // 解析表单字段间的默认值联动
-            parseDefaultValRules (key) {
+            parseAssociationValRules (key) {
                 const associatedFields = this.getValAssociatedFields(key)
                 associatedFields.forEach(async field => {
                     const { type, rules } = field.meta.default_val_config
@@ -157,7 +152,7 @@
             // 获取关联规则中包含当前字段key的字段列表
             getValAssociatedFields (key) {
                 return this.fields.filter(field => {
-                    if (field.meta.default_val_config?.enable) {
+                    if (field.meta.default_val_config) {
                         const { type, rules } = field.meta.default_val_config
                         return rules.some(group => {
                             return group.relations.find(item => {
@@ -212,7 +207,7 @@
                 this.$emit('change', this.localValue)
                 this.handleParseCondition()
                 this.parseDataSourceRelation(key, value)
-                this.handleDefaultValAssociation(key)
+                this.handleParseAssociation(key)
             }
         }
     }

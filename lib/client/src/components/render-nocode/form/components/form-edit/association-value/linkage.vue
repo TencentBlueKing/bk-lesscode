@@ -39,9 +39,9 @@
                 </bk-select>
             </bk-form-item>
             <bk-form-item
-                v-if="configData.type !== 'createTicketTime'"
                 label="关联规则"
-                :desc="configData.type === 'otherTable' ? '若设置的条件无法检索到单条数据，则关联值将无法正常带出' : ''">
+                desc-type="icon"
+                :desc="associationRuleTips">
                 <relation-rules
                     :disabled="disabled"
                     :rules="configData.rules"
@@ -51,22 +51,6 @@
                     :is-current-table="configData.type === 'currentTable'"
                     @change="configData.rules = $event">
                 </relation-rules>
-                <div class="end-value">
-                    <span style="margin-right: 8px; white-space: nowrap;">若以上规则都不满足，初始默认值为</span>
-                    <default-value
-                        style="width: 200px;"
-                        class="dete"
-                        :field="endValueField"
-                        :disabled="disabled"
-                        @change="configData.end_value = $event">
-                    </default-value>
-                </div>
-            </bk-form-item>
-            <bk-form-item label="支持用户修改值">
-                <bk-radio-group v-model="configData.can_modify">
-                    <bk-radio :value="true">是</bk-radio>
-                    <bk-radio :value="false">否</bk-radio>
-                </bk-radio-group>
             </bk-form-item>
         </bk-form>
     </bk-dialog>
@@ -75,13 +59,11 @@
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import RelationRules from './relation-rules.vue'
-    import DefaultValue from '../default-value.vue'
 
     export default {
         name: 'Linkage',
         components: {
-            RelationRules,
-            DefaultValue
+            RelationRules
         },
         props: {
             show: Boolean,
@@ -96,7 +78,15 @@
                 configData: cloneDeep(this.field.meta.default_val_config),
                 formList: [],
                 formListLoading: false,
-                fieldList: []
+                fieldList: [],
+                associationRuleTips: {
+                    placement: 'right-end',
+                    content: `
+                        <p>1.本表字段联动，若存在多条满足条件的关联规则，排序在后的规则优先级更高</p>
+                        <p>2.他表字段联动，若设置的条件无法检索到单条数据，则关联值将无法正常带出</p>
+                        <p>3.若没有满足关联规则时，字段将会保持当前值
+                    `
+                }
             }
         },
         computed: {
@@ -113,9 +103,6 @@
                     }
                 }
                 return []
-            },
-            endValueField () {
-                return { ...this.field, default: this.configData.end_value }
             }
         },
         watch: {
@@ -282,6 +269,9 @@
         }
     }
     >>> .determine-value {
+        .bk-form-content {
+            line-height: initial;
+        }
         .bk-date-picker-rel .bk-date-picker-editor,
         .bk-date-picker-rel .icon-wrapper,
         .bk-select,
