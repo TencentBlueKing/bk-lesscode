@@ -149,7 +149,6 @@
                     props['item-active-color'] = this.activeTheme
                     props['item-active-icon-color'] = this.activeTheme
                     props['item-child-icon-active-color'] = this.activeTheme
-                    props['item-child-icon-active-color'] = this.activeTheme
                     props['item-default-bg-color'] = this.backgroundColor
                     props['item-active-bg-color'] = `${this.activeTheme}1a` // 1a 代表十六进制色值的0.1透明度
                     props['item-hover-bg-color'] = WHITE_HOVER_BG_COLOR
@@ -161,7 +160,6 @@
                     props['sub-menu-open-bg-color'] = WHITE_SUB_BG_COLOR
                 } else if (this.backgroundColor !== DEFAULT_BACKGROUND_COLOR) { // 非默认背景色
                     props['item-active-bg-color'] = this.activeTheme
-                    props['item-child-icon-active-color'] = this.activeTheme
                     props['item-default-bg-color'] = this.backgroundColor
                     props['sub-menu-open-bg-color'] = this.backgroundColor
                     props['item-hover-bg-color'] = OTHER_HOVER_BG_COLOR

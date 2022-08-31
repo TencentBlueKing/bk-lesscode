@@ -196,7 +196,6 @@
                     props['item-active-color'] = this.sideActiveTheme
                     props['item-active-icon-color'] = this.sideActiveTheme
                     props['item-child-icon-active-color'] = this.sideActiveTheme
-                    props['item-child-icon-active-color'] = this.sideActiveTheme
                     props['item-default-bg-color'] = this.sideBackgroundColor
                     props['item-active-bg-color'] = `${this.sideActiveTheme}1a` // 1a 代表十六进制色值的0.1透明度
                     props['item-hover-bg-color'] = SIDE_HOVER_ACTIVE_BG_COLOR
@@ -208,7 +207,6 @@
                     props['sub-menu-open-bg-color'] = SIDE_WHITE_SUB_BG_COLOR
                 } else if (this.sideBackgroundColor !== TOP_DEFAULT_BACKGROUND_COLOR) { // 非默认背景色
                     props['item-active-bg-color'] = this.sideActiveTheme
-                    props['item-child-icon-active-color'] = this.sideActiveTheme
                     props['item-default-bg-color'] = this.sideBackgroundColor
                     props['sub-menu-open-bg-color'] = this.sideBackgroundColor
                     props['item-hover-bg-color'] = SIDE_NORMAL_HOVER_BG_COLOR
@@ -222,7 +220,6 @@
                     props['item-hover-bg-color'] = SIDE_DEFAULT_BG_COLOR
                     props['item-hover-color'] = TOP_DEFAULT_ACTIVE_COLOR
                     props['item-active-color'] = TOP_DEFAULT_ACTIVE_COLOR
-                    props['item-default-bg-color'] = SIDE_DEFAULT_BACKGROUND_COLOR
                     props['item-default-color'] = SIDE_DEFAULT_COLOR
                     props['item-default-icon-color'] = SIDE_DEFAULT_COLOR
                     props['item-child-icon-default-color'] = SIDE_DEFAULT_COLOR
