@@ -149,10 +149,7 @@
                         <span class="table-btn" @click="handleEditApi(props.row)">编辑</span>
                         <span class="table-btn" @click="handleCopyApi(props.row)">复制</span>
                         <span class="table-btn" @click="handleCreateFunction(props.row)">生成函数</span>
-                        <span @click="handleDeleteApi(props.row)"
-                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
-                            :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
-                        >删除</span>
+                        <span class="table-btn" @click="handleDeleteApi(props.row)">删除</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column
