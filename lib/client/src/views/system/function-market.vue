@@ -233,7 +233,7 @@
 
 <style lang="postcss" scoped>
     .function-market-home {
-        padding: 16px 8px 16px 24px;
+        padding: 24px;
     }
     .function-market-title {
         display: flex;
@@ -250,7 +250,7 @@
         width: 100%;
         -ms-flex-line-pack: start;
         align-content: flex-start;
-        padding: 8px;
+        padding: 8px 0;
         overflow-y: auto;
         overflow-x: hidden;
         margin-top: 16px;
