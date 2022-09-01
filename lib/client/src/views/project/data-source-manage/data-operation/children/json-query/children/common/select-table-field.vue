@@ -23,7 +23,7 @@
         PropType,
         computed
     } from '@vue/composition-api'
-    import SelectTable, { Itable } from './select-table.vue'
+    import SelectTable, { ITable } from './select-table.vue'
     import SelectField, { IField } from './select-field.vue'
     export { IField }
 
@@ -34,9 +34,9 @@
         },
 
         props: {
-            tableList: Array as PropType<Itable[]>,
+            tableList: Array as PropType<ITable[]>,
             tableName: String,
-            fieldId: String
+            fieldId: [String, Number]
         },
 
         setup (props, { emit }) {

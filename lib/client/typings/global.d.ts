@@ -15,3 +15,4 @@ declare const AJAX_URL_PREFIX: string
 declare const APP_CODE: string
 declare const ENV: string
 declare const monaco: any
+declare const V3_DEVELOPER_CENTER_URL: string

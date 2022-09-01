@@ -1,12 +1,34 @@
 <template>
     <div class="project-info-modifier">
-        <div>
-            <div class="action-title">应用名称配置</div>
-            <bk-input :value="siteName" @change="handleSiteNameChange" />
+        <div class="prop-box">
+            <div class="action-title">
+                <i
+                    :class="{
+                        'bk-icon icon-angle-down': true,
+                        close: !showNameProp
+                    }"
+                    @click="() => showNameProp = !showNameProp"
+                ></i>
+                <div>应用名称</div>
+            </div>
+            <div class="action-content" v-if="showNameProp">
+                <bk-input :value="siteName" @change="handleSiteNameChange" />
+            </div>
         </div>
-        <div style="margin-top: 10px;">
-            <div class="action-title">应用 LOGO 配置</div>
-            <src-input :value="logo" file-type="img" @change="handleLogoChange" />
+        <div class="prop-box">
+            <div class="action-title">
+                <i
+                    :class="{
+                        'bk-icon icon-angle-down': true,
+                        close: !showLogoProp
+                    }"
+                    @click="() => showLogoProp = !showLogoProp"
+                ></i>
+                <div>logo 设置</div>
+            </div>
+            <div class="action-content" v-if="showLogoProp">
+                <src-input :value="logo" file-type="img" @change="handleLogoChange" />
+            </div>
         </div>
     </div>
 </template>
@@ -22,6 +44,12 @@
             logo: String,
             siteName: String
         },
+        data () {
+            return {
+                showNameProp: true,
+                showLogoProp: true
+            }
+        },
         methods: {
             handleSiteNameChange (value) {
                 this.$emit('on-change', 'siteName', value)
@@ -32,3 +60,35 @@
         }
     }
 </script>
+
+<style lang="postcss">
+    .project-info-modifier {
+        .prop-box {
+            border-bottom: 1px solid #EAEBF0;
+            .action-title {
+                display: flex;
+                align-items: center;
+                height: 40px;
+                font-size: 12px;
+                font-weight: bold;
+                color: #313238;
+                margin-bottom: 0;
+                .bk-icon {
+                    margin-left: -5px;
+                    margin-right: 3px;
+                    font-size: 20px;
+                    color: #63656E;
+                    display: inline-block;
+                    transition: transform 200ms;
+                    cursor: pointer;
+                    &.close {
+                        transform: rotate(-90deg);
+                    }
+                }
+            }
+            .action-content {
+                margin: 4px 0 16px;
+            }
+        }
+    }
+</style>

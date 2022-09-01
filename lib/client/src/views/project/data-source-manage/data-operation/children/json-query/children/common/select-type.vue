@@ -43,9 +43,17 @@
 
     export default defineComponent({
         props: {
-            list: Array as PropType<item[]>,
-            value: String,
-            disable: Boolean
+            list: {
+                type: Array as PropType<item[]>
+            },
+            value: {
+                type: String,
+                default: ''
+            },
+            disable: {
+                type: Boolean,
+                default: false
+            }
         },
 
         emits: ['change'],

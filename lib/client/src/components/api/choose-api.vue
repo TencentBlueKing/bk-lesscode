@@ -13,7 +13,7 @@
             class="display-value"
             slot="trigger"
         >
-            {{ getDisplatName() }}
+            {{ getDisplayName() }}
             <i class="bk-select-angle bk-icon icon-angle-down"></i>
         </span>
         <bk-big-tree
@@ -109,26 +109,6 @@
             const treeRef = ref(null)
             const bigTreeRef = ref(null)
             const bigTreeKey = ref(1)
-            
-            if (!isEmpty(projectId)) {
-                apiData.value.unshift(
-                    ...[
-                        {
-                            id: 'lesscode-api',
-                            name: '应用自建 API',
-                            type: 'lesscode',
-                            children: []
-                        },
-                        {
-                            id: 'datasource-api',
-                            name: '数据表操作 API',
-                            type: 'datasource',
-                            children: []
-                        }
-                    ]
-                )
-            }
-
             // 空数据则返回空节点
             const getNodeValue = (data, isLeaf) => {
                 const node = {
@@ -299,7 +279,7 @@
             }
 
             // 计算展示名
-            const getDisplatName = () => {
+            const getDisplayName = () => {
                 return props
                     .value
                     .map((item) => {
@@ -350,7 +330,7 @@
                 bigTreeKey,
                 getRemoteApi,
                 chooseApi,
-                getDisplatName,
+                getDisplayName,
                 getDefaultExpandedNode,
                 handleSearch,
                 goToCreate,
@@ -360,7 +340,7 @@
     })
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
     .display-value {
         display: inline-block;
         line-height: 32px;

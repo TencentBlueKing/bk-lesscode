@@ -47,7 +47,6 @@
     import store from '@/store'
     import router from '@/router'
     import dayjs from 'dayjs'
-    import { messageError } from '@/common/bkmagic'
     import {
         isEmpty
     } from 'shared/util'
@@ -60,7 +59,8 @@
             queryType: String,
             condition: Object,
             sql: String,
-            tableList: Array
+            tableList: Array,
+            dataSourceType: String
         },
 
         setup (props) {
@@ -96,7 +96,8 @@
                 // 查询记录
                 const queryRecord = {
                     type: props.queryType,
-                    projectId: router?.currentRoute?.params?.projectId
+                    projectId: router?.currentRoute?.params?.projectId,
+                    dataSourceType: props.dataSourceType
                 }
                 if (props.queryType === 'json-query') {
                     queryRecord.condition = props.condition
@@ -106,7 +107,10 @@
                 }
                 // 执行查询
                 return store
-                    .dispatch('dataSource/queryBySql', { sql: queryRecord.sql })
+                    .dispatch('dataSource/queryBySql', {
+                        sql: queryRecord.sql,
+                        dataSourceType: props.dataSourceType
+                    })
                     .then(({ data, spendTime }) => {
                         // 存储总数
                         queryResult.value = data
@@ -129,8 +133,6 @@
                         queryErrorMessage.value = err.message
                         queryRecord.status = 1
                         queryRecord.message = err.message
-                        // 提示消息
-                        messageError(err.message)
                     })
                     .finally(() => {
                         // 记录本次查询
