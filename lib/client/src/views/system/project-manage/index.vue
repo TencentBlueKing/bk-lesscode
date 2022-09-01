@@ -52,18 +52,24 @@
                             </auth-component>
                         </a>
                     </li> -->
-                    <li>
-                        <auth-component auth="create_app">
-                            <a href="javascript:;" slot="forbid">空白应用</a>
-                            <a href="javascript:;" slot="allow" @click="handleCreate">空白应用</a>
-                        </auth-component>
-                    </li>
-                    <li>
-                        <auth-component auth="create_app">
-                            <a href="javascript:;" slot="forbid">从模板新建</a>
-                            <a href="javascript:;" slot="allow" @click="handleTempCreate">从模板新建</a>
-                        </auth-component>
-                    </li>
+                    <template v-if="iamEnable">
+                        <li>
+                            <auth-component auth="create_app">
+                                <a href="javascript:;" slot="forbid">空白应用</a>
+                                <a href="javascript:;" slot="allow" @click="handleCreate">空白应用</a>
+                            </auth-component>
+                        </li>
+                        <li>
+                            <auth-component auth="create_app">
+                                <a href="javascript:;" slot="forbid">从模板新建</a>
+                                <a href="javascript:;" slot="allow" @click="handleTempCreate">从模板新建</a>
+                            </auth-component>
+                        </li>
+                    </template>
+                    <template v-else>
+                        <li><a href="javascript:;" @click="handleCreate">空白应用</a></li>
+                        <li><a href="javascript:;" @click="handleTempCreate">从模板新建</a></li>
+                    </template>
                 </ul>
             </bk-dropdown-menu>
             <ul class="filter-links">
@@ -357,7 +363,8 @@
                 ],
                 listComponent: ListCard.name,
                 sort: 'createTime', // 应用的默认排序为id相当于创建时间
-                projectListDefaultSort: []
+                projectListDefaultSort: [],
+                iamEnable: IAM_ENABLE
             }
         },
         provide () {
