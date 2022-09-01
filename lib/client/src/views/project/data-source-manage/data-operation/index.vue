@@ -115,7 +115,7 @@
                             :href="`${v3DeveloperCenterUrl}/apps/${projectInfo.appCode}/cloudapi?apiName=bk-data&api=v3_meta_result_tables_mine_get,v3_queryengine_user_query_sync`"
                             target="href"
                         >申请权限</bk-link>
-                        【接口：v3_queryengine_query_sync & v3_meta_result_tables_mine_get】，用于项目调用数据平台接口，如已申请可忽略
+                        【接口：v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get】，用于项目调用数据平台接口，如已申请可忽略
                     </span>
                 </bk-alert>
             </template>
