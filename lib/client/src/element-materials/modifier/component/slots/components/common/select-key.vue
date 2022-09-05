@@ -14,6 +14,13 @@
             :loading="isLoading"
             @change="val => changeParams('idKey', val)"
         >
+            <span
+                class="display-value"
+                slot="trigger"
+            >
+                {{ params.idKey }}
+                <i class="bk-select-angle bk-icon icon-angle-down"></i>
+            </span>
             <bk-option
                 v-for="option in options"
                 :key="option"
@@ -34,6 +41,13 @@
             :loading="isLoading"
             @change="val => changeParams('nameKey', val)"
         >
+            <span
+                class="display-value"
+                slot="trigger"
+            >
+                {{ params.nameKey }}
+                <i class="bk-select-angle bk-icon icon-angle-down"></i>
+            </span>
             <bk-option
                 v-for="option in options"
                 :key="option"
@@ -60,7 +74,8 @@
                 default: () => ([])
             },
             isLoading: {
-                type: Boolean
+                type: Boolean,
+                default: false
             }
         },
 
@@ -75,9 +90,15 @@
         }
     })
 </script>
+
 <style lang="postcss" scoped>
     .subline {
         cursor: pointer;
         border-bottom: 1px dashed #63656E;
+    }
+    .display-value {
+        display: inline-block;
+        line-height: 32px;
+        padding: 0 36px 0 10px;
     }
 </style>

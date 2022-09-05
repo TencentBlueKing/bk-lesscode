@@ -1,0 +1,31 @@
+@import "@/css/mixins/scroller";
+
+.project-top-menu-modifier{
+    .menu-title {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #313238;
+        margin-bottom: 0;
+        .bk-icon {
+            margin-left: -5px;
+            margin-right: 3px;
+            font-size: 20px;
+            color: #63656E;
+            display: inline-block;
+            transition: transform 200ms;
+            cursor: pointer;
+            &.close {
+                transform: rotate(-90deg);
+            }
+        }
+    }
+    .menu-wrapper{
+        margin-bottom:  10px;
+    }
+    .footer {
+        padding-bottom: 20px;
+    }
+}

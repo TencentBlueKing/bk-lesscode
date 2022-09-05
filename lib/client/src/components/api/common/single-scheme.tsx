@@ -152,7 +152,7 @@ const SingleSchemeComponent = defineComponent({
                         <bk-form-item
                             rules={[this.requireRule]}
                             property="name"
-                            error-display-type="normal"
+                            error-display-type="tooltips"
                         >
                             <bk-input
                                 value={this.copyScheme.name}
@@ -174,7 +174,7 @@ const SingleSchemeComponent = defineComponent({
                         value={this.copyScheme.type}
                         clearable={false}
                         disabled={this.finalTypeDisable}
-                        onChange={this.updateType}
+                        onChange={(type) => this.updateType(type)}
                     >
                         {
                             Object.keys(API_PARAM_TYPES).map((key) => (

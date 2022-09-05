@@ -201,7 +201,7 @@
                 return this.layoutList.filter(layout => layout.layoutType === this.platform)
             },
             showAddNavListSwitcher () {
-                return this.platform !== 'MOBILE' && this.selectedLayout.type && this.selectedLayout.type !== 'empty'
+                return this.selectedLayout.type && !['empty', 'mobile-empty'].includes(this.selectedLayout.type)
             },
             pageCodePlaceholder () {
                 return ['FORM', 'FLOW'].includes(this.nocodeType)

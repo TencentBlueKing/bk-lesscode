@@ -7,7 +7,13 @@
             :loading="isLoadingList"
             @clear="handleClearTable"
         >
-            
+            <span
+                class="display-value"
+                slot="trigger"
+            >
+                {{ value }}
+                <i class="bk-select-angle bk-icon icon-angle-down"></i>
+            </span>
             <bk-option-group :name="tableGroups[0].name">
                 <span slot="group-name">
                     {{ tableGroups[0].name }}
@@ -29,6 +35,14 @@
                         @click.native="handleSelectTable(table.tableName, tableGroups[0].dataSourceType)"
                     >
                     </bk-option>
+                    <bk-exception
+                        v-if="tableGroups[0].children.length <= 0"
+                        ext-cls="exception-wrap-item exception-part"
+                        type="empty"
+                        scene="part"
+                    >
+                        请点击上方刷新按钮获取 Mysql 数据表
+                    </bk-exception>
                 </section>
             </bk-option-group>
             <bk-option-group :name="tableGroups[0].name">
@@ -48,6 +62,14 @@
                         @click.native="handleSelectTable(table.tableName, tableGroups[1].dataSourceType)"
                     >
                     </bk-option>
+                    <bk-exception
+                        v-if="tableGroups[1].children.length <= 0"
+                        ext-cls="exception-wrap-item exception-part"
+                        type="empty"
+                        scene="part"
+                    >
+                        请点击上方刷新按钮获取 BkBase 结果表
+                    </bk-exception>
                 </section>
             </bk-option-group>
         </bk-select>
@@ -79,10 +101,6 @@
             value: {
                 type: String
             },
-            isLoading: {
-                type: Boolean,
-                default: false
-            },
             dataSourceType: {
                 type: String
             }
@@ -108,11 +126,6 @@
                 }
             ])
 
-            const toggleLoadingData = (val) => {
-                isLoadingData.value = val
-                emit('update:isLoading', val)
-            }
-
             // 选择表
             const handleSelectTable = (tableName, dataSourceType) => {
                 // 选完以后立即触发选中事件
@@ -125,7 +138,7 @@
 
             // 获取表数据
             const handleGetTableDatas = (tableName, bkDataSourceType) => {
-                toggleLoadingData(true)
+                isLoadingData.value = true
                 const queryData = {
                     tableName,
                     bkDataSourceType
@@ -136,7 +149,7 @@
                         emit('fetch-data', data)
                     })
                     .finally(() => {
-                        toggleLoadingData(false)
+                        isLoadingData.value = false
                     })
             }
 
@@ -175,22 +188,19 @@
             onBeforeMount(() => {
                 // 加载表列表loading
                 isLoadingList.value = true
-                // 加载数据列表loading
-                toggleLoadingData(true)
                 Promise
                     .all([
-                        getMysqlTables(),
-                        getBkBaseTables()
+                        getMysqlTables()
+                        // getBkBaseTables()
                     ])
                     .then(() => {
                         // 初始化的时候，需要同步获取最新的表数据
                         if (props.value) {
-                            handleSelectTable(props.value, props.dataSourceType)
+                            handleGetTableDatas(props.value, props.dataSourceType)
                         }
                     })
                     .finally(() => {
                         isLoadingList.value = false
-                        toggleLoadingData(false)
                     })
             })
 
@@ -211,6 +221,19 @@
 </script>
 
 <style lang="postcss" scoped>
+    .display-value {
+        display: inline-block;
+        line-height: 32px;
+        padding: 0 36px 0 10px;
+    }
+    /deep/ .exception-wrap-item {
+        .bk-exception-text {
+            font-size: 12px;
+            margin-top: -20px;
+            margin-bottom: 10px;
+            color: #979ba5;
+        }
+    }
     .icon-plus-circle {
         display: inline-block;
         vertical-align: baseline;

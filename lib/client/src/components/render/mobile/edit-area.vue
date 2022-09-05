@@ -40,11 +40,14 @@
                 width: canvasSize.width + 'px',
                 height: canvasSize.height + 'px'
             }">
-            <render />
+            <layout>
+                <render />
+            </layout>
         </div>
     </div>
 </template>
 <script>
+    import layout from './widget/layout'
     import render from '../pc/index'
     import getModelInfo from './common/model'
     import { watch, ref } from '@vue/composition-api'
@@ -53,7 +56,8 @@
     export default {
         components: {
             render,
-            previewSwitch
+            previewSwitch,
+            layout
         },
         setup (props) {
             const { canvasSize, model, modelList } = getModelInfo()

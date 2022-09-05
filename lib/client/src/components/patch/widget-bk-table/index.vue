@@ -12,7 +12,7 @@
         >
             <slot></slot>
             <bk-table-column
-                v-if="tableName && bkDataSourceType === 'preview'"
+                v-if="showOperationColumn"
                 label="操作"
                 width="120"
             >
@@ -257,7 +257,8 @@
             tableName: String,
             paginationType: String,
             dataValueType: String,
-            bkDataSourceType: String
+            bkDataSourceType: String,
+            showOperationColumn: Boolean
         },
 
         data () {

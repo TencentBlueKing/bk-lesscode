@@ -14,6 +14,7 @@
         </section>
         <monaco
             v-show="activeTab === 'response'"
+            language="json"
             :value="responseString"
             @change="handleResponseChange"
         />
@@ -24,7 +25,6 @@
     import {
         defineComponent,
         ref,
-        onMounted,
         getCurrentInstance,
         watch
     } from '@vue/composition-api'
@@ -59,8 +59,17 @@
             ]
             const currentInstance = getCurrentInstance()
             const activeTab = ref('response')
-            const renderResponseParam = ref({})
-            const responseString = ref('')
+            const renderResponseParam = props.params?.name !== undefined
+                ? ref(props.params)
+                : ref(getDefaultApiEditScheme({
+                    name: 'root',
+                    type: API_PARAM_TYPES.OBJECT.VAL,
+                    value: API_PARAM_TYPES.OBJECT.DEFAULT,
+                    plusBrotherDisable: true
+                }))
+            const responseString = ref(
+                JSON.stringify(parseScheme2Value(renderResponseParam.value), null, 4)
+            )
 
             const handleUpdate = (param) => {
                 renderResponseParam.value = param
@@ -95,22 +104,6 @@
                 }
             )
 
-            onMounted(() => {
-                // 设置 params
-                renderResponseParam.value = props.params
-                // 默认显示 root
-                if (renderResponseParam.value.name === undefined) {
-                    renderResponseParam.value = getDefaultApiEditScheme({
-                        name: 'root',
-                        type: API_PARAM_TYPES.OBJECT.VAL,
-                        value: API_PARAM_TYPES.OBJECT.DEFAULT,
-                        plusBrotherDisable: true
-                    })
-                }
-                // 设置 monaco 内容
-                responseString.value = JSON.stringify(parseScheme2Value(renderResponseParam.value), null, 4)
-            })
-
             return {
                 tabs,
                 activeTab,
@@ -122,9 +115,4 @@
             }
         }
     })
-
 </script>
-
-<style lang="postcss" scoped>
-    
-</style>

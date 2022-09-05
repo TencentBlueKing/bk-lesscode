@@ -167,7 +167,7 @@
                 return this.dialog.formData.pageType === 'MOBILE'
             },
             showAddNavListSwitcher () {
-                return !this.isMobile && this.selectedLayout.type && this.selectedLayout.type !== 'empty'
+                return this.selectedLayout.type && !['empty', 'mobile-empty'].includes(this.selectedLayout.type)
             }
         },
         watch: {
