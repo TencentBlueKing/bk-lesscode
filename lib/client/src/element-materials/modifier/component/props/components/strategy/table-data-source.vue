@@ -2,12 +2,22 @@
     <section>
         <span class="g-prop-sub-title g-mb8">数据表</span>
         <choose-data-table
-            :value="chooseTableName"
-            :data-source-type="dataSourceType"
+            :value="renderChooseTableName"
+            :data-source-type="renderDataSourceType"
             @choose-table="chooseTable"
             @fetch-data="handleFetchData"
             @clear="clearTable"
         ></choose-data-table>
+        <template v-if="renderDataSourceType === 'preview'">
+            <span class="g-prop-sub-title g-mb8 g-mt12">是否展示操作列</span>
+            <bk-switcher
+                class="display-block"
+                size="small"
+                theme="primary"
+                :value="renderShowOperationColumn"
+                @change="handleToggleShowOperationColumn"
+            ></bk-switcher>
+        </template>
     </section>
 </template>
 
@@ -60,20 +70,27 @@
             // copy type 防止响应式更新
             const type = props.type
             const propStatus = toRefs<Iprop>(props)
-            const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
-            const dataSourceType = ref(propStatus.payload?.value?.sourceData?.dataSourceType)
+            const renderChooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
+            const renderDataSourceType = ref(propStatus.payload?.value?.sourceData?.dataSourceType)
+            const renderShowOperationColumn = ref(propStatus.payload?.value?.sourceData?.showOperationColumn)
 
-            const chooseTable = ({ tableName, table, dataSourceType: bkDataSourceType }) => {
-                chooseTableName.value = tableName
-                dataSourceType.value = bkDataSourceType
+            const chooseTable = ({ tableName, table, dataSourceType }) => {
+                renderChooseTableName.value = tableName
+                // 类型改变的时候，需要重置部分状态
+                if (renderDataSourceType.value !== dataSourceType) {
+                    renderDataSourceType.value = dataSourceType
+                    renderShowOperationColumn.value = dataSourceType === 'preview'
+                }
+                // 触发更新
                 propStatus.change.value(
                     props.name,
-                    [],
+                    props.defaultValue,
                     type,
                     {
                         sourceData: {
                             tableName,
-                            dataSourceType: bkDataSourceType,
+                            dataSourceType,
+                            showOperationColumn: renderShowOperationColumn.value,
                             // 表示数据表的表头信息
                             columns: table?.columns?.map(column => column.name) || []
                         }
@@ -91,27 +108,52 @@
             }
 
             const clearTable = () => {
-                chooseTableName.value = ''
-                dataSourceType.value = ''
+                renderChooseTableName.value = ''
+                renderDataSourceType.value = ''
+                renderShowOperationColumn.value = false
                 propStatus.change.value(
                     props.name,
                     props.describe.val,
                     type,
                     {
                         sourceData: {
-                            tableName: ''
+                            tableName: '',
+                            showOperationColumn: false
+                        }
+                    }
+                )
+            }
+
+            const handleToggleShowOperationColumn = (showOperationColumn) => {
+                renderShowOperationColumn.value = showOperationColumn
+                propStatus.change.value(
+                    props.name,
+                    props.defaultValue,
+                    type,
+                    {
+                        sourceData: {
+                            ...propStatus.payload?.value?.sourceData,
+                            showOperationColumn
                         }
                     }
                 )
             }
 
             return {
-                chooseTableName,
-                dataSourceType,
+                renderChooseTableName,
+                renderDataSourceType,
+                renderShowOperationColumn,
                 chooseTable,
                 handleFetchData,
-                clearTable
+                clearTable,
+                handleToggleShowOperationColumn
             }
         }
     })
 </script>
+
+<style lang="postcss" scoped>
+    .display-block {
+        display: block;
+    }
+</style>
