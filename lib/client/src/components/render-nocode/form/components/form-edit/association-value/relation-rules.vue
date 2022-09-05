@@ -1,18 +1,23 @@
 <template>
     <div class="relation-rules-wrapper">
         <vue-draggable handle=".drag-icon" :list="localVal" @change="change">
-            <div class="rule-group" v-for="(rule, groupIndex) in localVal" :key="rule.id">
-                <div class="rule-group-operate">
-                    <i v-if="isCurrentTable" class="bk-drag-icon bk-drag-drag-small1 drag-icon"></i>
-                    <i
-                        v-if="localVal.length > 1"
-                        class="bk-drag-icon bk-drag-close-small del-group-icon"
-                        @click="handleDelGroup(groupIndex)">
-                    </i>
-                </div>
+            <div class="rule-group" v-for="(rule, groupIndex) in localVal" :key="groupIndex">
+                <template v-if="isCurrentTable">
+                    <div class="rule-group-operate">
+                        <i class="bk-drag-icon bk-drag-drag-small1 drag-icon"></i>
+                        <i
+                            v-if="localVal.length > 1"
+                            class="bk-drag-icon bk-drag-close-small del-group-icon"
+                            @click="handleDelGroup(groupIndex)">
+                        </i>
+                    </div>
+                </template>
                 <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ `规则${groupIndex + 1}` }}</p>
                 <div class="relations-content">
-                    <div class="relation-item" v-for="(relation, index) in rule.group.relations" :key="index">
+                    <div
+                        class="relation-item"
+                        v-for="(relation, index) in rule.relations"
+                        :key="`${relation.field}_${relation.type}_${index}`">
                         当
                         <bk-select
                             v-model="relation.field"
@@ -61,26 +66,26 @@
                         </div>
                         <div class="operate-btns">
                             <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddRelation(groupIndex, index)"></i>
-                            <i :class="['bk-drag-icon bk-drag-reduce-fill', { disabled: rule.group.relations.length <= 1 }]" @click="handleDelRelation(groupIndex, index)"></i>
+                            <i :class="['bk-drag-icon bk-drag-reduce-fill', { disabled: rule.relations.length <= 1 }]" @click="handleDelRelation(groupIndex, index)"></i>
                         </div>
                     </div>
                 </div>
-                <div class="target-value">
+                <div class="target-value" :key="`${rule.target.type}_${rule.target_value}_${groupIndex}`">
                     <span style="white-space: nowrap;">值为</span>
                     <bk-select
                         v-if="isCurrentTable"
-                        :value="rule.group.target.type"
+                        :value="rule.target.type"
                         style="margin-left: 8px; width: 80px;"
                         size="small"
                         :clearable="false"
-                        @change="handleTargetVarValTypeChange(rule.group.target, $event)">
+                        @change="handleTargetVarValTypeChange(rule.target, $event)">
                         <bk-option id="CONST" name="常量"></bk-option>
                         <bk-option id="VAR" name="变量"></bk-option>
                     </bk-select>
                     <div style="margin-left: 8px; width: 160px;">
                         <bk-select
-                            v-if="rule.group.target.type === 'VAR'"
-                            v-model="rule.group.target.value"
+                            v-if="rule.target.type === 'VAR'"
+                            v-model="rule.target.value"
                             size="small"
                             :placeholder="isCurrentTable ? '请选择本表字段' : '请选择他表字段'"
                             :loading="!isCurrentTable && formListLoading"
@@ -94,9 +99,9 @@
                         </bk-select>
                         <default-value
                             v-else
-                            :field="getFulfillRuleField(rule.group.target.value)"
+                            :field="getFulfillRuleField(rule.target.value)"
                             :disabled="disabled"
-                            @change="handleTargetVarValChange(rule.group.target, $event)">
+                            @change="handleTargetVarValChange(rule.target, $event)">
                         </default-value>
                     </div>
                 </div>
@@ -178,14 +183,14 @@
                 return fields.filter(item => COMPARABLE_VALUE_TYPES.includes(item.type))
             }
         },
+        watch: {
+            rules (val) {
+                this.localVal = this.getLocalVal(val)
+            }
+        },
         methods: {
             getLocalVal (list) {
-                return list.map((item, index) => {
-                    return {
-                        id: `${index}_${Date.now()}`,
-                        group: cloneDeep(item)
-                    }
-                })
+                return list.map(item => cloneDeep(item))
             },
             // 规则字段可选列表
             getRelFieldList () {
@@ -212,17 +217,14 @@
             },
             handleAddGroup () {
                 this.localVal.push({
-                    id: Date.now(),
-                    group: {
-                        relations: [{ // 关联的字段信息
-                            field: '',
-                            type: '', // CONST常量、VAR变量
-                            value: ''
-                        }],
-                        target: { // 满足关联条件的联动值
-                            type: this.isCurrentTable ? '' : 'VAR',
-                            value: ''
-                        }
+                    relations: [{ // 关联的字段信息
+                        field: '',
+                        type: '', // CONST常量、VAR变量
+                        value: ''
+                    }],
+                    target: { // 满足关联条件的联动值
+                        type: this.isCurrentTable ? '' : 'VAR',
+                        value: ''
                     }
                 })
                 this.change()
@@ -232,7 +234,7 @@
                 this.change()
             },
             handleAddRelation (groupIndex, index) {
-                this.localVal[groupIndex].group.relations.splice(index + 1, 0, {
+                this.localVal[groupIndex].relations.splice(index + 1, 0, {
                     field: '',
                     type: '',
                     value: ''
@@ -240,10 +242,10 @@
                 this.change()
             },
             handleDelRelation (groupIndex, index) {
-                if (this.localVal[groupIndex].group.relations.length <= 1) {
+                if (this.localVal[groupIndex].relations.length <= 1) {
                     return
                 }
-                this.localVal[groupIndex].group.relations.splice(index, 1)
+                this.localVal[groupIndex].relations.splice(index, 1)
                 this.change()
             },
             // 关联的规则的本表字段切换
@@ -272,7 +274,7 @@
                 this.change()
             },
             change () {
-                this.$emit('change', this.localVal.map(item => item.group))
+                this.$emit('change', this.localVal)
             }
         }
     }

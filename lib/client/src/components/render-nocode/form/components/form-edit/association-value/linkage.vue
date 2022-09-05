@@ -91,6 +91,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('nocode/formSetting', ['fieldsList']),
             // 日期、时间类型字段
             isDateTypeField () {
                 return ['DATE', 'DATETIME'].includes(this.field.type)
@@ -158,7 +159,6 @@
                 this.close()
             },
             validate () {
-                let valid = true
                 if (this.configData.type === 'currentTable') {
                     return !this.configData.rules.some((group, index) => {
                         const hasRelationFormEmpty = group.relations.some(item => {
@@ -195,6 +195,13 @@
                             })
                             return true
                         }
+                        if (this.checkLoopReference(this.configData.rules, this.field.key)) {
+                            this.$bkMessage({
+                                theme: 'error',
+                                message: '当前字段联动规则存在循环配置的情况，请修改后保存'
+                            })
+                            return true
+                        }
                     })
                 } else if (this.configData.type === 'otherTable') {
                     if (!this.configData.tableName) {
@@ -214,7 +221,6 @@
                             msg = '关联规则的表单字段变量值不能为空'
                         }
                         if (msg) {
-                            valid = false
                             this.$bkMessage({
                                 theme: 'error',
                                 message: msg
@@ -233,7 +239,25 @@
                         return false
                     }
                 }
-                return valid
+                return true
+            },
+            // 本表字段关联时，检查是否存在字段间循环关联的情况
+            checkLoopReference (rules, key) {
+                let looped = false
+                rules.some(rule => {
+                    return rule.relations.some(relation => {
+                        const relField = this.fieldsList.find(item => item.key === relation.field)
+                        if (relField && relation.field === key) {
+                            looped = true
+                            return true
+                        }
+                        const { type: relType, rules: relRules } = relField.meta.default_val_config || {}
+                        if (relType === 'currentTable' && Array.isArray(relRules)) {
+                            looped = this.checkLoopReference(relField.meta.default_val_config.rules, key)
+                        }
+                    })
+                })
+                return looped
             },
             close () {
                 this.$emit('update:show', false)
