@@ -11,8 +11,22 @@
 
 <template functional>
     <div class="style-item">
-        <div class="item-label">
-            {{ props.name }}
+        <div
+            class="item-label"
+            v-bk-tooltips="{
+                content: props.tips,
+                disabled: !props.tips,
+                placements: ['left-start'],
+                boundary: 'window'
+            }"
+        >
+            <span
+                :class="{
+                    'g-config-subline': props.tips
+                }"
+            >
+                {{ props.name }}
+            </span>
         </div>
         <div class="item-content">
             <slot />

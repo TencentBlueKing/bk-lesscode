@@ -65,7 +65,10 @@
             formatInclude: ['variable', 'expression'], // v-if 支持配置（变量、表达式）
             code: '',
             valueTypeInclude: ['boolean'],
-            renderValue: true
+            renderValue: true,
+            tips () {
+                return '基于数据的真假性，来控制是否【渲染】该组件（通过控制是否绘制 DOM 元素来工作）'
+            }
         },
         {
             type: 'v-show',
@@ -74,7 +77,10 @@
             formatInclude: ['variable', 'expression'], // v-show 支持配置（变量、表达式）
             code: '',
             valueTypeInclude: ['boolean'],
-            renderValue: true
+            renderValue: true,
+            tips () {
+                return '基于数据的真假性，来控制是否【显示】该组件（通过设置内联样式的 display CSS 属性来工作）'
+            }
         }
     ]
 
