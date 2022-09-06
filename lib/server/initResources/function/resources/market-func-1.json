@@ -1,0 +1,166 @@
+[
+  {
+    "funcName": "getMockData",
+    "funcParams": [
+      "page",
+      "pageSzie"
+    ],
+    "funcBody": "// 接口地址可以换成其它地址\r\nreturn this.$http.get('/api/data/getMockData').then((res) => {\r\n    // 处理业务\r\n    const data = JSON.stringify(res)\r\n    alert(data)\r\n    return res.data\r\n}).catch(err => {\r\n    // 处理异常\r\n    console.error(err)\r\n})\r\n",
+    "funcSummary": "通过前端获取远程接口数据示例。可以替换代码中的接口地址来调用其它接口，在回调中进行业务处理",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "getTableData",
+    "funcParams": [
+      "page",
+      "pagesize"
+    ],
+    "funcBody": "/**\r\n* 可以在表格组件的“data”属性中绑定该函数以获取表格初始数据\r\n* 可以在表格组件的事件“page-change”、“page-limit-change” 绑定该函数以达到后台分页的效果\r\n*/\r\nconst newPage = page || 1\r\n/**\r\n* “tablePagination” 是表格组件 “pagination”属性对应的变量名，请修改为您实际设置的变量名\r\n* “pagination”属性变量默认值：{\"current\": 1, \"count\": 3, \"limit\": 10, \"limitList\": [10, 20, 50, 100], \"showLimit\": true}\r\n*/\r\nconst tablePagination = lesscode['${prop:tablePagination}'] || {}\r\nconst pageSize = pagesize || tablePagination.limit\r\n// 请将请求URL更换为您的实际表格数据获取API\r\nreturn this.$http.get('/api/data/getMockData?page=' + newPage + '&pageSize=' + pageSize).then((res) => {\r\n    tablePagination.count = res.count\r\n    tablePagination.current = newPage\r\n    tablePagination.limit = pageSize\r\n    // \"table4ea32data\" 是表格组件 “data” 属性变量名，请修改为您实际设置的变量名\r\n    this.table4ea32data = res.data\r\n    return res.data\r\n})\r\n",
+    "funcSummary": "使用远程API获取表格数据，并进行后台分页",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "getApiData",
+    "funcParams": [],
+    "funcBody": "// 在这里直接编辑接口返回以后的回调函数，参数可以通过远程参数进行配置\r\nconst data = res.data || []\r\nreturn data\r\n",
+    "funcSummary": "由于部分接口限制（比如跨域），纯前端无法调用该接口。需要通过后端转发接口来获取数据，就可以使用本方法。配置方法：Api Url 上配置接口地址，函数插槽编写业务处理，远程参数配置上编写业务处理回调参数",
+    "funcType": 1,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "{ \"page\": 1, \"pageSize\": 20 }",
+    "funcApiUrl": "/api/data/getMockData",
+    "remoteParams": [
+      "res"
+    ]
+  },
+  {
+    "funcName": "formContainerData",
+    "funcParams": [],
+    "funcBody": "/**\r\n* 1. 空白函数，函数内容完全由用户编写\r\n* 2. 这里编辑管理的函数，用于画布页面的属性配置和事件绑定\r\n* 3. 用于属性时：函数需要返回值，该返回值将会赋值给属性\r\n* 4. 用于事件时：函数将在事件触发时执行\r\n* 5. 可以使用 lesscode.变量标识，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 6. 可以使用 lesscode.方法名，必须通过编辑器自动补全功能选择对应函数，来调用应用中的函数\r\n* 7. 用于属性时示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('接口地址'),\r\n*     this.$http.post('接口地址', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\nconst formContainerData = {\r\n    'string': '请输入', // input输入框组件\r\n    'boolean': false, // switcher组件\r\n    'array': [ // checkbox 多选框\r\n        1,\r\n        2,\r\n        3\r\n    ]\r\n}\r\nreturn formContainerData\r\n",
+    "funcSummary": "表单容器组件的表单生成器",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "checkPermission",
+    "funcParams": [],
+    "funcBody": "const cookie = document.cookie || ''\r\nconst cookieArray = cookie.split(';').filter(v => v)\r\nconst cookieMap = cookieArray.reduce((acc, cur) => {\r\n    const cookieStr = cur.trim()\r\n    const [key, value] = cookieStr.split('=')\r\n    acc[key] = value\r\n    return acc\r\n}, {})\r\nconst userName = cookieMap['bk_uid']\r\n// 用户白名单，须填写白名单人员名称\r\nconst whiteList = []\r\n// 如果当前登录用户不在白名单里，就跳转到另一个页面（无权限页面需要自己开发）\r\nif (!whiteList.includes(userName)) {\r\n    this.$router.push({\r\n        name: 'pageId' // pageId 需要替换成真实的页面ID\r\n    })\r\n    // location.href = 'url' 或者直接使用 url 进行跳转\r\n}\r\n",
+    "funcSummary": "当前用户在固定的用户列表内就正常访问，没在的话跳转到无权限页面。可在页面生命周期函数中配置该函数进行权限控制。",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "showDialog",
+    "funcParams": [],
+    "funcBody": "/**\r\n* 1. 空白函数，函数内容完全由用户编写\r\n* 2. 这里编辑管理的函数，用于画布页面的属性配置和事件绑定\r\n* 3. 用于属性时：函数需要返回值，该返回值将会赋值给属性\r\n* 4. 用于事件时：函数将在事件触发时执行\r\n* 5. 可以使用 lesscode.变量标识，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 6. 可以使用 lesscode.方法名，必须通过编辑器自动补全功能选择对应函数，来调用应用中的函数\r\n* 7. 用于属性时示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('接口地址'),\r\n*     this.$http.post('接口地址', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\n// “isShow” 为对话框（dialog）组件指令“v-model”绑定的变量，根据实际变量名进行修改\r\nlesscode['${prop:isShow}'] = true\r\n",
+    "funcSummary": "显示Dialog弹窗",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "showSideslider",
+    "funcParams": [],
+    "funcBody": "/**\r\n* 1. 空白函数，函数内容完全由用户编写\r\n* 2. 这里编辑管理的函数，用于画布页面的属性配置和事件绑定\r\n* 3. 用于属性时：函数需要返回值，该返回值将会赋值给属性\r\n* 4. 用于事件时：函数将在事件触发时执行\r\n* 5. 可以使用 lesscode.变量标识，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 6. 可以使用 lesscode.方法名，必须通过编辑器自动补全功能选择对应函数，来调用应用中的函数\r\n* 7. 用于属性时示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('接口地址'),\r\n*     this.$http.post('接口地址', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\n// \"isShowSideslider\" 是侧栏（sideslider）组件的 \"is-show\" 属性绑定的变量，跟进实际变量名进行修改\r\nlesscode['${prop:isShowSideslider}'] = true\r\n",
+    "funcSummary": "显示侧滑弹层",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "setTableTitle",
+    "funcParams": [],
+    "funcBody": "/**\r\n* 1. 空白函数：函数内容完全由用户编写，用于页面组件属性配置和事件绑定\r\n* 2. 函数用于页面组件属性时：函数必须有返回值，该返回值将会赋值给组件属性\r\n* 3. 函数用于组件或页面事件时：函数将在事件触发时执行\r\n* 4. 可以使用 “lesscode.变量标识” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 5. 可以使用 “lesscode.函数名称” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应函数，来调用应用中的其它函数\r\n* 6. 函数用于组件属性时，函数体代码示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('接口地址'),\r\n*     this.$http.post('接口地址', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\nconst titleList = [\r\n    {\r\n        'label': '第一列',\r\n        'prop': 'projectId',\r\n        'sortable': false,\r\n        'type': '',\r\n        'width': 200 // 单位px\r\n    },\r\n    {\r\n        'label': '第二列',\r\n        'prop': 'projectName',\r\n        'sortable': true,\r\n        'type': '',\r\n        'width': 300 // 单位px\r\n    },\r\n    {\r\n        'label': '第三列',\r\n        'prop': 'name',\r\n        'sortable': 'custom', // 如果设置为 'custom'，则代表希望远程排序，需要监听 Table 的 sort-change 事件\r\n        'type': ''\r\n    }\r\n]\r\nreturn titleList\r\n",
+    "funcSummary": "通过远程函数动态设置表格的表头内容",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "commitFormData",
+    "funcParams": [],
+    "funcBody": "/**\r\n* 1. 空白函数：函数内容完全由用户编写，用于页面组件属性配置和事件绑定\r\n* 2. 函数用于页面组件属性时：函数必须有返回值，该返回值将会赋值给组件属性\r\n* 3. 函数用于组件或页面事件时：函数将在事件触发时执行\r\n* 4. 可以使用 “lesscode.变量标识” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 5. 可以使用 “lesscode.函数名称” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应函数，来调用应用中的其它函数\r\n* 6. 函数用于组件属性时，函数体代码示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('接口地址'),\r\n*     this.$http.post('接口地址', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\n// 这里的 “dynamicForm” 需要替换成表单容器组件 “ref 属性”的值\r\nreturn this.$refs['dynamicForm'].validate().then(validator => {\r\n    // 进行业务处理\r\n    alert('验证成功！')\r\n    // 表单数据组装\r\n    // 注意：示例this.form54326model.username中 “form54326model” 需更换为表单容器组件model属性的变量名\r\n    const data = { 'inputValue': this.form54326model.username }\r\n    // 示例链接/api/data/postMockData需要更换为具体的接口API地址\r\n    return this.$http.post('/api/data/postMockData', data).then(res => {\r\n        // 可以在这里添加业务操作\r\n        return res\r\n    }).catch((err) => {\r\n        console.log(err)\r\n    })\r\n}, validator => {\r\n    // 显示第一个出错位置\r\n    alert(validator.content)\r\n})\r\n",
+    "funcSummary": "表单校验及提交数据至远程API",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "clearFormData",
+    "funcParams": [],
+    "funcBody": "// 注意，这里的 “form78ed8eb7model” 需要替换成表单容器组件的model属性变量名\r\n// 可以使用 lesscode. 来唤起快捷输入，然后选择表单容器的变量\r\nconst formData = this.form78ed8eb7model || {}\r\nconst defaultMap = {\r\n    '[object String]': '',\r\n    '[object Date]': '',\r\n    '[object Number]': 0,\r\n    '[object Boolean]': false,\r\n    '[object Object]': {},\r\n    '[object Array]': [],\r\n    '[object Function]': () => { }\r\n}\r\nconst formKeys = Object.keys(formData)\r\nformKeys.forEach((formKey) => {\r\n    const value = formData[formKey]\r\n    const valueType = Object.prototype.toString.apply(value)\r\n    if (defaultMap.hasOwnProperty(valueType)) {\r\n        formData[formKey] = defaultMap[valueType]\r\n    }\r\n})\r\n",
+    "funcSummary": "用于清空表单容器组件中每一个输入组件的值",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "logout",
+    "funcParams": [],
+    "funcBody": "const environment = window.BKPAAS_ENVIRONMENT\r\nconst self = environment === 'preview' ? window.parent : window\r\nconst cUrl = encodeURIComponent(self.location.href)\r\nconst loginUrl = `{LOGIN_URL}/?app_code=&c_url=${cUrl}`\r\nself.location.href = loginUrl\r\n",
+    "funcSummary": "退出登陆，并跳转到登陆页面",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "getUserName",
+    "funcParams": [],
+    "funcBody": "const cookie = document.cookie || ''\r\nconst cookieArray = cookie.split(';').filter(v => v)\r\nconst cookieMap = cookieArray.reduce((acc, cur) => {\r\n    const cookieStr = cur.trim()\r\n    const [key, value] = cookieStr.split('=')\r\n    acc[key] = value\r\n    return acc\r\n}, {})\r\nreturn cookieMap['bk_uid']\r\n",
+    "funcSummary": "获取当前登录的用户名",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  },
+  {
+    "funcName": "getRemoteData",
+    "funcParams": [],
+    "funcBody": "return this.$store.dispatch('getApiData', {\r\n    url: '/api/data/getMockData',\r\n    type: 'get',\r\n    apiData: '',\r\n    withToken: 0\r\n}).then(res => {\r\n    // 处理业务\r\n    const data = res.data || []\r\n    return data\r\n}).catch(err => {\r\n    // 处理异常\r\n    console.error(err)\r\n})\r\n",
+    "funcSummary": "想更灵活使用后台转发接口的能力，可以使用本函数。调用转发函数的参数如函数内容所示，可以结合变量来动态改变参数。在 then 回调用处理业务逻辑。",
+    "funcType": 0,
+    "funcMethod": "get",
+    "withToken": 0,
+    "funcApiData": "",
+    "funcApiUrl": "",
+    "remoteParams": []
+  }
+]
