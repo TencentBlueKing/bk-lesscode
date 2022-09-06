@@ -194,7 +194,7 @@
                 }
                 .preview {
                     .mask {
-                        background: rgba(0, 0, 0, 0.4);
+                        background: rgba(0, 0, 0, 0.1);
                         .operate-btns {
                             display: block;
                             opacity: 1;
