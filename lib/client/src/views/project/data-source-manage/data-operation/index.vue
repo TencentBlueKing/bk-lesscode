@@ -64,7 +64,10 @@
         </header>
 
         <main class="data-operation-home"
-            v-bkloading="{ isLoading }"
+            v-bkloading="{
+                isLoading,
+                title: dataSourceType === 'preview' ? '正在加载 Mysql 数据表' : '正在加载 BkBase 结果表'
+            }"
         >
             <template v-if="dataSourceType === 'bk-base'">
                 <bk-alert
