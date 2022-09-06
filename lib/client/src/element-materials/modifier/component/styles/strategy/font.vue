@@ -59,10 +59,10 @@
                 :clearable="false"
                 @change="handleFontChange('fontStyle', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" />
-                <bk-option id="italic" name="italic" />
-                <bk-option id="oblique" name="oblique" />
-                <bk-option id="inherit" name="inherit" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig('普通')" />
+                <bk-option id="italic" name="italic" v-bk-tooltips="getTooltipsConfig('斜体')" />
+                <bk-option id="oblique" name="oblique" v-bk-tooltips="getTooltipsConfig('倾斜体')" />
+                <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig('继承父元素')" />
             </bk-select>
         </style-item>
         <style-item name="行高" v-if="handleHasKey('lineHeight')">
@@ -77,14 +77,14 @@
                 @change="handleFontWithUnitChange('letterSpacing', $event)"
                 style="width: 100%" />
         </style-item>
-        <style-item name="word-spacing" v-if="handleHasKey('wordSpacing')">
+        <style-item name="单词间距" v-if="handleHasKey('wordSpacing')">
             <font-size-input
                 :value="renderValueMap.wordSpacing"
                 placeholder="请输入"
                 @change="handleFontWithUnitChange('wordSpacing', $event)"
                 style="width: 100%" />
         </style-item>
-        <style-item name="text-align" v-if="handleHasKey('textAlign')">
+        <style-item name="text-align" tips="文本的水平对齐方式" v-if="handleHasKey('textAlign')">
             <bk-select
                 :value="renderValueMap.textAlign"
                 font-size="medium"
@@ -96,17 +96,17 @@
                 <bk-option id="right" name="right" />
             </bk-select>
         </style-item>
-        <style-item name="text-decoration" v-if="handleHasKey('textDecoration')">
+        <style-item name="text-decoration" tips="文本的修饰线" v-if="handleHasKey('textDecoration')">
             <bk-select
                 :value="renderValueMap.textDecoration"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('textDecoration', $event)"
                 style="width: 100%;">
-                <bk-option id="none" name="none" />
-                <bk-option id="underline" name="underline" />
-                <bk-option id="overline" name="overline" />
-                <bk-option id="line-through" name="line-through" />
+                <bk-option id="none" name="none" v-bk-tooltips="getTooltipsConfig('无修饰线')" />
+                <bk-option id="underline" name="underline" v-bk-tooltips="getTooltipsConfig('下划线')" />
+                <bk-option id="overline" name="overline" v-bk-tooltips="getTooltipsConfig('上划线')" />
+                <bk-option id="line-through" name="line-through" v-bk-tooltips="getTooltipsConfig('中划线')" />
             </bk-select>
         </style-item>
         <style-item name="缩进" v-if="handleHasKey('textIndent')">
@@ -114,53 +114,53 @@
                 <append-select :value="unitMap.textIndent" @change="handleSelectChange('textIndent', $event)" />
             </size-input>
         </style-item>
-        <style-item name="text-overflow" v-if="handleHasKey('textOverflow')">
+        <style-item name="text-overflow" tips="如何展示溢出文本" v-if="handleHasKey('textOverflow')">
             <bk-select
                 :value="renderValueMap.textOverflow"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('textOverflow', $event)"
                 style="width: 100%;">
-                <bk-option id="clip" name="clip" />
-                <bk-option id="ellipsis" name="ellipsis" />
+                <bk-option id="clip" name="clip" v-bk-tooltips="getTooltipsConfig('截断溢出文本')" />
+                <bk-option id="ellipsis" name="ellipsis" v-bk-tooltips="getTooltipsConfig('使用一个省略号来表示溢出文本')" />
             </bk-select>
         </style-item>
-        <style-item name="word-break" v-if="handleHasKey('wordBreak')">
+        <style-item name="word-break" tips="控制单词如何被拆分换行" v-if="handleHasKey('wordBreak')">
             <bk-select
                 :value="renderValueMap.wordBreak"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('wordBreak', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" />
-                <bk-option id="break-all" name="break-all" />
-                <bk-option id="keep-all" name="keep-all" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig('默认的换行规则')" />
+                <bk-option id="break-all" name="break-all" v-bk-tooltips="getTooltipsConfig('对于 non-CJK (CJK 指中文/日文/韩文) 文本，可在任意字符间断行')" />
+                <bk-option id="keep-all" name="keep-all" v-bk-tooltips="getTooltipsConfig('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal')" />
             </bk-select>
         </style-item>
-        <style-item name="word-wrap" v-if="handleHasKey('wordWrap')">
+        <style-item name="word-wrap" tips="控制长度超过一行的单词是否被拆分换行" v-if="handleHasKey('wordWrap')">
             <bk-select
                 :value="renderValueMap.wordWrap"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('wordWrap', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" />
-                <bk-option id="break-word" name="break-word" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig('不换行')" />
+                <bk-option id="break-word" name="break-word" v-bk-tooltips="getTooltipsConfig('长单词内部换行')" />
             </bk-select>
         </style-item>
-        <style-item name="white-space" v-if="handleHasKey('whiteSpace')">
+        <style-item name="white-space" tips="控制空白字符的显示" v-if="handleHasKey('whiteSpace')">
             <bk-select
                 :value="renderValueMap.whiteSpace"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('whiteSpace', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" />
-                <bk-option id="pre" name="pre" />
-                <bk-option id="nowrap" name="nowrap" />
-                <bk-option id="pre-wrap" name="pre-wrap" />
-                <bk-option id="pre-line" name="pre-line" />
-                <bk-option id="inherit" name="inherit" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig('连续的空白符会被合并，换行符会被当作空白符来处理')" />
+                <bk-option id="pre" name="pre" v-bk-tooltips="getTooltipsConfig('连续的空白符会被保留。在遇到换行符或者 br 元素时才会换行')" />
+                <bk-option id="nowrap" name="nowrap" v-bk-tooltips="getTooltipsConfig('和 normal 一样，连续的空白符会被合并。文本内的换行无效')" />
+                <bk-option id="pre-wrap" name="pre-wrap" v-bk-tooltips="getTooltipsConfig('连续的空白符会被保留。在遇到换行符或者 br 元素时会换行，且可以自动换行')" />
+                <bk-option id="pre-line" name="pre-line" v-bk-tooltips="getTooltipsConfig('连续的空白符会被合并。在遇到换行符或者 br 元素时会换行，且可以自动换行')" />
+                <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig('继承父元素该属性')" />
             </bk-select>
         </style-item>
         <style-item name="垂直对齐" v-if="handleHasKey('verticalAlign')">
@@ -190,7 +190,7 @@
     import AppendSelect from '@/components/modifier/append-select'
     import SizeInput from '@/components/modifier/size-input'
     import { splitValueAndUnit } from '@/common/util'
-    import { getCssProperties } from '../common/util'
+    import { getCssProperties, getTooltipsConfig } from '../common/util'
     import defaultUnitMixin from '@/common/defaultUnit.mixin'
 
     export default {
@@ -284,7 +284,8 @@
             },
             handleHasKey (key) {
                 return this.renderValueMap.hasOwnProperty(key)
-            }
+            },
+            getTooltipsConfig
         }
     }
 </script>

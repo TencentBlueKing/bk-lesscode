@@ -330,6 +330,7 @@
         line-height: 16px;
     }
     /deep/ .delete-dialog-wrapper {
+        text-align: center;
         .bk-dialog-footer {
             text-align: center;
             padding: 0 65px 40px;
