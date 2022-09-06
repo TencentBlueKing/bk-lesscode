@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <float-workbench-block></float-workbench-block>
+        <float-workbench-block v-if="type === 'FLOW'"></float-workbench-block>
     </div>
 </template>
 <script>
