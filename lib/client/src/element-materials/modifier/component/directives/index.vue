@@ -153,9 +153,21 @@
                         type: 'v-html',
                         prop,
                         format: 'value',
-                        formatInclude: ['value', 'variable', 'expression'], // v-bind 支持配置（变量）
+                        formatInclude: ['value', 'variable', 'expression'],
                         code: '',
                         tips: tips
+                    })
+                }
+                if (type === 'v-bkloading') {
+                    result.push({
+                        type,
+                        format: 'variable',
+                        formatInclude: ['variable', 'expression'],
+                        valueTypeInclude: ['boolean'],
+                        code: '',
+                        tips () {
+                            return '通过传入 boolean 数据，来控制是否展示 loading 效果'
+                        }
                     })
                 }
                 return result
@@ -175,6 +187,19 @@
                         return dir.code
                             ? `可以使用 【${this.id}Item】 为当前组件和子组件的指令或者属性赋值，当前组件的 v-if 和 v-show 除外`
                             : '可以使用 v-for 指令， 把一个数组转换为一组元素'
+                    }
+                }
+            )
+            // 公共 v-bk-tooltips
+            directiveList.push(
+                {
+                    type: 'v-bk-tooltips',
+                    format: 'value',
+                    formatInclude: ['value', 'variable', 'expression'],
+                    valueTypeInclude: ['string'],
+                    code: '',
+                    tips () {
+                        return '当鼠标指向页面元素时给出简单的提示，需传入提示的字符串'
                     }
                 }
             )
