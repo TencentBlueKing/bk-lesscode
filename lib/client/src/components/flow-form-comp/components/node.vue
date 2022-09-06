@@ -25,7 +25,8 @@
                     v-if="filters.length > 0 && showFilter"
                     :filters="filters"
                     :fields="fields"
-                    :value.sync="filtersData">
+                    :value="filtersData"
+                    @change="handleFilterDataChange">
                 </filters>
                 <table-fields
                     v-if="tableName"
@@ -43,6 +44,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import { formMap } from 'shared/form'
+    import queryStrSearchMixin from '../common/query-str-search-mixin'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
 
@@ -52,6 +54,7 @@
             Filters,
             TableFields
         },
+        mixins: [queryStrSearchMixin],
         props: {
             formIds: {
                 type: Object,
@@ -60,6 +63,10 @@
             config: {
                 type: Object,
                 default: () => ({})
+            },
+            systemFields: {
+                type: Array,
+                default: () => []
             },
             serviceId: Number,
             viewType: String
@@ -102,8 +109,9 @@
             await this.getInitData()
             if (this.nodes.length > 0) {
                 this.activeNode = this.nodes[0].id
-                this.getFormData()
+                await this.getFormData()
                 this.setNodeTabConfig()
+                this.setInitFilterData()
             }
         },
         methods: {
@@ -166,8 +174,14 @@
             },
             handleTabChange (val) {
                 this.activeNode = val
+                this.filtersData = {}
+                this.updateQueryString()
                 this.setNodeTabConfig()
                 this.getFormData()
+            },
+            handleFilterDataChange (val) {
+                this.filtersData = val
+                this.updateQueryString()
             }
         }
     }

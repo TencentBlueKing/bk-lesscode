@@ -98,8 +98,8 @@
                         const fieldCopy = cloneDeep(field)
                         // 选择值类型的字段统一用select组件来做筛选
                         if (this.isSelectComp(fieldCopy.type)) {
-                            fieldCopy.type = 'SELECT'
-                            fieldCopy.placeholder = `请选择${field.name}`
+                            fieldCopy.type = ['MULTISELECT', 'CHECKBOX'].includes(fieldCopy.type) ? 'MULTISELECT' : 'SELECT'
+                            fieldCopy.placeholder = `请选择${fieldCopy.name}`
                         }
                         filterFields.push(fieldCopy)
                         localVal[fieldCopy.key] = ''
@@ -114,7 +114,7 @@
                 const value = []
                 val.map(item => {
                     if (item !== '') {
-                        value.push(new Date(item))
+                        value.push(item)
                     }
                 })
                 this.localVal[key] = value
@@ -126,7 +126,7 @@
                 this.update()
             },
             update () {
-                this.$emit('update:value', { ...this.localVal })
+                this.$emit('change', { ...this.localVal })
             }
         }
     }
