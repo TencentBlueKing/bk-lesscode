@@ -2,15 +2,22 @@
     <div class="relation-rules-wrapper">
         <vue-draggable handle=".drag-icon" :list="localVal" @change="change">
             <div class="rule-group" v-for="(rule, groupIndex) in localVal" :key="groupIndex">
-                <i v-if="isCurrentTable" class="bk-drag-icon bk-drag-grag-fill drag-icon"></i>
-                <i
-                    v-if="localVal.length > 1"
-                    class="bk-drag-icon bk-drag-close-small del-group-icon"
-                    @click="handleDelGroup(groupIndex)">
-                </i>
+                <template v-if="isCurrentTable">
+                    <div class="rule-group-operate">
+                        <i class="bk-drag-icon bk-drag-drag-small1 drag-icon"></i>
+                        <i
+                            v-if="localVal.length > 1"
+                            class="bk-drag-icon bk-drag-close-small del-group-icon"
+                            @click="handleDelGroup(groupIndex)">
+                        </i>
+                    </div>
+                </template>
                 <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ `规则${groupIndex + 1}` }}</p>
                 <div class="relations-content">
-                    <div class="relation-item" v-for="(relation, index) in rule.relations" :key="index">
+                    <div
+                        class="relation-item"
+                        v-for="(relation, index) in rule.relations"
+                        :key="`${relation.field}_${relation.type}_${index}`">
                         当
                         <bk-select
                             v-model="relation.field"
@@ -51,7 +58,6 @@
                             </bk-select>
                             <default-value
                                 v-else
-                                class="determine-value"
                                 :field="getDeterminValField(relation)"
                                 :disabled="disabled"
                                 @change="handleRelVarValChange(relation, $event)">
@@ -64,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="target-value">
+                <div class="target-value" :key="`${rule.target.type}_${rule.target_value}_${groupIndex}`">
                     <span style="white-space: nowrap;">值为</span>
                     <bk-select
                         v-if="isCurrentTable"
@@ -101,7 +107,13 @@
                 </div>
             </div>
         </vue-draggable>
-        <bk-button v-if="isCurrentTable" size="small" :text="true" @click="handleAddGroup()">继续添加规则</bk-button>
+        <bk-button
+            v-if="isCurrentTable"
+            size="small"
+            :text="true"
+            @click="handleAddGroup()">
+            继续添加规则
+        </bk-button>
     </div>
 </template>
 <script>
@@ -151,7 +163,7 @@
         },
         data () {
             return {
-                localVal: cloneDeep(this.rules)
+                localVal: this.getLocalVal(this.rules)
             }
         },
         computed: {
@@ -173,10 +185,13 @@
         },
         watch: {
             rules (val) {
-                this.localVal = cloneDeep(val)
+                this.localVal = this.getLocalVal(val)
             }
         },
         methods: {
+            getLocalVal (list) {
+                return list.map(item => cloneDeep(item))
+            },
             // 规则字段可选列表
             getRelFieldList () {
                 return this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
@@ -273,27 +288,19 @@
         margin-bottom: 10px;
         padding: 8px;
         background: #f5f7fa;
-        &:hover {
-            .drag-icon,
-            .del-group-icon {
-                display: block;
-            }
+        .rule-group-operate {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            align-items: center;
         }
         .drag-icon {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 2px;
             color: #63656e;
-            font-size: 14px;
-            transform: translateY(-50%);
+            font-size: 22px;
             cursor: move;
         }
         .del-group-icon {
-            display: none;
-            position: absolute;
-            top: 4px;
-            right: 4px;
             color: #979ba5;
             font-size: 18px;
             cursor: pointer;

@@ -91,27 +91,20 @@
                 })
                 this.localValue = fieldsValue
                 fieldsWithRules.forEach(async field => {
-                    const { type, rules, end_value: endValue, can_modify: canModify } = field.meta.default_val_config
+                    const { type, rules } = field.meta.default_val_config
                     if (type === 'currentTable') {
                         const rule = this.getFulfillAssociationRule(rules)
                         if (rule) {
                             const value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
                             this.localValue[field.key] = value
-                        } else {
-                            this.localValue[field.key] = endValue
                         }
                     } else if (type === 'otherTable') {
                         const res = await this.getAssociationFilterData(field.key)
                         if (res.data.list.length === 1) {
                             this.localValue[field.key] = res.data.list[0][rules[0].target.value]
-                        } else {
-                            this.localValue[field.key] = endValue
                         }
                     } else if (type === 'createTicketTime') {
                         this.localValue[field.key] = field.type === 'DATE' ? dayjs().format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD HH:mm:ss')
-                    }
-                    if (!canModify) {
-                        field.is_readonly = true
                     }
                 })
                 this.$emit('change', this.localValue)
@@ -144,7 +137,6 @@
                     const { type, rules } = field.meta.default_val_config
                     if (type === 'currentTable') {
                         const rule = this.getFulfillAssociationRule(rules)
-                        console.log(rule)
                         if (rule) {
                             const value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
                             this.localValue[field.key] = value
