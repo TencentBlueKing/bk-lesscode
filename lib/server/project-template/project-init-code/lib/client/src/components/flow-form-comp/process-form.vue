@@ -32,16 +32,19 @@
                 </div>
             </div>
         </div>
+        <float-workbench-block></float-workbench-block>
     </div>
 </template>
 <script>
     import FormFields from './form/index.vue'
+    import FloatWorkbenchBlock from './components/float-workbench-block.vue'
     import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'ProcessForm',
         components: {
-            FormFields
+            FormFields,
+            FloatWorkbenchBlock
         },
         props: {
             type: String,
