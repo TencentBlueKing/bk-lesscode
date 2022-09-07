@@ -36,10 +36,19 @@
                 @delete="handleTableDelete(tableIndex)"
             >
                 <select-table
+                    v-if="dataSourceType === 'preview'"
                     class="fl mr8 mt8 mb8 wh380"
                     :table-name="table.tableName"
                     :table-list="tableList"
                     @change="(value) => handleTableChange(tableIndex, value)"
+                />
+                <select-bk-base-table
+                    v-else
+                    class="fl mr8 mt8 mb8 wh380"
+                    :table-name="table.tableName"
+                    :bk-base-biz-list="bkBaseBizList"
+                    @change="({ tableName, bkBizId }) => handleTableChange(tableIndex, tableName, bkBizId)"
+                    @updataBizs="(value) => $emit('updataBizs', value)"
                 />
                 <select-field
                     v-for="(field, fieldIndex) in table.fields"
@@ -51,7 +60,7 @@
                     :function-name="field.functionName"
                     :alias="field.alias"
                     :disable-delete="table.fields.length <= 1"
-                    :columns="handleGetColumns(table.tableName, field.functionName)"
+                    :columns="handleGetColumns(table.tableName)"
                     @change="(val) => handleFieldChange(tableIndex, fieldIndex, val)"
                     @delete="() => handleFieldDelete(tableIndex, fieldIndex)"
                 />
@@ -88,19 +97,22 @@
     import SelectType from './common/select-type.vue'
     import SelectJoin, { IJoinOn } from './common/select-join.vue'
     import SelectTable, { ITable } from './common/select-table.vue'
+    import SelectBkBaseTable, { IBkBaseBiz } from './common/select-bk-base-table.vue'
     import SelectField, { IField } from './common/select-field.vue'
     import {
         JOIN_TYPE,
         SQL_FUNCTION_TYPE,
         getDefaultTable,
         getDefaultTableOn,
-        getDefaultTableField
+        getDefaultTableField,
+        findTable
     } from 'shared/data-source'
-    export { ITable }
+    export { ITable, IBkBaseBiz }
 
     interface IQueryTable {
         tableName: string
         joinType: string
+        bkBizId: string
         fields: IField[]
         on: IJoinOn[]
     }
@@ -111,12 +123,15 @@
             SelectType,
             SelectJoin,
             SelectTable,
+            SelectBkBaseTable,
             SelectField
         },
 
         props: {
             queryTable: Array as PropType<IQueryTable[]>,
-            tableList: Array as PropType<ITable[]>
+            tableList: Array as PropType<ITable[]>,
+            bkBaseBizList: Array as PropType<IBkBaseBiz[]>,
+            dataSourceType: String
         },
 
         setup (props, { emit }) {
@@ -161,29 +176,22 @@
                     .value
                     .slice(0, tableIndex + 1)
                     .reduce((acc, cur) => {
-                        if (cur.tableName && !acc.find(table => table.tableName === cur.tableName)) {
-                            // 表格配置
-                            const table = props.tableList.find(table => table.tableName === cur.tableName)
-                            if (table) {
-                                acc.push({
-                                    id: cur.tableName,
-                                    tableName: cur.tableName,
-                                    columns: table.columns
-                                })
-                            }
+                        const isUsed = acc.find(table => table.tableName === cur.tableName)
+                        const table = findTable(cur.tableName, props.dataSourceType, props.tableList, props.bkBaseBizList)
+                        if (cur.tableName && !isUsed && table) {
+                            acc.push({
+                                id: table.id,
+                                tableName: table.tableName,
+                                columns: table.columns
+                            })
                         }
                         return acc
                     }, [])
             }
 
-            const handleGetColumns = (tableName, functionName) => {
-                const table = props.tableList.find(table => table.tableName === tableName) || { columns: [] }
-                const columns = [...table.columns]
-                // 默认字段添加 *
-                // if (!functionName && tableName) {
-                //     columns.unshift({ name: '*', columnId: '*' })
-                // }
-                return columns
+            const handleGetColumns = (tableName) => {
+                const table = findTable(tableName, props.dataSourceType, props.tableList, props.bkBaseBizList)
+                return table?.columns || []
             }
 
             const handleChange = (tableIndex, key, value) => {
@@ -191,8 +199,9 @@
                 triggleUpdate()
             }
 
-            const handleTableChange = (tableIndex, tableName) => {
+            const handleTableChange = (tableIndex, tableName, bkBizId) => {
                 renderTables.value[tableIndex].tableName = tableName
+                renderTables.value[tableIndex].bkBizId = bkBizId
                 renderTables.value[tableIndex].fields.forEach((field) => {
                     field.tableName = tableName
                 })

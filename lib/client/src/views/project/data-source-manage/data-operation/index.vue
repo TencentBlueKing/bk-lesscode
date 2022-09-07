@@ -62,7 +62,6 @@
                 >SQL</div>
             </div>
         </header>
-
         <main class="data-operation-home"
             v-bkloading="{ isLoading }"
         >
@@ -112,10 +111,10 @@
                     >
                         应用需
                         <bk-link
-                            :href="`${v3DeveloperCenterUrl}/apps/${projectInfo.appCode}/cloudapi?apiName=bk-data&api=v3_meta_result_tables_mine_get,v3_queryengine_user_query_sync`"
+                            :href="`${v3DeveloperCenterUrl}/apps/${projectInfo.appCode}/cloudapi?apiName=bk-data&api=v3_meta_result_tables_mine_get,v3_queryengine_user_query_sync,v3_meta_bizs`"
                             target="href"
                         >申请权限</bk-link>
-                        【接口：v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get】，用于应用调用数据平台接口，如已申请可忽略
+                        【接口：v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】，用于应用调用数据平台接口，如已申请可忽略
                     </span>
                 </bk-alert>
             </template>
@@ -125,7 +124,10 @@
                 ref="jsonQueryRef"
                 :condition="conditionQuery"
                 :table-list="tableList"
+                :bk-base-biz-list="bkBaseBizList"
+                :data-source-type="dataSourceType"
                 @change="handleConditionChange"
+                @updataBizs="handleUpdateBiz"
             />
             <sql-query
                 v-show="queryType === 'sql-query'"
@@ -184,6 +186,7 @@
                     :condition="conditionQuery"
                     :sql="sqlQuery"
                     :table-list="tableList"
+                    :bk-base-biz-list="bkBaseBizList"
                     :data-source-type="dataSourceType"
                     ref="queryResultRef"
                 />
@@ -287,7 +290,10 @@
             const conditionQuery = ref()
             const sqlQuery = ref('')
             const isQueryLoading = ref(false)
+            // prevew 表列表
             const tableList = ref([])
+            // bk-base 业务列表，包含了结果表
+            const bkBaseBizList = ref([])
             const isLoading = ref(false)
             // 弹框 & 侧滑相关状态
             const apiData = ref({
@@ -315,9 +321,14 @@
                     jsonQueryRef.value.handleClear()
                     sqlQuery.value = ''
                     // 重新获取数据
+                    isLoading.value = true
                     getTableList()
                         .catch(() => {
                             tableList.value = []
+                            bkBaseBizList.value = []
+                        })
+                        .finally(() => {
+                            isLoading.value = false
                         })
                 }
             }
@@ -330,6 +341,11 @@
             // 查询 sql 发生变化
             const handleSqlChange = (val) => {
                 sqlQuery.value = val
+            }
+
+            // bk-base 数据发生变化
+            const handleUpdateBiz = (val) => {
+                bkBaseBizList.value = val
             }
 
             // 校验
@@ -365,12 +381,24 @@
                     })
             }
 
+            const getAllTables = () => {
+                let tables = []
+                if (dataSourceType.value === 'preview') {
+                    tables = tableList.value
+                } else {
+                    bkBaseBizList.value.forEach((bkBaseBiz) => {
+                        tables.push(...bkBaseBiz.tables)
+                    })
+                }
+                return tables
+            }
+
             // 展示 SQL
             const handleShowSql = () => {
                 validate()
                     .then(() => {
                         sqlData.value.isShow = true
-                        sqlData.value.sql = generateSqlByCondition(conditionQuery.value, tableList.value)
+                        sqlData.value.sql = generateSqlByCondition(conditionQuery.value, getAllTables())
                     })
                     .catch((err) => {
                         messageError(err.message)
@@ -379,7 +407,7 @@
 
             const getFinalySql = () => {
                 const sql = queryType.value === 'json-query'
-                    ? generateSqlByCondition(conditionQuery.value, tableList.value)
+                    ? generateSqlByCondition(conditionQuery.value, getAllTables())
                     : sqlQuery.value
                 // 回车转空格
                 return sql.replace(/\r\n/g, ' ')
@@ -394,7 +422,10 @@
                             method: API_METHOD.POST,
                             projectId,
                             url: '/api/data-source/user/queryBySql',
-                            body: parseValue2Scheme({ sql: getFinalySql() })
+                            body: parseValue2Scheme({
+                                sql: getFinalySql(),
+                                dataSourceType: dataSourceType.value
+                            })
                         }
                     })
                     .catch((err) => {
@@ -414,7 +445,10 @@
                             funcMethod: API_METHOD.POST,
                             funcBody: 'return res\r\n',
                             funcApiUrl: '/api/data-source/user/queryBySql',
-                            apiBody: parseValue2UseScheme({ sql: getFinalySql() })
+                            apiBody: parseValue2UseScheme({
+                                sql: getFinalySql(),
+                                dataSourceType: dataSourceType.value
+                            })
                         }
                     })
                     .catch((err) => {
@@ -433,14 +467,42 @@
                     }
                 }
                 if (dataSourceType.value !== history.dataSourceType) {
-                    getTableList(history.dataSourceType).then(loadHistory)
+                    isLoading.value = true
+                    getTableList(history.dataSourceType)
+                        .then(() => getInitBkBaseTables(history.dataSourceType, history.condition))
+                        .then(loadHistory)
+                        .finally(() => {
+                            isLoading.value = false
+                        })
                 } else {
                     loadHistory()
                 }
             }
 
+            // 已选择的表，刷新页面后需要自动展开获取该数据，否则select不展示
+            const getInitBkBaseTables = (dataSourceType, condition) => {
+                return new Promise((resolve, reject) => {
+                    if (dataSourceType === 'preview') {
+                        resolve(null)
+                    } else {
+                        // 获取 bizid
+                        const bkBizIds = condition.table.map(table => table.bkBizId)
+                        store
+                            .dispatch('dataSource/getBkBaseTables', bkBizIds)
+                            .then(({ list }) => {
+                                const hasLoadedBizs = bkBaseBizList.value.filter(bkBaseBiz => bkBizIds.includes(+bkBaseBiz.bkBizId))
+                                hasLoadedBizs.forEach((bkBaseBiz) => {
+                                    bkBaseBiz.loaded = true
+                                    bkBaseBiz.tables = list.filter(table => table.bkBizId === +bkBaseBiz.bkBizId)
+                                })
+                                resolve(null)
+                            })
+                            .catch(reject)
+                    }
+                })
+            }
+
             const getTableList = (type = dataSourceType.value) => {
-                isLoading.value = true
                 return new Promise((resolve, reject) => {
                     store
                         .dispatch('dataSource/list', {
@@ -448,22 +510,27 @@
                             dataSourceType: type
                         })
                         .then((res) => {
-                            tableList.value = res.list
+                            if (type === 'preview') {
+                                tableList.value = res.list
+                            } else {
+                                bkBaseBizList.value = res.list.map((item) => ({
+                                    ...item,
+                                    tables: [],
+                                    loaded: false
+                                }))
+                            }
                             resolve(res)
                         })
                         .catch((err) => {
                             messageError(err.message || err)
                             reject(err)
                         })
-                        .finally(() => {
-                            isLoading.value = false
-                        })
                 })
             }
 
             // 获取项目相关信息
             const getProjectInfo = () => {
-                Promise
+                return Promise
                     .all([
                         store.dispatch('project/detail', { projectId }),
                         store.dispatch('functions/getTokenList', projectId)
@@ -477,8 +544,15 @@
             }
 
             onBeforeMount(() => {
-                getTableList()
-                getProjectInfo()
+                isLoading.value = true
+                Promise
+                    .all([
+                        getTableList(),
+                        getProjectInfo()
+                    ])
+                    .finally(() => {
+                        isLoading.value = false
+                    })
             })
 
             return {
@@ -495,6 +569,7 @@
                 sqlQuery,
                 isQueryLoading,
                 tableList,
+                bkBaseBizList,
                 isLoading,
                 apiData,
                 funcData,
@@ -503,6 +578,7 @@
                 chooseDataSource,
                 handleConditionChange,
                 handleSqlChange,
+                handleUpdateBiz,
                 handleQuery,
                 handleShowSql,
                 handleGenApi,

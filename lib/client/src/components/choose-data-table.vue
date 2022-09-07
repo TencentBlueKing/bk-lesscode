@@ -12,7 +12,8 @@
                 slot="trigger"
             >
                 {{ value }}
-                <i class="bk-select-angle bk-icon icon-angle-down"></i>
+                <img src="../images/svg/loading.svg" class="bk-select-loading" v-if="isLoadingList">
+                <i class="bk-select-angle bk-icon icon-angle-down" v-else></i>
             </span>
             <bk-option-group :name="tableGroups[0].name">
                 <span slot="group-name">
@@ -45,30 +46,62 @@
                     </bk-exception>
                 </section>
             </bk-option-group>
-            <bk-option-group :name="tableGroups[0].name">
+            <bk-option-group
+                class="bk-base-options"
+                :name="tableGroups[0].name"
+            >
                 <span slot="group-name">
                     {{ tableGroups[1].name }}
-                    <i
-                        class="bk-icon icon-refresh tool-icon"
-                        @click="getBkBaseTables"
-                    ></i>
                 </span>
                 <section v-bkloading="{ isLoading: tableGroups[1].isLoading }">
-                    <bk-option
-                        v-for="table in tableGroups[1].children"
-                        :key="table.tableName"
-                        :id="table.tableName"
-                        :name="table.tableName"
-                        @click.native="handleSelectTable(table.tableName, tableGroups[1].dataSourceType)"
+                    <bk-option-group
+                        v-for="bkBaseBiz in tableGroups[1].children"
+                        :key="bkBaseBiz.bkBizId"
+                        :name="bkBaseBiz.bkBizName"
                     >
-                    </bk-option>
+                        <span slot="group-name">
+                            <i
+                                v-if="isOpenIds.includes(bkBaseBiz.bkBizId)"
+                                class="node-folder-icon mr5 bk-icon icon-down-shape"
+                                @click="handleHideOptions(bkBaseBiz.bkBizId)"
+                            ></i>
+                            <span
+                                v-else-if="isLoadingIds.includes(bkBaseBiz.bkBizId)"
+                                class="mr5 span-loading"
+                            ></span>
+                            <i
+                                v-else
+                                class="node-folder-icon mr5 bk-icon icon-right-shape"
+                                @click="handleShowOptions(bkBaseBiz.bkBizId)"
+                            ></i>
+                            <span>{{ bkBaseBiz.bkBizName }}</span>
+                        </span>
+                        <template v-if="isOpenIds.includes(bkBaseBiz.bkBizId)">
+                            <bk-option
+                                v-for="table in bkBaseBiz.tables"
+                                :key="table.id"
+                                :id="table.tableName"
+                                :name="table.tableName"
+                                @click.native="handleSelectTable(table.tableName, tableGroups[1].dataSourceType)"
+                            >
+                            </bk-option>
+                            <bk-exception
+                                v-if="bkBaseBiz.tables.length <= 0 && bkBaseBiz.loaded"
+                                ext-cls="exception-wrap-item exception-part"
+                                type="empty"
+                                scene="part"
+                            >
+                                暂无数据
+                            </bk-exception>
+                        </template>
+                    </bk-option-group>
                     <bk-exception
                         v-if="tableGroups[1].children.length <= 0"
                         ext-cls="exception-wrap-item exception-part"
                         type="empty"
                         scene="part"
                     >
-                        请点击上方刷新按钮获取 BkBase 结果表
+                        暂无数据
                     </bk-exception>
                 </section>
             </bk-option-group>
@@ -93,7 +126,8 @@
     import store from '@/store'
     import router from '@/router'
     import {
-        DATA_SOURCE_TYPE
+        DATA_SOURCE_TYPE,
+        findTable
     } from 'shared/data-source'
 
     export default defineComponent({
@@ -110,6 +144,8 @@
             const selectRef = ref()
             const isLoadingData = ref(false)
             const isLoadingList = ref(false)
+            const isLoadingIds = ref([])
+            const isOpenIds = ref([])
             const projectId = router?.currentRoute?.params?.projectId
             const tableGroups = ref([
                 {
@@ -129,8 +165,7 @@
             // 选择表
             const handleSelectTable = (tableName, dataSourceType) => {
                 // 选完以后立即触发选中事件
-                const tableGroup = tableGroups.value.find((group) => group.dataSourceType === dataSourceType)
-                const table = tableGroup.children.find((table) => table.tableName === tableName)
+                const table = findTable(tableName, dataSourceType, tableGroups.value[0].children, tableGroups.value[1].children)
                 emit('choose-table', { tableName, table, dataSourceType })
                 // 立即更新数据
                 handleGetTableDatas(tableName, dataSourceType)
@@ -153,6 +188,38 @@
                     })
             }
 
+            // 隐藏 bk-base options
+            const handleHideOptions = (bkBizId) => {
+                const index = isOpenIds.value.findIndex(isOpenId => isOpenId === bkBizId)
+                isOpenIds.value.splice(index, 1)
+            }
+
+            // 展示 bk-base options
+            const handleShowOptions = (bkBizId) => {
+                const bkBaseBiz = tableGroups.value[1].children.find(bkBaseBiz => bkBaseBiz.bkBizId === bkBizId)
+                if (!bkBaseBiz.loaded) {
+                    // 加载数据
+                    isLoadingIds.value.push(bkBizId)
+                    store
+                        .dispatch('dataSource/getBkBaseTables', bkBizId)
+                        .then((data) => {
+                            // 展开
+                            isOpenIds.value.push(bkBizId)
+                            // 更新数据
+                            bkBaseBiz.loaded = true
+                            bkBaseBiz.tables = data?.list || []
+                        })
+                        .finally(() => {
+                            const index = isLoadingIds.value.findIndex(isLoadingId => isLoadingId === bkBizId)
+                            isLoadingIds.value.splice(index, 1)
+                        })
+                } else {
+                    // 直接展开
+                    isOpenIds.value.push(bkBizId)
+                }
+            }
+
+            // 获取 mysql 数据表
             const getMysqlTables = () => {
                 tableGroups.value[0].isLoading = true
                 return store
@@ -165,15 +232,16 @@
                     })
             }
 
-            const getBkBaseTables = () => {
-                tableGroups.value[1].isLoading = true
+            // 获取 bk-base 结果表
+            const getBkBaseBizs = () => {
                 return store
                     .dispatch('dataSource/list', { projectId, dataSourceType: DATA_SOURCE_TYPE.BK_BASE })
                     .then(({ list }) => {
-                        tableGroups.value[1].children = list
-                    })
-                    .finally(() => {
-                        tableGroups.value[1].isLoading = false
+                        tableGroups.value[1].children = list.map((item) => ({
+                            ...item,
+                            tables: [],
+                            loaded: false
+                        }))
                     })
             }
 
@@ -190,8 +258,8 @@
                 isLoadingList.value = true
                 Promise
                     .all([
-                        getMysqlTables()
-                        // getBkBaseTables()
+                        getMysqlTables(),
+                        getBkBaseBizs()
                     ])
                     .then(() => {
                         // 初始化的时候，需要同步获取最新的表数据
@@ -208,13 +276,16 @@
                 selectRef,
                 isLoadingData,
                 isLoadingList,
+                isLoadingIds,
+                isOpenIds,
                 tableGroups,
                 handleSelectTable,
                 getMysqlTables,
-                getBkBaseTables,
                 handleCreate,
                 handleClearTable,
-                handleGetTableDatas
+                handleGetTableDatas,
+                handleHideOptions,
+                handleShowOptions
             }
         }
     })
@@ -244,5 +315,26 @@
         cursor: pointer;
         color: #3A84FF;
         margin-left: 4px;
+    }
+    .node-folder-icon {
+        cursor: pointer;
+    }
+    .span-loading {
+        display: inline-block;
+        width: 12px;
+        &:before {
+            content: "";
+            display: inline-block;
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 8px;
+            background-image: url('../images/svg/loading.svg');
+        }
+    }
+    .bk-base-options {
+        /deep/ .bk-group-options {
+            padding: 0 5px;
+        }
     }
 </style>

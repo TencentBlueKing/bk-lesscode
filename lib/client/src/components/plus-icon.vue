@@ -18,7 +18,10 @@
         emits: ['click'],
 
         props: {
-            tips: String
+            tips: {
+                type: String,
+                default: ''
+            }
         },
 
         setup (_, { emit }) {
