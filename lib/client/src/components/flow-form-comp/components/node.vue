@@ -1,7 +1,7 @@
 <template>
     <div class="node-data-manage">
         <div v-if="!initDataLoading" class="node-tab-wrapper">
-            <bk-tab :active.sync="activeNode" :label-height="24" @tab-change="handleTabChange">
+            <bk-tab :active="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
                     :key="node.id"
@@ -25,7 +25,8 @@
                     v-if="filters.length > 0 && showFilter"
                     :filters="filters"
                     :fields="fields"
-                    :value.sync="filtersData">
+                    :value="filtersData"
+                    @change="handleFilterDataChange">
                 </filters>
                 <table-fields
                     v-if="tableName"
@@ -43,6 +44,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import { formMap } from 'shared/form'
+    import queryStrSearchMixin from '../common/query-str-search-mixin'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
 
@@ -52,6 +54,7 @@
             Filters,
             TableFields
         },
+        mixins: [queryStrSearchMixin],
         props: {
             formIds: {
                 type: Object,
@@ -61,6 +64,10 @@
                 type: Object,
                 default: () => ({})
             },
+            systemFields: {
+                type: Array,
+                default: () => []
+            },
             serviceId: Number,
             viewType: String
         },
@@ -69,7 +76,7 @@
                 initDataLoading: true,
                 formDataLoading: false,
                 nodes: [],
-                activeNode: '',
+                activeNode: Number(this.$route.query.activeNode) || '',
                 formDataMap: {},
                 filters: [],
                 tableConfig: [],
@@ -86,24 +93,15 @@
                 return this.formDataMap[this.activeNode]?.tableName || ''
             }
         },
-        // watch: {
-        //     filtersData (val) {
-        //         const isShowField = Object.values(val).every(item => {
-        //             if (Array.isArray(item)) {
-        //                 return !item.every(i => i)
-        //             } else {
-        //                 return !item
-        //             }
-        //         })
-        //         this.showFilter = isShowField
-        //     }
-        // },
         async created () {
             await this.getInitData()
             if (this.nodes.length > 0) {
-                this.activeNode = this.nodes[0].id
-                this.getFormData()
+                if (!this.activeNode) { // 如果页面加载时querystring不带当前选中节点tab信息
+                    this.activeNode = this.nodes[0].id
+                }
+                await this.getFormData()
                 this.setNodeTabConfig()
+                this.setInitFilterData()
             }
         },
         methods: {
@@ -165,9 +163,20 @@
                 }
             },
             handleTabChange (val) {
+                const { path, hash, params, query } = this.$route
+                const qs = { activeTab: 'node', activeNode: val }
+                if ('pageCode' in query) {
+                    qs.pageCode = query.pageCode
+                }
+                this.$router.replace({ path, hash, params, query: qs })
                 this.activeNode = val
+                this.filtersData = {}
                 this.setNodeTabConfig()
                 this.getFormData()
+            },
+            handleFilterDataChange (val) {
+                this.filtersData = val
+                this.updateQueryString()
             }
         }
     }
