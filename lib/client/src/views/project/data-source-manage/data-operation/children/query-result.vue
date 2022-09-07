@@ -60,7 +60,8 @@
             condition: Object,
             sql: String,
             tableList: Array,
-            dataSourceType: String
+            dataSourceType: String,
+            bkBaseBizList: Array
         },
 
         setup (props) {
@@ -101,7 +102,16 @@
                 }
                 if (props.queryType === 'json-query') {
                     queryRecord.condition = props.condition
-                    queryRecord.sql = generateSqlByCondition(props.condition, props.tableList)
+                    // 获取所有的 tables
+                    let tables = []
+                    if (props.dataSourceType === 'preview') {
+                        tables = props.tableList
+                    } else {
+                        props.bkBaseBizList.forEach((bkBaseBiz) => {
+                            tables.push(...bkBaseBiz.tables)
+                        })
+                    }
+                    queryRecord.sql = generateSqlByCondition(props.condition, tables)
                 } else {
                     queryRecord.sql = props.sql
                 }
