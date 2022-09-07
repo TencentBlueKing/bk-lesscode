@@ -44,7 +44,8 @@
     export default defineComponent({
         props: {
             list: {
-                type: Array as PropType<item[]>
+                type: Array as PropType<item[]>,
+                default: () => ([])
             },
             value: {
                 type: String,

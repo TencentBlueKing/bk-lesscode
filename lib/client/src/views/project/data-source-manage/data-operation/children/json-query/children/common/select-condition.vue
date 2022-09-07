@@ -87,10 +87,20 @@
         },
 
         props: {
-            conditionList: Array as PropType<ICondition[]>,
-            title: String,
-            tableList: Array,
-            allowClear: Boolean
+            conditionList: {
+                type: Array as PropType<ICondition[]>
+            },
+            title: {
+                type: String,
+                default: ''
+            },
+            tableList: {
+                type: Array
+            },
+            allowClear: {
+                type: Boolean,
+                default: false
+            }
         },
 
         setup (props, { emit }) {
