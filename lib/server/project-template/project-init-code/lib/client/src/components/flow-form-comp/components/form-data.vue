@@ -5,19 +5,13 @@
                 <i class="bk-icon icon-funnel filter-switch-icon" @click="showFilter = !showFilter"></i>
             </div>
             <filters
-                v-show="filters.length > 0 && showFilter"
+                v-show="filters.length > 0"
                 :filters="filters"
                 :fields="fields"
                 :system-fields="systemFields"
-                :value.sync="filtersData">
+                :value="filtersData"
+                @change="handleFilterDataChange">
             </filters>
-            <search-tag
-                v-if="!showFilter"
-                :filters="filters"
-                :fields="fields"
-                :system-fields="systemFields"
-                :value.sync="filtersData">
-            </search-tag>
             <table-fields
                 v-if="!formDetailLoading"
                 style="margin-top: 16px"
@@ -32,9 +26,9 @@
     </div>
 </template>
 <script>
-    import SearchTag from './search-tag.vue'
     import { formMap } from 'shared/form'
     import { FORM_SYS_FIELD } from '../common/field.js'
+    import queryStrSearchMixin from '../common/query-str-search-mixin'
     import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
     import Filters from './filters.vue'
     import TableFields from './table-fields.vue'
@@ -43,9 +37,9 @@
         name: 'formData',
         components: {
             Filters,
-            TableFields,
-            SearchTag
+            TableFields
         },
+        mixins: [queryStrSearchMixin],
         props: {
             formIds: Number,
             viewType: String,
@@ -66,25 +60,13 @@
                 fields: [],
                 formDetailLoading: true,
                 systemFields: FORM_SYS_FIELD,
-                showFilter: true,
                 tableName: '',
                 filtersData: {}
             }
         },
-        watch: {
-            filtersData (val) {
-                const isShowField = Object.values(val).every(item => {
-                    if (Array.isArray(item)) {
-                        return !item.every(i => i)
-                    } else {
-                        return !item
-                    }
-                })
-                this.showFilter = isShowField
-            }
-        },
         async created () {
-            this.getFormDetail()
+            await this.getFormDetail()
+            this.setInitFilterData()
         },
         methods: {
             async getFormDetail () {
@@ -109,6 +91,10 @@
                 } finally {
                     this.formDetailLoading = false
                 }
+            },
+            handleFilterDataChange (val) {
+                this.filtersData = val
+                this.updateQueryString()
             }
         }
     }

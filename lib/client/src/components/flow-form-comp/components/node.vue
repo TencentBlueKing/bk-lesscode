@@ -1,7 +1,7 @@
 <template>
     <div class="node-data-manage">
         <div v-if="!initDataLoading" class="node-tab-wrapper">
-            <bk-tab :active.sync="activeNode" :label-height="24" @tab-change="handleTabChange">
+            <bk-tab :active="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
                     :key="node.id"
@@ -76,7 +76,7 @@
                 initDataLoading: true,
                 formDataLoading: false,
                 nodes: [],
-                activeNode: '',
+                activeNode: Number(this.$route.query.activeNode) || '',
                 formDataMap: {},
                 filters: [],
                 tableConfig: [],
@@ -93,22 +93,12 @@
                 return this.formDataMap[this.activeNode]?.tableName || ''
             }
         },
-        // watch: {
-        //     filtersData (val) {
-        //         const isShowField = Object.values(val).every(item => {
-        //             if (Array.isArray(item)) {
-        //                 return !item.every(i => i)
-        //             } else {
-        //                 return !item
-        //             }
-        //         })
-        //         this.showFilter = isShowField
-        //     }
-        // },
         async created () {
             await this.getInitData()
             if (this.nodes.length > 0) {
-                this.activeNode = this.nodes[0].id
+                if (!this.activeNode) { // 如果页面加载时querystring不带当前选中节点tab信息
+                    this.activeNode = this.nodes[0].id
+                }
                 await this.getFormData()
                 this.setNodeTabConfig()
                 this.setInitFilterData()
@@ -173,9 +163,14 @@
                 }
             },
             handleTabChange (val) {
+                const { path, hash, params, query } = this.$route
+                const qs = { activeTab: 'node', activeNode: val }
+                if ('pageCode' in query) {
+                    qs.pageCode = query.pageCode
+                }
+                this.$router.replace({ path, hash, params, query: qs })
                 this.activeNode = val
                 this.filtersData = {}
-                this.updateQueryString()
                 this.setNodeTabConfig()
                 this.getFormData()
             },

@@ -79,10 +79,8 @@
             }
         },
         watch: {
-            value: {
-                handler (val) {
-                    this.localVal = cloneDeep(val)
-                }
+            value (val) {
+                this.localVal = cloneDeep(val)
             }
         },
         methods: {
@@ -102,7 +100,7 @@
                             fieldCopy.placeholder = `请选择${fieldCopy.name}`
                         }
                         filterFields.push(fieldCopy)
-                        localVal[fieldCopy.key] = ''
+                        localVal[fieldCopy.key] = key in this.value ? cloneDeep(this.value[key]) : ''
                     }
                 })
                 return { filterFields, localVal }
