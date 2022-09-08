@@ -3,6 +3,7 @@
         <bk-select
             searchable
             ref="selectRef"
+            :show-empty="false"
             :value="value"
             :loading="isLoadingList"
             @clear="handleClearTable"
@@ -51,7 +52,7 @@
                 :name="tableGroups[1].name"
             >
                 <span slot="group-name">
-                    {{ tableGroups[1].name }}
+                    <span v-bk-tooltips="{ content: '目前只支持查询 mysql 或 tspider 的结果表' }">{{ tableGroups[1].name }}</span>
                     <i
                         class="bk-icon icon-refresh tool-icon"
                         @click="getBkBaseBizs"
