@@ -48,10 +48,14 @@
             </bk-option-group>
             <bk-option-group
                 class="bk-base-options"
-                :name="tableGroups[0].name"
+                :name="tableGroups[1].name"
             >
                 <span slot="group-name">
                     {{ tableGroups[1].name }}
+                    <i
+                        class="bk-icon icon-refresh tool-icon"
+                        @click="getBkBaseBizs"
+                    ></i>
                 </span>
                 <section v-bkloading="{ isLoading: tableGroups[1].isLoading }">
                     <bk-option-group
@@ -96,12 +100,59 @@
                         </template>
                     </bk-option-group>
                     <bk-exception
-                        v-if="tableGroups[1].children.length <= 0"
+                        v-if="!projectInfo.appCode || !projectInfo.moduleCode"
                         ext-cls="exception-wrap-item exception-part"
                         type="empty"
                         scene="part"
                     >
-                        暂无数据
+                        <span
+                            class="data-base-tips"
+                        >
+                            请先
+                            <bk-link
+                                :href="`/project/${projectInfo.id}/basic`"
+                                target="href"
+                            >绑定蓝鲸应用模块</bk-link>
+                        </span>
+                    </bk-exception>
+                    <bk-exception
+                        v-else-if="!projectInfo.token"
+                        ext-cls="exception-wrap-item exception-part"
+                        type="empty"
+                        scene="part"
+                    >
+                        <span
+                            class="data-base-tips"
+                        >
+                            需
+                            <bk-link
+                                :href="`/project/${projectInfo.id}/credential`"
+                                target="href"
+                            >生成凭证</bk-link>
+                            ，用于预览环境使用绑定的蓝鲸应用身份调用接口
+                        </span>
+                    </bk-exception>
+                    <bk-exception
+                        v-else-if="tableGroups[1].children.length <= 0"
+                        ext-cls="exception-wrap-item exception-part"
+                        type="empty"
+                        scene="part"
+                    >
+                        <span
+                            class="data-base-tips"
+                        >
+                            请
+                            <bk-link
+                                :href="`${v3DeveloperCenterUrl}/apps/${projectInfo.appCode}/cloudapi?apiName=bk-data&api=v3_meta_result_tables_mine_get,v3_queryengine_user_query_sync,v3_meta_bizs`"
+                                target="href"
+                                v-bk-tooltips="{
+                                    boundary: 'window',
+                                    width: 350,
+                                    content: '应用需需要接口【v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】的权限，用于应用调用数据平台接口'
+                                }"
+                            >申请权限</bk-link>
+                            。如已申请，可点击上方刷新按钮获取 BkBase 结果表
+                        </span>
                     </bk-exception>
                 </section>
             </bk-option-group>
@@ -118,6 +169,7 @@
 </template>
 
 <script lang="ts">
+    import dayjs from 'dayjs'
     import {
         defineComponent,
         ref,
@@ -147,6 +199,14 @@
             const isLoadingIds = ref([])
             const isOpenIds = ref([])
             const projectId = router?.currentRoute?.params?.projectId
+            const v3DeveloperCenterUrl = V3_DEVELOPER_CENTER_URL
+            // 项目数据
+            const projectInfo = ref({
+                id: '',
+                appCode: '',
+                moduleCode: '',
+                token: ''
+            })
             const tableGroups = ref([
                 {
                     name: 'Mysql 数据表',
@@ -234,6 +294,7 @@
 
             // 获取 bk-base 结果表
             const getBkBaseBizs = () => {
+                tableGroups.value[1].isLoading = true
                 return store
                     .dispatch('dataSource/list', { projectId, dataSourceType: DATA_SOURCE_TYPE.BK_BASE })
                     .then(({ list }) => {
@@ -242,6 +303,24 @@
                             tables: [],
                             loaded: false
                         }))
+                    })
+                    .finally(() => {
+                        tableGroups.value[1].isLoading = false
+                    })
+            }
+
+            // 获取项目相关信息
+            const getProjectInfo = () => {
+                return Promise
+                    .all([
+                        store.dispatch('project/detail', { projectId }),
+                        store.dispatch('functions/getTokenList', projectId)
+                    ])
+                    .then(([project, token]) => {
+                        projectInfo.value.id = project.id
+                        projectInfo.value.appCode = project.appCode
+                        projectInfo.value.moduleCode = project.moduleCode
+                        projectInfo.value.token = !dayjs(token?.data?.[0]).isAfter(dayjs()) ? token?.data?.[0] : ''
                     })
             }
 
@@ -259,7 +338,7 @@
                 Promise
                     .all([
                         getMysqlTables(),
-                        getBkBaseBizs()
+                        getProjectInfo()
                     ])
                     .then(() => {
                         // 初始化的时候，需要同步获取最新的表数据
@@ -278,9 +357,12 @@
                 isLoadingList,
                 isLoadingIds,
                 isOpenIds,
+                v3DeveloperCenterUrl,
+                projectInfo,
                 tableGroups,
                 handleSelectTable,
                 getMysqlTables,
+                getBkBaseBizs,
                 handleCreate,
                 handleClearTable,
                 handleGetTableDatas,
@@ -335,6 +417,17 @@
     .bk-base-options {
         /deep/ .bk-group-options {
             padding: 0 5px;
+        }
+    }
+    .data-base-tips {
+        line-height: 16px;
+        display: inline-block;
+        .bk-link {
+            vertical-align: baseline;
+            color: #3A84FF;
+        }
+        /deep/ .bk-link-text {
+            font-size: 12px;
         }
     }
 </style>

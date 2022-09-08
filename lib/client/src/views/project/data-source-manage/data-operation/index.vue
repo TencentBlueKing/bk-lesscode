@@ -225,6 +225,7 @@
 </template>
 
 <script lang="ts">
+    import dayjs from 'dayjs'
     import router from '@/router'
     import store from '@/store'
     import RenderHeader from '../data-table/common/header'
@@ -457,49 +458,39 @@
             }
 
             const handleLoadHistory = (history) => {
-                const loadHistory = () => {
-                    dataSourceType.value = history.dataSourceType
-                    queryType.value = history.type
-                    if (history.type === 'json-query') {
-                        jsonQueryRef.value.setRenderCondition(history.condition)
-                    } else {
-                        sqlQuery.value = history.sql
-                    }
-                }
-                if (dataSourceType.value !== history.dataSourceType) {
-                    isLoading.value = true
-                    getTableList(history.dataSourceType)
-                        .then(() => getInitBkBaseTables(history.dataSourceType, history.condition))
-                        .then(loadHistory)
-                        .finally(() => {
-                            isLoading.value = false
-                        })
-                } else {
-                    loadHistory()
-                }
+                dataSourceType.value = history.dataSourceType
+                isLoading.value = true
+                getTableList(history.dataSourceType)
+                    .then(() => {
+                        if (history.dataSourceType === 'bk-base') {
+                            return getInitBkBaseTables(history.condition)
+                        }
+                    })
+                    .then(() => {
+                        queryType.value = history.type
+                        if (history.type === 'json-query') {
+                            jsonQueryRef.value.setRenderCondition(history.condition)
+                        } else {
+                            sqlQuery.value = history.sql
+                        }
+                    })
+                    .finally(() => {
+                        isLoading.value = false
+                    })
             }
 
             // 已选择的表，刷新页面后需要自动展开获取该数据，否则select不展示
-            const getInitBkBaseTables = (dataSourceType, condition) => {
-                return new Promise((resolve, reject) => {
-                    if (dataSourceType === 'preview') {
-                        resolve(null)
-                    } else {
-                        // 获取 bizid
-                        const bkBizIds = condition.table.map(table => table.bkBizId)
-                        store
-                            .dispatch('dataSource/getBkBaseTables', bkBizIds)
-                            .then(({ list }) => {
-                                const hasLoadedBizs = bkBaseBizList.value.filter(bkBaseBiz => bkBizIds.includes(+bkBaseBiz.bkBizId))
-                                hasLoadedBizs.forEach((bkBaseBiz) => {
-                                    bkBaseBiz.loaded = true
-                                    bkBaseBiz.tables = list.filter(table => table.bkBizId === +bkBaseBiz.bkBizId)
-                                })
-                                resolve(null)
-                            })
-                            .catch(reject)
-                    }
-                })
+            const getInitBkBaseTables = (condition) => {
+                const bkBizIds = condition.table.map(table => table.bkBizId)
+                return store
+                    .dispatch('dataSource/getBkBaseTables', bkBizIds)
+                    .then(({ list }) => {
+                        const hasLoadedBizs = bkBaseBizList.value.filter(bkBaseBiz => bkBizIds.includes(+bkBaseBiz.bkBizId))
+                        hasLoadedBizs.forEach((bkBaseBiz) => {
+                            bkBaseBiz.loaded = true
+                            bkBaseBiz.tables = list.filter(table => table.bkBizId === +bkBaseBiz.bkBizId)
+                        })
+                    })
             }
 
             const getTableList = (type = dataSourceType.value) => {
@@ -539,7 +530,7 @@
                         projectInfo.value.id = project.id
                         projectInfo.value.appCode = project.appCode
                         projectInfo.value.moduleCode = project.moduleCode
-                        projectInfo.value.token = token?.data?.[0]
+                        projectInfo.value.token = !dayjs(token?.data?.[0]).isAfter(dayjs()) ? token?.data?.[0] : ''
                     })
             }
 
