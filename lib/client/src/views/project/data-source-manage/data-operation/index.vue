@@ -536,7 +536,7 @@
                         projectInfo.value.id = project.id
                         projectInfo.value.appCode = project.appCode
                         projectInfo.value.moduleCode = project.moduleCode
-                        projectInfo.value.token = !dayjs(token?.data?.[0]).isAfter(dayjs()) ? token?.data?.[0] : ''
+                        projectInfo.value.token = dayjs(token?.data?.[0]?.expiresTime).isAfter(dayjs()) ? token?.data?.[0] : ''
                     })
             }
 
