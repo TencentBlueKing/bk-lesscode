@@ -156,6 +156,7 @@
     import TypeTableDataSource from './strategy/table-data-source.vue'
     import TypeSrc from './strategy/src.vue'
     import TypePagination from './strategy/pagination.vue'
+    import TypeRouteList from './strategy/route-list.vue'
 
     const getRealValue = (type, target) => {
         if (type === 'object') {
@@ -271,7 +272,8 @@
                     'table-data-source': TypeTableDataSource,
                     'src': TypeSrc,
                     'srcset': TypeList,
-                    'pagination': TypePagination
+                    'pagination': TypePagination,
+                    'route': TypeRouteList
                 }
 
                 const typeMap = {
@@ -313,7 +315,8 @@
                     'table-data-source': 'table-data-source',
                     'src': 'src',
                     'srcset': 'srcset',
-                    'pagination': 'pagination'
+                    'pagination': 'pagination',
+                    'route': 'route'
                 }
 
                 let realType = config.type
