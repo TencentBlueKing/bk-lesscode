@@ -100,7 +100,7 @@
              */
             options: {
                 type: Object,
-                required: true
+                default: () => ({})
             },
             /**
              * @desc 值数据
@@ -203,7 +203,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 12px;
             color: #63656E;
             word-break: keep-all;
             width: 100%;
@@ -211,7 +211,6 @@
         .format-list {
             position: absolute;
             right: 0;
-            top: 5px;
             border: none;
             /deep/ .bk-select-angle {
                 font-size: 16px;
