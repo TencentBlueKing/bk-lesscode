@@ -183,14 +183,29 @@
                 })
             },
 
+            generateFuncParams (params = [], funcName) {
+                return params
+                    .reduce((acc, cur) => {
+                        if (cur.format === 'value') {
+                            acc.push(`'${cur.value}'`)
+                        } else if (cur.format === 'variable' && cur.code) {
+                            acc.push(`this.${cur.code}`)
+                            this.recordVariable(cur.code, funcName)
+                        } else if (cur.code) {
+                            acc.push(cur.code)
+                        }
+                        return acc
+                    }, [])
+                    .join(', ')
+            },
+
             generateMethod (methodCode) {
                 const firstMethod = this.getMethodByCode(methodCode)
                 let funcStr = ''
                 Object.values(this.usedMethodMap).forEach((method) => {
                     funcStr += this.getMethodStr(method)
                 })
-                const execParam = this.remoteData.params.map(x => x.value).filter(x => x).join(', ')
-                funcStr += `return ${firstMethod.funcName}(${execParam})`
+                funcStr += `return ${firstMethod.funcName}(${this.generateFuncParams(this.remoteData.params, firstMethod.funcName)})`
                 return funcStr
             },
 

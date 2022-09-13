@@ -238,19 +238,24 @@
                 dataParse: {},
                 isSaving: false
             })
-            const fields = activeTable
-                .value
-                .columns
-                .map(column => ({
-                    id: column.name,
-                    label: column.name
-                }))
             const tableSetting = ref({
-                fields,
-                selectedFields: fields,
+                fields: [],
+                selectedFields: [],
                 max: 3,
                 size: 'small'
             })
+
+            const calcTableSetting = () => {
+                const fields = activeTable
+                    .value
+                    .columns
+                    .map(column => ({
+                        id: column.name,
+                        label: column.name
+                    }))
+                tableSetting.value.fields = fields
+                tableSetting.value.selectedFields = fields
+            }
 
             const handleTableSettingChange = ({ fields, size }) => {
                 tableSetting.value.size = size
@@ -468,10 +473,14 @@
                 () => {
                     dataStatus.pagination.current = 1
                     getDataList()
+                    calcTableSetting()
                 }
             )
 
-            onBeforeMount(getDataList)
+            onBeforeMount(() => {
+                getDataList()
+                calcTableSetting()
+            })
 
             return {
                 formRef,

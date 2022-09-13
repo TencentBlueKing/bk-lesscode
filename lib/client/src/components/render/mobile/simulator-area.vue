@@ -8,9 +8,7 @@
                 <div :class="$style['device-phone']"></div>
             </div>
             <div :class="$style['simulator-preview']" :style="{ width: pageSize.width + 'px', height: pageSize.height + 'px' }">
-                <div :class="$style['simulator-header']">
-                    <span></span>
-                </div>
+                <mobileHeader />
                 <iframe width="100%"
                     height="100%"
                     style="border: none"
@@ -26,8 +24,12 @@
     import { computed } from '@vue/composition-api'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
+    import mobileHeader from './common/mobile-header.vue'
 
     export default {
+        components: {
+            mobileHeader
+        },
         setup () {
             const store = useStore()
             const route = useRoute()

@@ -1,5 +1,10 @@
 <template>
-    <article v-bkloading="{ isLoading }">
+    <article
+        v-bkloading="{
+            isLoading,
+            title: dataSourceType === 'preview' ? '正在加载 Mysql 数据表' : '正在加载 BkBase 结果表'
+        }"
+    >
         <header>
             <render-header>
                 <span class="operation-title">
