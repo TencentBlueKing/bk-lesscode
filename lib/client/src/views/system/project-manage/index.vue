@@ -417,7 +417,7 @@
                 try {
                     const layoutList = await this.$store.dispatch('layout/getPlatformList')
                     layoutList.forEach(item => {
-                        const isEmptyType = item.type === 'empty'
+                        const isEmptyType = ['empty', 'mobile-empty'].includes(item.type)
                         item.isDefault = isEmptyType
                         item.checked = isEmptyType
                         item.disabled = isEmptyType
@@ -468,7 +468,7 @@
                 try {
                     await this.$refs.createForm.validate()
                     const data = this.dialog.create.formData
-                    const layouts = this.layoutFullList.filter(layout => layout.checked || layout.layoutType === 'MOBILE').map(layout => {
+                    const layouts = this.layoutFullList.filter(layout => layout.checked || layout.type === 'mobile-empty').map(layout => {
                         return {
                             layoutId: layout.id,
                             routePath: layout.defaultPath,

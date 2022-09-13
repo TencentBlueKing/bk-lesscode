@@ -140,14 +140,6 @@
             // 卸载的时候，清除 storage 数据
             LC.addEventListener('unload', this.clearPerviewData)
 
-            this.$once('hook:beforeDestroy', () => {
-                LC.removeEventListener('update', this.handleUpdatePreviewContent)
-                // 更新预览区域数据
-                LC.removeEventListener('ready', this.initPerviewData)
-                // 卸载的时候，清除 storage 数据
-                LC.removeEventListener('unload', this.clearPerviewData)
-            })
-
             // 获取并设置当前版本信息
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 
@@ -206,10 +198,17 @@
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
         },
         beforeRouteLeave (to, from, next) {
+            const self = this
             this.$bkInfo({
                 title: '确认离开?',
                 subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
                 confirmFn: async () => {
+                    // 路由离开的时候注销相关事件
+                    LC.removeEventListener('update', self.handleUpdatePreviewContent)
+                    // 更新预览区域数据
+                    LC.removeEventListener('ready', self.initPerviewData)
+                    // 卸载的时候，清除 storage 数据
+                    LC.removeEventListener('unload', self.clearPerviewData)
                     next()
                 }
             })

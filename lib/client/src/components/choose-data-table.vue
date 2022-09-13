@@ -149,7 +149,7 @@
                                 v-bk-tooltips="{
                                     boundary: 'window',
                                     width: 350,
-                                    content: '应用需需要接口【v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】的权限，用于应用调用数据平台接口'
+                                    content: '应用需要接口【v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】的权限，用于应用调用数据平台接口'
                                 }"
                             >申请权限</bk-link>
                             。如已申请，可点击上方刷新按钮获取 BkBase 结果表
@@ -159,6 +159,7 @@
             </bk-option-group>
         </bk-select>
         <bk-button
+            v-if="showDataButton"
             class="mt10"
             theme="primary"
             size="small"
@@ -190,6 +191,10 @@
             },
             dataSourceType: {
                 type: String
+            },
+            showDataButton: {
+                type: Boolean,
+                default: true
             }
         },
 
