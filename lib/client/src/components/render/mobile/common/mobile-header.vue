@@ -6,7 +6,10 @@
             <span class="mr5">5G</span>
         </div>
         <div :class="$style['header-mid']">{{time}}</div>
-        <div :class="$style['header-right']">100%</div>
+        <div :class="$style['header-right']">
+            <span>100%</span>
+            <span class="bk-drag-battery bk-drag-icon bk-drag ml5"></span>
+        </div>
     </div>
 </template>
 
@@ -41,6 +44,7 @@
   .header-right {
     flex: 4;
     text-align: right;
+    align-items: center;
   }
 }
 </style>
