@@ -179,7 +179,7 @@
                     type: 'v-for',
                     prop: '',
                     format: 'variable',
-                    formatInclude: ['value', 'variable', 'expression'],
+                    formatInclude: ['value', 'variable', 'dataSource', 'expression'],
                     code: '',
                     valueTypeInclude: ['array'],
                     renderValue: 1,
@@ -303,7 +303,8 @@
                 const {
                     format,
                     renderValue,
-                    code
+                    code,
+                    dataSourceType
                 } = variableSelectData
 
                 const directiveKey = this.genDirectiveKey(directive)
@@ -315,7 +316,8 @@
                         prop: directive.prop,
                         format,
                         code,
-                        renderValue
+                        renderValue,
+                        dataSourceType
                     }
                 })
                 this.triggleUpdate()

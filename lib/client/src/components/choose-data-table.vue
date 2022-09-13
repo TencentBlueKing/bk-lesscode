@@ -159,6 +159,7 @@
             </bk-option-group>
         </bk-select>
         <bk-button
+            v-if="showDataButton"
             class="mt10"
             theme="primary"
             size="small"
@@ -190,6 +191,10 @@
             },
             dataSourceType: {
                 type: String
+            },
+            showDataButton: {
+                type: Boolean,
+                default: true
             }
         },
 
