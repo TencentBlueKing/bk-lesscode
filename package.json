@@ -93,7 +93,7 @@
     "@blueking/bkcharts": "^2.0.11-alpha.5",
     "@blueking/bkui-vue-complex": "0.0.8",
     "@blueking/bundless": "0.0.8",
-    "@blueking/bundless-plugin-vue2": "0.0.9",
+    "@blueking/bundless-plugin-vue2": "0.0.10",
     "@blueking/magicbox-header": "~1.1.49",
     "@blueking/user-selector": "^1.0.7",
     "@icon-cool/bk-icon-vue-drag-vis": "^0.2.12",
