@@ -1,5 +1,10 @@
 <template>
-    <article>
+    <article
+        v-bkloading="{
+            isLoading,
+            title: dataSourceType === 'preview' ? '正在加载 Mysql 数据表' : '正在加载 BkBase 结果表'
+        }"
+    >
         <header>
             <render-header>
                 <span class="operation-title">
@@ -68,12 +73,7 @@
                 >SQL</div>
             </div>
         </header>
-        <main class="data-operation-home"
-            v-bkloading="{
-                isLoading,
-                title: dataSourceType === 'preview' ? '正在加载 Mysql 数据表' : '正在加载 BkBase 结果表'
-            }"
-        >
+        <main class="data-operation-home">
             <template v-if="dataSourceType === 'bk-base'">
                 <bk-alert
                     v-if="!projectInfo.appCode || !projectInfo.moduleCode"
@@ -479,7 +479,9 @@
                         queryType.value = history.type
                         if (history.type === 'json-query') {
                             jsonQueryRef.value.setRenderCondition(history.condition)
+                            sqlQuery.value = ''
                         } else {
+                            jsonQueryRef.value.handleClear()
                             sqlQuery.value = history.sql
                         }
                     })
@@ -490,7 +492,10 @@
 
             // 已选择的表，刷新页面后需要自动展开获取该数据，否则select不展示
             const getInitBkBaseTables = (condition) => {
-                const bkBizIds = condition.table.map(table => table.bkBizId)
+                const bkBizIds = condition?.table?.map(table => table.bkBizId)
+                if (!Array.isArray(bkBizIds) || bkBizIds.length <= 0) {
+                    return Promise.resolve()
+                }
                 return store
                     .dispatch('dataSource/getBkBaseTables', bkBizIds)
                     .then(({ list }) => {
