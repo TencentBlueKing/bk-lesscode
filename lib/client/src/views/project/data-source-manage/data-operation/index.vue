@@ -18,7 +18,13 @@
                             ext-cls="g-popover-empty-padding"
                             :tippy-options="{ arrow: false }"
                         >
-                            <span class="operation-source-value">
+                            <span
+                                class="operation-source-value"
+                                v-bk-tooltips="{
+                                    content: '目前只支持查询 mysql 或 tspider 的结果表',
+                                    disabled: dataSourceType === 'preview'
+                                }"
+                            >
                                 {{ dataSourceType === 'preview' ? 'Mysql 数据表' : 'BkBase 结果表' }}
                                 <i class="bk-icon icon-angle-down"></i>
                             </span>
@@ -533,7 +539,7 @@
                         projectInfo.value.id = project.id
                         projectInfo.value.appCode = project.appCode
                         projectInfo.value.moduleCode = project.moduleCode
-                        projectInfo.value.token = !dayjs(token?.data?.[0]).isAfter(dayjs()) ? token?.data?.[0] : ''
+                        projectInfo.value.token = dayjs(token?.data?.[0]?.expiresTime).isAfter(dayjs()) ? token?.data?.[0] : ''
                     })
             }
 
