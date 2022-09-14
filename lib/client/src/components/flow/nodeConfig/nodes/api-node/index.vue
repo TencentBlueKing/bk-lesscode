@@ -35,6 +35,7 @@
                         :desc="apiURLTips"
                         :required="true">
                         <bk-input v-model="formData.url" @change="update"></bk-input>
+                        <view-flow-variables></view-flow-variables>
                     </bk-form-item>
                     <bk-form-item
                         label="请求类型"
@@ -97,6 +98,7 @@
     import FormSection from '../../components/form-section.vue'
     import Processors from '../../components/processors.vue'
     import ChooseApi from '@/components/api/choose-api.vue'
+    import ViewFlowVariables from './view-flow-variables.vue'
     import QueryParams from './query-params.vue'
     import BodyParams from './body-params.vue'
     import ResponseVariable from './response-variable.vue'
@@ -109,6 +111,7 @@
             FormSection,
             Processors,
             ChooseApi,
+            ViewFlowVariables,
             QueryParams,
             BodyParams,
             ResponseVariable
