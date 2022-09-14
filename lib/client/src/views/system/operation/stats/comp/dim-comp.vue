@@ -17,7 +17,7 @@
                 @enter="handleKeywordEnter"
                 v-model="filters.keyword">
             </bk-input>
-            <export-button name="comp" :list="list" :fields="exportFields" />
+            <export-button name="comp" :list="list" :fields="exportFields" :remote-list="getAllData" />
         </div>
         <div class="data-list" v-bkloading="{ isLoading: fetching.base }">
             <bk-table
@@ -172,6 +172,82 @@
                 } finally {
                     this.fetching.versionCount = false
                 }
+            },
+            async getAllData () {
+                const total = this.pagination.count
+                let index = 1
+
+                if (this.list.length === total) {
+                    return this.list
+                }
+
+                const pageSize = 500
+
+                // 分页方法
+                const page = index => ({ pageNum: index, pageSize })
+
+                // 请求列表的req
+                const req = index => http.post('/operation/stats/comp/base', {
+                    ...this.params,
+                    ...page(index)
+                })
+
+                // 列表一共要拉取多少次
+                const max = Math.ceil(total / pageSize)
+
+                // 循环组装得到所有的req
+                const baseReqs = []
+                const projectUsedCountReqs = []
+                const pageUsedCountReqs = []
+                const versionCountReqs = []
+                while (index <= max) {
+                    baseReqs.push(req(index))
+                    index += 1
+                }
+
+                const baseAll = await Promise.all(baseReqs)
+                const results = []
+
+                baseAll.forEach(({ data: [list] }) => {
+                    const newList = list.map((item) => ({
+                        ...item,
+                        fullName: `${item.displayName}(${item.name})`,
+                        ...this.getDynamicValues()
+                    }))
+                    results.push(...newList)
+
+                    const compIds = newList.map(item => item.id)
+                    projectUsedCountReqs.push(http.post('/operation/stats/comp/projectUsedCount', { compIds }))
+                    pageUsedCountReqs.push(http.post('/operation/stats/comp/pageUsedCount', { compIds }))
+                    versionCountReqs.push(http.post('/operation/stats/comp/versionCount', { compIds }))
+                })
+
+                const projectUsedCountAll = await Promise.all(projectUsedCountReqs)
+                const pageUsedCountAll = await Promise.all(pageUsedCountReqs)
+                const versionCountAll = await Promise.all(versionCountReqs)
+
+                projectUsedCountAll.forEach(({ data: countList }) => {
+                    countList.forEach((item) => {
+                        const updateItem = results.find(comp => comp.id === item.compId)
+                        updateItem.projectUsedCount = Number(item.count)
+                    })
+                })
+
+                pageUsedCountAll.forEach(({ data: countList }) => {
+                    countList.forEach((item) => {
+                        const updateItem = results.find(comp => comp.id === item.compId)
+                        updateItem.pageUsedCount = Number(item.count)
+                    })
+                })
+
+                versionCountAll.forEach(({ data: countList }) => {
+                    countList.forEach((item) => {
+                        const updateItem = results.find(comp => comp.id === item.componentId)
+                        updateItem.versionCount = Number(item.count)
+                    })
+                })
+
+                return results
             }
         }
     }
