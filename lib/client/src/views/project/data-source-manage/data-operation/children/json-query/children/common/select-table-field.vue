@@ -21,8 +21,13 @@
     import {
         defineComponent,
         PropType,
-        computed
+        computed,
+        onMounted
     } from '@vue/composition-api'
+    import {
+        isEmpty
+    } from 'shared/util'
+
     import SelectTable, { ITable } from './select-table.vue'
     import SelectField, { IField } from './select-field.vue'
     export { IField }
@@ -48,6 +53,15 @@
             const handleChange = (val) => {
                 emit('change', val)
             }
+
+            onMounted(() => {
+                // 打开的时候默认选择第一个表
+                if (isEmpty(props.tableName) && !isEmpty(props.tableList)) {
+                    handleChange({
+                        tableName: props.tableList[0]?.tableName || ''
+                    })
+                }
+            })
 
             return {
                 tableColumns,
