@@ -207,7 +207,7 @@
                 }
             },
             toNewPage (page, toRouteName) {
-                this.$router.push({
+                this.$router.replace({
                     name: toRouteName || 'new',
                     params: {
                         projectId: this.projectId,

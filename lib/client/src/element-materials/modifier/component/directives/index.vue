@@ -41,7 +41,7 @@
                         </span>
                     </template>
                     <bk-input
-                        :value="directive.val"
+                        :value="lastDirectiveMap[genDirectiveKey(directive)].code"
                         @change="(val) => handleCodeChange(directive, val)"
                         clearable />
                 </variable-select>
@@ -185,8 +185,11 @@
                     renderValue: 1,
                     tips: (dir) => {
                         return dir.code
-                            ? `可以使用 【${this.id}Item】 为当前组件和子组件的指令或者属性赋值，当前组件的 v-if 和 v-show 除外`
-                            : '可以使用 v-for 指令， 把一个数组转换为一组元素'
+                            ? '渲染多个组件时，如果需要基于 v-for 指令的值给每个组件单独赋值。可以使用如下规则给该组件或子组件的指令或属性的表达式赋值（当前组件的 v-if 和 v-show 指令除外）：'
+                                + `<br> 1. 当输入的值为数组、数字或者对象时，请使用【${this.id}Item】为表达式赋值`
+                                + `<br> 2. 当输入的值为数组且数组子项为对象时，请使用【${this.id}Item.对象key】为表达式赋值`
+                                + `<br> 3. 当输入的值为数据表时，请使用【${this.id}Item.表字段名】为表达式赋值`
+                            : '可以使用 v-for 指令，渲染多个组件'
                     }
                 }
             )
