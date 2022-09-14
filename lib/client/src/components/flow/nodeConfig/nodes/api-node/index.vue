@@ -23,7 +23,7 @@
                     </bk-form-item>
                     <bk-form-item label="API">
                         <choose-api
-                            :excluded="['lesscode-api', 'datasource-api']"
+                            :excluded="['apigateway-api']"
                             :value="formData.selectedApi"
                             @change="handleSelectApi">
                         </choose-api>
