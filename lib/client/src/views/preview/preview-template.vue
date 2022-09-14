@@ -147,10 +147,10 @@
                             versionId: this.detail.versionId,
                             pageType: 'previewSingle',
                             fromPageCode: this.detail.fromPageCode,
-                            platform: this.detail?.layoutType
+                            platform: this.detail?.templateType || this.detail?.layoutType
                         })
                     }
-                    this.renderType = this.detail?.layoutType
+                    this.renderType = this.detail?.templateType || this.detail?.layoutType
 
                     code = code.replace('export default', 'module.exports =').replace('components: { chart: ECharts },', '')
                     const res = httpVueLoader(code)
