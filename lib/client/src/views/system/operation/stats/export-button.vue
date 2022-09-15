@@ -1,5 +1,5 @@
 <template>
-    <bk-button :disabled="!list.length" @click="handleExport">导出</bk-button>
+    <bk-button :disabled="!list.length" :loading="loading" @click="handleExport">导出</bk-button>
 </template>
 
 <script>
@@ -27,6 +27,15 @@
             fields: {
                 type: Array,
                 default: () => ([])
+            },
+            remoteList: {
+                type: Function,
+                default: null
+            }
+        },
+        data () {
+            return {
+                loading: false
             }
         },
         computed: {
@@ -57,12 +66,18 @@
                     return this.handleCommonTimeDimExport()
                 }
             },
-            handleCommonTableExport () {
+            async handleCommonTableExport () {
                 const header = this.fields.map(item => item.name)
                 const keys = this.fields.map(item => item.id)
 
+                this.loading = true
+
+                const list = this.remoteList ? await this.remoteList() : this.list
+
+                this.loading = false
+
                 const body = []
-                this.list.forEach(row => {
+                list.forEach(row => {
                     const sub = []
                     keys.forEach(key => {
                         for (const [rowKey, value] of Object.entries(row)) {
