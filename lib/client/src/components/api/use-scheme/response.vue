@@ -1,6 +1,6 @@
 <template>
     <section>
-        <scheme-header slot-label="引用为全局变量" />
+        <scheme-header slot-label="设置为全局变量" />
         <single-scheme
             ref="singleSchemeRef"
             :scheme="renderResponseParam"
