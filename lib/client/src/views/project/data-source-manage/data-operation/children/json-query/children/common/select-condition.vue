@@ -27,6 +27,7 @@
                 :field-id="condition.fieldId"
                 :table-name="condition.tableName"
                 :table-list="tableList"
+                :custom-validate="customValidate"
                 @change="(val) => handleTableChange(index, val)"
             />
             <select-type
@@ -100,6 +101,9 @@
             allowClear: {
                 type: Boolean,
                 default: false
+            },
+            customValidate: {
+                type: Function
             }
         },
 

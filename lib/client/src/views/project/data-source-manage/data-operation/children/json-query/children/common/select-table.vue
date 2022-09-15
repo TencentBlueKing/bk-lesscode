@@ -29,7 +29,6 @@
         PropType,
         watch,
         ref,
-        getCurrentInstance,
         onBeforeUnmount
     } from '@vue/composition-api'
     import {
@@ -54,7 +53,6 @@
 
         setup (props, { emit }) {
             const isError = ref(false)
-            const instance = getCurrentInstance()
 
             const handleChange = (val) => {
                 if (!isEmpty(val)) {
@@ -87,8 +85,8 @@
             )
 
             // 本组件需要注册校验方法
-            validateContainer.register(instance.proxy)
-            onBeforeUnmount(() => validateContainer.unRegister(instance.proxy))
+            validateContainer.register(validate)
+            onBeforeUnmount(() => validateContainer.unRegister(validate))
 
             return {
                 isError,
