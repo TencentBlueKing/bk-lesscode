@@ -38,10 +38,13 @@
                                 'directive-label': true
                             }">
                             {{ getLabel(directive) }}
+                            <span class="directive-tip">
+                                {{ getTips(directive) }}
+                            </span>
                         </span>
                     </template>
                     <bk-input
-                        :value="directive.val"
+                        :value="lastDirectiveMap[genDirectiveKey(directive)].code"
                         @change="(val) => handleCodeChange(directive, val)"
                         clearable />
                 </variable-select>
@@ -281,15 +284,31 @@
                 switch (type) {
                     case 'v-model':
                     case 'v-html':
-                        res = type
-                        break
                     case 'v-for':
-                        const tips = directive.val ? `(${this.id}Item)` : ''
-                        res = `${type}${tips}`
+                        res = type
                         break
                     default:
                         const modifierStr = (modifiers || []).map((modifier) => `.${modifier}`).join('')
                         res = `${type}${prop ? `:${prop}` : ''}${modifierStr}`
+                        break
+                }
+                return res
+            },
+            /**
+             * 获取指令提示
+             */
+            getTips (directive) {
+                const {
+                    type
+                } = directive
+                let res = ''
+                switch (type) {
+                    case 'v-for':
+                        const lastDirective = this.lastDirectiveMap[this.genDirectiveKey(directive)]
+                        res = lastDirective.code ? `（${this.id}Item）` : ''
+                        break
+                    default:
+                        res = ''
                         break
                 }
                 return res
