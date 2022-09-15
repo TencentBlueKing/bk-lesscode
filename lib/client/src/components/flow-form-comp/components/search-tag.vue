@@ -55,7 +55,7 @@
             },
             close (key) {
                 this.localVal[key] = ''
-                this.$emit('update:value', { ...this.localVal })
+                this.$emit('change', { ...this.localVal })
             },
             transValToName (field) {
                 let name = ''

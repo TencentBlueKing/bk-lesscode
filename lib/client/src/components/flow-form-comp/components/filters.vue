@@ -79,10 +79,8 @@
             }
         },
         watch: {
-            value: {
-                handler (val) {
-                    this.localVal = cloneDeep(val)
-                }
+            value (val) {
+                this.localVal = cloneDeep(val)
             }
         },
         methods: {
@@ -98,11 +96,11 @@
                         const fieldCopy = cloneDeep(field)
                         // 选择值类型的字段统一用select组件来做筛选
                         if (this.isSelectComp(fieldCopy.type)) {
-                            fieldCopy.type = 'SELECT'
-                            fieldCopy.placeholder = `请选择${field.name}`
+                            fieldCopy.type = ['MULTISELECT', 'CHECKBOX'].includes(fieldCopy.type) ? 'MULTISELECT' : 'SELECT'
+                            fieldCopy.placeholder = `请选择${fieldCopy.name}`
                         }
                         filterFields.push(fieldCopy)
-                        localVal[fieldCopy.key] = ''
+                        localVal[fieldCopy.key] = key in this.value ? cloneDeep(this.value[key]) : ''
                     }
                 })
                 return { filterFields, localVal }
@@ -114,7 +112,7 @@
                 const value = []
                 val.map(item => {
                     if (item !== '') {
-                        value.push(new Date(item))
+                        value.push(item)
                     }
                 })
                 this.localVal[key] = value
@@ -126,7 +124,7 @@
                 this.update()
             },
             update () {
-                this.$emit('update:value', { ...this.localVal })
+                this.$emit('change', { ...this.localVal })
             }
         }
     }

@@ -206,7 +206,7 @@
                     console.error(e)
                 }
             },
-            async getFieldList (tableName) {
+            getFieldList (tableName) {
                 this.fieldList = JSON.parse(this.formList.find(item => item.tableName === tableName).content)
             },
             getRelationList () {
