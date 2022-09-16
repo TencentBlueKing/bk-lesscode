@@ -51,7 +51,8 @@
         },
         data () {
             return {
-                mobileHeight: '812',
+                height: 812,
+                headerHeight: 30,
                 mobileWidth: '375',
                 isCustomComponentLoading: true,
                 detail: {},
@@ -64,6 +65,9 @@
             }
         },
         computed: {
+            mobileHeight () {
+                return this.height + this.headerHeight
+            },
             fromTemplateList () {
                 return this.$route.query.type && this.$route.query.type === 'viewTemplate'
             },
@@ -179,7 +183,7 @@
                     <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px', overflow: 'auto' }">
                         <div class="mobile-content-wrapper">
                             <mobileHeader />
-                            <component :is="comp" :is-loading="isLoading" style="flex: 1"/>
+                            <component :is="comp" :is-loading="isLoading"/>
                         </div>
                     </div>
                 </div>
@@ -205,8 +209,7 @@
             .mobile-content-wrapper {
                 height: 100%;
                 width: 100%;
-                transform: translate(0, 0);
-                pointer-events: none;
+                overflow: hidden;
                 display: flex;
                 flex-direction: column;
             }
