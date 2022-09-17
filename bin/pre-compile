@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
 
 echo "pre Hook: this runs before npm install"
-
-echo `export NODE_OPTIONS="--max-old-space-size=8192"`
-
 echo `npm config list`
