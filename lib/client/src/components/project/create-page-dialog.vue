@@ -201,7 +201,7 @@
                 return this.layoutList.filter(layout => layout.layoutType === this.platform)
             },
             showAddNavListSwitcher () {
-                return this.platform !== 'MOBILE' && this.selectedLayout.type && this.selectedLayout.type !== 'empty'
+                return this.selectedLayout.type && !['empty', 'mobile-empty'].includes(this.selectedLayout.type)
             },
             pageCodePlaceholder () {
                 return ['FORM', 'FLOW'].includes(this.nocodeType)
@@ -219,9 +219,11 @@
             async initData () {
                 try {
                     const layoutList = await this.$store.dispatch('layout/getList', { projectId: this.projectId, versionId: this.versionId })
+                    const noDefaultMobileLayout = layoutList.findIndex(item => item.layoutType === 'MOBILE' && item.isDefault === 1)
                     
                     layoutList.forEach(item => {
-                        if (item.layoutType === 'MOBILE') {
+                        // 如果移动端没有默认模板(兼容旧数据),则将mobile-empty选为默认
+                        if (noDefaultMobileLayout === -1 && item.layoutType === 'MOBILE') {
                             item.checked = item.type === 'mobile-empty'
                         } else {
                             item.checked = item.isDefault === 1

@@ -17,7 +17,7 @@
                 @enter="handleKeywordEnter"
                 v-model="filters.keyword">
             </bk-input>
-            <export-button name="project" :list="list" :fields="exportFields" />
+            <export-button name="project" :list="list" :fields="exportFields" :remote-list="getAllData" />
         </div>
         <div class="data-list" v-bkloading="{ isLoading: fetching.base }">
             <bk-table
@@ -140,6 +140,62 @@
                 } finally {
                     this.fetching.pageCount = false
                 }
+            },
+            async getAllData () {
+                const total = this.pagination.count
+                let index = 1
+
+                if (this.list.length === total) {
+                    return this.list
+                }
+
+                const pageSize = 500
+
+                // 分页方法
+                const page = index => ({ pageNum: index, pageSize })
+
+                // 请求列表的req
+                const req = index => http.post('/operation/stats/project/base', {
+                    ...this.params,
+                    ...page(index)
+                })
+
+                // 列表一共要拉取多少次
+                const max = Math.ceil(total / pageSize)
+
+                // 循环组装得到所有的req
+                const baseReqs = []
+                const pageCountReqs = []
+                while (index <= max) {
+                    baseReqs.push(req(index))
+                    index += 1
+                }
+
+                const baseAll = await Promise.all(baseReqs)
+
+                const results = []
+
+                baseAll.forEach(({ data: [list] }) => {
+                    const newList = list.map((item) => ({
+                        ...item,
+                        ...this.getDynamicValues()
+                    }))
+                    results.push(...newList)
+
+                    const projectIds = newList.map(item => item.id)
+                    pageCountReqs.push(http.post('/operation/stats/project/pageCount', { projectIds }))
+                })
+
+                const pageCountAll = await Promise.all(pageCountReqs)
+
+                pageCountAll.forEach(({ data: countList }) => {
+                    countList.forEach((item) => {
+                        const updateItem = results.find(project => project.id === item.projectId)
+                        updateItem.pageCount = Number(item.count)
+                    })
+                })
+
+                return results
             }
         }
     }

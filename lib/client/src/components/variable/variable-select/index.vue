@@ -40,6 +40,13 @@
                     :form-data="formData"
                     @on-change="handleChange"
                 />
+                <render-table
+                    v-if="formData.format === 'dataSource'"
+                    :show-data-button="false"
+                    :value="formData.code"
+                    :data-source-type="formData.dataSourceType"
+                    @choose-table="handleChooseTable"
+                />
             </div>
         </template>
     </section>
@@ -48,12 +55,14 @@
     import _ from 'lodash'
     import RenderVariable from './components/variable'
     import RenderExpression from './components/expression'
+    import RenderTable from '@/components/choose-data-table.vue'
 
     const genFormData = ({
         format,
         code = '',
         valueType = [],
-        renderValue
+        renderValue,
+        dataSourceType
     }) => ({
         // 类型（value、variable、expression）
         format,
@@ -62,19 +71,23 @@
         // 最终值的类型
         valueType,
         // 编辑器渲染值
-        renderValue
+        renderValue,
+        // 数据源类型
+        dataSourceType
     })
 
     const formatTypeMap = {
         value: '值',
         variable: '变量',
+        dataSource: '数据表',
         expression: '表达式'
     }
 
     export default {
         components: {
             RenderVariable,
-            RenderExpression
+            RenderExpression,
+            RenderTable
         },
         props: {
             show: {
@@ -100,7 +113,7 @@
              */
             options: {
                 type: Object,
-                required: true
+                default: () => ({})
             },
             /**
              * @desc 值数据
@@ -169,6 +182,14 @@
                 })
             },
             /**
+             * 选择数据源的时候
+             */
+            handleChooseTable ({ tableName, dataSourceType }) {
+                this.formData.code = tableName
+                this.formData.dataSourceType = dataSourceType
+                this.triggerChange()
+            },
+            /**
              * @desc 格式改变
              * @param { String } format
              * code 代表 选择的变量 或者 填写的表达式
@@ -203,7 +224,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 12px;
             color: #63656E;
             word-break: keep-all;
             width: 100%;
@@ -211,7 +232,6 @@
         .format-list {
             position: absolute;
             right: 0;
-            top: 5px;
             border: none;
             /deep/ .bk-select-angle {
                 font-size: 16px;
@@ -275,7 +295,6 @@
         .display-content {
             width: 100%;
             margin-bottom: 16px;
-            margin-top: 4px;
         }
     }
 </style>

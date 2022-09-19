@@ -6,14 +6,14 @@
         <choose-data-table
             class="g-mb8"
             :value="sourceData.tableName"
-            :is-loading.sync="isLoading"
-            @choose="chooseTable"
+            :data-source-type="sourceData.dataSourceType"
+            @choose-table="chooseTable"
+            @fetch-data="handleFetchData"
             @clear="clearTable"
         />
         <select-key
             :params="sourceData.keys"
-            :options="optionList"
-            :is-loading="isLoading"
+            :options="sourceData.columns"
             @change="changeParams"
         />
     </section>
@@ -66,26 +66,34 @@
                 slotConfig,
                 change
             } = toRefs<Iprop>(props)
-            const isLoading = ref(false)
             // 参数原始值
             const originSourceData = slotVal?.value?.payload?.sourceData
             // 构造此处需要使用的数据
             const sourceData = ref({
                 val: [],
                 tableName: originSourceData?.tableName,
+                dataSourceType: originSourceData?.dataSourceType,
+                columns: originSourceData?.columns,
                 keys: {
                     idKey: originSourceData?.keys?.idKey,
                     nameKey: originSourceData?.keys?.nameKey
                 }
             })
-            const optionList = ref([])
 
-            const chooseTable = ({ tableName, data, table }) => {
-                optionList.value = table?.columns.map(column => column.name)
-                sourceData.value.keys.idKey = sourceData.value.keys.idKey || optionList.value[0]
-                sourceData.value.keys.nameKey = sourceData.value.keys.nameKey || optionList.value[0]
-                sourceData.value.val = data.list
+            const chooseTable = ({ tableName, table, dataSourceType }) => {
+                sourceData.value.columns = table?.columns.map(column => column.name)
+                if (sourceData.value.tableName !== tableName) {
+                    sourceData.value.keys.idKey = sourceData.value.columns[0]
+                    sourceData.value.keys.nameKey = sourceData.value.columns[0]
+                }
+                sourceData.value.val = []
                 sourceData.value.tableName = tableName
+                sourceData.value.dataSourceType = dataSourceType
+                triggleUpdate()
+            }
+
+            const handleFetchData = ({ list }) => {
+                sourceData.value.val = list
                 triggleUpdate()
             }
 
@@ -97,6 +105,8 @@
             const clearTable = () => {
                 sourceData.value.val = slotConfig?.value?.val
                 sourceData.value.tableName = ''
+                sourceData.value.dataSourceType = ''
+                sourceData.value.columns = []
                 triggleUpdate()
             }
 
@@ -107,6 +117,8 @@
                     payload: {
                         sourceData: {
                             tableName: sourceData.value.tableName,
+                            dataSourceType: sourceData.value.dataSourceType,
+                            columns: sourceData.value.columns,
                             keys: {
                                 ...sourceData.value.keys
                             }
@@ -118,9 +130,8 @@
 
             return {
                 sourceData,
-                optionList,
-                isLoading,
                 chooseTable,
+                handleFetchData,
                 changeParams,
                 clearTable
             }

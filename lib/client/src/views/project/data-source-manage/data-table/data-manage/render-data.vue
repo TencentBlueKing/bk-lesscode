@@ -23,6 +23,7 @@
             :outer-border="false"
             :data="dataStatus.dataList"
             :pagination="dataStatus.pagination"
+            :size="tableSetting.size"
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
@@ -33,19 +34,35 @@
                 type="selection"
                 width="60"
             ></bk-table-column>
-            <bk-table-column
+            <template
                 v-for="column in activeTable.columns"
-                :key="column.name"
-                :label="column.name"
-                :prop="column.name"
-                :formatter="columnFormatter(column.type)"
-                show-overflow-tooltip
-            ></bk-table-column>
+            >
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find(selectedField => selectedField.id === column.name)"
+                    :key="column.name"
+                    :label="column.name"
+                    :prop="column.name"
+                    :formatter="columnFormatter(column.type)"
+                    show-overflow-tooltip
+                ></bk-table-column>
+            </template>
             <bk-table-column label="操作" width="180">
                 <template slot-scope="props">
                     <bk-button text @click="editData(props.row)" class="mr10">编辑</bk-button>
                     <bk-button text @click="deleteData([props.row])">删除</bk-button>
                 </template>
+            </bk-table-column>
+            <bk-table-column
+                type="setting"
+                :tippy-options="{ zIndex: 3000 }"
+            >
+                <bk-table-setting-content
+                    :fields="tableSetting.fields"
+                    :selected="tableSetting.selectedFields"
+                    :max="tableSetting.max"
+                    :size="tableSetting.size"
+                    @setting-change="handleTableSettingChange">
+                </bk-table-setting-content>
             </bk-table-column>
         </bk-table>
 
@@ -221,6 +238,29 @@
                 dataParse: {},
                 isSaving: false
             })
+            const tableSetting = ref({
+                fields: [],
+                selectedFields: [],
+                max: 3,
+                size: 'small'
+            })
+
+            const calcTableSetting = () => {
+                const fields = activeTable
+                    .value
+                    .columns
+                    .map(column => ({
+                        id: column.name,
+                        label: column.name
+                    }))
+                tableSetting.value.fields = fields
+                tableSetting.value.selectedFields = fields
+            }
+
+            const handleTableSettingChange = ({ fields, size }) => {
+                tableSetting.value.size = size
+                tableSetting.value.selectedFields = fields
+            }
 
             const selectionChange = (selections) => {
                 dataStatus.selectRows = selections
@@ -433,20 +473,26 @@
                 () => {
                     dataStatus.pagination.current = 1
                     getDataList()
+                    calcTableSetting()
                 }
             )
 
-            onBeforeMount(getDataList)
+            onBeforeMount(() => {
+                getDataList()
+                calcTableSetting()
+            })
 
             return {
                 formRef,
                 dataStatus,
                 formStatus,
+                tableSetting,
                 getColumnRule,
                 columnFormatter,
                 timeFormatter,
                 changeDateTime,
                 changeDate,
+                handleTableSettingChange,
                 selectionChange,
                 handlePageChange,
                 handlePageLimitChange,

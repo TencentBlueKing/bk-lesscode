@@ -1,5 +1,9 @@
 <template>
-    <section v-if="isShow" class="func-form-home">
+    <section
+        v-if="isShow"
+        class="func-form-home"
+        @click.self="handleClose"
+    >
         <section class="source-code">
             <section class="func-form-main">
                 <h3 class="func-form-title">源码预览</h3>
@@ -87,7 +91,7 @@
         right: 0;
         bottom: 0;
         background: rgba(0,0,0,0.6);
-        z-index: 500;
+        z-index: 9000;
         .source-code {
             position: absolute;
             background: #fff;
