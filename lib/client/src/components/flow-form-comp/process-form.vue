@@ -172,6 +172,7 @@
                                 if (typeof message === 'string' && message.includes('服务未启用')) {
                                     return '当前流程未部署，请部署后提单'
                                 }
+                                return message
                             }
                         }
                         const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
