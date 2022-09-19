@@ -454,8 +454,8 @@
                             params: {
                                 page: this.renderPagination?.current,
                                 pageSize: this.renderPagination?.limit,
-                                sortKey: this.sortObject.key,
-                                sortValue: this.sortObject.value,
+                                bkSortKey: this.sortObject.key,
+                                bkSortValue: this.sortObject.value,
                                 ...this.queryObject
                             }
                         }

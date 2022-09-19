@@ -3,7 +3,9 @@
         <span class="g-prop-sub-title g-mb8">数据表</span>
         <choose-data-table
             :value="chooseTableName"
-            @choose="chooseTable"
+            :data-source-type="dataSourceType"
+            @choose-table="chooseTable"
+            @fetch-data="handleFetchData"
             @clear="clearTable"
         ></choose-data-table>
     </section>
@@ -54,24 +56,31 @@
             const type = props.type
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
+            const dataSourceType = ref(propStatus.payload?.value?.sourceData?.dataSourceType)
 
-            const chooseTable = ({ tableName, data }) => {
-                triggleUpdate(tableName, data.list)
+            const chooseTable = ({ tableName, dataSourceType }) => {
+                triggleUpdate(tableName, [], dataSourceType)
+            }
+
+            const handleFetchData = ({ list }) => {
+                triggleUpdate(chooseTableName.value, list, dataSourceType.value)
             }
 
             const clearTable = () => {
-                triggleUpdate('', props.describe.val)
+                triggleUpdate('', props.describe.val, '')
             }
 
-            const triggleUpdate = (tableName, val) => {
+            const triggleUpdate = (tableName, val, bkDataSourceType) => {
                 chooseTableName.value = tableName
+                dataSourceType.value = bkDataSourceType
                 propStatus.change.value(
                     props.name,
                     val,
                     type,
                     {
                         sourceData: {
-                            tableName: tableName
+                            tableName,
+                            dataSourceType: bkDataSourceType
                         }
                     }
                 )
@@ -79,6 +88,8 @@
 
             return {
                 chooseTableName,
+                handleFetchData,
+                dataSourceType,
                 chooseTable,
                 clearTable
             }

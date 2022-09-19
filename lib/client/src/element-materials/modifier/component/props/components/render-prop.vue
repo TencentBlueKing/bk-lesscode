@@ -156,6 +156,7 @@
     import TypeTableDataSource from './strategy/table-data-source.vue'
     import TypeSrc from './strategy/src.vue'
     import TypePagination from './strategy/pagination.vue'
+    import TypeRouteList from './strategy/route-list.vue'
 
     const getRealValue = (type, target) => {
         if (type === 'object') {
@@ -271,7 +272,8 @@
                     'table-data-source': TypeTableDataSource,
                     'src': TypeSrc,
                     'srcset': TypeList,
-                    'pagination': TypePagination
+                    'pagination': TypePagination,
+                    'route': TypeRouteList
                 }
 
                 const typeMap = {
@@ -313,7 +315,8 @@
                     'table-data-source': 'table-data-source',
                     'src': 'src',
                     'srcset': 'srcset',
-                    'pagination': 'pagination'
+                    'pagination': 'pagination',
+                    'route': 'route'
                 }
 
                 let realType = config.type
@@ -571,7 +574,16 @@
                     let code = null
                     let renderValue = this.formData.renderValue
 
-                    const val = getRealValue(type, value)
+                    let val = getRealValue(type, value)
+
+                    // 防止数据量太大，画布区卡死
+                    if (Array.isArray(val)
+                        && val.length > 100
+                        && ['remote', 'table-data-source', 'data-source', 'select-data-source'].includes(this.formData.valueType)
+                    ) {
+                        val = val.slice(0, 100)
+                        this.messageInfo(`属性【${name}】的值大于 100 条，画布区限制渲染 100 条。实际数据请在预览或者部署后查看`)
+                    }
 
                     if (this.formData.valueType === 'remote') {
                         // 配置的是远程函数、数据源

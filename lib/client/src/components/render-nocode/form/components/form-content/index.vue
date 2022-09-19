@@ -34,6 +34,7 @@
     import FieldElement from '../form-edit/fieldElement.vue'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
+    import { getTypeDefaultVal } from 'shared/no-code'
 
     export default {
         components: {
@@ -94,9 +95,6 @@
                 const { type } = e.item.dataset
                 const columnId = uuid(8)
                 const field = FIELDS_TYPES.find(item => item.type === type)
-                const defaultVal = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE'].includes(type)
-                    ? ''
-                    : cloneDeep(field.default)
                 const key = this.generateKey(field.name, columnId)
                 const config = {
                     columnId, // lesscode特定字段
@@ -111,10 +109,10 @@
                     source_type: 'CUSTOM', // 数据来源类型 [CUSTOM, API, DATADICT, RPC, WORKSHEET]
                     api_instance_id: null, // 源数据的kv关系配置
                     kv_relation: {}, // 源数据的kv关系配置
-                    default: defaultVal, // 默认值
+                    default: getTypeDefaultVal(type), // 默认值
                     choice: this.getDefaultChoice(type), // 选项
                     worksheet_id: this.formId, // 表单id
-                    meta: {}, // 复杂描述信息
+                    meta: {}, // 复杂描述信息，data_config描述数据源，default_val_config描述默认值关联规则
                     show_conditions: {}, // 显隐藏条件
                     read_only_conditions: {}, // 只读条件
                     mandatory_conditions: {}, // 必填条件

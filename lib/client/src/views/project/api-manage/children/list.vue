@@ -21,46 +21,88 @@
                 :outer-border="false"
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
+                :size="tableSetting.size"
                 v-bkloading="{ isLoading }"
             >
-                <bk-table-column label="名称" prop="name" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'name')"
+                    label="名称"
+                    prop="name"
+                    show-overflow-tooltip
+                    sortable
+                >
                     <template slot-scope="props">
                         <span>{{ props.row.name || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="标识" prop="code" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'code')"
+                    label="标识"
+                    prop="code"
+                    show-overflow-tooltip
+                    sortable
+                >
                     <template slot-scope="props">
                         <span>{{ props.row.code || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="所属分类" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'categoryName')"
+                    label="所属分类"
+                    show-overflow-tooltip
+                    sortable
+                >
                     {{ categoryName }}
                 </bk-table-column>
-                <bk-table-column label="方法" prop="method" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'method')"
+                    label="方法"
+                    prop="method"
+                    show-overflow-tooltip
+                    sortable
+                >
                     <template slot-scope="props">
                         <span :class="[props.row.method, 'api-type']">{{ firstUpperCase(props.row.method) }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="路径" prop="url" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'url')"
+                    label="路径"
+                    prop="url"
+                    show-overflow-tooltip
+                    sortable
+                >
                     <template slot-scope="props">
                         <span>{{ props.row.url || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="默认请求参数" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'query')"
+                    label="默认请求参数"
+                    show-overflow-tooltip
+                >
                     <template slot-scope="props">
                         <bk-button :text="true" title="primary" @click="showParamModel(props.row)">
                             查看
                         </bk-button>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="请求响应示例" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'response')"
+                    label="请求响应示例"
+                    show-overflow-tooltip
+                >
                     <template slot-scope="props">
                         <bk-button :text="true" title="primary" @click="showResponseModel(props.row)">
                             查看
                         </bk-button>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="引用" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'useInfo')"
+                    label="引用"
+                    show-overflow-tooltip
+                >
                     <template slot-scope="props">
                         <span
                             v-bk-tooltips.light="{
@@ -73,23 +115,54 @@
                         </span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="备注" prop="funcSummary" show-overflow-tooltip>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'funcSummary')"
+                    label="备注"
+                    prop="funcSummary"
+                    show-overflow-tooltip
+                    sortable
+                >
                     <template slot-scope="props">
                         <span>{{ props.row.summary || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="更新人" prop="updateUser"></bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
-                <bk-table-column label="操作" width="240">
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateUser')"
+                    label="更新人"
+                    prop="updateUser"
+                    sortable
+                ></bk-table-column>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateTime')"
+                    label="更新时间"
+                    prop="updateTime"
+                    :formatter="timeFormatter"
+                    show-overflow-tooltip
+                    sortable
+                ></bk-table-column>
+                <bk-table-column
+                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'operation')"
+                    label="操作"
+                    width="240"
+                >
                     <template slot-scope="props">
                         <span class="table-btn" @click="handleEditApi(props.row)">编辑</span>
                         <span class="table-btn" @click="handleCopyApi(props.row)">复制</span>
                         <span class="table-btn" @click="handleCreateFunction(props.row)">生成函数</span>
-                        <span @click="handleDeleteApi(props.row)"
-                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
-                            :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
-                        >删除</span>
+                        <span class="table-btn" @click="handleDeleteApi(props.row)">删除</span>
                     </template>
+                </bk-table-column>
+                <bk-table-column
+                    type="setting"
+                    :tippy-options="{ zIndex: 3000 }"
+                >
+                    <bk-table-setting-content
+                        :fields="tableSetting.fields"
+                        :selected="tableSetting.selectedFields"
+                        :max="tableSetting.max"
+                        :size="tableSetting.size"
+                        @setting-change="handleTableSettingChange">
+                    </bk-table-setting-content>
                 </bk-table-column>
             </bk-table>
         </section>
@@ -105,6 +178,7 @@
         <edit-func-sideslider
             title="添加函数"
             :is-show="editFuncObj.isShow"
+            :is-edit="false"
             :func-data="editFuncObj.funcData"
             @close="handleCloseFunction"
         />
@@ -132,6 +206,7 @@
 
         <bk-dialog
             width="1000"
+            header-position="left"
             :title="apiModel.title"
             v-model="apiModel.show"
         >
@@ -161,6 +236,21 @@
         FUNCTION_TYPE,
         FUNCTION_TIPS
     } from 'shared/function'
+
+    const tableFields = [
+        { id: 'name', label: '名称', disabled: true },
+        { id: 'code', label: '标识' },
+        { id: 'categoryName', label: '所属分类' },
+        { id: 'method', label: '方法' },
+        { id: 'url', label: '路径' },
+        { id: 'query', label: '默认请求参数' },
+        { id: 'response', label: '请求响应示例' },
+        { id: 'useInfo', label: '引用' },
+        { id: 'funcSummary', label: '备注' },
+        { id: 'updateUser', label: '更新人' },
+        { id: 'updateTime', label: '更新时间' },
+        { id: 'operation', label: '操作' }
+    ]
 
     export default {
         components: {
@@ -201,6 +291,12 @@
                 editFuncObj: {
                     isShow: false,
                     funcData: {}
+                },
+                tableSetting: {
+                    max: 3,
+                    fields: tableFields,
+                    selectedFields: tableFields,
+                    size: 'small'
                 }
             }
         },
@@ -376,6 +472,11 @@
 
             firstUpperCase (val) {
                 return val?.replace(/.?/, x => x.toUpperCase())
+            },
+
+            handleTableSettingChange ({ fields, size }) {
+                this.tableSetting.size = size
+                this.tableSetting.selectedFields = fields
             }
         }
     }

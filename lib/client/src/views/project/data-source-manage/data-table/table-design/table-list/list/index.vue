@@ -39,7 +39,7 @@
             <bk-table-column label="字符集" width="100">utf8mb4</bk-table-column>
             <bk-table-column label="备注" prop="summary" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="更新人" prop="updateUser" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="更新时间" prop="updateTime" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column label="更新时间" prop="updateTime" width="160" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="操作" width="220">
                 <template slot-scope="props">
                     <bk-button class="mr10" theme="primary" text @click="goToDataDesign(props.row)">表结构设计</bk-button>

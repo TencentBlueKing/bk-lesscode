@@ -74,7 +74,10 @@
 
             handleClearEvent () {
                 this.$emit('update', {
-                    [this.eventName]: ''
+                    [this.eventName]: {
+                        ...this.eventValue,
+                        methodCode: ''
+                    }
                 })
             },
 

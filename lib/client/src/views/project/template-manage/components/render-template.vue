@@ -217,7 +217,7 @@
                 if (!template.content) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '该页面为空页面，请先编辑页面'
+                        message: '该模板内容为空'
                     })
                     return
                 }
@@ -240,7 +240,8 @@
                     vars: []
                 }
                 const { varList: vars = [], funcList: functions = [] } = await this.getVarAndFuncList(template)
-                Object.assign(templateJson, { functions, vars }, { template })
+                const newTemplate = Object.assign({}, template, { createUser: '', updateUser: '' })
+                Object.assign(templateJson, { functions, vars }, { template: newTemplate })
 
                 const jsonStr = JSON.stringify(templateJson)
                 const downlondEl = document.createElement('a')
@@ -333,7 +334,7 @@
                         }
                         .preview {
                             .mask {
-                                background: rgba(0, 0, 0, 0.4);
+                                background: rgba(0, 0, 0, 0.1);
                                 .operate-btns {
                                     display: block;
                                     opacity: 1;
@@ -418,7 +419,7 @@
                             left: 0;
                             width: 100%;
                             height: 100%;
-                            background: rgba(0, 0, 0, 0.1);
+                            background: rgba(0, 0, 0, 0.02);
                             display: flex;
                             align-items: center;
                             .operate-btns {

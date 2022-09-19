@@ -3,7 +3,7 @@
         <div class="header" v-if="!isComplexSide">{{ templateData.showName }}</div>
         <div class="main" :class="{ 'is-complex-side': isComplexSide }">
             <editor-prop
-                v-if="!isComplexSide"
+                v-if="!isComplexSide && !isMobileLayout "
                 v-bind="templateData"
                 @on-change="handleChange" />
             <div ref="container" :class="{ 'container': true, 'is-complex': isComplexSide }">
@@ -19,17 +19,19 @@
     import { bus } from '@/common/bus'
     import EditorProp from './editor/prop'
     import RenderInfo from './info'
-    import RenderMenu from './side-menu'
-    import RenderTopMenu from './top-menu'
+    import RenderMenu from './side-menu/index.tsx'
+    import RenderTopMenu from './top-menu/index.tsx'
     import RenderComplexTop from './complex-top'
     import RenderComplexSide from './complex-side'
+    import RenderMobileBottomMenu from './mobile-tab-bar'
 
     const panelComMap = {
         info: RenderInfo,
         menu: RenderMenu,
         topMenu: RenderTopMenu,
         complexTop: RenderComplexTop,
-        complexSide: RenderComplexSide
+        complexSide: RenderComplexSide,
+        mobileBottomMenu: RenderMobileBottomMenu
     }
 
     export default {
@@ -52,6 +54,9 @@
             },
             isComplexSide () {
                 return this.templateData.panelActive === 'complexSide'
+            },
+            isMobileLayout () {
+                return this.templateData.panelActive === 'mobileBottomMenu'
             }
         },
         methods: {

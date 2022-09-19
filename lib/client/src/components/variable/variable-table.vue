@@ -270,8 +270,12 @@
                                     tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.key}】插槽`)
                                 } else if (detail.type === 'slots') {
                                     tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.slot}】插槽`)
+                                } else if (detail.source === 'lifecycle') {
+                                    tips.push(`页面【${pageCode}】的【${detail.key}】的生命周期`)
+                                } else if (detail.source === 'event') {
+                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.key}】事件`)
                                 } else {
-                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.type}】指令`)
+                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.type || detail.source}】指令`)
                                 }
                             })
                             break
@@ -330,6 +334,7 @@
         line-height: 16px;
     }
     /deep/ .delete-dialog-wrapper {
+        text-align: center;
         .bk-dialog-footer {
             text-align: center;
             padding: 0 65px 40px;
