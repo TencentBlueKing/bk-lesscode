@@ -12,19 +12,10 @@
 <template>
     <div
         v-if="isShow"
-        class="modifier-form">
-        <remote
-            name="initFormData"
-            title="表单数据（更新将会覆盖已有数据）"
-            tips="绑定函数后，需要手动获取初始表单数据"
-            :auto-get-data="false"
-            :default-value="{}"
-            :remote-validate="validateObjectMethod"
-            :change="transformRemoteDataToNode"
-            :describe="formConfig" />
-        <div
-            class="form-slot-title"
-            style="margin: 20px 0 10px;">
+        class="modifier-form"
+    >
+        <init-form :component-node="componentNode" :handle-submit-form-item="handleSubmitFormItem" />
+        <div class="form-title">
             表单内容配置
         </div>
         <div
@@ -85,22 +76,15 @@
 <script>
     import _ from 'lodash'
     import LC from '@/element-materials/core'
-    import remote from '@/element-materials/modifier/component/props/components/strategy/remote'
-    import formItemEdit from './components/form-item-edit'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
-
-    const getFormTypeFromValue = (val) => {
-        if (typeof val === 'boolean') {
-            return 'switcher'
-        } else if (Array.isArray(val)) {
-            return 'checkbox-group'
-        }
-        return 'input'
-    }
+    import formItemEdit from './components/form-item-edit'
+    import initForm from './components/init-form'
+    import { getSubmitFormDataFunc, getResetFormValueFunc } from './components/form-helper'
 
     const getDefaultValFromType = (type) => {
         const typeValMap = {
             'switcher': false,
+            'checkbox': false,
             'checkbox-group': []
         }
         return typeValMap[type] || ''
@@ -121,6 +105,7 @@
         'switcher': 'bk-switcher',
         'radio-group': 'bk-radio-group',
         'checkbox-group': 'bk-checkbox-group',
+        'checkbox': 'bk-checkbox',
 
         'bk-input': 'input',
         'bk-select': 'select',
@@ -134,27 +119,26 @@
     export default {
         name: '',
         components: {
-            remote,
-            formItemEdit
+            formItemEdit,
+            initForm
         },
         inheritAttrs: false,
         data () {
             return {
                 isShow: false,
                 isShowOperation: false,
-                editFormItemData: {},
-                // 数据示例基于配置的value来展示值，这里需要传入一份配置的标准值
-                formConfig: {
-                    val: {
-                        'string': '',
-                        'boolean': false,
-                        'array': [
-                            1,
-                            2,
-                            3
-                        ]
-                    }
+                editFormItemData: {}
+            }
+        },
+
+        computed: {
+            formModelKey () {
+                const modelProps = this.componentNode.renderProps?.model || {}
+                let formModelKey = `${camelCase(this.componentNode.componentId, { transform: camelCaseTransformMerge })}model`
+                if (modelProps?.buildInVariableType === 'CUSTOM' && modelProps.payload?.customVariableCode) {
+                    formModelKey = modelProps.payload?.customVariableCode
                 }
+                return formModelKey
             }
         },
         
@@ -220,7 +204,7 @@
             /**
              * @desc 提交表单项
             */
-            handleSubmitFormItem (itemData) {
+            handleSubmitFormItem (itemData, payload = {}) {
                 const genInputNode = name => {
                     const node = LC.createNode(typeEnum[name])
                     
@@ -260,20 +244,94 @@
                         {
                             type: 'v-model',
                             format: 'variable',
-                            prop: 'value',
-                            code: `${camelCase(this.componentNode.componentId, { transform: camelCaseTransformMerge })}model.${itemData.property}`,
+                            prop: node.type === 'bk-checkbox' ? 'checked' : 'value',
+                            code: `${this.formModelKey}.${itemData.property}`,
                             valueType: 'string'
                         }
                     ])
                 }
-                
-                const formPropRules = Object.assign({}, this.componentNode.prop.rules)
+
+                const setBtnFormItem = () => {
+                    // 提交按钮
+                    const submitBtnNode = LC.createNode('bk-button')
+                    submitBtnNode.setRenderSlots({
+                        format: 'value',
+                        component: 'text',
+                        code: '提交',
+                        valueType: 'text',
+                        renderValue: '提交'
+                    })
+                    
+                    submitBtnNode.setProp('theme', LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: 'primary',
+                        renderValue: 'primary'
+                    }))
+                    submitBtnNode.setStyle({
+                        width: '88px'
+                    })
+                    
+                    // 绑定click事件并生成事件模板
+                    submitBtnNode.setRenderEvents({
+                        click: {
+                            enable: true,
+                            methodCode: '',
+                            params: [],
+                            eventTemplates: [
+                                {
+                                    funcName: 'submitFormData',
+                                    funcParams: [],
+                                    funcBody: getSubmitFormDataFunc({
+                                        '{ref}': this.componentNode.prop.ref,
+                                        '{formmodel}': this.formModelKey,
+                                        '{posturl}': payload.initType === 'table-data-source' ? `/data-source/user/tableName/${payload.tableData.tableName}` : '/api/data/postMockData',
+                                        '{urlTips}': payload.initType === 'table-data-source' ? `此地址会将数据提交到lesscode创建的数据表，${payload.tableData.tableName}为选择的表名称，若需提交到其它接口请作相应修改` : '示例链接/api/data/postMockData需要更换为具体的接口API地址'
+                                    })
+                                }
+                            ]
+                        }
+                    })
+                    // 取消按钮
+                    const cancelBtnNode = LC.createNode('bk-button')
+                    cancelBtnNode.setRenderSlots({
+                        format: 'value',
+                        component: 'text',
+                        code: '取消',
+                        valueType: 'text',
+                        renderValue: '取消'
+                    })
+                    cancelBtnNode.setStyle({
+                        width: '88px',
+                        'marginLeft': '8px'
+                    })
+                    // 绑定click事件并生成事件模板
+                    cancelBtnNode.setRenderEvents({
+                        click: {
+                            enable: true,
+                            methodCode: '',
+                            params: [],
+                            eventTemplates: [
+                                {
+                                    funcName: 'resetFormData',
+                                    funcParams: [],
+                                    funcBody: getResetFormValueFunc(this.formModelKey)
+                                }
+                            ]
+                        }
+                    })
+                    let actionFormItemNode = null
+                    actionFormItemNode = LC.createNode('widget-form-item')
+                    actionFormItemNode.appendChild(submitBtnNode)
+                    actionFormItemNode.appendChild(cancelBtnNode)
+                    this.componentNode.appendChild(actionFormItemNode)
+                    return actionFormItemNode
+                }
 
                 if (this.editFormItemNode) {
                     // 编辑
-                    const editFormItemDataProp = this.editFormItemNode.prop
+                    // const editFormItemDataProp = this.editFormItemNode.prop
                     //  可能修改了 property，删除老数据重新收集
-                    delete formPropRules[editFormItemDataProp.property]
+                    // delete formPropRules[editFormItemDataProp.property]
                 
                     let inputNode = this.editFormItemNode.children[0]
                     // 表单组件类型改变，删除原有组件
@@ -287,8 +345,6 @@
                     setDirective(inputNode)
                     setProp(this.editFormItemNode)
                 } else {
-                    // 新建
-
                     // 新建 form-item
                     const formItemNode = LC.createNode('widget-form-item')
                     const inputNode = genInputNode(itemData.type)
@@ -300,55 +356,19 @@
                     // prop.property 为空表示为 form 的操作项
                     let actionFormItemNode = _.find(this.componentNode.children, node => !node.prop.property)
                     if (!actionFormItemNode) {
-                        // 提交按钮
-                        const submitBtnNode = LC.createNode('bk-button')
-                        submitBtnNode.setRenderSlots({
-                            format: 'value',
-                            component: 'text',
-                            code: '提交',
-                            valueType: 'text',
-                            renderValue: '提交'
-                        })
-                        
-                        submitBtnNode.setProp('theme', LC.utils.genPropFormatValue({
-                            format: 'value',
-                            code: 'primary',
-                            renderValue: 'primary'
-                        }))
-                        submitBtnNode.setStyle({
-                            width: '88px'
-                        })
-                        // 取消按钮
-                        const cancelBtnNode = LC.createNode('bk-button')
-                        cancelBtnNode.setRenderSlots({
-                            format: 'value',
-                            component: 'text',
-                            code: '取消',
-                            valueType: 'text',
-                            renderValue: '取消'
-                        })
-                        cancelBtnNode.setStyle({
-                            width: '88px',
-                            'marginLeft': '8px'
-                        })
-                        actionFormItemNode = LC.createNode('widget-form-item')
-                        actionFormItemNode.appendChild(submitBtnNode)
-                        actionFormItemNode.appendChild(cancelBtnNode)
-                        this.componentNode.appendChild(actionFormItemNode)
+                        actionFormItemNode = setBtnFormItem()
                     }
-
                     // 新建的表单项放在操作按钮的前面
                     this.componentNode.insertBefore(formItemNode, actionFormItemNode)
                 }
 
-                const newPropRules = Object.assign(formPropRules, {
-                    [itemData.property]: itemData.validate
-                })
-                // form.prop.model 通过遍历 formItem 收集 formItem.prop.property得到
-                const newPropModel = this.componentNode.children.reduce((result, formItemNode) => {
+                // 更新model和rules
+                this.updateFormModel()
+                const formPropRules = Object.assign({}, this.componentNode.prop.rules, { [itemData.property]: itemData.validate })
+                const newPropRules = this.componentNode.children.reduce((result, formItemNode) => {
                     const formItemProp = formItemNode.prop
                     if (formItemProp.property) {
-                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
+                        result[formItemProp.property] = formPropRules[formItemProp.property]
                     }
                     return result
                 }, {})
@@ -357,14 +377,27 @@
                         format: 'value',
                         code: newPropRules,
                         renderValue: newPropRules
-                    }),
-                    'model': LC.utils.genPropFormatValue({
-                        format: 'value',
-                        code: newPropModel,
-                        renderValue: newPropModel
                     })
                 })
                 this.isShowOperation = false
+            },
+            updateFormModel () {
+                const modelProps = this.componentNode.renderProps?.model || {}
+                // form.prop.model 通过遍历 formItem 收集 formItem.prop.property得到
+                const model = this.componentNode.children.reduce((result, formItemNode) => {
+                    const formItemProp = formItemNode.prop
+                    if (formItemProp.property) {
+                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
+                    }
+                    return result
+                }, {})
+                this.componentNode.setProp('model', LC.utils.genPropFormatValue({
+                    format: 'value',
+                    code: model,
+                    renderValue: model,
+                    payload: modelProps?.payload || {},
+                    buildInVariableType: modelProps?.buildInVariableType
+                }))
             },
             /**
              * @desc 关闭表单项标记框
@@ -388,47 +421,7 @@
                     code: rules,
                     renderValue: rules
                 }))
-                // form.prop.model 通过遍历 formItem 收集 formItem.prop.property得到
-                const model = this.componentNode.children.reduce((result, formItemNode) => {
-                    const formItemProp = formItemNode.prop
-                    if (formItemProp.property) {
-                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
-                    }
-                    return result
-                }, {})
-                this.componentNode.setProp('model', LC.utils.genPropFormatValue({
-                    format: 'value',
-                    code: model,
-                    renderValue: model
-                }))
-            },
-            /**
-             * @desc 验证远程数据
-             * @param { Object } res
-             * @returns { String }
-             */
-            validateObjectMethod (res) {
-                let msg = ''
-                if (Object.prototype.toString.call(res) !== '[object Object]') {
-                    msg = '请确保函数返回值为object类型'
-                }
-                return msg
-            },
-            /**
-             * @desc 通过远程数据生成 form-item 节点
-             * @param { String } name
-             * @param { Array } data
-             */
-            transformRemoteDataToNode (name, data) {
-                Object.keys(data).forEach((key) => {
-                    this.handleSubmitFormItem({
-                        type: getFormTypeFromValue(data[key]),
-                        label: key,
-                        property: key,
-                        required: false,
-                        validate: []
-                    })
-                })
+                this.updateFormModel()
             }
         }
     }
@@ -437,6 +430,12 @@
     .modifier-form {
         padding: 0 10px;
         margin-bottom: 16px;
+        .form-title {
+            margin: 20px 0 10px;
+            font-size: 12px;
+            color: #313238;
+            font-weight: bold;
+        }
         .form-item-list {
             display: flex;
             flex-direction: column;
