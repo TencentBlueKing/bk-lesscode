@@ -23,6 +23,7 @@
                     </bk-form-item>
                     <bk-form-item label="API">
                         <choose-api
+                            :use-flow-esb-api="true"
                             :excluded="['apigateway-api']"
                             :value="formData.selectedApi"
                             @change="handleSelectApi">
