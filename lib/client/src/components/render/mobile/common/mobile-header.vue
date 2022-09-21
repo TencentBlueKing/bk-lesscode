@@ -1,5 +1,5 @@
 <template>
-    <div :class="$style['phone-header']">
+    <div :class="$style['phone-header']" :style="{ height: height + 'px' }">
         <div :class="$style['header-left']">
             <span class="bk-drag-cellular-connection bk-drag-icon bk-drag mr5"></span>
             <span class="mr5">iPhone</span>
@@ -14,11 +14,14 @@
 </template>
 
 <script>
-    import moment from 'moment'
+    
+    import headerHeight from './mobile-header-height'
     export default {
-        computed: {
-            time () {
-                return moment().format('hh:mm')
+        setup () {
+            const { height, time } = headerHeight()
+            return {
+                height,
+                time
             }
         }
     }

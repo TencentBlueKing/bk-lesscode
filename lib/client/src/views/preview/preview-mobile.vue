@@ -1,34 +1,28 @@
 <template>
     <div class="area-wrapper">
-        <div class="simulator-wrapper" :style="{ width: width + 'px', height: height + 'px' }">
-            <div class="device-phone-frame">
-                <div class="device-phone"></div>
-            </div>
-            <div class="simulator-preview" :style="{ width: width + 'px', height: height + 'px' }">
-                <mobileHeader />
-                <iframe width="100%"
-                    height="100%"
-                    style="border: none"
-                    :src="source"
-                >
-                </iframe>
-            </div>
-        </div>
+        <simulatorMobile :page-size="pageSize" :source="source" />
     </div>
 </template>
 
 <script>
     import { useRoute } from '@/router'
-    import mobileHeader from '@/components/render/mobile/common/mobile-header.vue'
+    import simulatorMobile from '@/components/render/mobile/common/simulator-mobile.vue'
+    import getHeaderHeight from '@/components/render/mobile/common/mobile-header-height'
 
     export default {
         components: {
-            mobileHeader
+            simulatorMobile
         },
         setup () {
             const route = useRoute()
-            const width = '375'
-            const height = '812'
+            const width = 375
+            const height = 812
+            const { height: headerHeight } = getHeaderHeight()
+
+            const pageSize = {
+                height: parseInt(height + headerHeight.value),
+                width
+            }
 
             const projectId = route.params.projectId
             const pagePath = route.query.pagePath || '/mobile'
@@ -38,8 +32,7 @@
             pathStr += '/platform/MOBILE'
 
             return {
-                width,
-                height,
+                pageSize,
                 source: `${location.origin}/preview/project/${projectId}${pathStr}${pagePath}`
             }
         }
