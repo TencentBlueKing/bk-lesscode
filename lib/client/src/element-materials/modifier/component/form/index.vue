@@ -83,11 +83,11 @@
 
     const getDefaultValFromType = (type) => {
         const typeValMap = {
-            'switcher': false,
-            'checkbox': false,
-            'checkbox-group': []
+            'bk-switcher': false,
+            'bk-checkbox': false,
+            'bk-checkbox-group': []
         }
-        return typeValMap[type] || ''
+        return typeValMap[type] !== undefined ? typeValMap[type] : ''
     }
 
     const genDefaultFormItemData = () => ({
@@ -113,7 +113,8 @@
         'bk-time-picker': 'time-picker',
         'bk-switcher': 'switcher',
         'bk-radio-group': 'radio-group',
-        'bk-checkbox-group': 'checkbox-group'
+        'bk-checkbox-group': 'checkbox-group',
+        'bk-checkbox': 'checkbox'
     }
 
     export default {
@@ -246,7 +247,7 @@
                             format: 'variable',
                             prop: node.type === 'bk-checkbox' ? 'checked' : 'value',
                             code: `${this.formModelKey}.${itemData.property}`,
-                            valueType: 'string'
+                            renderValue: getDefaultValFromType(node.type)
                         }
                     ])
                 }
@@ -387,7 +388,7 @@
                 const model = this.componentNode.children.reduce((result, formItemNode) => {
                     const formItemProp = formItemNode.prop
                     if (formItemProp.property) {
-                        result[formItemProp.property] = getDefaultValFromType(formItemNode.type)
+                        result[formItemProp.property] = getDefaultValFromType(formItemNode.children[0].type)
                     }
                     return result
                 }, {})
