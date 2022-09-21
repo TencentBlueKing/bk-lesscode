@@ -23,7 +23,8 @@
                     </bk-form-item>
                     <bk-form-item label="API">
                         <choose-api
-                            :excluded="['lesscode-api', 'datasource-api']"
+                            :use-flow-esb-api="true"
+                            :excluded="['apigateway-api']"
                             :value="formData.selectedApi"
                             @change="handleSelectApi">
                         </choose-api>
@@ -62,20 +63,20 @@
             desc="（调用该API需要传递的参数信息）"
             class="no-content-padding"
             style="margin-top: 16px;">
+            <debug-api></debug-api>
             <div class="api-data" style="width: 83%; margin-top: 22px;">
-                <template v-if="formData.method">
-                    <query-params
-                        v-if="METHODS_WITHOUT_DATA.includes(formData.method)" :variable-list="variableList"
-                        :query="apiQuery"
-                        @update="handleParamsChange('apiQuery', $event)">
-                    </query-params>
-                    <body-params
-                        v-else
-                        :variable-list="variableList"
-                        :body="apiBody"
-                        @update="handleParamsChange('apiBody', $event)">
-                    </body-params>
-                </template>
+                <query-params
+                    v-if="METHODS_WITHOUT_DATA.includes(formData.method)" :variable-list="variableList"
+                    :query="apiQuery"
+                    @update="handleParamsChange('apiQuery', $event)">
+                </query-params>
+                <body-params
+                    v-else
+                    :variable-list="variableList"
+                    :body="apiBody"
+                    @update="handleParamsChange('apiBody', $event)">
+                </body-params>
+                <headers-config :headers="apiHeaders" @update="handleParamsChange('apiHeaders', $event)"></headers-config>
             </div>
         </form-section>
         <!-- 返回数据 -->
@@ -99,6 +100,8 @@
     import Processors from '../../components/processors.vue'
     import ChooseApi from '@/components/api/choose-api.vue'
     import ViewFlowVariables from './view-flow-variables.vue'
+    import DebugApi from './debug-api.vue'
+    import HeadersConfig from './headers-config'
     import QueryParams from './query-params.vue'
     import BodyParams from './body-params.vue'
     import ResponseVariable from './response-variable.vue'
@@ -112,6 +115,8 @@
             Processors,
             ChooseApi,
             ViewFlowVariables,
+            DebugApi,
+            HeadersConfig,
             QueryParams,
             BodyParams,
             ResponseVariable
@@ -136,6 +141,7 @@
                     url: '',
                     method: 'get'
                 },
+                apiHeaders: [],
                 apiQuery: [],
                 apiBody: {},
                 apiResponse: {},
@@ -188,8 +194,9 @@
             const { api_info: apiInfo } = this.nodeData.extras
             this.formData.nodeName = this.nodeData.name
             if (apiInfo.url) {
-                const { selectedApi, url, method, query, body, response } = apiInfo
+                const { selectedApi, url, method, headers, query, body, response } = apiInfo
                 this.formData = { ...this.formData, selectedApi, url, method }
+                this.apiHeaders = headers || []
                 this.apiQuery = query
                 this.apiBody = body
                 this.apiResponse = response
@@ -265,6 +272,7 @@
                     selectedApi,
                     method,
                     url,
+                    headers: this.apiHeaders,
                     query: this.apiQuery,
                     body: this.apiBody,
                     response: this.apiResponse
