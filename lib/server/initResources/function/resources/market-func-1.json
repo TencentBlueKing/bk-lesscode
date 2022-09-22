@@ -5,7 +5,7 @@
       "page",
       "pageSzie"
     ],
-    "funcBody": "// 接口地址可以换成其它地址\r\nreturn this.$http.get('/api/data/getMockData').then((res) => {\r\n    // 处理业务\r\n    const data = JSON.stringify(res)\r\n    alert(data)\r\n    return res.data\r\n}).catch(err => {\r\n    // 处理异常\r\n    console.error(err)\r\n})\r\n",
+    "funcBody": "// 接口地址可以换成其它地址\r\nreturn this.$http.get('/data/getMockData').then((res) => {\r\n    // 处理业务\r\n    const data = JSON.stringify(res)\r\n    alert(data)\r\n    return res.data\r\n}).catch(err => {\r\n    // 处理异常\r\n    console.error(err)\r\n})\r\n",
     "funcSummary": "通过前端获取远程接口数据示例。可以替换代码中的接口地址来调用其它接口，在回调中进行业务处理",
     "funcType": 0,
     "funcMethod": "get",
@@ -20,7 +20,7 @@
       "page",
       "pagesize"
     ],
-    "funcBody": "/**\r\n* 可以在表格组件的“data”属性中绑定该函数以获取表格初始数据\r\n* 可以在表格组件的事件“page-change”、“page-limit-change” 绑定该函数以达到后台分页的效果\r\n*/\r\nconst newPage = page || 1\r\n/**\r\n* “tablePagination” 是表格组件 “pagination”属性对应的变量名，请修改为您实际设置的变量名\r\n* “pagination”属性变量默认值：{\"current\": 1, \"count\": 3, \"limit\": 10, \"limitList\": [10, 20, 50, 100], \"showLimit\": true}\r\n*/\r\nconst tablePagination = lesscode['${prop:tablePagination}'] || {}\r\nconst pageSize = pagesize || tablePagination.limit\r\n// 请将请求URL更换为您的实际表格数据获取API\r\nreturn this.$http.get('/api/data/getMockData?page=' + newPage + '&pageSize=' + pageSize).then((res) => {\r\n    tablePagination.count = res.count\r\n    tablePagination.current = newPage\r\n    tablePagination.limit = pageSize\r\n    // \"table4ea32data\" 是表格组件 “data” 属性变量名，请修改为您实际设置的变量名\r\n    this.table4ea32data = res.data\r\n    return res.data\r\n})\r\n",
+    "funcBody": "/**\r\n* 可以在表格组件的“data”属性中绑定该函数以获取表格初始数据\r\n* 可以在表格组件的事件“page-change”、“page-limit-change” 绑定该函数以达到后台分页的效果\r\n*/\r\nconst newPage = page || 1\r\n/**\r\n* “tablePagination” 是表格组件 “pagination”属性对应的变量名，请修改为您实际设置的变量名\r\n* “pagination”属性变量默认值：{\"current\": 1, \"count\": 3, \"limit\": 10, \"limitList\": [10, 20, 50, 100], \"showLimit\": true}\r\n*/\r\nconst tablePagination = lesscode['${prop:tablePagination}'] || {}\r\nconst pageSize = pagesize || tablePagination.limit\r\n// 请将请求URL更换为您的实际表格数据获取API\r\nreturn this.$http.get('/data/getMockData?page=' + newPage + '&pageSize=' + pageSize).then((res) => {\r\n    tablePagination.count = res.count\r\n    tablePagination.current = newPage\r\n    tablePagination.limit = pageSize\r\n    // \"table4ea32data\" 是表格组件 “data” 属性变量名，请修改为您实际设置的变量名\r\n    this.table4ea32data = res.data\r\n    return res.data\r\n})\r\n",
     "funcSummary": "使用远程API获取表格数据，并进行后台分页",
     "funcType": 0,
     "funcMethod": "get",
@@ -106,7 +106,7 @@
   {
     "funcName": "commitFormData",
     "funcParams": [],
-    "funcBody": "/**\r\n* 1. 空白函数：函数内容完全由用户编写，用于页面组件属性配置和事件绑定\r\n* 2. 函数用于页面组件属性时：函数必须有返回值，该返回值将会赋值给组件属性\r\n* 3. 函数用于组件或页面事件时：函数将在事件触发时执行\r\n* 4. 可以使用 “lesscode.变量标识” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 5. 可以使用 “lesscode.函数名称” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应函数，来调用应用中的其它函数\r\n* 6. 函数用于组件属性时，函数体代码示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('接口地址'),\r\n*     this.$http.post('接口地址', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\n// 这里的 “dynamicForm” 需要替换成表单容器组件 “ref 属性”的值\r\nreturn this.$refs['dynamicForm'].validate().then(validator => {\r\n    // 进行业务处理\r\n    alert('验证成功！')\r\n    // 表单数据组装\r\n    // 注意：示例this.form54326model.username中 “form54326model” 需更换为表单容器组件model属性的变量名\r\n    const data = { 'inputValue': this.form54326model.username }\r\n    // 示例链接/api/data/postMockData需要更换为具体的接口API地址\r\n    return this.$http.post('/api/data/postMockData', data).then(res => {\r\n        // 可以在这里添加业务操作\r\n        return res\r\n    }).catch((err) => {\r\n        console.log(err)\r\n    })\r\n}, validator => {\r\n    // 显示第一个出错位置\r\n    alert(validator.content)\r\n})\r\n",
+    "funcBody": "/**\r\n* 1. 空白函数：函数内容完全由用户编写，用于页面组件属性配置和事件绑定\r\n* 2. 函数用于页面组件属性时：函数必须有返回值，该返回值将会赋值给组件属性\r\n* 3. 函数用于组件或页面事件时：函数将在事件触发时执行\r\n* 4. 可以使用 “lesscode.变量标识” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 5. 可以使用 “lesscode.函数名称” 唤起自动补全功能，必须通过编辑器自动补全功能选择对应函数，来调用应用中的其它函数\r\n* 6. 函数用于组件属性时，函数体代码示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('接口地址'),\r\n*     this.$http.post('接口地址', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\n// 这里的 “dynamicForm” 需要替换成表单容器组件 “ref 属性”的值\r\nreturn this.$refs['dynamicForm'].validate().then(validator => {\r\n    // 进行业务处理\r\n    alert('验证成功！')\r\n    // 表单数据组装\r\n    // 注意：示例this.form54326model.username中 “form54326model” 需更换为表单容器组件model属性的变量名\r\n    const data = { 'inputValue': this.form54326model.username }\r\n    // 示例链接/data/postMockData需要更换为具体的接口API地址\r\n    return this.$http.post('/data/postMockData', data).then(res => {\r\n        // 可以在这里添加业务操作\r\n        return res\r\n    }).catch((err) => {\r\n        console.log(err)\r\n    })\r\n}, validator => {\r\n    // 显示第一个出错位置\r\n    alert(validator.content)\r\n})\r\n",
     "funcSummary": "表单校验及提交数据至远程API",
     "funcType": 0,
     "funcMethod": "get",
@@ -154,7 +154,7 @@
   {
     "funcName": "getRemoteData",
     "funcParams": [],
-    "funcBody": "return this.$store.dispatch('getApiData', {\r\n    url: '/api/data/getMockData',\r\n    type: 'get',\r\n    apiData: '',\r\n    withToken: 0\r\n}).then(res => {\r\n    // 处理业务\r\n    const data = res.data || []\r\n    return data\r\n}).catch(err => {\r\n    // 处理异常\r\n    console.error(err)\r\n})\r\n",
+    "funcBody": "return this.$store.dispatch('getApiData', {\r\n    url: '/data/getMockData',\r\n    type: 'get',\r\n    apiData: '',\r\n    withToken: 0\r\n}).then(res => {\r\n    // 处理业务\r\n    const data = res.data || []\r\n    return data\r\n}).catch(err => {\r\n    // 处理异常\r\n    console.error(err)\r\n})\r\n",
     "funcSummary": "想更灵活使用后台转发接口的能力，可以使用本函数。调用转发函数的参数如函数内容所示，可以结合变量来动态改变参数。在 then 回调用处理业务逻辑。",
     "funcType": 0,
     "funcMethod": "get",
