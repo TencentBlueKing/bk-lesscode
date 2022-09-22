@@ -170,7 +170,7 @@
                     node.children.forEach(childNode => recTree(childNode))
                 }
                 recTree(LC.getRoot())
-                
+
                 // 收集生命周期的函数
                 Object.keys(fieldData.lifeCycle).forEach((key) => {
                     const value = fieldData.lifeCycle[key]
@@ -192,6 +192,16 @@
                         functionData.push(func.id)
                     }
                 }
+                // 检查函数参数
+                Object.keys(fieldData.lifeCycle).forEach((key) => {
+                    const value = fieldData.lifeCycle[key]
+                    const methodData = typeof value === 'object' ? value : { methodCode: value }
+                    methodData?.params?.forEach((param) => {
+                        if (param.format === 'variable' && !param.code) {
+                            errorStack.push(`页面的【${key}】生命周期中，函数参数为变量，但是没有设置值，请修改后再试`)
+                        }
+                    })
+                })
                 // 抛出错误
                 if (errorStack.length) {
                     throw Error(errorStack.join(';'))
@@ -215,14 +225,26 @@
                 return res
             },
             getFieldDisplayValue (field) {
-                let methodCode = this.page.lifeCycle[field.id] || ''
-                let params = []
-                if (typeof methodCode === 'object') {
-                    params = (methodCode.params || []).map(param => param.value)
-                    methodCode = methodCode.methodCode
+                let methodData = this.page.lifeCycle[field.id] || ''
+                if (typeof methodData === 'string') {
+                    methodData = {
+                        methodCode: methodData
+                    }
                 }
-                const curFunc = this.functionList.find(func => func.funcCode === methodCode) || {}
-                return curFunc.funcName ? `${curFunc.funcName}(${params.join(', ')})` : ''
+                const curFunc = this.functionList.find(func => func.funcCode === methodData.methodCode) || {}
+                return curFunc.funcName
+                    ? `${curFunc.funcName}(${methodData
+                        ?.params
+                        ?.reduce((acc, cur) => {
+                            if (cur.format === 'value') {
+                                acc.push(`'${cur.value}'`)
+                            } else {
+                                acc.push(cur.code)
+                            }
+                            return acc
+                        }, [])
+                        .join(', ')})`
+                    : ''
             },
             getFieldValue (field) {
                 const defaultSetting = {

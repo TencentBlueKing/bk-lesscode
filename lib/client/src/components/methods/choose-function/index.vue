@@ -134,7 +134,20 @@
 
         <template v-if="showAddParams">
             <div class="panel-item" v-for="(panel, index) in renderChoosenFunction.params" :key="index">
-                <bk-input :value="panel.value" @change="val => handleChangeParam(index, val)" />
+                <variable-select
+                    class="select-param"
+                    :value="panel"
+                    @change="({ format, code }) => handleChangeParam(index, { format, code, value: '' })"
+                >
+                    <span
+                        class="param-title"
+                        slot="title"
+                    >参数</span>
+                    <bk-input
+                        :value="panel.value"
+                        @change="value => handleChangeParam(index, { value })"
+                    />
+                </variable-select>
                 <i class="bk-icon icon-minus-circle" @click="handleDeleteParam(index)"></i>
             </div>
             <div
@@ -162,12 +175,14 @@
 
 <script>
     import { mapActions, mapGetters } from 'vuex'
-    import EditFunctionDialog from '@/components/methods/edit-function-dialog/index.vue'
     import { getDefaultFunction } from 'shared/function'
+    import EditFunctionDialog from '@/components/methods/edit-function-dialog/index.vue'
+    import VariableSelect from '@/components/variable/variable-select/index.vue'
 
     export default {
         components: {
-            EditFunctionDialog
+            EditFunctionDialog,
+            VariableSelect
         },
 
         props: {
@@ -175,7 +190,8 @@
                 type: Object
             },
             functionTemplates: {
-                type: Array
+                type: Array,
+                default: () => ([])
             },
             showAddParams: {
                 type: Boolean,
@@ -266,7 +282,7 @@
             },
 
             handleChangeParam (index, val) {
-                this.renderChoosenFunction.params[index].value = val
+                Object.assign(this.renderChoosenFunction.params[index], val)
                 this.triggleUpdate()
             },
 
@@ -276,7 +292,11 @@
             },
 
             handlePlusParam () {
-                this.renderChoosenFunction.params.push({ value: '' })
+                this.renderChoosenFunction.params.push({
+                    value: '',
+                    code: '',
+                    format: 'value'
+                })
                 this.triggleUpdate()
             },
 
@@ -356,9 +376,18 @@
         align-items: center;
         margin-top: 8px;
         width: 100%;
+        .select-param {
+            flex: 1;
+            .param-title {
+                line-height: 25px;
+            }
+            /deep/ .display-content {
+                margin: 0;
+            }
+        }
     }
     .icon-minus-circle {
-        margin: 0 3px 0 8px;
+        margin: 23px 3px 0 8px;
         cursor: pointer;
         color: #979ba5;
         &:hover {
@@ -367,7 +396,7 @@
     }
     .panel-add {
         font-size: 12px;
-        margin: 8px 0 0;
+        margin: 12px 0 0;
         line-height: 16px;
         cursor: pointer;
         color: #3A84FF;

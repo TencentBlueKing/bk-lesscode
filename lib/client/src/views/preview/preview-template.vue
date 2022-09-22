@@ -14,6 +14,7 @@
     import httpVueLoader from '@/common/http-vue-loader'
     import * as swiperAni from '@/common/swiper.animate.min.js'
     import '@/css/animate.min.css'
+    import mobileHeader from '@/components/render/mobile/common/mobile-header.vue'
 
     window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []
@@ -45,7 +46,8 @@
     export default {
         name: 'preview',
         components: {
-            LoadingComponent
+            LoadingComponent,
+            mobileHeader
         },
         data () {
             return {
@@ -145,10 +147,10 @@
                             versionId: this.detail.versionId,
                             pageType: 'previewSingle',
                             fromPageCode: this.detail.fromPageCode,
-                            platform: this.detail?.templateType
+                            platform: this.detail?.layoutType
                         })
-                        this.renderType = this.detail?.templateType
                     }
+                    this.renderType = this.detail?.layoutType
 
                     code = code.replace('export default', 'module.exports =').replace('components: { chart: ECharts },', '')
                     const res = httpVueLoader(code)
@@ -175,7 +177,10 @@
                         <div class="device-phone"></div>
                     </div>
                     <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px', overflow: 'auto' }">
-                        <component :is="comp" :is-loading="isLoading"/>
+                        <div class="mobile-content-wrapper">
+                            <mobileHeader />
+                            <component :is="comp" :is-loading="isLoading" style="flex: 1"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -197,6 +202,14 @@
         .simulator-preview {
             z-index: 0;
             position: absolute;
+            .mobile-content-wrapper {
+                height: 100%;
+                width: 100%;
+                transform: translate(0, 0);
+                pointer-events: none;
+                display: flex;
+                flex-direction: column;
+            }
         }
     }
 </style>

@@ -194,7 +194,7 @@
             async getDefaultLayout () {
                 try {
                     const res = await this.$store.dispatch('layout/getPlatformList')
-                    const layoutList = res.filter(item => item.type !== 'empty')
+                    const layoutList = res.filter(item => !['empty', 'mobile-empty'].includes(item.type))
                     layoutList.forEach((item, index) => {
                         item.checked = index === 0
                     })
@@ -218,6 +218,7 @@
                         const layoutChecked = this.defaultLayoutList.find(layout => layout.checked)
                         formData.layoutId = layoutChecked.id
                         formData.content = layoutChecked.defaultContent
+                        formData.layoutType = layoutChecked.layoutType
                     }
                     if (this.action === 'edit') {
                         formData.id = this.currentLayout.id
