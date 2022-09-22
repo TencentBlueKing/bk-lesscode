@@ -20,7 +20,6 @@
 </template>
 <script>
     import { mapState } from 'vuex'
-    import cloneDeep from 'lodash.clonedeep'
     import monaco from '@/components/monaco.vue'
     import { parseValue2Scheme } from 'shared/api'
 
@@ -42,6 +41,8 @@
         methods: {
             async callDebugFunction () {
                 const { url, method, headers, query_params, body } = this.nodeData.extras.webhook_info
+                const apiInfo = this.nodeData.extras.api_info || {}
+                const apiType = apiInfo.selectedApi?.[0].id || 'lesscode-api'
                 if (!url) {
                     this.$bkMessage({
                         theme: 'error',
@@ -54,7 +55,7 @@
                     const data = {
                         url: url.replace('{{appApigwPrefix}}', BK_APP_APIGW_PREFIX),
                         method: method.toLowerCase(),
-                        body: cloneDeep(body),
+                        body: {},
                         headers: {},
                         query_params
                     }
@@ -65,8 +66,12 @@
                             }
                         })
                     }
-                    if (data.body.content) {
-                        data.body.content.replace('{{creatorUsername}}', this.$store.state.user.username)
+                    if (body.content) {
+                        const bodyContent = JSON.parse(body.content)
+                        Object.keys(bodyContent).forEach(key => {
+                            const val = bodyContent[key]
+                            data.body[key] = (apiType === 'datasource-api' && key === 'creatorUsername') ? this.$store.state.user.username : val
+                        })
                     }
                     const response = await this.$store.dispatch('nocode/flow/debugFlowApi', data)
                     if (response.errcode) {
