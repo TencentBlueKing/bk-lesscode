@@ -8,6 +8,7 @@
             查看变量
         </bk-button>
         <bk-sideslider
+            title="变量列表"
             transfer
             :is-show.sync="show"
             :quick-close="true"
@@ -68,6 +69,9 @@
 
     export default {
         name: 'ViewFlowVariables',
+        props: {
+            openVarList: Boolean
+        },
         data () {
             return {
                 show: false,
@@ -97,6 +101,11 @@
             }
         },
         watch: {
+            openVarList (val) {
+                if (val) {
+                    this.show = true
+                }
+            },
             show (val) {
                 if (val) {
                     this.getVarList()
@@ -143,6 +152,7 @@
             handleClose () {
                 this.searchStr = ''
                 this.varList = []
+                this.$emit('update:open-var-list', false)
             }
         }
     }
