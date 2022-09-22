@@ -40,10 +40,18 @@
         },
         methods: {
             async callDebugFunction () {
+                if (!this.nodeData.extras.webhook_info.url) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: '请填写请求地址'
+                    })
+                    return
+                }
                 this.debugCalling = true
                 try {
                     const data = cloneDeep(this.nodeData.extras.webhook_info)
                     data.url = data.url.replace('{{appApigwPrefix}}', BK_APP_APIGW_PREFIX)
+                    data.method = data.method.toLowerCase()
                     if (data.body.content) {
                         data.body.content.replace('{{creatorUsername}}', this.$store.state.user.username)
                     }
