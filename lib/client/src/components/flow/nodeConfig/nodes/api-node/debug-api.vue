@@ -13,7 +13,7 @@
             @confirm="handleExtractFields"
             @cancel="response = ''">
             <div class="dialog-content">
-                <monaco read-only height="300" value=""></monaco>
+                <monaco read-only height="300" :value="response"></monaco>
             </div>
         </bk-dialog>
     </section>
@@ -22,6 +22,7 @@
     import { mapState } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import monaco from '@/components/monaco.vue'
+    import { parseValue2Scheme } from 'shared/api'
 
     export default {
         name: 'DebugApi',
@@ -40,7 +41,8 @@
         },
         methods: {
             async callDebugFunction () {
-                if (!this.nodeData.extras.webhook_info.url) {
+                const { url, method, headers, query_params, body } = this.nodeData.extras.webhook_info
+                if (!url) {
                     this.$bkMessage({
                         theme: 'error',
                         message: '请填写请求地址'
@@ -49,14 +51,33 @@
                 }
                 this.debugCalling = true
                 try {
-                    const data = cloneDeep(this.nodeData.extras.webhook_info)
-                    data.url = data.url.replace('{{appApigwPrefix}}', BK_APP_APIGW_PREFIX)
-                    data.method = data.method.toLowerCase()
+                    const data = {
+                        url: url.replace('{{appApigwPrefix}}', BK_APP_APIGW_PREFIX),
+                        method: method.toLowerCase(),
+                        body: cloneDeep(body),
+                        headers: {},
+                        query_params
+                    }
+                    if (headers.length > 0) {
+                        headers.forEach(item => {
+                            if (item.key) {
+                                data.headers[item.key] = item.value
+                            }
+                        })
+                    }
                     if (data.body.content) {
                         data.body.content.replace('{{creatorUsername}}', this.$store.state.user.username)
                     }
                     const response = await this.$store.dispatch('nocode/flow/debugFlowApi', data)
-                    this.response = JSON.stringify(response)
+                    if (response.errcode) {
+                        const errMessage = response.errmsg || '调试API请求失败，请记录请求参数联系管理员'
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: errMessage
+                        })
+                        return
+                    }
+                    this.response = JSON.stringify(response, null, 4)
                     this.dialogShow = true
                 } catch (e) {
                     console.error(e)
@@ -64,7 +85,27 @@
                     this.debugCalling = false
                 }
             },
-            handleExtractFields () {}
+            handleExtractFields () {
+                const processedData = this.responseDataProcessing(JSON.parse(this.response))
+                const responseScheme = parseValue2Scheme(processedData)
+                this.$emit('extractScheme', responseScheme)
+                this.dialogShow = false
+            },
+            // 处理返回的响应数据，数组存在多条数据时，只取第一条
+            responseDataProcessing (response) {
+                let result = response
+                const type = Object.prototype.toString.apply(response)
+                if (type === '[object Object]') {
+                    result = {}
+                    Object.keys(response).forEach((key) => {
+                        result[key] = this.responseDataProcessing(response[key])
+                    })
+                }
+                if (type === '[object Array]') {
+                    result = [this.responseDataProcessing(response[0])]
+                }
+                return result
+            }
         }
     }
 </script>

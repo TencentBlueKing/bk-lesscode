@@ -63,7 +63,7 @@
             desc="（调用该API需要传递的参数信息）"
             class="no-content-padding"
             style="margin-top: 16px;">
-            <debug-api></debug-api>
+            <debug-api @extractScheme="handleExtractResponseFields"></debug-api>
             <div class="api-data" style="width: 83%; margin-top: 22px;">
                 <query-params
                     v-if="METHODS_WITHOUT_DATA.includes(formData.method)" :variable-list="variableList"
@@ -255,6 +255,10 @@
             handleParamsChange (type, val) {
                 this[type] = val
                 this.update()
+            },
+            // 提取调试api返回的响应数据，生成响应参数scheme
+            handleExtractResponseFields (scheme) {
+                this.handleParamsChange('apiResponse', scheme)
             },
             validate () {
                 return Promise.all([
