@@ -46,7 +46,7 @@
                                     <i class="bk-icon icon-check-1 checked-icon"></i>
                                 </div>
                                 <div class="layout-img">
-                                    <page-preview-thumb alt="模板缩略预览" :project-id="template.id" />
+                                    <page-preview-thumb alt="模板缩略预览" :project-id="template.id" :img-src="template.templateImg" />
                                 </div>
                                 <div class="layout-name">
                                     <span class="template-name" :title="template.projectName">{{ template.projectName }}</span>
