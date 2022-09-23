@@ -4,7 +4,7 @@
             class="create-sideslider"
             :is-show.sync="isVisible"
             :quick-close="false"
-            :title="isEdit ? '编辑用户组' : '新建用户组'"
+            :title="isEdit ? '编辑操作' : '新建操作'"
             :width="696"
             @hidden="hide">
             <div class="wrapper" slot="content" v-bkloading="{ isLoading: isLoading }">
@@ -28,8 +28,8 @@
                     <template v-if="isDefaultAction">
                         <bk-form-item label="是否关联资源" property="hasRelated" required>
                             <bk-radio-group v-model="formData.hasRelated">
-                                <bk-radio :value="'1'" class="mr15">是</bk-radio>
-                                <bk-radio :value="'0'">否</bk-radio>
+                                <bk-radio :value="'1'" class="mr15" :disabled="!isEdit">是</bk-radio>
+                                <bk-radio :value="'0'" :disabled="!isEdit">否</bk-radio>
                             </bk-radio-group>
                         </bk-form-item>
                         <bk-form-item label="关联资源" property="relatedResource" v-if="formData.hasRelated === '1'">
@@ -82,14 +82,14 @@
                 isChecking: false,
                 formData: {},
                 actionTypeList: [
-                    { id: 'create', name: '创建' },
-                    { id: 'delete', name: '删除' },
-                    { id: 'view', name: '查看' },
-                    { id: 'edit', name: '编辑' },
-                    { id: 'list', name: '列表' },
-                    { id: 'manage', name: '管理' },
-                    { id: 'execute', name: '执行' },
-                    { id: 'use', name: '使用' }
+                    { id: 'create', name: '创建(create)' },
+                    { id: 'delete', name: '删除(delete)' },
+                    { id: 'view', name: '查看(view)' },
+                    { id: 'edit', name: '编辑(edit)' },
+                    { id: 'list', name: '列表(list)' },
+                    { id: 'manage', name: '管理(manage)' },
+                    { id: 'execute', name: '执行(execute)' },
+                    { id: 'use', name: '使用(use)' }
                 ],
                 relatedResourceList: [],
                 rules: {
