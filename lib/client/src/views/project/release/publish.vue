@@ -57,15 +57,16 @@
                     </span>
                 </span>
 
+                <span v-show="currentAppInfo.appCode && currentAppInfo.moduleCode" :class="$style['seperate-line']">|</span>
+
                 <span :class="$style['offline-operate']" v-show="(stagInfo.version && !stagInfo.isOffline) || (prodInfo.version && !prodInfo.isOffline)">
-                    <span :class="$style['seperate-line']">|</span>
                     <bk-button :disabled="latestInfo.status === 'running'" :class="$style['offline-btn']" @click="toggleOffline(true)">
                         <i class="bk-drag-icon bk-drag-off-shelf"></i>
                         <span>下架</span>
                     </bk-button>
                 </span>
 
-                <bk-dropdown-menu v-show="stagInfo.version || prodInfo.version" @show="() => isDropdownShow = true " @hide="isDropdownShow = false" ref="dropdown">
+                <bk-dropdown-menu v-show="currentAppInfo.appCode && currentAppInfo.moduleCode" @show="() => isDropdownShow = true " @hide="isDropdownShow = false" ref="dropdown">
                     <div class="dropdown-trigger-btn" style="padding-left: 19px;" slot="dropdown-trigger">
                         <span>更多操作</span>
                         <i :class="['bk-icon icon-angle-down', { 'icon-flip': isDropdownShow }]"></i>
@@ -692,14 +693,15 @@
                     }
                 }
             }
-            .offline-operate {
-                min-width: 120px;
+
+            .seperate-line {
                 margin-left: 24px;
-                .seperate-line {
-                    width: 1px;
-                    height: 20px;
-                    color: #dcdee5;
-                }
+                width: 1px;
+                height: 20px;
+                color: #dcdee5;
+            }
+
+            .offline-operate {
                 .offline-btn {
                     margin-left: 24px;
                 }
