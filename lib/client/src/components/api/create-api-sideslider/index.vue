@@ -144,6 +144,7 @@
             }
 
             const handleClose = () => {
+                formChanged.value = false
                 emit('update:isShow', false)
                 emit('update:form', {})
             }
@@ -257,7 +258,7 @@
             watch(
                 () => props.form,
                 () => {
-                    formData.value = Object.assign(getDefaultApi(), props.form)
+                    formData.value = JSON.parse(JSON.stringify(Object.assign(getDefaultApi(), props.form)))
                 },
                 {
                     immediate: true

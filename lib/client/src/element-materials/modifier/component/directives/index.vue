@@ -38,10 +38,13 @@
                                 'directive-label': true
                             }">
                             {{ getLabel(directive) }}
+                            <span class="directive-tip">
+                                {{ getTips(directive) }}
+                            </span>
                         </span>
                     </template>
                     <bk-input
-                        :value="directive.val"
+                        :value="lastDirectiveMap[genDirectiveKey(directive)].code"
                         @change="(val) => handleCodeChange(directive, val)"
                         clearable />
                 </variable-select>
@@ -65,7 +68,10 @@
             formatInclude: ['variable', 'expression'], // v-if 支持配置（变量、表达式）
             code: '',
             valueTypeInclude: ['boolean'],
-            renderValue: true
+            renderValue: true,
+            tips () {
+                return '基于数据的真假性，来控制是否【渲染】该组件（通过控制是否绘制 DOM 元素来工作）'
+            }
         },
         {
             type: 'v-show',
@@ -74,7 +80,10 @@
             formatInclude: ['variable', 'expression'], // v-show 支持配置（变量、表达式）
             code: '',
             valueTypeInclude: ['boolean'],
-            renderValue: true
+            renderValue: true,
+            tips () {
+                return '基于数据的真假性，来控制是否【显示】该组件（通过设置内联样式的 display CSS 属性来工作）'
+            }
         }
     ]
 
@@ -147,9 +156,21 @@
                         type: 'v-html',
                         prop,
                         format: 'value',
-                        formatInclude: ['value', 'variable', 'expression'], // v-bind 支持配置（变量）
+                        formatInclude: ['value', 'variable', 'expression'],
                         code: '',
                         tips: tips
+                    })
+                }
+                if (type === 'v-bkloading') {
+                    result.push({
+                        type,
+                        format: 'variable',
+                        formatInclude: ['variable', 'expression'],
+                        valueTypeInclude: ['boolean'],
+                        code: '',
+                        tips () {
+                            return '通过传入 boolean 数据，来控制是否展示 loading 效果'
+                        }
                     })
                 }
                 return result
@@ -161,14 +182,30 @@
                     type: 'v-for',
                     prop: '',
                     format: 'variable',
-                    formatInclude: ['value', 'variable', 'expression'],
+                    formatInclude: ['value', 'variable', 'dataSource', 'expression'],
                     code: '',
                     valueTypeInclude: ['array'],
                     renderValue: 1,
                     tips: (dir) => {
                         return dir.code
-                            ? `可以使用 【${this.id}Item】 为当前组件和子组件的指令或者属性赋值，当前组件的 v-if 和 v-show 除外`
-                            : '可以使用 v-for 指令， 把一个数组转换为一组元素'
+                            ? '渲染多个组件时，如果需要基于 v-for 指令的值给每个组件单独赋值。可以使用如下规则给该组件或子组件的指令或属性的表达式赋值（当前组件的 v-if 和 v-show 指令除外）：'
+                                + `<br> 1. 当输入的值为数组、数字或者对象时，请使用【${this.id}Item】为表达式赋值`
+                                + `<br> 2. 当输入的值为数组且数组子项为对象时，请使用【${this.id}Item.对象key】为表达式赋值`
+                                + `<br> 3. 当输入的值为数据表时，请使用【${this.id}Item.表字段名】为表达式赋值`
+                            : '可以使用 v-for 指令，渲染多个组件'
+                    }
+                }
+            )
+            // 公共 v-bk-tooltips
+            directiveList.push(
+                {
+                    type: 'v-bk-tooltips',
+                    format: 'value',
+                    formatInclude: ['value', 'variable', 'expression'],
+                    valueTypeInclude: ['string'],
+                    code: '',
+                    tips () {
+                        return '当鼠标指向页面元素时给出简单的提示，需传入提示的字符串'
                     }
                 }
             )
@@ -250,15 +287,31 @@
                 switch (type) {
                     case 'v-model':
                     case 'v-html':
-                        res = type
-                        break
                     case 'v-for':
-                        const tips = directive.val ? `(${this.id}Item)` : ''
-                        res = `${type}${tips}`
+                        res = type
                         break
                     default:
                         const modifierStr = (modifiers || []).map((modifier) => `.${modifier}`).join('')
                         res = `${type}${prop ? `:${prop}` : ''}${modifierStr}`
+                        break
+                }
+                return res
+            },
+            /**
+             * 获取指令提示
+             */
+            getTips (directive) {
+                const {
+                    type
+                } = directive
+                let res = ''
+                switch (type) {
+                    case 'v-for':
+                        const lastDirective = this.lastDirectiveMap[this.genDirectiveKey(directive)]
+                        res = lastDirective.code ? `（${this.id}Item）` : ''
+                        break
+                    default:
+                        res = ''
                         break
                 }
                 return res
@@ -272,7 +325,8 @@
                 const {
                     format,
                     renderValue,
-                    code
+                    code,
+                    dataSourceType
                 } = variableSelectData
 
                 const directiveKey = this.genDirectiveKey(directive)
@@ -284,7 +338,8 @@
                         prop: directive.prop,
                         format,
                         code,
-                        renderValue
+                        renderValue,
+                        dataSourceType
                     }
                 })
                 this.triggleUpdate()

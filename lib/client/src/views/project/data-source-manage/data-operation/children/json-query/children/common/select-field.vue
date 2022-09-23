@@ -41,7 +41,7 @@
             >
                 <bk-option
                     v-for="column in columns"
-                    :key="column.name"
+                    :key="column.columnId"
                     :id="column.columnId"
                     :name="column.name"
                 >
@@ -104,28 +104,34 @@
     export default defineComponent({
         props: {
             fieldId: {
-                type: String
+                type: [String, Number]
             },
             distinct: {
-                type: Boolean
+                type: Boolean,
+                default: false
             },
             functionName: {
-                type: String
+                type: String,
+                default: ''
             },
             alias: {
-                type: String
+                type: String,
+                default: ''
             },
             columns: {
                 type: Array as PropType<IColumn[]>
             },
             disableDistinct: {
-                type: Boolean
+                type: Boolean,
+                default: false
             },
             disableDelete: {
-                type: Boolean
+                type: Boolean,
+                default: false
             },
             showAlias: {
-                type: Boolean
+                type: Boolean,
+                default: false
             }
         },
 

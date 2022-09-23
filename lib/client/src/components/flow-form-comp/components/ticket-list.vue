@@ -7,10 +7,12 @@
                 </bk-form-item>
                 <bk-form-item label="创建时间">
                     <bk-date-picker
-                        v-model="filterData.create_at"
+                        :value="filterData.create_at"
                         placeholder="请选择创建时间"
                         type="datetimerange"
-                        size="small">
+                        format="yyyy-MM-dd HH:mm:ss"
+                        size="small"
+                        @change="handleDateTimeChange">
                     </bk-date-picker>
                 </bk-form-item>
                 <bk-form-item label="单号">
@@ -30,7 +32,9 @@
         <bk-table
             v-bkloading="{ isLoading: ticketListLoading }"
             :data="ticketList"
-            :outer-border="!ticketList.length > 0"
+            class="hairless-table"
+            :header-border="false"
+            :outer-border="false"
             :pagination="pagination"
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
@@ -38,14 +42,6 @@
             <bk-table-column label="单号" property="sn"></bk-table-column>
             <bk-table-column label="创建人" property="creator"></bk-table-column>
             <bk-table-column label="创建时间" property="create_at"></bk-table-column>
-            <!-- <bk-table-column label="当前节点">
-                <template slot-scope="{ row }">
-                    <template v-if="row.current_steps.length > 0">
-                        <span v-for="step in row.current_steps" :key="step.id">{{ step.name }}</span>
-                    </template>
-                    <span v-else>--</span>
-                </template>
-            </bk-table-column> -->
             <bk-table-column label="状态" property="status_name">
                 <template slot-scope="{ row }">
                     <span :style="{ padding: '4px 10px', borderRadius: '2px', color: row.color, backgroundColor: row.backgroundColor }">
@@ -81,12 +77,7 @@
         data () {
             return {
                 ticketStatus: TICKET_STATUS,
-                filterData: {
-                    creator: '',
-                    create_at: [],
-                    sns: '',
-                    status: ''
-                },
+                filterData: this.getURLQuery(),
                 ticketList: [],
                 ticketListLoading: false,
                 pagination: {
@@ -100,13 +91,23 @@
             this.getTicketList()
         },
         methods: {
+            getURLQuery () {
+                const { creator, create_at: createAt, sns, status } = this.$route.query
+                return {
+                    creator: creator || '',
+                    create_at: createAt ? createAt.split(',') : [],
+                    sns: sns || '',
+                    status: status || ''
+                }
+            },
             async getTicketList () {
                 this.ticketListLoading = true
                 const { current, limit } = this.pagination
                 const params = {
                     page: current,
                     page_size: limit,
-                    service_id__in: [this.serviceId]
+                    service_id__in: [this.serviceId],
+                    tag: this.viewType === 'preview' ? 'preview' : BKPAAS_ENVIRONMENT
                 }
                 Object.keys(this.filterData).forEach(key => {
                     const val = this.filterData[key]
@@ -133,9 +134,13 @@
                 this.pagination.count = res.data.count
                 this.ticketListLoading = false
             },
+            handleDateTimeChange (val) {
+                this.filterData.create_at = val
+            },
             handleSearch () {
                 this.pagination.current = 1
                 this.getTicketList()
+                this.updateQueryString()
             },
             handleReset () {
                 this.filterData = {
@@ -146,6 +151,7 @@
                 }
                 this.pagination.current = 1
                 this.getTicketList()
+                this.updateQueryString()
             },
             handlePageChange (val) {
                 this.pagination.current = val
@@ -157,7 +163,28 @@
                 this.getTicketList()
             },
             goToTicketPage (ticket) {
-                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '__blank')
+                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '_blank')
+            },
+            updateQueryString () {
+                const { path, hash, params, query } = this.$route
+                const tableQuerys = { ...query }
+                Object.keys(this.filterData).forEach(key => {
+                    const val = this.filterData[key]
+                    if (Array.isArray(val)) {
+                        if (val.some(item => !!item)) {
+                            tableQuerys[key] = val.join(',')
+                        } else if (key in tableQuerys) {
+                            delete tableQuerys[key]
+                        }
+                    } else {
+                        if (val) {
+                            tableQuerys[key] = val
+                        } else if (key in tableQuerys) {
+                            delete tableQuerys[key]
+                        }
+                    }
+                })
+                this.$router.replace({ path, hash, params, query: { ...tableQuerys } })
             }
         }
     }
@@ -189,6 +216,11 @@
         .search-btns-wrapper {
             margin-top: 16px;
             padding: 0 8px;
+        }
+    }
+    .hairless-table {
+        &:before {
+            height: 0;
         }
     }
 </style>

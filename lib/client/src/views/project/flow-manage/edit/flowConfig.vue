@@ -12,10 +12,15 @@
     <section class="flow-config" style="height: 100%">
         <div class="flow-container" v-bkloading="{ isLoading: canvasDataLoading }">
             <bk-alert
-                v-if="showDeployTips"
+                v-if="!canvasDataLoading && showDeployTips"
                 class="deploy-tips"
-                type="warning"
-                title="流程有改动，需要部署后生效">
+                type="warning">
+                <div class="tips-content" slot="title">
+                    当前流程未部署，需部署后，预览环境才生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境，
+                    <bk-button style="padding: 0; height: 12px; line-height: 12px;" size="small" :text="true" :disabled="deployPending" @click="$emit('deploy')">立即部署流程</bk-button>
+                    或
+                    <router-link class="deploy-project-btn" :to="{ name: 'release', params: { projectId } }">部署应用</router-link>
+                </div>
             </bk-alert>
             <flow-canvas
                 v-if="!canvasDataLoading"
@@ -33,7 +38,7 @@
                 style="min-width: 88px"
                 :loading="flowPending || deployPending"
                 :disabled="canvasDataLoading || deployPending"
-                @click="handleDeploy">
+                @click="$emit('deploy')">
                 部署
             </bk-button>
         </div>
@@ -63,13 +68,13 @@
             serviceData: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            deployPending: Boolean
         },
         data () {
             return {
                 canvasDataLoading: false,
                 flowPending: false,
-                deployPending: false,
                 canvasData: { nodes: [], lines: [] },
                 nodeConfigPanelShow: false,
                 crtNode: null
@@ -128,44 +133,8 @@
                 const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.pageId))
                 if (pageRoute) {
                     const fullPath = getRouteFullPath(pageRoute)
-                    const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
-                    const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.flowConfig.pageCode}`
+                    const routerUrl = `/preview/project/${this.projectId}${fullPath}?pageCode=${this.flowConfig.pageCode}`
                     window.open(routerUrl, '_blank')
-                }
-            },
-            async handleDeploy () {
-                try {
-                    this.deployPending = true
-                    const {
-                        is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
-                    } = this.serviceData
-                    const data = {
-                        can_ticket_agency: false,
-                        display_type: 'INVISIBLE',
-                        workflow_config: {
-                            is_supervise_needed,
-                            notify,
-                            notify_freq,
-                            notify_rule,
-                            revoke_config,
-                            supervise_type,
-                            supervisor,
-                            is_revocable: this.serviceData.revoke_config.type !== 0,
-                            is_auto_approve: false
-                        }
-                    }
-                    await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
-                    await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
-                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
-                    this.$bkMessage({
-                        theme: 'success',
-                        message: '流程部署成功'
-                    })
-                } catch (e) {
-                    console.error(e.message || e)
-                } finally {
-                    this.deployPending = false
                 }
             }
         }
@@ -183,7 +152,18 @@
     position: absolute;
     top: 14px;
     left: 70px;
+    right: 70px;
     z-index: 110;
+    >>> .bk-alert-wraper {
+        display: flex;
+        align-items: center;
+    }
+}
+.deploy-project-btn {
+    color: #3a84ff;
+    &:hover {
+        color: #699df4;
+    }
 }
 .action-wrapper {
     position: absolute;

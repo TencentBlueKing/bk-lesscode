@@ -13,7 +13,7 @@
     <choose-function
         class="choose-event"
         :choosen-function="eventValue"
-        :function-templates="eventConfig.functionTemplates"
+        :function-templates="eventConfig.functionTemplates || eventValue.eventTemplates"
         @change="handleChangeEvent"
         @clear="handleClearEvent"
     >
@@ -74,7 +74,10 @@
 
             handleClearEvent () {
                 this.$emit('update', {
-                    [this.eventName]: ''
+                    [this.eventName]: {
+                        ...this.eventValue,
+                        methodCode: ''
+                    }
                 })
             },
 

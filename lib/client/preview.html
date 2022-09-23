@@ -20,6 +20,9 @@
             html, body, #app {
                 height: 100%;
             }
+            html::-webkit-scrollbar {
+                display: none;
+            }
             body {
                font-size: 14px;
             }
@@ -126,7 +129,9 @@
             var BKPAAS_ENVIRONMENT = '<%= htmlWebpackPlugin.options.BKPAAS_ENVIRONMENT %>'
             var BK_ITSM_URL = '<%= htmlWebpackPlugin.options.BK_ITSM_URL %>'
             var BK_APP_APIGW_PREFIX = '<%= htmlWebpackPlugin.options.BK_APP_APIGW_PREFIX %>'
+            var BKPAAS_ENGINE_REGION = '<%= htmlWebpackPlugin.options.BKPAAS_ENGINE_REGION %>'
             var BK_IAM_HOST = '<%= htmlWebpackPlugin.options.BK_IAM_HOST %>'
+            var IAM_ENABLE = <%= htmlWebpackPlugin.options.IAM_ENABLE %>
 
             const recalculate = () => {
                 const html = window.document.documentElement

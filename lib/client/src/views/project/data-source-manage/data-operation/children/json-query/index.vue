@@ -28,7 +28,10 @@
             <render-table
                 :query-table="renderCondition.table"
                 :table-list="tableList"
+                :bk-base-biz-list="bkBaseBizList"
+                :data-source-type="dataSourceType"
                 @change="(value) => handleChange('table', value)"
+                @updataBizs="(value) => $emit('updataBizs', value)"
             />
             <bk-divider />
             <render-where
@@ -59,19 +62,21 @@
 </template>
 
 <script lang="ts">
+    import Vue from 'vue'
     import {
         defineComponent,
         ref,
         computed,
         PropType
     } from '@vue/composition-api'
-    import RenderTable, { ITable } from './children/render-table.vue'
+    import RenderTable, { ITable, IBkBaseBiz } from './children/render-table.vue'
     import RenderWhere from './children/render-where.vue'
     import RenderGroup from './children/render-group.vue'
     import RenderOrder from './children/render-order.vue'
     import RenderLimit from './children/render-limit.vue'
     import {
-        getDefaultCondition
+        getDefaultCondition,
+        findTable
     } from 'shared/data-source'
     import validateContainer from './children/composables/validate'
 
@@ -86,7 +91,9 @@
 
         props: {
             condition: Object,
-            tableList: Array as PropType<ITable[]>
+            tableList: Array as PropType<ITable[]>,
+            dataSourceType: String,
+            bkBaseBizList: Array as PropType<IBkBaseBiz[]>
         },
 
         setup (props, { emit }) {
@@ -99,8 +106,8 @@
                     .table
                     .reduce((acc, cur) => {
                         const isUsed = acc.find(table => table.tableName === cur.tableName)
-                        if (cur.tableName && !isUsed) {
-                            const table = props.tableList.find(table => table.tableName === cur.tableName)
+                        const table = findTable(cur.tableName, props.dataSourceType, props.tableList, props.bkBaseBizList)
+                        if (cur.tableName && !isUsed && table) {
                             acc.push({
                                 id: table.id,
                                 tableName: table.tableName,
@@ -121,7 +128,7 @@
             }
 
             const handleChange = (key, value) => {
-                renderCondition.value[key] = value
+                Vue.set(renderCondition.value, key, value)
                 triggleChange()
             }
 

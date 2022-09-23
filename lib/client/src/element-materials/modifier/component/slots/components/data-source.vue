@@ -1,7 +1,9 @@
 <template>
     <choose-data-table
         :value="chooseTableName"
-        @choose="chooseTable"
+        :data-source-type="dataSourceType"
+        @choose-table="chooseTable"
+        @fetch-data="handleFetchData"
         @clear="clearTable"
     ></choose-data-table>
 </template>
@@ -48,23 +50,30 @@
             const type = props.type
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.slotVal?.value?.payload?.sourceData?.tableName)
+            const dataSourceType = ref(propStatus.slotVal?.value?.payload?.sourceData?.dataSourceType)
 
-            const chooseTable = ({ tableName, data }) => {
-                triggleUpdate(tableName, data.list)
+            const chooseTable = ({ tableName, dataSourceType }) => {
+                triggleUpdate(tableName, [], dataSourceType)
+            }
+
+            const handleFetchData = ({ list }) => {
+                triggleUpdate(chooseTableName.value, list, dataSourceType.value)
             }
 
             const clearTable = () => {
-                triggleUpdate('', propStatus.slotConfig.value.val)
+                triggleUpdate('', propStatus.slotConfig.value.val, '')
             }
 
-            const triggleUpdate = (tableName, val) => {
+            const triggleUpdate = (tableName, val, bkDataSourceType) => {
                 chooseTableName.value = tableName
+                dataSourceType.value = bkDataSourceType
                 const slot = {
                     ...propStatus.slotVal.value,
                     val,
                     payload: {
                         sourceData: {
-                            tableName
+                            tableName,
+                            dataSourceType: bkDataSourceType
                         }
                     }
                 }
@@ -73,7 +82,9 @@
 
             return {
                 chooseTableName,
+                dataSourceType,
                 chooseTable,
+                handleFetchData,
                 clearTable
             }
         }

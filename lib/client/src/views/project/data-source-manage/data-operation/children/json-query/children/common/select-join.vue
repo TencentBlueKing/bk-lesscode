@@ -56,7 +56,8 @@
     import {
         defineComponent,
         PropType,
-        ref
+        ref,
+        watch
     } from '@vue/composition-api'
     import SelectType from './select-type.vue'
     import SelectTableField, { IField } from './select-table-field.vue'
@@ -88,7 +89,7 @@
         },
 
         setup (props, { emit }) {
-            const renderJoinList = ref(props.joinList)
+            const renderJoinList = ref()
             const joinTypeList = Object
                 .keys(CONDITION_TYPE)
                 .map((key) => ({
@@ -118,6 +119,16 @@
             const triggleUpdate = () => {
                 emit('change', renderJoinList.value)
             }
+
+            watch(
+                () => props.joinList,
+                () => {
+                    renderJoinList.value = props.joinList
+                },
+                {
+                    immediate: true
+                }
+            )
 
             return {
                 renderJoinList,

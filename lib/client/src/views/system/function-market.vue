@@ -25,6 +25,7 @@
                 :key="index"
                 :show-foot="true"
                 :show-head="false"
+                :border="false"
                 class="function-card"
                 @click.native="handleShowSource(card)">
                 <h3 class="card-title">{{ card.funcName }}</h3>
@@ -232,7 +233,7 @@
 
 <style lang="postcss" scoped>
     .function-market-home {
-        padding: 16px 8px 16px 24px;
+        padding: 24px;
     }
     .function-market-title {
         display: flex;
@@ -242,6 +243,17 @@
         width: 400px;
     }
     .card-list {
+        display: grid;
+        grid-gap: 16px 12px;
+        gap: 16px 12px;
+        grid-template-columns: repeat(auto-fill,minmax(312px,1fr));
+        width: 100%;
+        -ms-flex-line-pack: start;
+        align-content: flex-start;
+        padding: 8px 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin-top: 16px;
         .exception-wrap-item {
             margin-top: calc(50vh - 180px);
         }
@@ -252,9 +264,7 @@
         }
     }
     .function-card {
-        margin: 16px 16px 0 0;
-        width: 310px;
-        height: 186px;
+        height: 197px;
         float: left;
         box-shadow: 0px 2px 2px 0px rgb(0 0 0 / 11%);
         &:hover {
@@ -271,7 +281,7 @@
             top: 2px;
         }
         /deep/ .bk-card-body {
-            height: 139px;
+            height: 150px;
             padding: 16px;
             line-height: 20px;
         }

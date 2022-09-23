@@ -13,17 +13,20 @@
             :config="config"
             :view-type="viewType">
         </flow-data>
+        <float-workbench-block></float-workbench-block>
     </div>
 </template>
 <script>
     import FormData from '@/components/flow-form-comp/components/form-data.vue'
     import FlowData from '@/components/flow-form-comp/components/flow-data.vue'
+    import FloatWorkbenchBlock from './components/float-workbench-block.vue'
 
     export default {
         name: 'DataManageComp',
         components: {
             FormData,
-            FlowData
+            FlowData,
+            FloatWorkbenchBlock
         },
         props: {
             type: {

@@ -89,5 +89,5 @@ export function getFileMime (file: UploadFile): string {
 
 export function isImageFile (file: UploadFile): boolean {
     const mime = getFileMime(file)
-    return mime.startsWith('image/')
+    return mime?.startsWith('image/')
 }

@@ -314,17 +314,17 @@
                                 toPath: {
                                     name: 'authManage'
                                 }
+                            },
+                            {
+                                title: '应用权限模型',
+                                icon: 'info-fill',
+                                url: 'appPermModel',
+                                iamAction: 'manage_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'appPermModel'
+                                }
                             }
-                            // {
-                            //     title: '应用权限模型',
-                            //     icon: 'info-fill',
-                            //     url: 'basicInfo',
-                            //     iamAction: 'develop_app',
-                            //     permission: false,
-                            //     toPath: {
-                            //         name: 'basicInfo'
-                            //     }
-                            // }
                         ]
                     },
                     {
@@ -430,6 +430,11 @@
                 }
                 const navList = []
                 navList.splice(0, 0, ...this.navList)
+
+                if (!IAM_ENABLE) {
+                    navList.splice(6, 1)
+                }
+
                 navList.forEach(item => {
                     dealPermission(item)
                     if (item.children) {
@@ -438,7 +443,7 @@
                         })
                     }
                 })
-                this.navList.splice(0, this.navList.length, ...this.navList)
+                this.navList.splice(0, this.navList.length, ...navList)
             } catch (e) {
                 console.error(e)
             } finally {
@@ -484,7 +489,8 @@
                 this.setCurrentVersion(version)
             },
             async getProjectList () {
-                const projectList = await this.$store.dispatch('iam/myProject', { config: {} })
+                const url = IAM_ENABLE ? 'iam/myProject' : 'project/my'
+                const projectList = await this.$store.dispatch(url, { config: {} })
                 this.projectList = projectList
             },
             changeProject (id) {

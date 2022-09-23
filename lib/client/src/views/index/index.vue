@@ -134,18 +134,12 @@
             this.projectId = parseInt(this.$route.params.projectId)
             this.pageId = parseInt(this.$route.params.pageId)
 
-            LC.addEventListener('update', this.handleUpdatePreviewContent)
-            // 更新预览区域数据
-            LC.addEventListener('ready', this.initPerviewData)
-            // 卸载的时候，清除 storage 数据
-            LC.addEventListener('unload', this.clearPerviewData)
-
-            this.$once('hook:beforeDestroy', () => {
-                LC.removeEventListener('update', this.handleUpdatePreviewContent)
+            this.$nextTick(() => {
+                LC.addEventListener('update', this.handleUpdatePreviewContent)
                 // 更新预览区域数据
-                LC.removeEventListener('ready', this.initPerviewData)
+                LC.addEventListener('ready', this.initPerviewData)
                 // 卸载的时候，清除 storage 数据
-                LC.removeEventListener('unload', this.clearPerviewData)
+                LC.addEventListener('unload', this.clearPerviewData)
             })
 
             // 获取并设置当前版本信息
@@ -203,6 +197,12 @@
             ]
         },
         beforeDestroy () {
+            // 路由离开的时候注销相关事件
+            LC.removeEventListener('update', this.handleUpdatePreviewContent)
+            // 更新预览区域数据
+            LC.removeEventListener('ready', this.initPerviewData)
+            // 卸载的时候，清除 storage 数据
+            LC.removeEventListener('unload', this.clearPerviewData)
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
         },
         beforeRouteLeave (to, from, next) {

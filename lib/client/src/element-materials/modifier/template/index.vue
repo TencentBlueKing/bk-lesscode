@@ -3,10 +3,10 @@
         <div class="header" v-if="!isComplexSide">{{ templateData.showName }}</div>
         <div class="main" :class="{ 'is-complex-side': isComplexSide }">
             <editor-prop
-                v-if="!isComplexSide"
+                v-if="!isComplexSide && !isMobileLayout "
                 v-bind="templateData"
                 @on-change="handleChange" />
-            <div ref="container" class="container">
+            <div ref="container" :class="{ 'container': true, 'is-complex': isComplexSide }">
                 <component
                     :is="panelCom"
                     v-bind="templateData"
@@ -19,17 +19,19 @@
     import { bus } from '@/common/bus'
     import EditorProp from './editor/prop'
     import RenderInfo from './info'
-    import RenderMenu from './side-menu'
-    import RenderTopMenu from './top-menu'
+    import RenderMenu from './side-menu/index.tsx'
+    import RenderTopMenu from './top-menu/index.tsx'
     import RenderComplexTop from './complex-top'
     import RenderComplexSide from './complex-side'
+    import RenderMobileBottomMenu from './mobile-tab-bar'
 
     const panelComMap = {
         info: RenderInfo,
         menu: RenderMenu,
         topMenu: RenderTopMenu,
         complexTop: RenderComplexTop,
-        complexSide: RenderComplexSide
+        complexSide: RenderComplexSide,
+        mobileBottomMenu: RenderMobileBottomMenu
     }
 
     export default {
@@ -52,6 +54,9 @@
             },
             isComplexSide () {
                 return this.templateData.panelActive === 'complexSide'
+            },
+            isMobileLayout () {
+                return this.templateData.panelActive === 'mobileBottomMenu'
             }
         },
         methods: {
@@ -74,14 +79,14 @@
         background: #fff;
 
         .header {
-            height: 46px;
+            height: 42px;
             font-size: 14px;
             line-height: 46px;
             text-align: center;
-            border-bottom: 1px solid #dcdee5;
+            border-bottom: 1px solid #EAEBF0;
+            color: #313238;
         }
         .main {
-            padding-top: 20px;
             height: calc(100% - 46px);
             overflow: auto;
             @mixin scroller;
@@ -91,6 +96,9 @@
         }
         .container {
             padding: 0 10px;
+            &.is-complex {
+                padding: 0;
+            }
         }
         .action-title {
             margin-bottom: 10px;

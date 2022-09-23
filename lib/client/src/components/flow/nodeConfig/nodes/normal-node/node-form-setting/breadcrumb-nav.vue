@@ -88,7 +88,7 @@
         color: #313238;
         font-size: 14px;
         .flow-icon {
-            margin-right: 10px;
+            margin-right: 5px;
             font-size: 12px;
             color: #63656e;
         }

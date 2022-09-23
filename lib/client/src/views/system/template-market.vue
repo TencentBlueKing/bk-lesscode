@@ -32,7 +32,7 @@
                                 <div class="item-bd">
                                     <template>
                                         <div class="preview">
-                                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" />
+                                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" :img-src="project.templateImg" />
                                         </div>
                                     </template>
                                     <div class="operate-btns">
@@ -66,7 +66,7 @@
                                 <div class="item-ft">
                                     <div class="col">
                                         <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
-                                        <div class="stat">{{project.createUser ? `由 ${project.createUser} 上传` : ''}}</div>
+                                        <div class="stat">{{`由 ${project.createUser || 'admin'} 上传`}}</div>
                                     </div>
                                 </div>
                                 <span class="favorite-btn">
@@ -130,7 +130,7 @@
                                             </span>
                                             <div class="name" :title="page.templateName">{{page.templateName}}</div>
                                         </div>
-                                        <div class="stat">{{page.createUser ? `由 ${page.createUser} 上传` : ''}}</div>
+                                        <div class="stat">{{`由 ${page.createUser || 'admin'} 上传`}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -704,7 +704,7 @@
                 }
                 .preview {
                     &::before {
-                        background: rgba(0, 0, 0, 0.4);
+                        background: rgba(0, 0, 0, 0.1);
                     }
                 }
                 .operate-btns {
@@ -725,7 +725,7 @@
                         left: 0;
                         width: 100%;
                         height: 100%;
-                        background: rgba(0, 0, 0, 0.4);
+                        background: rgba(0, 0, 0, 0.1);
                     }
                 }
             }
@@ -770,7 +770,7 @@
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    background: rgba(0, 0, 0, 0.2);
+                    background: rgba(0, 0, 0, 0.02);
                 }
             }
             .empty-preview-img {

@@ -32,16 +32,19 @@
                 </div>
             </div>
         </div>
+        <float-workbench-block v-if="type === 'FLOW'"></float-workbench-block>
     </div>
 </template>
 <script>
     import FormFields from './form/index.vue'
+    import FloatWorkbenchBlock from './components/float-workbench-block.vue'
     import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'ProcessForm',
         components: {
-            FormFields
+            FormFields,
+            FloatWorkbenchBlock
         },
         props: {
             type: String,
@@ -153,17 +156,27 @@
                             fields: [{ key: 'title', value: 'lesscode 提单' }, ...data],
                             creator: this.$store.state.user.username,
                             service_id: this.serviceId,
+                            tag: this.viewType === 'preview' ? 'preview' : BKPAAS_ENVIRONMENT,
                             meta: {
                                 envs: {
-                                    appApigwPrefix: BK_APP_APIGW_PREFIX
+                                    appApigwPrefix: BK_APP_APIGW_PREFIX,
+                                    creatorUsername: this.$store.state.user.username
                                 }
                             }
                         }
                         if (this.versionId) {
                             params.flow_id = this.versionId
                         }
+                        const reqConfig = {
+                            handingError (message) {
+                                if (typeof message === 'string' && message.includes('服务未启用')) {
+                                    return '当前流程未部署，请部署后提单'
+                                }
+                                return message
+                            }
+                        }
                         const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
-                        await this.$http.post(path, params)
+                        await this.$http.post(path, params, reqConfig)
                     } else {
                         await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     }

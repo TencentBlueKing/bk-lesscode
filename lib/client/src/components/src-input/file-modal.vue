@@ -28,6 +28,10 @@
                 validator (value) {
                     return ['*', 'img', 'zip', 'doc'].includes(value)
                 }
+            },
+            projectId: {
+                type: [String, Number],
+                default: ''
             }
         },
         setup (props, { emit }) {
@@ -36,7 +40,7 @@
 
             const uploadRef = ref(null)
 
-            const projectId = computed(() => route.params.projectId)
+            const projectId = computed(() => route.params.projectId || props.projectId)
             const paramsData = computed(() => ({ projectId: projectId.value }))
 
             const {

@@ -35,7 +35,10 @@ module.exports = {
         BKPAAS_ENVIRONMENT: false,
         BK_ITSM_URL: false,
         BK_APP_APIGW_PREFIX: false,
-        BK_IAM_HOST: false
+        BKPAAS_ENGINE_REGION: false,
+        BK_IAM_HOST: false,
+        IAM_ENABLE: false,
+        V3_DEVELOPER_CENTER_URL: false
     },
     // add your custom rules hered
     rules: {

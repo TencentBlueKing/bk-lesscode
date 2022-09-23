@@ -25,7 +25,10 @@
                 <!-- 保存、预览、快捷键等tool单独抽离 -->
                 <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" />
             </div>
-            <extra-links :show-help-box="false" :create-form-page="nocodeType === 'FORM'" />
+            <div class="actions-links-area">
+                <more-actions></more-actions>
+                <extra-links :show-help-box="false" />
+            </div>
         </div>
         <div class="lesscode-editor-page-content" ref="root" v-if="!isContentLoading">
             <operation-area :operation="operationType" :nocode-type="nocodeType" />
@@ -40,6 +43,7 @@
     import OperationSelect from './components/operation-select'
     import ActionTool from './components/action-tool'
     import OperationArea from './components/operation-area'
+    import MoreActions from './components/more-actions/index'
     import { syncVariableValue } from '@/views/index/components/utils'
     import PreviewMixin from './preview-mixin'
 
@@ -50,7 +54,8 @@
             ExtraLinks,
             OperationSelect,
             ActionTool,
-            OperationArea
+            OperationArea,
+            MoreActions
         },
         mixins: [PreviewMixin],
         data () {
@@ -205,6 +210,13 @@
             width: 1px;
             margin: 0 5px;
             background-color: #dcdee5;
+        }
+        .actions-links-area {
+            display: flex;
+            align-items: center;
+            .extra-links {
+                width: auto;
+            }
         }
     }
     .lesscode-editor-page-content{

@@ -35,9 +35,15 @@
             :formatter="spendTimeFormatter"
         />
         <bk-table-column
+            label="数据源"
+            prop="dataSourceType"
+            width="150"
+            :formatter="dataSourceTypeFormatter"
+        />
+        <bk-table-column
             label="查询描述"
-            show-overflow-tooltip
             prop="condition"
+            show-overflow-tooltip
             :formatter="conditionFormatter"
         />
         <bk-table-column
@@ -127,8 +133,9 @@
             const handleLoad = (row) => {
                 emit('load', {
                     type: row.type,
-                    condition: row.condition,
-                    sql: row.sql
+                    condition: JSON.parse(JSON.stringify(row.condition)),
+                    sql: row.sql,
+                    dataSourceType: row.dataSourceType
                 })
             }
 
@@ -151,6 +158,10 @@
                 return cellValue ? dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss') : '--'
             }
 
+            const dataSourceTypeFormatter = (row, column, cellValue, index) => {
+                return cellValue === 'bk-base' ? 'BkBase 结果表' : 'Mysql 数据表'
+            }
+
             onBeforeMount(getHistory)
 
             return {
@@ -165,7 +176,8 @@
                 handleLoad,
                 spendTimeFormatter,
                 conditionFormatter,
-                timeFormatter
+                timeFormatter,
+                dataSourceTypeFormatter
             }
         }
     })

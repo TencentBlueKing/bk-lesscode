@@ -1,12 +1,12 @@
 <template>
     <div class="node-data-manage" v-bkloading="{ isLoading: initDataLoading }">
         <div v-if="!initDataLoading" class="node-tab-wrapper">
-            <bk-tab :active.sync="activeNode" :label-height="32" @tab-change="handleTabChange">
+            <bk-tab :active.sync="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
                     :key="node.id"
                     :name="node.id"
-                    :label="node.name">
+                    :label="`【${node.name}】节点`">
                 </bk-tab-panel>
             </bk-tab>
             <div class="opereate-btn">
@@ -20,7 +20,6 @@
                 v-if="showFilters"
                 :filters="filters"
                 :fields="formContents[activeNode]"
-                :system-fields="systemFields"
                 :table-config="tableConfig"
                 @update="handleUpdate('filters', $event)">
             </filters>
@@ -28,7 +27,6 @@
                 style="margin-top: 16px"
                 :table-config="tableConfig"
                 :fields="formContents[activeNode]"
-                :system-fields="systemFields"
                 @update="handleUpdate('tableConfig', $event)">
             </table-fields>
         </div>
@@ -38,7 +36,6 @@
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import { messageError } from '@/common/bkmagic'
-    import { FLOW_SYS_FIELD } from '@/components/flow-form-comp/common/field.js'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
     export default {
@@ -61,7 +58,6 @@
                 formContents: {},
                 nodesConfig: {},
                 filters: [],
-                systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
                 showFilters: true
             }
@@ -149,7 +145,10 @@
         margin-bottom: 16px;
     }
     .bk-tab {
+        padding: 4px;
         max-width: calc(100% - 250px);
+        background: #f0f1f5;
+        border-radius: 2px;
         >>> .bk-tab-section {
             display: none;
         }

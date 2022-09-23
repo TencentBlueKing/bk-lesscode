@@ -343,7 +343,7 @@
             handleTableClick () {
                 if (this.formConfig.code) {
                     const route = this.$router.resolve({ name: 'dataManage', query: { tableName: this.formConfig.code } })
-                    window.open(route.href, '__blank')
+                    window.open(route.href, '_blank')
                 }
             },
             updateFormConfig (data) {

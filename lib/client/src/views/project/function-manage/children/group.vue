@@ -1,5 +1,5 @@
 <template>
-    <section class="group-list">
+    <section class="group-list-home">
         <h3 class="list-head">
             <bk-input
                 class="head-input"
@@ -12,7 +12,11 @@
             <bk-popconfirm
                 trigger="click"
                 confirm-text=""
-                cancel-text="">
+                cancel-text=""
+                ext-cls="g-popover-empty-padding"
+                placement="bottom-start"
+                :on-show="() => handleShowPopconfirm('addGroupInput')"
+            >
                 <div slot="content">
                     <bk-input
                         class="add-function-group"
@@ -52,12 +56,15 @@
                     confirm-text=""
                     cancel-text=""
                     class="item-tool-box edit-box"
+                    ext-cls="g-popover-empty-padding"
+                    placement="bottom-start"
+                    :on-show="() => handleShowPopconfirm(group.id)"
                     :on-hide="() => group.showChange = false"
                 >
                     <div slot="content">
                         <bk-input
                             placeholder="请输入函数分类"
-                            :class="['add-function-group']"
+                            class="add-function-group"
                             :ref="group.id"
                             v-model="group.tempName"
                             v-bkloading="{ isLoading: isLoadingCreateGroup }"
@@ -322,13 +329,19 @@
                 document.body.appendChild(btn)
                 btn.click()
                 document.body.removeChild(btn)
+            },
+
+            handleShowPopconfirm (refName) {
+                setTimeout(() => {
+                    this.$refs[refName]?.$refs?.input?.focus()
+                }, 0)
             }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
-    .group-list {
+    .group-list-home {
         height: 100%;
     }
 
@@ -462,7 +475,7 @@
     }
 
     .group-list {
-        height: calc(100% - 63px);
+        height: calc(100% - 67px);
         overflow-y: auto;
         .exception-wrap-item {
             position: absolute;
@@ -473,7 +486,6 @@
 
     .add-function-group {
         width: 340px;
-        margin-top: 6px;
     }
 
     /deep/ .delete-dialog-wrapper {

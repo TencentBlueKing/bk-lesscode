@@ -8,7 +8,12 @@
             need-menu
             v-bind="curTemplateData.renderProps || {}"
             @toggle="handleToggle"
-            :theme-color="themeColor">
+            :theme-color="backgroundColor"
+            :class="{
+                'white-theme': isWhiteTheme,
+                'other-theme': isOtherTheme
+            }"
+        >
             <template slot="side-header">
                 <div
                     class="component-wrapper"
@@ -81,6 +86,14 @@
     import { bus } from '@/common/bus'
     import LC from '@/element-materials/core'
 
+    const DEFAULT_BACKGROUND_COLOR = '#182132'
+    const DEFAULT_ACTIVE_BACKGROUND_COLOR = '#3c96ff'
+    const WHITE_BACKGROUND_COLOR = '#ffffff'
+    const WHITE_HOVER_COLOR = '#63656e'
+    const WHITE_HOVER_BG_COLOR = '#f5f7fa'
+    const WHITE_SUB_BG_COLOR = '#fafbfd'
+    const OTHER_HOVER_BG_COLOR = '#ffffff14'
+
     const unselectComponent = () => {
         const activeNode = LC.getActiveNode()
         if (activeNode) {
@@ -97,36 +110,7 @@
             return {
                 siteTitle: 'lesscode',
                 isToggle: false,
-                isSideMenuSelected: false,
-                whiteThemeColorProps: {
-                    'item-default-bg-color': 'white',
-                    'item-hover-bg-color': '#f0f1f5',
-                    'sub-menu-open-bg-color': '#f5f7fa',
-                    'item-hover-color': '#63656e',
-                    'item-active-color': '#699df4',
-                    'item-default-color': '#63656e',
-                    'item-default-icon-color': '#63656ead',
-                    'item-child-icon-default-color': '#63656ead',
-                    'item-child-icon-hover-color': '#313238',
-                    'item-active-icon-color': '#699df4',
-                    'item-hover-icon-color': '#63656e',
-                    'item-child-icon-active-color': '#699df4'
-                },
-                otherThemeColorProps: {
-                    'item-hover-bg-color': '#ffffff14',
-                    'item-hover-color': '#FFFFFF',
-                    'item-active-bg-color': '#ffffff33',
-                    'item-active-color': '#FFFFFF',
-                    'item-default-bg-color': '#1E1E1E',
-                    'item-default-color': '#ffffffad',
-                    'item-default-icon-color': '#ffffffad',
-                    'item-child-icon-default-color': '#ffffffad',
-                    'item-child-icon-hover-color': '#FFFFFF',
-                    'item-active-icon-color': '#FFFFFF',
-                    'item-hover-icon-color': '#FFFFFF',
-                    'item-child-icon-active-color': '#FFFFFF',
-                    'sub-menu-open-bg-color': '#000000e6'
-                }
+                isSideMenuSelected: false
             }
         },
         computed: {
@@ -139,34 +123,55 @@
             navActive () {
                 return this.pageDetail.pageCode
             },
-            isDefaultTheme () {
-                return !this.curTemplateData?.theme || this.curTemplateData?.theme === '#182132'
-            },
-            isWhiteTheme () {
-                return this.curTemplateData?.theme && this.curTemplateData?.theme === '#FFFFFF'
-            },
-            isBlackTheme () {
-                return this.curTemplateData?.theme && this.curTemplateData?.theme === '#1A1A1A'
-            },
             // 左侧导航菜单主题色 选中项背景色
             activeTheme () {
-                return this.isDefaultTheme
-                    ? '#3c96ff' : this.isBlackTheme
-                        ? '#ffffff33' : this.isWhiteTheme
-                            ? '#E1ECFF' : this.curTemplateData?.theme
+                return this.curTemplateData.themeConfig?.sideMenuTheme || DEFAULT_ACTIVE_BACKGROUND_COLOR
             },
-            // 左侧导航主题色
-            themeColor () {
-                return this.isWhiteTheme ? '#ffffff' : this.isDefaultTheme ? '#182132' : '#1E1E1E'
+            // 左侧导航背景色
+            backgroundColor () {
+                return this.curTemplateData.themeConfig?.sideMenuBackground || DEFAULT_BACKGROUND_COLOR
+            },
+            // 默认背景主题
+            isDefaultTheme () {
+                return this.backgroundColor === DEFAULT_BACKGROUND_COLOR
+            },
+            // 白色背景主题
+            isWhiteTheme () {
+                return this.backgroundColor === WHITE_BACKGROUND_COLOR
+            },
+            // 其他主题
+            isOtherTheme () {
+                return !this.isDefaultTheme && !this.isWhiteTheme
             },
             themeColorProps () {
-                let props = {}
-                if (this.isWhiteTheme) { // 白色主题需要设置以下属性
-                    props = { ...this.whiteThemeColorProps }
-                } else if (!this.isDefaultTheme) { // 非白色且非默认主题需要设置以下属性
-                    props = { ...this.otherThemeColorProps }
+                const props = {}
+                if (this.backgroundColor === WHITE_BACKGROUND_COLOR) { // 白色主题需要设置以下属性
+                    props['item-active-color'] = this.activeTheme
+                    props['item-active-icon-color'] = this.activeTheme
+                    props['item-child-icon-active-color'] = this.activeTheme
+                    props['item-default-bg-color'] = this.backgroundColor
+                    props['item-active-bg-color'] = `${this.activeTheme}1a` // 1a 代表十六进制色值的0.1透明度
+                    props['item-hover-bg-color'] = WHITE_HOVER_BG_COLOR
+                    props['item-hover-color'] = WHITE_HOVER_COLOR
+                    props['item-hover-icon-color'] = WHITE_HOVER_COLOR
+                    props['item-default-color'] = WHITE_HOVER_COLOR
+                    props['item-default-icon-color'] = WHITE_HOVER_COLOR
+                    props['item-child-icon-default-color'] = WHITE_HOVER_COLOR
+                    props['sub-menu-open-bg-color'] = WHITE_SUB_BG_COLOR
+                } else if (this.backgroundColor !== DEFAULT_BACKGROUND_COLOR) { // 非默认背景色
+                    props['item-active-bg-color'] = this.activeTheme
+                    props['item-default-bg-color'] = this.backgroundColor
+                    props['sub-menu-open-bg-color'] = this.backgroundColor
+                    props['item-hover-bg-color'] = OTHER_HOVER_BG_COLOR
+                    props['item-default-color'] = WHITE_BACKGROUND_COLOR
+                    props['item-default-icon-color'] = WHITE_BACKGROUND_COLOR
+                    props['item-child-icon-default-color'] = WHITE_BACKGROUND_COLOR
+                    props['item-child-icon-active-color'] = WHITE_BACKGROUND_COLOR
+                } else {
+                    props['item-default-bg-color'] = this.backgroundColor
+                    props['item-active-bg-color'] = this.activeTheme
                 }
-                props['item-active-bg-color'] = this.isWhiteTheme ? '#e1ecff' : this.activeTheme
+                
                 return props
             }
         },
@@ -247,7 +252,8 @@
                     siteName,
                     menuList,
                     renderProps,
-                    theme
+                    theme,
+                    themeConfig
                 } = payload
                 this.setCurTemplateData({
                     ...this.curTemplateData,
@@ -255,7 +261,8 @@
                     siteName,
                     menuList,
                     renderProps,
-                    theme
+                    theme,
+                    themeConfig
                 })
                 this.handleOpenMenu()
             },
@@ -279,8 +286,19 @@
         }
     }
 </script>
-<style lang="postcss">
+<style lang="postcss" scoped>
     .navigation-editor-wrapper{
         position: relative;
+    }
+    .white-theme {
+        .title-desc {
+            color: #313238;
+        }
+    }
+    .other-theme {
+        .title-desc {
+            color: #fff;
+            opacity: 0.86;
+        }
     }
 </style>

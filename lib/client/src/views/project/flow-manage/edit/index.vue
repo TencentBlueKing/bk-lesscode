@@ -12,7 +12,12 @@
     <section class="flow-edit-wrapper">
         <div class="page-header-container">
             <div class="nav-container">
-                <back-btn :from-page-list="fromPageList"></back-btn>
+                <back-btn
+                    :from-page-list="fromPageList"
+                    :flow-config="flowConfig"
+                    :deploy-pending="deployPending"
+                    @deploy="deployFlow">
+                </back-btn>
                 <flow-selector
                     :list="flowList"
                     :list-loading="listLoading"
@@ -34,7 +39,9 @@
         <div v-if="!serviceDataLoading" class="flow-edit-main">
             <router-view
                 :flow-config="flowConfig"
-                :service-data="serviceData">
+                :service-data="serviceData"
+                :deploy-pending="deployPending"
+                @deploy="deployFlow">
             </router-view>
         </div>
     </section>
@@ -67,6 +74,7 @@
                 flowConfigLoading: true,
                 serviceDataLoading: true,
                 serviceData: {},
+                deployPending: false,
                 fromPageList: false // 是否由页面列表页进入
             }
         },
@@ -141,6 +149,42 @@
                 return function () {
                     this.$router.push({ name })
                 }.bind(this)
+            },
+            // 部署流程
+            async deployFlow () {
+                try {
+                    this.deployPending = true
+                    const {
+                        is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
+                    } = this.serviceData
+                    const data = {
+                        can_ticket_agency: false,
+                        display_type: 'INVISIBLE',
+                        workflow_config: {
+                            is_supervise_needed,
+                            notify,
+                            notify_freq,
+                            notify_rule,
+                            revoke_config,
+                            supervise_type,
+                            supervisor,
+                            is_revocable: this.serviceData.revoke_config.type !== 0,
+                            is_auto_approve: false
+                        }
+                    }
+                    await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
+                    await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: '流程部署成功'
+                    })
+                } catch (e) {
+                    console.error(e.message || e)
+                } finally {
+                    this.deployPending = false
+                }
             }
         }
     }
@@ -157,14 +201,15 @@
     height: 52px;
     background: #ffffff;
     box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.04);
+    z-index: 1;
     .nav-container {
         position: absolute;
         top: 10px;
-        left: 35px;
+        left: 0;
         display: flex;
         align-items: center;
         .go-back-icon-wrapper {
-            margin-right: 10px;
+            margin: 0 21px;
         }
     }
     .steps-container {

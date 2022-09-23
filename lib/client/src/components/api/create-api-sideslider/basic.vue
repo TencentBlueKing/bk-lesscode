@@ -17,6 +17,7 @@
             v-bkloading="{ isLoading: isLoadingApi }"
         >
             <bk-input
+                placeholder="请输入名称"
                 :value="formData.name"
                 @change="update('name', ...arguments)"
             ></bk-input>
@@ -34,6 +35,7 @@
             v-bkloading="{ isLoading: isLoadingApi }"
         >
             <bk-input
+                placeholder="请输入标识，由大小写英文字母组成"
                 :value="formData.code"
                 :disabled="!!formData.id"
                 @change="update('code', ...arguments)"

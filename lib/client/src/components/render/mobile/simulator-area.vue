@@ -3,22 +3,7 @@
         <div :class="$style['title']">
             <span :class="$style['title-text']">效果预览</span>
         </div>
-        <div :class="$style['simulator-wrapper']" :style="{ width: pageSize.width + 'px', height: pageSize.height + 'px' }">
-            <div :class="$style['device-phone-frame']">
-                <div :class="$style['device-phone']"></div>
-            </div>
-            <div :class="$style['simulator-preview']" :style="{ width: pageSize.width + 'px', height: pageSize.height + 'px' }">
-                <div :class="$style['simulator-header']">
-                    <span></span>
-                </div>
-                <iframe width="100%"
-                    height="100%"
-                    style="border: none"
-                    :src="source"
-                >
-                </iframe>
-            </div>
-        </div>
+        <simulatorMobile :page-size="pageSize" :source="source" />
     </div>
 </template>
 
@@ -26,11 +11,18 @@
     import { computed } from '@vue/composition-api'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
+    import getHeaderHeight from './common/mobile-header-height'
+    import simulatorMobile from './common/simulator-mobile.vue'
 
     export default {
+        components: {
+            simulatorMobile
+        },
         setup () {
             const store = useStore()
             const route = useRoute()
+
+            const { height: headerHeight } = getHeaderHeight()
 
             const projectId = route.params.projectId
             const pagePath = `${store.getters['page/pageRoute'].layoutPath}${store.getters['page/pageRoute'].layoutPath.endsWith('/') ? '' : '/'}${store.getters['page/pageRoute'].path}`
@@ -39,7 +31,13 @@
             let pathStr = `${versionId ? `/version/${versionId}` : ''}`
             pathStr += '/platform/MOBILE'
 
-            const pageSize = computed(() => store.getters['page/pageSize'])
+            const pageSize = computed(() => {
+                const { height, width } = store.getters['page/pageSize']
+                return {
+                    width,
+                    height: parseInt(height + headerHeight.value)
+                }
+            })
 
             return {
                 pageSize,

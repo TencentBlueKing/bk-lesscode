@@ -16,7 +16,7 @@
                 <div class="item-bd">
                     <template v-if="pageMap[project.id] && pageMap[project.id].length > 0">
                         <div class="preview">
-                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" />
+                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" :img-src="project.templateImg" />
                         </div>
                     </template>
                     <div class="empty" v-else>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="item-ft">
                     <div class="col">
-                        <h3 class="name" :title="project.projectName">{{project.projectName}}--{{project.id}}--{{project.canDevelop}}</h3>
+                        <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
                         <div class="stat">{{getUpdateInfoMessage(project)}}</div>
                     </div>
                     <div class="col">
@@ -267,7 +267,7 @@
                 }
                 .preview {
                     &::before {
-                        background: rgba(0, 0, 0, 0.4);
+                        background: rgba(0, 0, 0, 0.1);
                     }
                 }
                 .operate-btns {
@@ -289,7 +289,7 @@
                         left: 0;
                         width: 100%;
                         height: 100%;
-                        background: rgba(0, 0, 0, 0.4);
+                        background: rgba(0, 0, 0, 0.1);
                     }
                 }
             }
@@ -392,7 +392,7 @@
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    background: rgba(0, 0, 0, 0.1);
+                    background: rgba(0, 0, 0, 0.02);
                 }
             }
             .operate-btns {
