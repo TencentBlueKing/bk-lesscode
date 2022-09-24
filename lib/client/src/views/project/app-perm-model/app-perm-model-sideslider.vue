@@ -10,7 +10,7 @@
             <div class="wrapper" slot="content" v-bkloading="{ isLoading: isLoading }">
                 <bk-form :label-width="120" :model="formData" :rules="rules" ref="validateForm">
                     <bk-form-item label="操作 ID" required property="actionId">
-                        <bk-input v-model="formData.actionId" placeholder="请输入操作 ID：如 access_page" clearable></bk-input>
+                        <bk-input v-model="formData.actionId" :disabled="isDefaultAction" placeholder="请输入操作 ID：如 access_page" clearable></bk-input>
                     </bk-form-item>
                     <bk-form-item label="操作名称" required property="actionName">
                         <bk-input v-model="formData.actionName" placeholder="请输入操作名称：如页面访问" clearable :show-word-limit="true" maxlength="32"></bk-input>
@@ -89,6 +89,7 @@
                     { id: 'list', name: '列表(list)' },
                     { id: 'manage', name: '管理(manage)' },
                     { id: 'execute', name: '执行(execute)' },
+                    { id: 'debug', name: '调试(debug)' },
                     { id: 'use', name: '使用(use)' }
                 ],
                 relatedResourceList: [],
