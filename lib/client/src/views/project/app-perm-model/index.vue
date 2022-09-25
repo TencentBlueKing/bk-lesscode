@@ -17,8 +17,8 @@
         <div class="system-manager-wrapper">
             <div class="label">系统管理员: </div>
             <div class="inner">
-                <div style="display: flex; align-items: center;" v-if="String(currentProject.isRegistryInIam) === '0'">
-                    <span>{{currentProject.createUser}}</span>
+                <div style="display: flex; align-items: center;" v-if="String(iamAppPerm.deployed) === '0'">
+                    <span>{{iamAppPerm.createUser}}</span>
                 </div>
                 <div v-else>
                     应用已部署至生产环境，请去<span class="already-deploy-msg" @click="goSystemManager">权限中心</span>查看或修改系统管理员
@@ -29,7 +29,7 @@
             新建
         </bk-button>
 
-        <bk-table :data="iamAppPermModelList"
+        <bk-table :data="iamAppPermActionList"
             :outer-border="false"
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
@@ -90,32 +90,44 @@
                 isShowSideslider: false,
                 curUpdate: {},
                 isDefaultAction: false,
-                iamAppPermModelList: []
+                iamAppPermActionList: [],
+                iamAppPerm: {}
             }
         },
 
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapGetters('project', ['currentProject']),
             projectId () {
                 return this.$route.params.projectId
             }
         },
 
         async created () {
-            await this.fetchIamAppPermModel()
+            this.isLoading = true
+            await Promise.all([
+                this.fetchIamAppPerm(),
+                this.fetchIamAppPermAction()
+            ])
+            this.isLoading = false
         },
 
         methods: {
-            async fetchIamAppPermModel () {
-                this.isLoading = true
+            async fetchIamAppPerm () {
                 try {
-                    const list = await this.$store.dispatch('iam/getIamAppPermModel', { projectId: this.projectId })
-                    this.iamAppPermModelList.splice(0, this.iamAppPermModelList.length, ...list)
+                    const res = await this.$store.dispatch('iam/getIamAppPerm', { projectId: this.projectId })
+                    this.iamAppPerm = Object.assign({}, res)
                 } catch (e) {
                     console.error(e)
-                } finally {
-                    this.isLoading = false
+                }
+            },
+
+            async fetchIamAppPermAction () {
+                try {
+                    const list = await this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
+                    console.error(list)
+                    this.iamAppPermActionList.splice(0, this.iamAppPermActionList.length, ...list)
+                } catch (e) {
+                    console.error(e)
                 }
             },
 
