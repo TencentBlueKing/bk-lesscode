@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="createNewPerm">
+        <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
             新建
         </bk-button>
 
@@ -46,8 +46,8 @@
             <bk-table-column label="操作描述" prop="actionDesc" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="关联资源">
                 <template slot-scope="{ row }">
-                    <div class="related-resource-wrapper" v-if="row.actionRelatedResourceId.length">
-                        <div class="related-resource-item" v-for="(item, index) in row.actionRelatedResourceId" :key="index">
+                    <div class="related-resource-wrapper" v-if="row.actionRelatedResourceList.length">
+                        <div class="related-resource-item" v-for="(item, index) in row.actionRelatedResourceList" :key="index">
                             <span class="item-name">{{item.pageName}}</span>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
         <app-perm-model-sideslider
             :is-show="isShowSideslider"
             :cur-update="curUpdate"
-            :is-default-action="true"
+            :is-default-action="isDefaultAction"
             @hide-sideslider="hideSideslider"
             @success="sidesliderSuccess"
         />
@@ -124,31 +124,35 @@
             async fetchIamAppPermAction () {
                 try {
                     const list = await this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
-                    console.error(list)
                     this.iamAppPermActionList.splice(0, this.iamAppPermActionList.length, ...list)
+                    console.warn(this.iamAppPermActionList)
                 } catch (e) {
                     console.error(e)
                 }
             },
 
-            createNewPerm () {
+            showCreate () {
+                this.isDefaultAction = false
                 this.isShowSideslider = true
             },
 
             showUpdate (row) {
+                this.isDefaultAction = row.actionId === 'access_page'
                 this.isShowSideslider = true
                 this.curUpdate = Object.assign({}, row)
             },
 
             hideSideslider () {
-                console.error('hideSideslider')
+                this.isDefaultAction = false
                 this.isShowSideslider = false
                 this.curUpdate = Object.assign({}, {})
             },
 
             async sidesliderSuccess () {
-                console.error(1)
                 this.hideSideslider()
+                this.isLoading = true
+                await this.fetchIamAppPermAction()
+                this.isLoading = false
             },
 
             goSystemManager () {
