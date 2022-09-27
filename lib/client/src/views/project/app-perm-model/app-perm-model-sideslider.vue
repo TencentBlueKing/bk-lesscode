@@ -10,7 +10,7 @@
             <div class="wrapper" slot="content" v-bkloading="{ isLoading: isLoading }">
                 <bk-form :label-width="120" :model="formData" :rules="rules" ref="validateForm">
                     <bk-form-item label="操作 ID" required property="actionId">
-                        <bk-input v-model="formData.actionId" :disabled="isDefaultAction" placeholder="请输入操作 ID：如 access_page"></bk-input>
+                        <bk-input v-model="formData.actionId" :disabled="isDefaultAction" :placeholder="`请输入操作 ID：如 ${IAM_APP_PERM_BUILDIN_ACTION}`"></bk-input>
                     </bk-form-item>
                     <bk-form-item label="操作名称" required property="actionName">
                         <bk-input v-model="formData.actionName" placeholder="请输入操作名称：如页面访问" :show-word-limit="true" maxlength="32"></bk-input>
@@ -59,7 +59,7 @@
 <script>
     import { mapGetters } from 'vuex'
 
-    import { IAM_ACTION_TYPE } from 'shared/constant'
+    import { IAM_ACTION_TYPE, IAM_APP_PERM_BUILDIN_ACTION } from 'shared/constant'
 
     export default {
         props: {
@@ -107,7 +107,8 @@
                             trigger: 'blur'
                         }
                     ]
-                }
+                },
+                IAM_APP_PERM_BUILDIN_ACTION: IAM_APP_PERM_BUILDIN_ACTION
             }
         },
 
@@ -253,7 +254,7 @@
             },
 
             deleteAction (row) {
-                if (row.actionId === 'access_page') {
+                if (row.actionId === IAM_APP_PERM_BUILDIN_ACTION) {
                     return
                 }
                 console.error(row)
