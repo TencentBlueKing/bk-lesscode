@@ -279,10 +279,14 @@
             }
 
             // 获取itsm对接系统的接口列表
-            const getFlowEsbApiList = (item) => {
-                return store.dispatch('nocode/flow/getEsbApis', { system_id: item.originId })
+            const getFlowEsbApiList = (system) => {
+                return store.dispatch('nocode/flow/getEsbApis', { system_id: system.originId })
                     .then(res => {
-                        return getNodeValue(res || [], true)
+                        const apiList = (res || []).map(api => {
+                            api.path = `${system.domain}${api.path}`
+                            return api
+                        })
+                        return getNodeValue(apiList, true)
                     })
             }
 
