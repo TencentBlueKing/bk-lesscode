@@ -35,10 +35,10 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             v-bkloading="{ isLoading }"
             class="app-perm-model-table">
-            <!-- { actionName: '页面访问', actionId: 'access_page', actionType: '查看(view)', actionDesc: '页面访问权限', relatedResource: ''} -->
+            <!-- { actionName: '页面访问', actionId: 'IAM_APP_PERM_BUILDIN_ACTION', actionType: '查看(view)', actionDesc: '页面访问权限', relatedResource: ''} -->
             <bk-table-column label="操作名称" show-overflow-tooltip>
                 <template slot-scope="{ row }">
-                    {{row.actionName}}<span class="buildin" v-if="row.actionId === 'access_page'">内置</span>
+                    {{row.actionName}}<span class="buildin" v-if="row.actionId === IAM_APP_PERM_BUILDIN_ACTION">内置</span>
                 </template>
             </bk-table-column>
             <bk-table-column label="操作ID" prop="actionId" show-overflow-tooltip></bk-table-column>
@@ -57,10 +57,10 @@
             <bk-table-column label="操作">
                 <template slot-scope="{ row }">
                     <span class="table-btn" @click="showUpdate(row)">编辑</span>
-                    <span class="table-btn" :class="row.actionId === 'access_page' ? 'disable' : ''" v-bk-tooltips="{
+                    <span class="table-btn" :class="row.actionId === IAM_APP_PERM_BUILDIN_ACTION ? 'disable' : ''" v-bk-tooltips="{
                         content: '内置权限，无法删除',
                         placements: ['right'],
-                        disabled: row.actionId !== 'access_page'
+                        disabled: row.actionId !== IAM_APP_PERM_BUILDIN_ACTION
                     }" @click="deleteAction(row)">删除</span>
                 </template>
             </bk-table-column>
@@ -78,6 +78,7 @@
 <script>
     import { mapGetters } from 'vuex'
 
+    import { IAM_APP_PERM_BUILDIN_ACTION } from 'shared/constant'
     import AppPermModelSideslider from './app-perm-model-sideslider.vue'
 
     export default {
@@ -91,7 +92,8 @@
                 curUpdate: {},
                 isDefaultAction: false,
                 iamAppPermActionList: [],
-                iamAppPerm: {}
+                iamAppPerm: {},
+                IAM_APP_PERM_BUILDIN_ACTION: IAM_APP_PERM_BUILDIN_ACTION
             }
         },
 
@@ -137,7 +139,7 @@
             },
 
             showUpdate (row) {
-                this.isDefaultAction = row.actionId === 'access_page'
+                this.isDefaultAction = row.actionId === IAM_APP_PERM_BUILDIN_ACTION
                 this.isShowSideslider = true
                 this.curUpdate = Object.assign({}, row)
             },
@@ -160,7 +162,7 @@
             },
 
             deleteAction (row) {
-                if (row.actionId === 'access_page') {
+                if (row.actionId === IAM_APP_PERM_BUILDIN_ACTION) {
                     return
                 }
                 console.error(row)
