@@ -16,7 +16,7 @@
         },
         methods: {
             async getUserInfo () {
-                this.$store.dispatch('userInfo')
+                await this.$store.dispatch('userInfo')
                 this.userInfoLoading = false
             }
         }
