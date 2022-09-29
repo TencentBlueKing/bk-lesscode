@@ -58,4 +58,11 @@
         -webkit-box-shadow: none;
         box-shadow: none;
     }
+    .tippy-tooltip .tippy-content {
+        padding: 0;
+    }
+    .tippy-tooltip .tippy-arrow {
+        width: 0;
+        height: 0;
+    }
 </style>
