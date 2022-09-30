@@ -129,10 +129,29 @@
                             </div>
                         </div>
                     </div>
-                    <div :class="[$style['last-version-tips'], $style['version-table']]" v-if="releaseSqls.length" v-bkloading="{ isLoading: isLoadingReleaseSql }">
+                    <div
+                        :class="[$style['last-version-tips'], $style['version-table']]"
+                        v-if="showReleaseTips"
+                        v-bkloading="{ isLoading: isLoadingReleaseSql || flowListLoading }">
                         <i :class="$style['table-icon']" class="bk-drag-icon bk-drag-info-tips"></i>
-                        <span :class="$style['tips-content']">部署后数据库将会有变更，请确认后操作，点击查看</span>
-                        <span :class="$style['table-link']" @click="showSql">变更详情</span>
+                        <div class="release-tips-content">
+                            <p v-if="releaseSqls.length">
+                                <span :class="$style['tips-content']">部署后数据库将会有变更，请确认后操作，点击查看</span>
+                                <span :class="$style['table-link']" @click="showSql">变更详情</span>
+                            </p>
+                            <p v-if="notDeployedFlowList.length">
+                                检测到流程
+                                <template v-for="(flow, index) in notDeployedFlowList">
+                                    {{ index === 0 ? '' : '、' }}
+                                    <span
+                                        :key="flow.id"
+                                        :class="$style['table-link']">
+                                        【{{ flow.flowName }}】
+                                    </span>
+                                </template>
+                                有更新，未在预览环境部署验证，建议先验证流程再发布应用。
+                            </p>
+                        </div>
                     </div>
                     <div :class="[$style['form-item']]">
                         <span :class="$style['version-label']">部署版本号</span>
@@ -293,6 +312,8 @@
                 isShowReleaseSql: false,
                 isLoadingReleaseSql: false,
                 releaseSqls: [],
+                notDeployedFlowList: [],
+                flowListLoading: true,
                 versionLogPlaceholder: 'eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n'
             }
         },
@@ -366,6 +387,9 @@
                     width: '284px',
                     content: '必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块'
                 }
+            },
+            showReleaseTips () {
+                return this.versionForm.releaseType === 'PROJECT_VERSION' && (this.releaseSqls.length || this.notDeployedFlowList.length)
             }
         },
         watch: {
@@ -407,6 +431,7 @@
                     this.currentAppInfo.moduleCode = moduleCode || ''
                     await this.resetData()
                     this.getReleaseSql()
+                    this.getUnDeployedFlows()
                 } catch (err) {
                     console.error(err)
                 } finally {
@@ -432,6 +457,19 @@
                     projectId: this.projectId
                 })
                 this.sucVersionLoading = false
+            },
+            async getUnDeployedFlows () {
+                try {
+                    this.flowListLoading = true
+                    const res = await this.$store.dispatch('nocode/flow/getFlowList', {
+                        projectId: this.projectId
+                    })
+                    this.notDeployedFlowList = res.list.filter(item => item.deployed === 0)
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.flowListLoading = false
+                }
             },
             toManagePage (pageUrl) {
                 window.open(`${this.createLinkUrl}/apps/${this.currentAppInfo.appCode}/${this.currentAppInfo.moduleCode}/${pageUrl}`, '_blank')
@@ -720,8 +758,9 @@
                 display: flex;
                 align-items: center;
                 margin-bottom: 30px;
+                padding: 8px 0;
                 width: 800px;
-                height: 32px;
+                min-height: 32px;
                 background: #f0f8ff;
                 border: 1px solid #c5daff;
                 border-radius: 2px;
