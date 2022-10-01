@@ -25,9 +25,9 @@
                 </div>
             </div>
         </div>
-        <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
+        <!-- <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
             新建
-        </bk-button>
+        </bk-button> -->
 
         <bk-table :data="iamAppPermActionList"
             :outer-border="false"
