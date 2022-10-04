@@ -214,7 +214,7 @@
                 this.isFormFocused = e.target.classList.contains('field-container-mask')
             },
             handleKeyboardEvent (event) {
-                if (this.selectedIndex < 0 || !this.isFormFocused) {
+                if (this.disabled || this.selectedIndex < 0 || !this.isFormFocused) {
                     return
                 }
                 const vKey = 86
