@@ -8,8 +8,10 @@
                         <p>注意：</p>
                         <p>1. 应用权限模型在应用预览环境、预发布环境不生效</p>
                         <p>2. 应用需部署至生产环境后，最新权限模型方可在生产环境生效</p>
-                        <p>3. 系统管理员可以管理本应用各个操作的权限，默认为本应用创建者</p>
-                        <p>4. 应用未部署至生产环境时，系统管理员不可修改；部署至生产环境之后，修改系统管理员需要去权限中心设置</p>
+                        <p>3. 应用未部署至生产环境时，系统管理员默认为本应用创建者，并不可修改；应用部署至生产环境之后，系统管理员可在权限中心设置</p>
+                        <p>4. 系统管理员可以设置该应用的系统管理员，设置入口：权限中心->权限管理->系统管理员</p>
+                        <p>5. 系统管理员也可以设置该应用的权限审批流程，设置入口：权限中心->权限管理->审批流程</p>
+                        <p>6. 权限中心自定义权限默认审批流程为：【审批节点：申请人上级审批确认 -> 系统管理员审批】，系统管理员可根据自己的需求修改审批流程</p>
                     </div>
                 </template>
             </bk-alert>
@@ -42,8 +44,18 @@
                 </template>
             </bk-table-column>
             <bk-table-column label="操作ID" prop="actionId" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="操作类型" prop="actionType" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="操作描述" prop="actionDesc" show-overflow-tooltip></bk-table-column>
+            <bk-table-column label="操作类型">
+                <template slot-scope="{ row }">
+                    <div v-if="row.actionType" :title="row.actionType">{{row.actionType}}</div>
+                    <div v-else>--</div>
+                </template>
+            </bk-table-column>
+            <bk-table-column label="操作描述">
+                <template slot-scope="{ row }">
+                    <div v-if="row.actionDesc" :title="row.actionDesc">{{row.actionDesc}}</div>
+                    <div v-else>--</div>
+                </template>
+            </bk-table-column>
             <bk-table-column label="关联资源">
                 <template slot-scope="{ row }">
                     <div class="related-resource-wrapper" v-if="row.actionRelatedResourceList.length">
@@ -61,17 +73,37 @@
                         content: '内置权限，无法删除',
                         placements: ['right'],
                         disabled: row.actionId !== IAM_APP_PERM_BUILDIN_ACTION
-                    }" @click="deleteAction(row)">删除</span>
+                    }" @click="showDelete(row)">删除</span>
                 </template>
             </bk-table-column>
         </bk-table>
         <app-perm-model-sideslider
             :is-show="isShowSideslider"
             :cur-update="curUpdate"
+            :iam-app-perm="iamAppPerm"
             :is-default-action="isDefaultAction"
             @hide-sideslider="hideSideslider"
             @success="sidesliderSuccess"
         />
+
+        <bk-dialog v-model="delObj.show"
+            render-directive="if"
+            theme="primary"
+            ext-cls="delete-dialog-wrapper"
+            title="确定删除？"
+            width="400"
+            footer-position="center"
+            :mask-close="false"
+            :auto-close="false">
+            <p class="delete-content">{{ delObj.nameTips }}</p>
+            <div class="dialog-footer" slot="footer">
+                <bk-button
+                    theme="danger"
+                    :loading="delObj.loading"
+                    @click="deleteAction">删除</bk-button>
+                <bk-button @click="delObj.show = false" :disabled="delObj.loading">取消</bk-button>
+            </div>
+        </bk-dialog>
     </article>
 </template>
 
@@ -93,7 +125,12 @@
                 isDefaultAction: false,
                 iamAppPermActionList: [],
                 iamAppPerm: {},
-                IAM_APP_PERM_BUILDIN_ACTION: IAM_APP_PERM_BUILDIN_ACTION
+                IAM_APP_PERM_BUILDIN_ACTION: IAM_APP_PERM_BUILDIN_ACTION,
+                delObj: {
+                    id: '',
+                    loading: false,
+                    show: false
+                }
             }
         },
 
@@ -126,8 +163,11 @@
             async fetchIamAppPermAction () {
                 try {
                     const list = await this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
-                    this.iamAppPermActionList.splice(0, this.iamAppPermActionList.length, ...list)
-                    console.warn(this.iamAppPermActionList)
+                    this.iamAppPermActionList.splice(
+                        0,
+                        this.iamAppPermActionList.length,
+                        ...list.filter(item => item.registeredStatus !== -1)
+                    )
                 } catch (e) {
                     console.error(e)
                 }
@@ -161,11 +201,39 @@
                 window.open(`${BK_IAM_HOST}/administrator`, '_blank')
             },
 
-            deleteAction (row) {
+            showDelete (row) {
                 if (row.actionId === IAM_APP_PERM_BUILDIN_ACTION) {
                     return
                 }
-                console.error(row)
+                this.delObj.show = true
+                this.delObj.id = row.id
+                this.delObj.nameTips = `删除操作【${row.actionName}】`
+            },
+
+            async deleteAction () {
+                this.delObj.loading = true
+                try {
+                    const params = {
+                        // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
+                        projectId: this.projectId,
+                        actionId: this.delObj.id,
+                        fields: {
+                            registeredStatus: -1
+                        }
+                    }
+                    await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
+                    this.delObj = Object.assign({}, {
+                        id: '',
+                        loading: false,
+                        show: false
+                    })
+                    this.messageSuccess('删除成功')
+                    this.sidesliderSuccess()
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.delObj.loading = false
+                }
             }
         }
     }
@@ -205,7 +273,7 @@
         justify-content: space-between;
         .tips {
             margin-top: 10px;
-            line-height: 18px;
+            line-height: 20px;
             color: #ea3636;
             font-weight: 400;
         }
