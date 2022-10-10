@@ -20,10 +20,10 @@
             <div
                 id="toolActionBox"
                 class="function-and-tool">
-                <operation-select v-model="operationType" :hide-json="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" />
+                <operation-select v-model="operationType" :hide-json="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" :hide-func="nocodeType === 'MARKDOWN'" />
                 <div class="spilt-line" />
                 <!-- 保存、预览、快捷键等tool单独抽离 -->
-                <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" />
+                <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" :hide-func="nocodeType === 'MARKDOWN'" />
             </div>
             <div class="actions-links-area">
                 <more-actions></more-actions>
@@ -44,7 +44,6 @@
     import ActionTool from './components/action-tool'
     import OperationArea from './components/operation-area'
     import MoreActions from './components/more-actions/index'
-    import { syncVariableValue } from '@/views/index/components/utils'
     import PreviewMixin from './preview-mixin'
 
     export default {
@@ -134,7 +133,7 @@
                         })
                     ])
 
-                    const variableList = await this.$store.dispatch('variable/getAllVariable', {
+                    await this.$store.dispatch('variable/getAllVariable', {
                         projectId: this.projectId,
                         pageCode: pageDetail.pageCode,
                         versionId: this.versionId,
@@ -145,8 +144,6 @@
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
                     this.$store.commit('functions/setFunctionData', functionData)
-
-                    syncVariableValue(pageDetail.content, variableList)
 
                     LC.pageStyle = pageDetail.styleSetting
                 } catch (e) {
