@@ -88,19 +88,19 @@
         methods: {
             // 针对chart类型，将动态返回的remoteOptions与options合并
             updateChartOptions (res) {
-                // if (this.renderProps['options']
-                //     && this.renderProps['options'].val
-                //     && typeof this.renderProps['options'].val === 'object') {
-                //     const options = Object.assign({}, this.renderProps['options'].val, res)
-                //     this.renderProps['options'] = {
-                //         ...this.renderProps['options'],
-                //         val: options
-                //     }
-                //     this.renderProps['options'].val = options
-                //     this.batchUpdate({
-                //         renderProps: this.renderProps
-                //     })
-                // }
+                if (this.componentNode.renderProps['options']
+                    && this.componentNode.renderProps['options'].renderValue
+                    && typeof this.componentNode.renderProps['options'].renderValue === 'object') {
+                    const options = Object.assign({}, this.componentNode.renderProps['options'].renderValue, res)
+                    this.componentNode.renderProps['options'] = {
+                        ...this.componentNode.renderProps['options'],
+                        val: options
+                    }
+                    this.componentNode.renderProps['options'].renderValue = options
+                    this.batchUpdate({
+                        renderProps: this.componentNode.renderProps
+                    })
+                }
             },
             syncOtherProp (propName) {
                 if (['bk-charts', 'chart'].includes(this.componentNode.type)
