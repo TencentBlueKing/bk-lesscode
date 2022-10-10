@@ -51,10 +51,16 @@
                     return
                 }
                 if (this.nocodeType === 'FORM') {
-                    // console.log('FORM')
                     this.saveFormList()
                 } else if (['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)) {
-                    this.saveFormManage()
+                    const content = []
+                    content.push(JSON.stringify(this.$store.state.nocode.formSetting.tableFieldsConfig))
+                    this.savePageContent(content)
+                } else if (this.nocodeType === 'MARKDOWN') {
+                    const content = {
+                        content: this.$store.state.nocode.markdown.mdContent
+                    }
+                    this.savePageContent(JSON.stringify(content))
                 }
                 this.saveTemplate()
                 // this.savePreviewImg()
@@ -99,10 +105,8 @@
                     this.isLoading = false
                 }
             },
-            // 保存表单管理页
-            async saveFormManage () {
-                const content = []
-                content.push(JSON.stringify(this.$store.state.nocode.formSetting.tableFieldsConfig))
+            // 保存页面content
+            async savePageContent (content) {
                 const pageData = {
                     id: this.pageDetail.id,
                     content
