@@ -21,11 +21,13 @@
                 var SITE_URL = '/'
                 var BK_STATIC_URL = ''
                 var REMOTE_STATIC_URL = ''
+                var IAM_ENABLE = <%= htmlWebpackPlugin.options.IAM_ENABLE %>
 
                 return {
                     SITE_URL: SITE_URL,
                     BK_STATIC_URL: BK_STATIC_URL,
-                    REMOTE_STATIC_URL: REMOTE_STATIC_URL
+                    REMOTE_STATIC_URL: REMOTE_STATIC_URL,
+                    IAM_ENABLE: IAM_ENABLE
                 }
             })()
             var BKPAAS_ENVIRONMENT = 'stag'
