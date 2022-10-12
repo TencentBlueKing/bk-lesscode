@@ -19,7 +19,7 @@
                         <bk-input v-model="formData.actionNameEn" placeholder="请输入操作名称英文：如 View Page"></bk-input>
                     </bk-form-item>
                     <bk-form-item label="操作类型" property="actionType">
-                        <bk-select v-model="formData.actionType" @change="actionTypeChange">
+                        <bk-select v-model="formData.actionType">
                             <bk-option v-for="item in actionTypeList" :key="item.id"
                                 :id="item.id" :name="item.name">
                             </bk-option>
@@ -33,7 +33,7 @@
                             </bk-radio-group>
                         </bk-form-item>
                         <bk-form-item label="关联资源" property="actionRelatedResourceId" v-if="formData.hasRelated">
-                            <bk-select v-model="formData.actionRelatedResourceId" @change="relatedResourceChange" placeholder="请选择资源" multiple>
+                            <bk-select v-model="formData.actionRelatedResourceId" placeholder="请选择资源" multiple>
                                 <bk-option v-for="item in relatedResourceList" :key="item.id"
                                     :id="item.id" :name="item.name">
                                 </bk-option>
@@ -95,6 +95,11 @@
                             required: true,
                             message: '请填写操作 ID',
                             trigger: 'blur'
+                        },
+                        {
+                            message: '操作 ID 在应用内唯一',
+                            trigger: 'blur',
+                            validator: this.checkActionId
                         }
                     ],
                     actionName: [
@@ -176,6 +181,21 @@
                 })
             },
 
+            async checkActionId (val) {
+                try {
+                    const res = await this.$store.dispatch('iam/checkActionId', {
+                        data: {
+                            projectId: this.projectId,
+                            actionId: val
+                        }
+                    })
+                    return !res.exist
+                } catch (e) {
+                    console.error(e)
+                    return false
+                }
+            },
+
             async getRelatedResourceList () {
                 this.isLoading = true
                 try {
@@ -189,14 +209,6 @@
                 } finally {
                     this.isLoading = false
                 }
-            },
-
-            actionTypeChange () {
-
-            },
-
-            relatedResourceChange () {
-
             },
 
             validate () {
