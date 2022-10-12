@@ -182,6 +182,9 @@
             },
 
             async checkActionId (val) {
+                if (this.isEdit) {
+                    return true
+                }
                 try {
                     const res = await this.$store.dispatch('iam/checkActionId', {
                         data: {
