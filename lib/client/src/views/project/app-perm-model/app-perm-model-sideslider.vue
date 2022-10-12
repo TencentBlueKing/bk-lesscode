@@ -10,7 +10,7 @@
             <div class="wrapper" slot="content" v-bkloading="{ isLoading: isLoading }">
                 <bk-form :label-width="120" :model="formData" :rules="rules" ref="validateForm">
                     <bk-form-item label="操作 ID" required property="actionId">
-                        <bk-input v-model="formData.actionId" :disabled="isDefaultAction" :placeholder="`请输入操作 ID：如 ${IAM_APP_PERM_BUILDIN_ACTION}`"></bk-input>
+                        <bk-input v-model="formData.actionId" :disabled="isEdit || isDefaultAction" :placeholder="`请输入操作 ID：如 ${IAM_APP_PERM_BUILDIN_ACTION}`"></bk-input>
                     </bk-form-item>
                     <bk-form-item label="操作名称" required property="actionName">
                         <bk-input v-model="formData.actionName" placeholder="请输入操作名称：如页面访问" :show-word-limit="true" maxlength="32"></bk-input>
@@ -72,6 +72,10 @@
                 default: true
             },
             curUpdate: {
+                type: Object,
+                default: () => ({})
+            },
+            iamAppPerm: {
                 type: Object,
                 default: () => ({})
             }
@@ -202,19 +206,30 @@
                 form.validate().then(async () => {
                     try {
                         const params = {
+                            // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
                             projectId: this.projectId,
+                            actionId: this.curUpdate.id,
                             fields: {
                                 actionId: this.formData.actionId,
                                 actionName: this.formData.actionName,
                                 actionNameEn: this.formData.actionNameEn,
-                                actionDesc: this.formData.actionDesc,
-                                actionDescEn: this.formData.actionDescEn,
-                                actionRelatedResourceId: this.formData.actionRelatedResourceId,
-                                actionType: this.formData.actionType
+                                actionDesc: this.formData.actionDesc || '',
+                                actionDescEn: this.formData.actionDescEn || '',
+                                actionRelatedResourceId: this.formData.actionRelatedResourceId || [],
+                                actionType: this.formData.actionType || ''
                             }
                         }
-                        console.warn(params)
-                        await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
+                        if (this.isEdit) {
+                            await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
+                        } else {
+                            await this.$store.dispatch('iam/addIamAppPermAction', {
+                                data: {
+                                    projectId: Number(this.projectId),
+                                    iamAppPermId: this.iamAppPerm.id,
+                                    ...params.fields
+                                }
+                            })
+                        }
                         this.$emit('success')
                     } catch (e) {
                         console.error(e)

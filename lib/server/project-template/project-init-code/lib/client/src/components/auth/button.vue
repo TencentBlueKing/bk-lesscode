@@ -13,7 +13,6 @@
     </bk-button>
 </template>
 <script>
-    // import PermissionCheckService from '@service/permission-check'
     import { permissionDialog } from '@/common/bkmagic'
 
     export default {
@@ -32,11 +31,6 @@
             auth: {
                 type: String,
                 required: true
-            },
-            resourceId: {
-                type: [
-                    Number, String
-                ]
             }
         },
         data () {
@@ -58,9 +52,6 @@
         },
         watch: {
             resourceId (resourceId) {
-                if (!resourceId) {
-                    return
-                }
                 this.checkPermission()
             }
         },
@@ -75,12 +66,12 @@
             async fetchPermission () {
                 this.isLoading = true
                 try {
-                    const resData = await this.$store.dispatch('iam/check', {
+                    const resData = await this.$store.dispatch('iam/checkBatch', {
                         data: {
-                            action: this.auth,
-                            resourceId: this.resourceId
+                            actions: this.auth.split(',')
                         }
                     })
+                    console.error(resData)
                     this.hasPermission = resData.pass
                     this.authResult = resData
                 } catch (e) {
@@ -105,8 +96,7 @@
                     return
                 }
                 permissionDialog({
-                    action: this.auth,
-                    resourceId: this.resourceId
+                    actions: this.auth.split(',')
                 }, this.authResult)
             }
         }

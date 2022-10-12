@@ -27,9 +27,9 @@
                 </div>
             </div>
         </div>
-        <!-- <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
+        <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
             新建
-        </bk-button> -->
+        </bk-button>
 
         <bk-table :data="iamAppPermActionList"
             :outer-border="false"
@@ -66,17 +66,48 @@
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
+            <bk-table-column label="引用">
+                <template slot-scope="{ row }">
+                    <template v-if="row.pageComponentRef && row.pageComponentRef.length">
+                        <bk-popover placement="top">
+                            <span style="cursor: pointer; color: #3a84ff;">{{row.pageComponentRef.length}}</span>
+                            <div slot="content" style="white-space: normal;">
+                                <div v-for="(str, index) in row.pageComponentRefStrList" :key="index">
+                                    {{str}}
+                                </div>
+                            </div>
+                        </bk-popover>
+                    </template>
+                    <template v-else>
+                        --
+                    </template>
+                </template>
+            </bk-table-column>
+            <bk-table-column label="是否部署到权限中心">
+                <template slot-scope="{ row }">
+                    <div v-if="row.registeredStatus === 1" style="color: #2dcb56">已部署</div>
+                    <div v-else style="color: #ff9c01">未部署</div>
+                </template>
+            </bk-table-column>
             <bk-table-column label="操作">
                 <template slot-scope="{ row }">
                     <span class="table-btn" @click="showUpdate(row)">编辑</span>
-                    <span class="table-btn" :class="row.actionId === IAM_APP_PERM_BUILDIN_ACTION ? 'disable' : ''" v-bk-tooltips="{
-                        content: '内置权限，无法删除',
-                        placements: ['right'],
-                        disabled: row.actionId !== IAM_APP_PERM_BUILDIN_ACTION
-                    }" @click="showDelete(row)">删除</span>
+                    <template v-if="row.pageComponentRef && row.pageComponentRef.length">
+                        <span class="table-btn disable" v-bk-tooltips="{ content: '该操作已被绑定，无法删除', placements: ['right'] }">
+                            删除
+                        </span>
+                    </template>
+                    <template v-else>
+                        <span class="table-btn" :class="row.actionId === IAM_APP_PERM_BUILDIN_ACTION ? 'disable' : ''" v-bk-tooltips="{
+                            content: '内置权限，无法删除',
+                            placements: ['right'],
+                            disabled: row.actionId !== IAM_APP_PERM_BUILDIN_ACTION
+                        }" @click="showDelete(row)">删除</span>
+                    </template>
                 </template>
             </bk-table-column>
         </bk-table>
+
         <app-perm-model-sideslider
             :is-show="isShowSideslider"
             :cur-update="curUpdate"
@@ -163,6 +194,11 @@
             async fetchIamAppPermAction () {
                 try {
                     const list = await this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
+                    list.forEach(item => {
+                        item.pageComponentRefStrList = (item.pageComponentRef || []).map(
+                            ref => `页面【${ref.pageCode}】内的【${ref.componentId}】组件`
+                        )
+                    })
                     this.iamAppPermActionList.splice(
                         0,
                         this.iamAppPermActionList.length,
