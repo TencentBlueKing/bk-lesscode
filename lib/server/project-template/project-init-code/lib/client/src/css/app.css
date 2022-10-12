@@ -14,3 +14,10 @@
 #app {
     font-size: 14px;
 }
+
+.cursor-element {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 12px 16px;
+    background-image: url("../images/lock.svg");
+}

@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <div class="material-modifier">
+    <div class="material-modifier" :style="{ '--width': tabLabelItemWidth }">
         <template v-if="renderKey">
             <bk-tab
                 :active="tabPanelActive"
@@ -61,6 +61,7 @@
     import ModifierDirectives from './directives'
     import ModifierAlign from './align'
     import H5Page from './h5-page'
+    import ModifierPerms from './perms'
 
     export default {
         name: '',
@@ -71,12 +72,14 @@
                     { name: 'styles', label: '样式', count: 40 },
                     { name: 'props', label: '属性', count: 30 },
                     { name: 'events', label: '事件', count: 20 },
-                    { name: 'directives', label: '指令', count: 10 }
+                    { name: 'directives', label: '指令', count: 10 },
+                    { name: 'perms', label: '权限', count: 10 }
                 ],
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
                 renderKey: '',
-                isModifierEmpty: false
+                isModifierEmpty: false,
+                tabLabelItemWidth: '25%'
             }
         },
         computed: {
@@ -86,12 +89,13 @@
                     styles: [ModifierAlign, ModifierStyles],
                     props: [ModifierGird, H5Page, ModifierForm, ModifierTab, ModifierSlots, ModifierProps],
                     events: [ModifierEvents],
-                    directives: [ModifierDirectives]
+                    directives: [ModifierDirectives],
+                    perms: [ModifierPerms]
                 }
                 return comMap[this.tabPanelActive]
             }
         },
-        
+
         created () {
             this.activeComponentNode = null
             const activeCallback = ({ target }) => {
@@ -99,6 +103,9 @@
                 this.renderKey = target.renderKey
                 this.activeComponentNode = target
                 this.checkChildrenComponentInstance()
+
+                // 目前只有 button 按钮有权限面板
+                this.tabLabelItemWidth = target.type === 'bk-button' ? '20%' : '25%'
             }
 
             const activeClearCallback = () => {
@@ -112,7 +119,7 @@
             if (activeNode && activeNode.parentNode) {
                 activeCallback({ target: activeNode })
             }
-            
+
             LC.addEventListener('active', activeCallback)
             LC.addEventListener('activeClear', activeClearCallback)
             this.$once('hook:beforeDestroy', () => {
@@ -155,7 +162,7 @@
                         height: 100%;
                         padding: 0 20px;
                         .bk-tab-label-item {
-                            width: 25%;
+                            width: calc(var(--width));
                             line-height: 46px;
                             min-width: auto;
                             padding: 0 2px;
@@ -170,7 +177,7 @@
             .bk-tab-section {
                 padding: 0;
             }
-            
+
         }
         .material-modifier-container {
             @mixin scroller;
