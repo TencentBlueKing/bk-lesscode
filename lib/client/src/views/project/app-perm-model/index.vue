@@ -158,7 +158,7 @@
                 iamAppPerm: {},
                 IAM_APP_PERM_BUILDIN_ACTION: IAM_APP_PERM_BUILDIN_ACTION,
                 delObj: {
-                    id: '',
+                    action: {},
                     loading: false,
                     show: false
                 }
@@ -242,27 +242,33 @@
                     return
                 }
                 this.delObj.show = true
-                this.delObj.id = row.id
+                this.delObj.action = Object.assign({}, row)
                 this.delObj.nameTips = `删除操作【${row.actionName}】`
             },
 
             async deleteAction () {
                 this.delObj.loading = true
                 try {
-                    const params = {
-                        // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
-                        projectId: this.projectId,
-                        actionId: this.delObj.id,
-                        fields: {
-                            registeredStatus: -1
+                    // 之前没有部署过的操作，直接删除
+                    if (this.delObj.action.registeredStatus === 0) {
+                        await this.$store.dispatch('iam/deleteIamAppPermAction', {
+                            projectId: this.projectId,
+                            actionId: this.delObj.action.id
+                        })
+                    } else {
+                        // 之前部署过，删除即是把 registeredStatus 置为 -1
+                        const params = {
+                            // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
+                            projectId: this.projectId,
+                            actionId: this.delObj.action.id,
+                            fields: {
+                                registeredStatus: -1
+                            }
                         }
+                        await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
                     }
-                    await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
-                    this.delObj = Object.assign({}, {
-                        id: '',
-                        loading: false,
-                        show: false
-                    })
+                    this.delObj.action = Object.assign({}, {})
+                    this.delObj.show = false
                     this.messageSuccess('删除成功')
                     this.sidesliderSuccess()
                 } catch (e) {
