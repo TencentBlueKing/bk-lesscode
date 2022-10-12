@@ -230,7 +230,7 @@
                                 actionNameEn: this.formData.actionNameEn,
                                 actionDesc: this.formData.actionDesc || '',
                                 actionDescEn: this.formData.actionDescEn || '',
-                                actionRelatedResourceId: this.formData.actionRelatedResourceId || [],
+                                actionRelatedResourceId: this.formData.hasRelated ? (this.formData.actionRelatedResourceId || []) : [],
                                 actionType: this.formData.actionType || ''
                             }
                         }
