@@ -235,6 +235,10 @@
                             }
                         }
                         if (this.isEdit) {
+                            // 之前已同步到权限中心的操作
+                            if (this.curUpdate.registeredStatus === 1) {
+                                params.fields.registeredStatus = -1
+                            }
                             await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
                         } else {
                             await this.$store.dispatch('iam/addIamAppPermAction', {

@@ -72,8 +72,7 @@
                     { name: 'styles', label: '样式', count: 40 },
                     { name: 'props', label: '属性', count: 30 },
                     { name: 'events', label: '事件', count: 20 },
-                    { name: 'directives', label: '指令', count: 10 },
-                    { name: 'perms', label: '权限', count: 10 }
+                    { name: 'directives', label: '指令', count: 10 }
                 ],
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
@@ -105,7 +104,24 @@
                 this.checkChildrenComponentInstance()
 
                 // 目前只有 button 按钮有权限面板
-                this.tabLabelItemWidth = target.type === 'bk-button' ? '20%' : '25%'
+                if (target.type === 'bk-button') {
+                    this.tabLabelItemWidth = '20%'
+                    this.tabPanels.splice(0, this.tabPanels.length, ...[
+                        { name: 'styles', label: '样式', count: 40 },
+                        { name: 'props', label: '属性', count: 30 },
+                        { name: 'events', label: '事件', count: 20 },
+                        { name: 'directives', label: '指令', count: 10 },
+                        { name: 'perms', label: '权限', count: 10 }
+                    ])
+                } else {
+                    this.tabLabelItemWidth = '25%'
+                    this.tabPanels.splice(0, this.tabPanels.length, ...[
+                        { name: 'styles', label: '样式', count: 40 },
+                        { name: 'props', label: '属性', count: 30 },
+                        { name: 'events', label: '事件', count: 20 },
+                        { name: 'directives', label: '指令', count: 10 }
+                    ])
+                }
             }
 
             const activeClearCallback = () => {
