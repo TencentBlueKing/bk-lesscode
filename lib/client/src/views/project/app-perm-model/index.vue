@@ -83,7 +83,7 @@
                     </template>
                 </template>
             </bk-table-column>
-            <bk-table-column label="是否同步到权限中心">
+            <bk-table-column label="是否同步到权限中心" :render-header="renderHeader">
                 <template slot-scope="{ row }">
                     <div v-if="row.registeredStatus === 1" style="color: #2dcb56">已同步</div>
                     <div v-else-if="row.registeredStatus === 0" style="color: #979ba5">未同步</div>
@@ -273,6 +273,15 @@
                 } finally {
                     this.delObj.loading = false
                 }
+            },
+
+            renderHeader (h, data) {
+                const directive = {
+                    name: 'bkTooltips',
+                    content: '应用部署生产环境后会自动同步至权限中心',
+                    placement: 'top'
+                }
+                return <a class="custom-header-cell" v-bk-tooltips={ directive }>{ data.column.label }</a>
             }
         }
     }
@@ -377,6 +386,13 @@
                 white-space: nowrap;
                 vertical-align: text-top;
             }
+        }
+
+        /deep/ .custom-header-cell {
+            color: inherit;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-underline-position: under;
         }
     }
 </style>
