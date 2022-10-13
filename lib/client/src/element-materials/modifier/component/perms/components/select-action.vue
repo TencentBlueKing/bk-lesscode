@@ -65,7 +65,7 @@
                         0,
                         this.iamAppPermActionList.length,
                         ...list.filter(
-                            item => item.registeredStatus !== -1 && item.actionId !== IAM_APP_PERM_BUILDIN_ACTION
+                            item => item.actionId !== IAM_APP_PERM_BUILDIN_ACTION
                         ).map(item => {
                             return {
                                 id: item.id,

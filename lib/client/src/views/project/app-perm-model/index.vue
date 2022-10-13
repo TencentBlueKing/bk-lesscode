@@ -83,10 +83,11 @@
                     </template>
                 </template>
             </bk-table-column>
-            <bk-table-column label="是否部署到权限中心">
+            <bk-table-column label="是否同步到权限中心">
                 <template slot-scope="{ row }">
-                    <div v-if="row.registeredStatus === 1" style="color: #2dcb56">已部署</div>
-                    <div v-else style="color: #ff9c01">未部署</div>
+                    <div v-if="row.registeredStatus === 1" style="color: #2dcb56">已同步</div>
+                    <div v-else-if="row.registeredStatus === 0" style="color: #979ba5">未同步</div>
+                    <div v-else style="color: #ff9c01">已更新未同步</div>
                 </template>
             </bk-table-column>
             <bk-table-column label="操作">
@@ -199,11 +200,7 @@
                             ref => `页面【${ref.pageCode}】内的【${ref.componentId}】组件`
                         )
                     })
-                    this.iamAppPermActionList.splice(
-                        0,
-                        this.iamAppPermActionList.length,
-                        ...list.filter(item => item.registeredStatus !== -1)
-                    )
+                    this.iamAppPermActionList.splice(0, this.iamAppPermActionList.length, ...list)
                 } catch (e) {
                     console.error(e)
                 }
@@ -256,13 +253,13 @@
                             actionId: this.delObj.action.id
                         })
                     } else {
-                        // 之前部署过，删除即是把 registeredStatus 置为 -1
+                        // 之前部署过，删除即是把 deleteFlag 置为 -1
                         const params = {
                             // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
                             projectId: this.projectId,
                             actionId: this.delObj.action.id,
                             fields: {
-                                registeredStatus: -1
+                                deleteFlag: 1
                             }
                         }
                         await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
