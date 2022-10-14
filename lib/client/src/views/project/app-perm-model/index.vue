@@ -27,9 +27,9 @@
                 </div>
             </div>
         </div>
-        <!-- <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
+        <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
             新建
-        </bk-button> -->
+        </bk-button>
 
         <bk-table :data="iamAppPermActionList"
             :outer-border="false"
@@ -66,17 +66,49 @@
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
+            <bk-table-column label="引用">
+                <template slot-scope="{ row }">
+                    <template v-if="row.pageComponentRef && row.pageComponentRef.length">
+                        <bk-popover placement="top">
+                            <span style="cursor: pointer; color: #3a84ff;">{{row.pageComponentRef.length}}</span>
+                            <div slot="content" style="white-space: normal;">
+                                <div v-for="(str, index) in row.pageComponentRefStrList" :key="index">
+                                    {{str}}
+                                </div>
+                            </div>
+                        </bk-popover>
+                    </template>
+                    <template v-else>
+                        --
+                    </template>
+                </template>
+            </bk-table-column>
+            <bk-table-column label="是否同步到权限中心" :render-header="renderHeader">
+                <template slot-scope="{ row }">
+                    <div v-if="row.registeredStatus === 1" style="color: #2dcb56">已同步</div>
+                    <div v-else-if="row.registeredStatus === 0" style="color: #979ba5">未同步</div>
+                    <div v-else style="color: #ff9c01">已更新未同步</div>
+                </template>
+            </bk-table-column>
             <bk-table-column label="操作">
                 <template slot-scope="{ row }">
                     <span class="table-btn" @click="showUpdate(row)">编辑</span>
-                    <span class="table-btn" :class="row.actionId === IAM_APP_PERM_BUILDIN_ACTION ? 'disable' : ''" v-bk-tooltips="{
-                        content: '内置权限，无法删除',
-                        placements: ['right'],
-                        disabled: row.actionId !== IAM_APP_PERM_BUILDIN_ACTION
-                    }" @click="showDelete(row)">删除</span>
+                    <template v-if="row.pageComponentRef && row.pageComponentRef.length">
+                        <span class="table-btn disable" v-bk-tooltips="{ content: '该操作已被绑定，无法删除', placements: ['right'] }">
+                            删除
+                        </span>
+                    </template>
+                    <template v-else>
+                        <span class="table-btn" :class="row.actionId === IAM_APP_PERM_BUILDIN_ACTION ? 'disable' : ''" v-bk-tooltips="{
+                            content: '内置权限，无法删除',
+                            placements: ['right'],
+                            disabled: row.actionId !== IAM_APP_PERM_BUILDIN_ACTION
+                        }" @click="showDelete(row)">删除</span>
+                    </template>
                 </template>
             </bk-table-column>
         </bk-table>
+
         <app-perm-model-sideslider
             :is-show="isShowSideslider"
             :cur-update="curUpdate"
@@ -127,7 +159,7 @@
                 iamAppPerm: {},
                 IAM_APP_PERM_BUILDIN_ACTION: IAM_APP_PERM_BUILDIN_ACTION,
                 delObj: {
-                    id: '',
+                    action: {},
                     loading: false,
                     show: false
                 }
@@ -163,11 +195,12 @@
             async fetchIamAppPermAction () {
                 try {
                     const list = await this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
-                    this.iamAppPermActionList.splice(
-                        0,
-                        this.iamAppPermActionList.length,
-                        ...list.filter(item => item.registeredStatus !== -1)
-                    )
+                    list.forEach(item => {
+                        item.pageComponentRefStrList = (item.pageComponentRef || []).map(
+                            ref => `页面【${ref.pageCode}】内的【${ref.componentId}】组件`
+                        )
+                    })
+                    this.iamAppPermActionList.splice(0, this.iamAppPermActionList.length, ...list)
                 } catch (e) {
                     console.error(e)
                 }
@@ -206,27 +239,33 @@
                     return
                 }
                 this.delObj.show = true
-                this.delObj.id = row.id
+                this.delObj.action = Object.assign({}, row)
                 this.delObj.nameTips = `删除操作【${row.actionName}】`
             },
 
             async deleteAction () {
                 this.delObj.loading = true
                 try {
-                    const params = {
-                        // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
-                        projectId: this.projectId,
-                        actionId: this.delObj.id,
-                        fields: {
-                            registeredStatus: -1
+                    // 之前没有部署过的操作，直接删除
+                    if (this.delObj.action.registeredStatus === 0) {
+                        await this.$store.dispatch('iam/deleteIamAppPermAction', {
+                            projectId: this.projectId,
+                            actionId: this.delObj.action.id
+                        })
+                    } else {
+                        // 之前部署过，删除即是把 deleteFlag 置为 -1
+                        const params = {
+                            // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
+                            projectId: this.projectId,
+                            actionId: this.delObj.action.id,
+                            fields: {
+                                deleteFlag: 1
+                            }
                         }
+                        await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
                     }
-                    await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
-                    this.delObj = Object.assign({}, {
-                        id: '',
-                        loading: false,
-                        show: false
-                    })
+                    this.delObj.action = Object.assign({}, {})
+                    this.delObj.show = false
                     this.messageSuccess('删除成功')
                     this.sidesliderSuccess()
                 } catch (e) {
@@ -234,6 +273,15 @@
                 } finally {
                     this.delObj.loading = false
                 }
+            },
+
+            renderHeader (h, data) {
+                const directive = {
+                    name: 'bkTooltips',
+                    content: '应用部署生产环境后会自动同步至权限中心',
+                    placement: 'top'
+                }
+                return <a class="custom-header-cell" v-bk-tooltips={ directive }>{ data.column.label }</a>
             }
         }
     }
@@ -338,6 +386,13 @@
                 white-space: nowrap;
                 vertical-align: text-top;
             }
+        }
+
+        /deep/ .custom-header-cell {
+            color: inherit;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-underline-position: under;
         }
     }
 </style>

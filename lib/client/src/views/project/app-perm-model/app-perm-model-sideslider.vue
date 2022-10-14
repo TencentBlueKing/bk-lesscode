@@ -10,7 +10,7 @@
             <div class="wrapper" slot="content" v-bkloading="{ isLoading: isLoading }">
                 <bk-form :label-width="120" :model="formData" :rules="rules" ref="validateForm">
                     <bk-form-item label="操作 ID" required property="actionId">
-                        <bk-input v-model="formData.actionId" :disabled="isDefaultAction" :placeholder="`请输入操作 ID：如 ${IAM_APP_PERM_BUILDIN_ACTION}`"></bk-input>
+                        <bk-input v-model="formData.actionId" :disabled="isEdit || isDefaultAction" :placeholder="`请输入操作 ID：如 ${IAM_APP_PERM_BUILDIN_ACTION}`"></bk-input>
                     </bk-form-item>
                     <bk-form-item label="操作名称" required property="actionName">
                         <bk-input v-model="formData.actionName" placeholder="请输入操作名称：如页面访问" :show-word-limit="true" maxlength="32"></bk-input>
@@ -19,7 +19,7 @@
                         <bk-input v-model="formData.actionNameEn" placeholder="请输入操作名称英文：如 View Page"></bk-input>
                     </bk-form-item>
                     <bk-form-item label="操作类型" property="actionType">
-                        <bk-select v-model="formData.actionType" @change="actionTypeChange">
+                        <bk-select v-model="formData.actionType">
                             <bk-option v-for="item in actionTypeList" :key="item.id"
                                 :id="item.id" :name="item.name">
                             </bk-option>
@@ -33,7 +33,7 @@
                             </bk-radio-group>
                         </bk-form-item>
                         <bk-form-item label="关联资源" property="actionRelatedResourceId" v-if="formData.hasRelated">
-                            <bk-select v-model="formData.actionRelatedResourceId" @change="relatedResourceChange" placeholder="请选择资源" multiple>
+                            <bk-select v-model="formData.actionRelatedResourceId" placeholder="请选择资源" multiple>
                                 <bk-option v-for="item in relatedResourceList" :key="item.id"
                                     :id="item.id" :name="item.name">
                                 </bk-option>
@@ -74,6 +74,10 @@
             curUpdate: {
                 type: Object,
                 default: () => ({})
+            },
+            iamAppPerm: {
+                type: Object,
+                default: () => ({})
             }
         },
 
@@ -91,6 +95,11 @@
                             required: true,
                             message: '请填写操作 ID',
                             trigger: 'blur'
+                        },
+                        {
+                            message: '操作 ID 在应用内唯一',
+                            trigger: 'blur',
+                            validator: this.checkActionId
                         }
                     ],
                     actionName: [
@@ -172,6 +181,24 @@
                 })
             },
 
+            async checkActionId (val) {
+                if (this.isEdit) {
+                    return true
+                }
+                try {
+                    const res = await this.$store.dispatch('iam/checkActionId', {
+                        data: {
+                            projectId: this.projectId,
+                            actionId: val
+                        }
+                    })
+                    return !res.exist
+                } catch (e) {
+                    console.error(e)
+                    return false
+                }
+            },
+
             async getRelatedResourceList () {
                 this.isLoading = true
                 try {
@@ -187,14 +214,6 @@
                 }
             },
 
-            actionTypeChange () {
-
-            },
-
-            relatedResourceChange () {
-
-            },
-
             validate () {
                 this.isChecking = true
 
@@ -202,19 +221,34 @@
                 form.validate().then(async () => {
                     try {
                         const params = {
+                            // 这里传入 projectId 是为了 /iam/app-perm-model-action 接口 权限中心鉴权
                             projectId: this.projectId,
+                            actionId: this.curUpdate.id,
                             fields: {
                                 actionId: this.formData.actionId,
                                 actionName: this.formData.actionName,
                                 actionNameEn: this.formData.actionNameEn,
-                                actionDesc: this.formData.actionDesc,
-                                actionDescEn: this.formData.actionDescEn,
-                                actionRelatedResourceId: this.formData.actionRelatedResourceId,
-                                actionType: this.formData.actionType
+                                actionDesc: this.formData.actionDesc || '',
+                                actionDescEn: this.formData.actionDescEn || '',
+                                actionRelatedResourceId: this.formData.hasRelated ? (this.formData.actionRelatedResourceId || []) : [],
+                                actionType: this.formData.actionType || ''
                             }
                         }
-                        console.warn(params)
-                        await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
+                        if (this.isEdit) {
+                            // 之前已同步到权限中心的操作
+                            if (this.curUpdate.registeredStatus === 1) {
+                                params.fields.registeredStatus = -1
+                            }
+                            await this.$store.dispatch('iam/updateIamAppPermAction', { data: params })
+                        } else {
+                            await this.$store.dispatch('iam/addIamAppPermAction', {
+                                data: {
+                                    projectId: Number(this.projectId),
+                                    iamAppPermId: this.iamAppPerm.id,
+                                    ...params.fields
+                                }
+                            })
+                        }
                         this.$emit('success')
                     } catch (e) {
                         console.error(e)
