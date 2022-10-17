@@ -10,13 +10,14 @@
                 <div
                     id="toolActionBox"
                     class="function-and-tool">
-                    <operation-select v-model="operationType" :hide-setting="hideSetting"></operation-select>
+                    <operation-select v-model="operationType" :hide-setting="hideSetting" :hide-func="hideSetting"></operation-select>
                     <div class="spilt-line"></div>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
                     <action-tool
                         :custom-save="true"
                         :hide-save="hideSave"
                         :hide-preview="hidePreview"
+                        :hide-func="hidePreview"
                         :hide-clear="hideClear"
                         @save="$emit('save', $event)">
                     </action-tool>

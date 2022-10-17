@@ -279,6 +279,8 @@
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId }),
                         this.$store.dispatch('components/componentNameMap'),
                         this.$store.dispatch('dataSource/list', { projectId: this.projectId }),
+                        // 进入画布拉取一次权限操作，给 iam getters projectPermActionList 赋值，保存页面时，需要用到 projectPermActionList
+                        this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId }),
                         this.registerCustomComponent()
                     ])
 

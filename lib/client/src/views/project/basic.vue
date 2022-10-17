@@ -9,7 +9,7 @@
                 <bk-form-item label="应用ID：">
                     {{projectDetail.projectCode}}
                 </bk-form-item>
-                <bk-form-item label="绑定蓝鲸应用模块" desc="必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改">
+                <bk-form-item label="绑定蓝鲸应用模块：" desc="必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改">
                     <app-module-select :can-edit="true"></app-module-select>
                 </bk-form-item>
                 <bk-form-item label="应用简介：">

@@ -20,6 +20,7 @@
                     <ul class="bk-dropdown-list select-page-type" slot="dropdown-content">
                         <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>PC自定义页面</a></li>
                         <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>PC表单页面</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')"><i class="bk-drag-icon bk-drag-pc"> </i>Markdown文档</a></li>
                         <li><a href="javascript:;" @click="handleCreate('MOBILE', '')"><i class="bk-drag-icon bk-drag-mobilephone"> </i>Mobile自定义页面</a></li>
                     </ul>
                 </bk-dropdown-menu>

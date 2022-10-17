@@ -116,6 +116,7 @@
 <script>
     import _ from 'lodash'
     import { mapActions } from 'vuex'
+    import LC from '@/element-materials/core'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
@@ -401,6 +402,9 @@
                     buildInVariable = `${perVariableName}${camelCase(this.name, { transform: camelCaseTransformMerge })}`
                 }
                 return buildInVariable
+            },
+            isFormModel () {
+                return this.componentType === 'widget-form' && this.name === 'model'
             }
         },
         watch: {
@@ -437,7 +441,7 @@
             }
         },
         created () {
-            this.isReadOnly = this.componentType === 'widget-form' && this.name === 'model'
+            this.isReadOnly = this.isFormModel
             const {
                 type,
                 val
@@ -615,6 +619,12 @@
             },
 
             handleBuildInVariableChange ({ buildInVariableType, payload }) {
+                console.log(this.buildInVariable, buildInVariableType, payload, this.componentNode, LC.getActiveNode())
+                
+                if (this.isFormModel) {
+                    // 每个formItem中表单组件v-model的变量名替换成formModel选择的变量名
+                    this.replaceFormItemVmodelKey(LC.getActiveNode(), buildInVariableType, payload, this.buildInVariable)
+                }
                 this.formData = Object.freeze({
                     ...this.formData,
                     buildInVariableType,
@@ -635,6 +645,23 @@
 
             toggleShowProp () {
                 this.isShowProp = !this.isShowProp
+            },
+
+            // 每个formItem中表单组件v-model的变量名替换成formModel选择的变量名
+            replaceFormItemVmodelKey (formNode = {}, buildInVariableType, payload, buildInVariable) {
+                let formModelKey = `${buildInVariable}model`
+                if (buildInVariableType === 'CUSTOM' && payload?.customVariableCode) {
+                    formModelKey = payload.customVariableCode
+                }
+                formNode.children.forEach(formItemNode => {
+                    formItemNode.children.forEach(inputNode => {
+                        inputNode.renderDirectives.forEach(directiveItem => {
+                            if (directiveItem.type === 'v-model') {
+                                directiveItem.code = `${formModelKey}.${formItemNode.prop.property}`
+                            }
+                        })
+                    })
+                })
             }
         }
     }
