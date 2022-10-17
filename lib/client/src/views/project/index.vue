@@ -314,17 +314,17 @@
                                 toPath: {
                                     name: 'authManage'
                                 }
+                            },
+                            {
+                                title: '应用权限模型',
+                                icon: 'info-fill',
+                                url: 'appPermModel',
+                                iamAction: 'manage_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'appPermModel'
+                                }
                             }
-                            // {
-                            //     title: '应用权限模型',
-                            //     icon: 'info-fill',
-                            //     url: 'basicInfo',
-                            //     iamAction: 'develop_app',
-                            //     permission: false,
-                            //     toPath: {
-                            //         name: 'basicInfo'
-                            //     }
-                            // }
                         ]
                     },
                     {

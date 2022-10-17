@@ -1,7 +1,7 @@
 <template>
     <article class="auth-manage-main">
         <section class="auth-manage-head">
-            <bk-alert type="info" title="应用管理权限：即在平台中对该应用进行开发、部署、权限模型设计等的应用级管理权限。" closable style="flex: 1"></bk-alert>
+            <bk-alert type="info" title="应用管理权限：即在平台中对该应用进行开发、部署、权限模型设计等的应用级管理权限" closable style="flex: 1"></bk-alert>
         </section>
 
         <bk-table :data="renderList"

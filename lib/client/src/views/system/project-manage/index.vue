@@ -713,6 +713,14 @@
     }
 </script>
 
+<style lang="postcss">
+    .project-create-dialog {
+        .bk-dialog-body {
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
 <style lang="postcss" scoped>
     .create-dropdown {
         /deep/ .bk-dropdown-trigger .bk-button {

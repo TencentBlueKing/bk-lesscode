@@ -15,7 +15,8 @@
             <div class="page-item" v-for="(page, index) in pageList" :key="index">
                 <div class="item-bd">
                     <div class="preview" @click="handleEditPage(page)">
-                        <page-preview-thumb alt="页面缩略预览" :page-id="page.id" />
+                        <flow-page-preview v-if="page.nocodeType === 'FLOW'"></flow-page-preview>
+                        <page-preview-thumb v-else alt="页面缩略预览" :page-id="page.id" />
                         <div class="mask">
                             <div class="operate-btns">
                                 <bk-button class="edit-btn" theme="primary">编辑</bk-button>
@@ -102,11 +103,13 @@
 
 <script>
     import pagePreviewThumb from '@/components/project/page-preview-thumb.vue'
+    import flowPagePreview from './flow-page-preview'
 
     export default {
         name: 'page-list-card',
         components: {
-            pagePreviewThumb
+            pagePreviewThumb,
+            flowPagePreview
         },
         props: {
             pageList: {

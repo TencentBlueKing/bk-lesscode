@@ -2,6 +2,7 @@
     <section>
         <bk-select
             searchable
+            class="choose-data-table"
             ref="selectRef"
             :show-empty="false"
             :value="value"
@@ -9,6 +10,7 @@
             @clear="handleClearTable"
         >
             <span
+                v-bk-overflow-tips="{ content: value }"
                 class="display-value"
                 slot="trigger"
             >
@@ -380,8 +382,13 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/ellipsis";
+
+    .choose-data-table {
+        height: 32px;
+    }
     .display-value {
-        display: inline-block;
+        @mixin ellipsis 100%, inline-block;
         line-height: 32px;
         padding: 0 36px 0 10px;
     }

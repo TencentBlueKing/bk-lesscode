@@ -22,6 +22,7 @@
                 default: 'edit'
             },
             hideSetting: Boolean,
+            hideFunc: Boolean,
             hideJson: Boolean
         },
         computed: {
@@ -30,20 +31,22 @@
                 const list = [
                     {
                         key: 'edit',
-                        label: ['FLOW_MANAGE', 'FORM_MANAGE'].includes(this.pageDetail.nocodeType) ? '数据管理设计' : '表单设计',
+                        label: ['FLOW_MANAGE', 'FORM_MANAGE'].includes(this.pageDetail.nocodeType) ? '数据管理设计' : (this.pageDetail.nocodeType === 'FORM' ? '表单设计' : '画布'),
                         icon: 'bk-drag-huabu'
                     }
                 ]
                 if (!this.hideSetting) {
                     list.push({
-                        key: 'pageFunction',
-                        label: '页面函数',
-                        icon: 'bk-drag-yemianhanshu'
-                    })
-                    list.push({
                         key: 'setting',
                         label: '页面设置',
                         icon: 'bk-drag-set'
+                    })
+                }
+                if (!this.hideFunc) {
+                    list.push({
+                        key: 'pageFunction',
+                        label: '页面函数',
+                        icon: 'bk-drag-yemianhanshu'
                     })
                 }
                 if (!this.hideJson) {
