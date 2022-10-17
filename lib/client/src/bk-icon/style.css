@@ -38,6 +38,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-check-circle-fill:before {
 	content: "\e180";
 }
+.bk-drag-assembly-line-fill:before {
+	content: "\e244";
+}
 .bk-drag-close-circle-fill:before {
 	content: "\e181";
 }
