@@ -1,11 +1,12 @@
 <template>
     <section>
-        <scheme-header slot-label="设置为全局变量" />
+        <scheme-header slot-label="设置为全局变量" :hide-required="true" />
         <single-scheme
             ref="singleSchemeRef"
             :scheme="renderResponseParam"
             :render-slot="renderSlot"
             :minus-disable="true"
+            :hide-required="true"
             @update="handleUpdate"
         />
     </section>
