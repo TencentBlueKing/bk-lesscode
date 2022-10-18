@@ -18,13 +18,12 @@
             :show-content="isShowProp"
             @change="handleVariableFormatChange">
             <template v-slot:title>
-                <div class="prop-name">
+                <div class="prop-name" @click="toggleShowProp">
                     <i
                         :class="{
                             'bk-icon icon-angle-down': true,
                             close: !isShowProp
                         }"
-                        @click="toggleShowProp"
                     ></i>
                     <span
                         :class="{ label: describe.tips }"
@@ -712,6 +711,7 @@
             display: flex;
             align-items: center;
             border-top: 1px solid #EAEBF0;
+            cursor: pointer;
             .label {
                 border-bottom: 1px dashed #313238;
                 cursor: pointer;
