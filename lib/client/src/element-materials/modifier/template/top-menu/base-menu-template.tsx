@@ -86,14 +86,15 @@ export default defineComponent({
     render (): VNode {
         return (
             <div class="project-top-menu-modifier">
-                <div class="menu-title">
+                <div
+                    class="menu-title"
+                    onClick={() => {
+                        this.showContent = !this.showContent
+                    }}>
                     <i
                         class={{
                             'bk-icon icon-angle-down': true,
                             close: !this.showContent
-                        }}
-                        onClick={() => {
-                            this.showContent = !this.showContent
                         }}
                     ></i>
                     <span>导航菜单</span>

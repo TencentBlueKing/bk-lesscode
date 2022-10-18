@@ -9,6 +9,7 @@
         font-weight: bold;
         color: #313238;
         margin-bottom: 0;
+        cursor: pointer;
         .bk-icon {
             margin-left: -5px;
             margin-right: 3px;
