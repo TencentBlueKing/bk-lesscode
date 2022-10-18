@@ -357,15 +357,16 @@
                     'item-hover-bg-color': '#f0f1f5',
                     'item-hover-color': '#63656e',
                     'item-active-bg-color': '#e1ecff',
-                    'item-active-color': '#3A84FF',
+
+                    // 这里写 3a84ff 会命中组件 bk-navigation-menu defItemActiveColor 里三元表达式的后面的结果
+                    'item-active-color': '#3a84fe',
                     'item-default-color': '#63656e',
                     'item-default-icon-color': '#63656e',
                     'item-active-icon-color': '#63656e',
                     'item-hover-icon-color': '#63656e',
                     'item-child-icon-default-color': '#63656e',
                     'item-child-icon-hover-color': '#63656e',
-                    'item-child-icon-active-color': '#3A84FF'
-
+                    'item-child-icon-active-color': '#3a84ff'
                 },
                 defaultOpen: true,
                 asideFolded: false,
