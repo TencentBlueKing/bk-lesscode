@@ -23,7 +23,8 @@
                     </bk-form-item>
                     <bk-form-item label="API">
                         <choose-api
-                            :excluded="['lesscode-api', 'datasource-api']"
+                            :use-flow-esb-api="true"
+                            :excluded="['apigateway-api']"
                             :value="formData.selectedApi"
                             @change="handleSelectApi">
                         </choose-api>
@@ -35,7 +36,20 @@
                         :desc="apiURLTips"
                         :required="true">
                         <bk-input v-model="formData.url" @change="update"></bk-input>
-                        <view-flow-variables></view-flow-variables>
+                        <view-flow-variables :open-var-list.sync="openVarList"></view-flow-variables>
+                        <div id="request-url-tips">
+                            <p>1.非蓝鲸网关API，请先接入【蓝鲸网关】</p>
+                            <p>2.确保选择的蓝鲸网关API给蓝鲸应用ID【{{BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}}】已授权并设置了用户免认证策略</p>
+                            <p><span v-pre>3.请求地址可使用{{变量名}}引用流程上下文变量，比如http://host/{{id}}</span>
+                                <bk-button
+                                    style="padding: 0; height: initial; line-height: 14px;"
+                                    size="small"
+                                    :text="true"
+                                    @click="openVarList = true">
+                                    查看可用变量
+                                </bk-button>
+                            </p>
+                        </div>
                     </bk-form-item>
                     <bk-form-item
                         label="请求类型"
@@ -62,20 +76,20 @@
             desc="（调用该API需要传递的参数信息）"
             class="no-content-padding"
             style="margin-top: 16px;">
+            <debug-api @extractScheme="handleExtractResponseFields"></debug-api>
             <div class="api-data" style="width: 83%; margin-top: 22px;">
-                <template v-if="formData.method">
-                    <query-params
-                        v-if="METHODS_WITHOUT_DATA.includes(formData.method)" :variable-list="variableList"
-                        :query="apiQuery"
-                        @update="handleParamsChange('apiQuery', $event)">
-                    </query-params>
-                    <body-params
-                        v-else
-                        :variable-list="variableList"
-                        :body="apiBody"
-                        @update="handleParamsChange('apiBody', $event)">
-                    </body-params>
-                </template>
+                <query-params
+                    v-if="METHODS_WITHOUT_DATA.includes(formData.method)" :variable-list="variableList"
+                    :query="apiQuery"
+                    @update="handleParamsChange('apiQuery', $event)">
+                </query-params>
+                <body-params
+                    v-else
+                    :variable-list="variableList"
+                    :body="apiBody"
+                    @update="handleParamsChange('apiBody', $event)">
+                </body-params>
+                <headers-config :headers="apiHeaders" @update="handleParamsChange('apiHeaders', $event)"></headers-config>
             </div>
         </form-section>
         <!-- 返回数据 -->
@@ -99,6 +113,8 @@
     import Processors from '../../components/processors.vue'
     import ChooseApi from '@/components/api/choose-api.vue'
     import ViewFlowVariables from './view-flow-variables.vue'
+    import DebugApi from './debug-api.vue'
+    import HeadersConfig from './headers-config'
     import QueryParams from './query-params.vue'
     import BodyParams from './body-params.vue'
     import ResponseVariable from './response-variable.vue'
@@ -112,6 +128,8 @@
             Processors,
             ChooseApi,
             ViewFlowVariables,
+            DebugApi,
+            HeadersConfig,
             QueryParams,
             BodyParams,
             ResponseVariable
@@ -126,6 +144,7 @@
             return {
                 API_METHOD,
                 METHODS_WITHOUT_DATA,
+                BKPAAS_ENGINE_REGION,
                 apiListLoading: false,
                 apiList: [],
                 variableList: [],
@@ -136,16 +155,17 @@
                     url: '',
                     method: 'get'
                 },
+                apiHeaders: [],
                 apiQuery: [],
                 apiBody: {},
                 apiResponse: {},
                 excludeRoleType: ['CMDB', 'GENERAL', 'EMPTY', 'OPEN', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION'],
+                openVarList: false,
                 apiURLTips: {
                     placement: 'right',
-                    content: `
-                        <p>1.非蓝鲸网关API，请先接入【蓝鲸网关】</p>
-                        <p>2.确保选择的蓝鲸网关API给蓝鲸应用ID【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】已授权并设置了用户免认证策略</p>
-                    `
+                    allowHtml: true,
+                    zIndex: 2000,
+                    content: '#request-url-tips'
                 },
                 rules: {
                     nodeName: [
@@ -188,8 +208,9 @@
             const { api_info: apiInfo } = this.nodeData.extras
             this.formData.nodeName = this.nodeData.name
             if (apiInfo.url) {
-                const { selectedApi, url, method, query, body, response } = apiInfo
+                const { selectedApi, url, method, headers, query, body, response } = apiInfo
                 this.formData = { ...this.formData, selectedApi, url, method }
+                this.apiHeaders = headers || []
                 this.apiQuery = query
                 this.apiBody = body
                 this.apiResponse = response
@@ -249,6 +270,10 @@
                 this[type] = val
                 this.update()
             },
+            // 提取调试api返回的响应数据，生成响应参数scheme
+            handleExtractResponseFields (scheme) {
+                this.handleParamsChange('apiResponse', scheme)
+            },
             validate () {
                 return Promise.all([
                     this.$refs.basicForm.validate(),
@@ -265,6 +290,7 @@
                     selectedApi,
                     method,
                     url,
+                    headers: this.apiHeaders,
                     query: this.apiQuery,
                     body: this.apiBody,
                     response: this.apiResponse

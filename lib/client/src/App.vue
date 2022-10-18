@@ -200,7 +200,7 @@
     }
 
     .nav-icon{
-        z-index: 2009;
+        z-index: 2000;
         position: fixed;
         right: 10px;
         width: 52px;

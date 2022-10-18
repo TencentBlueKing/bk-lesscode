@@ -23,6 +23,8 @@
 <script>
     import LC from '@/element-materials/core'
     import { setMousedown } from '../resolve-component'
+    import getRoot from '@/element-materials/core/static/get-root'
+    import clearCanvas from '@/element-materials/core/static/reset'
 
     export default {
         name: 'render-draggable',
@@ -188,6 +190,18 @@
                 // fix: vue-draggable 内部索引不更新的问题
                 this.$refs.draggable.computeIndexes()
                 this.$emit('change', event)
+
+                /** 优化H5使用体验，当H5插入到非root节点时，进行相关提示 */
+                if (triggerEvent.child.type === 'h5-container' && triggerEvent.target.type !== 'root') {
+                    const root = getRoot()
+                    const updateH5Layout = () => {
+                        root.appendChild(triggerEvent.child)
+                    }
+                    clearCanvas(
+                        'H5容器应在根节点上',
+                        'H5容器默认占满全屏，与其他容器不兼容，是否自动清空其他容器，仅保留H5容器',
+                        updateH5Layout)
+                }
             }
         }
     }

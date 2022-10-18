@@ -8,14 +8,18 @@
             查看变量
         </bk-button>
         <bk-sideslider
-            transfer
             title="变量列表"
+            transfer
             :is-show.sync="show"
             :quick-close="true"
             :width="900"
             @hidden="handleClose">
-            <section class="flow-variables-content" slot="content">
-                <div class="search-input-area">
+            <div class="header-wrapper" slot="header">
+                变量列表
+                <i class="bk-icon icon-info tips-icon" v-bk-tooltips="'可使用的流程变量是指，流程执行时该节点之前的流程节点输出到执行环境的变量，例如人工节点的字段、api节点响应数据中设置的全局变量'"></i>
+            </div>
+            <section v-bkloading="{ isLoading: loading }" class="flow-variables-content" slot="content">
+                <div v-if="varList.length > 0" class="search-input-area">
                     <bk-input
                         style="width: 430px;"
                         placeholder="请输入变量名称"
@@ -26,7 +30,7 @@
                         @enter="searchStr = $event">
                     </bk-input>
                 </div>
-                <div v-bkloading="{ isLoading: loading }" class="var-groups">
+                <div class="var-groups">
                     <div v-for="(group, index) in tableDataList" class="var-group-item" :key="index">
                         <div class="group-title-area" @click="group.unfold = !group.unfold">
                             <i :class="['bk-icon icon-right-shape fold-icon', { unfold: group.unfold }]"></i>
@@ -65,6 +69,9 @@
 
     export default {
         name: 'ViewFlowVariables',
+        props: {
+            openVarList: Boolean
+        },
         data () {
             return {
                 show: false,
@@ -94,6 +101,11 @@
             }
         },
         watch: {
+            openVarList (val) {
+                if (val) {
+                    this.show = true
+                }
+            },
             show (val) {
                 if (val) {
                     this.getVarList()
@@ -140,6 +152,7 @@
             handleClose () {
                 this.searchStr = ''
                 this.varList = []
+                this.$emit('update:open-var-list', false)
             }
         }
     }
@@ -152,6 +165,14 @@
         right: 0;
         top: -26px;
         padding: 0;
+    }
+    .tips-icon {
+        font-size: 18px;
+        color: #63656e;
+        cursor: pointer;
+        &:hover {
+            color: #3a84ff;
+        }
     }
     .flow-variables-content {
         padding: 28px 0;
