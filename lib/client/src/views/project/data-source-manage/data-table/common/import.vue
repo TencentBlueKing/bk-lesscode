@@ -40,7 +40,7 @@
         },
 
         setup () {
-            const uploadUrl = `${AJAX_URL_PREFIX}/page/importJson`
+            const uploadUrl = `${process.env.BK_AJAX_URL_PREFIX}/page/importJson`
             const isShowImport = ref<boolean>(false)
 
             const showImport = () => {

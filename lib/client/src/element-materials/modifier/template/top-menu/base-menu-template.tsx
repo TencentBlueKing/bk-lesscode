@@ -11,7 +11,7 @@
 
 import { defineComponent, ref, watch } from '@vue/composition-api'
 import { VNode } from 'vue'
-import MenuItem from '../editor/menu'
+import MenuItem from '../editor/menu/index.vue'
 import { generatorMenu } from '../../../../../../shared/util'
 import './base-menu-template.css'
 

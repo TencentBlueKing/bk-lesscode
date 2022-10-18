@@ -207,7 +207,7 @@
             const isLoadingIds = ref([])
             const isOpenIds = ref([])
             const projectId = router?.currentRoute?.params?.projectId
-            const v3DeveloperCenterUrl = V3_DEVELOPER_CENTER_URL
+            const v3DeveloperCenterUrl = process.env.BK_V3_DEVELOPER_CENTER_URL
             // 项目数据
             const projectInfo = ref({
                 id: '',

@@ -55,7 +55,10 @@
 │       │   ......
 │       ├── service/        # 后端服务目录
 │       │   ......
-├── nodemon.json            # nodemon 配置文件
+├── scripts                 # 项目脚本
+├── .bk.env                 # 基础变量
+├── .bk.development.env     # 开发环境变量
+├── .bk.production.env      # 生产环境变量
 ├── package.json            # 项目描述文件
 ```
 
@@ -87,11 +90,6 @@ npm run dev
 ## 打包构建（生成dist目录）
 ```
 npm run build
-```
-
-## 打包构建分析
-```
-npm run build:analyzer
 ```
 
 ## 登录

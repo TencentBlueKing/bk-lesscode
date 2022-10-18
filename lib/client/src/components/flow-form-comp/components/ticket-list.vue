@@ -163,7 +163,7 @@
                 this.getTicketList()
             },
             goToTicketPage (ticket) {
-                window.open(`${BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '_blank')
+                window.open(`${process.env.BK_ITSM_URL}/#/ticket/detail?id=${ticket.id}&project_id=lesscode`, '_blank')
             },
             updateQueryString () {
                 const { path, hash, params, query } = this.$route
