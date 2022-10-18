@@ -64,8 +64,8 @@
             }
         },
         created () {
-            if (BK_USER_MANAGE_HOST) {
-                this.host = BK_USER_MANAGE_HOST
+            if (process.env.BK_USER_MANAGE_HOST) {
+                this.host = process.env.BK_USER_MANAGE_HOST
             } else {
                 this.getUserManageUrl()
             }

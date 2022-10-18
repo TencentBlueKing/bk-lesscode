@@ -112,7 +112,7 @@
                 const uploadOption = {
                     file: rawFile,
                     filename: 'file',
-                    action: `${AJAX_URL_PREFIX}/file/upload`,
+                    action: `${process.env.BK_AJAX_URL_PREFIX}/file/upload`,
                     method: 'POST',
                     data: [props.params],
                     withCredentials: true,

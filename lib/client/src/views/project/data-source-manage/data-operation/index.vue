@@ -279,7 +279,7 @@
         setup () {
             const projectId = router?.currentRoute?.params?.projectId
             const versionId = store.getters['projectVersion/currentVersionId']
-            const v3DeveloperCenterUrl = V3_DEVELOPER_CENTER_URL
+            const v3DeveloperCenterUrl = process.env.BK_V3_DEVELOPER_CENTER_URL
             // ref
             const dataSourceTypeRef = ref()
             const jsonQueryRef = ref()

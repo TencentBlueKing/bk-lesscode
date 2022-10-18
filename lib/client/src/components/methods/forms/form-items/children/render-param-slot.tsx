@@ -4,6 +4,8 @@ import {
     API_PARAM_TYPES
 } from 'shared/api'
 
+console.log(ChooseVariable)
+
 export default (row, handleUpdate) => {
     const disabled = [
         API_PARAM_TYPES.ARRAY.VAL,
