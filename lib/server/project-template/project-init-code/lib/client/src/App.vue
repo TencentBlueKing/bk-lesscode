@@ -1,7 +1,8 @@
 <template>
     <div id="app" :class="[systemCls, { 'mobile-page': isMobilePage }]">
         <main :class="{ 'mobile-page': isMobilePage }">
-            <router-view :key="routerKey" />
+            <apply-page v-if="isNotPermission" :auth-result="authResult" />
+            <router-view v-else :key="routerKey" />
         </main>
     </div>
 </template>
@@ -10,12 +11,21 @@
 
     import { bus } from '@/common/bus'
 
+    import ApplyPage from '@/components/apply-permission/apply-page.vue'
+
     export default {
         name: 'app',
+        components: {
+            ApplyPage
+        },
         data () {
             return {
                 routerKey: +new Date(),
-                systemCls: 'mac'
+                systemCls: 'mac',
+                isNotPermission: false,
+                authResult: {
+                    requiredPermissions: []
+                }
             }
         },
         computed: {
@@ -31,6 +41,11 @@
             if (platform.indexOf('win') === 0) {
                 this.systemCls = 'win'
             }
+
+            bus.$on('permission-page', this.permissionHold)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('permission-page', this.permissionHold)
+            })
         },
         mounted () {
             bus.$on('redirect-login', data => {
@@ -38,6 +53,11 @@
             })
         },
         methods: {
+            permissionHold (authResult) {
+                this.isNotPermission = true
+                this.authResult = authResult
+            },
+
             /**
              * router 跳转
              *
@@ -58,5 +78,5 @@
     .mobile-page {
         height: 100%;
     }
-    
+
 </style>

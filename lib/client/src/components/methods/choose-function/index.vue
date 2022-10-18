@@ -1,7 +1,7 @@
 <template>
     <section class="choose-function-main">
         <slot name="header"></slot>
-        
+
         <bk-popover
             ref="mainPopoverRef"
             placement="bottom"

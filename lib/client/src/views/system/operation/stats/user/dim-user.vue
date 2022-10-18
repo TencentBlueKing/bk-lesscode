@@ -39,7 +39,10 @@
                             <span v-if="column.type === 'number'">{{row[column.id] | formatCount}}</span>
                             <span v-else>{{row[column.id]}}</span>
                         </loading>
-                        <template v-else>{{row[column.id]}}</template>
+                        <template v-else>
+                            <span v-if="column.type === 'datetime'">{{row[column.id] | formatTime}}</span>
+                            <span v-else>{{row[column.id]}}</span>
+                        </template>
                     </template>
                 </bk-table-column>
             </bk-table>
@@ -71,6 +74,7 @@
                 orderBy: undefined,
                 columns: [
                     { id: 'username', name: '用户名', width: '360' },
+                    { id: 'createTime', name: '创建时间', width: '320', sortable: 'custom', type: 'datetime' },
                     { id: 'projectCount', name: '应用数', sortable: 'custom', dynamic: true, type: 'number' },
                     { id: 'pageCount', name: '页面数', sortable: 'custom', dynamic: true, type: 'number' }
                 ],

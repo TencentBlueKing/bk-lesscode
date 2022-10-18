@@ -139,6 +139,7 @@
     "shx": "~0.3.2",
     "swig": "~1.4.2",
     "swiper": "5.2.0",
+    "mavon-editor": "^2.9.0",
     "typeorm": "^0.2.25",
     "typescript": "^4.4.3",
     "url-loader": "~2.2.0",

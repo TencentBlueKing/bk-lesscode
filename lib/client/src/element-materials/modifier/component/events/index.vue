@@ -52,7 +52,7 @@
             PlusEvent,
             RenderEvent
         },
-        
+
         data () {
             return {
                 configEvents: [],

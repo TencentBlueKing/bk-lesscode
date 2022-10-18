@@ -63,6 +63,7 @@
             v-if="editFormPanelShow"
             :edit-form-panel-show.sync="editFormPanelShow"
             :hide-setting="!isFirstNormalNode || !hasCreatedTicketPage"
+            :hide-func="!isFirstNormalNode || !hasCreatedTicketPage"
             :hide-preview="!isFirstNormalNode || !hasCreatedTicketPage"
             :hide-save="formConfig.type === 'USE_FORM'"
             :hide-clear="formConfig.type === 'USE_FORM'"

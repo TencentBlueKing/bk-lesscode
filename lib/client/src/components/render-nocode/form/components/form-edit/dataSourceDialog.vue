@@ -89,7 +89,7 @@
                     content: '#showTagToolTips',
                     theme: 'light',
                     placement: 'top',
-                    showOnInit: true,
+                    boundary: 'scrollParent',
                     appendTo: () => document.body
                 },
                 toolTipData: [{}, {}, {}]

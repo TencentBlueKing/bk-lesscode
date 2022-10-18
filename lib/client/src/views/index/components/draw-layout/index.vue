@@ -64,7 +64,7 @@
                 return ['FORM', 'FLOW'].includes(this.nocodeType)
             },
             isDataManagePage () {
-                return ['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)
+                return ['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(this.nocodeType)
             }
         },
         methods: {

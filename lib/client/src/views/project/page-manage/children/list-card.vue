@@ -15,7 +15,7 @@
             <div class="page-item" v-for="(page, index) in pageList" :key="index">
                 <div class="item-bd">
                     <div class="preview" @click="handleEditPage(page)">
-                        <flow-page-preview v-if="page.nocodeType === 'FLOW'"></flow-page-preview>
+                        <flow-page-preview v-if="page.nocodeType === 'FLOW'" :flow-name="page.flowName"></flow-page-preview>
                         <page-preview-thumb v-else alt="页面缩略预览" :page-id="page.id" />
                         <div class="mask">
                             <div class="operate-btns">
@@ -201,6 +201,7 @@
                         .operate-btns {
                             display: block;
                             opacity: 1;
+                            z-index: 3;
                         }
                     }
                 }
