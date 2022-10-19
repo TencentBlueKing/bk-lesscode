@@ -307,6 +307,7 @@ const SingleSchemeComponent = defineComponent({
                                 class="pl20"
                                 key={property.name}
                                 ref={'childComponentRef' + index}
+                                key={property.id}
                                 scheme={property}
                                 hideRequired={this.hideRequired}
                                 renderSlot={this.renderSlot}
