@@ -21,7 +21,7 @@ function loadScript (url, callback) {
     document.getElementsByTagName('head')[0].appendChild(script)
 }
 
-const urlPrefix = window.location.origin + BK_STATIC_URL
+var urlPrefix = window.location.origin + '/static'
 
 loadScript(urlPrefix + '/monaco-editor/min/vs/loader.js', function () {
     require.config({
