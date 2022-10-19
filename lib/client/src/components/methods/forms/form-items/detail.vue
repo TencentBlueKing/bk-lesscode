@@ -57,6 +57,7 @@
             >
                 <bk-input
                     :value="form.funcApiUrl"
+                    :disabled="disabled"
                     @change="(funcApiUrl) => updateValue({ funcApiUrl })"
                 ></bk-input>
             </bk-form-item>

@@ -201,6 +201,8 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
     .func-main {
         height: 100%;
         background: #fff;
@@ -211,12 +213,16 @@
         /deep/ .bk-label-text {
             font-size: 12px;
         }
+        /deep/ .bk-resize-layout-aside-content {
+            @mixin scroller;
+            overflow-x: auto;
+        }
     }
     .func-form-main {
         float: left;
         height: 100%;
         width: 100%;
-        min-width: 650px;
+        min-width: 750px;
         overflow-y: auto;
         margin: 7px 0;
         padding: 0 20px 20px;
