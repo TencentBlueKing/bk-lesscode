@@ -305,7 +305,7 @@ const SingleSchemeComponent = defineComponent({
                         ? this.copyScheme.children.map((property, index) =>
                             <SingleSchemeComponent
                                 class="pl20"
-                                key={property.name}
+                                key={property.id}
                                 ref={'childComponentRef' + index}
                                 scheme={property}
                                 hideRequired={this.hideRequired}
