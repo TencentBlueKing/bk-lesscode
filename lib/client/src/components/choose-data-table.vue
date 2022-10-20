@@ -2,6 +2,7 @@
     <section>
         <bk-select
             searchable
+            class="choose-data-table"
             ref="selectRef"
             :show-empty="false"
             :value="value"
@@ -9,6 +10,7 @@
             @clear="handleClearTable"
         >
             <span
+                v-bk-overflow-tips="{ content: value }"
                 class="display-value"
                 slot="trigger"
             >
@@ -205,7 +207,7 @@
             const isLoadingIds = ref([])
             const isOpenIds = ref([])
             const projectId = router?.currentRoute?.params?.projectId
-            const v3DeveloperCenterUrl = V3_DEVELOPER_CENTER_URL
+            const v3DeveloperCenterUrl = process.env.BK_V3_DEVELOPER_CENTER_URL
             // 项目数据
             const projectInfo = ref({
                 id: '',
@@ -380,8 +382,13 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/ellipsis";
+
+    .choose-data-table {
+        height: 32px;
+    }
     .display-value {
-        display: inline-block;
+        @mixin ellipsis 100%, inline-block;
         line-height: 32px;
         padding: 0 36px 0 10px;
     }

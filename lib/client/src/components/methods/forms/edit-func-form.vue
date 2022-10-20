@@ -132,9 +132,9 @@
             },
 
             handleSaveChooseFunction () {
-                this.handleSaveFunction().then(() => {
+                this.handleSaveFunction().then((form) => {
                     // 触发 save-use 事件
-                    this.$emit('save-use', this.form.funcCode)
+                    this.$emit('save-use', form.funcCode)
                     // 关闭弹框
                     this.handleClose()
                 })
@@ -150,7 +150,9 @@
                         } else {
                             await this.submitCreate(form)
                         }
-                        resolve()
+                        // 保存或者更新完需要及时刷新列表，以供画布使用最新的数据
+                        await this.refreshLayoutFunctionList()
+                        resolve(form)
                     } catch (err) {
                         if (err?.code === 499) {
                             this.messageHtmlError(err.message)
@@ -162,7 +164,6 @@
                         reject(err)
                     } finally {
                         this.isSubmitting = false
-                        this.refreshLayoutFunctionList()
                     }
                 })
             },
@@ -188,7 +189,7 @@
             },
 
             refreshLayoutFunctionList () {
-                this.getAllGroupAndFunction({
+                return this.getAllGroupAndFunction({
                     projectId: this.projectId,
                     versionId: this.currentVersionId
                 }).then((functionData) => {
@@ -200,6 +201,8 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
     .func-main {
         height: 100%;
         background: #fff;
@@ -210,12 +213,16 @@
         /deep/ .bk-label-text {
             font-size: 12px;
         }
+        /deep/ .bk-resize-layout-aside-content {
+            @mixin scroller;
+            overflow-x: auto;
+        }
     }
     .func-form-main {
         float: left;
         height: 100%;
         width: 100%;
-        min-width: 650px;
+        min-width: 750px;
         overflow-y: auto;
         margin: 7px 0;
         padding: 0 20px 20px;

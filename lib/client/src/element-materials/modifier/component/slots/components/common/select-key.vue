@@ -9,12 +9,13 @@
             }"
         >id 配置</div>
         <bk-select
-            class="g-mb8"
+            class="g-mb8 h32"
             :value="params.idKey"
             :loading="isLoading"
             @change="val => changeParams('idKey', val)"
         >
             <span
+                v-bk-overflow-tips="{ content: params.idKey }"
                 class="display-value"
                 slot="trigger"
             >
@@ -37,11 +38,13 @@
             }"
         >name 配置</div>
         <bk-select
+            class="h32"
             :value="params.nameKey"
             :loading="isLoading"
             @change="val => changeParams('nameKey', val)"
         >
             <span
+                v-bk-overflow-tips="{ content: params.nameKey }"
                 class="display-value"
                 slot="trigger"
             >
@@ -92,12 +95,17 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/ellipsis";
+
     .subline {
         cursor: pointer;
         border-bottom: 1px dashed #63656E;
     }
+    .h32 {
+        height: 32px;
+    }
     .display-value {
-        display: inline-block;
+        @mixin ellipsis 100%, inline-block;
         line-height: 32px;
         padding: 0 36px 0 10px;
     }

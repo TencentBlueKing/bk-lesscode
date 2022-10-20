@@ -9,6 +9,10 @@
                 </form-fields>
                 <div class="operate-btns">
                     <bk-button
+                        v-bk-tooltips="{
+                            disabled: viewType === 'projectCode' || type === 'FORM' || flowDeployed,
+                            content: '流程有更新未部署，提单或流程执行可能会失败'
+                        }"
                         theme="primary"
                         style="min-width: 88px; margin-right: 4px;"
                         :loading="submitPending"
@@ -32,16 +36,19 @@
                 </div>
             </div>
         </div>
+        <float-workbench-block v-if="type === 'FLOW'"></float-workbench-block>
     </div>
 </template>
 <script>
     import FormFields from './form/index.vue'
+    import FloatWorkbenchBlock from './components/float-workbench-block.vue'
     import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'ProcessForm',
         components: {
-            FormFields
+            FormFields,
+            FloatWorkbenchBlock
         },
         props: {
             type: String,
@@ -53,6 +60,7 @@
             serviceId: Number,
             versionId: Number,
             tableName: String,
+            flowDeployed: Boolean,
             viewType: {
                 type: String,
                 default: 'projectCode'
@@ -164,8 +172,15 @@
                         if (this.versionId) {
                             params.flow_id = this.versionId
                         }
-                        const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
-                        await this.$http.post(path, params)
+                        const reqConfig = {
+                            handingError (message) {
+                                if (typeof message === 'string' && message.includes('服务未启用')) {
+                                    return '当前流程未部署，请部署后提单'
+                                }
+                                return message
+                            }
+                        }
+                        await this.$http.post('/nocode/ticket/create_ticket_with_version/', params, reqConfig)
                     } else {
                         await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     }

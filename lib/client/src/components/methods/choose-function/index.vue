@@ -1,7 +1,7 @@
 <template>
     <section class="choose-function-main">
         <slot name="header"></slot>
-        
+
         <bk-popover
             ref="mainPopoverRef"
             placement="bottom"
@@ -136,6 +136,7 @@
             <div class="panel-item" v-for="(panel, index) in renderChoosenFunction.params" :key="index">
                 <variable-select
                     class="select-param"
+                    :options="{ formatInclude: ['value', 'variable', 'expression'] }"
                     :value="panel"
                     @change="({ format, code }) => handleChangeParam(index, { format, code, value: '' })"
                 >

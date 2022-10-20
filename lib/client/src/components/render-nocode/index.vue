@@ -1,12 +1,14 @@
 <template>
     <div class="render-content">
         <render-form v-if="nocodeType === 'FORM'" @update="$emit('update', $event)" />
+        <render-markdown v-else-if="nocodeType === 'MARKDOWN'"></render-markdown>
         <render-data-manage v-else-if="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" type="edit" :nocode-type="nocodeType"></render-data-manage>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
+    import RenderMarkdown from './markdown'
     import RenderForm from './form'
     import RenderDataManage from './data-manage'
 
@@ -14,7 +16,8 @@
         name: 'RenderNocode',
         components: {
             RenderForm,
-            RenderDataManage
+            RenderDataManage,
+            RenderMarkdown
         },
         data () {
             return {

@@ -3,7 +3,7 @@
         <save v-if="!hideSave" :custom="customSave" @save="$emit('save', $event)" />
         <preview v-if="!hidePreview" />
         <clear v-if="!hideClear" />
-        <show-function v-if="!hidePreview" />
+        <show-function v-if="!hideFunc" />
     </div>
 </template>
 <script>
@@ -23,6 +23,7 @@
             customSave: Boolean,
             hideSave: Boolean,
             hidePreview: Boolean,
+            hideFunc: Boolean,
             hideClear: Boolean
         }
     }

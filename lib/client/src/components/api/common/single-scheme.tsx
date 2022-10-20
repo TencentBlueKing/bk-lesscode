@@ -18,7 +18,8 @@ const SingleSchemeComponent = defineComponent({
         typeDisable: Boolean,
         minusDisable: Boolean,
         plusBrotherDisable: Boolean,
-        renderSlot: Function
+        renderSlot: Function,
+        hideRequired: Boolean
     },
 
     setup (props, { emit }) {
@@ -162,13 +163,17 @@ const SingleSchemeComponent = defineComponent({
                             </bk-input>
                         </bk-form-item>
                     </bk-form>
-                    <bk-checkbox
-                        class="layout-small"
-                        value={this.copyScheme.required}
-                        disabled={this.finalDisable}
-                        onChange={(required) => this.update({ required })}
-                    >
-                    </bk-checkbox>
+                    {
+                        this.hideRequired
+                            ? ''
+                            : <bk-checkbox
+                                class="layout-small"
+                                value={this.copyScheme.required}
+                                disabled={this.finalDisable}
+                                onChange={(required) => this.update({ required })}
+                            >
+                            </bk-checkbox>
+                    }
                     <bk-select
                         class="layout-middle"
                         value={this.copyScheme.type}
@@ -300,8 +305,10 @@ const SingleSchemeComponent = defineComponent({
                         ? this.copyScheme.children.map((property, index) =>
                             <SingleSchemeComponent
                                 class="pl20"
+                                key={property.id}
                                 ref={'childComponentRef' + index}
                                 scheme={property}
+                                hideRequired={this.hideRequired}
                                 renderSlot={this.renderSlot}
                                 onUpdate={this.triggleChange}
                                 onPlusBrotherNode={this.plusChildProperty}
