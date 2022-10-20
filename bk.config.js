@@ -1,6 +1,7 @@
 
 const mdLoaderOption = require('./scripts/mark-dowm/md-loader-option')
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
     assetsDir: './lib/client/static',
@@ -40,6 +41,9 @@ module.exports = {
                 alias: {
                     '@': path.resolve(__dirname, './lib/client/src'),
                     'shared': path.resolve(__dirname, './lib/shared')
+                },
+                fallback: {
+                    buffer: require.resolve('buffer')
                 }
             },
             devServer: {
@@ -103,6 +107,13 @@ module.exports = {
             .loader(require.resolve('vue-markdown-loader/lib/markdown-compiler'))
             .options(mdLoaderOption)
 
+        config.plugin('Buffer')
+            .use(
+                webpack.ProvidePlugin,
+                [{
+                    Buffer: ['buffer', 'Buffer']
+                }]
+            )
         return config
     }
 }
