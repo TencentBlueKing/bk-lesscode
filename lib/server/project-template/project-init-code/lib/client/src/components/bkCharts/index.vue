@@ -16,9 +16,8 @@
 </template>
 
 <script>
-    import { bkChartProps, chartsConfigMap } from './bk-chart-config'
+    import { bkChartProps, chartsConfigMap, colorSets } from './bk-chart-config'
     import Chart from '@blueking/bkcharts'
-    import { colorSets } from '@/common/chart-color-sets'
 
     export default {
         name: 'bk-charts',
