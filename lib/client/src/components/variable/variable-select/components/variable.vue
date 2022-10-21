@@ -156,7 +156,6 @@
     }
 
     export default {
-        name: '',
         components: {
             remoteExample,
             VariableForm

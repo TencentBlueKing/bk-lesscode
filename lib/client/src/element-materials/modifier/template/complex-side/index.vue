@@ -11,13 +11,12 @@
         </div>
         <div class="wraper" :key="menuActive">
             <div class="complex-action-title side-menu-title">
-                <div class="info-title">
+                <div class="info-title" @click="() => showContent = !showContent">
                     <i
                         :class="{
                             'bk-icon icon-angle-down': true,
                             close: !showContent
                         }"
-                        @click="() => showContent = !showContent"
                     ></i>
                     <span>开启侧边导航</span>
                 </div>
@@ -32,13 +31,12 @@
                 </div>
             </div>
             <div class="side-menu-wraper" v-if="hasSideMenu">
-                <div class="info-title">
+                <div class="info-title" @click="() => showMenuContent = !showMenuContent">
                     <i
                         :class="{
                             'bk-icon icon-angle-down': true,
                             close: !showMenuContent
                         }"
-                        @click="() => showMenuContent = !showMenuContent"
                     ></i>
                     <span>导航菜单</span>
                 </div>
@@ -207,6 +205,7 @@
             font-size: 12px;
             font-weight: bold;
             color: #313238;
+            cursor: pointer;
             .bk-icon {
                 margin-left: -5px;
                 margin-right: 3px;

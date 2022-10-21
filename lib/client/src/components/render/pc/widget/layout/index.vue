@@ -129,7 +129,7 @@
             position: relative;
             height: calc(100vh - 300px);
             border: 1px solid transparent;
-            overflow-y: scroll;
+            overflow-y: auto;
             @mixin scroller;
             &:hover{
                 border: 1px dashed #3a84ff;

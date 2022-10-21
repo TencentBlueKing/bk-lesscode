@@ -179,7 +179,7 @@
                 return
             }
 
-            this.$bkInfo({
+            (this as any).$bkInfo({
                 title: '确认离开?',
                 subTitle: '文件正在上传中，离开可能导致文件上传失败',
                 confirmFn: async () => {

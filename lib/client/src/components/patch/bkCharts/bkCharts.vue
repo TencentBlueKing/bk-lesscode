@@ -16,52 +16,72 @@
 </template>
 
 <script>
+    import { bkChartProps, chartsConfigMap } from './bk-chart-config'
     import Chart from '@blueking/bkcharts'
+    import { colorSets } from '@/common/chart-color-sets'
+
     export default {
         name: 'bk-charts',
-        props: {
-            width: {
-                type: [Number, String],
-                default: ''
-            },
-            height: {
-                type: [Number, String],
-                default: ''
-            },
-            options: {
-                type: Object,
-                default: () => ({})
-            }
-        },
+        props: { ...bkChartProps() },
         data () {
             return {
-                ctx: null,
-                chart: null
+                chart: null,
+                ctx: null
             }
         },
         computed: {
             computedWidth () {
                 const widthVal = this.width ? (typeof this.width === 'number' ? `${this.width}px` : this.width) : '100%'
-                // 画布渲染时将百分比置为100%
-                // this.$route.name === 'new' && widthVal.endsWith('%') && (widthVal = '100%')
                 return widthVal
+            },
+            baseChartOptions () {
+                const title = {
+                    display: this.title !== '',
+                    text: this.title
+                }
+
+                return {
+                    type: this.type,
+                    data: {
+                        labels: this.xAxis,
+                        datasets: []
+                    },
+                    options: {
+                        plugins: {
+                            title
+                        },
+                        maintainAspectRatio: this.maintainAspectRatio
+                    }
+                }
+            },
+            chartOptions () {
+                /** options参数具有最高优先级，用于更高级的自定义配置 */
+                if (Object.keys(this.options).length) {
+                    return this.options
+                }
+
+                const { list: colorList } = colorSets.find(item => item.name === this.colorSet)
+                const options = JSON.parse(JSON.stringify(this.baseChartOptions))
+                return chartsConfigMap[this.type](this, options, colorList)
             }
         },
         watch: {
-            options: {
+            chartOptions: {
                 deep: true,
                 handler (val, old) {
                     if (JSON.stringify(val) === JSON.stringify(old)) return
-                    this.chart.destroy()
-                    const options = JSON.parse(JSON.stringify(this.options))
-                    this.chart = new Chart(this.ctx, options)
+
+                    const { options, data } = val
+        
+                    this.chart.options = options
+                    this.chart.data = data
+                    this.chart.update()
                 }
             }
         },
         mounted () {
             this.ctx = this.$refs.chart.getContext('2d')
-            const options = JSON.parse(JSON.stringify(this.options))
-            this.chart = new Chart(this.ctx, options)
+            this.chart = new Chart(this.ctx, JSON.parse(JSON.stringify(this.chartOptions)))
         }
     }
 </script>

@@ -1,12 +1,11 @@
 <template>
     <div class="project-complex-top-menu-modifier">
-        <div class="menu-title">
+        <div class="menu-title" @click="() => showContent = !showContent">
             <i
                 :class="{
                     'bk-icon icon-angle-down': true,
                     close: !showContent
                 }"
-                @click="() => showContent = !showContent"
             ></i>
             <span>导航菜单</span>
         </div>

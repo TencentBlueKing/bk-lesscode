@@ -6,6 +6,7 @@
         :show-empty="false"
         :clearable="false"
         :scroll-height="300"
+        :disabled="disabled"
         :remote-method="handleSearch"
         @toggle="handleToggle"
     >
@@ -67,7 +68,14 @@
                 default: () => ([])
             },
             // itsm系统对接的esb接口
-            useFlowEsbApi: Boolean
+            useFlowEsbApi: {
+                type: Boolean,
+                default: false
+            },
+            disabled: {
+                type: Boolean,
+                default: false
+            }
         },
 
         setup (props, { emit }) {
