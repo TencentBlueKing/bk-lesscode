@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "basePath": "/",
     "info": {
-        "version": "1.1.0",
+        "version": "1.1.3",
         "title": "bk-lesscode",
         "description": "bk-lesscode 对外接口"
     },
@@ -252,6 +252,68 @@
                     },
                     "authConfig": {
                         "userVerifiedRequired": false
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/get_my_project_list": {
+            "get": {
+                "operationId": "get_my_project_list",
+                "description": "获取有应用开发权限的应用列表",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/getMyProjectList",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/get_table_data": {
+            "get": {
+                "operationId": "get_table_data",
+                "description": "根据表名和projctId获取lesscode数据自建表的数据",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/getTableData",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
                     },
                     "disabledStages": [],
                     "descriptionEn": null
