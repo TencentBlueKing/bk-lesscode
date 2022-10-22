@@ -60,7 +60,6 @@
                 bus.$off('update-chart-options', this.updateChartOptions)
             })
             this.componentNode = LC.getActiveNode()
-            debugger
             if (this.componentNode) {
                 const {
                     type,
@@ -70,7 +69,6 @@
                 } = this.componentNode
                 this.componentType = type
                 this.componentId = componentId
-                debugger
                 this.propsConfig = Object.freeze(material.props)
                 this.lastProps = Object.freeze(_.cloneDeep(renderProps))
                 this.material = material
