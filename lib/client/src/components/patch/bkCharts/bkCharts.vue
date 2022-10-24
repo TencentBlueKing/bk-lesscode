@@ -43,7 +43,6 @@
                 return {
                     type: this.type,
                     data: {
-                        labels: this.xAxis,
                         datasets: []
                     },
                     options: {
@@ -71,11 +70,8 @@
                 handler (val, old) {
                     if (JSON.stringify(val) === JSON.stringify(old)) return
 
-                    const { options, data } = val
-        
-                    this.chart.options = options
-                    this.chart.data = data
-                    this.chart.update()
+                    this.chart.destroy()
+                    this.chart = new Chart(this.ctx, val)
                 }
             }
         },

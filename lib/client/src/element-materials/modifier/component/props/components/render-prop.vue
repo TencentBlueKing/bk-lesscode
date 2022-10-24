@@ -16,6 +16,7 @@
             :options="variableSelectOptions"
             :value="formData"
             :show-content="isShowProp"
+            :describe="describe"
             @change="handleVariableFormatChange">
             <template v-slot:title>
                 <div class="prop-name">
