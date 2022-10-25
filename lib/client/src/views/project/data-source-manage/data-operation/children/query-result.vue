@@ -21,7 +21,7 @@
                 class="mt20 g-hairless-table"
             >
                 <bk-table-column
-                    v-for="column in Object.keys(data[0])"
+                    v-for="column in Object.keys(data[0] || {})"
                     :key="column"
                     :label="column"
                     :prop="column"

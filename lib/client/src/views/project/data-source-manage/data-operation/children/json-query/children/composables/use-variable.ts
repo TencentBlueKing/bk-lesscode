@@ -2,7 +2,6 @@ import {
     getVariableReg
 } from 'shared/api'
 
-const variableReg = getVariableReg()
 // 设置是否使用了变量
 let hasVariable
 // 收集变量依赖
@@ -16,6 +15,7 @@ export const initVariable = (val) => {
 
 // 更新变量的值
 export const updateVariable = (val, id) => {
+    const variableReg = getVariableReg()
     if (variableReg.test(val)) {
         if (!variableDepend.find(x => x === id)) {
             variableDepend.push(id)
