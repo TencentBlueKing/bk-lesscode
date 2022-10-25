@@ -63,7 +63,8 @@
     import {
         defineComponent,
         PropType,
-        toRef
+        toRef,
+        onBeforeUnmount
     } from '@vue/composition-api'
     import { ITable } from './select-table.vue'
     import SelectType from './select-type.vue'
@@ -162,6 +163,11 @@
             const triggleUpdate = () => {
                 emit('change', renderConditionList.value)
             }
+
+            onBeforeUnmount(() => {
+                // 清除变量使用
+                updateVariable('', id)
+            })
 
             return {
                 renderConditionList,

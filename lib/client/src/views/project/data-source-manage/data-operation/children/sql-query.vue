@@ -26,8 +26,22 @@
                         'disabled': data.disabled
                     }"
                 >
-                    <i v-if="data.icon" :class="data.icon"></i>
-                    {{data.name}}
+                    <i
+                        v-if="data.isTable"
+                        class="bk-drag-icon bk-drag-data-table"
+                    ></i>
+                    <span
+                        v-bk-overflow-tips
+                        class="display-name"
+                    >
+                        {{data.name}}
+                    </span>
+                    <i
+                        v-if="data.isTable"
+                        v-bk-tooltips="{ content: '点击生成查询该表SQL' }"
+                        class="bk-drag-icon bk-drag-sql"
+                        @click="handleAddQuerySql(data)"
+                    ></i>
                 </div>
             </bk-big-tree>
         </section>
@@ -45,6 +59,9 @@
         isEmpty,
         uuid
     } from 'shared/util'
+    import {
+        getQueryTableSql
+    } from 'shared/data-source'
     import { useStore } from '@/store'
 
     export default defineComponent({
@@ -114,11 +131,10 @@
                     .then((data) => {
                         const bkBaseTables = data?.list?.map((bkBaseTable) => {
                             return {
-                                id: bkBaseTable.id,
+                                ...bkBaseTable,
                                 name: bkBaseTable.tableName,
-                                columns: bkBaseTable.columns,
                                 type: 'base-table-name',
-                                icon: 'bk-drag-icon bk-drag-data-table'
+                                isTable: true
                             }
                         })
                         return getNodeValue(bkBaseTables)
@@ -135,6 +151,15 @@
                 }
             }
 
+            // 点击添加查询 sql
+            const handleAddQuerySql = (table) => {
+                let sql = getQueryTableSql(table)
+                if (props.sql.trim()) {
+                    sql = `${props.sql}\r\n${sql}`
+                }
+                handleSqlChange(sql)
+            }
+
             watch(
                 [
                     () => props.dataSourceType,
@@ -145,11 +170,10 @@
                     if (props.dataSourceType === 'preview') {
                         apiData.value = props.tableList.map((table) => {
                             return {
-                                id: table.id,
+                                ...table,
                                 name: table.tableName,
-                                columns: table.columns,
                                 type: 'preview-table-name',
-                                icon: 'bk-drag-icon bk-drag-data-table'
+                                isTable: true
                             }
                         })
                     } else {
@@ -168,7 +192,8 @@
                 apiData,
                 handleSqlChange,
                 validate,
-                getRemoteApi
+                getRemoteApi,
+                handleAddQuerySql
             }
         }
     })
@@ -176,6 +201,7 @@
 
 <style lang="postcss" scoped>
     @import "@/css/mixins/scroller";
+    @import "@/css/mixins/ellipsis";
 
     .sql-query {
         display: flex;
@@ -191,7 +217,7 @@
             overflow: auto;
             background: #fff;
             box-shadow: 0 2px 4px 0 rgb(25 25 41 / 5%);
-            padding: 20px;
+            padding: 10px;
         }
     }
     .sql-title {
@@ -202,9 +228,21 @@
 
     .display-option {
         font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         &.disabled {
             cursor: not-allowed;
             color: #c4c6cc;
+        }
+        .display-name {
+            @mixin ellipsis calc(100% - 30px), inline-block;
+            flex: 1;
+            margin: 0 3px;
+        }
+        .bk-drag-sql {
+            color: #3a84ff;
+            margin-right: 5px;
         }
     }
 </style>

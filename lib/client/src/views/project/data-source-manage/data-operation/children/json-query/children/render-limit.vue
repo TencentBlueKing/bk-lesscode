@@ -34,7 +34,8 @@
         defineComponent,
         ref,
         PropType,
-        watch
+        watch,
+        onBeforeUnmount
     } from '@vue/composition-api'
     import {
         getDefaultLimit
@@ -94,6 +95,11 @@
                     immediate: true
                 }
             )
+
+            onBeforeUnmount(() => {
+                // 清除变量使用
+                updateVariable('', id)
+            })
 
             return {
                 renderLimit,
