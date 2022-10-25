@@ -36,7 +36,7 @@
     } from '@vue/composition-api'
 
     type item = {
-        disabled: boolean,
+        disabled?: boolean,
         name: string,
         id: string
     }

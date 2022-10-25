@@ -34,7 +34,7 @@
             <bk-select
                 :class="{
                     'field-main': true,
-                    'is-error': isError
+                    'is-error': validateStatus.isError
                 }"
                 :value="fieldId"
                 @change="handleChange"
@@ -56,8 +56,8 @@
             >
             </bk-input>
             <i
-                v-if="isError"
-                v-bk-tooltips="{ content: '字段是必填项' }"
+                v-if="validateStatus.isError"
+                v-bk-tooltips="{ content: validateStatus.message }"
                 :class="{
                     'bk-icon icon-exclamation-circle-shape tooltips-icon': true,
                     'with-alias': displayAlias
@@ -80,7 +80,6 @@
         watch,
         computed,
         ref,
-        getCurrentInstance,
         onBeforeUnmount
     } from '@vue/composition-api'
     import validateContainer from '../composables/validate'
@@ -132,16 +131,20 @@
             showAlias: {
                 type: Boolean,
                 default: false
+            },
+            customValidate: {
+                type: Function as PropType<(IField) => string>,
+                default: () => {}
             }
         },
 
         emits: ['change', 'delete'],
 
         setup (props, { emit }) {
-            const isError = ref(false)
-            const instance = getCurrentInstance()
-            // 本组件需要注册校验方法
-            validateContainer.register(instance.proxy)
+            const validateStatus = ref({
+                message: '',
+                isError: false
+            })
 
             const displayAlias = computed(() => {
                 return props.showAlias && props.fieldId !== '*'
@@ -160,17 +163,27 @@
                     handleChangeAlias('')
                 }
                 if (!isEmpty(fieldId)) {
-                    isError.value = false
+                    validateStatus.value.isError = false
                 }
                 emit('change', { fieldId })
             }
 
             const validate = () => {
+                let message = ''
+
                 if (isEmpty(props.fieldId)) {
-                    isError.value = true
-                    return Promise.reject(new Error('字段不能为空'))
+                    message = '字段不能为空'
+                } else if (props.customValidate) {
+                    message = props?.customValidate?.({ functionName: props.functionName, fieldId: props.fieldId })
+                }
+
+                if (message) {
+                    validateStatus.value.isError = true
+                    validateStatus.value.message = message
+                    return Promise.reject(new Error(message))
                 } else {
-                    isError.value = false
+                    validateStatus.value.isError = false
+                    validateStatus.value.message = ''
                     return Promise.resolve()
                 }
             }
@@ -196,10 +209,12 @@
                 }
             )
 
-            onBeforeUnmount(() => validateContainer.unRegister(instance.proxy))
+            // 本组件需要注册校验方法
+            validateContainer.register(validate)
+            onBeforeUnmount(() => validateContainer.unRegister(validate))
 
             return {
-                isError,
+                validateStatus,
                 displayAlias,
                 handleToggleDistinct,
                 handleChange,
