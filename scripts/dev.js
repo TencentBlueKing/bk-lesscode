@@ -4,12 +4,27 @@ const chalk = require('chalk')
 const { runDev } = require('@blueking/cli-service-webpack')
 
 const backendDir = path.resolve(__dirname, '../lib/server')
+const sharedDir = path.resolve(__dirname, '../lib/shared')
+const ignore = [
+    path.resolve(__dirname, '../lib/server/project-template'),
+    path.resolve(__dirname, '../lib/server/npmTemp'),
+    path.resolve(__dirname, '../lib/server/downloadTemp'),
+    path.resolve(__dirname, '../lib/server/temp'),
+    path.resolve(__dirname, '../lib/server/upload')
+]
 
 function startServer () {
     nodemon({
         script: path.resolve(backendDir, 'app.browser.js'),
-        watch: [backendDir],
-        ext: 'js'
+        watch: [
+            backendDir,
+            sharedDir
+        ],
+        nodeArgs: [
+            '--inspect'
+        ],
+        ext: 'js',
+        ignore
     })
         .once('start', () => {
             runDev()

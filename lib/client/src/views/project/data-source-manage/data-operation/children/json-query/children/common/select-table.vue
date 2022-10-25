@@ -43,6 +43,7 @@
         id: string
         tableName: string
         columns: IColumn[]
+        bkBizId?: string
     }
 
     export default defineComponent({

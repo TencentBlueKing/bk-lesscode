@@ -133,7 +133,7 @@
                 default: false
             },
             customValidate: {
-                type: Function,
+                type: Function as PropType<(IField) => string>,
                 default: () => {}
             }
         },

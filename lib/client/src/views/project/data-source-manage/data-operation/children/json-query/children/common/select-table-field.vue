@@ -50,7 +50,8 @@
                 type: [String, Number]
             },
             customValidate: {
-                type: Function
+                type: Function,
+                default: () => {}
             }
         },
 
