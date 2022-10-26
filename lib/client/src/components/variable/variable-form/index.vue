@@ -124,7 +124,7 @@
             // 限制新增或编辑的变量类型
             valueTypeInclude: {
                 type: Array,
-                default: () => ([])
+                default: () => (Object.keys(typeEnum))
             }
         },
 

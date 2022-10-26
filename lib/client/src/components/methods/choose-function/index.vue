@@ -79,7 +79,7 @@
                                                     'function-item': true
                                                 }"
                                                 :key="functionData.funcName"
-                                                @click="handleChooseFunction(functionData.funcCode)"
+                                                @click="handleChooseFunction(functionData)"
                                             >
                                                 <span class="function-item-name" v-bk-overflow-tips>
                                                     {{ functionData.funcName }}（{{ functionData.funcCode }}）
@@ -276,8 +276,13 @@
                 this.$emit('change', JSON.parse(JSON.stringify(this.renderChoosenFunction)))
             },
 
-            handleChooseFunction (funcCode) {
-                this.renderChoosenFunction.methodCode = funcCode
+            handleChooseFunction (functionData) {
+                this.renderChoosenFunction.methodCode = functionData.funcCode
+                this.renderChoosenFunction.params = functionData?.funcParams?.map((funcParam) => ({
+                    value: funcParam,
+                    code: '',
+                    format: 'value'
+                }))
                 this.triggleUpdate()
                 this.handleClose()
             },

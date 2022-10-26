@@ -134,7 +134,7 @@
             handleSaveChooseFunction () {
                 this.handleSaveFunction().then((form) => {
                     // 触发 save-use 事件
-                    this.$emit('save-use', form.funcCode)
+                    this.$emit('save-use', form)
                     // 关闭弹框
                     this.handleClose()
                 })

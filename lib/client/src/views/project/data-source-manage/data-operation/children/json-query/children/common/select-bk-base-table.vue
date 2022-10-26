@@ -75,7 +75,6 @@
         watch,
         ref,
         toRef,
-        getCurrentInstance,
         onBeforeUnmount
     } from '@vue/composition-api'
     import { useStore } from '@/store'
@@ -102,7 +101,6 @@
 
         setup (props, { emit }) {
             const store = useStore()
-            const instance = getCurrentInstance()
             const isError = ref(false)
             const isLoadingIds = ref([])
             const isOpenIds = ref([])
@@ -169,8 +167,8 @@
             )
 
             // 本组件需要注册校验方法
-            validateContainer.register(instance.proxy)
-            onBeforeUnmount(() => validateContainer.unRegister(instance.proxy))
+            validateContainer.register(validate)
+            onBeforeUnmount(() => validateContainer.unRegister(validate))
 
             return {
                 isError,

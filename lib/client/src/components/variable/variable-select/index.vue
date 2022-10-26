@@ -27,6 +27,12 @@
                 {{ formData.code }}
             </div>
             <div v-else class="display-content">
+                <div v-if="Object.hasOwnProperty.call(describe, 'example')"
+                    class="edit-text mb5"
+                    @click="() => {
+                        $refs.example.isShow = true
+                    }">
+                    数据示例</div>
                 <slot v-if="formData.format === 'value'" />
                 <render-variable
                     v-if="formData.format === 'variable'"
@@ -49,6 +55,10 @@
                 />
             </div>
         </template>
+        <Example :data="{
+            name: '',
+            value: describe.example
+        }" ref="example"></Example>
     </section>
 </template>
 <script>
@@ -56,6 +66,7 @@
     import RenderVariable from './components/variable'
     import RenderExpression from './components/expression'
     import RenderTable from '@/components/choose-data-table.vue'
+    import Example from '@/element-materials/modifier/component/props/components/strategy/remote-example'
 
     const genFormData = ({
         format,
@@ -87,12 +98,17 @@
         components: {
             RenderVariable,
             RenderExpression,
-            RenderTable
+            RenderTable,
+            Example
         },
         props: {
             show: {
                 type: Boolean,
                 default: true
+            },
+            describe: {
+                type: Object,
+                default: () => ({})
             },
             // 是否展示内容区
             showContent: {
@@ -295,6 +311,12 @@
         .display-content {
             width: 100%;
             margin-bottom: 16px;
+            .edit-text {
+                font-size: 12px;
+                cursor: pointer;
+                color: #3a84ff;
+                margin-top: 4px;
+            }
         }
     }
 </style>
