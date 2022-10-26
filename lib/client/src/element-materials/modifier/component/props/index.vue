@@ -88,19 +88,32 @@
         methods: {
             // 针对chart类型，将动态返回的remoteOptions与options合并
             updateChartOptions (res) {
-                // if (this.renderProps['options']
-                //     && this.renderProps['options'].val
-                //     && typeof this.renderProps['options'].val === 'object') {
-                //     const options = Object.assign({}, this.renderProps['options'].val, res)
-                //     this.renderProps['options'] = {
-                //         ...this.renderProps['options'],
-                //         val: options
-                //     }
-                //     this.renderProps['options'].val = options
-                //     this.batchUpdate({
-                //         renderProps: this.renderProps
-                //     })
-                // }
+                try {
+                    if (this.componentNode.renderProps['options']
+                        && this.componentNode.renderProps['options'].renderValue
+                        && typeof this.componentNode.renderProps['options'].renderValue === 'object') {
+                        const options = Object.assign({}, this.componentNode.renderProps['options'].renderValue, res)
+                        this.componentNode.renderProps['options'] = {
+                            ...this.componentNode.renderProps['options'],
+                            val: options
+                        }
+                        this.componentNode.renderProps['options'].renderValue = options
+
+                        this.$bkMessage({
+                            theme: 'success',
+                            message: `图表配置已更新，${Object.keys(res).join('、')}选项已被远程数据覆盖`
+                        })
+
+                        // this.batchUpdate({
+                        //     renderProps: this.componentNode.renderProps
+                        // })
+                    }
+                } catch (error) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: error
+                    })
+                }
             },
             syncOtherProp (propName) {
                 if (['bk-charts', 'chart'].includes(this.componentNode.type)
@@ -110,11 +123,15 @@
                     const propOfOptionsData = this.lastProps['options']
                     const propOfRemoteOptionsData = this.lastProps['remoteOptions']
 
+                    console.log(this.lastProps['options'], this.lastProps['remoteOptions'], 'last')
+
                     const realOptionValue = Object.assign(
                         {},
                         _.cloneDeep(propOfOptionsData.renderValue),
                         _.cloneDeep(propOfRemoteOptionsData.renderValue)
                     )
+
+                    console.log(realOptionValue, 'real')
 
                     if (propOfOptionsData.format === 'value') {
                         // format 为 value 替换所有配置
@@ -152,7 +169,15 @@
                     return
                 }
                 // 同步 table 的 columns
-                if (key === 'data' && ['bk-table', 'el-table', 'folding-table', 'search-table'].includes(this.componentType)) {
+                if (key === 'data'
+                    && [
+                        'bk-table',
+                        'el-table',
+                        'folding-table',
+                        'search-table',
+                        'widget-bk-table',
+                        'widget-el-table'
+                    ].includes(this.componentType)) {
                     // 默认同步 第一个 slot
                     const slotName = Object.keys(this.material.slots)[0]
                     const slotConfig = this.material.slots[slotName]
@@ -201,11 +226,23 @@
                     ...this.lastProps,
                     [propName]: propData
                 })
+
+                /** 兼容bkcharts的精细化配置升级，去除了remoteOptions，当修改了options，将remoteOptions置空 */
+                const updateBkChartsRemoteOptions = (this.componentNode.type === 'bk-charts' && propName === 'options') ? {
+                    remoteOptions: LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: {},
+                        renderValue: {},
+                        payload: {}
+                    })
+                } : {}
+
                 this.componentNode.setRenderProps({
                     ...this.lastProps,
-                    [propName]: propData
+                    [propName]: propData,
+                    ...updateBkChartsRemoteOptions
                 })
-                this.syncOtherProp(propName)
+                // this.syncOtherProp(propName)
             }, 60)
         }
     }

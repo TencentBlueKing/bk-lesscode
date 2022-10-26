@@ -32,16 +32,19 @@
                 </div>
             </div>
         </div>
+        <float-workbench-block v-if="type === 'FLOW'"></float-workbench-block>
     </div>
 </template>
 <script>
     import FormFields from './form/index.vue'
+    import FloatWorkbenchBlock from './components/float-workbench-block.vue'
     import { isValEmpty } from '@/common/util'
 
     export default {
         name: 'ProcessForm',
         components: {
-            FormFields
+            FormFields,
+            FloatWorkbenchBlock
         },
         props: {
             type: String,
@@ -50,7 +53,13 @@
                 default: () => []
             },
             formId: Number,
-            tableName: String
+            serviceId: Number,
+            versionId: Number,
+            tableName: String,
+            viewType: {
+                type: String,
+                default: 'projectCode'
+            }
         },
         data () {
             return {
@@ -62,14 +71,18 @@
         methods: {
             getFieldsData () {
                 return this.fields.map((item) => {
-                    const { choice, id, key, type } = item
+                    const { choice, key, type } = item
                     let value = this.value[key]
                     if (type === 'IMAGE') {
                         value = this.value[key].map(item => item.path)
                     } else if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(type)) {
                         value = Array.isArray(this.value[key]) ? this.value[key].join(',') : this.value[key]
                     }
-                    return { choice, id, key, type, value }
+                    const dataItem = { key, value }
+                    if (['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO', 'TABLE'].includes(type)) {
+                        dataItem.choice = choice
+                    }
+                    return dataItem
                 })
             },
             handleContinue () {
@@ -80,7 +93,7 @@
                 let valid = true
                 this.fields.some((field) => {
                     // 隐藏的表单不校验
-                    if (field.show_type === 1) {
+                    if (field.isHide) {
                         return
                     }
                     // 校验多值类型的表单配置值的数目范围后，用户填写的值数目是否范围内
@@ -112,10 +125,10 @@
                     }
                     if ('imageRange' in field && ['MULTISELECT', 'CHECKBOX', 'IMAGE'].includes(field.type)) {
                         let msg = ''
-                        if (field.imageRange.isMin && fieldVal.length < Number(field.imageRange.minNum)) {
+                        if (field.imageRange?.isMin && fieldVal.length < Number(field.imageRange.minNum)) {
                             msg = `${field.name}表单的选项值数目不能小于${field.imageRange.minNum}`
                         }
-                        if (field.imageRange.isMax && fieldVal.length > Number(field.imageRange.maxNum)) {
+                        if (field.imageRange?.isMax && fieldVal.length > Number(field.imageRange.maxNum)) {
                             msg = `${field.name}表单的选项值数目不能大于${field.imageRange.maxNum}`
                         }
                         if (msg) {
@@ -138,7 +151,34 @@
                 try {
                     this.submitPending = true
                     const data = this.getFieldsData()
-                    await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
+                    if (this.type === 'FLOW') {
+                        const params = {
+                            fields: [{ key: 'title', value: 'lesscode 提单' }, ...data],
+                            creator: this.$store.state.user.username,
+                            service_id: this.serviceId,
+                            tag: this.viewType === 'preview' ? 'preview' : BKPAAS_ENVIRONMENT,
+                            meta: {
+                                envs: {
+                                    appApigwPrefix: BK_APP_APIGW_PREFIX,
+                                    creatorUsername: this.$store.state.user.username
+                                }
+                            }
+                        }
+                        if (this.versionId) {
+                            params.flow_id = this.versionId
+                        }
+                        const reqConfig = {
+                            handingError (message) {
+                                if (typeof message === 'string' && message.includes('服务未启用')) {
+                                    return '当前流程未部署，请部署后提单'
+                                }
+                                return message
+                            }
+                        }
+                        await this.$http.post('/nocode/ticket/create_ticket_with_version/', params, reqConfig)
+                    } else {
+                        await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
+                    }
                     this.showSuccess = true
                 } catch (e) {
                     console.error(e.messsage || e)

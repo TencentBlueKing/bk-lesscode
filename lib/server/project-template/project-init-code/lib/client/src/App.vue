@@ -1,7 +1,8 @@
 <template>
-    <div id="app" :class="systemCls">
-        <main>
-            <router-view :key="routerKey" />
+    <div id="app" :class="[systemCls, { 'mobile-page': isMobilePage }]">
+        <main :class="{ 'mobile-page': isMobilePage }">
+            <apply-page v-if="isNotPermission" :auth-result="authResult" />
+            <router-view v-else :key="routerKey" />
         </main>
     </div>
 </template>
@@ -10,15 +11,27 @@
 
     import { bus } from '@/common/bus'
 
+    import ApplyPage from '@/components/apply-permission/apply-page.vue'
+
     export default {
         name: 'app',
+        components: {
+            ApplyPage
+        },
         data () {
             return {
                 routerKey: +new Date(),
-                systemCls: 'mac'
+                systemCls: 'mac',
+                isNotPermission: false,
+                authResult: {
+                    requiredPermissions: []
+                }
             }
         },
         computed: {
+            isMobilePage () {
+                return this.$route.meta.platform === 'MOBILE'
+            },
             ...mapGetters(['mainContentLoading'])
         },
         watch: {
@@ -28,13 +41,23 @@
             if (platform.indexOf('win') === 0) {
                 this.systemCls = 'win'
             }
+
+            bus.$on('permission-page', this.permissionHold)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('permission-page', this.permissionHold)
+            })
         },
         mounted () {
             bus.$on('redirect-login', data => {
-                window.location.href = LOGIN_SERVICE_URL + '/?c_url=' + window.location.href
+                window.location.href = process.env.BK_LOGIN_URL + '/?c_url=' + window.location.href
             })
         },
         methods: {
+            permissionHold (authResult) {
+                this.isNotPermission = true
+                this.authResult = authResult
+            },
+
             /**
              * router 跳转
              *
@@ -52,4 +75,8 @@
 <style lang="postcss">
     @import './css/reset.css';
     @import './css/app.css';
+    .mobile-page {
+        height: 100%;
+    }
+
 </style>

@@ -6,33 +6,15 @@
         <choose-data-table
             class="g-mb8"
             :value="sourceData.tableName"
-            @choose="chooseTable"
+            :data-source-type="sourceData.dataSourceType"
+            @choose-table="chooseTable"
+            @fetch-data="handleFetchData"
             @clear="clearTable"
         />
-        <div
-            class="g-prop-sub-title g-mb6 g-mt8 subline"
-            v-bk-tooltips="{
-                content: '用于赋值的字段名，默认为 id',
-                placements: ['left-start'],
-                boundary: 'window'
-            }"
-        >id 配置</div>
-        <bk-input
-            class="g-mb8"
-            :value="sourceData.params.idKey"
-            @change="val => changeParams('idKey', val)"
-        />
-        <div
-            class="g-prop-sub-title g-mb6 g-mt8 subline"
-            v-bk-tooltips="{
-                content: '用于展示的字段名，默认为 name',
-                placements: ['left-start'],
-                boundary: 'window'
-            }"
-        >name 配置</div>
-        <bk-input
-            :value="sourceData.params.nameKey"
-            @change="val => changeParams('nameKey', val)"
+        <select-key
+            :params="sourceData.keys"
+            :options="sourceData.columns"
+            @change="changeParams"
         />
     </section>
 </template>
@@ -44,6 +26,7 @@
         toRefs
     } from '@vue/composition-api'
     import chooseDataTable from '@/components/choose-data-table.vue'
+    import SelectKey from './common/select-key.vue'
 
     interface Iprop {
         slotVal?: any,
@@ -53,7 +36,8 @@
 
     export default defineComponent({
         components: {
-            chooseDataTable
+            chooseDataTable,
+            SelectKey
         },
 
         props: {
@@ -88,26 +72,41 @@
             const sourceData = ref({
                 val: [],
                 tableName: originSourceData?.tableName,
-                params: {
-                    idKey: originSourceData?.params?.idKey || 'id',
-                    nameKey: originSourceData?.params?.nameKey || 'name'
+                dataSourceType: originSourceData?.dataSourceType,
+                columns: originSourceData?.columns,
+                keys: {
+                    idKey: originSourceData?.keys?.idKey,
+                    nameKey: originSourceData?.keys?.nameKey
                 }
             })
 
-            const chooseTable = ({ tableName, data }) => {
-                sourceData.value.val = data.list
+            const chooseTable = ({ tableName, table, dataSourceType }) => {
+                sourceData.value.columns = table?.columns.map(column => column.name)
+                if (sourceData.value.tableName !== tableName) {
+                    sourceData.value.keys.idKey = sourceData.value.columns[0]
+                    sourceData.value.keys.nameKey = sourceData.value.columns[0]
+                }
+                sourceData.value.val = []
                 sourceData.value.tableName = tableName
+                sourceData.value.dataSourceType = dataSourceType
                 triggleUpdate()
             }
 
-            const changeParams = (key, value) => {
-                sourceData.value.params[key] = value
+            const handleFetchData = ({ list }) => {
+                sourceData.value.val = list
+                triggleUpdate()
+            }
+
+            const changeParams = ({ key, value }) => {
+                sourceData.value.keys[key] = value
                 triggleUpdate()
             }
 
             const clearTable = () => {
                 sourceData.value.val = slotConfig?.value?.val
                 sourceData.value.tableName = ''
+                sourceData.value.dataSourceType = ''
+                sourceData.value.columns = []
                 triggleUpdate()
             }
 
@@ -118,8 +117,10 @@
                     payload: {
                         sourceData: {
                             tableName: sourceData.value.tableName,
-                            params: {
-                                ...sourceData.value.params
+                            dataSourceType: sourceData.value.dataSourceType,
+                            columns: sourceData.value.columns,
+                            keys: {
+                                ...sourceData.value.keys
                             }
                         }
                     }
@@ -130,16 +131,10 @@
             return {
                 sourceData,
                 chooseTable,
+                handleFetchData,
                 changeParams,
                 clearTable
             }
         }
     })
 </script>
-
-<style lang="postcss" scoped>
-    .subline {
-        cursor: pointer;
-        border-bottom: 1px dashed #63656E;
-    }
-</style>

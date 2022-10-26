@@ -12,8 +12,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="icon" href="<%= htmlWebpackPlugin.options.staticUrl %>/images/favicon.png" type="image/x-icon" />
-        <link rel="shortcut icon" href="<%= htmlWebpackPlugin.options.staticUrl %>/images/favicon.png" type="image/x-icon" />
+        <link rel="icon" href="<%= process.env.BK_STATIC_URL %>/static/images/favicon.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="<%= process.env.BK_STATIC_URL %>/static/images/favicon.png" type="image/x-icon" />
         <meta charset="utf-8">
         <title>可视化开发平台 | 蓝鲸智云社区版</title>
         <script>
@@ -25,12 +25,15 @@
     </head>
     <body>
         <div id="app"></div>
-        <script src="<%= htmlWebpackPlugin.options.staticUrl %>/lib.bundle.js"></script>
         <script>
-            var STATIC_URL = '<%= htmlWebpackPlugin.options.staticUrl %>'
-            var BKPAAS_ENVIRONMENT = '<%= htmlWebpackPlugin.options.BKPAAS_ENVIRONMENT %>'
-            var BK_API_URL_TMPL = '<%= htmlWebpackPlugin.options.BK_API_URL_TMPL %>'
+            var BK_STATIC_URL = '<%= process.env.BK_STATIC_URL %>'
+            var BKPAAS_ENVIRONMENT = '<%= process.env.BK_PAAS_ENVIRONMENT %>'
+            var BK_API_URL_TMPL = '{{ BK_API_URL_TMPL }}'
+            var BKPAAS_ENGINE_REGION = '<%= process.env.BK_PAAS_ENGINE_REGION %>'
+            var BK_APP_APIGW_PREFIX = '<%= process.env.BK_API_GATEWAY_ORIGIN.replace('{api_name}', 'bk-lesscode') + '/' + process.env.BK_LESSCODE_ENVIRONMENT || '' %>'
+            var BK_IAM_HOST = '<%= process.env.BK_IAM_HOST %>'
+            var IAM_ENABLE = <%= process.env.BK_IAM_ENABLE %>
         </script>
-        <%= require('html-loader!./require-monaco.html') %>
+        <%= require('raw-loader!./require-monaco.html').default %>
     </body>
 </html>

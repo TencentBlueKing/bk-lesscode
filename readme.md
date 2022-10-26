@@ -11,6 +11,8 @@
 - 可视化拖拽布局：集成蓝鲸MagicBox Vue通用组件，支持在线画布拖拽组件进行页面布局编辑、在线预览、查看及下载源码
 - 在线函数库管理：支持在线灵活编写管理事件函数及远程接口返回数据清洗函数
 - 数据源管理：在线建表及数据处理
+- 表单引擎：支持纯表单类页面及表单数据校验、提交等操作
+- 流程引擎：支持流程管理，在线流程创建、编辑等操作
 - 在线组件配置：支持组件样式、属性、事件在线配置
 - 布局模板：提供多种导航布局模板
 - 支持自定义组件开发：提供自定义组件开发规范及示例，开放自定义组件开发能力，满足业务场景组件集成需求
@@ -26,9 +28,6 @@
 │   ......
 ├── lib/                    # 源码目录
 │   ├── client/             # 前端源码目录
-│   │   ├── build/          # 前端构建脚本目录
-│   │       ......
-│   │   ├── index-dev.html  # 本地开发使用的 html
 │   │   ├── index.html      # 生产环境使用的 html
 │   │   ├── preview.html    # 预览模块使用的 html
 │   │   ├── require-monaco.html # 辅助引入 monaco 编辑器的 html
@@ -77,9 +76,12 @@
 │       │   ......
 │       ├── utils/          # 后端utils 目录
 │       │   ......
-├── nodemon.json            # nodemon 配置文件
+├── scripts                 # 项目脚本
 ├── package.json            # 项目描述文件
 ├── forever.json            # forever 配置文件
+├── .bk.env                 # 基础变量
+├── .bk.development.env     # 开发环境变量
+├── .bk.production.env      # 生产环境变量
 ```
 
 ## 技术栈
@@ -102,6 +104,7 @@
 - 蓝鲸制品库服务（非必须）： 若需要使用到可视化平台的自定义组件功能开发模块及文件库能力，请事先搭建 [蓝鲸制品库服务](https://github.com/Tencent/bk-ci/tree/master/src/backend/storage/core)， **搭建时并开启npm-registry**
 - 蓝鲸PaaS3.0（非必须）：可视化平台提供的一键部署能力依赖蓝鲸PaaS3.0平台能力，若需要请事先在【蓝鲸软件7.X环境】更新【蓝鲸PaaS3.0（bkpaas3）】的版本到【0.1.0-beta5】及以上
 - 流程服务（非必须）：若需可视化平台提供的流程类场景服务，请事先在【蓝鲸软件7.X环境】更新【流程服务（bk-itsm）】的版本到【2.6.1】及以上
+- 蓝鲸基础计算平台（非必须）：若需可视化平台提供的BKBase结果表作为数据源操作，请事先在【蓝鲸软件7.X环境】更新【蓝鲸基础计算平台（BKBase）】版本到【3.7】及以上
 
 ## 分支说明
 可视化开发平台使用 develop, master 两个分支进行迭代。其中 master 为稳定版分支，每次 release develop 为日常开发的分支，给可视化开发平台贡献代码统一向主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/tree/master) 的  [develop](https://github.com/TencentBlueKing/bk-lesscode/tree/develop) 分支提 pr。

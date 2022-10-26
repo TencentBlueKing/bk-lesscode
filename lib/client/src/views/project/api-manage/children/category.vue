@@ -1,5 +1,5 @@
 <template>
-    <section class="category-list">
+    <section class="category-list-home">
         <h3 class="list-head">
             <bk-input
                 class="head-input"
@@ -12,7 +12,11 @@
             <bk-popconfirm
                 trigger="click"
                 confirm-text=""
-                cancel-text="">
+                cancel-text=""
+                ext-cls="g-popover-empty-padding"
+                placement="bottom-start"
+                :on-show="() => handleShowPopconfirm('addCategoryInput')"
+            >
                 <div slot="content">
                     <bk-input
                         class="add-api-category"
@@ -68,11 +72,14 @@
                     confirm-text=""
                     cancel-text=""
                     class="item-tool-box edit-box"
+                    ext-cls="g-popover-empty-padding"
+                    placement="bottom-start"
                     :on-hide="() => category.showChange = false"
+                    :on-show="() => handleShowPopconfirm(category.id)"
                 >
                     <div slot="content">
                         <bk-input
-                            placeholder="请输入函数分类"
+                            placeholder="请输入 API 分类"
                             :class="['add-api-category']"
                             :ref="category.id"
                             v-model="category.tempName"
@@ -166,7 +173,6 @@
 
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('member', ['userPerm']),
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
@@ -234,13 +240,6 @@
             },
 
             getDeletePermission (category) {
-                if (this.userPerm.roleId === 2 && this.user.username !== category.createUser) {
-                    return {
-                        hasPermission: false,
-                        message: '无删除权限'
-                    }
-                }
-
                 if (category.apiCount > 0) {
                     return {
                         hasPermission: false,
@@ -355,13 +354,19 @@
                 document.body.appendChild(btn)
                 btn.click()
                 document.body.removeChild(btn)
+            },
+
+            handleShowPopconfirm (refName) {
+                setTimeout(() => {
+                    this.$refs[refName]?.$refs?.input?.focus()
+                }, 0)
             }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
-    .category-list {
+    .category-list-home {
         height: 100%;
     }
 
@@ -506,7 +511,6 @@
 
     .add-api-category {
         width: 340px;
-        margin-top: 6px;
     }
 
     /deep/ .delete-dialog-wrapper {

@@ -32,6 +32,7 @@
         <plus-event
             :config-events="configEvents"
             :render-events="renderEvents"
+            :node="currentComponentNode"
             @plus-event="handlePlusEvent"
         />
     </section>
@@ -51,11 +52,12 @@
             PlusEvent,
             RenderEvent
         },
-        
+
         data () {
             return {
                 configEvents: [],
-                renderEvents: {}
+                renderEvents: {},
+                currentComponentNode: {}
             }
         },
 
@@ -71,6 +73,7 @@
                 const renderEvent = renderEvents[key]
                 if (typeof renderEvent === 'string') {
                     this.renderEvents[key] = {
+                        enable: true,
                         methodCode: renderEvent,
                         params: []
                     }
@@ -102,6 +105,7 @@
                 this.renderEvents = {
                     ...this.renderEvents,
                     [event.name]: {
+                        enable: true,
                         methodCode: '',
                         params: []
                     }

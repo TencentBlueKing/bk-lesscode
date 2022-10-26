@@ -1,29 +1,39 @@
 <template>
     <div class="project-complex-top-menu-modifier">
-        <div class="action-title">顶部导航配置</div>
-        <div class="menu-wraper">
-            <vue-draggable
-                class="group-list"
-                ghost-class="menu-ghost-item"
-                :list="localMenuList"
-                handle=".item-drag"
-                @change="triggerChange"
-                :group="{ name: 'cpmplex-top-col' }">
-                <transition-group type="transition" :name="'flip-list'">
-                    <menu-item
-                        v-for="(menu, index) in localMenuList"
-                        :key="`${menu.id}`"
-                        :data="menu"
-                        :last-one="localMenuList.length === 1"
-                        :has-child="false"
-                        @on-delete="handleRemove(index)"
-                        @on-change="value => handleChange(value, index)" />
-                </transition-group>
-            </vue-draggable>
+        <div class="menu-title" @click="() => showContent = !showContent">
+            <i
+                :class="{
+                    'bk-icon icon-angle-down': true,
+                    close: !showContent
+                }"
+            ></i>
+            <span>导航菜单</span>
         </div>
-        <div class="footer">
-            <bk-button size="small" text @click="handleAdd">继续添加</bk-button>
-        </div>
+        <template v-if="showContent">
+            <div class="menu-wraper">
+                <vue-draggable
+                    class="group-list"
+                    ghost-class="menu-ghost-item"
+                    :list="localMenuList"
+                    handle=".item-drag"
+                    @change="triggerChange"
+                    :group="{ name: 'cpmplex-top-col' }">
+                    <transition-group type="transition" :name="'flip-list'">
+                        <menu-item
+                            v-for="(menu, index) in localMenuList"
+                            :key="`${menu.id}`"
+                            :data="menu"
+                            :last-one="localMenuList.length === 1"
+                            :has-child="false"
+                            @on-delete="handleRemove(index)"
+                            @on-change="value => handleChange(value, index)" />
+                    </transition-group>
+                </vue-draggable>
+            </div>
+            <div class="footer">
+                <bk-button size="small" text @click="handleAdd">继续添加</bk-button>
+            </div>
+        </template>
     </div>
 </template>
 <script>
@@ -44,6 +54,7 @@
         },
         data () {
             return {
+                showContent: true,
                 localMenuList: []
             }
         },
@@ -79,7 +90,28 @@
 <style lang='postcss'>
     @import "@/css/mixins/scroller";
 
-    .project-complex-top-menu-modifier{
+    .project-complex-top-menu-modifier {
+        .menu-title {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #313238;
+            margin-bottom: 0;
+            .bk-icon {
+                margin-left: -5px;
+                margin-right: 3px;
+                font-size: 20px;
+                color: #63656E;
+                display: inline-block;
+                transition: transform 200ms;
+                cursor: pointer;
+                &.close {
+                    transform: rotate(-90deg);
+                }
+            }
+        }
         .menu-wraper{
             margin-bottom:  10px;
         }

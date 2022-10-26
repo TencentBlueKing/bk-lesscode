@@ -112,6 +112,7 @@
     import slotTextArea from './components/textarea'
     import slotDataSource from './components/data-source.vue'
     import slotSelectDataSource from './components/select-data-source.vue'
+    import slotSelectRemote from './components/select-remote'
 
     const comMap = {
         list: slotList,
@@ -121,7 +122,8 @@
         textarea: slotTextArea,
         'table-list': slotTable,
         'data-source': slotDataSource,
-        'select-data-source': slotSelectDataSource
+        'select-data-source': slotSelectDataSource,
+        'select-remote': slotSelectRemote
     }
 
     const typeTextMap = {
@@ -133,7 +135,8 @@
         'data-source': '数据表',
         'list': '数据列表',
         'table-list': '数据列表',
-        'select-data-source': '数据表'
+        'select-data-source': '数据表',
+        'select-remote': '函数'
     }
 
     // slot 类型转为可接受的值类型

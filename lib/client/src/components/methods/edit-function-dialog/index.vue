@@ -20,12 +20,15 @@
                             confirm-text=""
                             cancel-text=""
                             theme="light"
-                            ext-cls="g-function-pop"
+                            ext-cls="g-popover-empty-padding"
+                            placement="bottom-start"
+                            :on-show="() => handleShowPopconfirm('addGroupRef')"
                         >
                             <div slot="content">
                                 <bk-input
                                     right-icon="loading"
                                     class="add-function-group"
+                                    ref="addGroupRef"
                                     placeholder="请输入函数分类，多个分类 / 分隔，回车保存"
                                     v-model="newGroupName"
                                     v-bkloading="{ isLoading: isCreatingGroup }"
@@ -275,8 +278,8 @@
                 }
             },
 
-            handleSaveUse (funcCode) {
-                this.$emit('save-use', funcCode)
+            handleSaveUse (functionData) {
+                this.$emit('save-use', functionData)
             },
 
             refreshStatus () {
@@ -347,6 +350,12 @@
                 document.body.appendChild(btn)
                 btn.click()
                 document.body.removeChild(btn)
+            },
+
+            handleShowPopconfirm (refName) {
+                setTimeout(() => {
+                    this.$refs[refName]?.$refs?.input?.focus()
+                }, 0)
             }
         }
     }
@@ -360,8 +369,9 @@
         bottom: 0;
         right: 0;
         background: rgba(0, 0, 0, 0.6);
-        z-index: 2000;
+        z-index: 1000;
         color: #63656e;
+        cursor: auto;
         .function-main {
             position: absolute;
             width: 90%;

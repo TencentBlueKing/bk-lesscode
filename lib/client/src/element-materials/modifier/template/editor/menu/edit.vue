@@ -8,11 +8,11 @@
                     ref="icon"
                     class="group-text"
                     style="padding: 0 10px">
-                    <i class="bk-icon" :class="baseInfo.icon" />
+                    <i :class="iconClass" />
                 </div>
             </bk-input>
         </div>
-        <div class="menu-page-wraper">
+        <div class="menu-page-wraper" v-if="showMenu">
             <div v-if="isPageCode">
                 <bk-select
                     class="menu-page"
@@ -32,11 +32,11 @@
                     <bk-input
                         v-if="isShowPageQuery"
                         :value="baseInfo.query"
-                        style="margin-top: 10px"
                         placeholder="name=zhangsan&age=18"
                         @change="handlePageQueryChange" />
                     <bk-button
                         v-else
+                        class="add-query"
                         text
                         style="font-size: 12px;"
                         @click="handleShowEditPageQuery">
@@ -116,6 +116,7 @@
     import _ from 'lodash'
     import { mapState } from 'vuex'
     import iconComponentList from '@/element-materials/materials/icon-list.js'
+    import iconVantList from '@/element-materials/materials/vant/icon-list'
 
     export default {
         name: '',
@@ -127,6 +128,14 @@
             showIcon: {
                 type: Boolean,
                 default: false
+            },
+            showMenu: {
+                type: Boolean,
+                default: true
+            },
+            platform: {
+                type: String,
+                default: 'PC'
             }
         },
         data () {
@@ -148,16 +157,39 @@
         },
         computed: {
             ...mapState('route', ['layoutPageList']),
-            pageRouteList () {
-                const pageRouteList = this.layoutPageList.map(item => {
-                    const { id, layoutPath, path } = item
-                    const disabled = !id
-                    return {
-                        ...item,
-                        disabled,
-                        fullPath: `${layoutPath}${layoutPath.endsWith('/') ? '' : '/'}${path}`
+            iconClass () {
+                return this.platform === 'PC' ? `bk-icon ${this.baseInfo.icon}` : `van-icon van-icon-${this.baseInfo.icon}`
+            },
+            iconList () {
+                return this.platform === 'PC' ? iconComponentList : iconVantList
+            },
+            buildInIconGroup () {
+                const list = JSON.parse(JSON.stringify(this.iconList))
+                return list.reduce((result, item) => {
+                    if (!result[item.group]) {
+                        result[item.group] = []
                     }
-                })
+                    result[item.group].push({
+                        icon: this.getIcon(item),
+                        name: item.icon
+                    })
+                    return result
+                }, {})
+            },
+            pageRouteList () {
+                const pageRouteList = this.layoutPageList.reduce((acc, cur) => {
+                    if (cur.pageType === this.platform) { // 只允许调准同平台路由
+                        const { id, layoutPath, path } = cur
+                        const disabled = !id
+                        acc.push({
+                            ...cur,
+                            disabled,
+                            fullPath: `${layoutPath}${layoutPath.endsWith('/') ? '' : '/'}${path}`
+                        })
+                    }
+                    return acc
+                }, [])
+
                 pageRouteList.sort((p1, p2) => p1.disabled - p2.disabled)
                 return pageRouteList
             }
@@ -169,21 +201,14 @@
             })
         },
         created () {
-            this.buildInIconGroup = iconComponentList.reduce((result, item) => {
-                if (!result[item.group]) {
-                    result[item.group] = []
-                }
-                result[item.group].push({
-                    icon: `bk-icon ${item.name}`,
-                    name: item.icon
-                })
-                return result
-            }, {})
             this.baseInfo = { ...this.data }
             this.isPageCode = !this.data.link
             this.isShowPageQuery = !!this.data.query
         },
         methods: {
+            getIcon (item) {
+                return this.platform === 'PC' ? `bk-icon ${item.name}` : `van-icon van-icon-${item.icon}`
+            },
             triggerChange () {
                 this.$emit('on-change', {
                     ...this.baseInfo
@@ -223,11 +248,11 @@
                     return
                 }
                 const result = []
-                for (let i = 0; i < iconComponentList.length; i++) {
-                    const curItem = iconComponentList[i]
+                for (let i = 0; i < this.iconList.length; i++) {
+                    const curItem = this.iconList[i]
                     if (curItem.icon.indexOf(localSearch) > -1) {
                         result.push({
-                            icon: `bk-icon ${curItem.name}`,
+                            icon: this.getIcon(curItem),
                             name: curItem.icon
                         })
                     }
@@ -350,13 +375,13 @@
         }
         .menu-page-wraper{
             position: relative;
-            padding-left: 42px;
-            margin-top: 6px;
+            padding-left: 32px;
+            margin-top: 8px;
             .menu-type{
                 position: absolute;
                 top: 8px;
-                left: 7px;
-                padding: 2px 3px;
+                left: 4px;
+                padding: 3px 2px;
                 font-size: 12px;
                 color: #3A84FF;
                 line-height: 1;
@@ -372,6 +397,8 @@
             }
             .menu-page-query{
                 position: relative;
+                top: 8px;
+                margin-bottom: 8px;
                 .query-remove{
                     position: absolute;
                     top: 0;
@@ -381,6 +408,9 @@
                     font-size: 16px;
                     color: #979BA5;
                     cursor: pointer;
+                }
+                .bk-button-text.bk-primary:hover {
+                    color: #1964E1;
                 }
             }
         }

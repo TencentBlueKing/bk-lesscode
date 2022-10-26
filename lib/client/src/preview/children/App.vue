@@ -1,11 +1,25 @@
 <template>
     <div id="app">
-        <router-view></router-view>
+        <router-view v-if="!userInfoLoading"></router-view>
     </div>
 </template>
 <script>
     export default {
-        name: 'app'
+        name: 'app',
+        data () {
+            return {
+                userInfoLoading: true
+            }
+        },
+        created () {
+            this.getUserInfo()
+        },
+        methods: {
+            async getUserInfo () {
+                await this.$store.dispatch('userInfo')
+                this.userInfoLoading = false
+            }
+        }
     }
 </script>
 <style>
@@ -57,5 +71,12 @@
         border-radius: 0;
         -webkit-box-shadow: none;
         box-shadow: none;
+    }
+    .tippy-tooltip .tippy-content {
+        padding: 0;
+    }
+    .tippy-tooltip .tippy-arrow {
+        width: 0;
+        height: 0;
     }
 </style>

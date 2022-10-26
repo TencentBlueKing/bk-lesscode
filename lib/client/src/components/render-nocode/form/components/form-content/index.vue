@@ -34,6 +34,7 @@
     import FieldElement from '../form-edit/fieldElement.vue'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
+    import { getTypeDefaultVal } from 'shared/no-code'
 
     export default {
         components: {
@@ -58,7 +59,8 @@
         },
         data () {
             return {
-                selectedIndex: -1
+                selectedIndex: -1,
+                isFormFocused: false
             }
         },
         computed: {
@@ -78,6 +80,14 @@
                 }
             }
         },
+        mounted () {
+            window.addEventListener('click', this.handleFormFocus)
+            window.addEventListener('keydown', this.handleKeyboardEvent)
+        },
+        beforeDestroy () {
+            window.removeEventListener('click', this.handleFormFocus)
+            window.removeEventListener('keydown', this.handleKeyboardEvent)
+        },
         methods: {
             ...mapMutations('drag', ['setCurTemplateData']),
             // 拖拽添加字段
@@ -85,16 +95,7 @@
                 const { type } = e.item.dataset
                 const columnId = uuid(8)
                 const field = FIELDS_TYPES.find(item => item.type === type)
-                const defaultVal = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE'].includes(type)
-                    ? ''
-                    : cloneDeep(field.default)
-                const key = pinyin(field.name, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                })
-                    .join('_')
-                    .toUpperCase()
-                    .concat(`_${columnId}`)
+                const key = this.generateKey(field.name, columnId)
                 const config = {
                     columnId, // lesscode特定字段
                     type, // 类型
@@ -108,15 +109,15 @@
                     source_type: 'CUSTOM', // 数据来源类型 [CUSTOM, API, DATADICT, RPC, WORKSHEET]
                     api_instance_id: null, // 源数据的kv关系配置
                     kv_relation: {}, // 源数据的kv关系配置
-                    default: defaultVal, // 默认值
+                    default: getTypeDefaultVal(type), // 默认值
                     choice: this.getDefaultChoice(type), // 选项
                     worksheet_id: this.formId, // 表单id
-                    meta: {}, // 复杂描述信息
+                    meta: {}, // 复杂描述信息，data_config描述数据源，default_val_config描述默认值关联规则
                     show_conditions: {}, // 显隐藏条件
                     read_only_conditions: {}, // 只读条件
                     mandatory_conditions: {}, // 必填条件
                     is_readonly: false, // 只读
-                    show_type: 0, // 显隐
+                    show_type: 1, // 为0表示条件隐藏
                     fileTemplate: [], // 存储文件类型组件模板的值
                     imageRange: this.getDefaultImageRange(type),
                     isDisplayTag: false,
@@ -144,14 +145,11 @@
                     this.$emit('select', field, index)
                     this.selectedIndex = index
                 } else if (type === 'copy') {
-                    const key = pinyin(field.name, {
-                        style: pinyin.STYLE_NORMAL,
-                        heteronym: false
-                    })
-                        .join('_')
-                        .toUpperCase()
-                        .concat(uuid(4))
+                    const columnId = uuid(8)
+                    const key = this.generateKey(field.name, columnId)
+                    field.columnId = columnId
                     field.key = key
+                    field.id = null
                     this.$emit('copy', field, index)
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
@@ -191,6 +189,15 @@
                     maxNum: 2
                 } : ''
             },
+            generateKey (name, columnId) {
+                return pinyin(name, {
+                    style: pinyin.STYLE_NORMAL,
+                    heteronym: false
+                })
+                    .join('_')
+                    .toUpperCase()
+                    .concat(`_${columnId}`)
+            },
             showFormPanel () {
                 this.curTemplateData.layoutType !== 'empty' && this.setCurTemplateData({
                     ...this.curTemplateData,
@@ -201,6 +208,21 @@
                 if (e?.target?.className === 'fields-container') {
                     this.selectedIndex = -1
                     this.$emit('clickOutSide')
+                }
+            },
+            handleFormFocus (e) {
+                this.isFormFocused = e.target.classList.contains('field-container-mask')
+            },
+            handleKeyboardEvent (event) {
+                if (this.disabled || this.selectedIndex < 0 || !this.isFormFocused) {
+                    return
+                }
+                const vKey = 86
+                const delKey = [8, 46]
+                if (event.metaKey && event.keyCode === vKey) {
+                    this.handleFormAction('copy', this.selectedIndex)
+                } else if (delKey.includes(event.keyCode)) {
+                    this.handleFormAction('delete', this.selectedIndex)
                 }
             }
         }

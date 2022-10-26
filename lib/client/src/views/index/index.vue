@@ -134,29 +134,18 @@
             this.projectId = parseInt(this.$route.params.projectId)
             this.pageId = parseInt(this.$route.params.pageId)
 
-            LC.addEventListener('update', this.handleUpdatePreviewContent)
-            // 更新预览区域数据
-            LC.addEventListener('ready', this.initPerviewData)
-            // 卸载的时候，清除 storage 数据
-            LC.addEventListener('unload', this.clearPerviewData)
-
-            this.$once('hook:beforeDestroy', () => {
-                LC.removeEventListener('update', this.handleUpdatePreviewContent)
+            this.$nextTick(() => {
+                LC.addEventListener('update', this.handleUpdatePreviewContent)
                 // 更新预览区域数据
-                LC.removeEventListener('ready', this.initPerviewData)
+                LC.addEventListener('ready', this.initPerviewData)
                 // 卸载的时候，清除 storage 数据
-                LC.removeEventListener('unload', this.clearPerviewData)
+                LC.addEventListener('unload', this.clearPerviewData)
             })
 
             // 获取并设置当前版本信息
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 
             this.fetchData()
-
-            // 设置权限相关的信息
-            this.$store.dispatch('member/setCurUserPermInfo', {
-                id: this.projectId
-            })
 
             this.debounceUpdatePreview = debounce(this.updatePreview)
 
@@ -208,6 +197,12 @@
             ]
         },
         beforeDestroy () {
+            // 路由离开的时候注销相关事件
+            LC.removeEventListener('update', this.handleUpdatePreviewContent)
+            // 更新预览区域数据
+            LC.removeEventListener('ready', this.initPerviewData)
+            // 卸载的时候，清除 storage 数据
+            LC.removeEventListener('unload', this.clearPerviewData)
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
         },
         beforeRouteLeave (to, from, next) {
@@ -284,6 +279,8 @@
                         this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId }),
                         this.$store.dispatch('components/componentNameMap'),
                         this.$store.dispatch('dataSource/list', { projectId: this.projectId }),
+                        // 进入画布拉取一次权限操作，给 iam getters projectPermActionList 赋值，保存页面时，需要用到 projectPermActionList
+                        this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId }),
                         this.registerCustomComponent()
                     ])
 
@@ -393,7 +390,7 @@
             height: 1px;
             box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
         }
-        
+
         .function-and-tool {
             position: relative;
             display: flex;

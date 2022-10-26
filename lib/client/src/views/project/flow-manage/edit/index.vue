@@ -12,7 +12,12 @@
     <section class="flow-edit-wrapper">
         <div class="page-header-container">
             <div class="nav-container">
-                <back-btn></back-btn>
+                <back-btn
+                    :from-page-list="fromPageList"
+                    :flow-config="flowConfig"
+                    :deploy-pending="deployPending"
+                    @deploy="deployFlow">
+                </back-btn>
                 <flow-selector
                     :list="flowList"
                     :list-loading="listLoading"
@@ -20,12 +25,12 @@
                 </flow-selector>
             </div>
             <div class="steps-container">
-                <bk-steps
-                    v-if="!serviceDataLoading"
-                    :steps="steps"
-                    :cur-step="curStep"
-                    @step-changed="handleStepChange">
-                </bk-steps>
+                <menu-item
+                    v-for="item in steps"
+                    :key="item.id"
+                    :item="item"
+                    :class="{ active: $route.name === item.id }">
+                </menu-item>
             </div>
             <div class="genarate-action">
                 <generate-data-manage-page v-if="!flowConfigLoading"></generate-data-manage-page>
@@ -34,52 +39,53 @@
         <div v-if="!serviceDataLoading" class="flow-edit-main">
             <router-view
                 :flow-config="flowConfig"
-                :service-data="serviceData">
+                :service-data="serviceData"
+                :deploy-pending="deployPending"
+                @deploy="deployFlow">
             </router-view>
         </div>
     </section>
 </template>
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
+    import MenuItem from '@/views/index/components/action-tool/components/menu-item'
     import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
     import GenerateDataManagePage from './components/generate-data-manage-page.vue'
 
-    const STEPS = [
-        { id: 'flowDesign', icon: 1, title: '流程设计' },
-        { id: 'flowConfig', icon: 2, title: '流程设置' }
-    ]
-
     export default {
         name: 'flowEdit',
         components: {
+            MenuItem,
             BackBtn,
             FlowSelector,
             GenerateDataManagePage
         },
         data () {
             return {
-                steps: STEPS,
-                curStep: this.getCurStep(),
+                steps: [
+                    { id: 'flowConfig', icon: 'bk-drag-icon bk-drag-flow-fill', text: '流程设计', func: this.handleStepChange('flowConfig') },
+                    { id: 'flowAdvancedConfig', icon: 'bk-drag-icon bk-drag-set', text: '流程设置', func: this.handleStepChange('flowAdvancedConfig') }
+                ],
                 flowId: this.$route.params.flowId,
                 listLoading: true,
                 flowList: [],
                 flowConfigLoading: true,
                 serviceDataLoading: true,
-                serviceData: {}
+                serviceData: {},
+                deployPending: false,
+                fromPageList: false // 是否由页面列表页进入
             }
         },
         computed: {
             ...mapState('nocode/flow', ['flowConfig']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
             }
         },
         watch: {
-            '$route.name' () {
-                this.curStep = this.getCurStep()
-            },
             '$route.params.flowId' (val) {
                 this.flowId = val
                 this.getflowConfig()
@@ -89,6 +95,13 @@
             this.getFlowList()
             await this.getflowConfig()
             this.getServiceData()
+        },
+        beforeRouteEnter (to, from, next) {
+            next(vm => {
+                if (from.name === 'pageList') {
+                    vm.fromPageList = true
+                }
+            })
         },
         beforeDestroy () {
             this.$store.commit('nocode/flow/clearFlowConfig')
@@ -110,15 +123,18 @@
             async getflowConfig () {
                 try {
                     this.flowConfigLoading = true
-                    const res = await this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId })
-                    this.$store.commit('nocode/flow/setFlowConfig', res)
+                    const [flowConfig] = await Promise.all([
+                        this.$store.dispatch('nocode/flow/getFlowData', { id: this.flowId }),
+                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
+                    ])
+                    this.$store.commit('nocode/flow/setFlowConfig', flowConfig)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
                     this.flowConfigLoading = false
                 }
             },
-            // 保存到流程服务的配置
+            // 获取存到itsm的流程配置
             async getServiceData () {
                 try {
                     this.serviceDataLoading = true
@@ -129,14 +145,45 @@
                     this.serviceDataLoading = false
                 }
             },
-            getCurStep () {
-                return this.$route.name === 'flowConfig' ? 1 : 2
+            handleStepChange (name) {
+                return function () {
+                    this.$router.push({ name })
+                }.bind(this)
             },
-            handleStepChange (val) {
-                if (val === 1) {
-                    this.$router.push({ name: 'flowConfig' })
-                } else {
-                    this.$router.push({ name: 'flowAdvancedConfig' })
+            // 部署流程
+            async deployFlow () {
+                try {
+                    this.deployPending = true
+                    const {
+                        is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
+                    } = this.serviceData
+                    const data = {
+                        can_ticket_agency: false,
+                        display_type: 'INVISIBLE',
+                        workflow_config: {
+                            is_supervise_needed,
+                            notify,
+                            notify_freq,
+                            notify_rule,
+                            revoke_config,
+                            supervise_type,
+                            supervisor,
+                            is_revocable: this.serviceData.revoke_config.type !== 0,
+                            is_auto_approve: false
+                        }
+                    }
+                    await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
+                    await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: '流程部署成功'
+                    })
+                } catch (e) {
+                    console.error(e.message || e)
+                } finally {
+                    this.deployPending = false
                 }
             }
         }
@@ -154,23 +201,29 @@
     height: 52px;
     background: #ffffff;
     box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.04);
+    z-index: 1;
     .nav-container {
         position: absolute;
         top: 10px;
-        left: 35px;
+        left: 0;
         display: flex;
         align-items: center;
         .go-back-icon-wrapper {
-            margin-right: 10px;
+            margin: 0 21px;
         }
     }
     .steps-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         min-width: 360px;
+        height: 100%;
     }
     .genarate-action {
         position: absolute;
-        top: 14px;
-        right: 24px;
+        top: 0;
+        right: 20px;
+        height: 100%;
     }
 }
 .flow-edit-main {

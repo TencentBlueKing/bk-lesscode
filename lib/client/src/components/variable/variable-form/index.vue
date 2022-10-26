@@ -29,7 +29,7 @@
                                     v-if="renderJsType.tips"
                                     v-bk-tooltips="{
                                         content: renderJsType.tips,
-                                        width: '400px'
+                                        width: '500px'
                                     }"
                                 ></i>
                             </bk-radio-button>
@@ -124,7 +124,7 @@
             // 限制新增或编辑的变量类型
             valueTypeInclude: {
                 type: Array,
-                default: () => ([])
+                default: () => (Object.keys(typeEnum))
             }
         },
 
@@ -221,8 +221,7 @@
                     {
                         label: '计算变量',
                         id: 6,
-                        hidden: this.copyForm.effectiveRange === 0,
-                        tips: '计算属性内部可以执行函数和变量，最后需将执行结果返回。如果内部使用的变量发生变化，计算属性也会实时重新计算。注意：计算属性必须有返回值，不能给计算属性设置值'
+                        hidden: this.copyForm.effectiveRange === 0
                     }
                 ].map((jsType) => {
                     return {
@@ -397,6 +396,10 @@
         margin-right: 10px;
         margin-top: 19px;
         vertical-align: middle;
+    }
+    /deep/ .empty-margin-tips {
+        margin: 0;
+        line-height: 16px;
     }
     ::v-deep .bk-form-radio-button.disabled:first-child {
         .bk-radio-button-text {

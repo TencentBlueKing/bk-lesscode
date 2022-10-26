@@ -11,7 +11,8 @@
     export default {
         props: {
             projectId: Number,
-            pageId: Number
+            pageId: Number,
+            imgSrc: String
         },
         data () {
             return {
@@ -21,9 +22,9 @@
         computed: {
             src () {
                 if (this.projectId) {
-                    return `${AJAX_URL_PREFIX}/project/previewimg?id=${this.projectId}`
+                    return `${process.env.BK_AJAX_URL_PREFIX}/project/previewimg?id=${this.projectId}`
                 }
-                return `${AJAX_URL_PREFIX}/page/previewimg?id=${this.pageId}`
+                return `${process.env.BK_AJAX_URL_PREFIX}/page/previewimg?id=${this.pageId}`
             }
         },
         mounted () {
@@ -36,7 +37,7 @@
                 this.src = preivewErrImg
                 this.onerror = null
             }
-            img.src = this.src
+            img.src = this.imgSrc || this.src
         }
     }
 </script>
@@ -45,7 +46,8 @@
     .preview-thumb {
         height: 100%;
         img {
-            max-width: 100%;
+            width: 100%;
+            object-fit: contain;
         }
     }
     .empty-preview-img {

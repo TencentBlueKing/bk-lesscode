@@ -1,5 +1,11 @@
 <template>
     <div class="flow-manage-home">
+        <bk-alert
+            style="margin-bottom: 16px;"
+            type="warning"
+            title="流程设计完成后需要手动部署，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。"
+            :closable="true">
+        </bk-alert>
         <div class="operation-area">
             <bk-button theme="primary" @click="isCreateDialogShow = true">新建</bk-button>
             <div class="search-wrapper">
@@ -19,7 +25,8 @@
             </div>
         </div>
         <bk-table
-            v-bkloading="{ isLoading: listLoading }"
+            v-bkloading="{ isLoading: listLoading || pageRouteListLoading }"
+            class="g-hairless-table"
             :data="flowList"
             :pagination="pagination"
             :outer-border="false"
@@ -40,10 +47,24 @@
                 <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
             </bk-table-column>
             <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip>
-                <template slot-scope="{ row }">{{ row.pageName || '--' }}</template>
+                <template slot-scope="{ row }">
+                    <span v-if="row.pageId" class="link-btn" @click="handlePreviewPage(row.pageId, row.pageCode)">{{ row.pageName }}</span>
+                    <span v-else style="color: #3a84ff">--</span>
+                </template>
             </bk-table-column>
             <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip>
-                <template slot-scope="{ row }">{{ row.managePageNames || '--' }}</template>
+                <template slot-scope="{ row }">
+                    <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
+                    <span v-else style="color: #3a84ff">--</span>
+                </template>
+            </bk-table-column>
+            <bk-table-column label="预览环境部署状态">
+                <template slot-scope="{ row }">
+                    <div class="deploy-status">
+                        <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>
+                        {{ row.deployed ? '已部署' : '未部署' }}
+                    </div>
+                </template>
             </bk-table-column>
             <bk-table-column label="创建人" property="createUser"></bk-table-column>
             <bk-table-column label="创建时间" show-overflow-tooltip>
@@ -83,7 +104,8 @@
 </template>
 <script>
     import dayjs from 'dayjs'
-    import { messageError } from '@/common/bkmagic'
+    import { mapGetters } from 'vuex'
+    import { getRouteFullPath } from 'shared/route'
     import CreateFlowDialog from './create-flow-dialog.vue'
 
     export default {
@@ -99,7 +121,9 @@
         data () {
             return {
                 flowList: [],
+                pageRouteList: [],
                 listLoading: true,
+                pageRouteListLoading: true,
                 pagination: {
                     current: 1,
                     count: 0,
@@ -112,14 +136,35 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
+            },
+            routeMap () {
+                const routeMap = {}
+                this.pageRouteList.forEach((route) => {
+                    const { id, pageId, layoutId } = route
+                    routeMap[pageId] = {
+                        id,
+                        pageId,
+                        layoutId,
+                        fullPath: id ? getRouteFullPath(route) : null
+                    }
+                })
+                return routeMap
             }
         },
         mounted () {
+            this.getPageRouteList()
             this.getFlowList()
         },
         methods: {
+            async getPageRouteList () {
+                this.pageRouteListLoading = true
+                const res = await this.$store.dispatch('route/query', { projectId: this.projectId, versionId: this.versionId || '' })
+                this.pageRouteList = res
+                this.pageRouteListLoading = false
+            },
             async getFlowList () {
                 this.listLoading = true
                 const params = {
@@ -130,32 +175,23 @@
                 if (this.keyword) {
                     params.flowName = this.keyword.trim()
                 }
-                try {
-                    const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
-                    const { list, count } = res
-                    this.flowList = list
-                    this.pagination.count = count
-                } catch (err) {
-                    messageError(err.message || err)
-                } finally {
-                    this.listLoading = false
-                }
+                const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
+                const { list, count } = res
+                this.flowList = list
+                this.pagination.count = count
+                this.listLoading = false
             },
             async handleArchiveConfirm () {
-                try {
-                    const params = {
-                        id: this.archiveId,
-                        deleteFlag: 1
-                    }
-                    await this.$store.dispatch('nocode/flow/archiveFlow', params)
-                    this.archiveId = ''
-                    if (this.flowList.length === 1 && this.pagination.current > 1) {
-                        this.pagination.current -= 1
-                    }
-                    this.getFlowList()
-                } catch (e) {
-                    messageError(e.message || e)
+                const params = {
+                    id: this.archiveId,
+                    deleteFlag: 1
                 }
+                await this.$store.dispatch('nocode/flow/archiveFlow', params)
+                this.archiveId = ''
+                if (this.flowList.length === 1 && this.pagination.current > 1) {
+                    this.pagination.current -= 1
+                }
+                this.getFlowList()
             },
             handlePageChange (val) {
                 this.pagination.current = val
@@ -175,6 +211,12 @@
             handleSearch (val) {
                 this.pagination.current = 1
                 this.getFlowList()
+            },
+            handlePreviewPage (pageId, pageCode) {
+                const route = this.routeMap[pageId]
+                const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${pageCode}`
+                window.open(routerUrl, '_blank')
             }
         }
     }
@@ -216,6 +258,22 @@
             }
         }
     }
+    .deploy-status {
+        display: flex;
+        align-items: center;
+        .deploy-status-icon {
+            margin-right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #ffe8c3;
+            border-radius: 50%;
+            border: 1px solid #ff9c01;
+            &.deployed {
+                background: #e5f6ea;
+                border-color: #3fc06d;
+            }
+        }
+    }
     .archive-tips-content {
         h4 {
             margin: 0 0 10px;
@@ -233,5 +291,6 @@
     }
     .link-btn {
         color: #3a84ff;
+        cursor: pointer;
     }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <article class="function-market-home">
         <section class="function-market-title">
-            <section v-if="isPlatformAdmin">
+            <section v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]">
                 <bk-button
                     class="mr5"
                     theme="primary"
@@ -25,12 +25,13 @@
                 :key="index"
                 :show-foot="true"
                 :show-head="false"
+                :border="false"
                 class="function-card"
                 @click.native="handleShowSource(card)">
                 <h3 class="card-title">{{ card.funcName }}</h3>
                 <p class="card-body" v-bk-overflow-tips>{{ card.funcSummary }}</p>
                 <bk-popconfirm
-                    v-if="isPlatformAdmin"
+                    v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]"
                     content="确定删除该函数？"
                     width="280"
                     @confirm="handleDeleteFunc(card)">
@@ -41,7 +42,7 @@
                     <bk-button text class="foot-btn" @click.stop="handleShowSource(card)">查看源码</bk-button>
                     <bk-divider direction="vertical"></bk-divider>
                     <bk-button text class="foot-btn" @click.stop="handleShowAddFuncFromMarket(card)">添加至应用</bk-button>
-                    <template v-if="isPlatformAdmin">
+                    <template v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]">
                         <bk-divider direction="vertical"></bk-divider>
                         <bk-button text class="foot-btn" @click.stop="handleShowEditFunc(card)">编辑</bk-button>
                     </template>
@@ -71,7 +72,7 @@
         <show-func-dialog
             :is-show.sync="showSource.isShow"
             :func-data="showSource.func"
-            :is-show-export="isPlatformAdmin"
+            :is-show-export="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]"
         />
 
         <import-function-dialog
@@ -126,7 +127,7 @@
         },
 
         computed: {
-            ...mapGetters(['isPlatformAdmin']),
+            ...mapGetters(['iamNoResourcesPerm']),
             computedCardList () {
                 return this.cardList.filter(card => (card.funcName || '').includes(this.searchStr))
             }
@@ -232,7 +233,7 @@
 
 <style lang="postcss" scoped>
     .function-market-home {
-        padding: 16px 8px 16px 24px;
+        padding: 24px;
     }
     .function-market-title {
         display: flex;
@@ -242,6 +243,17 @@
         width: 400px;
     }
     .card-list {
+        display: grid;
+        grid-gap: 16px 12px;
+        gap: 16px 12px;
+        grid-template-columns: repeat(auto-fill,minmax(312px,1fr));
+        width: 100%;
+        -ms-flex-line-pack: start;
+        align-content: flex-start;
+        padding: 8px 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin-top: 16px;
         .exception-wrap-item {
             margin-top: calc(50vh - 180px);
         }
@@ -252,9 +264,7 @@
         }
     }
     .function-card {
-        margin: 16px 16px 0 0;
-        width: 310px;
-        height: 186px;
+        height: 197px;
         float: left;
         box-shadow: 0px 2px 2px 0px rgb(0 0 0 / 11%);
         &:hover {
@@ -271,7 +281,7 @@
             top: 2px;
         }
         /deep/ .bk-card-body {
-            height: 139px;
+            height: 150px;
             padding: 16px;
             line-height: 20px;
         }

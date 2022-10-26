@@ -35,7 +35,7 @@
                                     <div class="layout-img">
                                         <img :src="getPreviewImg(template.previewImg)" alt="模板缩略预览">
                                         <div v-if="template.isOffcial && template.hasInstall === false" class="mask">
-                                            <bk-button class="apply-btn" theme="primary" @click.stop="handleApply(template)">应用</bk-button>
+                                            <bk-button class="apply-btn" theme="primary" @click.stop="handleApply(template)">添加到本应用</bk-button>
                                         </div>
                                     </div>
                                 </section>
@@ -400,7 +400,6 @@
 
                         img {
                             width: 100%;
-                            height: 100%;
                             object-fit: contain;
                         }
 
@@ -415,7 +414,7 @@
                             align-items: center;
                             .apply-btn {
                                 display: none;
-                                margin-left: 68px;
+                                margin-left: 42px;
                             }
                         }
 

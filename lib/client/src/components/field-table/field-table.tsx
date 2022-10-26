@@ -47,7 +47,6 @@ interface IError {
 }
 export default defineComponent({
     name: 'FieldTable',
-    components: {},
     props: {
         data: Array,
         column: Array,
@@ -188,7 +187,7 @@ export default defineComponent({
             }
             const handleDelete = (props) => {
                 const { row, $index } = props
-                if (row.isEdit) {
+                if (row.isReadonly) {
                     return
                 }
                 emit('delete', row, $index)
@@ -206,7 +205,7 @@ export default defineComponent({
                             />
                             <i
                                 class={`bk-icon icon-minus-circle-shape field-icon ${
-                                    row?.isEdit ? 'icon-disabled' : ''
+                                    row?.isReadonly ? 'icon-disabled' : ''
                                 }`}
                                 onClick={() => {
                                     handleDelete(props)

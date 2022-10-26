@@ -1,11 +1,17 @@
 <template>
-    <section v-if="isShow" class="func-form-home">
+    <section
+        v-if="isShow"
+        class="func-form-home"
+        @click.self="handleClose"
+    >
         <section class="source-code">
             <section class="func-form-main">
-                <h3 class="func-form-title">源码预览</h3>
-                <form-name :form.sync="form" form-type="vertical" disabled></form-name>
-                <form-detail :form.sync="form" form-type="vertical" disabled></form-detail>
-                <form-summary :form.sync="form" form-type="vertical" disabled></form-summary>
+                <section class="func-form-wrapper">
+                    <h3 class="func-form-title">源码预览</h3>
+                    <form-name :form.sync="form" form-type="vertical" disabled></form-name>
+                    <form-detail :form.sync="form" form-type="vertical" disabled></form-detail>
+                    <form-summary :form.sync="form" form-type="vertical" disabled></form-summary>
+                </section>
             </section>
             <monaco class="monaco" :read-only="true" height="100%" :value="form.funcBody">
                 <template v-slot:tools>
@@ -57,10 +63,14 @@
 <style lang="postcss" scoped>
     .func-form-main {
         float: left;
-        width: 350px;
+        width: 600px;
         height: 100%;
-        overflow-y: auto;
         padding: 7px 20px 20px;
+        overflow: auto;
+        .func-form-wrapper {
+            min-width: 750px;
+            height: 100%;
+        }
         /deep/ .func-form-item {
             margin-top: 8px;
         }
@@ -87,20 +97,20 @@
         right: 0;
         bottom: 0;
         background: rgba(0,0,0,0.6);
-        z-index: 500;
+        z-index: 2000;
         .source-code {
             position: absolute;
             background: #fff;
-            width: 80%;
+            width: 90%;
             height: 74%;
             top: 13%;
-            left: 10%;
+            left: 5%;
         }
     }
     .monaco {
         margin: 0;
         height: calc(100% - 30px);
-        margin-left: 350px;
+        margin-left: 600px;
     }
     .func-form-title {
         font-weight: normal;

@@ -24,10 +24,21 @@
             <div class="node-name-area" :title="node.name">
                 <div :class="['name-wrapper', { 'has-label': hasCreatedPage }]">
                     <span class="name">{{ node.name }}</span>
-                    <span v-if="hasCreatedPage" class="create-page-icon">
-                        <i class="bk-drag-icon bk-drag-page" v-bk-tooltips.top="'已生成流程提单页'"></i>
+                    <span v-if="hasCreatedPage" class="create-ticket-page-icon">
+                        <i
+                            class="bk-drag-icon bk-drag-page"
+                            v-bk-tooltips.top="{
+                                allowHtml: true,
+                                content: '#create-ticket-page-tips'
+                            }"
+                            @click="$emit('preview')">
+                        </i>
+                        <div id="create-ticket-page-tips">
+                            <span>已生成流程提单页</span>
+                            <bk-button style="padding: 0" size="small" :text="true" @click="$emit('preview')">预览</bk-button>
+                        </div>
                     </span>
-                    <span v-if="node.nodeInfo && node.nodeInfo.extras.is_system_add" class="system-add-icon">系统</span>
+                    <span v-if="node.nodeInfo && node.nodeInfo.extras.data_source_id" class="system-add-icon">系统</span>
                 </div>
                 <p class="desc">
                     <span v-if="isDraft" style="color: #c4c6cc;">
@@ -36,7 +47,9 @@
                     <template v-else>
                         <span v-if="node.type === 'NORMAL'">处理人：{{ getProcessorName() }}</span>
                         <span v-else-if="node.type === 'APPROVAL'">类型：{{ approvalType }} 处理人: {{ getProcessorName() }}</span>
-                        <span v-else-if="node.type === 'DATA_PROC'">数据来源节点：-- 目标表： --</span>
+                        <span v-else-if="node.type === 'DATA_PROC'">
+                            目标表：{{ (node.nodeInfo && node.nodeInfo.extras.dataManager && node.nodeInfo.extras.dataManager.tableName) || '--' }}
+                        </span>
                         <span v-else-if="node.type === 'TASK'">
                             API：{{ (node.nodeInfo && node.nodeInfo.extras.api_info && node.nodeInfo.extras.api_info.url) || '--' }}
                         </span>
@@ -320,7 +333,7 @@
             white-space: nowrap;
             overflow: hidden;
         }
-        .create-page-icon {
+        .create-ticket-page-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -332,6 +345,7 @@
             background: #e1ecff;
             color: #3d81fe;
             opacity: 0.9;
+            cursor: pointer;
             &:hover {
                 color: #3a84ff;
             }
@@ -362,7 +376,7 @@
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 22px;
+  font-size: 26px;
   cursor: pointer;
   &:hover {
     color: #3a84ff;

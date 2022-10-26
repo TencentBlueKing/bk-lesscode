@@ -11,25 +11,35 @@
 <template>
     <section class="flow-config" style="height: 100%">
         <div class="flow-container" v-bkloading="{ isLoading: canvasDataLoading }">
+            <bk-alert
+                v-if="!canvasDataLoading && showDeployTips"
+                class="deploy-tips"
+                type="warning">
+                <div class="tips-content" slot="title">
+                    当前流程未部署，需部署后，预览环境才生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境，
+                    <bk-button style="padding: 0; height: 12px; line-height: 12px;" size="small" :text="true" :disabled="deployPending" @click="$emit('deploy')">立即部署流程</bk-button>
+                    或
+                    <router-link class="deploy-project-btn" :to="{ name: 'release', params: { projectId } }">部署应用</router-link>
+                </div>
+            </bk-alert>
             <flow-canvas
                 v-if="!canvasDataLoading"
                 :nodes="canvasData.nodes"
                 :lines="canvasData.lines"
                 :flow-id="serviceData.workflow_id"
                 :editable="editable"
+                @preview="handleCreateTicktetPagePreview"
                 @onNodeClick="handleNodeClick">
             </flow-canvas>
         </div>
         <div class="action-wrapper">
-            <bk-button @click="$router.push({ name: 'flowList' })">
-                取消
-            </bk-button>
             <bk-button
                 theme="primary"
-                :loading="flowPending || nextPending"
-                :disabled="canvasDataLoading || nextPending"
-                @click="handleNextStep">
-                下一步
+                style="min-width: 88px"
+                :loading="flowPending || deployPending"
+                :disabled="canvasDataLoading || deployPending"
+                @click="$emit('deploy')">
+                部署
             </bk-button>
         </div>
         <div v-if="nodeConfigPanelShow" class="node-config-wrapper">
@@ -37,7 +47,6 @@
                 :node-id="crtNode"
                 :flow-config="flowConfig"
                 :service-data="serviceData"
-                :create-ticket-node-id="createTicketNodeId"
                 @close="closeConfigPanel">
             </node-config>
         </div>
@@ -45,7 +54,7 @@
 </template>
 <script>
     import { mapState } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
+    import { getRouteFullPath } from 'shared/route'
     import FlowCanvas from '@/components/flow/flow-canvas/index.vue'
     import NodeConfig from '@/components/flow/nodeConfig/index.vue'
 
@@ -59,23 +68,29 @@
             serviceData: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            deployPending: Boolean
         },
         data () {
             return {
                 canvasDataLoading: false,
                 flowPending: false,
-                nextPending: false,
                 canvasData: { nodes: [], lines: [] },
-                createTicketNodeId: '',
                 nodeConfigPanelShow: false,
                 crtNode: null
             }
         },
         computed: {
             ...mapState('nocode/flow', ['flowConfig']),
+            ...mapState('route', ['layoutPageList']),
+            projectId () {
+                return this.$route.params.projectId
+            },
             editable () {
                 return this.flowConfig.deleteFlag === 0
+            },
+            showDeployTips () {
+                return this.flowConfig.deployed === 0
             }
         },
         created () {
@@ -94,9 +109,9 @@
                         nodes: res[0].items,
                         lines: res[1].items
                     }
-                    this.createTicketNodeId = res[0].items.find(item => item.is_first_state && item.is_builtin).id
+                    this.$store.commit('nocode/flow/setFlowNodes', this.canvasData.nodes)
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.canvasDataLoading = false
                 }
@@ -114,24 +129,12 @@
                 this.crtNode = null
                 this.getFlowStructData()
             },
-            async handleNextStep () {
-                try {
-                    this.nextPending = true
-                    const data = {
-                        can_ticket_agency: false,
-                        display_type: 'OPEN',
-                        workflow_config: {
-                            ...this.serviceData,
-                            is_revocable: this.serviceData.revoke_config.type !== 0,
-                            is_auto_approve: false
-                        }
-                    }
-                    await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
-                    this.$router.push({ name: 'flowAdvancedConfig' })
-                } catch (e) {
-                    messageError(e.message || e)
-                } finally {
-                    this.nextPending = false
+            handleCreateTicktetPagePreview () {
+                const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.flowConfig.pageId))
+                if (pageRoute) {
+                    const fullPath = getRouteFullPath(pageRoute)
+                    const routerUrl = `/preview/project/${this.projectId}${fullPath}?pageCode=${this.flowConfig.pageCode}`
+                    window.open(routerUrl, '_blank')
                 }
             }
         }
@@ -142,8 +145,25 @@
     position: relative;
 }
 .flow-container {
-    height: 100%;
     position: relative;
+    height: 100%;
+}
+.deploy-tips {
+    position: absolute;
+    top: 14px;
+    left: 70px;
+    right: 70px;
+    z-index: 110;
+    >>> .bk-alert-wraper {
+        display: flex;
+        align-items: center;
+    }
+}
+.deploy-project-btn {
+    color: #3a84ff;
+    &:hover {
+        color: #699df4;
+    }
 }
 .action-wrapper {
     position: absolute;
@@ -153,13 +173,9 @@
     padding: 0 24px;
     height: 52px;
     line-height: 52px;
-    text-align: right;
+    text-align: center;
     background: #fafbfd;
     border-top: 1px solid #dcdee5;
-    .bk-button {
-        margin-left: 4px;
-        min-width: 88px;
-    }
 }
 .node-config-wrapper {
     position: absolute;
@@ -170,6 +186,6 @@
     width: 100%;
     height: 100%;
     background: #fafbfd;
-    z-index: 1100;
+    z-index: 120;
 }
 </style>

@@ -49,7 +49,7 @@
                                     <ul class="bk-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(template.id)">
                                         <li><a href="javascript:;" @click="handleEdit(template)">编辑</a></li>
                                         <li><a href="javascript:;" @click="handleExport(template)">导出</a></li>
-                                        <li><a href="javascript:;" @click="handleDelete(template)" :class="{ 'g-no-permission': !getDeletePerm(template) }" v-bk-tooltips="{ content: '无删除权限', disabled: getDeletePerm(template) }">删除</a></li>
+                                        <li><a href="javascript:;" @click="handleDelete(template)">删除</a></li>
                                     </ul>
                                 </bk-dropdown-menu>
                             </div>
@@ -113,9 +113,6 @@
             ...mapGetters(['user']),
             projectId () {
                 return this.$route.params.projectId
-            },
-            userPerm () {
-                return this.$store.getters['member/userPerm'] || { roleId: 2 }
             }
         },
         watch: {
@@ -183,7 +180,8 @@
                     categoryId: template.categoryId,
                     templateName: template.templateName,
                     isOffcial: template.isOffcial,
-                    offcialType: template.offcialType
+                    offcialType: template.offcialType,
+                    previewImg: template?.previewImg.startsWith('http:') ? template.previewImg : ''
                 }
             },
             async handleImport () {
@@ -194,8 +192,6 @@
                 }
             },
             handleDelete (template) {
-                if (!this.getDeletePerm(template)) return
-
                 this.$bkInfo({
                     title: '确认删除?',
                     subTitle: `确认删除模板  “${template.templateName}”?`,
@@ -207,9 +203,6 @@
                         this.refreshData()
                     }
                 })
-            },
-            getDeletePerm (template) {
-                return this.userPerm.roleId === 1 || this.user.username === template.createUser
             },
             handleEditPage (id) {
                 this.$router.push({
@@ -224,7 +217,7 @@
                 if (!template.content) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '该页面为空页面，请先编辑页面'
+                        message: '该模板内容为空'
                     })
                     return
                 }
@@ -247,8 +240,9 @@
                     vars: []
                 }
                 const { varList: vars = [], funcList: functions = [] } = await this.getVarAndFuncList(template)
-                Object.assign(templateJson, { functions, vars }, { template })
-                
+                const newTemplate = Object.assign({}, template, { createUser: '', updateUser: '' })
+                Object.assign(templateJson, { functions, vars }, { template: newTemplate })
+
                 const jsonStr = JSON.stringify(templateJson)
                 const downlondEl = document.createElement('a')
                 const blob = new Blob([jsonStr])
@@ -340,7 +334,7 @@
                         }
                         .preview {
                             .mask {
-                                background: rgba(0, 0, 0, 0.4);
+                                background: rgba(0, 0, 0, 0.1);
                                 .operate-btns {
                                     display: block;
                                     opacity: 1;
@@ -399,9 +393,10 @@
                         height: 100%;
                         overflow: hidden;
                         border-radius: 4px 4px 0px 0px;
+                        display: flex;
+                        justify-content: center;
                         img {
                             max-width: 100%;
-                            height: 100%;
                             object-fit: contain;
                         }
 
@@ -423,7 +418,7 @@
                             left: 0;
                             width: 100%;
                             height: 100%;
-                            background: rgba(0, 0, 0, 0.1);
+                            background: rgba(0, 0, 0, 0.02);
                             display: flex;
                             align-items: center;
                             .operate-btns {

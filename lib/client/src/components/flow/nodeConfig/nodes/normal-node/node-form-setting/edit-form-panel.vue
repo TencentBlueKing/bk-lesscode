@@ -10,13 +10,14 @@
                 <div
                     id="toolActionBox"
                     class="function-and-tool">
-                    <operation-select v-model="operationType" :hide-setting="hideSetting"></operation-select>
+                    <operation-select v-model="operationType" :hide-setting="hideSetting" :hide-func="hideSetting"></operation-select>
                     <div class="spilt-line"></div>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
                     <action-tool
                         :custom-save="true"
                         :hide-save="hideSave"
                         :hide-preview="hidePreview"
+                        :hide-func="hidePreview"
                         :hide-clear="hideClear"
                         @save="$emit('save', $event)">
                     </action-tool>
@@ -31,6 +32,7 @@
                     :disabled="formConfig.type === 'USE_FORM'">
                 </nocode-form>
                 <page-setting v-if="operationType === 'setting'"></page-setting>
+                <page-function v-if="operationType === 'pageFunction'"></page-function>
                 <page-json v-else-if="operationType === 'jsonSource'" style="height: 100%;" nocode-type="FLOW"></page-json>
             </div>
         </div>
@@ -43,6 +45,7 @@
     import ActionTool from '@/views/edit-nocode/components/action-tool'
     import NocodeForm from '@/components/render-nocode/form/index.vue'
     import PageSetting from '@/views/index/components/operation-area/components/page-setting'
+    import PageFunction from '@/views/index/components/operation-area/components/page-function'
     import PageJson from '@/views/index/components/operation-area/components/page-json'
 
     export default {
@@ -54,6 +57,7 @@
             ActionTool,
             NocodeForm,
             PageSetting,
+            PageFunction,
             PageJson
         },
         props: {

@@ -3,7 +3,7 @@
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
-                    <rich-text @change="handleDescValueChange" is-full-screen></rich-text>
+                    <rich-text @change="handleDescValueChange" is-full-screen :value="fieldData.value"></rich-text>
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
@@ -95,7 +95,13 @@
                     <!--                        @selected="handleSelectApi">-->
                     <!--                        <bk-option v-for="item in apiList" :key="item.id" :id="item.id" :name="item.name"></bk-option>-->
                     <!--                    </bk-select>-->
-                    <bk-button class="mt8" :theme="'primary'" :title="'配置'" @click="dataSourceDialogShow = true" :disabled="isConfigDataSourceDisabled">
+                    <bk-button
+                        style="margin-top: 8px;"
+                        theme="primary"
+                        size="small"
+                        :title="'配置'"
+                        :disabled="isConfigDataSourceDisabled"
+                        @click="dataSourceDialogShow = true">
                         配置数据源
                     </bk-button>
                 </bk-form-item>
@@ -153,14 +159,14 @@
                         </div>
                         <div class="contidion">
                             <bk-checkbox
-                                :true-value="1"
-                                :false-value="0"
+                                :true-value="0"
+                                :false-value="1"
                                 :disabled="disabled"
                                 v-model="fieldData.show_type"
                                 @change="change">
                                 隐藏
                             </bk-checkbox>
-                            <span v-show="fieldData.show_type === 1" @click="showTypeShow = true">条件编辑</span>
+                            <span v-show="fieldData.show_type === 0" @click="showTypeShow = true">条件编辑</span>
                         </div>
                     </div>
                 </bk-form-item>
@@ -268,17 +274,22 @@
                         <bk-option v-for="option in regexList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item
-                    ext-cls="default-val"
-                    label="默认值"
-                    v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
-                    <default-value
-                        :key="fieldData.type"
-                        :field="defaultData"
-                        :disabled="disabled"
-                        @change="handleDefaultValChange">
-                    </default-value>
-                </bk-form-item>
+                <template v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
+                    <bk-form-item ext-cls="default-val" label="默认值">
+                        <default-value
+                            :field="fieldData"
+                            :disabled="disabled"
+                            @change="handleDefaultValChange">
+                        </default-value>
+                    </bk-form-item>
+                    <bk-form-item label="值联动规则">
+                        <association-value
+                            :field="fieldData"
+                            :disabled="disabled"
+                            @change="updateFieldData">
+                        </association-value>
+                    </bk-form-item>
+                </template>
                 <bk-form-item label="填写说明" v-if="!handleIsFolded">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
@@ -341,7 +352,8 @@
 
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import DefaultValue from './defaultValue.vue'
+    import DefaultValue from './default-value.vue'
+    import AssociationValue from './association-value/index.vue'
     import ReadOnlyDialog from './readOnlyDialog.vue'
     import RequireDialog from './requireDialog.vue'
     import ShowTypeDialog from './showTypeDialog.vue'
@@ -363,6 +375,7 @@
     export default {
         name: 'formEdit',
         components: {
+            AssociationValue,
             DefaultValue,
             TableHeaderSetting,
             ReadOnlyDialog,
@@ -392,7 +405,6 @@
                 fieldData: cloneDeep(this.value),
                 checkTips: '',
                 regexList: this.getRegexList(this.value),
-                defaultData: this.getDefaultData(),
                 basicIsFolded: false,
                 handleIsFolded: false,
                 fieldProps: {
@@ -470,7 +482,6 @@
                 if (this.fieldProps.fieldsDataSource.includes(val.type) && val.id !== oldVal.id) {
                     this.getSystems()
                 }
-                this.defaultData = this.getDefaultData()
                 this.fieldData = cloneDeep(val)
             }
         },
@@ -527,28 +538,6 @@
                 this.fieldData.tips = ''
                 this.change()
             },
-            getDefaultData () {
-                const { type, default: defaultVal, choice, meta } = this.value
-                let dftVal
-                if (['MULTISELECT', 'CHECKBOX', 'MEMBERS', 'MEMBER'].includes(type)) {
-                    dftVal = defaultVal ? defaultVal.split(',') : []
-                } else {
-                    dftVal = cloneDeep(defaultVal)
-                }
-                return {
-                    type,
-                    choice,
-                    value: dftVal,
-                    meta,
-                    multiple: ['MULTISELECT', 'CHECKBOX'].includes(type)
-                }
-            },
-            handleDefaultValChange (val) {
-                this.fieldData.default = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
-                    ? val.join(',')
-                    : cloneDeep(val)
-                this.change()
-            },
             onConfirm (type, val) {
                 this.fieldData[type] = val
                 if (type === 'read_only_conditions') {
@@ -585,7 +574,7 @@
                         { key: 'XUANXIANG1', name: '选项1', color: '#3a84ff', isDefaultVal: true },
                         { key: 'XUANXIANG2', name: '选项2', color: '#2dcb56', isDefaultVal: false }
                     ]
-                    this.fieldData.api_info = {}
+                    delete this.fieldData.meta.data_config
                     this.fieldData.kv_relation = {}
                 } else if (val === 'API') {
                     this.fieldData.choice = []
@@ -599,14 +588,13 @@
                     this.fieldData.kv_relation = { key: '', name: '' }
                 } else if (val === 'WORKSHEET') {
                     this.fieldData.choice = []
-                    this.fieldData.api_info = {}
                     this.fieldData.kv_relation = {}
                     this.fieldData.meta.data_config = {
                         formId: '',
                         tableName: '',
                         field: '',
                         conditions: {
-                            connector: 'and',
+                            type: 'and',
                             expressions: []
                         }
                     }
@@ -634,6 +622,13 @@
             setFormData (apiId) {
                 this.apiDetail = this.systemList.find(item => item.id === apiId)
                 this.resArrayTreeData = transSchemeToArrayTypeTree(this.apiDetail.response)
+            },
+            handleDefaultValChange (val) {
+                const formattedValue = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
+                    ? val.join(',')
+                    : val
+                this.fieldData.default = formattedValue
+                this.change()
             },
             // 设置描述组件的值
             handleDescValueChange (val) {
@@ -675,6 +670,10 @@
                     name: `列${len + 1}`,
                     required: false
                 })
+                this.change()
+            },
+            updateFieldData (val) {
+                this.fieldData = val
                 this.change()
             },
             change () {

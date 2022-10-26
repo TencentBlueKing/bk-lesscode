@@ -1,5 +1,5 @@
 <template>
-    <div :class="$style['area-wrapper']">
+    <div :class="$style['area-wrapper']" id="mobileDrawContent">
         <div :class="$style['title']">
             <span :class="$style['title-text']">编辑区</span>
             <div :class="$style['edit-button']">
@@ -40,11 +40,14 @@
                 width: canvasSize.width + 'px',
                 height: canvasSize.height + 'px'
             }">
-            <render />
+            <layout>
+                <render />
+            </layout>
         </div>
     </div>
 </template>
 <script>
+    import layout from './widget/layout'
     import render from '../pc/index'
     import getModelInfo from './common/model'
     import { watch, ref } from '@vue/composition-api'
@@ -53,7 +56,8 @@
     export default {
         components: {
             render,
-            previewSwitch
+            previewSwitch,
+            layout
         },
         setup (props) {
             const { canvasSize, model, modelList } = getModelInfo()
@@ -76,7 +80,7 @@
             }
         }
     }
-</script>¬
+</script>
 
 <style lang="postcss" module>
     @import './area.scss'

@@ -51,10 +51,16 @@
                     return
                 }
                 if (this.nocodeType === 'FORM') {
-                    // console.log('FORM')
                     this.saveFormList()
                 } else if (['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)) {
-                    this.saveFormManage()
+                    const content = []
+                    content.push(JSON.stringify(this.$store.state.nocode.formSetting.tableFieldsConfig))
+                    this.savePageContent(content)
+                } else if (this.nocodeType === 'MARKDOWN') {
+                    const content = {
+                        content: this.$store.state.nocode.markdown.mdContent
+                    }
+                    this.savePageContent(JSON.stringify(content))
                 }
                 this.saveTemplate()
                 // this.savePreviewImg()
@@ -99,10 +105,8 @@
                     this.isLoading = false
                 }
             },
-            // 保存表单管理页
-            async saveFormManage () {
-                const content = []
-                content.push(JSON.stringify(this.$store.state.nocode.formSetting.tableFieldsConfig))
+            // 保存页面content
+            async savePageContent (content) {
                 const pageData = {
                     id: this.pageDetail.id,
                     content
@@ -131,15 +135,33 @@
             },
             // 校验表单配置
             validateForm () {
-                let result = true
+                let isKeyValid = true
                 if (this.$store.state.nocode.formSetting.fieldsList.length < 1) {
-                    result = false
                     this.$bkMessage({
                         theme: 'error',
                         message: '表单项不能为空'
                     })
+                    return false
                 }
-                return result
+                this.$store.state.nocode.formSetting.fieldsList.some(field => {
+                    if (!/^[a-zA-Z0-9_]*$/.test(field.key)) {
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: `字段【${field.name}】唯一标识需要由字母、数字、下划线组成`
+                        })
+                        isKeyValid = false
+                        return true
+                    }
+                    if (field.key === 'title') {
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: `字段【${field.name}】唯一标识title为系统内置字符，请修改后保存`
+                        })
+                        isKeyValid = false
+                        return true
+                    }
+                })
+                return isKeyValid
             },
             // 保存导航数据
             async saveTemplate () {
@@ -148,6 +170,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig = {},
                     menuList = [],
                     topMenuList = [],
                     renderProps = {}
@@ -157,6 +180,7 @@
                     logo,
                     siteName,
                     theme,
+                    themeConfig,
                     menuList,
                     topMenuList,
                     renderProps

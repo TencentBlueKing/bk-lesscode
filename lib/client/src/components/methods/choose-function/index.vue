@@ -1,7 +1,7 @@
 <template>
     <section class="choose-function-main">
         <slot name="header"></slot>
-        
+
         <bk-popover
             ref="mainPopoverRef"
             placement="bottom"
@@ -79,7 +79,7 @@
                                                     'function-item': true
                                                 }"
                                                 :key="functionData.funcName"
-                                                @click="handleChooseFunction(functionData.funcCode)"
+                                                @click="handleChooseFunction(functionData)"
                                             >
                                                 <span class="function-item-name" v-bk-overflow-tips>
                                                     {{ functionData.funcName }}（{{ functionData.funcCode }}）
@@ -134,7 +134,21 @@
 
         <template v-if="showAddParams">
             <div class="panel-item" v-for="(panel, index) in renderChoosenFunction.params" :key="index">
-                <bk-input :value="panel.value" @change="val => handleChangeParam(index, val)" />
+                <variable-select
+                    class="select-param"
+                    :options="{ formatInclude: ['value', 'variable', 'expression'] }"
+                    :value="panel"
+                    @change="({ format, code }) => handleChangeParam(index, { format, code, value: '' })"
+                >
+                    <span
+                        class="param-title"
+                        slot="title"
+                    >参数</span>
+                    <bk-input
+                        :value="panel.value"
+                        @change="value => handleChangeParam(index, { value })"
+                    />
+                </variable-select>
                 <i class="bk-icon icon-minus-circle" @click="handleDeleteParam(index)"></i>
             </div>
             <div
@@ -162,12 +176,14 @@
 
 <script>
     import { mapActions, mapGetters } from 'vuex'
-    import EditFunctionDialog from '@/components/methods/edit-function-dialog/index.vue'
     import { getDefaultFunction } from 'shared/function'
+    import EditFunctionDialog from '@/components/methods/edit-function-dialog/index.vue'
+    import VariableSelect from '@/components/variable/variable-select/index.vue'
 
     export default {
         components: {
-            EditFunctionDialog
+            EditFunctionDialog,
+            VariableSelect
         },
 
         props: {
@@ -175,7 +191,8 @@
                 type: Object
             },
             functionTemplates: {
-                type: Array
+                type: Array,
+                default: () => ([])
             },
             showAddParams: {
                 type: Boolean,
@@ -259,14 +276,19 @@
                 this.$emit('change', JSON.parse(JSON.stringify(this.renderChoosenFunction)))
             },
 
-            handleChooseFunction (funcCode) {
-                this.renderChoosenFunction.methodCode = funcCode
+            handleChooseFunction (functionData) {
+                this.renderChoosenFunction.methodCode = functionData.funcCode
+                this.renderChoosenFunction.params = functionData?.funcParams?.map((funcParam) => ({
+                    value: funcParam,
+                    code: '',
+                    format: 'value'
+                }))
                 this.triggleUpdate()
                 this.handleClose()
             },
 
             handleChangeParam (index, val) {
-                this.renderChoosenFunction.params[index].value = val
+                Object.assign(this.renderChoosenFunction.params[index], val)
                 this.triggleUpdate()
             },
 
@@ -276,7 +298,11 @@
             },
 
             handlePlusParam () {
-                this.renderChoosenFunction.params.push({ value: '' })
+                this.renderChoosenFunction.params.push({
+                    value: '',
+                    code: '',
+                    format: 'value'
+                })
                 this.triggleUpdate()
             },
 
@@ -356,9 +382,18 @@
         align-items: center;
         margin-top: 8px;
         width: 100%;
+        .select-param {
+            flex: 1;
+            .param-title {
+                line-height: 25px;
+            }
+            /deep/ .display-content {
+                margin: 0;
+            }
+        }
     }
     .icon-minus-circle {
-        margin: 0 3px 0 8px;
+        margin: 23px 3px 0 8px;
         cursor: pointer;
         color: #979ba5;
         &:hover {
@@ -367,7 +402,7 @@
     }
     .panel-add {
         font-size: 12px;
-        margin: 8px 0 0;
+        margin: 12px 0 0;
         line-height: 16px;
         cursor: pointer;
         color: #3A84FF;

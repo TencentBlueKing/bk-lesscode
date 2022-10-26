@@ -25,9 +25,10 @@
                     ext-cls="select-page"
                     ext-popover-cls="select-page-dropdown"
                     ref="pageSelect"
-                    :value="pageDetail.id"
+                    v-model="selectPageId"
                     :clearable="false"
                     :searchable="true"
+                    @toggle="toggleSelect"
                     @change="handlePageChange">
                     <div slot="trigger">
                         <div
@@ -50,7 +51,7 @@
                             <span>{{group.name}}</span>
                         </template>
                         <bk-option
-                            v-show="!group.collapse"
+                            v-show="!group.collapse && group.children"
                             v-for="option in group.children"
                             :key="option.id"
                             :id="option.id"
@@ -62,7 +63,7 @@
                                 @click.stop="handleCopyPage(option)"
                                 title="复制页面"></i>
                         </bk-option>
-                        
+                        <li style="padding: 0 28px" v-show="!group.children.length && !group.collapse">暂无页面</li>
                     </bk-option-group>
                     <div slot="extension" class="extension">
                         <div
@@ -105,6 +106,7 @@
         },
         data () {
             return {
+                selectPageId: '',
                 createPlatform: 'PC',
                 createNocodeType: '',
                 classPageList: [
@@ -145,6 +147,7 @@
         created () {
             this.projectId = parseInt(this.$route.params.projectId)
             this.pageId = parseInt(this.$route.params.pageId)
+            this.selectPageId = parseInt(this.$route.params.pageId)
         },
         methods: {
             initClassPageList () {
@@ -175,6 +178,11 @@
                     name: 'projects'
                 })
             },
+            toggleSelect (isShow) {
+                if (isShow) {
+                    this.selectPageId = parseInt(this.$route.params.pageId)
+                }
+            },
             /**
              * @desc 页面切换
              */
@@ -199,7 +207,7 @@
                 }
             },
             toNewPage (page, toRouteName) {
-                this.$router.push({
+                this.$router.replace({
                     name: toRouteName || 'new',
                     params: {
                         projectId: this.projectId,

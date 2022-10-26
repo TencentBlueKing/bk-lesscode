@@ -12,7 +12,6 @@
 module.exports = process.env.NODE_ENV === 'production'
     // 线上环境配置（npm run build时使用）
     ? {
-        port: 5000,
         protocol: 'http',
         // 用户身份检验字段, 社区版值为bk_token
         authName: 'bk_token',
@@ -22,10 +21,12 @@ module.exports = process.env.NODE_ENV === 'production'
         loginUrl: '',
         // 用户管理接口前缀，用于获取用户列表
         userManageUrl: '',
-        // itsm网关域名前缀, 使用到流程相关功能时需配置
-        itsmUrl: '',
         // apiGateWay 请求地址模板
         apiGateWayUrlTmpl: '',
+        // itsm在paas平台的域名
+        itsmUrl: ''
+        // 环境标识
+        stageName: '',
         // 应用 ID
         appCode: '',
         // 应用 TOKEN
@@ -33,7 +34,6 @@ module.exports = process.env.NODE_ENV === 'production'
     }
     // 本地调试配置（npm run dev时使用）
     : {
-        port: 5000,
         protocol: 'http',
         // 用户身份检验字段, 社区版值为bk_token
         authName: 'bk_token',
@@ -43,10 +43,12 @@ module.exports = process.env.NODE_ENV === 'production'
         loginUrl: '',
         // 用户管理接口前缀，用于获取用户列表
         userManageUrl: '',
-        // itsm网关域名前缀, 使用到流程相关功能时需配置
-        itsmUrl: '',
         // apiGateWay 请求地址模板
         apiGateWayUrlTmpl: '',
+        // itsm在paas平台的域名
+        itsmUrl: ''
+        // 环境标识
+        stageName: '',
         // 应用 ID
         appCode: '',
         // 应用 TOKEN

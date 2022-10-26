@@ -5,11 +5,12 @@
                 <i class="bk-icon icon-funnel filter-switch-icon" @click="showFilter = !showFilter"></i>
             </div>
             <filters
-                v-if="filters.length > 0 && showFilter"
+                v-show="filters.length > 0"
                 :filters="filters"
                 :fields="fields"
                 :system-fields="systemFields"
-                :value.sync="filtersData">
+                :value="filtersData"
+                @change="handleFilterDataChange">
             </filters>
             <table-fields
                 v-if="!formDetailLoading"
@@ -27,6 +28,7 @@
 <script>
     import { formMap } from 'shared/form'
     import { FORM_SYS_FIELD } from '../common/field.js'
+    import queryStrSearchMixin from '../common/query-str-search-mixin'
     import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
     import Filters from './filters.vue'
     import TableFields from './table-fields.vue'
@@ -37,6 +39,7 @@
             Filters,
             TableFields
         },
+        mixins: [queryStrSearchMixin],
         props: {
             formIds: Number,
             viewType: String,
@@ -57,13 +60,13 @@
                 fields: [],
                 formDetailLoading: true,
                 systemFields: FORM_SYS_FIELD,
-                showFilter: true,
                 tableName: '',
                 filtersData: {}
             }
         },
         async created () {
-            this.getFormDetail()
+            await this.getFormDetail()
+            this.setInitFilterData()
         },
         methods: {
             async getFormDetail () {
@@ -88,32 +91,38 @@
                 } finally {
                     this.formDetailLoading = false
                 }
+            },
+            handleFilterDataChange (val) {
+                this.filtersData = val
+                this.updateQueryString()
             }
         }
     }
 </script>
 <style lang="postcss" scoped>
-    .form-data-manage {
-        .operate-btns {
-            display: flex;
-            align-items: center;
-            flex-direction: row-reverse;
-            margin-bottom: 16px;
-            height: 32px;
-        }
-        .filter-switch-icon {
-            height: 32px;
-            line-height: 32px;
-            width: 32px;
-            text-align: center;
-            color: #979ba5;
-            border: 1px solid #c4c6cc;
-            border-radius: 2px;
-            background: #ffffff;
-            cursor: pointer;
-            &:hover {
-                color: #3a84ff;
-            }
-        }
+.form-data-manage {
+  .operate-btns {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    margin-bottom: 16px;
+    height: 32px;
+  }
+
+  .filter-switch-icon {
+    height: 32px;
+    line-height: 32px;
+    width: 32px;
+    text-align: center;
+    color: #979ba5;
+    border: 1px solid #c4c6cc;
+    border-radius: 2px;
+    background: #ffffff;
+    cursor: pointer;
+
+    &:hover {
+      color: #3a84ff;
     }
+  }
+}
 </style>

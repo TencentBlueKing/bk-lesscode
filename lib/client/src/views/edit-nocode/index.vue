@@ -20,12 +20,15 @@
             <div
                 id="toolActionBox"
                 class="function-and-tool">
-                <operation-select v-model="operationType" :hide-json="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" />
+                <operation-select v-model="operationType" :hide-json="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" :hide-func="nocodeType === 'MARKDOWN'" />
                 <div class="spilt-line" />
                 <!-- 保存、预览、快捷键等tool单独抽离 -->
-                <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" />
+                <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" :hide-func="nocodeType === 'MARKDOWN'" />
             </div>
-            <extra-links :show-help-box="false" :create-form-page="nocodeType === 'FORM'" />
+            <div class="actions-links-area">
+                <more-actions></more-actions>
+                <extra-links :show-help-box="false" />
+            </div>
         </div>
         <div class="lesscode-editor-page-content" ref="root" v-if="!isContentLoading">
             <operation-area :operation="operationType" :nocode-type="nocodeType" />
@@ -40,6 +43,7 @@
     import OperationSelect from './components/operation-select'
     import ActionTool from './components/action-tool'
     import OperationArea from './components/operation-area'
+    import MoreActions from './components/more-actions/index'
     import PreviewMixin from './preview-mixin'
 
     export default {
@@ -49,7 +53,8 @@
             ExtraLinks,
             OperationSelect,
             ActionTool,
-            OperationArea
+            OperationArea,
+            MoreActions
         },
         mixins: [PreviewMixin],
         data () {
@@ -82,11 +87,6 @@
             this.$store.commit('projectVersion/setCurrentVersion', this.getInitialVersion())
 
             this.fetchData()
-
-            // 设置权限相关的信息
-            this.$store.dispatch('member/setCurUserPermInfo', {
-                id: this.projectId
-            })
         },
         beforeDestroy () {
             this.clearContext()
@@ -108,31 +108,42 @@
             async fetchData () {
                 try {
                     this.isContentLoading = true
-                    const [pageDetail, pageList, projectDetail] = await Promise.all([
+                    const [pageDetail, pageList, projectDetail, functionData] = await Promise.all([
                         this.$store.dispatch('page/detail', { pageId: this.pageId }),
                         this.$store.dispatch('page/getList', {
                             projectId: this.projectId,
                             versionId: this.versionId
                         }),
                         this.$store.dispatch('project/detail', { projectId: this.projectId }),
-                        
+                        this.$store.dispatch('functions/getAllGroupAndFunction', {
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        }),
+
                         this.$store.dispatch('page/pageLockStatus', { pageId: this.pageId }),
                         this.$store.dispatch('route/getProjectPageRoute', {
                             projectId: this.projectId,
                             versionId: this.versionId
                         }),
-                        this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId })
+                        this.$store.dispatch('layout/getPageLayout', { pageId: this.pageId }),
+                        this.$store.dispatch('page/getPageSetting', {
+                            pageId: this.pageId,
+                            projectId: this.projectId,
+                            versionId: this.versionId
+                        })
                     ])
 
-                    await this.$store.dispatch('page/getPageSetting', {
-                        pageId: this.pageId,
+                    await this.$store.dispatch('variable/getAllVariable', {
                         projectId: this.projectId,
-                        versionId: this.versionId
+                        pageCode: pageDetail.pageCode,
+                        versionId: this.versionId,
+                        effectiveRange: 0
                     })
 
                     this.$store.commit('page/setPageDetail', pageDetail || {})
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
+                    this.$store.commit('functions/setFunctionData', functionData)
 
                     LC.pageStyle = pageDetail.styleSetting
                 } catch (e) {
@@ -183,7 +194,7 @@
             height: 1px;
             box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
         }
-        
+
         .function-and-tool {
             position: relative;
             display: flex;
@@ -196,6 +207,13 @@
             width: 1px;
             margin: 0 5px;
             background-color: #dcdee5;
+        }
+        .actions-links-area {
+            display: flex;
+            align-items: center;
+            .extra-links {
+                width: auto;
+            }
         }
     }
     .lesscode-editor-page-content{

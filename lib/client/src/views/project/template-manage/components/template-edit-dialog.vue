@@ -13,9 +13,9 @@
             <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="120" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item label="模板名称" required property="templateName" error-display-type="normal">
                     <bk-input ref="nameInput"
-                        maxlength="60"
+                        maxlength="40"
                         v-model.trim="dialog.formData.templateName"
-                        placeholder="请输入模板名称，50个字符以内">
+                        placeholder="请输入模板名称，40个字符以内">
                     </bk-input>
                 </bk-form-item>
                 <bk-form-item label="模板分类" required property="categoryId" error-display-type="normal">
@@ -28,7 +28,12 @@
                         </bk-option>
                     </bk-select>
                 </bk-form-item>
-                <section v-if="isPlatformAdmin && actionType === 'update'" style="margin-top: 20px;">
+                <section v-if="actionType === 'update'" style="margin-top: 20px;">
+                    <bk-form-item label="模板封面" property="previewImg" error-display-type="normal">
+                        <src-input v-model="dialog.formData.previewImg" file-type="img" @change="handleImgChange" />
+                    </bk-form-item>
+                </section>
+                <section v-if="iamNoResourcesPerm[$IAM_ACTION.manage_platform[0]] && actionType === 'update'" style="margin-top: 20px;">
                     <bk-form-item label="设为公开模板" required property="isOffcial" error-display-type="normal">
                         <bk-radio-group v-model="dialog.formData.isOffcial">
                             <bk-radio :value="1" style="margin-right: 20px;">是</bk-radio>
@@ -61,9 +66,13 @@
     import { PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import { mapGetters } from 'vuex'
     import templateMixin from './template-mixin'
+    import SrcInput from '@/components/src-input/index.vue'
 
     export default {
         name: 'template-dialog',
+        components: {
+            SrcInput
+        },
         mixins: [templateMixin],
         props: {
             actionType: {
@@ -86,6 +95,7 @@
                     formData: {
                         templateName: '',
                         categoryId: '',
+                        previewImg: '',
                         isOffcial: 0,
                         offcialType: ''
                     },
@@ -114,7 +124,7 @@
             }
         },
         computed: {
-            ...mapGetters(['isPlatformAdmin']),
+            ...mapGetters(['iamNoResourcesPerm']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
@@ -142,6 +152,9 @@
             this.getTemplateCategory()
         },
         methods: {
+            handleImgChange (value) {
+                this.dialog.formData.previewImg = value
+            },
             toggleCategory (open = false) {
                 if (open) {
                     this.getTemplateCategory()
@@ -158,28 +171,30 @@
                 await this.$refs.pageTemplateFrom.validate()
                 try {
                     this.dialog.loading = true
+                    const { formData = {} } = this.dialog
                     const params = {
-                        templateName: this.dialog.formData.templateName,
-                        categoryId: this.dialog.formData.categoryId,
+                        templateName: formData.templateName,
+                        categoryId: formData.categoryId,
                         belongProjectId: this.projectId,
-                        fromPageCode: this.fromTemplate.fromPageCode
+                        fromPageCode: this.fromTemplate.fromPageCode,
+                        previewImg: formData.previewImg || undefined
                     }
-                    if (this.actionType !== 'apply' && this.isPlatformAdmin) {
-                        if (this.dialog.formData.isOffcial && !this.dialog.formData.offcialType) {
+                    if (this.actionType !== 'apply' && this.iamNoResourcesPerm[this.$IAM_ACTION.manage_platform[0]]) {
+                        if (formData.isOffcial && !formData.offcialType) {
                             this.$bkMessage({
                                 theme: 'error',
                                 message: '公开模板分类不能为空'
                             })
                             return
                         } else {
-                            Object.assign(params, { isOffcial: this.dialog.formData.isOffcial, offcialType: this.dialog.formData.offcialType })
+                            Object.assign(params, { isOffcial: formData.isOffcial, offcialType: formData.offcialType })
                         }
                     }
                     const data = {
                         id: this.templateId,
                         fromProjectId: this.fromTemplate.belongProjectId,
                         params,
-                        templateInfo: [{ templateName: this.dialog.formData.templateName, belongProjectId: this.projectId, versionId: this.versionId, categoryId: this.dialog.formData.categoryId }]
+                        templateInfo: [{ templateName: formData.templateName, belongProjectId: this.projectId, versionId: this.versionId, categoryId: formData.categoryId }]
                     }
                     if (this.actionType === 'apply') {
                         const { varList, funcList } = await this.getVarAndFuncList(this.fromTemplate)

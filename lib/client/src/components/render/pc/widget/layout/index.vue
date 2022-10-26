@@ -1,100 +1,59 @@
 <template>
     <component
         :class="['lesscode-editor-layout',{ 'form-page-width': pageDetail.nocodeType === 'FORM' }]"
-        :style="style"
         :is="layoutCom">
         <slot />
     </component>
 </template>
 <script>
-    import { mapGetters, mapMutations } from 'vuex'
-    import LC from '@/element-materials/core'
+    import { defineComponent, computed, onMounted } from '@vue/composition-api'
+    import useComponentAction from '../../../mobile/widget/component-action-use'
+    import { useStore } from '@/store'
+    import { useRoute } from '@/router'
+
     import LayoutEmpty from './components/empty'
     import LayoutLeftRight from './components/left-right'
     import LayoutComplex from './components/complex'
     import LayoutTopBottom from './components/top-bottom'
 
-    const componentMap = {
-        'empty': LayoutEmpty,
-        'left-right': LayoutLeftRight,
-        'complex': LayoutComplex,
-        'top-bottom': LayoutTopBottom
-    }
-
-    export default {
-        data () {
-            return {
-                layout: 'left-right',
-                style: {}
+    export default defineComponent({
+        setup () {
+            const store = useStore()
+            const route = useRoute()
+            const pageDetail = store.getters['page/pageDetail']
+            const componentMap = {
+                'empty': LayoutEmpty,
+                'left-right': LayoutLeftRight,
+                'complex': LayoutComplex,
+                'top-bottom': LayoutTopBottom
             }
-        },
-        computed: {
-            ...mapGetters('layout', ['pageLayout']),
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapGetters('page', ['pageDetail']),
-            layoutCom () {
-                if (!componentMap[this.layout]) {
+            const { layout } = useComponentAction('.lesscode-editor-layout .container-content')
+            const layoutCom = computed(() => {
+                if (!componentMap[layout.value]) {
                     return 'div'
                 }
-                return componentMap[this.layout]
-            }
-        },
-        watch: {
-            pageLayout: {
-                handler (pageLayout) {
-                    const {
-                        showName,
-                        layoutType,
-                        layoutContent = {}
-                    } = pageLayout
-
-                    this.layout = layoutType
-                    this.setCurTemplateData({
-                        showName,
-                        layoutType,
-                        ...layoutContent
-                    })
-                    this.applyPageSetting()
-                },
-                immediate: true
-            }
-        },
-        created () {
-            this.projectId = this.$route.params.projectId
-            this.fetchPageList()
-            LC.addEventListener('setPageStyle', this.applyPageSetting)
-            this.$once('hook:beforeDestroy', () => {
-                LC.removeEventListener('setPageStyle', this.applyPageSetting)
+                return componentMap[layout.value]
             })
-        },
-        mounted () {
-            this.applyPageSetting()
-        },
-        methods: {
-            ...mapMutations('drag', ['setCurTemplateData']),
-            /**
-             * @desc 引用页面样式配置
-             */
-            applyPageSetting () {
-                this.$nextTick(() => {
-                    const pageStyle = LC.pageStyle
-                    this.style = {}
-                    const $pageContentTarget = document.querySelector('.lesscode-editor-layout .container-content')
-                    $pageContentTarget && Object.keys(pageStyle).forEach(key => {
-                        if (key !== 'min-width') {
-                            $pageContentTarget.style[key] = pageStyle[key] || ''
-                        }
-                    })
+
+            const fetchPageList = () => {
+                store.dispatch('route/getProjectPageRoute', {
+                    projectId: route.params.projectId,
+                    versionId: store.getters['projectVersion/currentVersionId']
                 })
-            },
-            fetchPageList () {
-                this.$store.dispatch('route/getProjectPageRoute', {
-                    projectId: this.projectId,
-                    versionId: this.versionId
-                })
+            }
+
+            onMounted(() => {
+                fetchPageList()
+            })
+
+            return {
+                layout,
+                layoutCom,
+                pageDetail
             }
         }
-    }
+    })
+
 </script>
 <style lang='postcss'>
     @import "@/css/mixins/scroller";
@@ -170,7 +129,7 @@
             position: relative;
             height: calc(100vh - 300px);
             border: 1px solid transparent;
-            overflow-y: scroll;
+            overflow-y: auto;
             @mixin scroller;
             &:hover{
                 border: 1px dashed #3a84ff;

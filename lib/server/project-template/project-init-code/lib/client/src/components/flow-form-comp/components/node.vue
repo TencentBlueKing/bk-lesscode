@@ -1,47 +1,50 @@
 <template>
     <div class="node-data-manage">
         <div v-if="!initDataLoading" class="node-tab-wrapper">
-            <bk-tab :active.sync="activeNode" :label-height="32" @tab-change="handleTabChange">
+            <bk-tab :active="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
                     :key="node.id"
                     :name="node.id"
-                    :label="node.name">
+                    :label="`【${node.name}】节点`">
                 </bk-tab-panel>
             </bk-tab>
-            <div class="opereate-btn">
+            <div class="opereate-btns">
                 <!-- <bk-button>导出</bk-button>
                 <bk-button>下载流程附件</bk-button> -->
                 <i
                     v-if="filters.length > 0"
                     class="bk-icon icon-funnel filter-switch-icon"
-                    @click="showFilters = !showFilters">
+                    @click="showFilter = !showFilter">
                 </i>
             </div>
         </div>
         <div class="node-data-content" v-bkloading="{ isLoading: formDataLoading }">
-            <filters
-                v-if="filters.length > 0 && showFilters"
-                :filters="filters"
-                :fields="fields"
-                :system-fields="systemFields">
-            </filters>
-            <table-fields
-                style="margin-top: 16px"
-                :table-config="tableConfig"
-                :fields="fields"
-                :form-id="formIds[activeNode]"
-                :table-name="tableName"
-                :system-fields="systemFields">
-            </table-fields>
+            <template v-if="!formDataLoading">
+                <filters
+                    v-if="filters.length > 0 && showFilter"
+                    :filters="filters"
+                    :fields="fields"
+                    :value="filtersData"
+                    @change="handleFilterDataChange">
+                </filters>
+                <table-fields
+                    v-if="tableName"
+                    style="margin-top: 16px"
+                    :table-config="tableConfig"
+                    :fields="fields"
+                    :form-id="formIds[activeNode]"
+                    :table-name="tableName"
+                    :filters-data="filtersData">
+                </table-fields>
+            </template>
         </div>
     </div>
 </template>
 <script>
     import { mapGetters } from 'vuex'
-    import { messageError } from '@/common/bkmagic'
     import { formMap } from 'shared/form'
-    import { FLOW_SYS_FIELD } from '../common/field.js'
+    import queryStrSearchMixin from '../common/query-str-search-mixin'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
 
@@ -51,6 +54,7 @@
             Filters,
             TableFields
         },
+        mixins: [queryStrSearchMixin],
         props: {
             formIds: {
                 type: Object,
@@ -60,20 +64,24 @@
                 type: Object,
                 default: () => ({})
             },
+            systemFields: {
+                type: Array,
+                default: () => []
+            },
             serviceId: Number,
             viewType: String
         },
         data () {
             return {
                 initDataLoading: true,
-                formDataLoading: true,
+                formDataLoading: false,
                 nodes: [],
-                activeNode: '',
+                activeNode: Number(this.$route.query.activeNode) || '',
                 formDataMap: {},
                 filters: [],
-                systemFields: FLOW_SYS_FIELD,
                 tableConfig: [],
-                showFilters: true
+                showFilter: true,
+                filtersData: {}
             }
         },
         computed: {
@@ -88,8 +96,12 @@
         async created () {
             await this.getInitData()
             if (this.nodes.length > 0) {
-                this.activeNode = this.nodes[0].id
-                this.getFormData()
+                if (!this.activeNode) { // 如果页面加载时querystring不带当前选中节点tab信息
+                    this.activeNode = this.nodes[0].id
+                }
+                await this.getFormData()
+                this.setNodeTabConfig()
+                this.setInitFilterData()
             }
         },
         methods: {
@@ -106,15 +118,20 @@
                     })
                     this.nodes = nodes
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.initDataLoading = false
                 }
             },
             async getFormData () {
                 try {
-                    this.formDataLoading = true
                     let formDetail = {}
+                    if (this.activeNode in this.formDataMap) {
+                        formDetail = this.formDataMap[this.activeNode]
+                        return
+                    }
+
+                    this.formDataLoading = true
                     if (this.viewType === 'preview') {
                         const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds[this.activeNode] } })
                         const { tableName, content } = res.data
@@ -123,31 +140,43 @@
                             content: JSON.parse(content)
                         }
                     } else {
-                        formDetail = formMap[this.formIds]
+                        formDetail = formMap[this.formIds[this.activeNode]]
                     }
                     this.$set(this.formDataMap, this.activeNode, {
                         tableName: formDetail.tableName,
                         content: formDetail.content
                     })
                 } catch (e) {
-                    messageError(e.message || e)
+                    console.error(e.message || e)
                 } finally {
                     this.formDataLoading = false
                 }
             },
-            handleTabChange (val) {
-                this.activeNode = val
-                if (val in this.config) {
-                    this.filters = this.config[val].filters || []
-                    this.tableConfig = this.config[val].tableConfig || []
+            setNodeTabConfig () {
+                if (this.activeNode in this.config) {
+                    this.filters = this.config[this.activeNode].filters || []
+                    this.tableConfig = this.config[this.activeNode].tableConfig || []
                 } else {
                     this.filters = []
                     this.tableConfig = []
-                    this.$set(this.config, val, { filters: [], tableConfig: [] })
+                    this.$set(this.config, this.activeNode, { filters: [], tableConfig: [] })
                 }
-                if (!(val in this.formDataMap)) {
-                    this.getFormData()
+            },
+            handleTabChange (val) {
+                const { path, hash, params, query } = this.$route
+                const qs = { activeTab: 'node', activeNode: val }
+                if ('pageCode' in query) {
+                    qs.pageCode = query.pageCode
                 }
+                this.$router.replace({ path, hash, params, query: qs })
+                this.activeNode = val
+                this.filtersData = {}
+                this.setNodeTabConfig()
+                this.getFormData()
+            },
+            handleFilterDataChange (val) {
+                this.filtersData = val
+                this.updateQueryString()
             }
         }
     }
@@ -160,7 +189,10 @@
         margin-bottom: 16px;
     }
     .bk-tab {
+        padding: 4px;
         max-width: calc(100% - 250px);
+        background: #f0f1f5;
+        border-radius: 2px;
         >>> .bk-tab-section {
             display: none;
         }
@@ -187,11 +219,11 @@
             }
         }
     }
-    .opereate-btn {
+    .opereate-btns {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 230px;
+        max-width: 230px;
         .bk-button {
             cursor: inherit;
         }
@@ -209,5 +241,9 @@
                 color: #3a84ff;
             }
         }
+    }
+
+    .node-data-content {
+        min-height: 260px;
     }
 </style>

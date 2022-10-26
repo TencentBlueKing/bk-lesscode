@@ -29,7 +29,8 @@
                     @fastCreateNode="handleFastCreateNode"
                     @cloneNode="handleCloneNode"
                     @onNodeClick="handleNodeClick"
-                    @delete="handleDeleteNode">
+                    @delete="handleDeleteNode"
+                    @preview="$emit('preview')">
                 </node-template>
             </template>
         </bk-flow>
@@ -57,7 +58,6 @@
     import { mapGetters, mapState } from 'vuex'
     import { uuid } from '@/common/util.js'
     import { NODE_TYPE_LIST } from '../constants/nodes.js'
-    import { messageError } from '@/common/bkmagic'
     import BkFlow from './flow.js'
     import PalettePanel from './palettePanel.vue'
     import NodeTemplate from './nodeTemplate.vue'
@@ -67,7 +67,7 @@
     const endpointOptions = {
         endpoint: 'Dot',
         // connector: ['Flowchart', { stub: [10, 16], alwaysRespectStub: true, gap: 2, cornerRadius: 10 }],
-        connector: ['Bezier', { curviness: 5 }],
+        connector: ['Bezier', { curviness: 10 }],
         connectorOverlays: [['PlainArrow', { width: 8, length: 6, location: 1, id: 'arrow' }]],
         paintStyle: { fill: 'rgba(0, 0, 0, 0)', stroke: '', strokeWidth: 1, radius: 6 },
         hoverPaintStyle: { fill: '#EE8F62', stroke: '#EE8F62', radius: 8 },
@@ -144,7 +144,7 @@
             }
         },
         computed: {
-            ...mapGetters('nocode/flow', ['flowNodeForms']),
+            ...mapGetters('nocode/flow', ['flowNodeForms', 'flowNodes']),
             ...mapState('nocode/flow', ['flowConfig'])
         },
         watch: {
@@ -255,6 +255,9 @@
                     type
                 }
                 this.$refs.flowCanvas.createNode(node)
+                this.$nextTick(() => {
+                    this.updateStoreNodes()
+                })
             },
             handleNodeMoveStop (node) {
                 try {
@@ -287,9 +290,10 @@
                 }
                 const index = this.canvasData.nodes.findIndex(item => item.id === node.id)
                 this.canvasData.nodes.splice(index, 1, addedNode)
+                this.updateStoreNodes()
                 if (node.type === 'NORMAL') {
                     const { x, y } = node
-                    const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' }, true)
+                    const procNode = await this.saveNode({ x: x + 340, y, type: 'DATA_PROC' }, res.id)
                     const { id, axis, type, name } = procNode
                     const dataProcNode = {
                         id: `node_${id}`,
@@ -311,10 +315,12 @@
                                 id: `node_${procNode.id}`
                             }
                         })
+                        this.updateStoreNodes()
                     })
                 }
+                this.setFlowUnDeployed()
             },
-            async saveNode (node, isSystemAdd = false) {
+            async saveNode (node, dataSourceId) {
                 try {
                     const { x, y, type } = node
                     const nodeDesc = NODE_TYPE_LIST.find(item => item.type === type)
@@ -345,8 +351,8 @@
                             worksheet_id: ''
                         }
                         params.extras.webhook_info = {}
-                        if (isSystemAdd) {
-                            params.extras.is_system_add = true
+                        if (dataSourceId) {
+                            params.extras.data_source_id = dataSourceId
                         }
                     } else if (type === 'TASK') {
                         params.extras.node_type = 'TASK'
@@ -355,14 +361,13 @@
                     }
                     return this.$store.dispatch('nocode/flow/createNode', params)
                 } catch (e) {
-                    // this.$refs.flowCanvas.removeNode(addedNode);
                     console.error(e)
-                    messageError(e.message || e)
                 }
             },
             async handleCloneNode (nodeId) {
                 try {
                     const res = await this.$store.dispatch('nocode/flow/cloneFlowNode', nodeId)
+                    this.setFlowUnDeployed()
                     const { id, axis, type, name } = res
                     const addedNode = {
                         id: `node_${id}`,
@@ -373,6 +378,9 @@
                         nodeInfo: cloneDeep(res)
                     }
                     this.$refs.flowCanvas.createNode(addedNode)
+                    this.$nextTick(() => {
+                        this.updateStoreNodes()
+                    })
                 } catch (e) {
                     console.error(e)
                 }
@@ -398,6 +406,7 @@
                         to_state: tNode.nodeInfo.id
                     }
                     const res = await this.$store.dispatch('nocode/flow/createLine', params)
+                    this.setFlowUnDeployed()
                     const lineData = {
                         source: {
                             arrow: res.axis.start,
@@ -427,10 +436,10 @@
                     console.error(e)
                 }
             },
-            handleDeleteNode (node) {
+            async handleDeleteNode (node) {
                 try {
                     this.$refs.flowCanvas.removeNode(node)
-                    this.$store.dispatch('nocode/flow/delNode', node.nodeInfo.id)
+                    await this.$store.dispatch('nocode/flow/delNode', node.nodeInfo.id)
                     if (node.nodeInfo.id in this.flowNodeForms) {
                         this.$store.commit('nocode/flow/delFlowNodeFormId', node.nodeInfo.id)
                         this.$store.dispatch('nocode/flow/editFlow', {
@@ -438,6 +447,10 @@
                             formIds: JSON.stringify(this.flowNodeForms)
                         })
                     }
+                    this.setFlowUnDeployed()
+                    this.$nextTick(() => {
+                        this.updateStoreNodes()
+                    })
                 } catch (e) {
                     console.log(e)
                 }
@@ -537,6 +550,7 @@
                 try {
                     this.lineSavePending = true
                     const res = await this.$store.dispatch('nocode/flow/updateLine', data)
+                    this.setFlowUnDeployed()
                     const line = this.canvasData.lines.find(item => item.lineInfo.id === data.id)
                     this.$refs.flowCanvas.removeLineOverlay(
                         { source: { id: line.source.id }, target: { id: line.target.id } },
@@ -573,6 +587,7 @@
                 try {
                     this.lineDeletePending = true
                     await this.$store.dispatch('nocode/flow/deleteLine', this.lineConfig.id)
+                    this.setFlowUnDeployed()
                     this.$refs.flowCanvas.removeConnector({
                         source: { id: this.lineConfig.sNode.id },
                         target: { id: this.lineConfig.tNode.id }
@@ -586,8 +601,16 @@
                     this.lineDeletePending = false
                 }
             },
+            async setFlowUnDeployed () {
+                await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+            },
             hanldeLineConfigPanelClose () {
                 this.showLineConfigPanel = false
+            },
+            updateStoreNodes () {
+                const nodes = this.canvasData.nodes.map(item => item.nodeInfo)
+                this.$store.commit('nocode/flow/setFlowNodes', nodes)
             }
         }
     }
@@ -606,7 +629,7 @@
       width: 56px;
       height: 100%;
       background-color: #fff;
-      border-right: 1px 0 0 0 #dcdee5;
+      border-right: 1px solid #dcdee5;
     }
     .tool-panel-wrap {
       top: 14px;

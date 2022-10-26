@@ -83,19 +83,8 @@
 
         computed: {
             ...mapGetters(['user']),
-            ...mapGetters('member', ['userPerm']),
 
             computedPermissionInfo () {
-                if (
-                    this.userPerm.roleId === 2
-                    && this.user.username !== this.group.createUser
-                ) {
-                    return {
-                        hasPermission: false,
-                        message: '无删除权限'
-                    }
-                }
-
                 if (this.group?.children?.length > 0) {
                     return {
                         hasPermission: false,

@@ -45,10 +45,10 @@
                     error-display-type="normal">
                     <bk-select v-model="formItemData.type">
                         <bk-option
-                            v-for="itemName in formItemTypeList"
-                            :id="itemName"
-                            :name="itemName"
-                            :key="itemName" />
+                            v-for="item in formItemTypeList"
+                            :id="item.id"
+                            :name="`${item.id}(${item.name})`"
+                            :key="item.id" />
                     </bk-select>
                 </bk-form-item>
                 <div v-if="isShow" style="margin: 30px 0">
@@ -107,13 +107,14 @@
                 formItemData: {},
                 title: '表单项配置',
                 formItemTypeList: [
-                    'input',
-                    'select',
-                    'date-picker',
-                    'time-picker',
-                    'switcher',
-                    'radio-group',
-                    'checkbox-group'
+                    { id: 'input', name: '输入框' },
+                    { id: 'select', name: '下拉选框' },
+                    { id: 'date-picker', name: '日期选择' },
+                    { id: 'time-picker', name: '时间选择' },
+                    { id: 'switcher', name: '开关' },
+                    { id: 'radio-group', name: '单选框' },
+                    { id: 'checkbox-group', name: '多选框' },
+                    { id: 'checkbox', name: '复选框' }
                 ],
                 rules: {
                     label: [
