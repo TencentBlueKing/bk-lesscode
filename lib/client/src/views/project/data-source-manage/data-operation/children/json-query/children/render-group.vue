@@ -41,6 +41,7 @@
                 :condition-list="renderQueryGroup && renderQueryGroup.having"
                 :table-list="tableList"
                 :allow-clear="true"
+                :custom-validate="validate"
                 @change="handleHavingChange"
             ></select-condition>
         </select-wrapper>
@@ -66,7 +67,7 @@
         getDefaultConnect
     } from 'shared/data-source'
 
-    interface IQueryGroup {
+    export interface IQueryGroup {
         having: ICondition[],
         fields: IField[]
     }
@@ -88,6 +89,14 @@
 
         setup (props, { emit }) {
             const renderQueryGroup = ref()
+
+            const validate = ({ fieldId }) => {
+                let message = ''
+                if (!props.queryGroup?.fields?.find(field => field.fieldId === fieldId)) {
+                    message = 'HAVING 字段必须是查询的字段或者 GROUP 的条件字段'
+                }
+                return message
+            }
 
             const handleAdd = () => {
                 renderQueryGroup.value = getDefaultGroupBy()
@@ -140,6 +149,7 @@
 
             return {
                 renderQueryGroup,
+                validate,
                 handleAdd,
                 handleChange,
                 handleTableChange,

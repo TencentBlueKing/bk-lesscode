@@ -43,7 +43,6 @@
                 return {
                     type: this.type,
                     data: {
-                        labels: this.xAxis,
                         datasets: []
                     },
                     options: {
@@ -57,7 +56,7 @@
             chartOptions () {
                 /** options参数具有最高优先级，用于更高级的自定义配置 */
                 if (Object.keys(this.options).length) {
-                    return this.options
+                    return JSON.parse(JSON.stringify(this.options))
                 }
 
                 const { list: colorList } = colorSets.find(item => item.name === this.colorSet)
@@ -71,11 +70,8 @@
                 handler (val, old) {
                     if (JSON.stringify(val) === JSON.stringify(old)) return
 
-                    const { options, data } = val
-        
-                    this.chart.options = options
-                    this.chart.data = data
-                    this.chart.update()
+                    this.chart.destroy()
+                    this.chart = new Chart(this.ctx, val)
                 }
             }
         },
