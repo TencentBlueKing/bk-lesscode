@@ -1,40 +1,49 @@
 <template>
-    <section v-if="queryResult.length && queryResult[0].length">
-        <bk-table
-            v-for="(data, index) in displayResult"
-            :key="index"
-            :outer-border="false"
-            :header-border="false"
-            :header-cell-style="{ background: '#f0f1f5' }"
-            :data="data"
-            :pagination="paginationList[index]"
-            @page-change="(val) => handlePageChange(val, index)"
-            @page-limit-change="(val) => handlePageLimitChange(val, index)"
-            class="mt20 g-hairless-table"
-        >
-            <bk-table-column
-                v-for="column in Object.keys(data[0])"
-                :key="column"
-                :label="column"
-                :prop="column"
-                :formatter="formatter"
-                show-overflow-tooltip
-            />
-        </bk-table>
+    <section v-if="isSuccessfulQuery">
+        <bk-exception
+            v-if="queryErrorMessage"
+            class="exception-part"
+            type="500"
+            scene="part">
+            <span>{{ queryErrorMessage }}</span>
+        </bk-exception>
+        <section v-else-if="queryResult.length && queryResult[0].length">
+            <bk-table
+                v-for="(data, index) in displayResult"
+                :key="index"
+                :outer-border="false"
+                :header-border="false"
+                :header-cell-style="{ background: '#f0f1f5' }"
+                :data="data"
+                :pagination="paginationList[index]"
+                @page-change="(val) => handlePageChange(val, index)"
+                @page-limit-change="(val) => handlePageLimitChange(val, index)"
+                class="mt20 g-hairless-table"
+            >
+                <bk-table-column
+                    v-for="column in Object.keys(data[0] || {})"
+                    :key="column"
+                    :label="column"
+                    :prop="column"
+                    :formatter="formatter"
+                    show-overflow-tooltip
+                />
+            </bk-table>
+        </section>
+        <bk-exception
+            v-else
+            class="exception-part"
+            type="empty"
+            scene="part">
+            <span>暂无数据</span>
+        </bk-exception>
     </section>
-    <bk-exception
-        v-else-if="queryErrorMessage"
-        class="exception-part"
-        type="500"
-        scene="part">
-        <span>{{ queryErrorMessage }}</span>
-    </bk-exception>
     <bk-exception
         v-else
         class="exception-part"
         type="empty"
         scene="part">
-        <span>暂无数据</span>
+        <span>请先点击查询按钮</span>
     </bk-exception>
 </template>
 
@@ -61,10 +70,11 @@
             sql: String,
             tableList: Array,
             dataSourceType: String,
-            bkBaseBizList: Array
+            bkBaseBizList: Array,
+            isSuccessfulQuery: Boolean
         },
 
-        setup (props) {
+        setup (props, { emit }) {
             const queryResult = ref([])
             const displayResult = ref([])
             const queryErrorMessage = ref('')
@@ -116,38 +126,43 @@
                     queryRecord.sql = props.sql
                 }
                 // 执行查询
-                return store
-                    .dispatch('dataSource/queryBySql', {
-                        sql: queryRecord.sql,
-                        dataSourceType: props.dataSourceType
-                    })
-                    .then(({ data, spendTime }) => {
-                        // 存储总数
-                        queryResult.value = data
-                        // 分页数据
-                        data.forEach((item) => {
-                            paginationList.value.push({
-                                limit: 10,
-                                current: 1,
-                                count: item.length
-                            })
-                            displayResult.value.push([])
+                return new Promise((resolve, reject) => {
+                    store
+                        .dispatch('dataSource/queryBySql', {
+                            sql: queryRecord.sql,
+                            dataSourceType: props.dataSourceType
                         })
-                        // 计算需要展示的数据
-                        calcDisplayResult()
-                        // 查询记录
-                        queryRecord.status = 0
-                        queryRecord.spendTime = spendTime
-                    })
-                    .catch((err) => {
-                        queryErrorMessage.value = err.message
-                        queryRecord.status = 1
-                        queryRecord.message = err.message
-                    })
-                    .finally(() => {
-                        // 记录本次查询
-                        store.dispatch('dataSource/addQueryHistory', queryRecord)
-                    })
+                        .then(({ data, spendTime }) => {
+                            // 存储总数
+                            queryResult.value = data
+                            // 分页数据
+                            data.forEach((item) => {
+                                paginationList.value.push({
+                                    limit: 10,
+                                    current: 1,
+                                    count: item.length
+                                })
+                                displayResult.value.push([])
+                            })
+                            // 计算需要展示的数据
+                            calcDisplayResult()
+                            // 查询记录
+                            queryRecord.status = 0
+                            queryRecord.spendTime = spendTime
+                            emit('changeQueryStatus', true)
+                            resolve()
+                        })
+                        .catch((err) => {
+                            queryErrorMessage.value = err.message
+                            queryRecord.status = 1
+                            queryRecord.message = err.message
+                            reject(err)
+                        })
+                        .finally(() => {
+                            // 记录本次查询
+                            store.dispatch('dataSource/addQueryHistory', queryRecord)
+                        })
+                })
             }
 
             // 本地翻页

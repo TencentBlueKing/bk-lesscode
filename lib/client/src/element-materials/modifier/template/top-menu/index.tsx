@@ -11,7 +11,7 @@
 
 import { defineComponent } from '@vue/composition-api'
 import { VNode } from 'vue'
-import menuLayout from './base-menu-template.tsx'
+import menuLayout from './base-menu-template'
 
 export default defineComponent({
     components: {

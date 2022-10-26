@@ -2,12 +2,15 @@
 
 ## 配置文件说明
 
-在将代码拉取到本地准备开发之前，需先将配置信息填写好，相应的配置文件都位于`lesscode/lib/server/conf`目录下，
+在将代码拉取到本地准备开发之前，需先将配置信息填写好，相应的配置文件位于`lesscode/lib/server/conf`和根目录下，
 
-- 其中必须配置的文件为data-base.js、db-migrate.json、http.js
+- 其中必须配置的文件为data-base.js、db-migrate.json、http.js、.bk.local.env
 - 可选的配置文件为npm.js和bk-repo.js
 
 ### 各配置文件说明如下： 
+#### .bk.local.env (全局变量配置)
+
+在项目根目录下复制`.bk.development.env`文件，并重命名为`.bk.local.env`，依照注释填写相关值。
 
 #### data-base.js (用于数据库的连接)
 

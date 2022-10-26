@@ -113,7 +113,7 @@
                 return '导入模板'
             },
             uploadUrl () {
-                return `${AJAX_URL_PREFIX}/page/importJson`
+                return `${process.env.BK_AJAX_URL_PREFIX}/page/importJson`
             }
         },
         watch: {

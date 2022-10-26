@@ -9,6 +9,10 @@
                 </form-fields>
                 <div class="operate-btns">
                     <bk-button
+                        v-bk-tooltips="{
+                            disabled: viewType === 'projectCode' || type === 'FORM' || flowDeployed,
+                            content: '流程有更新未部署，提单或流程执行可能会失败'
+                        }"
                         theme="primary"
                         style="min-width: 88px; margin-right: 4px;"
                         :loading="submitPending"
@@ -56,6 +60,7 @@
             serviceId: Number,
             versionId: Number,
             tableName: String,
+            flowDeployed: Boolean,
             viewType: {
                 type: String,
                 default: 'projectCode'
@@ -175,8 +180,7 @@
                                 return message
                             }
                         }
-                        const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
-                        await this.$http.post(path, params, reqConfig)
+                        await this.$http.post('/nocode/ticket/create_ticket_with_version/', params, reqConfig)
                     } else {
                         await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     }

@@ -1,13 +1,12 @@
 <template>
     <div class="project-layout-props-modifier">
         <div v-for="prop in propList" :key="prop.id" class="prop-box">
-            <div class="prop-name">
+            <div class="prop-name" @click="toggleShowProp(prop.id)">
                 <i
                     :class="{
                         'bk-icon icon-angle-down': true,
                         close: !prop.isShow
                     }"
-                    @click="toggleShowProp(prop.id)"
                 ></i>
                 <div
                     :class="{ 'label': true, 'has-tips': prop.tips }"
@@ -60,7 +59,7 @@
                             :value="calcValue(prop, 'topMenuTheme')"
                             @change="value => handleValueChange(prop.name, value, prop.defaultValue, 'topMenuTheme')">
                             <bk-option
-                                v-for="option in themeColorList"
+                                v-for="option in topMenuMainColor"
                                 :key="option.id"
                                 :id="option.id"
                                 :name="option.name">
@@ -105,6 +104,12 @@
     </div>
 </template>
 <script>
+    import {
+        BG_COLOR_OPTIONS,
+        MAIN_COLOR_OPTIONS,
+        TOP_MENU_THEME_OPTIONS
+    } from './color-options'
+
     export default {
         name: '',
         inheritAttrs: false,
@@ -123,6 +128,8 @@
         },
         data () {
             return {
+                backgroundColorList: BG_COLOR_OPTIONS,
+                topMenuMainColor: TOP_MENU_THEME_OPTIONS,
                 propList: [
                     {
                         id: 'theme',
@@ -145,27 +152,7 @@
                         isShow: true
                     }
                 ],
-                backgroundColorList: [
-                    { id: '#182132', name: '科技蓝' },
-                    { id: '#0549BB', name: '蓝色' },
-                    { id: '#1a1a1a', name: '黑色' },
-                    { id: '#7c0000', name: '红色' },
-                    { id: '#815e01', name: '棕黄色' },
-                    { id: '#1c8d50', name: '绿色' },
-                    { id: '#266994', name: '青色' },
-                    { id: '#374dc6', name: '紫色' },
-                    { id: '#ffffff', name: '白色' }
-                ],
-                themeColorList: [
-                    { id: '#3c96ff', name: '蓝色' },
-                    { id: '#1a1a1a', name: '黑色' },
-                    { id: '#7c0000', name: '红色' },
-                    { id: '#815e01', name: '棕黄色' },
-                    { id: '#1c8d50', name: '绿色' },
-                    { id: '#266994', name: '青色' },
-                    { id: '#374dc6', name: '紫色' },
-                    { id: '#ffffff', name: '白色' }
-                ]
+                themeColorList: MAIN_COLOR_OPTIONS
             }
         },
         computed: {
@@ -207,6 +194,7 @@
                 return defaultValue
             },
             handleValueChange (name, value, defaultValue, prop) {
+                console.log(name, value, defaultValue, prop, 12)
                 if (name === '主题配置') {
                     const themeConfig = Object.assign({}, this.themeConfig)
                     themeConfig[prop] = value

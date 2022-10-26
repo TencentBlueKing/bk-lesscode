@@ -11,7 +11,6 @@
                 <span class="limit-title">开始</span>
                 <bk-input
                     class="limit-number"
-                    type="number"
                     :value="renderLimit && renderLimit.index"
                     @change="(val) => handleChange(val, 'index')"
                 ></bk-input>
@@ -20,7 +19,6 @@
                 <span class="limit-title">长度</span>
                 <bk-input
                     class="limit-number"
-                    type="number"
                     :value="renderLimit && renderLimit.length"
                     @change="(val) => handleChange(val, 'length')"
                 ></bk-input>
@@ -36,11 +34,18 @@
         defineComponent,
         ref,
         PropType,
-        watch
+        watch,
+        onBeforeUnmount
     } from '@vue/composition-api'
     import {
         getDefaultLimit
     } from 'shared/data-source'
+    import {
+        uuid
+    } from 'shared/util'
+    import {
+        updateVariable
+    } from './composables/use-variable'
 
     interface ILimit {
         index: number,
@@ -58,6 +63,7 @@
         },
 
         setup (props, { emit }) {
+            const id = uuid()
             const renderLimit = ref()
 
             const handleInit = () => {
@@ -73,6 +79,7 @@
             const handleChange = (val, key) => {
                 renderLimit.value[key] = val
                 triggleUpdate()
+                updateVariable(val, id)
             }
 
             const triggleUpdate = () => {
@@ -88,6 +95,11 @@
                     immediate: true
                 }
             )
+
+            onBeforeUnmount(() => {
+                // 清除变量使用
+                updateVariable('', id)
+            })
 
             return {
                 renderLimit,

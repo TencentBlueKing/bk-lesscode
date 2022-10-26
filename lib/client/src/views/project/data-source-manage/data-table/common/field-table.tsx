@@ -83,7 +83,10 @@ export default defineComponent({
     },
 
     props: {
-        data: Array
+        data: {
+            type: Array,
+            default: () => ([])
+        }
     },
 
     setup (props: ITableStatus, { emit }) {

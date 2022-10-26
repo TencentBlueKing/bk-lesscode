@@ -88,17 +88,30 @@
         methods: {
             // 针对chart类型，将动态返回的remoteOptions与options合并
             updateChartOptions (res) {
-                if (this.componentNode.renderProps['options']
-                    && this.componentNode.renderProps['options'].renderValue
-                    && typeof this.componentNode.renderProps['options'].renderValue === 'object') {
-                    const options = Object.assign({}, this.componentNode.renderProps['options'].renderValue, res)
-                    this.componentNode.renderProps['options'] = {
-                        ...this.componentNode.renderProps['options'],
-                        val: options
+                try {
+                    if (this.componentNode.renderProps['options']
+                        && this.componentNode.renderProps['options'].renderValue
+                        && typeof this.componentNode.renderProps['options'].renderValue === 'object') {
+                        const options = Object.assign({}, this.componentNode.renderProps['options'].renderValue, res)
+                        this.componentNode.renderProps['options'] = {
+                            ...this.componentNode.renderProps['options'],
+                            val: options
+                        }
+                        this.componentNode.renderProps['options'].renderValue = options
+
+                        this.$bkMessage({
+                            theme: 'success',
+                            message: `图表配置已更新，${Object.keys(res).join('、')}选项已被远程数据覆盖`
+                        })
+
+                        // this.batchUpdate({
+                        //     renderProps: this.componentNode.renderProps
+                        // })
                     }
-                    this.componentNode.renderProps['options'].renderValue = options
-                    this.batchUpdate({
-                        renderProps: this.componentNode.renderProps
+                } catch (error) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: error
                     })
                 }
             },

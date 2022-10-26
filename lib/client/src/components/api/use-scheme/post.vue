@@ -10,6 +10,7 @@
                 :scheme="renderBodyParam"
                 :minus-disable="true"
                 :plus-brother-disable="true"
+                :disable="disabled"
                 :render-slot="renderSlot"
                 @minusNode="handleMinusNode"
                 @update="handleUpdate"
@@ -50,7 +51,8 @@
         props: {
             params: Object,
             renderSlot: Function,
-            getParamVal: Function
+            getParamVal: Function,
+            disabled: Boolean
         },
 
         setup (props, { emit }) {

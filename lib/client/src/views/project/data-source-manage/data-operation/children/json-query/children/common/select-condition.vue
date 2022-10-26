@@ -27,6 +27,7 @@
                 :field-id="condition.fieldId"
                 :table-name="condition.tableName"
                 :table-list="tableList"
+                :custom-validate="customValidate"
                 @change="(val) => handleTableChange(index, val)"
             />
             <select-type
@@ -36,10 +37,14 @@
                 @change="(val) => handleChange(index, val, 'expression')"
             />
             <bk-input
+                v-bk-tooltips="{
+                    content: '1. 可以输入逗号分隔的字符串表示数组<br>2. 可以输入类似 ${var} 的字符串表示变量，在生成函数的时候会自动生成同名参数，调用函数的时候传入具体值',
+                    width: '300px'
+                }"
                 class="select-value"
-                placeholder="请输入值，可以输入逗号分隔的字符串表示数组"
+                placeholder="请输入值或变量"
                 :value="condition.value"
-                @change="(val) => handleChange(index, val, 'value')"
+                @change="(val) => handleValueChange(index, val)"
             >
             </bk-input>
             <plus-icon
@@ -58,8 +63,10 @@
     import {
         defineComponent,
         PropType,
-        toRef
+        toRef,
+        onBeforeUnmount
     } from '@vue/composition-api'
+    import { ITable } from './select-table.vue'
     import SelectType from './select-type.vue'
     import SelectTableField from './select-table-field.vue'
     import PlusIcon from '@/components/plus-icon.vue'
@@ -69,13 +76,19 @@
         CONNECT_TYPE_LIST,
         getDefaultConnect
     } from 'shared/data-source'
+    import {
+        uuid
+    } from 'shared/util'
+    import {
+        updateVariable
+    } from '../composables/use-variable'
 
     export interface ICondition {
-        tableName: String,
-        fieldId: String,
-        expression: String,
-        value: String,
-        type: String
+        tableName: string;
+        fieldId: string;
+        expression: string;
+        value: string;
+        type: string;
     }
 
     export default defineComponent({
@@ -95,15 +108,20 @@
                 default: ''
             },
             tableList: {
-                type: Array
+                type: Array as PropType<ITable[]>
             },
             allowClear: {
                 type: Boolean,
                 default: false
+            },
+            customValidate: {
+                type: Function,
+                default: () => {}
             }
         },
 
         setup (props, { emit }) {
+            const id = uuid()
             const renderConditionList = toRef(props, 'conditionList')
             const conditionTypeList = Object
                 .keys(CONDITION_TYPE)
@@ -131,6 +149,12 @@
                 triggleUpdate()
             }
 
+            const handleValueChange = (index, val) => {
+                renderConditionList.value[index].value = val
+                triggleUpdate()
+                updateVariable(val, id)
+            }
+
             const handleChange = (index, val, key) => {
                 renderConditionList.value[index][key] = val
                 triggleUpdate()
@@ -140,6 +164,11 @@
                 emit('change', renderConditionList.value)
             }
 
+            onBeforeUnmount(() => {
+                // 清除变量使用
+                updateVariable('', id)
+            })
+
             return {
                 renderConditionList,
                 conditionTypeList,
@@ -147,6 +176,7 @@
                 handlePlusCondition,
                 handleMinusCondition,
                 handleTableChange,
+                handleValueChange,
                 handleChange
             }
         }

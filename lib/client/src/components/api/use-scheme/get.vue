@@ -13,6 +13,7 @@
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
                 :render-slot="renderSlot"
+                :disable="disabled"
                 @plusBrotherNode="handlePlusBrotherNode"
                 @minusNode="handleMinusNode"
                 @update="(param) => handleUpdate(index, param)"
@@ -55,7 +56,8 @@
         props: {
             params: Array,
             renderSlot: Function,
-            getParamVal: Function
+            getParamVal: Function,
+            disabled: Boolean
         },
 
         setup (props, { emit }) {

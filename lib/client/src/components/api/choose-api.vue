@@ -2,10 +2,13 @@
     <bk-select
         ref="treeRef"
         searchable
+        search-placeholder="请输入关键字搜索。如果没搜索到，可能是懒加载还未加载相应数据，请手动展开目录来寻找 API"
         :tag-fixed-height="false"
         :show-empty="false"
         :clearable="false"
         :scroll-height="300"
+        :popover-options="{ appendTo: 'parent' }"
+        :disabled="disabled"
         :remote-method="handleSearch"
         @toggle="handleToggle"
     >
@@ -53,6 +56,7 @@
     import { useRoute } from '@/router'
     import { getDataSourceApiList } from 'shared/data-source'
     import { isEmpty, uuid } from 'shared/util'
+    import { transItsmApiSchemeToDataSourceScheme } from 'shared/no-code'
 
     export default defineComponent({
         props: {
@@ -64,6 +68,15 @@
             excluded: {
                 type: Array,
                 default: () => ([])
+            },
+            // itsm系统对接的esb接口
+            useFlowEsbApi: {
+                type: Boolean,
+                default: false
+            },
+            disabled: {
+                type: Boolean,
+                default: false
             }
         },
 
@@ -96,6 +109,14 @@
                             }
                         ]
                     )
+                }
+                if (props.useFlowEsbApi) {
+                    defaultClassify.unshift({
+                        id: 'flow-esb-api',
+                        name: '蓝鲸网关 API',
+                        type: 'flow-esb-systems',
+                        children: []
+                    })
                 }
                 if (Array.isArray(props.excluded) && props.excluded.length) {
                     return defaultClassify.filter(item => !props.excluded.includes(item.id))
@@ -147,6 +168,10 @@
                         return getDataTableList(data)
                     case 'datasource-table':
                         return getDataTableApiList(data)
+                    case 'flow-esb-systems':
+                        return getFlowEsbSystems(data)
+                    case 'flow-esb-api-list':
+                        return getFlowEsbApiList(data)
                 }
             }
 
@@ -250,6 +275,31 @@
                 return getNodeValue(apiList, true)
             }
 
+            // 获取itsm对接的esb系统
+            const getFlowEsbSystems = (item) => {
+                return store.dispatch('nocode/flow/getEsbSystems')
+                    .then(res => {
+                        const data = res?.map((sysItem) => {
+                            sysItem.type = 'flow-esb-api-list'
+                            sysItem.children = []
+                            return sysItem
+                        })
+                        return getNodeValue(data)
+                    })
+            }
+
+            // 获取itsm对接系统的接口列表
+            const getFlowEsbApiList = (system) => {
+                return store.dispatch('nocode/flow/getEsbApis', { system_id: system.originId })
+                    .then(res => {
+                        const apiList = (res || []).map(api => {
+                            api.path = `${system.domain}${api.path}`
+                            return api
+                        })
+                        return getNodeValue(apiList, true)
+                    })
+            }
+
             // 触发值更新
             const chooseApi = (data, node) => {
                 if (!node.isLeaf || data.disabled) return
@@ -263,14 +313,16 @@
                     })
                     cur = cur.parent
                 } while (cur)
+                const apiType = path[path.length - 1]?.id
+                const apiData = apiType === 'flow-esb-api' ? transItsmApiSchemeToDataSourceScheme(data) : data
                 emit('change', {
                     path: path.reverse(),
-                    method: data.method.toLowerCase(),
-                    url: data.url,
-                    query: data.query || [],
-                    body: data.body || {},
-                    response: data.response || {},
-                    summary: data.summary
+                    method: apiData.method.toLowerCase(),
+                    url: apiData.url,
+                    query: apiData.query || [],
+                    body: apiData.body || {},
+                    response: apiData.response || {},
+                    summary: apiData.summary
                 })
                 treeRef
                     .value
@@ -294,7 +346,7 @@
 
             // 获取默认展开的节点
             const getDefaultExpandedNode = () => {
-                return ['lesscode-api', 'apigateway-api', 'datasource-api']
+                return ['lesscode-api', 'apigateway-api', 'datasource-api', 'flow-esb-api']
             }
 
             // 远程搜索

@@ -9,7 +9,7 @@
         name: 'FloatWorkbenchBlock',
         methods: {
             goToWorkbench () {
-                window.open(`${BK_ITSM_URL}/#/workbench/ticket/todo`, '_blank')
+                window.open(`${process.env.BK_ITSM_URL}/#/workbench/ticket/todo`, '_blank')
             }
         }
     }

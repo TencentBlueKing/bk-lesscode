@@ -16,15 +16,15 @@
             :options="variableSelectOptions"
             :value="formData"
             :show-content="isShowProp"
+            :describe="describe"
             @change="handleVariableFormatChange">
             <template v-slot:title>
-                <div class="prop-name">
+                <div class="prop-name" @click="toggleShowProp">
                     <i
                         :class="{
                             'bk-icon icon-angle-down': true,
                             close: !isShowProp
                         }"
-                        @click="toggleShowProp"
                     ></i>
                     <span
                         :class="{ label: describe.tips }"
@@ -81,7 +81,8 @@
                             :remote-validate="describe.remoteValidate"
                             :key="`${renderCom.type}_${index}`"
                             :readonly="isReadOnly"
-                            :change="handleCodeChange" />
+                            :change="handleCodeChange"
+                            v-bind="describe.bindProps" />
                     </template>
                 </template>
             </div>
@@ -158,6 +159,7 @@
     import TypeSrc from './strategy/src.vue'
     import TypePagination from './strategy/pagination.vue'
     import TypeRouteList from './strategy/route-list.vue'
+    import TypeChartColor from './strategy/chart-color-set.vue'
 
     const getRealValue = (type, target) => {
         if (type === 'object') {
@@ -274,7 +276,8 @@
                     'src': TypeSrc,
                     'srcset': TypeList,
                     'pagination': TypePagination,
-                    'route': TypeRouteList
+                    'route': TypeRouteList,
+                    'chartColor': TypeChartColor
                 }
 
                 const typeMap = {
@@ -317,7 +320,8 @@
                     'src': 'src',
                     'srcset': 'srcset',
                     'pagination': 'pagination',
-                    'route': 'route'
+                    'route': 'route',
+                    'chartColor': 'chartColor'
                 }
 
                 let realType = config.type
@@ -712,6 +716,7 @@
             display: flex;
             align-items: center;
             border-top: 1px solid #EAEBF0;
+            cursor: pointer;
             .label {
                 border-bottom: 1px dashed #313238;
                 cursor: pointer;
