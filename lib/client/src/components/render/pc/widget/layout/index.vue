@@ -10,12 +10,10 @@
     import useComponentAction from '../../../mobile/widget/component-action-use'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
-
     import LayoutEmpty from './components/empty'
     import LayoutLeftRight from './components/left-right'
     import LayoutComplex from './components/complex'
     import LayoutTopBottom from './components/top-bottom'
-
     export default defineComponent({
         setup () {
             const store = useStore()
@@ -34,18 +32,15 @@
                 }
                 return componentMap[layout.value]
             })
-
             const fetchPageList = () => {
                 store.dispatch('route/getProjectPageRoute', {
                     projectId: route.params.projectId,
                     versionId: store.getters['projectVersion/currentVersionId']
                 })
             }
-
             onMounted(() => {
                 fetchPageList()
             })
-
             return {
                 layout,
                 layoutCom,
@@ -53,17 +48,15 @@
             }
         }
     })
-
 </script>
 <style lang='postcss'>
     @import "@/css/mixins/scroller";
     .lesscode-editor-layout {
         transform: translate(0, 0);
-        
+
         .bk-navigation {
             width: auto;
             height: auto;
-
             .bk-navigation-wrapper {
                 flex: initial;
                 .nav-slider {
@@ -104,7 +97,6 @@
                     margin-right: 0;
                 }
             }
-
             .navigation-header-item{
                 display: flex;
                 align-items: center;
