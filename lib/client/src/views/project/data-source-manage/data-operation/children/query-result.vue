@@ -7,10 +7,21 @@
             scene="part">
             <span>{{ queryErrorMessage }}</span>
         </bk-exception>
-        <section v-else-if="queryResult.length && queryResult[0].length">
+        <section
+            v-for="(data, index) in displayResult"
+            :key="index"
+        >
+            <h3 class="table-name" @click="toggleShowTable(index)">
+                <i
+                    :class="{
+                        'bk-icon icon-angle-up-fill': true,
+                        close: hiddenTableIndexs.includes(index)
+                    }"
+                ></i>
+                {{ tableNames[index] }}
+            </h3>
             <bk-table
-                v-for="(data, index) in displayResult"
-                :key="index"
+                v-if="!hiddenTableIndexs.includes(index)"
                 :outer-border="false"
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
@@ -18,7 +29,7 @@
                 :pagination="paginationList[index]"
                 @page-change="(val) => handlePageChange(val, index)"
                 @page-limit-change="(val) => handlePageLimitChange(val, index)"
-                class="mt20 g-hairless-table"
+                class="g-hairless-table"
             >
                 <bk-table-column
                     v-for="column in Object.keys(data[0] || {})"
@@ -31,7 +42,7 @@
             </bk-table>
         </section>
         <bk-exception
-            v-else
+            v-if="!queryResult.length"
             class="exception-part"
             type="empty"
             scene="part">
@@ -57,7 +68,8 @@
     import router from '@/router'
     import dayjs from 'dayjs'
     import {
-        isEmpty
+        isEmpty,
+        splitSql
     } from 'shared/util'
     import {
         generateSqlByCondition
@@ -79,6 +91,8 @@
             const displayResult = ref([])
             const queryErrorMessage = ref('')
             const paginationList = ref([])
+            const tableNames = ref([])
+            const hiddenTableIndexs = ref([])
 
             const formatter = (row, column, cellValue, index) => {
                 const value = row[column.property]
@@ -93,12 +107,23 @@
                 }
             }
 
+            // 切换是否展示 table
+            const toggleShowTable = (index) => {
+                const hiddenIndex = hiddenTableIndexs.value.findIndex(hiddenTableIndex => hiddenTableIndex === index)
+                if (hiddenIndex > -1) {
+                    hiddenTableIndexs.value.splice(hiddenIndex, 1)
+                } else {
+                    hiddenTableIndexs.value.push(index)
+                }
+            }
+
             // 清空数据
             const clearStatus = () => {
                 queryErrorMessage.value = ''
                 queryResult.value = []
                 paginationList.value = []
                 displayResult.value = []
+                hiddenTableIndexs.value = []
             }
 
             // 执行查询
@@ -121,10 +146,17 @@
                             tables.push(...bkBaseBiz.tables)
                         })
                     }
-                    queryRecord.sql = generateSqlByCondition(props.condition, tables)
+                    queryRecord.sql = generateSqlByCondition(props.condition, tables, false)
                 } else {
                     queryRecord.sql = props.sql
                 }
+                // 分析 sql 语句获取表名
+                splitSql(queryRecord.sql)?.forEach((sql) => {
+                    const result = /FROM `([^\`]+)`/.exec(sql)
+                    if (result?.[1]) {
+                        tableNames.value.push(result[1])
+                    }
+                })
                 // 执行查询
                 return new Promise((resolve, reject) => {
                     store
@@ -206,7 +238,10 @@
                 displayResult,
                 queryErrorMessage,
                 paginationList,
+                tableNames,
+                hiddenTableIndexs,
                 formatter,
+                toggleShowTable,
                 handleQuery,
                 handlePageChange,
                 handlePageLimitChange
@@ -216,8 +251,19 @@
 </script>
 
 <style lang="postcss" scoped>
-    .mt20 {
-        margin-top: 20px;
+    .table-name {
+        cursor: pointer;
+        margin: 20px 0;
+        font-size: 14px;
+        color: #313238;
+        font-weight: Bold;
+        .icon-angle-up-fill {
+            display: inline-block;
+            transition: transform 200ms;
+        }
+        .close {
+            transform: rotate(-90deg);
+        }
     }
     .exception-part {
         height: 320px;

@@ -151,14 +151,14 @@
             <section class="operation-button">
                 <span
                     v-bk-tooltips="{
-                        disabled: !isParamsHasVariable,
-                        content: 'SQL 语句包含变量，请在使用函数的时候传入具体的值进行查询'
+                        disabled: !isEmptySql,
+                        content: '填写 SQL 后，可执行查询'
                     }"
                 >
                     <bk-button
                         theme="primary"
                         class="mr6"
-                        :disabled="isParamsHasVariable"
+                        :disabled="isEmptySql"
                         :loading="isQueryLoading"
                         @click="handleQuery"
                     >
@@ -168,42 +168,40 @@
                 <span
                     v-if="queryType === 'json-query'"
                     v-bk-tooltips="{
-                        disabled: isSuccessfulQuery || isParamsHasVariable,
-                        content: '成功查询或使用变量后，可查看 SQL'
+                        disabled: isSuccessfulQuery,
+                        content: '成功查询后，可查看 SQL'
                     }"
                 >
                     <bk-button
                         class="mr6"
-                        :disabled="!isSuccessfulQuery && !isParamsHasVariable"
+                        :disabled="!isSuccessfulQuery"
                         @click="handleShowSql"
                     >
                         查看 SQL
                     </bk-button>
                 </span>
                 <span
-                    v-if="queryType === 'json-query'"
                     v-bk-tooltips="{
-                        disabled: isSuccessfulQuery || isParamsHasVariable,
-                        content: '成功查询或使用变量后，可生成 API'
+                        disabled: isSuccessfulQuery,
+                        content: '成功查询后，可生成 API'
                     }"
                 >
                     <bk-button
                         class="mr6"
-                        :disabled="!isSuccessfulQuery && !isParamsHasVariable"
+                        :disabled="!isSuccessfulQuery"
                         @click="handleGenApi"
                     >
                         生成 API
                     </bk-button>
                 </span>
                 <span
-                    v-if="queryType === 'json-query'"
                     v-bk-tooltips="{
-                        disabled: isSuccessfulQuery || isParamsHasVariable,
-                        content: '成功查询或使用变量后，可生成函数'
+                        disabled: isSuccessfulQuery,
+                        content: '成功查询后，可生成函数'
                     }"
                 >
                     <bk-button
-                        :disabled="!isSuccessfulQuery && !isParamsHasVariable"
+                        :disabled="!isSuccessfulQuery"
                         @click="handleGenFunction"
                     >
                         生成函数
@@ -289,6 +287,7 @@
     import {
         defineComponent,
         ref,
+        computed,
         onBeforeMount
     } from '@vue/composition-api'
     import {
@@ -304,8 +303,8 @@
         generateSqlByCondition
     } from 'shared/data-source'
     import {
-        initVariable
-    } from './children/json-query/children/composables/use-variable'
+        isEmpty
+    } from 'shared/util'
 
     export default defineComponent({
         components: {
@@ -339,9 +338,6 @@
                 moduleCode: '',
                 token: ''
             })
-            // 参数是否使用到变量
-            const isParamsHasVariable = ref(false)
-            initVariable(isParamsHasVariable)
             // 是否成功查询
             const isSuccessfulQuery = ref(false)
             // 查询相关状态
@@ -367,6 +363,12 @@
                 sql: ''
             })
 
+            // 计算变量
+            const isEmptySql = computed(() => {
+                return queryType.value === 'sql-query' && isEmpty(sqlQuery.value)
+            })
+
+            // 方法
             const toggleQueryType = (val) => {
                 queryType.value = val
             }
@@ -629,7 +631,6 @@
                 queryType,
                 queryTab,
                 projectInfo,
-                isParamsHasVariable,
                 isSuccessfulQuery,
                 conditionQuery,
                 sqlQuery,
@@ -640,6 +641,7 @@
                 apiData,
                 funcData,
                 sqlData,
+                isEmptySql,
                 toggleQueryType,
                 changeQueryStatus,
                 chooseDataSource,

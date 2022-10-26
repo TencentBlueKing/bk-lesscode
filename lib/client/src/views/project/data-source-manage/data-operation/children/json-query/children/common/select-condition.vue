@@ -28,7 +28,7 @@
                 :table-name="condition.tableName"
                 :table-list="tableList"
                 :custom-validate="customValidate"
-                @change="(val) => handleTableChange(index, val)"
+                @change="(val) => handleValueChange(index, val)"
             />
             <select-type
                 class="connect-type"
@@ -36,17 +36,13 @@
                 :list="connectTypeList"
                 @change="(val) => handleChange(index, val, 'expression')"
             />
-            <bk-input
-                v-bk-tooltips="{
-                    content: '1. 可以输入逗号分隔的字符串表示数组<br>2. 可以输入类似 ${var} 的字符串表示变量，在生成函数的时候会自动生成同名参数，调用函数的时候传入具体值',
-                    width: '300px'
-                }"
+            <select-value
                 class="select-value"
-                placeholder="请输入值或变量"
+                placeholder="可用逗号分隔的字符串表示数组"
                 :value="condition.value"
+                :param="condition.param"
                 @change="(val) => handleValueChange(index, val)"
-            >
-            </bk-input>
+            />
             <plus-icon
                 class="plus-icon"
                 @click="handlePlusCondition"
@@ -63,12 +59,12 @@
     import {
         defineComponent,
         PropType,
-        toRef,
-        onBeforeUnmount
+        toRef
     } from '@vue/composition-api'
     import { ITable } from './select-table.vue'
     import SelectType from './select-type.vue'
     import SelectTableField from './select-table-field.vue'
+    import SelectValue from './select-value.vue'
     import PlusIcon from '@/components/plus-icon.vue'
     import MinusIcon from '@/components/minus-icon.vue'
     import {
@@ -76,25 +72,21 @@
         CONNECT_TYPE_LIST,
         getDefaultConnect
     } from 'shared/data-source'
-    import {
-        uuid
-    } from 'shared/util'
-    import {
-        updateVariable
-    } from '../composables/use-variable'
 
     export interface ICondition {
         tableName: string;
         fieldId: string;
         expression: string;
         value: string;
+        param: string;
         type: string;
     }
 
     export default defineComponent({
         components: {
-            SelectTableField,
             SelectType,
+            SelectTableField,
+            SelectValue,
             PlusIcon,
             MinusIcon
         },
@@ -121,7 +113,6 @@
         },
 
         setup (props, { emit }) {
-            const id = uuid()
             const renderConditionList = toRef(props, 'conditionList')
             const conditionTypeList = Object
                 .keys(CONDITION_TYPE)
@@ -144,15 +135,9 @@
                 triggleUpdate()
             }
 
-            const handleTableChange = (index, val) => {
+            const handleValueChange = (index, val) => {
                 Object.assign(renderConditionList.value[index], val)
                 triggleUpdate()
-            }
-
-            const handleValueChange = (index, val) => {
-                renderConditionList.value[index].value = val
-                triggleUpdate()
-                updateVariable(val, id)
             }
 
             const handleChange = (index, val, key) => {
@@ -164,18 +149,12 @@
                 emit('change', renderConditionList.value)
             }
 
-            onBeforeUnmount(() => {
-                // 清除变量使用
-                updateVariable('', id)
-            })
-
             return {
                 renderConditionList,
                 conditionTypeList,
                 connectTypeList,
                 handlePlusCondition,
                 handleMinusCondition,
-                handleTableChange,
                 handleValueChange,
                 handleChange
             }
