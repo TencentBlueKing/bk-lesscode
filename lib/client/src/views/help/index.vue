@@ -13,37 +13,19 @@
     <main class="help-main">
         <div class="main-container">
             <aside class="main-left-sidebar">
-                <div class="main-top">
-                    <div class="page-title">
-                        <!-- <span class="bk-drag-icon app-logo" @click="jump('projects')">
-                            <svg aria-hidden="true" width="22" height="22">
-                                <use xlink:href="#bk-drag-logo"></use>
-                            </svg>
-                        </span> -->
-                        <div class="app-name">
-                            产品使用文档
-                        </div>
-                    </div>
-                </div>
                 <div class="sidebar-panel">
                     <div class="sidebar-bd">
-                        <div class="nav-item">
-                            <div class="nav-title no-groupid"></div>
-                            <div class="nav-content" :class="$route.name === 'intro' ? 'nav-active' : ''" @click="jump('intro')">介绍</div>
-                            <div class="nav-content" :class="$route.name === 'start' ? 'nav-active' : ''" @click="jump('start')">快速上手</div>
-                            <div class="nav-content" :class="$route.name === 'grid' ? 'nav-active' : ''" @click="jump('grid')">栅格布局</div>
-                            <div class="nav-content" :class="$route.name === 'freeLayout' ? 'nav-active' : ''" @click="jump('freeLayout')">自由布局</div>
-                            <div class="nav-content" :class="$route.name === 'interactive' ? 'nav-active' : ''" @click="jump('interactive')">交互式组件</div>
-                            <div class="nav-content" :class="$route.name === 'layout-guide' ? 'nav-active' : ''" @click="jump('layout-guide')">布局模板使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'custom' ? 'nav-active' : ''" @click="jump('custom')">自定义组件开发指引</div>
-                            <div class="nav-content" :class="$route.name === 'method' ? 'nav-active' : ''" @click="jump('method')">函数使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'variable' ? 'nav-active' : ''" @click="jump('variable')">变量使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'directive' ? 'nav-active' : ''" @click="jump('directive')">指令使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'template-project' ? 'nav-active' : ''" @click="jump('template-project')">应用模板使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'template-page' ? 'nav-active' : ''" @click="jump('template-page')">页面模板使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'develop' ? 'nav-active' : ''" @click="jump('develop')">二次开发指引</div>
-                            <div class="nav-content" :class="$route.name === 'table-search' ? 'nav-active' : ''" @click="jump('table-search')">表格查询实战案例</div>
-                            <div class="nav-content" :class="$route.name === 'changelog' ? 'nav-active' : ''" @click="jump('changelog')">更新日志</div>
+                        <div class="nav-list">
+                            <div class="nav-item" v-for="item in navList" :key="item.name">
+                                <div class="item-title">{{item.title}}</div>
+                                <div class="nav-child"
+                                    v-for="child in item.childs"
+                                    :class="$route.name === child.name ? 'nav-active' : ''"
+                                    :key="child.name"
+                                    @click="jump(child.name)">
+                                    {{child.title}}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -59,6 +41,76 @@
     import { getActualTop } from '@/common/util'
 
     export default {
+        data () {
+            return {
+                navList: [
+                    {
+                        title: '产品使用文档',
+                        name: 'doc',
+                        childs: [{
+                            title: '产品简介',
+                            name: 'intro'
+                        }, {
+                            title: '快速上手',
+                            name: 'start'
+                        }]
+                    },
+                    {
+                        title: '布局',
+                        name: 'layout',
+                        childs: [{
+                            title: '栅格布局',
+                            name: 'grid'
+                        }, {
+                            title: '自由布局',
+                            name: 'freeLayout'
+                        }]
+                    },
+                    {
+                        title: '功能指引',
+                        name: 'guide',
+                        childs: [{
+                            title: '交互式组件使用指引',
+                            name: 'interactive'
+                        }, {
+                            title: '函数使用指引',
+                            name: 'method'
+                        }, {
+                            title: '指令使用指引',
+                            name: 'directive'
+                        }, {
+                            title: '变量使用指引',
+                            name: 'variable'
+                        }, {
+                            title: '布局模板使用指引',
+                            name: 'layout-guide'
+                        }, {
+                            title: '应用模板使用指引',
+                            name: 'template-project'
+                        }, {
+                            title: '页面模板使用指引',
+                            name: 'template-page'
+                        }, {
+                            title: '二次开发指引',
+                            name: 'develop'
+                        }, {
+                            title: '表格查询实战案例',
+                            name: 'table-search'
+                        }, {
+                            title: '自定义组件开发指引',
+                            name: 'custom'
+                        }]
+                    }, {
+                        title: '日志',
+                        name: 'log',
+                        childs: [{
+                            title: '发布日志',
+                            name: 'changelog'
+                        }]
+                    }
+                ]
+            }
+        },
         watch: {
             '$route' (to, from) {
                 this.adjustAnchor()
@@ -108,4 +160,31 @@
 
 <style lang="postcss">
     @import './index.css';
+    .nav-list{
+        .nav-item{
+            .item-title{
+                padding-left: 20px;
+                padding-bottom: 10px;
+                font-weight: 600;
+                font-size: 19px;
+                color: #313238;
+            }
+            .nav-child{
+                padding-left: 20px;
+                font-size: 14px;
+                line-height: 40px;
+                cursor: pointer;
+                .bk-drag-icon {
+                    font-size: 24px;
+                }
+                .name {
+                    margin-left: 10px;
+                }
+                &:hover {
+                    background-color: #f0f1f5;
+                }
+            }
+        }
+    }
+    
 </style>
