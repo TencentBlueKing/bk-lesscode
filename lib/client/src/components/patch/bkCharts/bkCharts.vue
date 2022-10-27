@@ -56,7 +56,7 @@
             chartOptions () {
                 /** options参数具有最高优先级，用于更高级的自定义配置 */
                 if (Object.keys(this.options).length) {
-                    return this.options
+                    return JSON.parse(JSON.stringify(this.options))
                 }
 
                 const { list: colorList } = colorSets.find(item => item.name === this.colorSet)

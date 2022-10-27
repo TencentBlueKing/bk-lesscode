@@ -9,19 +9,21 @@
         >
             <section class="limit-wrapper">
                 <span class="limit-title">开始</span>
-                <bk-input
+                <select-value
                     class="limit-number"
                     :value="renderLimit && renderLimit.index"
+                    :param="renderLimit && renderLimit.indexParam"
                     @change="(val) => handleChange(val, 'index')"
-                ></bk-input>
+                />
             </section>
             <section class="limit-wrapper">
                 <span class="limit-title">长度</span>
-                <bk-input
+                <select-value
                     class="limit-number"
                     :value="renderLimit && renderLimit.length"
+                    :param="renderLimit && renderLimit.lengthParam"
                     @change="(val) => handleChange(val, 'length')"
-                ></bk-input>
+                />
             </section>
         </select-wrapper>
     </select-enable>
@@ -30,22 +32,16 @@
 <script lang="ts">
     import SelectEnable from './common/select-enable.vue'
     import SelectWrapper from './common/select-wrapper.vue'
+    import SelectValue from './common/select-value.vue'
     import {
         defineComponent,
         ref,
         PropType,
-        watch,
-        onBeforeUnmount
+        watch
     } from '@vue/composition-api'
     import {
         getDefaultLimit
     } from 'shared/data-source'
-    import {
-        uuid
-    } from 'shared/util'
-    import {
-        updateVariable
-    } from './composables/use-variable'
 
     interface ILimit {
         index: number,
@@ -55,7 +51,8 @@
     export default defineComponent({
         components: {
             SelectEnable,
-            SelectWrapper
+            SelectWrapper,
+            SelectValue
         },
 
         props: {
@@ -63,7 +60,6 @@
         },
 
         setup (props, { emit }) {
-            const id = uuid()
             const renderLimit = ref()
 
             const handleInit = () => {
@@ -77,9 +73,14 @@
             }
 
             const handleChange = (val, key) => {
-                renderLimit.value[key] = val
+                if (key === 'index') {
+                    renderLimit.value.index = val.value
+                    renderLimit.value.indexParam = val.param
+                } else {
+                    renderLimit.value.length = val.value
+                    renderLimit.value.lengthParam = val.param
+                }
                 triggleUpdate()
-                updateVariable(val, id)
             }
 
             const triggleUpdate = () => {
@@ -95,11 +96,6 @@
                     immediate: true
                 }
             )
-
-            onBeforeUnmount(() => {
-                // 清除变量使用
-                updateVariable('', id)
-            })
 
             return {
                 renderLimit,
@@ -137,6 +133,7 @@
         text-align: center;
     }
     .limit-number {
-        left: -1px;
+        margin-left: -2px;
+        flex: 1;
     }
 </style>

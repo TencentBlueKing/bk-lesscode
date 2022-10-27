@@ -40,10 +40,17 @@
                         v-if="data.isTable"
                         v-bk-tooltips="{ content: '点击生成查询该表SQL' }"
                         class="bk-drag-icon bk-drag-sql"
-                        @click="handleAddQuerySql(data)"
+                        @click.stop="handleAddQuerySql(data)"
                     ></i>
                 </div>
             </bk-big-tree>
+            <bk-exception
+                v-if="apiData.length <= 0"
+                class="exception-part"
+                type="empty"
+                scene="part">
+                <span>暂无数据</span>
+            </bk-exception>
         </section>
     </section>
 </template>
