@@ -145,9 +145,6 @@
         },
         watch: {
             '$route' (to, from) {
-                if (this.navNameArr.includes(to.name)) {
-                    this.$refs.trees[0].setSelected(null)
-                }
                 this.adjustAnchor()
             }
         },
@@ -185,6 +182,7 @@
              * @param {string} routeName routeName
              */
             jump (routeName) {
+                this.$refs.trees[0].setSelected(null)
                 this.$router.push({
                     name: routeName
                 })
