@@ -21,9 +21,10 @@
                                 <template v-if="item.tree">
                                     <bk-big-tree
                                         ext-cls="tree-cls"
-                                        ref="tree"
+                                        ref="trees"
                                         selectable
                                         enable-title-tip
+                                        default-expand-all
                                         :data="item.childs"
                                         @select-change="handlerSelectTreeData">
                                     </bk-big-tree>
@@ -138,11 +139,15 @@
                             name: 'changelog'
                         }]
                     }
-                ]
+                ],
+                navNameArr: ['intro', 'start', 'template-project', 'template-page', 'changelog']
             }
         },
         watch: {
             '$route' (to, from) {
+                if (this.navNameArr.includes(to.name)) {
+                    this.$refs.trees[0].setSelected(null)
+                }
                 this.adjustAnchor()
             }
         },
@@ -186,7 +191,7 @@
             },
 
             handlerSelectTreeData (data) {
-                if (data.children.length === 0) {
+                if (data.isLeaf) {
                     this.$router.push({
                         name: data.id
                     })
