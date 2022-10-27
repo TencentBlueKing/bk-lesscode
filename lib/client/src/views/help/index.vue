@@ -18,13 +18,25 @@
                         <div class="nav-list">
                             <div class="nav-item" v-for="item in navList" :key="item.name">
                                 <div class="item-title">{{item.title}}</div>
-                                <div class="nav-child"
-                                    v-for="child in item.childs"
-                                    :class="$route.name === child.name ? 'nav-active' : ''"
-                                    :key="child.name"
-                                    @click="jump(child.name)">
-                                    {{child.title}}
-                                </div>
+                                <template v-if="item.tree">
+                                    <bk-big-tree
+                                        ext-cls="tree-cls"
+                                        ref="tree"
+                                        selectable
+                                        enable-title-tip
+                                        :data="item.childs"
+                                        @select-change="handlerSelectTreeData">
+                                    </bk-big-tree>
+                                </template>
+                                <template v-else>
+                                    <div class="nav-child"
+                                        v-for="child in item.childs"
+                                        :class="$route.name === child.name ? 'nav-active' : ''"
+                                        :key="child.name"
+                                        @click="jump(child.name)">
+                                        {{child.title}}
+                                    </div>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -56,55 +68,73 @@
                         }]
                     },
                     {
-                        title: '布局',
-                        name: 'layout',
+                        title: '应用开发',
+                        name: 'app',
+                        tree: true,
                         childs: [{
-                            title: '栅格布局',
-                            name: 'grid'
+                            name: '交互函数',
+                            level: 0,
+                            id: 'function',
+                            children: [{
+                                name: '函数使用指引',
+                                level: 1,
+                                id: 'method'
+                            }]
                         }, {
-                            title: '自由布局',
-                            name: 'freeLayout'
+                            name: '页面画布',
+                            level: 0,
+                            id: 'canvas',
+                            children: [{
+                                name: '变量使用指引',
+                                level: 1,
+                                id: 'variable'
+                            }, {
+                                name: '交互式组件使用指引',
+                                level: 1,
+                                id: 'interactive'
+                            }]
+                        }, {
+                            name: '页面布局',
+                            level: 0,
+                            id: 'layout',
+                            children: [{
+                                name: '栅格布局',
+                                level: 1,
+                                id: 'grid'
+                            }, {
+                                name: '布局模板',
+                                level: 1,
+                                id: 'layout-guide'
+                            }, {
+                                name: '自由布局',
+                                level: 1,
+                                id: 'freeLayout'
+                            }]
+                        }, {
+                            name: '二次开发指引',
+                            level: 0,
+                            id: 'develop'
+                        }, {
+                            name: '自定义组件开发指引',
+                            level: 0,
+                            id: 'custom'
                         }]
                     },
                     {
-                        title: '功能指引',
-                        name: 'guide',
+                        title: '模板市场',
+                        name: 'template',
                         childs: [{
-                            title: '交互式组件使用指引',
-                            name: 'interactive'
-                        }, {
-                            title: '函数使用指引',
-                            name: 'method'
-                        }, {
-                            title: '指令使用指引',
-                            name: 'directive'
-                        }, {
-                            title: '变量使用指引',
-                            name: 'variable'
-                        }, {
-                            title: '布局模板使用指引',
-                            name: 'layout-guide'
-                        }, {
                             title: '应用模板使用指引',
                             name: 'template-project'
                         }, {
                             title: '页面模板使用指引',
                             name: 'template-page'
-                        }, {
-                            title: '二次开发指引',
-                            name: 'develop'
-                        }, {
-                            title: '表格查询实战案例',
-                            name: 'table-search'
-                        }, {
-                            title: '自定义组件开发指引',
-                            name: 'custom'
                         }]
                     }, {
                         title: '日志',
                         name: 'log',
                         childs: [{
-                            title: '发布日志',
+                            title: '更新日志',
                             name: 'changelog'
                         }]
                     }
@@ -153,6 +183,14 @@
                 this.$router.push({
                     name: routeName
                 })
+            },
+
+            handlerSelectTreeData (data) {
+                if (data.children.length === 0) {
+                    this.$router.push({
+                        name: data.id
+                    })
+                }
             }
         }
     }
@@ -160,6 +198,25 @@
 
 <style lang="postcss">
     @import './index.css';
+    .tree-cls{
+        .bk-big-tree-node{
+            padding-left: 20px;
+            height: 40px;
+            line-height: 40px;
+            &:hover {
+                background-color: #f0f1f5;
+            }
+        }
+        .is-leaf{
+            .node-content{
+                padding-left: 20px;
+            }
+        }
+        .is-selected{
+            color: #2d8cf0;
+            background: #f0faff;
+        }
+    }
     .nav-list{
         .nav-item{
             .item-title{
