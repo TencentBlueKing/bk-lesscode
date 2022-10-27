@@ -149,7 +149,7 @@
     import DynamicTag from '@/components/dynamic-tag.vue'
     import QueryParams from './children/query-params.vue'
     import BodyParams from './children/body-params.vue'
-    import monaco from '@/components/monaco'
+    import Monaco from '@/components/monaco'
     import ChooseApi from '@/components/api/choose-api.vue'
     import {
         FUNCTION_TYPE,
@@ -160,7 +160,8 @@
         API_METHOD,
         parseScheme2UseScheme,
         parseScheme2Value,
-        LCGetParamsVal
+        LCGetParamsVal,
+        getParamFromApi
     } from 'shared/api'
     import {
         getVariableValue
@@ -171,7 +172,7 @@
             DynamicTag,
             QueryParams,
             BodyParams,
-            monaco,
+            Monaco,
             ChooseApi
         },
 
@@ -221,13 +222,18 @@
             },
 
             handleSelectApi (api) {
+                const apiQuery = api.query.map(parseScheme2UseScheme)
+                const apiBody = parseScheme2UseScheme(api.body)
+                const funcParams = getParamFromApi(apiQuery, apiBody, api.method)
+
                 this.updateValue({
                     apiChoosePath: api.path,
                     funcApiUrl: api.url,
                     funcMethod: api.method,
                     funcSummary: api.summary,
-                    apiQuery: api.query.map(parseScheme2UseScheme),
-                    apiBody: parseScheme2UseScheme(api.body)
+                    funcParams,
+                    apiQuery,
+                    apiBody
                 })
             },
 

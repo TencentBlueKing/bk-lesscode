@@ -9,21 +9,21 @@
         >
             <section class="limit-wrapper">
                 <span class="limit-title">开始</span>
-                <bk-input
+                <select-value
                     class="limit-number"
-                    type="number"
                     :value="renderLimit && renderLimit.index"
+                    :param="renderLimit && renderLimit.indexParam"
                     @change="(val) => handleChange(val, 'index')"
-                ></bk-input>
+                />
             </section>
             <section class="limit-wrapper">
                 <span class="limit-title">长度</span>
-                <bk-input
+                <select-value
                     class="limit-number"
-                    type="number"
                     :value="renderLimit && renderLimit.length"
+                    :param="renderLimit && renderLimit.lengthParam"
                     @change="(val) => handleChange(val, 'length')"
-                ></bk-input>
+                />
             </section>
         </select-wrapper>
     </select-enable>
@@ -32,6 +32,7 @@
 <script lang="ts">
     import SelectEnable from './common/select-enable.vue'
     import SelectWrapper from './common/select-wrapper.vue'
+    import SelectValue from './common/select-value.vue'
     import {
         defineComponent,
         ref,
@@ -50,7 +51,8 @@
     export default defineComponent({
         components: {
             SelectEnable,
-            SelectWrapper
+            SelectWrapper,
+            SelectValue
         },
 
         props: {
@@ -71,7 +73,13 @@
             }
 
             const handleChange = (val, key) => {
-                renderLimit.value[key] = val
+                if (key === 'index') {
+                    renderLimit.value.index = val.value
+                    renderLimit.value.indexParam = val.param
+                } else {
+                    renderLimit.value.length = val.value
+                    renderLimit.value.lengthParam = val.param
+                }
                 triggleUpdate()
             }
 
@@ -125,6 +133,7 @@
         text-align: center;
     }
     .limit-number {
-        left: -1px;
+        margin-left: -2px;
+        flex: 1;
     }
 </style>

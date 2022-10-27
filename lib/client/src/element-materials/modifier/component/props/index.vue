@@ -226,9 +226,21 @@
                     ...this.lastProps,
                     [propName]: propData
                 })
+
+                /** 兼容bkcharts的精细化配置升级，去除了remoteOptions，当修改了options，将remoteOptions置空 */
+                const updateBkChartsRemoteOptions = (this.componentNode.type === 'bk-charts' && propName === 'options') ? {
+                    remoteOptions: LC.utils.genPropFormatValue({
+                        format: 'value',
+                        code: {},
+                        renderValue: {},
+                        payload: {}
+                    })
+                } : {}
+
                 this.componentNode.setRenderProps({
                     ...this.lastProps,
-                    [propName]: propData
+                    [propName]: propData,
+                    ...updateBkChartsRemoteOptions
                 })
                 // this.syncOtherProp(propName)
             }, 60)
