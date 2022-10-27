@@ -8,10 +8,9 @@
 </template>
 <script>
     import { mapGetters } from 'vuex'
-
     import { bus } from '@/common/bus'
-
     import ApplyPage from '@/components/apply-permission/apply-page.vue'
+    import auth from '@/common/auth'
 
     export default {
         name: 'app',
@@ -49,7 +48,7 @@
         },
         mounted () {
             bus.$on('redirect-login', data => {
-                window.location.href = process.env.BK_LOGIN_URL + '/?c_url=' + window.location.href
+                auth.redirectToLogin()
             })
         },
         methods: {
