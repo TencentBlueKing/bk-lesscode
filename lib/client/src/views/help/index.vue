@@ -31,9 +31,7 @@
                 </div>
             </aside>
             <div class="main-content">
-                <div class="container">
-                    <router-view :key="$route.path"></router-view>
-                </div>
+                <router-view :key="$route.path"></router-view>
             </div>
         </div>
     </main>
@@ -187,11 +185,6 @@
                 }
             }
         }
-    }
-
-    .container{
-        width: 1280px;
-        margin: 0 auto;
     }
     
 </style>
