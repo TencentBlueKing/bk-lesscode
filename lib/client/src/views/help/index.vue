@@ -21,9 +21,10 @@
                                 <template v-if="item.tree">
                                     <bk-big-tree
                                         ext-cls="tree-cls"
-                                        ref="tree"
+                                        ref="trees"
                                         selectable
                                         enable-title-tip
+                                        default-expand-all
                                         :data="item.childs"
                                         @select-change="handlerSelectTreeData">
                                     </bk-big-tree>
@@ -43,7 +44,9 @@
                 </div>
             </aside>
             <div class="main-content">
-                <router-view :key="$route.path"></router-view>
+                <div class="container">
+                    <router-view :key="$route.path"></router-view>
+                </div>
             </div>
         </div>
     </main>
@@ -72,28 +75,6 @@
                         name: 'app',
                         tree: true,
                         childs: [{
-                            name: '交互函数',
-                            level: 0,
-                            id: 'function',
-                            children: [{
-                                name: '函数使用指引',
-                                level: 1,
-                                id: 'method'
-                            }]
-                        }, {
-                            name: '页面画布',
-                            level: 0,
-                            id: 'canvas',
-                            children: [{
-                                name: '变量使用指引',
-                                level: 1,
-                                id: 'variable'
-                            }, {
-                                name: '交互式组件使用指引',
-                                level: 1,
-                                id: 'interactive'
-                            }]
-                        }, {
                             name: '页面布局',
                             level: 0,
                             id: 'layout',
@@ -109,6 +90,28 @@
                                 name: '自由布局',
                                 level: 1,
                                 id: 'freeLayout'
+                            }]
+                        }, {
+                            name: '页面画布',
+                            level: 0,
+                            id: 'canvas',
+                            children: [{
+                                name: '变量使用指引',
+                                level: 1,
+                                id: 'variable'
+                            }, {
+                                name: '交互式组件使用指引',
+                                level: 1,
+                                id: 'interactive'
+                            }]
+                        }, {
+                            name: '交互函数',
+                            level: 0,
+                            id: 'function',
+                            children: [{
+                                name: '函数使用指引',
+                                level: 1,
+                                id: 'method'
                             }]
                         }, {
                             name: '二次开发指引',
@@ -180,13 +183,14 @@
              * @param {string} routeName routeName
              */
             jump (routeName) {
+                this.$refs.trees[0].setSelected(null)
                 this.$router.push({
                     name: routeName
                 })
             },
 
             handlerSelectTreeData (data) {
-                if (data.children.length === 0) {
+                if (data.isLeaf) {
                     this.$router.push({
                         name: data.id
                     })
@@ -198,6 +202,10 @@
 
 <style lang="postcss">
     @import './index.css';
+    .container{
+        width: 1000px;
+        margin: 0 auto;
+    }
     .tree-cls{
         .bk-big-tree-node{
             padding-left: 20px;

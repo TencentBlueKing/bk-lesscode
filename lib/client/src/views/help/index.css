@@ -22,8 +22,6 @@ $headerHeight: 64px;
             padding: 0 25px 20px 25px;
             background: #fff;
             overflow: auto;
-            display: flex;
-            justify-content: center;
             code {
                 font-family: 'Microsoft Yahei', arial;
                 /* background-color: #f9fafc; */
