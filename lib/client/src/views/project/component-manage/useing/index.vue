@@ -292,9 +292,6 @@
             .dialog-footer {
                 button {
                     width: 86px;
-                    & + button {
-                        margin-left: 4px;
-                    }
                 }
             }
         }

@@ -433,12 +433,6 @@
             }
         }
 
-        .dialog-footer {
-            button + button {
-                margin-left: 4px;
-            }
-        }
-
         .filter-links {
             display: flex;
             align-items: center;
