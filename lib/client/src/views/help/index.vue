@@ -141,8 +141,7 @@
                             name: 'changelog'
                         }]
                     }
-                ],
-                navNameArr: ['intro', 'start', 'template-project', 'template-page', 'changelog']
+                ]
             }
         },
         watch: {
