@@ -63,6 +63,9 @@
         props: {
             name: String,
             type: String,
+            componentType: {
+                type: String
+            },
             payload: {
                 type: Object,
                 default: () => ({})
@@ -110,7 +113,7 @@
             ...mapGetters('functions', ['functionList']),
             ...mapGetters('variable', ['variableList']),
             exampleData () {
-                return { name: this.name, value: this.describe.val }
+                return { name: this.name, value: this.describe.example || this.describe.val }
             }
         },
         watch: {
@@ -343,6 +346,13 @@
                         this.messageWarn(message)
                     } else {
                         this.change(this.name, res, this.type, JSON.parse(JSON.stringify(this.remoteData)))
+                        if (this.name === 'options' && this.componentType === 'bk-charts') {
+                            this.$bkMessage({
+                                theme: 'success',
+                                message: `图表配置已更新，${Object.keys(res).join('、')}选项已被远程数据覆盖`
+                            })
+                            return
+                        }
                         if (this.name === 'remoteOptions') {
                             bus.$emit('update-chart-options', res)
                         }
