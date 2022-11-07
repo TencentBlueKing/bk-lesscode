@@ -74,7 +74,7 @@
     "@blueking/bkui-vue-complex": "0.0.8",
     "@blueking/bundless": "0.0.8",
     "@blueking/bundless-plugin-vue2": "0.0.10",
-    "@blueking/cli-service-webpack": "0.0.0-beta.55",
+    "@blueking/cli-service-webpack": "0.0.0-beta.56",
     "@blueking/magicbox-header": "~1.1.49",
     "@blueking/user-selector": "^1.0.7",
     "@icon-cool/bk-icon-vue-drag-vis": "^0.2.12",
@@ -155,7 +155,6 @@
     "mysql2": "~2.3.3",
     "node-request-context": "~1.0.5",
     "node-sql-parser": "^3.8.2",
-    "node-xlsx": "^0.17.1",
     "nodemon": "~1.19.3",
     "npm": "6.14.15",
     "path-to-regexp": "^6.1.0",
@@ -195,7 +194,8 @@
     "vue-router": "~3.1.3",
     "vue-template-compiler": "~2.6.14",
     "vuedraggable": "~2.23.2",
-    "vuex": "~3.1.1"
+    "vuex": "~3.1.1",
+    "xlsx": "^0.18.5"
   },
   "engines": {
     "node": ">= 14.16.1",
