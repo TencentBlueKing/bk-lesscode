@@ -155,7 +155,6 @@
     "mysql2": "~2.3.3",
     "node-request-context": "~1.0.5",
     "node-sql-parser": "^3.8.2",
-    "node-xlsx": "^0.17.1",
     "nodemon": "~1.19.3",
     "npm": "6.14.15",
     "path-to-regexp": "^6.1.0",
@@ -195,7 +194,8 @@
     "vue-router": "~3.1.3",
     "vue-template-compiler": "~2.6.14",
     "vuedraggable": "~2.23.2",
-    "vuex": "~3.1.1"
+    "vuex": "~3.1.1",
+    "xlsx": "^0.18.5"
   },
   "engines": {
     "node": ">= 14.16.1",
