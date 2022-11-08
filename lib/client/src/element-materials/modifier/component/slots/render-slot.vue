@@ -452,8 +452,8 @@
                     }
                 } else {
                     code = valueData.val
-                    // 用户设置数据为空时显示配置默认值（fix: 数据为空可能导致组件无法显示）
-                    if (!isEmpty(code)) {
+                    // 用户设置数据为空时显示配置默认值（fix: 数据为空可能导致组件无法显示）  如果允许为空(emptyable)，则同样可以change
+                    if (!isEmpty(code) || this.describe.emptyable) {
                         renderValue = code
                     }
                 }
