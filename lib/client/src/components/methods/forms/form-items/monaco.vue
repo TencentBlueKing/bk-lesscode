@@ -57,7 +57,7 @@
         data () {
             return {
                 fixMethodTips: {
-                    content: '自动修复 Eslint',
+                    content: '自动修复 Eslint 格式问题',
                     appendTo: 'parent',
                     boundary: 'window',
                     theme: 'light',

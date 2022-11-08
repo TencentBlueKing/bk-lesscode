@@ -91,7 +91,7 @@
             getErrMessage () {
                 const messageMap = {
                     3: '请输入 Array 格式数据',
-                    4: '请输入 Json 格式数据'
+                    4: '请输入 JSON 格式数据'
                 }
                 return messageMap[this.valueType]
             }
