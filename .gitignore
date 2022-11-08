@@ -48,6 +48,7 @@ lib/server/conf/iam.js
 lib/server/project-template/project-target*
 lib/server/project-template/bklesscode-proj*
 
+.bk.local.env
 .codecc
 build.yml
 package-lock.json

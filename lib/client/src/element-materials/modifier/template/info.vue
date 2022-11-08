@@ -1,13 +1,12 @@
 <template>
     <div class="project-info-modifier">
         <div class="prop-box">
-            <div class="action-title">
+            <div class="action-title" @click="() => showNameProp = !showNameProp">
                 <i
                     :class="{
                         'bk-icon icon-angle-down': true,
                         close: !showNameProp
                     }"
-                    @click="() => showNameProp = !showNameProp"
                 ></i>
                 <div>应用名称</div>
             </div>
@@ -16,13 +15,12 @@
             </div>
         </div>
         <div class="prop-box">
-            <div class="action-title">
+            <div class="action-title" @click="() => showLogoProp = !showLogoProp">
                 <i
                     :class="{
                         'bk-icon icon-angle-down': true,
                         close: !showLogoProp
                     }"
-                    @click="() => showLogoProp = !showLogoProp"
                 ></i>
                 <div>logo 设置</div>
             </div>
@@ -73,6 +71,7 @@
                 font-weight: bold;
                 color: #313238;
                 margin-bottom: 0;
+                cursor: pointer;
                 .bk-icon {
                     margin-left: -5px;
                     margin-right: 3px;

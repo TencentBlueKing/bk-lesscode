@@ -55,7 +55,6 @@
     import { replaceFuncKeyword, replaceFuncParam, getRemoteFunctionInfo } from 'shared/function'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable'
     import remoteExample from './remote-example'
-
     export default {
         components: {
             ChooseFunction,
@@ -64,6 +63,9 @@
         props: {
             name: String,
             type: String,
+            componentType: {
+                type: String
+            },
             payload: {
                 type: Object,
                 default: () => ({})
@@ -111,7 +113,7 @@
             ...mapGetters('functions', ['functionList']),
             ...mapGetters('variable', ['variableList']),
             exampleData () {
-                return { name: this.name, value: this.describe.val }
+                return { name: this.name, value: this.describe.example || this.describe.val }
             }
         },
         watch: {
@@ -136,12 +138,10 @@
                     this.getApiData()
                 }
             },
-
             handleClear () {
                 this.remoteData = Object.assign(this.remoteData, { methodCode: '' })
                 this.change(this.name, this.defaultValue, this.type, this.remoteData)
             },
-
             getVariableVal (variable) {
                 const copyVariable = JSON.parse(JSON.stringify(variable))
                 const { defaultValue, defaultValueType, valueType } = copyVariable
@@ -156,7 +156,6 @@
                 }
                 return value
             },
-
             recordVariable (variableCode, funcName) {
                 const variableCodes = Array.isArray(variableCode) ? variableCode : [variableCode]
                 variableCodes.forEach((code) => {
@@ -168,21 +167,18 @@
                     }
                 })
             },
-
             processVarInFunApiData (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
                     this.recordVariable(variableCode, funcName)
                     return `this.${variableCode}`
                 })
             },
-
             processVarInFunApiUrl (str, funcName) {
                 return replaceFuncParam(str || '', (variableCode) => {
                     this.recordVariable(variableCode, funcName)
                     return `\${this.${variableCode}}`
                 })
             },
-
             generateFuncParams (params = [], funcName) {
                 return params
                     .reduce((acc, cur) => {
@@ -198,7 +194,6 @@
                     }, [])
                     .join(', ')
             },
-
             generateMethod (methodCode) {
                 const firstMethod = this.getMethodByCode(methodCode)
                 let funcStr = ''
@@ -208,10 +203,8 @@
                 funcStr += `return ${firstMethod.funcName}(${this.generateFuncParams(this.remoteData.params, firstMethod.funcName)})`
                 return funcStr
             },
-
             getMethodStr (returnMethod) {
                 const funcParams = (returnMethod.funcParams || []).join(', ')
-                const hasAwait = /await\s/.test(returnMethod.funcBody)
                 if (returnMethod.funcType === 1) {
                     const remoteParams = (returnMethod.remoteParams || []).join(', ')
                     const {
@@ -225,20 +218,18 @@
                         apiData: ${apiDataString},
                         withToken: ${returnMethod.withToken}
                     }`
-                    returnMethod.funcStr = `const ${returnMethod.funcName} = ${hasAwait ? 'async ' : ''}(${funcParams}) => { return this.$store.dispatch('getApiData', ${data}).then((${remoteParams}) => { ${returnMethod.funcBody} }) };`
+                    returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { return this.$store.dispatch('getApiData', ${data}).then((${remoteParams}) => { ${returnMethod.funcBody} }) };`
                 } else {
-                    returnMethod.funcStr = `const ${returnMethod.funcName} = ${hasAwait ? 'async ' : ''}(${funcParams}) => { ${returnMethod.funcBody} };`
+                    returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { ${returnMethod.funcBody} };`
                 }
                 return returnMethod.funcStr
             },
-
             getMethodByCode (methodCode) {
                 const returnMethod = this.functionList.find(functionData => functionData.funcCode === methodCode)
                 this.usedMethodMap[returnMethod.funcCode] = returnMethod
                 returnMethod.funcBody = this.processFuncBody(returnMethod.funcName, returnMethod.funcBody)
                 return returnMethod
             },
-
             processFuncBody (funcName, funcBody) {
                 return replaceFuncKeyword(funcBody, (all, first, second, variableCode, funcStr, funcCode) => {
                     if (funcCode) {
@@ -260,7 +251,6 @@
                     }
                 })
             },
-
             createSandBox (contextProxy = {}) {
                 const Fn = Function
                 const global = Fn('return this')()
@@ -324,7 +314,6 @@
                 sandbox.exec = sandbox
                 return sandbox
             },
-
             async getApiData () {
                 if (!this.remoteData.methodCode) {
                     this.$bkMessage({
@@ -334,7 +323,6 @@
                     })
                     return
                 }
-
                 let methodStr
                 try {
                     methodStr = this.generateMethod(this.remoteData.methodCode)
@@ -346,7 +334,7 @@
                     })
                     return
                 }
-                
+
                 try {
                     this.toggleLoading(true)
                     const sandBox = this.createSandBox(this.usedVariableMap)
@@ -358,6 +346,13 @@
                         this.messageWarn(message)
                     } else {
                         this.change(this.name, res, this.type, JSON.parse(JSON.stringify(this.remoteData)))
+                        if (this.name === 'options' && this.componentType === 'bk-charts') {
+                            this.$bkMessage({
+                                theme: 'success',
+                                message: `图表配置已更新，${Object.keys(res).join('、')}选项已被远程数据覆盖`
+                            })
+                            return
+                        }
                         if (this.name === 'remoteOptions') {
                             bus.$emit('update-chart-options', res)
                         }
@@ -373,11 +368,9 @@
                     this.toggleLoading(false)
                 }
             },
-
             handleShowExample () {
                 this.$refs.example.isShow = true
             },
-
             toggleLoading (val) {
                 this.isLoadingData = val
                 this.$emit('update:isLoading', val)
@@ -398,22 +391,15 @@
         line-height: 24px;
         border-bottom: 1px dashed #979ba5;
     }
-
-    .remote-button {
-        margin-top: 10px;
-    }
-
     .remote-example {
         color: #3a84ff;
         cursor: pointer;
         font-size: 12px
     }
-
     .form-title {
         font-weight: bold;
         color: #63656E;
         height: 22px;
-
         .form-tip {
             font-weight: normal;
             color: #979ba5;

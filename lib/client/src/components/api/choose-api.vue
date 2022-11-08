@@ -2,10 +2,13 @@
     <bk-select
         ref="treeRef"
         searchable
+        search-placeholder="请输入关键字搜索。如果没搜索到，可能是懒加载还未加载相应数据，请手动展开目录来寻找 API"
         :tag-fixed-height="false"
         :show-empty="false"
         :clearable="false"
         :scroll-height="300"
+        :popover-options="{ appendTo: 'parent' }"
+        :disabled="disabled"
         :remote-method="handleSearch"
         @toggle="handleToggle"
     >
@@ -67,7 +70,14 @@
                 default: () => ([])
             },
             // itsm系统对接的esb接口
-            useFlowEsbApi: Boolean
+            useFlowEsbApi: {
+                type: Boolean,
+                default: false
+            },
+            disabled: {
+                type: Boolean,
+                default: false
+            }
         },
 
         setup (props, { emit }) {

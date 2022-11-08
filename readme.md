@@ -28,9 +28,6 @@
 │   ......
 ├── lib/                    # 源码目录
 │   ├── client/             # 前端源码目录
-│   │   ├── build/          # 前端构建脚本目录
-│   │       ......
-│   │   ├── index-dev.html  # 本地开发使用的 html
 │   │   ├── index.html      # 生产环境使用的 html
 │   │   ├── preview.html    # 预览模块使用的 html
 │   │   ├── require-monaco.html # 辅助引入 monaco 编辑器的 html
@@ -79,9 +76,12 @@
 │       │   ......
 │       ├── utils/          # 后端utils 目录
 │       │   ......
-├── nodemon.json            # nodemon 配置文件
+├── scripts                 # 项目脚本
 ├── package.json            # 项目描述文件
 ├── forever.json            # forever 配置文件
+├── .bk.env                 # 基础变量
+├── .bk.development.env     # 开发环境变量
+├── .bk.production.env      # 生产环境变量
 ```
 
 ## 技术栈

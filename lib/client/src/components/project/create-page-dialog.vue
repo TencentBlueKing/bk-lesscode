@@ -400,11 +400,6 @@
 
         .bk-dialog-footer {
             padding: 8px 24px;
-            .dialog-footer {
-                button + button {
-                    margin-left: 4px;
-                }
-            }
         }
     }
 </style>

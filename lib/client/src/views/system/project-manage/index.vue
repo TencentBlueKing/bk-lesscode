@@ -789,12 +789,6 @@
         margin: 12px 0;
     }
 
-    /deep/ .dialog-footer {
-        button + button {
-            margin-left: 4px;
-        }
-    }
-
     /deep/ .delete-dialog-wrapper {
         .delete-form {
             .confirm-name {

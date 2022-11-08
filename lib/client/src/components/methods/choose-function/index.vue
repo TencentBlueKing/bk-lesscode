@@ -79,7 +79,7 @@
                                                     'function-item': true
                                                 }"
                                                 :key="functionData.funcName"
-                                                @click="handleChooseFunction(functionData.funcCode)"
+                                                @click="handleChooseFunction(functionData)"
                                             >
                                                 <span class="function-item-name" v-bk-overflow-tips>
                                                     {{ functionData.funcName }}（{{ functionData.funcCode }}）
@@ -136,13 +136,14 @@
             <div class="panel-item" v-for="(panel, index) in renderChoosenFunction.params" :key="index">
                 <variable-select
                     class="select-param"
+                    :options="{ formatInclude: ['value', 'variable', 'expression'] }"
                     :value="panel"
                     @change="({ format, code }) => handleChangeParam(index, { format, code, value: '' })"
                 >
                     <span
                         class="param-title"
                         slot="title"
-                    >参数</span>
+                    >参数（{{ computedParamKeys[index] }}）</span>
                     <bk-input
                         :value="panel.value"
                         @change="value => handleChangeParam(index, { value })"
@@ -151,9 +152,13 @@
                 <i class="bk-icon icon-minus-circle" @click="handleDeleteParam(index)"></i>
             </div>
             <div
-                class="panel-add"
+                :class="{
+                    'panel-add': true,
+                    'disabled': renderChoosenFunction.params.length >= computedParamKeys.length
+                }"
                 v-bk-tooltips="{
-                    content: '配置的执行参数，会在函数执行的时候传入，且优先级最高',
+                    content: '配置的执行参数，会在函数执行的时候传入，如果参数由组件传入（比如表格组件的 page-change 事件，在调用函数的时候会自动传入 page 参数），则可以删除此处的参数',
+                    width: '300px',
                     placements: ['left'],
                     boundary: 'window'
                 }"
@@ -249,6 +254,13 @@
                         break
                 }
                 return functionData || []
+            },
+
+            computedParamKeys () {
+                const functionData = this.funcGroups.reduce((acc, cur) => {
+                    return cur.children.find(functionData => functionData.funcCode === this.renderChoosenFunction.methodCode)
+                }, {})
+                return functionData?.funcParams || []
             }
         },
 
@@ -275,8 +287,13 @@
                 this.$emit('change', JSON.parse(JSON.stringify(this.renderChoosenFunction)))
             },
 
-            handleChooseFunction (funcCode) {
-                this.renderChoosenFunction.methodCode = funcCode
+            handleChooseFunction (functionData) {
+                this.renderChoosenFunction.methodCode = functionData.funcCode
+                this.renderChoosenFunction.params = functionData?.funcParams?.map(() => ({
+                    value: '',
+                    code: '',
+                    format: 'value'
+                }))
                 this.triggleUpdate()
                 this.handleClose()
             },
@@ -292,6 +309,8 @@
             },
 
             handlePlusParam () {
+                if (this.renderChoosenFunction.params.length >= this.computedParamKeys.length) return
+
                 this.renderChoosenFunction.params.push({
                     value: '',
                     code: '',
@@ -400,6 +419,10 @@
         line-height: 16px;
         cursor: pointer;
         color: #3A84FF;
+        &.disabled {
+            color: #a3c5fd;
+            cursor: not-allowed;
+        }
         i {
             padding-right: 2px;
         }

@@ -47,7 +47,6 @@ interface IError {
 }
 export default defineComponent({
     name: 'FieldTable',
-    components: {},
     props: {
         data: Array,
         column: Array,

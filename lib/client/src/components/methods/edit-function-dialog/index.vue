@@ -278,8 +278,8 @@
                 }
             },
 
-            handleSaveUse (funcCode) {
-                this.$emit('save-use', funcCode)
+            handleSaveUse (functionData) {
+                this.$emit('save-use', functionData)
             },
 
             refreshStatus () {
@@ -371,6 +371,7 @@
         background: rgba(0, 0, 0, 0.6);
         z-index: 1000;
         color: #63656e;
+        cursor: auto;
         .function-main {
             position: absolute;
             width: 90%;

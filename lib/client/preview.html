@@ -12,10 +12,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="icon" href="<%= htmlWebpackPlugin.options.staticUrl %>/images/favicon.png" type="image/x-icon" />
-        <link rel="shortcut icon" href="<%= htmlWebpackPlugin.options.staticUrl %>/images/favicon.png" type="image/x-icon" />
+        <link rel="icon" href="<%= process.env.BK_STATIC_URL %>/images/logo.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="<%= process.env.BK_STATIC_URL %>/images/logo.png" type="image/x-icon" />
         <meta charset="utf-8">
-        <title>可视化开发平台 | 蓝鲸智云社区版</title>
+        <title>可视化开发平台 | 腾讯蓝鲸智云</title>
         <style>
             html, body, #app {
                 height: 100%;
@@ -126,14 +126,15 @@
         </div>
         <div class="preview-tip">未发布<br>请勿分享</div>
         <script>
-            var BKPAAS_ENVIRONMENT = '<%= htmlWebpackPlugin.options.BKPAAS_ENVIRONMENT %>'
-            var BK_ITSM_URL = '<%= htmlWebpackPlugin.options.BK_ITSM_URL %>'
-            var BK_APP_APIGW_PREFIX = '<%= htmlWebpackPlugin.options.BK_APP_APIGW_PREFIX %>'
-            var BKPAAS_ENGINE_REGION = '<%= htmlWebpackPlugin.options.BKPAAS_ENGINE_REGION %>'
-            var BK_IAM_HOST = '<%= htmlWebpackPlugin.options.BK_IAM_HOST %>'
-            var IAM_ENABLE = <%= htmlWebpackPlugin.options.IAM_ENABLE %>
+            var BK_STATIC_URL = '<%= process.env.BK_STATIC_URL %>'
+            var BKPAAS_ENVIRONMENT = '<%= process.env.BK_PAAS_ENVIRONMENT %>'
+            var BK_API_URL_TMPL = '{{ BK_API_URL_TMPL }}'
+            var BKPAAS_ENGINE_REGION = '<%= process.env.BK_PAAS_ENGINE_REGION %>'
+            var BK_APP_APIGW_PREFIX = '<%= process.env.BK_API_GATEWAY_ORIGIN.replace('{api_name}', 'bk-lesscode') + '/' + process.env.BK_LESSCODE_ENVIRONMENT || '' %>'
+            var BK_IAM_HOST = '<%= process.env.BK_IAM_HOST %>'
+            var IAM_ENABLE = <%= process.env.BK_IAM_ENABLE %>
 
-            const recalculate = () => {
+            var recalculate = () => {
                 const html = window.document.documentElement
                 const clientWidth = html.clientWidth || 375
                 html.style.fontSize = `${clientWidth / 20}px`
@@ -142,6 +143,5 @@
             window.addEventListener('resize', recalculate, false)
             window.document.addEventListener('DOMContentLoaded', recalculate, false)
         </script>
-        <script src="<%= htmlWebpackPlugin.options.staticUrl %>/lib.bundle.js"></script>
     </body>
 </html>

@@ -175,8 +175,7 @@
                                 return message
                             }
                         }
-                        const path = this.versionId ? '/nocode/ticket/create_ticket_with_version/' : '/nocode/v2/itsm/create_ticket/'
-                        await this.$http.post(path, params, reqConfig)
+                        await this.$http.post('/nocode/ticket/create_ticket_with_version/', params, reqConfig)
                     } else {
                         await this.$http.post(`/data-source/user/tableName/${this.tableName}?formId=${this.formId}`, data)
                     }

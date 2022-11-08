@@ -183,6 +183,12 @@
         font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Microsoft YaHei, Helvetica Neue, Arial;
     }
 
+    .dialog-footer {
+        button + button {
+            margin-left: 6px;
+        }
+    }
+
     .bk-fixed-navbar-wrapper {
         z-index: 9999;
     }

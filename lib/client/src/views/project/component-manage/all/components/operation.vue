@@ -134,7 +134,7 @@
                 return this.data.id
             },
             uploadUrl () {
-                return `${AJAX_URL_PREFIX}/component/upload?belongProjectId=${this.belongProjectId}&id=${this.data.id ? this.data.id : ''}`
+                return `${process.env.BK_AJAX_URL_PREFIX}/component/upload?belongProjectId=${this.belongProjectId}&id=${this.data.id ? this.data.id : ''}`
             }
         },
         watch: {
@@ -318,6 +318,9 @@
         }
         .sideslider-footer{
             padding-left: 120px;
+            .bk-button {
+                margin-right: 10px;
+            }
         }
 
         .bk-form-radio-button .bk-radio-button-text {
