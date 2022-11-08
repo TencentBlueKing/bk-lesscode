@@ -140,7 +140,12 @@
                     this.$emit('success-submit')
                 }).catch((err) => {
                     if (err?.code === 499) {
-                        this.messageHtmlError(err.message)
+                        this.messageWarn('函数不符合 Eslint 规范，启动自动修复')
+                        this
+                            .$refs
+                            .monaco
+                            .fixMethod()
+                            .then(this.handleSubmit)
                     } else {
                         this.messageError(err.message || err)
                     }
@@ -162,7 +167,12 @@
                     this.$emit('success-submit')
                 }).catch((err) => {
                     if (err?.code === 499) {
-                        this.messageHtmlError(err.message)
+                        this.messageWarn('函数不符合 Eslint 规范，启动自动修复')
+                        this
+                            .$refs
+                            .monaco
+                            .fixMethod()
+                            .then(this.handleSubmit)
                     } else {
                         this.messageError(err.message || err)
                     }
