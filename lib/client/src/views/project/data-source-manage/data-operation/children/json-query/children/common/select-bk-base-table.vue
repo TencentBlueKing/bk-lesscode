@@ -3,7 +3,7 @@
         <span class="select-title">数据表</span>
         <bk-select
             searchable
-            search-placeholder="请输入表名进行搜索，需要展开业务后才能搜索到"
+            search-placeholder="输入业务下的表名进行搜索（需要先展开业务）"
             :class="{
                 'select-main': true,
                 'is-error': isError
