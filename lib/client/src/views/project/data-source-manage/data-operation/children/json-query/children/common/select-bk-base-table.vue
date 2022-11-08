@@ -3,6 +3,7 @@
         <span class="select-title">数据表</span>
         <bk-select
             searchable
+            search-placeholder="请输入表名进行搜索，需要展开业务后才能搜索到"
             :class="{
                 'select-main': true,
                 'is-error': isError
@@ -12,6 +13,7 @@
             @clear="handleChange"
         >
             <span
+                v-bk-overflow-tips
                 class="display-value"
                 slot="trigger"
             >
@@ -211,6 +213,9 @@
             max-width: calc(100% - 65px);
             margin-left: -1px;
             z-index: 5;
+            /deep/ .bk-tooltip-ref {
+                height: 30px;
+            }
         }
         .is-error {
             border-color: #ff5656;
@@ -228,6 +233,10 @@
         display: inline-block;
         line-height: 30px;
         padding: 0 36px 0 10px;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     /deep/ .exception-wrap-item {
         .bk-exception-text {
