@@ -27,7 +27,8 @@
                 :field-id="condition.fieldId"
                 :table-name="condition.tableName"
                 :table-list="tableList"
-                @change="(val) => handleTableChange(index, val)"
+                :custom-validate="customValidate"
+                @change="(val) => handleValueChange(index, val)"
             />
             <select-type
                 class="connect-type"
@@ -35,13 +36,13 @@
                 :list="connectTypeList"
                 @change="(val) => handleChange(index, val, 'expression')"
             />
-            <bk-input
+            <select-value
                 class="select-value"
-                placeholder="请输入值，可以输入逗号分隔的字符串表示数组"
+                placeholder="可用逗号分隔的字符串表示数组"
                 :value="condition.value"
-                @change="(val) => handleChange(index, val, 'value')"
-            >
-            </bk-input>
+                :param="condition.param"
+                @change="(val) => handleValueChange(index, val)"
+            />
             <plus-icon
                 class="plus-icon"
                 @click="handlePlusCondition"
@@ -60,8 +61,10 @@
         PropType,
         toRef
     } from '@vue/composition-api'
+    import { ITable } from './select-table.vue'
     import SelectType from './select-type.vue'
     import SelectTableField from './select-table-field.vue'
+    import SelectValue from './select-value.vue'
     import PlusIcon from '@/components/plus-icon.vue'
     import MinusIcon from '@/components/minus-icon.vue'
     import {
@@ -71,17 +74,19 @@
     } from 'shared/data-source'
 
     export interface ICondition {
-        tableName: String,
-        fieldId: String,
-        expression: String,
-        value: String,
-        type: String
+        tableName: string;
+        fieldId: string;
+        expression: string;
+        value: string;
+        param: string;
+        type: string;
     }
 
     export default defineComponent({
         components: {
-            SelectTableField,
             SelectType,
+            SelectTableField,
+            SelectValue,
             PlusIcon,
             MinusIcon
         },
@@ -95,11 +100,15 @@
                 default: ''
             },
             tableList: {
-                type: Array
+                type: Array as PropType<ITable[]>
             },
             allowClear: {
                 type: Boolean,
                 default: false
+            },
+            customValidate: {
+                type: Function,
+                default: () => {}
             }
         },
 
@@ -126,7 +135,7 @@
                 triggleUpdate()
             }
 
-            const handleTableChange = (index, val) => {
+            const handleValueChange = (index, val) => {
                 Object.assign(renderConditionList.value[index], val)
                 triggleUpdate()
             }
@@ -146,7 +155,7 @@
                 connectTypeList,
                 handlePlusCondition,
                 handleMinusCondition,
-                handleTableChange,
+                handleValueChange,
                 handleChange
             }
         }

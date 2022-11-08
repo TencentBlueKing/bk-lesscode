@@ -27,6 +27,7 @@
             <bk-divider />
             <render-table
                 :query-table="renderCondition.table"
+                :query-group="renderCondition.groupBy"
                 :table-list="tableList"
                 :bk-base-biz-list="bkBaseBizList"
                 :data-source-type="dataSourceType"

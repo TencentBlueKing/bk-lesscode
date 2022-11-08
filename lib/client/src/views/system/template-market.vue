@@ -879,10 +879,4 @@
             @mixin scroller;
         }
     }
-
-    /deep/ .dialog-footer {
-        button + button {
-            margin-left: 4px;
-        }
-    }
 </style>

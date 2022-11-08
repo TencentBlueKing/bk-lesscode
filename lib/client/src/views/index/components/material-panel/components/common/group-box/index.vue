@@ -95,7 +95,6 @@
                     this.newNode = this.createFallback(this.list, event.oldIndex)
                 } else {
                     const materialConfig = this.list[event.oldIndex]
-                    // debugger
                     const node = LC.createNode(materialConfig.type)
 
                     Object.values(createHacker).forEach(task => task(node, materialConfig))

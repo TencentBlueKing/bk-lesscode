@@ -12,6 +12,7 @@
             :columns="tableColumns"
             :disable-distinct="true"
             :disable-delete="true"
+            :custom-validate="customValidate"
             @change="(val) => handleChange(val)"
         ></select-field>
     </section>
@@ -39,9 +40,19 @@
         },
 
         props: {
-            tableList: Array as PropType<ITable[]>,
-            tableName: String,
-            fieldId: [String, Number]
+            tableList: {
+                type: Array as PropType<ITable[]>
+            },
+            tableName: {
+                type: String
+            },
+            fieldId: {
+                type: [String, Number]
+            },
+            customValidate: {
+                type: Function,
+                default: () => {}
+            }
         },
 
         setup (props, { emit }) {

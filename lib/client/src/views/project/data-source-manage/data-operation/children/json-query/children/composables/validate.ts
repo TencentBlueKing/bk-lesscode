@@ -1,21 +1,21 @@
 class Validate {
-    public componentList: any[]
+    public methods: any[]
 
     constructor () {
-        this.componentList = []
+        this.methods = []
     }
 
-    register (component) {
-        this.componentList.push(component)
+    register (method) {
+        this.methods.push(method)
     }
 
-    unRegister (component) {
-        const index = this.componentList.findIndex(item => item === component)
-        this.componentList.splice(index, 1)
+    unRegister (method) {
+        const index = this.methods.findIndex(item => item === method)
+        this.methods.splice(index, 1)
     }
 
     validate () {
-        return Promise.all(this.componentList.map(component => component.validate()))
+        return Promise.all(this.methods.map(method => method()))
     }
 }
 

@@ -69,9 +69,7 @@
                     </template>
                 </bk-popover>
             </template>
-            <div class="nav-container">
-                <slot />
-            </div>
+            <slot />
         </bk-navigation>
     </div>
 </template>
@@ -261,13 +259,13 @@
         font-weight: normal;
     }
     .component-wrapper .theme-desc {
-        @extend .theme-style
+        @extend .theme-style;
     }
     .header-user.theme-header {
         &:hover {
             opacity: 1;
         }
-        @extend .theme-style
+        @extend .theme-style;
     }
     .top-menu-wraper{
         border: 1px  solid transparent;
