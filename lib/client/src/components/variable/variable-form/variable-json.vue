@@ -10,7 +10,12 @@
                     @input="getDisplayJson(item.key, ...arguments)"
                     @blur="formatterValue(item.key)"
                 ></bk-input>
-                <json-viewer :value="displayJSON[item.key]" :expand-depth="5" class="json-viewer" />
+                <json-viewer
+                    :value="displayJSON[item.key]"
+                    :expand-depth="5"
+                    :show-array-index="false"
+                    class="json-viewer"
+                />
             </main>
         </template>
     </section>
