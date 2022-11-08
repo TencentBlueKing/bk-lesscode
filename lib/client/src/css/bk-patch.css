@@ -60,7 +60,6 @@
     right: 0;
     left: 0;
     width: unset !important;
-    min-width: unset !important;
 }
 .g-prop-radio-group {
     margin-bottom: 8px;
