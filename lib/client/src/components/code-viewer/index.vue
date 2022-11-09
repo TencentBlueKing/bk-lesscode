@@ -14,7 +14,6 @@
         <div :class="$style['toolbar']">
             <p><span v-if="pageType === 'json'">仅包含页面内容区域JSON数据</span></p>
             <div :class="$style['buttons']">
-                {{withNav}}
                 <i v-bk-tooltips="{ boundary: 'window', content: `复制${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
                 <i v-bk-tooltips="{ boundary: 'window', content: `下载${typeName}` }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
                 <i v-if="pageType === 'json'" v-bk-tooltips="{ boundary: 'window', content: '导入JSON' }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>

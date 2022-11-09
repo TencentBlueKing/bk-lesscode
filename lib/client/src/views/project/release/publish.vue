@@ -568,12 +568,12 @@
                             deployId: this.latestInfo.deployId
                         })
                         if ((detail.status === 'running' || detail.status === 'pending')) {
-                            // 如果超过10分钟，判定为失败
+                            // 如果超过30分钟，判定为失败
                             const tmpTime = this.latestInfo.createTime || this.latestInfo.updateTime
                             const createTime = dayjs(tmpTime).format('YYYY-MM-DD HH:mm:ss') || ''
                             const createTimeUnix = new Date(createTime).getTime()
                             const currentTimeUnix = new Date().getTime()
-                            if ((currentTimeUnix - createTimeUnix) > 600000) {
+                            if ((currentTimeUnix - createTimeUnix) > 1800000) {
                                 detail.status = 'failed'
                             }
                         }
