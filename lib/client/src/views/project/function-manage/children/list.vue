@@ -312,7 +312,7 @@
 
             exportFunction () {
                 const versionName = this.versionId ? `-${this.versionName}` : ''
-                downloadFile(getExportFunction(this.selectionData), `lesscode-${this.projectId}${versionName}-func.json`)
+                downloadFile(getExportFunction(this.selectionData), `bklesscode-${this.projectId}${versionName}-func.json`)
             },
 
             exportDemoFunction () {

@@ -408,8 +408,9 @@
                 return field.type === 'input' ? 'bk-input' : 'pageRouterSelect'
             },
             handleCancel () {
-                if (this.editField.field.from === 'style') this.page.styleSetting = JSON.parse(JSON.stringify(this.styleData))
+                if (this.editField.field.from === 'style') Object.assign(this.page.styleSetting, JSON.parse(JSON.stringify(this.styleData)))
                 this.$delete(this.errors, this.editField.field.id)
+                console.log('cancel style')
                 this.unsetEditField()
             },
             async handleConfirm () {
@@ -662,6 +663,7 @@
         /deep/ .style-setting {
             margin-left: 0;
             padding: 0 0;
+            width: auto;
             .style-title{
                 display: none;
               }
@@ -677,6 +679,7 @@
             .modifier-style {
                 margin-left: 0;
                 padding: 0 0;
+                width: auto;
               }
             .item-content div {
                 text-align: left !important;

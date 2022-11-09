@@ -237,7 +237,7 @@
             }
 
             const exportSelectTables = (fileType) => {
-                const fileName = fileType === 'sql' ? `lesscode-struct-${projectId}.sql` : ''
+                const fileName = fileType === 'sql' ? `bklesscode-struct-${projectId}.sql` : ''
                 const files = generateExportStruct(listStatus.selectRows, fileType, fileName)
                 files.forEach(({ name, content }) => {
                     downloadFile(content, name)

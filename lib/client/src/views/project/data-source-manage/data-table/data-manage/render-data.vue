@@ -453,7 +453,7 @@
                     tableName: activeTable.value.tableName,
                     list: dataStatus.selectRows
                 }]
-                const fileName = fileType === 'sql' ? `lesscode-data-${projectId}.sql` : ''
+                const fileName = fileType === 'sql' ? `bklesscode-data-${projectId}.sql` : ''
                 const files = generateExportDatas(datas, fileType, fileName)
                 files.forEach(({ name, content }) => {
                     downloadFile(content, name)

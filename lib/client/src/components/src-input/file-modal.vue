@@ -168,7 +168,7 @@
         :esc-close="false"
         :mask-close="false"
         header-position="left"
-        title="文件库">
+        title="文件管理">
         <div :class="$style['modal-container']">
             <div :class="$style['modal-head']">
                 <div :class="$style['buttons']">
