@@ -146,7 +146,8 @@
                     >参数（{{ computedParamKeys[index] }}）</span>
                     <bk-input
                         :value="panel.value"
-                        @change="value => handleChangeParam(index, { value })"
+                        @change="value => handleInputParam(index, { value })"
+                        @blur="triggleUpdate"
                     />
                 </variable-select>
                 <i class="bk-icon icon-minus-circle" @click="handleDeleteParam(index)"></i>
@@ -301,6 +302,10 @@
             handleChangeParam (index, val) {
                 Object.assign(this.renderChoosenFunction.params[index], val)
                 this.triggleUpdate()
+            },
+
+            handleInputParam (index, val) {
+                Object.assign(this.renderChoosenFunction.params[index], val)
             },
 
             handleDeleteParam (index) {

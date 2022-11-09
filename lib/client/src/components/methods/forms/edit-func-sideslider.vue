@@ -203,10 +203,10 @@
 <style lang="postcss" scoped>
     .func-form-home {
         padding: 20px 30px;
-        /deep/ .func-form-item {
-            margin-top: 20px;
+        ::v-deep .func-form-item {
+            margin-top: 20px !important;
         }
-        /deep/ .func-title {
+        .func-title {
             margin: 19px 0 17px;
             padding-left: 4px;
         }

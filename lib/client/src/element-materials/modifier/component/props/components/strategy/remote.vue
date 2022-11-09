@@ -106,7 +106,8 @@
                 },
                 usedMethodMap: {},
                 usedVariableMap: {},
-                isLoadingData: false
+                isLoadingData: false,
+                apiList: []
             }
         },
         computed: {
@@ -212,8 +213,14 @@
                         codes
                     } = getRemoteFunctionInfo(returnMethod)
                     this.recordVariable(codes, returnMethod.funcName)
+                    // 构造 url
+                    let funcApiUrl = returnMethod.funcApiUrl
+                    if (returnMethod?.apiChoosePath?.find(path => path.id === 'lesscode-api')) {
+                        const apiData = this.apiList.find(api => api.code === returnMethod.apiChoosePath[2].code)
+                        funcApiUrl = apiData?.url || returnMethod.funcApiUrl
+                    }
                     const data = `{
-                        url: \`${this.processVarInFunApiUrl(returnMethod.funcApiUrl, returnMethod.funcName)}\`,
+                        url: \`${this.processVarInFunApiUrl(funcApiUrl, returnMethod.funcName)}\`,
                         type: '${returnMethod.funcMethod}',
                         apiData: ${apiDataString},
                         withToken: ${returnMethod.withToken}
@@ -325,6 +332,7 @@
                 }
                 let methodStr
                 try {
+                    this.apiList = await this.$store.dispatch('api/getApiList')
                     methodStr = this.generateMethod(this.remoteData.methodCode)
                 } catch (error) {
                     this.$bkMessage({
