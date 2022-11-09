@@ -618,6 +618,7 @@
             handleDownloadSource (project) {
                 this.$refs.downloadDialog.isShow = true
                 this.$refs.downloadDialog.projectId = project.id
+                this.$refs.downloadDialog.projectCode = project.projectCode
                 this.$refs.downloadDialog.projectName = project.projectName
             },
             handleSetTemplate (project) {

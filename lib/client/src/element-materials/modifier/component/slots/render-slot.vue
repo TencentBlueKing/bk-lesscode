@@ -75,6 +75,7 @@
                 </bk-radio-button>
             </bk-radio-group>
         </template>
+
         <component
             v-if="isRenderValueCom"
             :is="renderValueComponent"
@@ -82,7 +83,16 @@
             :slot-val="slotVal"
             :slot-config="describe"
             :type="formData.valueType"
-            :change="handleCodeChange" />
+            :change="handleCodeChange"
+            @option-change="(val) => handleSlotChange('keyOptions', val)" />
+        <select-key
+            v-show="describe.keys && describe.keys.length && formData.valueType !== describe.type[0]"
+            :keys="describe.keys"
+            :value="formData.valueKeys"
+            :value-type="formData.valueType"
+            :options="slotVal.keyOptions"
+            @change="(val) => handleSlotChange('valueKeys', val)"
+        />
     </variable-select>
 </template>
 
@@ -91,8 +101,9 @@
     import { mapActions } from 'vuex'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
-    import variableSelect from '@/components/variable/variable-select'
-    import chooseBuildInVariable from '@/components/variable/choose-build-in-variable'
+    import VariableSelect from '@/components/variable/variable-select'
+    import ChooseBuildInVariable from '@/components/variable/choose-build-in-variable'
+    import SelectKey from './components/common/select-key.vue'
     import {
         determineShowSlotInnerVariable,
         BUILDIN_VARIABLE_TYPE_LIST
@@ -155,8 +166,9 @@
 
     export default {
         components: {
-            variableSelect,
-            chooseBuildInVariable
+            VariableSelect,
+            ChooseBuildInVariable,
+            SelectKey
         },
 
         filters: {
@@ -222,8 +234,9 @@
             slotVal () {
                 return {
                     val: this.slotTypeValueMemo[this.formData.valueType].val,
-                    payload: this.formData.payload,
-                    component: this.slotTypeValueMemo[this.formData.valueType].component
+                    payload: this.slotTypeValueMemo[this.formData.valueType].payload,
+                    component: this.slotTypeValueMemo[this.formData.valueType].component,
+                    keyOptions: this.slotTypeValueMemo[this.formData.valueType].keyOptions
                 }
             },
             /**
@@ -287,12 +300,16 @@
                                 payload: lastValue.payload || {},
                                 valueType: lastValue.valueType,
                                 buildInVariableType: lastValue.buildInVariableType,
-                                renderValue: lastValue.renderValue
+                                renderValue: lastValue.renderValue,
+                                valueKeys: lastValue.valueKeys || {},
+                                keyOptions: lastValue.keyOptions || []
                             })
 
                             this.slotTypeValueMemo[lastValue.valueType] = {
                                 val: lastValue.renderValue,
-                                component: lastValue.component
+                                component: lastValue.component,
+                                keyOptions: lastValue.keyOptions || [],
+                                payload: lastValue.payload || {}
                             }
                         }
                         this.isRenderValueCom = true
@@ -330,14 +347,18 @@
                 payload: {},
                 valueType: type[0],
                 renderValue: defaultValue,
-                buildInVariableType: ''
+                buildInVariableType: '',
+                valueKeys: {},
+                keyOptions: []
             })
 
             // 编辑状态缓存
             this.slotTypeValueMemo = {
                 [this.formData.valueType]: {
                     val: defaultValue,
-                    component: this.formData.component
+                    component: this.formData.component,
+                    keyOptions: [],
+                    payload: {}
                 }
             }
         },
@@ -350,7 +371,9 @@
                 // 缓存用户本地编辑值
                 this.slotTypeValueMemo[this.formData.valueType] = {
                     val: this.formData.renderValue,
-                    component: this.formData.component
+                    component: this.formData.component,
+                    keyOptions: this.formData.keyOptions,
+                    payload: this.formData.payload
                 }
                 this.isInnerChange = true
                 this.$emit('on-change', this.name, {
@@ -426,7 +449,9 @@
                     ...this.formData,
                     code,
                     valueType,
-                    renderValue: code
+                    renderValue: code,
+                    payload: this.slotTypeValueMemo[valueType]?.payload || {},
+                    keyOptions: this.slotTypeValueMemo[valueType]?.keyOptions || []
                 })
                 this.triggerChange()
                 this.triggerUpdateVariable()
@@ -452,16 +477,19 @@
                     }
                 } else {
                     code = valueData.val
-                    // 用户设置数据为空时显示配置默认值（fix: 数据为空可能导致组件无法显示）
-                    if (!isEmpty(code)) {
+                    // 用户设置数据为空时显示配置默认值（fix: 数据为空可能导致组件无法显示）  如果允许为空(emptyable)，则同样可以change
+                    if (!isEmpty(code) || this.describe.emptyable) {
                         renderValue = code
                     }
                 }
-                // 防止 payload 互相覆盖，采用叠加的方式赋值
+                // 更新值
                 this.formData = Object.freeze({
                     ...this.formData,
                     code,
-                    payload: Object.assign(this.formData.payload, valueData.payload),
+                    payload: {
+                        customVariableCode: this.formData?.payload?.customVariableCode,
+                        ...valueData.payload
+                    },
                     renderValue
                 })
                 
@@ -493,6 +521,18 @@
                         [this.formData.payload.customVariableCode]: this.formData.renderValue
                     })
                 }
+            },
+            /**
+             * slot 变化
+             * @param {*} key slot 的key
+             * @param {*} val slot 的值
+             */
+            handleSlotChange (key, val) {
+                this.formData = Object.freeze({
+                    ...this.formData,
+                    [key]: val
+                })
+                this.triggerChange()
             }
         }
     }

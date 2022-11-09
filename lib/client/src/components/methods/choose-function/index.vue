@@ -210,7 +210,7 @@
                 functionTypeList: [
                     { name: 'functionTemplate', label: '事件模板' },
                     { name: 'functionMarket', label: '函数市场' },
-                    { name: 'functionList', label: '应用函数库' }
+                    { name: 'functionList', label: '应用函数管理' }
                 ],
                 searchFunctionName: '',
                 functionType: 'functionList',

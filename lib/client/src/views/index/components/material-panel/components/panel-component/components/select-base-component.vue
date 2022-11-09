@@ -54,12 +54,12 @@
                     PC: [
                         {
                             key: 'bk',
-                            name: '蓝鲸Vue组件库',
+                            name: '蓝鲸基础组件 (Vue)',
                             tooltip: this.bkUiTips
                         },
                         {
                             key: 'element',
-                            name: 'element-ui',
+                            name: 'Element UI (Vue)',
                             tooltip: this.elementUiTips
                         }
                     ],

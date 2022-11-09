@@ -153,7 +153,7 @@
                 }
             },
             async handleDownloadSource (template) {
-                const { content, id: templateId, versionId, fromPageCode } = template
+                const { content, id: templateName, versionId, fromPageCode } = template
                 const targetData = []
                 targetData.push(JSON.parse(content))
                 this.$store.dispatch('vueCode/getPageCode', {
@@ -164,7 +164,7 @@
                 }).then((res) => {
                     const downlondEl = document.createElement('a')
                     const blob = new Blob([res])
-                    downlondEl.download = `bklesscode-template-${templateId}.vue`
+                    downlondEl.download = `bklesscode-template-${templateName}.vue`
                     downlondEl.href = URL.createObjectURL(blob)
                     downlondEl.style.display = 'none'
                     document.body.appendChild(downlondEl)

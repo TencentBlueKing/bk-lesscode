@@ -16,7 +16,8 @@
             [$style['component']]: true,
             [$style['precent-width']]: fixPercentStyleWidth,
             [$style['precent-height']]: fixPercentStyleHeight,
-            'bk-layout-custom-component-wrapper': componentData.isCustomComponent
+            'bk-layout-custom-component-wrapper': componentData.isCustomComponent,
+            [[$style['component-root']]]: true
         }"
         role="component-root"
         :style="Object.assign({}, componentData.style, safeStyles)"
@@ -546,6 +547,9 @@
         min-height: 10px;
         pointer-events: auto !important;
         cursor: pointer;
+        &.component-root {
+            border: 1px solid transparent;
+        }
         &.precent-width{
             & > * {
                 width: 100% !important;

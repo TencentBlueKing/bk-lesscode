@@ -194,12 +194,12 @@
                         ]
                     },
                     {
-                        title: '资源库',
+                        title: '资源管理',
                         icon: 'source',
                         url: 'componentManage',
                         children: [
                             {
-                                title: '自定义组件库',
+                                title: '自定义组件管理',
                                 url: 'componentManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -217,7 +217,7 @@
                                 }
                             },
                             {
-                                title: '函数库',
+                                title: '函数管理',
                                 url: 'functionManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -235,7 +235,7 @@
                                 }
                             },
                             {
-                                title: '页面模板库',
+                                title: '页面模板管理',
                                 url: 'templateManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -245,7 +245,7 @@
                                 redPoint: true
                             },
                             {
-                                title: '文件库',
+                                title: '文件管理',
                                 url: 'fileManage',
                                 iamAction: 'develop_app',
                                 permission: false,
