@@ -217,7 +217,7 @@
                                 }
                             },
                             {
-                                title: '函数库',
+                                title: '函数管理',
                                 url: 'functionManage',
                                 iamAction: 'develop_app',
                                 permission: false,
