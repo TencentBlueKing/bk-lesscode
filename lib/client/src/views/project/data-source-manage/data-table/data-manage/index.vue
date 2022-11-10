@@ -16,55 +16,77 @@
         </div>
 
         <template v-if="!pageStatus.isLoading">
-            <layout class="data-manage-main" v-if="!pageStatus.errorCode">
-                <aside class="table-list" slot="left">
-                    <bk-input
-                        clearable
-                        class="filter-table-name"
-                        placeholder="请输入表名"
-                        right-icon="bk-icon icon-search"
-                        v-model="pageStatus.tableName"
-                    ></bk-input>
+            <template v-if="!pageStatus.errorCode">
+                <bk-alert type="info" v-if="isShowUpdateInfo">
+                    <span slot="title" class="table-data-info">
+                        预览环境数据表结构有更新，需
+                        <bk-button text @click="goDeploy">部署</bk-button>
+                        后生效
+                    </span>
+                </bk-alert>
 
-                    <ul class="table-item-list" v-if="displayTableList.length">
-                        <li
-                            @click="setActiveTable(item)"
-                            v-for="item in displayTableList"
-                            :key="item.tableName"
-                            :class="{
-                                active: item.tableName === pageStatus.activeTable.tableName,
-                                'table-item': true
-                            }"
-                        >
-                            <span class="table-item-name">
-                                <i class="bk-drag-icon bk-drag-data-table"></i>
-                                {{ item.tableName }}
-                            </span>
-                        </li>
-                    </ul>
-                    <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part" v-else>
-                        <div>暂无搜索结果</div>
-                    </bk-exception>
-                </aside>
-                <section class="data-main">
-                    <bk-tab :active.sync="pageStatus.currentTab">
-                        <bk-tab-panel
-                            v-for="panel in panels"
-                            v-bind="panel"
-                            :key="panel.name">
-                        </bk-tab-panel>
-                    </bk-tab>
-                    <component
-                        class="data-component"
-                        :is="pageStatus.currentTab"
-                        :environment="pageStatus.activeEnvironment"
-                        :active-table="pageStatus.activeTable"
-                    ></component>
-                </section>
-            </layout>
+                <layout class="data-manage-main">
+                    <aside class="table-list" slot="left">
+                        <bk-input
+                            clearable
+                            class="filter-table-name"
+                            placeholder="请输入表名"
+                            right-icon="bk-icon icon-search"
+                            v-model="pageStatus.tableName"
+                        ></bk-input>
+
+                        <ul class="table-item-list" v-if="displayTableList.length">
+                            <li
+                                @click="setActiveTable(item)"
+                                v-for="item in displayTableList"
+                                :key="item.tableName"
+                                :class="{
+                                    active: item.tableName === pageStatus.activeTable.tableName,
+                                    'table-item': true
+                                }"
+                            >
+                                <span class="table-item-name">
+                                    <i class="bk-drag-icon bk-drag-data-table"></i>
+                                    {{ item.tableName }}
+                                </span>
+                            </li>
+                        </ul>
+                        <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part" v-else>
+                            <div>暂无搜索结果</div>
+                        </bk-exception>
+                    </aside>
+                    <section class="data-main">
+                        <bk-tab :active.sync="pageStatus.currentTab">
+                            <bk-tab-panel
+                                v-for="panel in panels"
+                                v-bind="panel"
+                                :key="panel.name">
+                            </bk-tab-panel>
+                        </bk-tab>
+                        <component
+                            class="data-component"
+                            :is="pageStatus.currentTab"
+                            :environment="pageStatus.activeEnvironment"
+                            :active-table="pageStatus.activeTable"
+                        ></component>
+                    </section>
+                </layout>
+            </template>
             <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part" v-else>
-                <div v-if="!pageStatus.tableList.length">
-                    {{ pageStatus.activeEnvironment.name }}未查询到表，无法进行数据管理，请修改数据库后再试
+                <div v-if="pageStatus.errorCode === 'CANNOT_READ_INSTANCE_INFO'">
+                    绑定应用的{{ pageStatus.activeEnvironment.name }}，未开启 GCS-MySql增强服务，无法进行数据管理，请尝试
+                    <bk-button text @click="goDeploy">重新部署</bk-button>
+                    后再试
+                </div>
+                <div v-else-if="pageStatus.errorCode === 'NOT_BIND_APPLICATION'">
+                    本应用暂未绑定蓝鲸应用，请绑定蓝鲸应用并
+                    <bk-button text @click="goDeploy">部署</bk-button>
+                    后再试
+                </div>
+                <div v-else-if="!pageStatus.tableList.length">
+                    {{ pageStatus.activeEnvironment.name }}未查询到表，无法进行数据管理，请
+                    <bk-button text @click="goDeploy">重新部署</bk-button>
+                    后再试
                 </div>
             </bk-exception>
         </template>
@@ -76,7 +98,8 @@
         defineComponent,
         reactive,
         computed,
-        watch
+        watch,
+        onBeforeMount
     } from '@vue/composition-api'
     import {
         messageError
@@ -90,7 +113,9 @@
     import layout from '@/components/ui/layout.vue'
 
     const environmentList = [
-        { key: 'preview', name: '预览环境' }
+        { key: 'preview', name: '预览环境' },
+        { key: 'stag', name: '预发布环境' },
+        { key: 'prod', name: '正式环境' }
     ]
 
     const panels = [
@@ -124,9 +149,17 @@
                 errorCode: '',
                 currentTab: 'render-data'
             })
+            const releaseInfo = reactive({
+                isProdNeedUpdate: false,
+                isStagNeedUpdate: false
+            })
 
             const goBack = () => {
                 router.push({ name: 'tableList' })
+            }
+
+            const goDeploy = () => {
+                router.push({ name: 'release' })
             }
 
             const setEnvironment = (val) => {
@@ -138,6 +171,7 @@
             }
 
             const getTableList = () => {
+                pageStatus.errorCode = ''
                 pageStatus.isLoading = true
                 const queryData = {
                     environment: pageStatus.activeEnvironment?.key,
@@ -151,10 +185,41 @@
                     // 清除数据
                     pageStatus.tableList = []
                     setActiveTable()
-                    messageError(error.message || error)
+                    const code = error?.response?.data?.code
+                    switch (code) {
+                        case 'CANNOT_READ_INSTANCE_INFO':
+                        case 'NOT_BIND_APPLICATION':
+                            pageStatus.errorCode = code
+                            break
+                        default:
+                            messageError(error.message || error)
+                            break
+                    }
                 }).finally(() => {
-                    pageStatus.errorCode = pageStatus.tableList.length <= 0 ? 'NO_DATA' : ''
+                    if (!pageStatus.errorCode) {
+                        pageStatus.errorCode = pageStatus.tableList.length <= 0 ? 'NO_DATA' : ''
+                    }
                     pageStatus.isLoading = false
+                })
+            }
+
+            const getReleaseInfo = () => {
+                const params = {
+                    projectId,
+                    pageSize: 1,
+                    page: 1
+                }
+                Promise.all([
+                    store.dispatch('release/detailInfo', { projectId }),
+                    store.dispatch('dataSource/list', params)
+                ]).then(([releaseApiData, tableApiData]) => {
+                    const prodCreateTime = new Date(releaseApiData?.prodInfo?.createTime)
+                    const stagCreateTime = new Date(releaseApiData?.stagInfo?.createTime)
+                    const latestTable = tableApiData.list[0] || {}
+                    releaseInfo.isProdNeedUpdate = new Date(latestTable.updateTime) > prodCreateTime
+                    releaseInfo.isStagNeedUpdate = new Date(latestTable.updateTime) > stagCreateTime
+                }).catch((error) => {
+                    messageError(error.message || error)
                 })
             }
 
@@ -164,20 +229,32 @@
                 })
             })
 
+            const isShowUpdateInfo = computed(() => {
+                const updateMap = {
+                    stag: releaseInfo.isStagNeedUpdate,
+                    prod: releaseInfo.isProdNeedUpdate
+                }
+                return updateMap[pageStatus.activeEnvironment.key]
+            })
+
             watch(
                 () => pageStatus.activeEnvironment.key,
-                getTableList,
-                {
-                    immediate: true
-                }
+                getTableList
             )
+
+            onBeforeMount(() => {
+                getReleaseInfo()
+                getTableList()
+            })
 
             return {
                 environmentList,
                 panels,
                 pageStatus,
                 displayTableList,
+                isShowUpdateInfo,
                 goBack,
+                goDeploy,
                 setEnvironment,
                 setActiveTable
             }
