@@ -26,7 +26,7 @@
                 @update="handleUpdate"
             />
             <h3 class="api-form-title">
-                默认请求参数
+                默认请求响应
                 <bk-button
                     class="api-response-button"
                     size="small"
