@@ -222,7 +222,7 @@
             },
 
             disableEditUrl () {
-                return this.disabled || this.form.apiChoosePath.some(path => ['datasource-api', 'lesscode-api'].includes(path.id))
+                return this.disabled || this.form?.apiChoosePath?.some(path => ['datasource-api', 'lesscode-api'].includes(path.id))
             }
         },
 
@@ -238,7 +238,7 @@
         methods: {
             async updateUrl () {
                 let funcApiUrl = this.form.funcApiUrl
-                const lesscodeApi = this.form.apiChoosePath.find(path => path.id === 'lesscode-api')
+                const lesscodeApi = this.form?.apiChoosePath?.find(path => path.id === 'lesscode-api')
                 if (lesscodeApi) {
                     try {
                         this.isLoadingUrl = true
