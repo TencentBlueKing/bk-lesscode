@@ -55,7 +55,7 @@
 <template>
     <div class="list-table">
         <bk-table
-            class="file-table"
+            class="file-table g-hairless-table"
             :outer-border="false"
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
