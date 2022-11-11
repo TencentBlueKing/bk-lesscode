@@ -9,6 +9,7 @@
         </div>
         <div class="component-list-content" v-bkloading="{ isLoading }">
             <bk-table
+                class="g-hairless-table"
                 :outer-border="false"
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
@@ -318,7 +319,7 @@
         }
         .component-list-content{
             min-height: calc(100vh - 250px);
-        
+
             .comp-type {
                 font-size: 16px;
                 color: #979ba5;
