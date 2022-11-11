@@ -291,6 +291,7 @@
                 disabledRelease: false,
                 createLinkUrl: '',
                 latestInfo: {},
+                newVersionInfo: {},
                 stagInfo: {},
                 prodInfo: {},
                 envMap: {
@@ -369,6 +370,7 @@
                 const version = this.versionForm.releaseVersion
                 if (!version) {
                     tips = '部署版本号必填'
+                    tips += this.newVersionInfo?.version ? `，上一次部署版本号为：${this.newVersionInfo?.version}` : ''
                 } else if (!/^[A-za-z0-9\-\.\_]{1,40}$/.test(version)) {
                     tips = '仅支持英文、数字、下划线、中划线和英文句号'
                 }
@@ -419,6 +421,7 @@
                 this.prodInfo = res.prodInfo || {}
                 this.stagInfo = res.stagInfo || {}
                 this.latestInfo = res.latestInfo || {}
+                this.newVersionInfo = res.newVersionInfo || {}
                 this.createLinkUrl = res.createLinkUrl
             },
 
