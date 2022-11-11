@@ -386,7 +386,7 @@
                     return
                 }
                 const componentDataStyle = this.componentData.style
-                
+
                 // 优先使用自定义配置的 line-height
                 if (_.has(componentDataStyle, 'line-height')
                     && componentDataStyle['line-height'] !== '') {
