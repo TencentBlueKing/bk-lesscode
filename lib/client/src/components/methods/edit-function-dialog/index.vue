@@ -458,6 +458,5 @@
     }
     .add-function-group {
         width: 340px;
-        margin-top: 6px;
     }
 </style>

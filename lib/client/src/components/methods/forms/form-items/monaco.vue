@@ -264,19 +264,23 @@
             },
 
             fixMethod () {
-                this.fixFunByEslint(this.form).then((code) => {
-                    if (code) {
-                        this.change(code)
-                        this.messageSuccess('函数修复成功')
-                    } else {
-                        this.messageWarn('暂无可修复内容')
-                    }
-                }).catch((err) => {
-                    if (err?.code === 499) {
-                        this.messageHtmlError(err.message || err)
-                    } else {
-                        this.messageError(err.message || err)
-                    }
+                return new Promise((resolve, reject) => {
+                    this.fixFunByEslint(this.form).then((code) => {
+                        if (code) {
+                            this.change(code)
+                            this.messageSuccess('函数修复成功')
+                        } else {
+                            this.messageWarn('暂无可修复内容')
+                        }
+                        resolve()
+                    }).catch((err) => {
+                        if (err?.code === 499) {
+                            this.messageHtmlError(err.message || err)
+                        } else {
+                            this.messageError(err.message || err)
+                        }
+                        reject(err)
+                    })
                 })
             },
 

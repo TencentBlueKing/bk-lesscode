@@ -86,8 +86,9 @@
                         container: this.$el
                     })
                 }
+
                 const dragEle = this.$refs[childNode.componentId][0].$el
-                
+
                 this.drag = new Drag(dragEle, {
                     container: dragEle.parentNode
                 })
@@ -97,6 +98,9 @@
                 let isMoveing = false
 
                 this.drag.on('move', () => {
+                    // fix: 自由布局选中时，直接按住其中的组件然后拖动，之后再松开鼠标，自由布局不会选中的问题
+                    LC.getActiveNode() && LC.getActiveNode().activeClear()
+
                     if (!isMoveing) {
                         LC.triggerEventListener('componentMouserleave')
                         childNode.activeClear()
@@ -107,7 +111,7 @@
                     this.dragLine.uncheck()
                     const left = parseFloat(this.drag.$elem.style.left)
                     const top = parseFloat(this.drag.$elem.style.top)
-                    
+
                     childNode.setStyle({
                         left: left + 'px',
                         top: top + 'px'
@@ -139,7 +143,7 @@
                 const $elem = this.$refs[childNode.componentId][0].$el
 
                 this.doDrag(childNode)
-                
+
                 // setTimeout 保证 drag add 事件已经处理完毕
                 setTimeout(() => {
                     const freeLayoutContainer = this.$refs[this.componentData.componentId]
@@ -150,7 +154,7 @@
                         width: componentWidth,
                         height: componentHeight
                     } = $elem
-                    
+
                     const {
                         top: containerTop,
                         right: containerRight,

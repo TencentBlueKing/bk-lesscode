@@ -18,6 +18,7 @@
         </div>
         <div :class="$style['data-list']" v-bkloading="{ isLoading, opacity: 0.1 }">
             <bk-table
+                class="g-hairless-table"
                 :outer-border="false"
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"

@@ -81,16 +81,15 @@
                 }
 
                 if (uploadFiles.length > props.maxlength) {
-                    messageError(`一次最多上传 ${props.maxlength} 个文件`)
-                    return
+                    uploadFiles = uploadFiles.slice(0, props.maxlength)
                 }
 
                 if (!props.multiple) {
                     uploadFiles = uploadFiles.slice(0, 1)
                 }
 
-                for (let i = 0, l = files.length; i < l; i++) {
-                    const file = files[i]
+                for (let i = 0, l = uploadFiles.length; i < l; i++) {
+                    const file = uploadFiles[i]
                     const rawFile = file as UploadRawFile
                     rawFile.uid = genFileId()
 

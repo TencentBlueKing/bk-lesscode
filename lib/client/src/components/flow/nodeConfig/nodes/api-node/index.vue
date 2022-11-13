@@ -35,7 +35,15 @@
                         desc-type="icon"
                         :desc="apiURLTips"
                         :required="true">
-                        <bk-input v-model="formData.url" @change="update"></bk-input>
+                        <div class="url-edit-input">
+                            <bk-input v-model="formData.url" :disabled="urlEditDisabled" @change="update"></bk-input>
+                            <i
+                                v-if="lesscodeApiUrlToUpdate"
+                                v-bk-tooltips.top="'接口路径有变更，点击更新'"
+                                class="bk-drag-icon bk-drag-refresh-line refresh-icon"
+                                @click="handleApiUrlUpdate">
+                            </i>
+                        </div>
                         <view-flow-variables :open-var-list.sync="openVarList"></view-flow-variables>
                         <div id="request-url-tips">
                             <p>1.非蓝鲸网关API，请先接入【蓝鲸网关】</p>
@@ -161,6 +169,7 @@
                 apiResponse: {},
                 excludeRoleType: ['CMDB', 'GENERAL', 'EMPTY', 'OPEN', 'BY_ASSIGNOR', 'IAM', 'API', 'ORGANIZATION'],
                 openVarList: false,
+                lesscodeApiUrlToUpdate: '', // 记录当前选中的应用自建API变更后的url
                 apiURLTips: {
                     placement: 'right',
                     allowHtml: true,
@@ -198,6 +207,10 @@
             ...mapGetters('nocode/nodeConfig', ['processorData']),
             projectId () {
                 return parseInt(this.$route.params.projectId)
+            },
+            // 请求地址编辑禁用
+            urlEditDisabled () {
+                return this.formData.selectedApi.some(item => ['datasource-api', 'lesscode-api'].includes(item.id))
             }
         },
         created () {
@@ -214,6 +227,9 @@
                 this.apiQuery = query
                 this.apiBody = body
                 this.apiResponse = response
+                if (selectedApi[0]?.id === 'lesscode-api') {
+                    this.getLesscodeApiDetail(selectedApi[2].code)
+                }
             }
             this.getApiList()
             this.getVariableList()
@@ -249,6 +265,13 @@
                     messageError(e.message || e)
                 }
             },
+            // 获取当前选择的自建API详情，比较url是否发生修改
+            async getLesscodeApiDetail (code) {
+                const apiData = await this.$store.dispatch('api/getApiDetail', { code })
+                if (apiData.url !== this.formData.url) {
+                    this.lesscodeApiUrlToUpdate = apiData.url
+                }
+            },
             handleNameChange (val) {
                 this.$store.commit('nocode/nodeConfig/setNodeName', val)
             },
@@ -264,6 +287,13 @@
                 this.apiBody = parseScheme2UseScheme(body)
                 response.disabled = true
                 this.apiResponse = response
+                this.lesscodeApiUrlToUpdate = ''
+                this.update()
+            },
+            // 更新应用自建api路径
+            handleApiUrlUpdate () {
+                this.formData.url = this.lesscodeApiUrlToUpdate
+                this.lesscodeApiUrlToUpdate = ''
                 this.update()
             },
             handleParamsChange (type, val) {
@@ -314,6 +344,18 @@
     margin-right: 20px;
 }
 .api-node-form {
+  .url-edit-input {
+    position: relative;
+    .refresh-icon {
+        position: absolute;
+        top: 9px;
+        right: -20px;
+        cursor: pointer;
+        &:hover {
+            color: #3a84ff;
+        }
+    }
+  }
   .response-data {
     /deep/ .key-col {
       font-size: 12px;

@@ -71,10 +71,15 @@
             >保存</bk-button>
             <bk-button
                 v-if="showSaveUse"
+                class="mr5"
                 :loading="isSubmitting"
                 :disabled="!formChanged"
                 @click="handleSaveChooseFunction"
             >保存并使用</bk-button>
+            <bk-button
+                :loading="isSubmitting"
+                @click="handleClose"
+            >取消</bk-button>
         </footer>
     </main>
 </template>
@@ -155,7 +160,12 @@
                         resolve(form)
                     } catch (err) {
                         if (err?.code === 499) {
-                            this.messageHtmlError(err.message)
+                            this.messageWarn('函数不符合 Eslint 规范，启动自动修复')
+                            this
+                                .$refs
+                                .monaco
+                                .fixMethod()
+                                .then(() => this.handleSaveFunction())
                         } else if (err?.content) {
                             this.messageError(err.content || err)
                         } else {

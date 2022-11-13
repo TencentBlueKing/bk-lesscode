@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
-        <bk-form-item label="函数类型" property="funcType">
+    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
+        <bk-form-item label="函数类型" property="funcType" class="func-form-item">
             <bk-radio-group
                 :value="form.funcType"
                 @change="(funcType) => updateValue({ funcType })"
@@ -26,6 +26,7 @@
             ref="funcParams"
             property="funcParams"
             error-display-type="normal"
+            class="func-form-item"
             :rules="[getParamRule('函数调用参数')]"
             :desc="{ width: 350, content: '调用该函数传入的参数列表，如果函数用于组件事件，则这里是组件事件回调的参数，组件事件回调参数具体可见组件文档。' }">
             <dynamic-tag
@@ -40,6 +41,7 @@
                 property="apiChoosePath"
                 error-display-type="normal"
                 desc="使用 Api 管理的 api 做为模板，快速生成远程函数"
+                class="func-form-item"
             >
                 <choose-api
                     :value="form.apiChoosePath"
@@ -51,13 +53,15 @@
                 label="请求地址"
                 property="funcApiUrl"
                 error-display-type="normal"
-                desc="请求地址中可以使用 {变量标识} 的格式来使用变量。注意：如果地址中有*，表示可以匹配任意字符串，请替换成真实的路径"
+                class="func-form-item"
+                desc="1. 请求地址中可以使用 {变量标识} 的格式来使用变量。<br> 2. 应用自建 API 和 数据表操作 API 的地址不可修改，每次执行实时获取 API 地址 <br> 3. 如果地址中有*，表示可以匹配任意字符串，请替换成真实的路径"
                 :required="true"
                 :rules="[requireRule('请求地址')]"
             >
                 <bk-input
+                    v-bkloading="{ isLoading: isLoadingUrl }"
                     :value="form.funcApiUrl"
-                    :disabled="disabled"
+                    :disabled="disableEditUrl"
                     @change="(funcApiUrl) => updateValue({ funcApiUrl })"
                 ></bk-input>
             </bk-form-item>
@@ -65,6 +69,7 @@
                 label="请求类型"
                 property="funcMethod"
                 error-display-type="normal"
+                class="func-form-item"
                 :required="true"
                 :rules="[requireRule('请求类型')]"
             >
@@ -83,7 +88,7 @@
                 </bk-select>
             </bk-form-item>
             <bk-button
-                class="get-remote-response bk-form-item"
+                class="get-remote-response bk-form-item func-form-item"
                 size="small"
                 :loading="isLoadingResponse"
                 @click="getRemoteResponse"
@@ -92,7 +97,8 @@
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
                 label="请求参数"
                 property="remoteParams"
-                error-display-type="normal">
+                error-display-type="normal"
+                class="func-form-item">
                 <query-params
                     class="mt38"
                     :query="form.apiQuery"
@@ -105,7 +111,8 @@
                 v-else
                 label="请求参数"
                 property="remoteParams"
-                error-display-type="normal">
+                error-display-type="normal"
+                class="func-form-item">
                 <body-params
                     class="mt38"
                     :body="form.apiBody"
@@ -121,6 +128,7 @@
                 property="remoteParams"
                 error-display-type="normal"
                 desc="该参数用于接收Api返回数据，在函数中直接可使用该变量名来操作Api返回数据"
+                class="func-form-item"
                 :rules="[getParamRule('接口返回数据参数名')]">
                 <dynamic-tag
                     :disabled="disabled"
@@ -201,7 +209,8 @@
                 showFuncResponse: {
                     show: false,
                     code: ''
-                }
+                },
+                isLoadingUrl: false
             }
         },
 
@@ -210,10 +219,40 @@
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
+            },
+
+            disableEditUrl () {
+                return this.disabled || this.form?.apiChoosePath?.some(path => ['datasource-api', 'lesscode-api'].includes(path.id))
+            }
+        },
+
+        watch: {
+            'form.id': {
+                handler () {
+                    this.updateUrl()
+                },
+                immediate: true
             }
         },
 
         methods: {
+            async updateUrl () {
+                let funcApiUrl = this.form.funcApiUrl
+                const lesscodeApi = this.form?.apiChoosePath?.find(path => path.id === 'lesscode-api')
+                if (lesscodeApi) {
+                    try {
+                        this.isLoadingUrl = true
+                        const apiData = await this.$store.dispatch('api/getApiDetail', {
+                            code: this.form.apiChoosePath[2].code
+                        })
+                        funcApiUrl = apiData?.url || this.form.funcApiUrl
+                    } catch (error) {
+                    }
+                    this.isLoadingUrl = false
+                }
+                this.form.funcApiUrl = funcApiUrl
+            },
+
             tagChange (key, val) {
                 this.updateValue({ [key]: val })
                 this.$nextTick(() => {
@@ -297,7 +336,7 @@
 </script>
 
 <style lang="postcss" scoped>
-    .func-form-item {
+    .func-detail {
         position: relative;
     }
     .func-temp {
