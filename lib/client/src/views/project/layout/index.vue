@@ -29,19 +29,21 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <bk-dropdown-menu :ref="`moreActionDropdown${layout.id}`">
-                                        <span slot="dropdown-trigger" class="more-menu-trigger">
-                                            <i class="bk-drag-icon bk-drag-more-dot"></i>
-                                        </span>
-                                        <ul class="bk-dropdown-list more-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(layout.id)">
-                                            <li class="action-item" v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty'"><a href="javascript:;" @click="handlePreview(layout)">预览</a></li>
-                                            <li class="action-item"><a href="javascript:;" @click="handleUpdate(layout)">修改模板</a></li>
-                                            <li v-if="layout.layoutType !== 'MOBILE'" v-bk-tooltips.bottom="{ content: '模板已被使用，不可删除', disabled: !layoutPageMap[layout.id] }"
-                                                :class="['action-item', { disabled: layoutPageMap[layout.id] }]">
-                                                <a href="javascript:;" @click="handleDelete(layout)">删除模板</a>
-                                            </li>
-                                        </ul>
-                                    </bk-dropdown-menu>
+                                    <div class="operate-icons">
+                                        <i title="预览" v-if="(layout.type !== 'empty' && (layout.type && !layout.type.startsWith('mobile')))" class="bk-icon icon-eye click-icon" @click="handlePreview(layout)"></i>
+                                        <bk-dropdown-menu :ref="`moreActionDropdown${layout.id}`">
+                                            <span slot="dropdown-trigger" class="more-menu-trigger">
+                                                <i class="bk-drag-icon bk-drag-more-dot"></i>
+                                            </span>
+                                            <ul class="bk-dropdown-list more-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(layout.id)">
+                                                <li class="action-item"><a href="javascript:;" @click="handleUpdate(layout)">编辑</a></li>
+                                                <li v-if="layout.layoutType !== 'MOBILE'" v-bk-tooltips.bottom="{ content: '导航布局已被使用，不可删除', disabled: !layoutPageMap[layout.id] }"
+                                                    :class="['action-item', { disabled: layoutPageMap[layout.id] }]">
+                                                    <a href="javascript:;" @click="handleDelete(layout)">删除</a>
+                                                </li>
+                                            </ul>
+                                        </bk-dropdown-menu>
+                                    </div>
                                 </div>
                                 <span v-if="layout.isDefault" class="default-tag checked">默认</span>
                                 <span v-else class="default-tag setting" @click.stop="handleSetDefault(layout)">设为默认</span>
@@ -49,7 +51,7 @@
                         </div>
                         <div class="empty" v-show="!layoutList.length && !isLoading">
                             <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                                <div v-if="!layoutList.length" class="empty-page">暂无布局实例，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link></div>
+                                <div v-if="!layoutList.length" class="empty-page">暂无导航布局实例，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link></div>
                             </bk-exception>
                         </div>
                     </div>
@@ -332,16 +334,6 @@
                                     }
                                 }
                             }
-
-                            /* &::before {
-                                content: '';
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: 100%;
-                                height: 100%;
-                                background: rgba(0, 0, 0, 0.2);
-                            } */
                         }
                         .desc {
                             display: none;
@@ -383,7 +375,7 @@
                                 font-size: 12px;
                                 font-weight: 700;
                                 color: #63656E;
-                                width: 215px;
+                                width: 200px;
                                 overflow: hidden;
                                 white-space: nowrap;
                                 text-overflow: ellipsis;
@@ -400,6 +392,14 @@
                                 color: #979ba5;
                                 border-radius: 2px;
                                 background: #f0f1f5;
+                            }
+                        }
+                        .operate-icons {
+                            display: flex;
+                            align-items: center;
+                            .icon-eye {
+                                cursor: pointer;
+                                padding: 4px;
                             }
                         }
                         .stat {

@@ -153,8 +153,8 @@
                         :maxlength="100">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="布局模板" style="margin-top: 10px" v-if="!isCopy" error-display-type="normal">
-                    <span class="layout-desc">可多选，作为创建应用页面时可供选择的布局模板，便于应用中统一修改与配置</span>
+                <bk-form-item label="导航布局" style="margin-top: 10px" v-if="!isCopy" error-display-type="normal">
+                    <span class="layout-desc">可多选，作为创建应用页面时可供选择的导航布局，便于在应用中统一配置导航</span>
                     <layout-thumb-list :list="defaultLayoutList" @change-checked="handleLayoutChecked" @set-default="handleLayoutDefault" />
                 </bk-form-item>
             </bk-form>
