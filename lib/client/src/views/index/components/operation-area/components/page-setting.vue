@@ -281,7 +281,7 @@
                     settingFields: [
                         {
                             id: 'layoutId',
-                            name: '布局模板',
+                            name: '导航布局',
                             type: 'select',
                             props: {
                                 clearable: false
@@ -418,7 +418,7 @@
                 if (field.id === 'layoutId') {
                     this.$bkInfo({
                         title: '确认修改？',
-                        subTitle: '当前使用的布局模板未保存的配置会丢失',
+                        subTitle: '当前使用的导航布局未保存的配置会丢失',
                         theme: 'primary',
                         confirmFn: async () => {
                             await this.handleConfirmSave()
