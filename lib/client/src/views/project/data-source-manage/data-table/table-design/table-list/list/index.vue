@@ -78,7 +78,6 @@
     import { messageError } from '@/common/bkmagic'
     import { defineComponent, onBeforeMount, reactive } from '@vue/composition-api'
     import dayjs from 'dayjs'
-    // import importTable from '../../../common/import.vue'
     import exportTable from '../../../common/export.vue'
     import confirmDialog from '../../../common/confirm-dialog.vue'
     import {

@@ -154,7 +154,7 @@
     "moment": "^2.29.1",
     "mysql2": "~2.3.3",
     "node-request-context": "~1.0.5",
-    "node-sql-parser": "^3.8.2",
+    "node-sql-parser": "^4.5.1",
     "nodemon": "~1.19.3",
     "npm": "6.14.15",
     "path-to-regexp": "^6.1.0",
