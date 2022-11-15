@@ -20,8 +20,8 @@
                 class="import-data"
                 title="导入数据"
                 tips="如果导入 sql 文件，仅支持解析插入数据的语法"
-                @downloadTemplate="downloadDataTemplate"
-                @import="importData"
+                :handle-import="importData"
+                @downloadTemplate="handleDownloadTemplate"
             />
         </section>
 
@@ -407,9 +407,13 @@
                         activeTable.value.tableName,
                         [formStatus.editForm],
                         formStatus.dataParse
-                    ).finally(() => {
-                        formStatus.isSaving = false
-                    })
+                    )
+                        .catch((error) => {
+                            messageError(error.message || error)
+                        })
+                        .finally(() => {
+                            formStatus.isSaving = false
+                        })
                 }).catch((validator) => {
                     messageError(validator.content || validator)
                 })
@@ -432,11 +436,10 @@
                 const dataSqlParser = new DataSqlParser()
                 const sql = dataParse.set(dataJsonParser).export(dataSqlParser)
 
-                return modifyOnlineDb(sql).then(() => {
+                return modifyOnlineDb(sql).then((res) => {
                     closeForm()
                     getDataList()
-                }).catch((error) => {
-                    messageError(error.message || error)
+                    return res
                 })
             }
 
@@ -496,17 +499,44 @@
             }
 
             const importData = ({ data, type }) => {
-                try {
-                    const [list] = handleImportData([data], type)
-                    // 去除 id，由 DB 自增长
-                    const filterList = list.map((item) => {
-                        const { id, ...rest } = item
-                        return rest
-                    })
-                    updateDB(activeTable.value.tableName, filterList, new DataParse())
-                } catch (error) {
-                    messageError(error.message || error)
-                }
+                return new Promise((resolve, reject) => {
+                    try {
+                        const [list] = handleImportData([data], type)
+                        // 去除 id，由 DB 自增长
+                        const filterList = list.map((item) => {
+                            const { id, ...rest } = item
+                            return rest
+                        })
+                        updateDB(activeTable.value.tableName, filterList, new DataParse())
+                            .then((res) => {
+                                const affectedRows = res.reduce((acc, cur) => {
+                                    acc += cur.affectedRows
+                                    return acc
+                                }, 0)
+                                resolve(`解析到${affectedRows}条数据，已导入`)
+                            })
+                            .catch(reject)
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            }
+
+            const handleDownloadTemplate = (type) => {
+                // 基于当前选择的表构建示例数据
+                const demoData = activeTable.value.columns.reduce((acc, cur) => {
+                    // 时间类型做特殊处理
+                    acc[cur.name] = cur.default === 'CURRENT_TIMESTAMP' ? '' : cur.default
+                    return acc
+                }, {})
+                // 下载示例
+                downloadDataTemplate(
+                    type,
+                    {
+                        tableName: 'demo_data',
+                        list: [demoData]
+                    }
+                )
             }
 
             watch(
@@ -544,7 +574,7 @@
                 bulkDelete,
                 deleteData,
                 exportDatas,
-                downloadDataTemplate,
+                handleDownloadTemplate,
                 importData
             }
         }

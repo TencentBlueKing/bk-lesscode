@@ -27,9 +27,9 @@
                     <import-table
                         class="import-table"
                         title="导入表结构"
-                        tips="如果导入 sql 文件，仅支持解析创建表的语法，且只支持系统可创建的字段类型。系统内置字段会默认添加且不可修改"
+                        tips="1. 如果导入 sql 文件，仅支持解析创建表的语法<br>2. 仅支持系统可创建的字段类型<br>3. 系统内置字段会默认添加且不可修改<br>4. 导入文件后会解析并更新表字段配置"
+                        :handle-import="importTable"
                         @downloadTemplate="downloadStructTemplate"
-                        @import="importTable"
                     />
                 </h5>
                 <field-table ref="fieldTableRef" :data.sync="tableStatus.data" @change="changeEdit(true)"></field-table>
@@ -192,17 +192,19 @@
             }
 
             const importTable = ({ data, type }) => {
-                try {
-                    const [tableInfo] = handleImportStruct([data], type)
-                    tableStatus.basicInfo.tableName = tableInfo.tableName
-                    // 过滤掉基础字段设置，使用系统内置
-                    tableStatus.data = [
-                        ...BASE_COLUMNS,
-                        ...tableInfo.columns.filter(column => !BASE_COLUMNS.find(baseColumn => baseColumn.name === column.name))
-                    ]
-                } catch (error) {
-                    messageError(error.message || error)
-                }
+                return new Promise((resolve, reject) => {
+                    try {
+                        const [tableInfo] = handleImportStruct([data], type)
+                        // 过滤掉基础字段设置，使用系统内置
+                        tableStatus.data = [
+                            ...BASE_COLUMNS,
+                            ...tableInfo.columns.filter(column => !BASE_COLUMNS.find(baseColumn => baseColumn.name === column.name))
+                        ]
+                        resolve('已解析文件并更新字段配置')
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
             }
 
             return {

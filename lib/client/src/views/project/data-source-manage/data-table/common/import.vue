@@ -6,7 +6,6 @@
             theme="primary"
             header-position="left"
             width="640"
-            :show-footer="false"
             v-model="isShowImport">
             <span slot="header">
                 {{ title }}
@@ -35,6 +34,10 @@
                     <i class="bk-drag-icon bk-drag-download"></i>SQL 模板
                 </bk-link>
             </span>
+
+            <h5 class="result-message">
+                {{ resultMessage }}
+            </h5>
         </bk-dialog>
     </section>
 </template>
@@ -45,11 +48,13 @@
     export default defineComponent({
         props: {
             title: String,
-            tips: String
+            tips: String,
+            handleImport: Function
         },
 
-        setup (_, { emit }) {
+        setup (props, { emit }) {
             const isShowImport = ref<boolean>(false)
+            const resultMessage = ref('')
             // 展示导入 dialog
             const showImport = () => {
                 isShowImport.value = true
@@ -63,6 +68,9 @@
                     onSuccess
                 } = options
                 const [tableName, type] = fileList?.[0]?.name?.split('.')
+
+                // 每次导入需要清空上次导入的结果信息
+                resultMessage.value = ''
     
                 // 读取文件
                 const reader = new FileReader()
@@ -73,18 +81,21 @@
                 }
                 // 读取完成
                 reader.onload = (event) => {
-                    emit(
-                        'import',
-                        {
+                    props
+                        .handleImport({
                             data: {
                                 tableName,
                                 content: event.target.result
                             },
                             type
-                        }
-                    )
-                    onSuccess({ code: 0 }, fileObj)
-                    isShowImport.value = false
+                        })
+                        .then((message) => {
+                            resultMessage.value = message
+                            onSuccess({ code: 0 }, fileObj)
+                        })
+                        .catch((err) => {
+                            fileObj.errorMsg = err.message
+                        })
                 }
                 // 发生错误
                 reader.onerror = () => {
@@ -103,6 +114,7 @@
 
             return {
                 isShowImport,
+                resultMessage,
                 showImport,
                 handleRequest,
                 downloadTemplate
@@ -119,7 +131,7 @@
     .import-tip {
         display: inline-flex;
         align-items: center;
-        margin-bottom: 26px;
+        margin-bottom: 5px;
     }
     .bk-drag-download {
         font-size: 14px;
@@ -132,5 +144,8 @@
         font-size: 14px;
         vertical-align: middle;
         cursor: pointer;
+    }
+    .result-message {
+        margin: 0 0 5px;
     }
 </style>
