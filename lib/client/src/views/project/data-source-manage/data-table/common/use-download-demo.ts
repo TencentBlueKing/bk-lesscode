@@ -112,31 +112,8 @@ export const downloadStructTemplate = (type) => {
     })
 }
 
-const demoData = [
-    {
-        tableName: 'demo_data',
-        list: [
-            {
-                name: 'Tom',
-                age: 18,
-                height: 180
-            },
-            {
-                name: 'Lucy',
-                age: 17,
-                height: 168
-            },
-            {
-                name: 'Jack',
-                age: 20,
-                height: 177
-            }
-        ]
-    }
-]
-
 // 下载数据示例
-export const downloadDataTemplate = (type) => {
+export const downloadDataTemplate = (type, demoData) => {
     const fileName = type === 'sql' ? 'bklesscode-data-demo.sql' : ''
     const files = generateExportDatas(demoData, type, fileName)
     files.forEach(({ name, content }) => {
