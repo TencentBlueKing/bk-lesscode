@@ -1,14 +1,13 @@
 <template>
-    <main class="page-content">
-        <bk-tab :active.sync="active" @tab-change="handleTabChange" type="unborder-card">
-            <bk-tab-panel
+    <main class="operation-content">
+        <div class="g-page-tab">
+            <div class="tab-item"
                 v-for="(panel, index) in panels"
-                v-bind="panel"
                 :key="index"
-                render-directive="if">
-                <component :is="`dim-${panel.name}`" />
-            </bk-tab-panel>
-        </bk-tab>
+                :class="{ active: active === panel.name }"
+                @click="handleTabChange(panel.name)">{{panel.label}}</div>
+        </div>
+        <component :is="`dim-${active}`" />
     </main>
 </template>
 

@@ -78,7 +78,6 @@
     import { messageError } from '@/common/bkmagic'
     import { defineComponent, onBeforeMount, reactive } from '@vue/composition-api'
     import dayjs from 'dayjs'
-    // import importTable from '../../../common/import.vue'
     import exportTable from '../../../common/export.vue'
     import confirmDialog from '../../../common/confirm-dialog.vue'
     import {
@@ -237,7 +236,7 @@
             }
 
             const exportSelectTables = (fileType) => {
-                const fileName = fileType === 'sql' ? `lesscode-struct-${projectId}.sql` : ''
+                const fileName = fileType === 'sql' ? `bklesscode-struct-${projectId}.sql` : ''
                 const files = generateExportStruct(listStatus.selectRows, fileType, fileName)
                 files.forEach(({ name, content }) => {
                     downloadFile(content, name)

@@ -26,7 +26,7 @@
                     'selected': value === item.key
                 }">
                 <div @click="handleChange(item.key)">
-                    <span>{{item.name}}</span>
+                    <span style="margin-right: 4px;">{{ item.name }}</span>
                     <i class="bk-drag-icon bk-drag-vesion-fill"
                         v-bk-tooltips="{
                             content: item.tooltip,
@@ -54,13 +54,13 @@
                     PC: [
                         {
                             key: 'bk',
-                            name: '蓝鲸Vue组件库',
-                            tooltip: this.bkUiTips
+                            name: '蓝鲸基础组件 (Vue)',
+                            tooltip: '当前组件库版本为“2.4.15<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         },
                         {
                             key: 'element',
-                            name: 'element-ui',
-                            tooltip: this.elementUiTips
+                            name: 'Element UI (Vue)',
+                            tooltip: '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         }
                     ],
                     MOBILE: [{
@@ -80,10 +80,6 @@
                 const currentLibrary = this.componentList.find(item => item.key === this.value)
                 return currentLibrary && currentLibrary.name
             }
-        },
-        created () {
-            this.bkUiTips = '当前组件库版本为“latest”，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
-            this.elementUiTips = '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
         },
         methods: {
             handleToggleSelectPanel () {

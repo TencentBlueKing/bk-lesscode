@@ -79,7 +79,7 @@
                     @click="handlerRouter('projects')"
                 >立即体验</bk-button>
             </div>
-            <div class="footer">
+            <div class="home-footer">
                 <div class="frameList">
                     <div>常用框架</div>
                     <div class="item" v-for="(item, index) in frameList" :key="index">
@@ -457,7 +457,7 @@
             }
         }
 
-        .footer {
+        .home-footer {
             z-index: 2022;
             width: 100%;
             font-size: 12px;

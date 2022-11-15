@@ -332,6 +332,12 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-radius-zs:before {
 	content: "\e15b";
 }
+.bk-drag-tishi_gaozhi:before {
+	content: "\e246";
+}
+.bk-drag-tixing:before {
+	content: "\e245";
+}
 .bk-drag-github-logo:before {
 	content: "\e15c";
 }
@@ -964,4 +970,7 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-refill:before {
 	content: "\e241";
+}
+.bk-drag-xlsx:before {
+	content: "\e247";
 }

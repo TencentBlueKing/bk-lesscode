@@ -209,7 +209,7 @@
                 })
             }
         },
-        
+
         created () {
             this.getVariableList()
             this.renderVarialbeList = Object.freeze(this.wholeVariableList)
@@ -303,11 +303,15 @@
              */
             handleRowMouseEnter (index, event, row) {
                 const rowEl = event.currentTarget
-                if (rowEl._tippy || !row.useInfo.disabled) return
-                const instance = this.$bkPopover(rowEl, {
+                const targetEl = rowEl?.cells?.[0]?.querySelector('.bk-form-radio')
+                if (!targetEl || targetEl._tippy || !row.useInfo.disabled) return
+                const instance = this.$bkPopover(targetEl, {
                     content: row.useInfo.tips,
                     arrow: true,
-                    extCls: 'variable-disabled-tips'
+                    extCls: 'variable-disabled-tips',
+                    triggerTarget: rowEl,
+                    placement: 'top',
+                    boundary: 'window'
                 })
                 instance.show()
             },

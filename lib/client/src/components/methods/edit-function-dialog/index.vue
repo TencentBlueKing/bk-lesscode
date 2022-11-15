@@ -12,7 +12,7 @@
                 <section slot="aside" class="func-left">
                     <h3 class="left-title">
                         <div class="title-name">
-                            <span class="function-lib">函数库</span>
+                            <span class="function-lib">函数管理</span>
                             <version-tag :version-name="versionName" />
                         </div>
                         <bk-popconfirm
@@ -278,8 +278,8 @@
                 }
             },
 
-            handleSaveUse (funcCode) {
-                this.$emit('save-use', funcCode)
+            handleSaveUse (functionData) {
+                this.$emit('save-use', functionData)
             },
 
             refreshStatus () {
@@ -371,6 +371,7 @@
         background: rgba(0, 0, 0, 0.6);
         z-index: 1000;
         color: #63656e;
+        cursor: auto;
         .function-main {
             position: absolute;
             width: 90%;
@@ -457,6 +458,5 @@
     }
     .add-function-group {
         width: 340px;
-        margin-top: 6px;
     }
 </style>

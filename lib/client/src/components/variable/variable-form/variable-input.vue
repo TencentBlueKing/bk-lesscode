@@ -30,7 +30,10 @@
 
         methods: {
             inputVal (key, val) {
-                if (this.inputType === 'number') val = Number(val)
+                if (this.inputType === 'number') {
+                    val = Number(val)
+                    if (isNaN(val)) val = 0
+                }
                 this.change(key, val)
             }
         }

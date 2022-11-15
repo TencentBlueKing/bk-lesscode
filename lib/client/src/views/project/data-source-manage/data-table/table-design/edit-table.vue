@@ -24,6 +24,13 @@
                             width: '400'
                         }"
                     ></i>
+                    <import-table
+                        class="import-table"
+                        title="导入表结构"
+                        tips="如果导入 sql 文件，仅支持解析创建表的语法，且只支持系统可创建的字段类型。系统内置字段会默认添加且不可修改"
+                        @downloadTemplate="downloadStructTemplate"
+                        @import="importTable"
+                    />
                 </h5>
                 <field-table ref="fieldTableRef" :data="originTableStatus.data" @change="changeEdit(true)"></field-table>
             </section>
@@ -63,7 +70,9 @@
     import {
         DataParse,
         StructJsonParser,
-        StructSqlParser
+        StructSqlParser,
+        handleImportStruct,
+        BASE_COLUMNS
     } from 'shared/data-source'
     import {
         messageSuccess,
@@ -72,19 +81,24 @@
     import {
         bkInfoBox
     } from 'bk-magic-vue'
+    import router from '@/router'
+    import store from '@/store'
     import renderHeader from '../common/header'
     import fieldTable from '../common/field-table'
     import infoTable from '../common/info-table.vue'
     import confirmDialog from '../common/confirm-dialog.vue'
-    import router from '@/router'
-    import store from '@/store'
+    import importTable from '../common/import.vue'
+    import {
+        downloadStructTemplate
+    } from '../common/use-download-demo'
 
     export default defineComponent({
         components: {
             renderHeader,
             fieldTable,
             infoTable,
-            confirmDialog
+            confirmDialog,
+            importTable
         },
 
         beforeRouteLeave (to, from, next) {
@@ -203,6 +217,19 @@
                 })
             }
 
+            const importTable = ({ data, type }) => {
+                try {
+                    const [tableInfo] = handleImportStruct([data], type)
+                    // 过滤掉基础字段设置，使用系统内置
+                    originTableStatus.data = [
+                        ...BASE_COLUMNS,
+                        ...tableInfo.columns.filter(column => !BASE_COLUMNS.find(baseColumn => baseColumn.name === column.name))
+                    ]
+                } catch (error) {
+                    messageError(error.message || error)
+                }
+            }
+
             onBeforeMount(getDetail)
 
             return {
@@ -213,11 +240,13 @@
                 basicFormRef,
                 fieldTableRef,
                 originTableStatus,
+                hasEdit,
                 goBack,
                 submit,
                 confirmSubmit,
                 changeEdit,
-                hasEdit
+                downloadStructTemplate,
+                importTable
             }
         }
     })
@@ -251,6 +280,11 @@
             line-height: 19px;
             font-size: 14px;
             margin: 0 0 12px;
+        }
+        .import-table {
+            font-weight: normal;
+            display: inline-block;
+            margin-left: 20px;
         }
     }
 </style>

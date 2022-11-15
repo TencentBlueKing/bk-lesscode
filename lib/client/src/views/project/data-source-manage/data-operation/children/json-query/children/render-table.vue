@@ -53,7 +53,7 @@
                 <select-field
                     v-for="(field, fieldIndex) in table.fields"
                     class="fl mr8 mt8 mb8 wh380"
-                    :key="`${tableIndex}_${fieldIndex}`"
+                    :key="`${tableIndex}_${field.functionName}_${field.fieldId}_${field.distinct}`"
                     :show-alias="true"
                     :field-id="field.fieldId"
                     :distinct="field.distinct"
@@ -61,6 +61,7 @@
                     :alias="field.alias"
                     :disable-delete="table.fields.length <= 1"
                     :columns="handleGetColumns(table.tableName)"
+                    :custom-validate="validate"
                     @change="(val) => handleFieldChange(tableIndex, fieldIndex, val)"
                     @delete="() => handleFieldDelete(tableIndex, fieldIndex)"
                 />
@@ -93,12 +94,6 @@
         toRef,
         PropType
     } from '@vue/composition-api'
-    import SelectWrapper from './common/select-wrapper.vue'
-    import SelectType from './common/select-type.vue'
-    import SelectJoin, { IJoinOn } from './common/select-join.vue'
-    import SelectTable, { ITable } from './common/select-table.vue'
-    import SelectBkBaseTable, { IBkBaseBiz } from './common/select-bk-base-table.vue'
-    import SelectField, { IField } from './common/select-field.vue'
     import {
         JOIN_TYPE,
         SQL_FUNCTION_TYPE,
@@ -107,6 +102,18 @@
         getDefaultTableField,
         findTable
     } from 'shared/data-source'
+    import {
+        isEmpty
+    } from 'shared/util'
+
+    import SelectWrapper from './common/select-wrapper.vue'
+    import SelectType from './common/select-type.vue'
+    import SelectJoin, { IJoinOn } from './common/select-join.vue'
+    import SelectTable, { ITable } from './common/select-table.vue'
+    import SelectBkBaseTable, { IBkBaseBiz } from './common/select-bk-base-table.vue'
+    import SelectField, { IField } from './common/select-field.vue'
+    import { IQueryGroup } from './render-group.vue'
+
     export { ITable, IBkBaseBiz }
 
     interface IQueryTable {
@@ -129,6 +136,7 @@
 
         props: {
             queryTable: Array as PropType<IQueryTable[]>,
+            queryGroup: Object as PropType<IQueryGroup>,
             tableList: Array as PropType<ITable[]>,
             bkBaseBizList: Array as PropType<IBkBaseBiz[]>,
             dataSourceType: String
@@ -148,6 +156,18 @@
                     id: SQL_FUNCTION_TYPE[type].VAL,
                     name: SQL_FUNCTION_TYPE[type].NAME
                 }))
+
+            // 校验
+            const validate = ({ functionName, fieldId }) => {
+                let message = ''
+                if (isEmpty(functionName)
+                    && !isEmpty(props.queryGroup?.fields)
+                    && !props.queryGroup?.fields?.some(field => field.fieldId === fieldId)
+                ) {
+                    message = '设置了 GROUP 的情况下，查询字段只能为【AVG，COUNT，MAX，MIN，SUM】或者 GROUP 字段'
+                }
+                return message
+            }
 
             const addLinkTable = () => {
                 renderTables
@@ -231,6 +251,7 @@
                 renderTables,
                 joinTypeList,
                 fieldTypeList,
+                validate,
                 addLinkTable,
                 handlePlusField,
                 handleGetJoinTableList,

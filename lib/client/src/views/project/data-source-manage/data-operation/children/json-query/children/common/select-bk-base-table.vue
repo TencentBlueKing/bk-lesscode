@@ -3,6 +3,7 @@
         <span class="select-title">数据表</span>
         <bk-select
             searchable
+            search-placeholder="输入业务下的表名进行搜索（需要先展开业务）"
             :class="{
                 'select-main': true,
                 'is-error': isError
@@ -12,6 +13,7 @@
             @clear="handleChange"
         >
             <span
+                v-bk-overflow-tips
                 class="display-value"
                 slot="trigger"
             >
@@ -75,7 +77,6 @@
         watch,
         ref,
         toRef,
-        getCurrentInstance,
         onBeforeUnmount
     } from '@vue/composition-api'
     import { useStore } from '@/store'
@@ -102,7 +103,6 @@
 
         setup (props, { emit }) {
             const store = useStore()
-            const instance = getCurrentInstance()
             const isError = ref(false)
             const isLoadingIds = ref([])
             const isOpenIds = ref([])
@@ -169,8 +169,8 @@
             )
 
             // 本组件需要注册校验方法
-            validateContainer.register(instance.proxy)
-            onBeforeUnmount(() => validateContainer.unRegister(instance.proxy))
+            validateContainer.register(validate)
+            onBeforeUnmount(() => validateContainer.unRegister(validate))
 
             return {
                 isError,
@@ -213,6 +213,9 @@
             max-width: calc(100% - 65px);
             margin-left: -1px;
             z-index: 5;
+            /deep/ .bk-tooltip-ref {
+                height: 30px;
+            }
         }
         .is-error {
             border-color: #ff5656;
@@ -230,6 +233,10 @@
         display: inline-block;
         line-height: 30px;
         padding: 0 36px 0 10px;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     /deep/ .exception-wrap-item {
         .bk-exception-text {

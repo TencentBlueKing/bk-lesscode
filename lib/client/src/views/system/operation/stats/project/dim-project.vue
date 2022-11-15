@@ -21,9 +21,13 @@
         </div>
         <div class="data-list" v-bkloading="{ isLoading: fetching.base }">
             <bk-table
+                class="g-hairless-table"
                 v-show="!fetching.base"
                 :data="list"
                 :pagination="pagination"
+                :outer-border="false"
+                :header-border="false"
+                :header-cell-style="{ background: '#f0f1f5' }"
                 @page-change="handlePageChange"
                 @page-limit-change="handlePageLimitChange"
                 @sort-change="handleSortChange">

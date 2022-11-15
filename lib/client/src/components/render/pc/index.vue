@@ -120,7 +120,7 @@
                             'padding: 2px 5px; background: #42c02e; color: #fff; border-radius: 0 3px 3px 0; font-weight: bold;',
                             event)
             }
-            
+
             const activeLogCallback = event => {
                 console.log('\n')
                 console.log(`%c>> ${new Date().toString().slice(0, 25)}`,
@@ -185,7 +185,7 @@
         mounted () {
             this.componentData.mounted(this.$refs.root)
             LC._mounted()
-            
+
             const mousedownCallback = () => {
                 setMousedown(true)
             }
@@ -195,11 +195,11 @@
             const resetCallback = () => {
                 LC.clearMenu()
             }
-            
+
             document.body.addEventListener('mousedown', mousedownCallback)
             document.body.addEventListener('mouseup', mouseupCallback)
             document.body.addEventListener('click', resetCallback)
-            
+
             this.$once('hook:beforeDestroy', () => {
                 document.body.removeEventListener('mousedown', mousedownCallback)
                 document.body.removeEventListener('mouseup', mouseupCallback)
@@ -229,7 +229,7 @@
                     top: componentTop,
                     left: componentLeft
                 } = $childEl.getBoundingClientRect()
-                
+
                 const styles = {}
                 if (componentTop > boxTop + 3) {
                     styles['marginTop'] = '8px'

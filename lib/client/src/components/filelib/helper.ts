@@ -24,8 +24,8 @@ export enum DISPLAY_TYPES {
 export type UploadStatus = Lowercase<keyof typeof UPLOAD_STATUS>
 
 export const FILE_MAX_LIMIT = {
-    IMAGE_SIZE: 5,
-    FILE_SIZE: 10
+    IMAGE_SIZE: 15,
+    FILE_SIZE: 50
 }
 
 export interface UploadRawFile extends File {

@@ -6,6 +6,7 @@
         </section>
 
         <bk-table :data="tokenList"
+            class="g-hairless-table"
             :outer-border="false"
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
@@ -166,13 +167,6 @@
 <style lang="postcss">
     .token-table {
         margin-bottom: 16px;
-        box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
-        th.is-leaf {
-            border: none;
-        }
-        &:before {
-            height: 0;
-        }
         .bk-table-empty-block {
             background: #ffffff;
             height: 42px;

@@ -7,6 +7,7 @@
             >{{item.txt}}：</span>
             <monaco
                 class="variable-code"
+                ref="monaco"
                 :height="300"
                 :key="item.key"
                 :form="{ funcBody: value[item.key] }"
@@ -49,6 +50,12 @@
         computed: {
             ...mapGetters('functions', ['functionList']),
             ...mapGetters('variable', ['variableList'])
+        },
+
+        methods: {
+            fixMethod () {
+                return Promise.all(this.$refs.monaco.map(instance => instance.fixMethod()))
+            }
         }
     }
 </script>

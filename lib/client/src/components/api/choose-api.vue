@@ -2,10 +2,12 @@
     <bk-select
         ref="treeRef"
         searchable
+        search-placeholder="请输入关键字搜索。如果没搜索到，可能是懒加载还未加载相应数据，请手动展开目录来寻找 API"
         :tag-fixed-height="false"
         :show-empty="false"
         :clearable="false"
         :scroll-height="300"
+        :popover-options="{ appendTo: 'parent' }"
         :disabled="disabled"
         :remote-method="handleSearch"
         @toggle="handleToggle"
@@ -15,6 +17,10 @@
             slot="trigger"
         >
             {{ getDisplayName() }}
+            <i
+                class="bk-select-clear bk-icon icon-close-circle-shape"
+                @click.stop="handleClear"
+            ></i>
             <i class="bk-select-angle bk-icon icon-angle-down"></i>
         </span>
         <bk-big-tree
@@ -55,6 +61,7 @@
     import { getDataSourceApiList } from 'shared/data-source'
     import { isEmpty, uuid } from 'shared/util'
     import { transItsmApiSchemeToDataSourceScheme } from 'shared/no-code'
+    import { API_METHOD } from 'shared/api'
 
     export default defineComponent({
         props: {
@@ -197,7 +204,11 @@
                         categoryId: item.originId
                     })
                     .then((res) => {
-                        return getNodeValue(res, true)
+                        const data = res.map((api) => {
+                            api.name = `${api.name}（${api.code}）`
+                            return api
+                        })
+                        return getNodeValue(data, true)
                     })
             }
 
@@ -307,7 +318,8 @@
                     const { data } = cur
                     path.push({
                         id: data.id,
-                        name: data.name
+                        name: data.name,
+                        code: data.code
                     })
                     cur = cur.parent
                 } while (cur)
@@ -333,7 +345,7 @@
                 return props
                     .value
                     .map((item) => {
-                        return item.name
+                        return item.code || item.name
                     })
                     .reduce((acc, cur, index) => {
                         const divider = index === 0 ? '' : index === 1 ? '：' : ' / '
@@ -373,6 +385,19 @@
                 }
             }
 
+            // 点击清除
+            const handleClear = () => {
+                emit('change', {
+                    path: [],
+                    method: API_METHOD.GET,
+                    url: '',
+                    query: [],
+                    body: {},
+                    response: {},
+                    summary: ''
+                })
+            }
+
             return {
                 apiData,
                 treeRef,
@@ -384,7 +409,8 @@
                 getDefaultExpandedNode,
                 handleSearch,
                 goToCreate,
-                handleToggle
+                handleToggle,
+                handleClear
             }
         }
     })

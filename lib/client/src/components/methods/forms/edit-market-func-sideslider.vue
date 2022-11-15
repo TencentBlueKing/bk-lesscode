@@ -23,7 +23,6 @@
 <script>
     import mixins from './form-mixins'
     import { mapActions } from 'vuex'
-    import { messageHtmlError } from '@/common/bkmagic'
 
     export default {
         mixins: [mixins],
@@ -58,7 +57,14 @@
                         this.handleClose()
                     }).catch((err) => {
                         if (err?.code === 499) {
-                            messageHtmlError(err.message)
+                            this
+                                .$refs
+                                .monaco
+                                .fixMethod()
+                                .then(this.submitAddMarketFunc)
+                                .catch(() => {
+                                    this.messageHtmlError(err.message || err)
+                                })
                         } else {
                             this.messageError(err.message || err)
                         }

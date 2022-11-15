@@ -16,7 +16,8 @@
             [$style['component']]: true,
             [$style['precent-width']]: fixPercentStyleWidth,
             [$style['precent-height']]: fixPercentStyleHeight,
-            'bk-layout-custom-component-wrapper': componentData.isCustomComponent
+            'bk-layout-custom-component-wrapper': componentData.isCustomComponent,
+            [[$style['component-root']]]: true
         }"
         role="component-root"
         :style="Object.assign({}, componentData.style, safeStyles)"
@@ -385,7 +386,7 @@
                     return
                 }
                 const componentDataStyle = this.componentData.style
-                
+
                 // 优先使用自定义配置的 line-height
                 if (_.has(componentDataStyle, 'line-height')
                     && componentDataStyle['line-height'] !== '') {
@@ -546,6 +547,9 @@
         min-height: 10px;
         pointer-events: auto !important;
         cursor: pointer;
+        &.component-root {
+            border: 1px solid transparent;
+        }
         &.precent-width{
             & > * {
                 width: 100% !important;
