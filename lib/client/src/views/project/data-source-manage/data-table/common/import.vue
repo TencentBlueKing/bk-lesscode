@@ -1,6 +1,6 @@
 <template>
     <section>
-        <bk-button class="import-button" @click="showImport">导入</bk-button>
+        <bk-button class="import-button" @click="toggleShowDialog(true)">导入</bk-button>
 
         <bk-dialog
             theme="primary"
@@ -19,6 +19,7 @@
                 accept=".sql,.xlsx"
                 with-credentials
                 :limit="1"
+                :size="10"
                 :multiple="false"
                 :custom-request="handleRequest"
                 v-if="isShowImport"
@@ -38,6 +39,21 @@
             <h5 class="result-message">
                 {{ resultMessage }}
             </h5>
+
+            <h5 class="error-message">
+                {{ errorMessage }}
+            </h5>
+
+            <div class="dialog-footer" slot="footer">
+                <bk-button
+                    theme="primary"
+                    :loading="isLoadingData"
+                    @click="confirmImport">导入</bk-button>
+                <bk-button
+                    :disabled="isLoadingData"
+                    @click="toggleShowDialog(false)"
+                >取消</bk-button>
+            </div>
         </bk-dialog>
     </section>
 </template>
@@ -49,17 +65,29 @@
         props: {
             title: String,
             tips: String,
+            parseImport: Function,
             handleImport: Function
         },
 
         setup (props, { emit }) {
             const isShowImport = ref<boolean>(false)
+            const isLoadingData = ref(false)
             const resultMessage = ref('')
-            // 展示导入 dialog
-            const showImport = () => {
-                isShowImport.value = true
+            const errorMessage = ref('')
+            const parseData = ref([])
+
+            // 清空状态
+            const clearStatus = () => {
+                resultMessage.value = ''
+                errorMessage.value = ''
+                parseData.value = []
             }
-            // 执行导入请求
+            // 展示导入 dialog
+            const toggleShowDialog = (isShow) => {
+                isShowImport.value = isShow
+                clearStatus()
+            }
+            // 执行导入请求并解析文件格式
             const handleRequest = (options) => {
                 const {
                     fileObj,
@@ -70,7 +98,7 @@
                 const [tableName, type] = fileList?.[0]?.name?.split('.')
 
                 // 每次导入需要清空上次导入的结果信息
-                resultMessage.value = ''
+                clearStatus()
     
                 // 读取文件
                 const reader = new FileReader()
@@ -82,15 +110,16 @@
                 // 读取完成
                 reader.onload = (event) => {
                     props
-                        .handleImport({
+                        .parseImport({
                             data: {
                                 tableName,
                                 content: event.target.result
                             },
                             type
                         })
-                        .then((message) => {
+                        .then(({ data, message }) => {
                             resultMessage.value = message
+                            parseData.value = data
                             onSuccess({ code: 0 }, fileObj)
                         })
                         .catch((err) => {
@@ -107,6 +136,22 @@
                     onProgress({}, 100)
                 }
             }
+            const confirmImport = () => {
+                resultMessage.value = ''
+                isLoadingData.value = true
+                return props
+                    .handleImport(parseData.value)
+                    .then(() => {
+                        isShowImport.value = false
+                        clearStatus()
+                    })
+                    .catch((err) => {
+                        errorMessage.value = err.message || err
+                    })
+                    .finally(() => {
+                        isLoadingData.value = false
+                    })
+            }
             // 下载模板
             const downloadTemplate = (type) => {
                 emit('downloadTemplate', type)
@@ -114,9 +159,12 @@
 
             return {
                 isShowImport,
+                isLoadingData,
                 resultMessage,
-                showImport,
+                errorMessage,
+                toggleShowDialog,
                 handleRequest,
+                confirmImport,
                 downloadTemplate
             }
         }
@@ -147,5 +195,9 @@
     }
     .result-message {
         margin: 0 0 5px;
+    }
+    .error-message {
+        margin: 0 0 5px;
+        color: #ff5656;
     }
 </style>

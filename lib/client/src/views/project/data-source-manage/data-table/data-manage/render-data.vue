@@ -20,7 +20,8 @@
                 class="import-data"
                 title="导入数据"
                 tips="如果导入 sql 文件，仅支持解析插入数据的语法"
-                :handle-import="importData"
+                :parse-import="parseImport"
+                :handle-import="handleImport"
                 @downloadTemplate="handleDownloadTemplate"
             />
         </section>
@@ -174,6 +175,7 @@
         DataParse,
         DataJsonParser,
         DataSqlParser,
+        FIELDS_TYPES,
         generateExportDatas,
         handleImportData
     } from 'shared/data-source'
@@ -186,6 +188,9 @@
     import {
         downloadDataTemplate
     } from '../common/use-download-demo'
+    import {
+        isEmpty
+    } from 'shared/util'
 
     import DayJSUtcPlugin from 'dayjs/plugin/utc'
     dayjs.extend(DayJSUtcPlugin)
@@ -259,6 +264,7 @@
                 max: 3,
                 size: 'small'
             })
+            const userInfo = store.state.user
 
             const calcTableSetting = () => {
                 const fields = activeTable
@@ -425,9 +431,16 @@
                 const dateTimeColumns = activeTable.value.columns?.filter((column) => (column.type === 'datetime'))
                 dateTimeColumns.forEach((dateTimeColumn) => {
                     list.forEach((form) => {
-                        form[dateTimeColumn.name] = dayjs(form[dateTimeColumn.name])
-                            .utcOffset(0)
-                            .format('YYYY-MM-DD HH:mm:ss')
+                        if (isEmpty(form[dateTimeColumn.name])) {
+                            return
+                        }
+                        if (!dayjs(form[dateTimeColumn.name]).isValid()) {
+                            throw new Error(`数据是【datetime】类型，但是值【${form[dateTimeColumn.name]}】不符合【datetime】格式`)
+                        } else {
+                            form[dateTimeColumn.name] = dayjs(form[dateTimeColumn.name])
+                                .utcOffset(0)
+                                .format('YYYY-MM-DD HH:mm:ss')
+                        }
                     })
                 })
 
@@ -479,9 +492,13 @@
             }
 
             const exportSelectDatas = (fileType) => {
+                // 导出数据过滤掉 id
                 const datas = [{
                     tableName: activeTable.value.tableName,
-                    list: dataStatus.selectRows
+                    list: dataStatus.selectRows.map((row) => {
+                        const { id, ...rest } = row
+                        return rest
+                    })
                 }]
                 const fileName = fileType === 'sql' ? `bklesscode-data-${projectId}.sql` : ''
                 const files = generateExportDatas(datas, fileType, fileName)
@@ -497,36 +514,72 @@
                     exportSelectDatas(fileType)
                 }
             }
-
-            const importData = ({ data, type }) => {
+            // 解析导入的数据
+            const parseImport = ({ data, type }) => {
                 return new Promise((resolve, reject) => {
                     try {
-                        const [list] = handleImportData([data], type)
+                        const [list] = handleImportData(
+                            [data],
+                            type,
+                            activeTable.value.columns.map(column => column.name)
+                        )
                         // 去除 id，由 DB 自增长
+                        // 如果内置时间字段没填，去掉该字段，由系统自动生成
+                        // 如果内置用户没填，取当前登录人
                         const filterList = list.map((item) => {
-                            const { id, ...rest } = item
+                            const { id, createTime, updateTime, ...rest } = item
+                            if (!isEmpty(createTime)) {
+                                rest.createTime = createTime
+                            }
+                            if (!isEmpty(updateTime)) {
+                                rest.updateTime = updateTime
+                            }
+                            if (isEmpty(rest.updateUser)) {
+                                rest.updateUser = userInfo.username
+                            }
+                            if (isEmpty(rest.createUser)) {
+                                rest.createUser = userInfo.username
+                            }
                             return rest
                         })
-                        updateDB(activeTable.value.tableName, filterList, new DataParse())
-                            .then((res) => {
-                                const affectedRows = res.reduce((acc, cur) => {
-                                    acc += cur.affectedRows
-                                    return acc
-                                }, 0)
-                                resolve(`解析到${affectedRows}条数据，已导入`)
-                            })
-                            .catch(reject)
+                        resolve({
+                            data: filterList,
+                            message: `解析到【${filterList.length}】条数据，点击导入后插入到数据库`
+                        })
                     } catch (error) {
                         reject(error)
                     }
                 })
             }
+            // 执行导入
+            const handleImport = (data) => {
+                return updateDB(activeTable.value.tableName, data, new DataParse())
+            }
 
             const handleDownloadTemplate = (type) => {
+                // 基于类型获取默认值
+                const getDefaultValueByType = (type, name) => {
+                    // 使用当前登录人作为更新人和创建人
+                    if (['updateUser', 'createUser'].includes(name)) {
+                        return userInfo.username
+                    }
+                    if (type === 'date') {
+                        return dayjs().format('YYYY-MM-DD')
+                    }
+                    if (type === 'datetime') {
+                        return dayjs().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                    // 使用值类型的默认值
+                    const fieldType = FIELDS_TYPES.find(fieldType => fieldType.name === type)
+                    return fieldType.defaultValue
+                }
+                // 过滤掉不需要导出的字段
+                const filterColumns = activeTable.value.columns.filter((column) => {
+                    return column.name !== 'id'
+                })
                 // 基于当前选择的表构建示例数据
-                const demoData = activeTable.value.columns.reduce((acc, cur) => {
-                    // 时间类型做特殊处理
-                    acc[cur.name] = cur.default === 'CURRENT_TIMESTAMP' ? '' : cur.default
+                const demoData = filterColumns.reduce((acc, cur) => {
+                    acc[cur.name] = getDefaultValueByType(cur.type, cur.name)
                     return acc
                 }, {})
                 // 下载示例
@@ -575,7 +628,8 @@
                 deleteData,
                 exportDatas,
                 handleDownloadTemplate,
-                importData
+                parseImport,
+                handleImport
             }
         }
     })
