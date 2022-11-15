@@ -1,35 +1,19 @@
 <template>
-    <main :class="['layout', { 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
-        <aside class="aside">
-            <div class="side-hd">
-                <div class="brand">
-                    <span class="bk-drag-icon app-logo" @click="$router.push('/projects')">
-                        <svg aria-hidden="true" width="22" height="22">
-                            <use xlink:href="#bk-drag-logo"></use>
-                        </svg>
-                    </span>
-                    <h2 class="app-name">可视化开发平台</h2>
-                </div>
-            </div>
+    <main :class="['layout', { 'aside-folded': asideFolded, 'aside-hover': asideHover, 'nocrumb': hideCrumb, nofooter: !showFooter }]">
+        <aside class="aside" v-if="!hideSideNav">
             <div class="side-bd"
                 @mouseenter="asideHover = true"
                 @mouseleave="asideHover = false">
                 <nav class="nav-list">
-                    <a tag="div" class="nav-item product-link" href="/home" target="_blank">
-                        <i class="bk-drag-icon bk-drag-chanpinjieshao"></i>产品介绍
-                    </a>
-                    <div class="nav-parent" v-if="!asideFolded || asideHover">
-                        应用中心
-                    </div>
-                    <router-link tag="div" :class="['nav-item', { 'router-link-active': $route.name === 'projects' }]" to="/projects">
-                        <i class="bk-drag-icon bk-drag-project-list"></i>我的应用
-                    </router-link>
-                    <router-link tag="div" class="nav-item" to="/template-market">
-                        <i class="bk-drag-icon bk-drag-template-fill"></i>模板市场<i class="red-point"></i>
-                    </router-link>
-                    <router-link tag="div" class="nav-item" to="/function-market">
-                        <i class="bk-drag-icon bk-drag-function-fill"></i>函数市场
-                    </router-link>
+                    <template v-if="isRouteContains('marketplace')">
+                        <router-link tag="div" class="nav-item" to="/marketplace/template">
+                            <i class="bk-drag-icon bk-drag-template-fill"></i>模板市场<i class="red-point"></i>
+                        </router-link>
+                        <router-link tag="div" class="nav-item" to="/marketplace/function">
+                            <i class="bk-drag-icon bk-drag-function-fill"></i>函数市场
+                        </router-link>
+                    </template>
+
                     <!-- <div v-if="iamNoResourcesPerm[$IAM_ACTION.manage_platform[0]]">
                         <div class="nav-parent" v-if="!asideFolded || asideHover">
                             平台管理
@@ -39,10 +23,7 @@
                         </router-link>
                     </div> -->
 
-                    <div v-if="iamNoResourcesPerm[$IAM_ACTION.view_operation_data[0]]">
-                        <div class="nav-parent" v-if="!asideFolded || asideHover">
-                            运营数据
-                        </div>
+                    <template v-if="isRouteContains('op') && iamNoResourcesPerm[$IAM_ACTION.view_operation_data[0]]">
                         <!-- <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/user">
                             <i class="bk-drag-icon bk-drag-user-count"></i>用户数据
                         </auth-router-link>
@@ -67,7 +48,7 @@
                         <router-link tag="div" class="nav-item" to="/op/stats/comp">
                             <i class="bk-drag-icon bk-drag-compoment-count"></i>自定义组件数据
                         </router-link>
-                    </div>
+                    </template>
                 </nav>
             </div>
             <div class="side-ft">
@@ -76,14 +57,14 @@
                 </span>
             </div>
         </aside>
-        <div class="breadcrumbs">
+        <div class="breadcrumbs" v-if="!hideCrumb">
             <h3 class="current">{{$route.meta.title}}</h3>
             <extra-links></extra-links>
         </div>
         <div class="main-container">
             <router-view :key="$route.path"></router-view>
         </div>
-        <footer class="footer">
+        <footer class="footer" v-if="showFooter">
             <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=1&key=XzgwMDgwMjAwMV80NDMwOTZfODAwODAyMDAxXzJf"
                 target="_blank"
                 class="magic-feedback"
@@ -117,7 +98,21 @@
             }
         },
         computed: {
-            ...mapGetters(['iamNoResourcesPerm'])
+            ...mapGetters(['iamNoResourcesPerm']),
+            hideSideNav () {
+                return this.$route?.meta?.hideSideNav
+            },
+            hideCrumb () {
+                return this.$route?.meta?.hideCrumb
+            },
+            showFooter () {
+                return this.$route?.meta?.showFooter
+            }
+        },
+        methods: {
+            isRouteContains (path) {
+                return this.$route.matched.some(route => route.path.startsWith(`/${path}`))
+            }
         }
     }
 </script>
@@ -127,15 +122,15 @@
     @import "@/css/mixins/scroller";
 
     .layout {
-        --side-hd-height: 52px;
+        --side-hd-height: 0px;
         --side-ft-height: 50px;
         --aside-width: 258px;
         --footer-height: 50px;
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 68px);
-        margin-top: 64px;
+        height: calc(100vh - 52px);
+        margin-top: 52px;
 
         &.aside-folded {
             .aside {
@@ -176,22 +171,18 @@
             }
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            margin-left: 20px;
-            .app-logo {
-                font-size: 0;
-                cursor: pointer;
+        &.nocrumb {
+            .main-container {
+                height: calc(100% - var(--footer-height));
             }
-            .app-name {
-                font-size: 16px;
-                font-weight: normal;
-                color: #313238;
-                margin: 0;
-                padding-left: 18px;
-                white-space: nowrap;
+        }
+        &.nofooter {
+            .main-container {
+                height: calc(100% - var(--breadcrumb-height));
             }
+        }
+        &.nocrumb.nofooter {
+            height: 100%;
         }
 
         .aside {
@@ -291,7 +282,9 @@
         }
 
         .nav-list {
-            .nav-parent{
+            margin-top: 8px;
+
+            .nav-parent {
                 font-size: 12px;
                 text-align: left;
                 color: #979ba5;
@@ -306,7 +299,7 @@
                 height: 42px;
                 line-height: 42px;
                 padding: 0 12px 0 22px;
-                margin: 0;
+                margin: 4px 0;
                 white-space: nowrap;
                 cursor: pointer;
 

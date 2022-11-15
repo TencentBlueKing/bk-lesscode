@@ -723,6 +723,11 @@
 </style>
 
 <style lang="postcss" scoped>
+    .projects {
+        max-width: 1680px;
+        margin: 0 auto;
+    }
+
     .create-dropdown {
         /deep/ .bk-dropdown-trigger .bk-button {
             font-size: 14px;

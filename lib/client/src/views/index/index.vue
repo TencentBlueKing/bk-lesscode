@@ -365,7 +365,7 @@
     }
 </script>
 <style lang="postcss">
-    $headerHeight: 64px;
+    $headerHeight: 52px;
     $pageHeaderHeight: 52px;
 
     .lessocde-editor-page {
