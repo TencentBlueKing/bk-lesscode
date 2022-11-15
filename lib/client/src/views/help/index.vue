@@ -151,6 +151,10 @@
         },
         mounted () {
             this.adjustAnchor()
+
+            setTimeout(() => {
+                document.querySelector('.nav-list .nav-child.nav-active')?.scrollIntoView()
+            }, 0)
         },
         methods: {
             adjustAnchor () {
@@ -251,5 +255,5 @@
             }
         }
     }
-    
+
 </style>

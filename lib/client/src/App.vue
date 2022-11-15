@@ -19,21 +19,12 @@
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
-            <home-header v-if="homeHeaderNav"></home-header>
-            <app-header v-else></app-header>
+            <app-header></app-header>
             <not-exist v-if="isNotExist" :message="notExistMsg" />
             <template v-else>
                 <apply-page v-if="isNotPermission" :auth-result="authResult" />
                 <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
             </template>
-        </div>
-        <bk-fixed-navbar
-            :ext-cls="hasFooterBar ? 'nav-footer-bar' : 'no-footer-bar'"
-            :style="showFixedNavBar ? 'transform: translateY(-50%); opacity: 1' : 'transform: translateY(100%); opacity: 0'"
-            :position="position"
-            :nav-items="navItems"></bk-fixed-navbar>
-        <div class="nav-icon" @click="toggerNavbar" :class="hasFooterBar ? 'nav-icon-footer' : 'nav-icon-bottom'">
-            <i class="bk-drag-icon bk-drag-arrow-down toggle-arrow" :class="showFixedNavBar ? 'nav-icon-down' : 'nav-icon-up'" />
         </div>
     </section>
 </template>
@@ -72,16 +63,13 @@
                     }
                 ],
                 routerNameData: ['/home', '/help'],
-                homeHeaderNav: true,
                 appTabData: [{ name: '产品介绍', url: '/', routerName: 'home' }, { name: '帮助文档', url: '/help', routerName: 'intro' }],
                 isNotPermission: false,
                 authResult: {
                     requiredPermissions: []
                 },
                 isNotExist: false,
-                notExistMsg: '',
-                hasFooterBar: false,
-                showFixedNavBar: true
+                notExistMsg: ''
             }
         },
 
@@ -105,12 +93,6 @@
         watch: {
             '$route': {
                 handler (value) {
-                    if (value.matched[0]) {
-                        this.$nextTick(() => {
-                            this.hasFooterBar = !!document.getElementsByClassName('footer').length
-                        })
-                        this.homeHeaderNav = this.routerNameData.includes(value.matched[0].path) || this.routerNameData.includes(value.fullPath + value.name)
-                    }
                     this.isNotPermission = false
                     this.isNotExist = false
                 },
@@ -149,10 +131,6 @@
             notExistHold (msg) {
                 this.isNotExist = true
                 this.notExistMsg = msg
-            },
-
-            toggerNavbar () {
-                this.showFixedNavBar = !this.showFixedNavBar
             }
         }
     }

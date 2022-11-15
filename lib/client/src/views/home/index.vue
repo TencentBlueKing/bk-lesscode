@@ -241,7 +241,7 @@
             }
         },
         created () {
-            
+
         },
         mounted () {
             this.isLoading = false
@@ -273,7 +273,7 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        margin-top: 64px;
+        margin-top: 52px;
         .banner{
             width: 100%;
             background: linear-gradient(to right, #DAE5F1 20% , #F9F9FA 78%);

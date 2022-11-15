@@ -535,8 +535,8 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 68px);
-        margin-top: 64px;
+        height: calc(100vh - 52px);
+        margin-top: 52px;
 
         &.aside-folded:not(.aside-hover) {
             .aside {
