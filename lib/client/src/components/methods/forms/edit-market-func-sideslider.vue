@@ -57,12 +57,14 @@
                         this.handleClose()
                     }).catch((err) => {
                         if (err?.code === 499) {
-                            this.messageWarn('函数不符合 Eslint 规范，启动自动修复')
                             this
                                 .$refs
                                 .monaco
                                 .fixMethod()
                                 .then(this.submitAddMarketFunc)
+                                .catch(() => {
+                                    this.messageHtmlError(err.message || err)
+                                })
                         } else {
                             this.messageError(err.message || err)
                         }

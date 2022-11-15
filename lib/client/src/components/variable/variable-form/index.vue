@@ -353,12 +353,14 @@
                                 })
                                 .catch((err) => {
                                     if (err?.code === 499) {
-                                        this.messageWarn('计算变量不符合 Eslint 规范，启动自动修复')
                                         this
                                             .$refs
                                             .defaultValue
                                             .fixMethod()
                                             .then(this.handleSave)
+                                            .catch(() => {
+                                                this.messageHtmlError(err.message || err)
+                                            })
                                     } else {
                                         this.messageError(err.message || err)
                                     }

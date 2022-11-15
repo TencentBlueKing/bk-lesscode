@@ -7,7 +7,7 @@
         @change="change">
         <template v-slot:tools>
             <i class="bk-drag-icon bk-drag-info-tips icon-style" v-bk-tooltips="functionTips"></i>
-            <i class="bk-drag-icon bk-drag-fix icon-style" @click="fixMethod" v-bk-tooltips="fixMethodTips"></i>
+            <i class="bk-drag-icon bk-drag-fix icon-style" @click="handleFixMethod" v-bk-tooltips="fixMethodTips"></i>
             <slot name="tools"></slot>
         </template>
     </monaco>
@@ -25,6 +25,7 @@
         determineShowSlotInnerVariable
     } from 'shared/variable'
     import { BUILDIN_VARIABLE_TYPE_LIST } from 'shared/variable/constant'
+    import { CustomError } from 'shared/custom-error'
 
     export default {
         components: {
@@ -263,22 +264,34 @@
                 })
             },
 
+            handleFixMethod () {
+                this
+                    .fixMethod()
+                    .then(() => {
+                        this.messageSuccess('函数修复成功')
+                    })
+                    .catch((err) => {
+                        if (err?.code === 499) {
+                            this.messageHtmlError(err.message || err)
+                        } else if (err?.code === 501) {
+                            this.messageWarn(err.message || err)
+                        } else {
+                            this.messageError(err.message || err)
+                        }
+                    })
+            },
+
             fixMethod () {
+                // 执行修复函数，只有当真正有修复的时候，才算修复成功
                 return new Promise((resolve, reject) => {
                     this.fixFunByEslint(this.form).then((code) => {
                         if (code) {
                             this.change(code)
-                            this.messageSuccess('函数修复成功')
+                            resolve()
                         } else {
-                            this.messageWarn('暂无可修复内容')
+                            reject(new CustomError(501, '暂无可修复内容'))
                         }
-                        resolve()
                     }).catch((err) => {
-                        if (err?.code === 499) {
-                            this.messageHtmlError(err.message || err)
-                        } else {
-                            this.messageError(err.message || err)
-                        }
                         reject(err)
                     })
                 })
