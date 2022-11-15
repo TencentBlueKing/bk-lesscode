@@ -30,7 +30,8 @@
                     <i class="bk-drag-icon bk-drag-vesion-fill"
                         v-bk-tooltips="{
                             content: item.tooltip,
-                            placements: ['bottom-end']
+                            placements: ['bottom-end'],
+                            allowHtml: true
                         }" />
                 </div>
             </div>
@@ -55,7 +56,7 @@
                         {
                             key: 'bk',
                             name: '蓝鲸基础组件 (Vue)',
-                            tooltip: '当前组件库版本为“2.4.15<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                            tooltip: '当前组件库版本为“2.4.15，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         },
                         {
                             key: 'element',
@@ -65,8 +66,8 @@
                     ],
                     MOBILE: [{
                         key: 'vant',
-                        name: 'vant-ui',
-                        tooltip: ''
+                        name: 'Vant UI (Vue)',
+                        tooltip: '当前组件库版本为“2.12.39”，<a target="_blank" href="https://vant-ui.github.io/vant/v2/#/zh-CN/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                     }]
                 }
             }
