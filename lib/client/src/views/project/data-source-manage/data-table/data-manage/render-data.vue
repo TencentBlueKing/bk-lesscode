@@ -11,10 +11,11 @@
             >批量删除</bk-button>
             <export-data
                 class="mr10"
-                title="导出数据"
+                :title="downloadType === 'all' ? '导出所有数据' : '导出选中数据'"
                 :disable-partial-selection="dataStatus.selectRows.length <= 0"
                 :disabled="dataStatus.pagination.count <= 0"
                 @download="exportDatas"
+                @show="handleShowExport"
             />
             <import-data
                 class="import-data"
@@ -264,6 +265,7 @@
                 max: 3,
                 size: 'small'
             })
+            const downloadType = ref('')
             const userInfo = store.state.user
 
             const calcTableSetting = () => {
@@ -507,6 +509,10 @@
                 })
             }
 
+            const handleShowExport = (type) => {
+                downloadType.value = type
+            }
+
             const exportDatas = (fileType, downloadType) => {
                 if (downloadType === 'all') {
                     exportAllDatas(fileType)
@@ -611,6 +617,7 @@
                 dataStatus,
                 formStatus,
                 tableSetting,
+                downloadType,
                 getColumnRule,
                 columnFormatter,
                 timeFormatter,
@@ -626,6 +633,7 @@
                 confirmSubmitData,
                 bulkDelete,
                 deleteData,
+                handleShowExport,
                 exportDatas,
                 handleDownloadTemplate,
                 parseImport,

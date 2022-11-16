@@ -12,12 +12,16 @@
             <bk-button class="table-list-btn" @click="bulkDelete" :disabled="listStatus.selectRows.length <= 0">批量删除</bk-button>
             <!-- <import-table title="导入表" class="table-list-btn"></import-table> -->
             <export-table
-                title="导出表"
                 class="table-list-btn"
+                export-selection-text="导出选中表结构信息"
+                export-all-text="导出所有表结构信息"
+                :title="downloadType === 'select' ? '导出选中表结构信息' : '导出所有表结构信息'"
                 :disable-partial-selection="listStatus.selectRows.length <= 0"
                 :disabled="listStatus.pagination.count <= 0"
                 @download="exportTables"
+                @show="handleShowExport"
             ></export-table>
+            {{ downloadType }}
             <bk-divider direction="vertical" class="table-list-divider"></bk-divider>
             <bk-button class="table-list-btn" @click="goToDataManage" :disabled="listStatus.pagination.count <= 0">数据管理</bk-button>
         </section>
@@ -76,7 +80,7 @@
     import store from '@/store'
     import router from '@/router'
     import { messageError } from '@/common/bkmagic'
-    import { defineComponent, onBeforeMount, reactive } from '@vue/composition-api'
+    import { defineComponent, onBeforeMount, reactive, ref } from '@vue/composition-api'
     import dayjs from 'dayjs'
     import exportTable from '../../../common/export.vue'
     import confirmDialog from '../../../common/confirm-dialog.vue'
@@ -125,6 +129,7 @@
                 deleteData: {},
                 selectRows: []
             })
+            const downloadType = ref('')
 
             const selectionChange = (selections) => {
                 listStatus.selectRows = selections
@@ -243,6 +248,10 @@
                 })
             }
 
+            const handleShowExport = (type) => {
+                downloadType.value = type
+            }
+
             const exportTables = (fileType, downloadType) => {
                 if (downloadType === 'all') {
                     exportAllTables(fileType)
@@ -267,6 +276,7 @@
 
             return {
                 listStatus,
+                downloadType,
                 handlePageChange,
                 handlePageLimitChange,
                 selectionChange,
@@ -276,6 +286,7 @@
                 bulkDelete,
                 deleteTable,
                 confirmDelete,
+                handleShowExport,
                 exportTables,
                 calcDisableInfo
             }

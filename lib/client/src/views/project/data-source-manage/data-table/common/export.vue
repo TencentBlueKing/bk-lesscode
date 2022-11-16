@@ -7,8 +7,8 @@
                 <i :class="['bk-icon icon-angle-down']"></i>
             </div>
             <ul class="bk-dropdown-list" slot="dropdown-content">
-                <li><a href="javascript:;" :class="{ disabled: disablePartialSelection || disabled }" @click="showExport('select')">导出选中数据</a></li>
-                <li><a href="javascript:;" :class="{ disabled: disabled }" @click="showExport('all')">导出所有数据</a></li>
+                <li><a href="javascript:;" :class="{ disabled: disablePartialSelection || disabled }" @click="showExport('select')">{{ exportSelectionText }}</a></li>
+                <li><a href="javascript:;" :class="{ disabled: disabled }" @click="showExport('all')">{{ exportAllText }}</a></li>
             </ul>
         </bk-dropdown-menu>
 
@@ -55,6 +55,14 @@
             onlyExportAll: {
                 type: Boolean,
                 default: false
+            },
+            exportSelectionText: {
+                type: String,
+                default: '导出选中数据'
+            },
+            exportAllText: {
+                type: String,
+                default: '导出所有数据'
             }
         },
 
@@ -74,6 +82,7 @@
                 isShowExport.value = true
                 downLoadType.value = type
                 dropdownHide()
+                emit('show', type)
             }
 
             const downLoad = (type) => {

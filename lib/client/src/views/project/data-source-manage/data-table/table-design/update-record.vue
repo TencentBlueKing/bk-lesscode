@@ -3,7 +3,7 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                表变更记录
+                表结构变更记录
             </span>
         </render-header>
 
