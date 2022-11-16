@@ -160,6 +160,7 @@
         position: fixed;
         height: 52px;
         width: 100%;
+        min-width: 1280px;
         padding: 0 16px;
         top: 0;
         z-index: 1000;
@@ -171,6 +172,7 @@
             color: #EAEBF0;
             font-size: 16px;
             text-decoration: none;
+            white-space: nowrap;
 
             img {
                 width: 32px;
@@ -193,6 +195,7 @@
                         height: 100%;
                         font-size: 14px;
                         color: #96A2B9;
+                        white-space: nowrap;
 
                         &:hover {
                             color: #d3d9e4;
