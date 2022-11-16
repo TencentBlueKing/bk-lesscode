@@ -209,6 +209,7 @@
             background-color: #dcdee5;
         }
         .actions-links-area {
+            margin-right: 10px;
             display: flex;
             align-items: center;
             .extra-links {

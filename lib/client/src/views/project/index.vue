@@ -3,13 +3,6 @@
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
-                <span class="seperate-line">|</span>
-                <span class="bk-drag-icon template-logo" title="返回应用列表" @click="toProjects">
-                    <svg aria-hidden="true" width="16" height="16">
-                        <use xlink:href="#bk-drag-logo"></use>
-                    </svg>
-                </span>
-                <span class="seperate-line">|</span>
                 <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
                     <bk-option v-for="option in projectList"
                         :key="option.id"
@@ -610,11 +603,11 @@
                     margin-left: -2px;
                 }
                 .select-project {
-                    width: 186px;
+                    width: 216px;
                     border: none;
                     margin-left: 2px;
                     .bk-select-name {
-                        font-size: 16px;
+                        font-size: 14px;
                         color: #313238;
                     }
                     &.is-focus {
