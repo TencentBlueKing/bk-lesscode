@@ -3,7 +3,7 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                编辑表【{{originTableStatus.basicInfo.tableName}}】
+                编辑表【{{originTableStatus.basicInfo.tableName}}】信息
             </span>
         </render-header>
 
@@ -133,7 +133,7 @@
                 tableStatus: finalTableStatus
             } = useTableStatus()
 
-            const id = router?.currentRoute?.query?.id
+            let id = ''
 
             const goBack = () => {
                 router.push({ name: 'showTable', query: { id } })
@@ -206,11 +206,12 @@
 
             const getDetail = () => {
                 isLoading.value = true
-                store.dispatch('dataSource/findOne', id).then((data) => {
+                store.dispatch('dataSource/findOne', router?.currentRoute?.query).then((data) => {
                     originTableStatus.basicInfo.tableName = data.tableName
                     originTableStatus.basicInfo.comment = data.comment
                     originTableStatus.data = data.columns
                     originTableStatus.disableEdit = data.source === 'nocode'
+                    id = data.id
                 }).catch((error) => {
                     messageError(error.message || error)
                 }).finally(() => {
