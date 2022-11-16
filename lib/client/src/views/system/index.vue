@@ -1,5 +1,11 @@
 <template>
-    <main :class="['layout', { 'aside-folded': asideFolded, 'aside-hover': asideHover, 'nocrumb': hideCrumb, nofooter: !showFooter }]">
+    <main :class="['layout', {
+        'aside-folded': asideFolded,
+        'aside-hover': asideHover,
+        nocrumb: hideCrumb,
+        nofooter: !showFooter,
+        noaside: hideSideNav
+    }]">
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-bd"
                 @mouseenter="asideHover = true"
@@ -183,6 +189,11 @@
         }
         &.nocrumb.nofooter {
             height: 100%;
+        }
+        &.noaside {
+            .footer {
+                padding-left: 0;
+            }
         }
 
         .aside {
