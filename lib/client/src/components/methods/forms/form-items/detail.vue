@@ -16,7 +16,7 @@
                     <i
                         class="bk-icon icon-info ml5"
                         v-if="temp.info"
-                        v-bk-tooltips="{ content: temp.info }"
+                        v-bk-tooltips="{ content: temp.info, allowHtml: true }"
                     ></i>
                 </bk-radio-button>
             </bk-radio-group>
@@ -326,7 +326,7 @@
 
             getParamRule (label) {
                 return {
-                    validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z_]+$/.test(x))),
+                    validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z]+$/.test(x))),
                     message: `${label}由大小写英文字母组成`,
                     trigger: 'blur'
                 }

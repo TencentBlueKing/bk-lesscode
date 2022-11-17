@@ -49,7 +49,8 @@
                                     <span
                                         class="g-config-subline"
                                         v-bk-tooltips="{
-                                            content: '1. 可输入 html模板或 vue template<br>2. `props.row`作为内置变量代表表格每一行的数据，如`props.row.id`代表每一行的id字段<br>3. 可以在此处通过编写函数名来调用函数管理中已有的函数（若使用了函数管理中的函数，需在模板绑定函数项勾选用到的函数）<br>4. 如默认值demo即可实现一项编辑操作列<br>5. 注意：自定列模板使用手动填写函数名的方式使用函数，如果函数名有变化，需要手动进行修改'
+                                            content: '1. 可输入 html模板或 vue template<br>2. `props.row`作为内置变量代表表格每一行的数据，如`props.row.id`代表每一行的id字段<br>3. 可以在此处通过编写函数名来调用函数管理中已有的函数（若使用了函数管理中的函数，需在模板绑定函数项勾选用到的函数）<br>4. 如默认值demo即可实现一项编辑操作列<br>5. 注意：自定列模板使用手动填写函数名的方式使用函数，如果函数名有变化，需要手动进行修改',
+                                            allowHtml: true
                                         }">
                                         自定义列模板
                                     </span>
@@ -64,7 +65,8 @@
                                     <span
                                         class="g-config-subline"
                                         v-bk-tooltips="{
-                                            content: '1. 请勾选列模板中使用到的函数管理中的函数<br>2. 未使用函数则无须勾选<br>3. 注意：此处系统显示函数标识'
+                                            content: '1. 请勾选列模板中使用到的函数管理中的函数<br>2. 未使用函数则无须勾选<br>3. 注意：此处系统显示函数标识',
+                                            allowHtml: true
                                         }">
                                         模板绑定函数
                                     </span>
