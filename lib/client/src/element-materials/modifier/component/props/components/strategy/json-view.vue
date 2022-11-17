@@ -144,10 +144,18 @@
                     if (this.initJsonStr && typeof JSON.parse(this.initJsonStr) === 'object') {
                         this.localValue = JSON.parse(this.initJsonStr)
                         if (!this.showInput) {
-                            if (!Array.isArray(JSON.parse(this.initJsonStr)) || JSON.parse(this.initJsonStr).length === 0) {
+                            const initJsonArr = JSON.parse(this.initJsonStr)
+                            if (!Array.isArray(initJsonArr) || initJsonArr.length === 0) {
                                 this.$bkMessage({
                                     theme: 'error',
                                     message: '画布的JSON需要为Array且不能为空'
+                                })
+                                return
+                            }
+                            if (!initJsonArr[0]?.componentId) {
+                                this.$bkMessage({
+                                    theme: 'error',
+                                    message: 'JSON格式不是画布所需的格式'
                                 })
                                 return
                             }
@@ -155,7 +163,7 @@
                                 title: '',
                                 subTitle: 'JSON会覆盖现有画布内容区域数据，请谨慎操作',
                                 confirmFn: () => {
-                                    this.triggerChange(this.name, JSON.parse(this.initJsonStr), this.type)
+                                    this.triggerChange(this.name, initJsonArr, this.type)
                                     this.isShow = false
                                 }
                             })
