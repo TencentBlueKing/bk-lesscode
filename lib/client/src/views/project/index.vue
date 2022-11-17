@@ -199,21 +199,12 @@
                         url: 'componentManage',
                         children: [
                             {
-                                title: '自定义组件管理',
-                                url: 'componentManage',
+                                title: '导航布局管理',
+                                url: 'layout',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'componentManage'
-                                }
-                            },
-                            {
-                                title: 'API 管理',
-                                url: 'apiManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'apiManage'
+                                    name: 'layout'
                                 }
                             },
                             {
@@ -226,6 +217,15 @@
                                 }
                             },
                             {
+                                title: 'API 管理',
+                                url: 'apiManage',
+                                iamAction: 'develop_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'apiManage'
+                                }
+                            },
+                            {
                                 title: '凭证管理',
                                 url: 'credential',
                                 iamAction: 'develop_app',
@@ -235,14 +235,13 @@
                                 }
                             },
                             {
-                                title: '页面模板管理',
-                                url: 'templateManage',
+                                title: '变量管理',
+                                url: 'variableManage',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'templateManage'
-                                },
-                                redPoint: true
+                                    name: 'variableManage'
+                                }
                             },
                             {
                                 title: '文件管理',
@@ -254,22 +253,23 @@
                                 }
                             },
                             {
-                                title: '导航布局管理',
-                                url: 'layout',
+                                title: '自定义组件管理',
+                                url: 'componentManage',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'layout'
+                                    name: 'componentManage'
                                 }
                             },
                             {
-                                title: '变量管理',
-                                url: 'variableManage',
+                                title: '页面模板管理',
+                                url: 'templateManage',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'variableManage'
-                                }
+                                    name: 'templateManage'
+                                },
+                                redPoint: true
                             }
                         ]
                     },
