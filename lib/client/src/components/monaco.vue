@@ -12,7 +12,7 @@
         </section>
         <section class="monaco-editor"
             :style="{
-                height: calcSize(renderHeight),
+                height: `calc(${calcSize(renderHeight)} - 30px)`,
                 width: calcSize(renderWidth),
                 position: 'relative'
             }"

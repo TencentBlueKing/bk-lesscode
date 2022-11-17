@@ -80,7 +80,8 @@
                     boundary: 'window',
                     width: this.tipWidth || 750,
                     theme: 'light',
-                    placements: ['bottom-end']
+                    placements: ['bottom-end'],
+                    allowHtml: true
                 }
             }
         },
