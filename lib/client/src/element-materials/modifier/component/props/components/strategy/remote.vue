@@ -232,7 +232,7 @@
                 return returnMethod.funcStr
             },
             getMethodByCode (methodCode) {
-                const returnMethod = this.functionList.find(functionData => functionData.funcCode === methodCode)
+                const returnMethod = JSON.parse(JSON.stringify(this.functionList.find(functionData => functionData.funcCode === methodCode)))
                 this.usedMethodMap[returnMethod.funcCode] = returnMethod
                 returnMethod.funcBody = this.processFuncBody(returnMethod.funcName, returnMethod.funcBody)
                 return returnMethod
@@ -332,6 +332,7 @@
                 }
                 let methodStr
                 try {
+                    this.usedMethodMap = {}
                     this.apiList = await this.$store.dispatch('api/getApiList')
                     methodStr = this.generateMethod(this.remoteData.methodCode)
                 } catch (error) {

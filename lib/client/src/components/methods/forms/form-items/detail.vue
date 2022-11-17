@@ -16,7 +16,7 @@
                     <i
                         class="bk-icon icon-info ml5"
                         v-if="temp.info"
-                        v-bk-tooltips="{ content: `<pre class='component-method-tip'>${temp.info}</pre>` }"
+                        v-bk-tooltips="{ content: temp.info }"
                     ></i>
                 </bk-radio-button>
             </bk-radio-group>
@@ -201,7 +201,7 @@
             return {
                 tempList: [
                     { id: FUNCTION_TYPE.EMPTY, name: '空白函数' },
-                    { id: FUNCTION_TYPE.REMOTE, name: '远程函数', info: '建议以下几种情况使用 "远程函数":\n1、远程API需要携带用户登录态认证\n2、远程API无法跨域或纯前端访问' }
+                    { id: FUNCTION_TYPE.REMOTE, name: '远程函数', info: '建议以下几种情况使用 "远程函数":<br>1、远程API需要携带用户登录态认证<br>2、远程API无法跨域或纯前端访问' }
                 ],
                 isLoadingResponse: false,
                 METHODS_WITHOUT_DATA,
@@ -326,8 +326,8 @@
 
             getParamRule (label) {
                 return {
-                    validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z_0-9]+$/.test(x))),
-                    message: `${label}由大小写英文字母、下划线、数字组成`,
+                    validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z_]+$/.test(x))),
+                    message: `${label}由大小写英文字母组成`,
                     trigger: 'blur'
                 }
             }
