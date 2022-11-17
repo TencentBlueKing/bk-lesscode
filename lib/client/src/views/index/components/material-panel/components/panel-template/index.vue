@@ -347,6 +347,7 @@
                 img {
                     width: 100%;
                     object-fit: contain;
+                    max-height: 100%;
                 }
                 .mask {
                     display: flex;
