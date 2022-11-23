@@ -258,8 +258,12 @@
             },
 
             computedParamKeys () {
-                const functionData = this.funcGroups.reduce((acc, cur) => {
-                    return cur.children.find(functionData => functionData.funcCode === this.renderChoosenFunction.methodCode)
+                let functionData = {}
+                this.funcGroups.forEach((funcGroup) => {
+                    const usedFunction = funcGroup.children.find(functionData => functionData.funcCode === this.renderChoosenFunction.methodCode)
+                    if (usedFunction) {
+                        functionData = usedFunction
+                    }
                 }, {})
                 return functionData?.funcParams || []
             }
