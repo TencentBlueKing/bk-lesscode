@@ -289,7 +289,9 @@
             },
 
             triggleUpdate () {
-                this.$emit('change', JSON.parse(JSON.stringify(this.renderChoosenFunction)))
+                if (window.event.sourceCapabilities) {
+                    this.$emit('change', JSON.parse(JSON.stringify(this.renderChoosenFunction)))
+                }
             },
 
             handleChooseFunction (functionData) {
