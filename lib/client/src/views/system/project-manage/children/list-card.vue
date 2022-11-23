@@ -111,7 +111,7 @@
                     </div>
                 </div>
                 <span class="favorite-btn">
-                    <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc }"></i>
+                    <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false }"></i>
                     <!-- <i :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
                         v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
                         @click.stop="handleClickFavorite(project)"

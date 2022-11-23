@@ -70,7 +70,7 @@
                                     </div>
                                 </div>
                                 <span class="favorite-btn">
-                                    <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc }"></i>
+                                    <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false }"></i>
                                 </span>
                             </div>
                         </div>
