@@ -15,6 +15,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import BindRouteSelector from './bind-route-selector'
     export default {
         name: 'BindRouteForm',
@@ -37,6 +38,7 @@
             }
         },
         computed: {
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             currentRoute () {
                 return this.selectorProps.active
             },
@@ -64,10 +66,14 @@
         },
         methods: {
             async handleConfirm () {
-                // 绑定页面id，跳转路由id或者不绑定
+                // 构造参数，默认包含routeId为当前编辑的路由对象id
                 const data = {
-                    routeId: this.currentRoute.id
+                    routeId: this.currentRoute.id,
+                    projectId: this.projectId,
+                    versionId: this.versionId
                 }
+
+                // 从选择的绑定值中取出数据
                 const { type, id, name } = this.bindValue
 
                 if (type) {
@@ -76,6 +82,12 @@
                 } else {
                     // 清空设置
                     data.remove = 1
+                }
+
+                if (this.currentRoute.isRoot && this.currentRoute.isNew) {
+                    data.createRoot = 1
+                    data.layoutId = this.currentRoute.layoutId
+                    data.layoutPath = this.currentRoute.layoutPath
                 }
 
                 this.loading = true
