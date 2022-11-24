@@ -136,36 +136,28 @@
             <div class="panel-item" v-for="(panel, index) in renderChoosenFunction.params" :key="index">
                 <variable-select
                     class="select-param"
-                    :options="{ formatInclude: ['value', 'variable', 'expression'] }"
+                    :options="{ formatInclude }"
                     :value="panel"
                     @change="({ format, code }) => handleChangeParam(index, { format, code, value: '' })"
                 >
                     <span
+                        v-bk-tooltips="{
+                            content: '1. 配置的执行参数，会在函数执行的时候传入。<br>2. 可以将类型修改为事件，让组件事件提供参数值（比如表格组件的 page-change 事件，在调用函数的时候会自动传入 page 参数）。<br>3. 如果参数由多种类型组成（比如 事件、变量、值的组成），组件会根据参数顺序提供值',
+                            width: '350px',
+                            placements: ['left'],
+                            boundary: 'window'
+                        }"
                         class="param-title"
                         slot="title"
-                    >参数（{{ computedParamKeys[index] }}）</span>
+                    >
+                        <span class="title">参数（{{ computedParamKeys[index] }}）</span>
+                    </span>
                     <bk-input
                         :value="panel.value"
                         @change="value => handleInputParam(index, { value })"
                         @blur="triggleUpdate"
                     />
                 </variable-select>
-                <i class="bk-icon icon-minus-circle" @click="handleDeleteParam(index)"></i>
-            </div>
-            <div
-                :class="{
-                    'panel-add': true,
-                    'disabled': renderChoosenFunction.params.length >= computedParamKeys.length
-                }"
-                v-bk-tooltips="{
-                    content: '配置的执行参数，会在函数执行的时候传入，如果参数由组件传入（比如表格组件的 page-change 事件，在调用函数的时候会自动传入 page 参数），则可以删除此处的参数',
-                    width: '300px',
-                    placements: ['left'],
-                    boundary: 'window'
-                }"
-                @click="handlePlusParam"
-            >
-                <i class="bk-icon icon-plus-circle"></i>添加函数执行参数
             </div>
         </template>
 
@@ -202,6 +194,14 @@
             showAddParams: {
                 type: Boolean,
                 default: true
+            },
+            formatInclude: {
+                type: Array,
+                default: () => (['value', 'variable', 'expression'])
+            },
+            defaultVariableFormat: {
+                type: String,
+                default: 'value'
             }
         },
 
@@ -274,6 +274,21 @@
                 methodCode: this.choosenFunction?.methodCode || '',
                 params: [...this.choosenFunction?.params || []]
             }
+
+            // 如果有选择函数，需要查找到对应的 params
+            if (this.renderChoosenFunction.methodCode) {
+                this.renderChoosenFunction.params = this.computedParamKeys.map((paramKey, index) => {
+                    let param = {
+                        value: '',
+                        code: '',
+                        format: this.defaultVariableFormat
+                    }
+                    if (this.choosenFunction?.params?.[index]) {
+                        param = this.choosenFunction.params[index]
+                    }
+                    return param
+                })
+            }
         },
 
         methods: {
@@ -299,7 +314,7 @@
                 this.renderChoosenFunction.params = functionData?.funcParams?.map(() => ({
                     value: '',
                     code: '',
-                    format: 'value'
+                    format: this.defaultVariableFormat
                 }))
                 this.triggleUpdate()
                 this.handleClose()
@@ -312,22 +327,6 @@
 
             handleInputParam (index, val) {
                 Object.assign(this.renderChoosenFunction.params[index], val)
-            },
-
-            handleDeleteParam (index) {
-                this.renderChoosenFunction.params.splice(index, 1)
-                this.triggleUpdate()
-            },
-
-            handlePlusParam () {
-                if (this.renderChoosenFunction.params.length >= this.computedParamKeys.length) return
-
-                this.renderChoosenFunction.params.push({
-                    value: '',
-                    code: '',
-                    format: 'value'
-                })
-                this.triggleUpdate()
             },
 
             handleEditFunction (functionData) {
@@ -371,6 +370,7 @@
 
             handleClear () {
                 this.renderChoosenFunction.methodCode = ''
+                this.renderChoosenFunction.params = []
                 this.$emit('clear')
             }
         }
@@ -410,6 +410,10 @@
             flex: 1;
             .param-title {
                 line-height: 25px;
+            }
+            .title {
+                border-bottom: 1px dashed #979ba5;
+                cursor: pointer;
             }
             /deep/ .display-content {
                 margin: 0;

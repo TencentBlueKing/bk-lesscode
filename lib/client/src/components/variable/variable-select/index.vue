@@ -53,6 +53,11 @@
                     :data-source-type="formData.dataSourceType"
                     @choose-table="handleChooseTable"
                 />
+                <bk-input
+                    v-if="formData.format === 'event'"
+                    value="参数值由组件事件提供"
+                    disabled
+                ></bk-input>
             </div>
         </template>
         <Example :data="{
@@ -91,7 +96,8 @@
         value: '值',
         variable: '变量',
         dataSource: '数据表',
-        expression: '表达式'
+        expression: '表达式',
+        event: '事件'
     }
 
     export default {
