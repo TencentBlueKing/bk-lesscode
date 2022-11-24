@@ -136,14 +136,22 @@
             <div class="panel-item" v-for="(panel, index) in renderChoosenFunction.params" :key="index">
                 <variable-select
                     class="select-param"
-                    :options="{ formatInclude: ['value', 'variable', 'expression'] }"
+                    :options="{ formatInclude }"
                     :value="panel"
                     @change="({ format, code }) => handleChangeParam(index, { format, code, value: '' })"
                 >
                     <span
+                        v-bk-tooltips="{
+                            content: '1. 配置的执行参数，会在函数执行的时候传入。<br>2. 可以将类型修改为事件，让组件事件提供参数值（比如表格组件的 page-change 事件，在调用函数的时候会自动传入 page 参数）。<br>3. 如果参数由多种类型组成（比如 事件、变量、值的组成），组件会根据参数顺序提供值',
+                            width: '350px',
+                            placements: ['left'],
+                            boundary: 'window'
+                        }"
                         class="param-title"
                         slot="title"
-                    >参数（{{ computedParamKeys[index] }}）</span>
+                    >
+                        <span class="title">参数（{{ computedParamKeys[index] }}）</span>
+                    </span>
                     <bk-input
                         :value="panel.value"
                         @change="value => handleInputParam(index, { value })"
@@ -166,7 +174,6 @@
 <script>
     import { mapActions, mapGetters } from 'vuex'
     import { getDefaultFunction } from 'shared/function'
-    import { isEmpty } from 'shared/util'
     import EditFunctionDialog from '@/components/methods/edit-function-dialog/index.vue'
     import VariableSelect from '@/components/variable/variable-select/index.vue'
 
@@ -187,6 +194,14 @@
             showAddParams: {
                 type: Boolean,
                 default: true
+            },
+            formatInclude: {
+                type: Array,
+                default: () => (['value', 'variable', 'expression'])
+            },
+            defaultVariableFormat: {
+                type: String,
+                default: 'value'
             }
         },
 
@@ -251,25 +266,6 @@
                     }
                 }, {})
                 return functionData?.funcParams || []
-            },
-
-            computedPlusParamTips () {
-                let content = '配置的执行参数，会在函数执行的时候传入，如果参数由组件传入（比如表格组件的 page-change 事件，在调用函数的时候会自动传入 page 参数），则可以删除此处的参数'
-                if (this.renderChoosenFunction.params.length >= this.computedParamKeys.length) {
-                    content = '函数的全部参数已经添加，无法继续添加参数'
-                }
-                if (isEmpty(this.renderChoosenFunction.params)) {
-                    content = '函数未定义参数，无法添加参数'
-                }
-                if (isEmpty(this.renderChoosenFunction?.methodCode)) {
-                    content = '请先选择函数，再添加函数执行参数'
-                }
-                return {
-                    content,
-                    width: '300px',
-                    placements: ['left'],
-                    boundary: 'window'
-                }
             }
         },
 
@@ -285,7 +281,7 @@
                     let param = {
                         value: '',
                         code: '',
-                        format: 'value'
+                        format: this.defaultVariableFormat
                     }
                     if (this.choosenFunction?.params?.[index]) {
                         param = this.choosenFunction.params[index]
@@ -318,7 +314,7 @@
                 this.renderChoosenFunction.params = functionData?.funcParams?.map(() => ({
                     value: '',
                     code: '',
-                    format: 'value'
+                    format: this.defaultVariableFormat
                 }))
                 this.triggleUpdate()
                 this.handleClose()
@@ -414,6 +410,10 @@
             flex: 1;
             .param-title {
                 line-height: 25px;
+            }
+            .title {
+                border-bottom: 1px dashed #979ba5;
+                cursor: pointer;
             }
             /deep/ .display-content {
                 margin: 0;
