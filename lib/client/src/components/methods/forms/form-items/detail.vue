@@ -50,6 +50,7 @@
                 ></choose-api>
             </bk-form-item>
             <bk-form-item
+                ref="funcApiUrl"
                 label="请求地址"
                 property="funcApiUrl"
                 error-display-type="normal"
@@ -274,6 +275,10 @@
                     apiQuery,
                     apiBody
                 })
+                // 选择 api 以后，会对地址赋值，这时候需要进行一次校验（组件库blur未检验）
+                if (api.url) {
+                    this.$nextTick(this.$refs.funcApiUrl.validate)
+                }
             },
 
             getRemoteResponse () {

@@ -150,22 +150,6 @@
                         @blur="triggleUpdate"
                     />
                 </variable-select>
-                <i class="bk-icon icon-minus-circle" @click="handleDeleteParam(index)"></i>
-            </div>
-            <div
-                :class="{
-                    'panel-add': true,
-                    'disabled': renderChoosenFunction.params.length >= computedParamKeys.length
-                }"
-                v-bk-tooltips="{
-                    content: '配置的执行参数，会在函数执行的时候传入，如果参数由组件传入（比如表格组件的 page-change 事件，在调用函数的时候会自动传入 page 参数），则可以删除此处的参数',
-                    width: '300px',
-                    placements: ['left'],
-                    boundary: 'window'
-                }"
-                @click="handlePlusParam"
-            >
-                <i class="bk-icon icon-plus-circle"></i>添加函数执行参数
             </div>
         </template>
 
@@ -182,6 +166,7 @@
 <script>
     import { mapActions, mapGetters } from 'vuex'
     import { getDefaultFunction } from 'shared/function'
+    import { isEmpty } from 'shared/util'
     import EditFunctionDialog from '@/components/methods/edit-function-dialog/index.vue'
     import VariableSelect from '@/components/variable/variable-select/index.vue'
 
@@ -266,6 +251,25 @@
                     }
                 }, {})
                 return functionData?.funcParams || []
+            },
+
+            computedPlusParamTips () {
+                let content = '配置的执行参数，会在函数执行的时候传入，如果参数由组件传入（比如表格组件的 page-change 事件，在调用函数的时候会自动传入 page 参数），则可以删除此处的参数'
+                if (this.renderChoosenFunction.params.length >= this.computedParamKeys.length) {
+                    content = '函数的全部参数已经添加，无法继续添加参数'
+                }
+                if (isEmpty(this.renderChoosenFunction.params)) {
+                    content = '函数未定义参数，无法添加参数'
+                }
+                if (isEmpty(this.renderChoosenFunction?.methodCode)) {
+                    content = '请先选择函数，再添加函数执行参数'
+                }
+                return {
+                    content,
+                    width: '300px',
+                    placements: ['left'],
+                    boundary: 'window'
+                }
             }
         },
 
@@ -273,6 +277,21 @@
             this.renderChoosenFunction = {
                 methodCode: this.choosenFunction?.methodCode || '',
                 params: [...this.choosenFunction?.params || []]
+            }
+
+            // 如果有选择函数，需要查找到对应的 params
+            if (this.renderChoosenFunction.methodCode) {
+                this.renderChoosenFunction.params = this.computedParamKeys.map((paramKey, index) => {
+                    let param = {
+                        value: '',
+                        code: '',
+                        format: 'value'
+                    }
+                    if (this.choosenFunction?.params?.[index]) {
+                        param = this.choosenFunction.params[index]
+                    }
+                    return param
+                })
             }
         },
 
@@ -312,22 +331,6 @@
 
             handleInputParam (index, val) {
                 Object.assign(this.renderChoosenFunction.params[index], val)
-            },
-
-            handleDeleteParam (index) {
-                this.renderChoosenFunction.params.splice(index, 1)
-                this.triggleUpdate()
-            },
-
-            handlePlusParam () {
-                if (this.renderChoosenFunction.params.length >= this.computedParamKeys.length) return
-
-                this.renderChoosenFunction.params.push({
-                    value: '',
-                    code: '',
-                    format: 'value'
-                })
-                this.triggleUpdate()
             },
 
             handleEditFunction (functionData) {
@@ -371,6 +374,7 @@
 
             handleClear () {
                 this.renderChoosenFunction.methodCode = ''
+                this.renderChoosenFunction.params = []
                 this.$emit('clear')
             }
         }
