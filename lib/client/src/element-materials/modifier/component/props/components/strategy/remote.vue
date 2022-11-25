@@ -52,8 +52,7 @@
     import { mapGetters } from 'vuex'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
     import { bus } from '@/common/bus'
-    import { replaceFuncKeyword, replaceFuncParam, getRemoteFunctionInfo } from 'shared/function'
-    import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable'
+    import { evalWithSandBox } from 'shared/function'
     import remoteExample from './remote-example'
     export default {
         components: {
@@ -104,10 +103,7 @@
                     methodCode: '',
                     params: []
                 },
-                usedMethodMap: {},
-                usedVariableMap: {},
-                isLoadingData: false,
-                apiList: []
+                isLoadingData: false
             }
         },
         computed: {
@@ -143,184 +139,6 @@
                 this.remoteData = Object.assign(this.remoteData, { methodCode: '' })
                 this.change(this.name, this.defaultValue, this.type, this.remoteData)
             },
-            getVariableVal (variable) {
-                const copyVariable = JSON.parse(JSON.stringify(variable))
-                const { defaultValue, defaultValueType, valueType } = copyVariable
-                let value = defaultValueType === VARIABLE_VALUE_TYPE.SAME ? defaultValue.all : defaultValue.stag
-                // 计算变量，赋为空值
-                if (valueType === VARIABLE_TYPE.COMPUTED.VAL) {
-                    value = ''
-                }
-                // 对象类型，解析为object
-                if (valueType === VARIABLE_TYPE.OBJECT.VAL && typeof value !== 'object') {
-                    value = JSON.parse(value)
-                }
-                return value
-            },
-            recordVariable (variableCode, funcName) {
-                const variableCodes = Array.isArray(variableCode) ? variableCode : [variableCode]
-                variableCodes.forEach((code) => {
-                    const curVar = this.variableList.find((variable) => (variable.variableCode === code))
-                    if (curVar) {
-                        this.usedVariableMap[code] = this.getVariableVal(curVar)
-                    } else {
-                        throw new Error(`函数【${funcName}】里引用的变量【${code}】不存在，请检查`)
-                    }
-                })
-            },
-            processVarInFunApiData (str, funcName) {
-                return replaceFuncParam(str || '', (variableCode) => {
-                    this.recordVariable(variableCode, funcName)
-                    return `this.${variableCode}`
-                })
-            },
-            processVarInFunApiUrl (str, funcName) {
-                return replaceFuncParam(str || '', (variableCode) => {
-                    this.recordVariable(variableCode, funcName)
-                    return `\${this.${variableCode}}`
-                })
-            },
-            generateFuncParams (params = [], funcName) {
-                return params
-                    .reduce((acc, cur) => {
-                        if (cur.format === 'value') {
-                            acc.push(`'${cur.value}'`)
-                        } else if (cur.format === 'variable' && cur.code) {
-                            acc.push(`this.${cur.code}`)
-                            this.recordVariable(cur.code, funcName)
-                        } else if (cur.code) {
-                            acc.push(cur.code)
-                        }
-                        return acc
-                    }, [])
-                    .join(', ')
-            },
-            generateMethod (methodCode) {
-                const firstMethod = this.getMethodByCode(methodCode)
-                let funcStr = ''
-                Object.values(this.usedMethodMap).forEach((method) => {
-                    funcStr += this.getMethodStr(method)
-                })
-                funcStr += `return ${firstMethod.funcName}(${this.generateFuncParams(this.remoteData.params, firstMethod.funcName)})`
-                return funcStr
-            },
-            getMethodStr (returnMethod) {
-                const funcParams = (returnMethod.funcParams || []).join(', ')
-                if (returnMethod.funcType === 1) {
-                    const remoteParams = (returnMethod.remoteParams || []).join(', ')
-                    const {
-                        apiDataString,
-                        codes
-                    } = getRemoteFunctionInfo(returnMethod)
-                    this.recordVariable(codes, returnMethod.funcName)
-                    // 构造 url
-                    let funcApiUrl = returnMethod.funcApiUrl
-                    if (returnMethod?.apiChoosePath?.find(path => path.id === 'lesscode-api')) {
-                        const apiData = this.apiList.find(api => api.code === returnMethod.apiChoosePath[2].code)
-                        funcApiUrl = apiData?.url || returnMethod.funcApiUrl
-                    }
-                    const data = `{
-                        url: \`${this.processVarInFunApiUrl(funcApiUrl, returnMethod.funcName)}\`,
-                        type: '${returnMethod.funcMethod}',
-                        apiData: ${apiDataString},
-                        withToken: ${returnMethod.withToken}
-                    }`
-                    returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { return this.$store.dispatch('getApiData', ${data}).then((${remoteParams}) => { ${returnMethod.funcBody} }) };`
-                } else {
-                    returnMethod.funcStr = `const ${returnMethod.funcName} = (${funcParams}) => { ${returnMethod.funcBody} };`
-                }
-                return returnMethod.funcStr
-            },
-            getMethodByCode (methodCode) {
-                const returnMethod = JSON.parse(JSON.stringify(this.functionList.find(functionData => functionData.funcCode === methodCode)))
-                this.usedMethodMap[returnMethod.funcCode] = returnMethod
-                returnMethod.funcBody = this.processFuncBody(returnMethod.funcName, returnMethod.funcBody)
-                return returnMethod
-            },
-            processFuncBody (funcName, funcBody) {
-                return replaceFuncKeyword(funcBody, (all, first, second, variableCode, funcStr, funcCode) => {
-                    if (funcCode) {
-                        const curFunc = this.usedMethodMap[funcCode] || this.getMethodByCode(funcCode)
-                        if (curFunc.id) {
-                            return `${curFunc.funcName}`
-                        } else {
-                            throw new Error(`函数【${funcName}】里引用的函数【${funcCode}】不存在，请检查`)
-                        }
-                    }
-                    if (variableCode) {
-                        const curVar = this.variableList.find((variable) => (variable.variableCode === variableCode))
-                        if (curVar) {
-                            this.usedVariableMap[variableCode] = this.getVariableVal(curVar)
-                            return `this.${variableCode}`
-                        } else {
-                            throw new Error(`函数【${funcName}】里引用的变量【${variableCode}】不存在，请检查`)
-                        }
-                    }
-                })
-            },
-            createSandBox (contextProxy = {}) {
-                const Fn = Function
-                const global = Fn('return this')()
-                const vm = this
-                const createProxy = (context) => {
-                    const proxy = new Proxy(context, {
-                        set (target, p, value) {
-                            target[p] = value
-                            return true
-                        },
-                        get (target, p) {
-                            switch (p) {
-                                case 'document':
-                                case 'window':
-                                case 'global':
-                                case 'self':
-                                case 'globalThis':
-                                    return proxy
-                                case 'Function':
-                                    return (...args) => Fn(...args).bind(proxy)
-                                case 'eval':
-                                    return code => Fn(`return ${code}`).bind(proxy)
-                            }
-                            if (!(p in target) && p in global) {
-                                const value = global[p]
-                                if (typeof value === 'function' && !value.prototype) return value.bind(global)
-                                return value
-                            }
-                            if (!(p in target) && p in vm) {
-                                const value = vm[p]
-                                if (typeof value === 'function' && !value.prototype) return value.bind(vm)
-                                return value
-                            }
-                            return target[p]
-                        },
-                        has () {
-                            return true
-                        }
-                    })
-                    return proxy
-                }
-                const context = createProxy(contextProxy)
-                const sandbox = (script) => {
-                    const hasAwait = /await\s/.test(script)
-                    const Fn = Function
-                    const AsyncFunction = new Fn('return Object.getPrototypeOf(async function(){}).constructor')()
-                    const createFunc = hasAwait ? AsyncFunction : Fn.constructor
-                    return createFunc(
-                        'context',
-                        `
-                        with (context) {
-                            return (function() {
-                                "use strict"
-                                ${script}
-                            }).bind(global)()
-                        }
-                        `
-                    )(context)
-                }
-                sandbox.context = context
-                sandbox.exec = sandbox
-                return sandbox
-            },
             async getApiData () {
                 if (!this.remoteData.methodCode) {
                     this.$bkMessage({
@@ -330,42 +148,37 @@
                     })
                     return
                 }
-                let methodStr
-                try {
-                    this.usedMethodMap = {}
-                    this.apiList = await this.$store.dispatch('api/getApiList')
-                    methodStr = this.generateMethod(this.remoteData.methodCode)
-                } catch (error) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: error.message || error || '函数格式有误，请修改后再试',
-                        limit: 1
-                    })
-                    return
-                }
-
                 try {
                     this.toggleLoading(true)
-                    const sandBox = this.createSandBox(this.usedVariableMap)
-                    const res = await sandBox.exec(methodStr, this.remoteData.params)
-                    let message = this.remoteValidate(res)
+                    const apiList = await this.$store.dispatch('api/getApiList')
+                    const result = await evalWithSandBox(
+                        this.remoteData.methodCode,
+                        this.remoteData.params,
+                        this.functionList,
+                        this.variableList,
+                        apiList,
+                        {
+                            $store: this.$store,
+                            $http: this.$http
+                        }
+                    )
+                    let message = this.remoteValidate(result)
                     if (message) {
                         // 选择函数已经成功设置 payload，rendervalue 因为数据校验问题没有同步过去。所以该函数选择成功，但是有异常提示
                         message = '数据源设置成功，以下问题可能会导致组件表现异常，请检查：' + message
                         this.messageWarn(message)
                     } else {
-                        this.change(this.name, res, this.type, JSON.parse(JSON.stringify(this.remoteData)))
+                        this.change(this.name, result, this.type, JSON.parse(JSON.stringify(this.remoteData)))
                         if (this.name === 'options' && this.componentType === 'bk-charts') {
                             this.$bkMessage({
                                 theme: 'success',
-                                message: `图表配置已更新，${Object.keys(res).join('、')}选项已被远程数据覆盖`
+                                message: `图表配置已更新，${Object.keys(result).join('、')}选项已被远程数据覆盖`
                             })
                             return
                         }
                         if (this.name === 'remoteOptions') {
-                            bus.$emit('update-chart-options', res)
+                            bus.$emit('update-chart-options', result)
                         }
-                        // this.$bkMessage({ theme: 'success', message: '获取数据成功', limit: 1 })
                     }
                 } catch (error) {
                     this.$bkMessage({
