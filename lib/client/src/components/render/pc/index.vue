@@ -231,10 +231,12 @@
                 } = $childEl.getBoundingClientRect()
 
                 const styles = {}
-                if (componentTop > boxTop + 3) {
+                // 如果被复制的组件已经有marginLeft或marginTop， 则不覆盖
+                const { marginTop: childMarginTop, marginLeft: childMarginLeft } = childNode.renderStyles || {}
+                if (componentTop > boxTop + 3 && !childMarginTop) {
                     styles['marginTop'] = '8px'
                 }
-                if (componentLeft > boxLeft + 3) {
+                if (componentLeft > boxLeft + 3 && !childMarginLeft) {
                     styles['marginLeft'] = '8px'
                 }
                 if (Object.keys(styles).length > 0) {

@@ -36,11 +36,11 @@ cd component-project
 4. 进行组件功能开发（文件 ./index.vue）
 touch index.vue
 
-5. 暴露组件给 lesscode 的能力配置（文件 ./config.json）
+5. 暴露组件给 LessCode 的能力配置（文件 ./config.json）
 touch config.json
 ```
 
-### config.json（暴露给 lesscode 的能力配置）
+### config.json（暴露给 LessCode 的能力配置）
 
 <table class="table">
     <tr>
@@ -94,7 +94,7 @@ touch config.json
 </table>
 
 :::info
-events —— 组件内部支持 vue 的自定义事件（this.$emit('click')），配置希望那些事件可以暴露给 lesscode
+events —— 组件内部支持 vue 的自定义事件（this.$emit('click')），配置希望那些事件可以暴露给 LessCode
 :::
 
 ```js

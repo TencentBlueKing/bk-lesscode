@@ -42,7 +42,7 @@
     .func-split-line {
         height: 22px;
         width: 1px;
-        /* margin: 0 5px; */
+        margin-left: 5px;
         background-color: #dcdee5;
     }
 </style>

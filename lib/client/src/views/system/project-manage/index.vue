@@ -132,7 +132,7 @@
             @value-change="handleCreateDialogToggle">
             <span slot="header">
                 {{ isCopy ? '复制应用' : '创建应用' }}
-                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块' }"></i>
+                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
             </span>
             <bk-form ref="createForm" :label-width="86" :rules="dialog.create.formRules" :model="dialog.create.formData">
                 <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
