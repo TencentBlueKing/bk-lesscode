@@ -11,10 +11,10 @@
 
 <template>
     <header class="app-header">
-        <a class="logo" href="/projects">
+        <div class="logo" @click="toProjectList">
             <img src="../images/logo.png" alt="logo">
             蓝鲸可视化开发平台
-        </a>
+        </div>
         <nav class="top-nav">
             <ul class="menu">
                 <router-link
@@ -73,7 +73,7 @@
                 <template slot="content">
                     <a class="popover-link" href="javascript:void(0)"
                         @click="goLogin">
-                        退出
+                        退出登录
                     </a>
                 </template>
             </bk-popover>
@@ -143,12 +143,19 @@
                 window.location.href = user.value.loginRedirectUrl + '&c_url=' + encodeURIComponent(window.location.href)
             }
 
+            const toProjectList = () => {
+                router.push({
+                    name: 'projects'
+                })
+            }
+
             return {
                 userName,
                 menus,
                 isMenuActive,
                 isRouteContains,
-                goLogin
+                goLogin,
+                toProjectList
             }
         }
     })
@@ -169,6 +176,7 @@
         .logo {
             display: flex;
             align-items: center;
+            cursor: pointer;
             color: #EAEBF0;
             font-size: 16px;
             text-decoration: none;

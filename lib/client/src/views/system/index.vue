@@ -13,7 +13,7 @@
                 <nav class="nav-list">
                     <template v-if="isRouteContains('marketplace')">
                         <router-link tag="div" class="nav-item" to="/marketplace/template">
-                            <i class="bk-drag-icon bk-drag-template-fill"></i>模板市场<i class="red-point"></i>
+                            <i class="bk-drag-icon bk-drag-template-fill"></i>模板市场<i></i>
                         </router-link>
                         <router-link tag="div" class="nav-item" to="/marketplace/function">
                             <i class="bk-drag-icon bk-drag-function-fill"></i>函数市场
