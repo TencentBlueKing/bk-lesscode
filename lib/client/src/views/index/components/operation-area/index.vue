@@ -110,14 +110,14 @@
     @import "@/css/mixins/scroller";
 
     .horizontal-wrapper{
+        background: #fff;
         position: relative;
-        padding: 20px;
+        margin: 20px;
         height: 100%;
         overflow: auto;
         @mixin scroller;
     }
     .vertical-wrapper{
         background: #fff;
-        
     }
 </style>

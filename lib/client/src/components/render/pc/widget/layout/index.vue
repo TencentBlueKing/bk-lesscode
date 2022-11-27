@@ -25,7 +25,7 @@
                 'complex': LayoutComplex,
                 'top-bottom': LayoutTopBottom
             }
-            const { layout } = useComponentAction('.lesscode-editor-layout .container-content')
+            const { layout } = useComponentAction(false, '', 'PC')
             const layoutCom = computed(() => {
                 if (!componentMap[layout.value]) {
                     return 'div'
@@ -182,7 +182,7 @@
     .lesscode-layout-empty {
         min-height: calc(100vh - 160px);
         .container-content{
-            padding: 20px !important;
+            padding: 20px;
         }
     }
     .lesscode-layout-message-theme{
