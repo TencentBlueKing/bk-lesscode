@@ -182,7 +182,6 @@
     .lesscode-layout-empty {
         min-height: calc(100vh - 160px);
         .container-content{
-            /* margin: 20px !important; */
             padding: 20px;
         }
     }
