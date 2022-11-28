@@ -113,6 +113,7 @@
         background: #fff;
         position: relative;
         margin: 20px;
+        padding-top: 18px;
         height: 100%;
         overflow: auto;
         @mixin scroller;
