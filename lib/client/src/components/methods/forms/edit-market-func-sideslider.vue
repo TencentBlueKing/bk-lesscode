@@ -11,7 +11,7 @@
             <form-detail :form.sync="form" ref="detail"></form-detail>
             <form-token :form.sync="form" ref="token"></form-token>
             <form-summary :form.sync="form" :require-summary="true" ref="summary"></form-summary>
-            <form-monaco :form.sync="form" :function-list="[]" class="mt20" ref="monaco"></form-monaco>
+            <form-monaco :form.sync="form" :function-list="[]" class="monaco" ref="monaco"></form-monaco>
         </section>
         <section slot="footer" class="add-footer">
             <bk-button theme="primary" @click="submitAddMarketFunc" :loading="isLoading">提交</bk-button>
@@ -111,5 +111,8 @@
         button {
             margin-right: 10px;
         }
+    }
+    .monaco {
+        margin-top: 20px;
     }
 </style>

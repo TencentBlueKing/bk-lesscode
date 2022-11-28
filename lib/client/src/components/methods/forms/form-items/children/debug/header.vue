@@ -2,6 +2,7 @@
     <ul class="debug-headers">
         <li
             v-for="panel in panels"
+            v-bk-tooltips="{ content: panel.tips }"
             :key="panel.name"
             :class="{
                 'debug-header': true,

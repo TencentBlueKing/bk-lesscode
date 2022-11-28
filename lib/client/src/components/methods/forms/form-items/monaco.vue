@@ -130,7 +130,7 @@
         data () {
             return {
                 fixMethodTips: {
-                    content: '自动修复 Eslint 格式问题',
+                    content: '自动修复 ESLint 格式问题',
                     appendTo: 'parent',
                     boundary: 'window',
                     theme: 'light',
@@ -165,8 +165,8 @@
             computedPanels () {
                 return [
                     { name: 'DebugOutput', label: '调试结果' },
-                    { name: 'DebugParam', label: '参数设置', count: this.params.length },
-                    { name: 'DebugProblem', label: '问题', count: this.problems.length, isError: true }
+                    { name: 'DebugParam', label: '参数设置', count: this.params.length, tips: '参数设置后需重新执行方可生效' },
+                    { name: 'DebugProblem', label: '问题', count: this.problems.length, isError: true, tips: '点击右上角 <i class="bk-drag-icon bk-drag-fix" /> 图标自动修复 ESLint 问题' }
                 ]
             }
         },
@@ -457,25 +457,33 @@
                     })
                 }
                 try {
+                    // 构造函数列表
+                    const functionList = this.functionList.map((item) => {
+                        let funcBody = item.funcBody
+                        let funcParams = item.funcParams
+                        // 由于函数间存在互相引用的场景，需要更新为当前编辑的内容进行调试
+                        if (item.funcCode === this.form.funcCode) {
+                            funcBody = this.form.funcBody
+                            funcParams = this.form.funcParams
+                        }
+                        return {
+                            ...item,
+                            funcBody,
+                            funcParams
+                        }
+                    })
+                    // 新增函数需要单独加到列表里面
+                    if (!this.form.id) {
+                        functionList.push({
+                            ...this.form
+                        })
+                    }
                     // 获取 api
                     const apiList = await this.$store.dispatch('api/getApiList')
                     const content = await evalWithSandBox(
                         this.form.funcCode,
                         this.params,
-                        this.functionList.map((item) => {
-                            let funcBody = item.funcBody
-                            let funcParams = item.funcParams
-                            // 由于函数间存在互相引用的场景，需要更新为当前编辑的内容进行调试
-                            if (item.funcCode === this.form.funcCode) {
-                                funcBody = this.form.funcBody
-                                funcParams = this.form.funcParams
-                            }
-                            return {
-                                ...item,
-                                funcBody,
-                                funcParams
-                            }
-                        }),
+                        functionList,
                         this.variableList,
                         apiList,
                         {
