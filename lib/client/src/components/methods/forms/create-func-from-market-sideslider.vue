@@ -42,7 +42,7 @@
                 :form.sync="form"
             ></form-summary>
             <form-monaco
-                class="mt20"
+                class="monaco"
                 ref="monaco"
                 :form.sync="form"
                 :function-list="functionList"
@@ -189,5 +189,8 @@
         button {
             margin-right: 10px;
         }
+    }
+    .monaco {
+        margin-top: 20px;
     }
 </style>

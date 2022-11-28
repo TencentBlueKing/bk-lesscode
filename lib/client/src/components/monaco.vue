@@ -115,22 +115,32 @@
 
         mounted () {
             this.initMonaco()
-            window.addEventListener('resize', this.handleFullScreen)
             this.createDependencyProposals()
-            window.addEventListener('unhandledrejection', function (event) {
+
+            // 全局监听事件
+            const handleMonacoRejection = (event) => {
                 if (event.reason && event.reason.name === 'Canceled') {
                     // monaco editor promise cancelation
                     event.preventDefault()
                 }
-            })
-        },
+            }
+            const handleEsc = (event) => {
+                if (event.code === 'Escape') {
+                    this.exitFullScreen()
+                }
+            }
+            window.addEventListener('unhandledrejection', handleMonacoRejection)
+            window.addEventListener('keyup', handleEsc)
+            // 销毁
+            this.$once('hook:beforeDestroy', () => {
+                window.removeEventListener('unhandledrejection', handleMonacoRejection)
+                window.removeEventListener('keyup', handleEsc)
 
-        beforeDestroy () {
-            window.removeEventListener('resize', this.handleFullScreen)
-            setTimeout(() => {
-                this.editor?.dispose?.()
-                this.proposalsRef?.dispose?.()
-            }, 200)
+                setTimeout(() => {
+                    this.editor?.dispose?.()
+                    this.proposalsRef?.dispose?.()
+                }, 200)
+            })
         },
 
         methods: {
@@ -224,7 +234,7 @@
                     severity: 8
                 }))
                 const model = this.editor.getModel()
-                monaco.editor.setModelMarkers(model, 'Eslint', markers)
+                monaco.editor.setModelMarkers(model, 'ESLint', markers)
             },
 
             setPosition (position) {
@@ -232,53 +242,43 @@
                 this.editor?.setPosition(position)
             },
 
-            handleFullScreen () {
-                if (document.fullscreenElement) {
-                    this.isFull = true
-                    return true
-                } else if (this.isFull) {
-                    this.isFull = false
+            exitFullScreen () {
+                if (!this.isFull) return
+
+                this.isFull = false
+                const element = this.fullScreenEle || this.$el
+                element.style.position = this.openFullScreen.originStyle.position
+                element.style.top = this.openFullScreen.originStyle.top
+                element.style.bottom = this.openFullScreen.originStyle.bottom
+                element.style.left = this.openFullScreen.originStyle.left
+                element.style.right = this.openFullScreen.originStyle.right
+                element.style.zIndex = this.openFullScreen.originStyle.zIndex
+                element.style.margin = this.openFullScreen.originStyle.margin
+                element.style.height = this.openFullScreen.originStyle.height
+                element.style.width = this.openFullScreen.originStyle.width
+                this.$nextTick().then(() => {
                     this.renderWidth = this.initWidth
                     this.renderHeight = this.initHeight
-                    this.$nextTick().then(() => {
-                        this.editor.layout()
-                    })
-                }
-                return false
-            },
-
-            exitFullScreen () {
-                const exitMethod = document.exitFullscreen // W3C
-                if (exitMethod) {
-                    exitMethod.call(document)
-                    this.$nextTick().then(() => {
-                        this.renderWidth = this.initWidth
-                        this.renderHeight = this.initHeight
-                        this.$emit('exitFullScreen')
-                    })
-                }
+                    this.editor.layout()
+                    this.$emit('exitFullScreen')
+                })
             },
 
             openFullScreen () {
+                this.isFull = true
                 const element = this.fullScreenEle || this.$el
-                const fullScreenMethod = element.requestFullScreen // W3C
-                    || element.webkitRequestFullScreen // FireFox
-                    || element.webkitExitFullscreen // Chrome等
-                    || element.msRequestFullscreen // IE11
-                if (fullScreenMethod) {
-                    fullScreenMethod.call(element)
-                    this.$nextTick().then(() => {
-                        this.renderWidth = window.screen.width
-                        this.renderHeight = window.screen.height
-                        this.$emit('openFullScreen')
-                    })
-                } else {
-                    this.$bkMessage({
-                        showClose: true,
-                        message: this.$t('此浏览器不支持全屏操作，请使用chrome浏览器'),
-                        type: 'warning'
-                    })
-                }
+                this.openFullScreen.originStyle = JSON.parse(JSON.stringify(element.style))
+                element.style.position = 'fixed'
+                element.style.top = '0'
+                element.style.bottom = '0'
+                element.style.left = '0'
+                element.style.right = '0'
+                element.style.zIndex = 100
+                element.style.margin = '0px'
+                element.style.height = `${window.innerHeight}px`
+                element.style.width = `${window.innerWidth}px`
+                this.renderWidth = window.innerWidth
+                this.renderHeight = window.innerHeight
             },
 
             getMonaco () {
