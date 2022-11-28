@@ -108,6 +108,7 @@
     .variable-txt {
         display: inline-block;
         font-size: 12px;
+        color: #63656e;
     }
     .variable-code {
         display: flex;
