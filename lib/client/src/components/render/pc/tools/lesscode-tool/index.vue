@@ -30,7 +30,7 @@
                 v-if="activeComponentData.parentNode && !activeComponentData.parentNode.root"
                 :class="$style['button']"
                 @click="handleSelectParent">
-                <i class="bk-drag-icon bk-drag-grid" v-bk-tooltips.top-start="'选中父级'" />
+                <i class="bk-drag-icon bk-drag-xuanzhongfuji" v-bk-tooltips.top-start="'选中父级'" />
             </div>
             <div
                 v-if="activeComponentData.componentId && !activeComponentData.isInteractiveComponent"
