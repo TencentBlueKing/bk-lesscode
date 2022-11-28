@@ -12,7 +12,7 @@
         </section>
         <section class="monaco-editor"
             :style="{
-                height: `calc(${calcSize(renderHeight)} - 30px)`,
+                height: `calc(${calcSize(renderHeight)} - 40px)`,
                 width: calcSize(renderWidth),
                 position: 'relative'
             }"
@@ -52,6 +52,14 @@
             proposals: {
                 type: Array,
                 default: () => ([])
+            },
+            // 编辑器代码异常信息
+            modelMarkers: {
+                type: Array,
+                default: () => ([])
+            },
+            fullScreenEle: {
+                type: HTMLDivElement
             }
         },
 
@@ -98,6 +106,10 @@
                 this.$nextTick(() => {
                     this.resize()
                 })
+            },
+
+            modelMarkers () {
+                this.setModelMarkers()
             }
         },
 
@@ -105,6 +117,12 @@
             this.initMonaco()
             window.addEventListener('resize', this.handleFullScreen)
             this.createDependencyProposals()
+            window.addEventListener('unhandledrejection', function (event) {
+                if (event.reason && event.reason.name === 'Canceled') {
+                    // monaco editor promise cancelation
+                    event.preventDefault()
+                }
+            })
         },
 
         beforeDestroy () {
@@ -155,6 +173,7 @@
                         onDidChangeStorage () {}
                     }
                 })
+
                 this.editor.onDidChangeModelContent(event => {
                     const value = this.editor.getValue()
                     if (this.value !== value) {
@@ -166,6 +185,10 @@
                 this.$nextTick(() => {
                     this.editor.setValue(this.value)
                     this.editor.getAction('editor.action.formatDocument').run()
+                    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+                        noSemanticValidation: true,
+                        noSyntaxValidation: true
+                    })
                 })
             },
 
@@ -189,6 +212,24 @@
                         }
                     }
                 })
+            },
+
+            setModelMarkers () {
+                const markers = this.modelMarkers?.map(err => ({
+                    startLineNumber: err.line,
+                    endLineNumber: err.endLine,
+                    startColumn: err.column,
+                    endColumn: err.endColumn,
+                    message: `${err.message} (${err.ruleId})`,
+                    severity: 8
+                }))
+                const model = this.editor.getModel()
+                monaco.editor.setModelMarkers(model, 'Eslint', markers)
+            },
+
+            setPosition (position) {
+                this.editor?.focus()
+                this.editor?.setPosition(position)
             },
 
             handleFullScreen () {
@@ -219,7 +260,7 @@
             },
 
             openFullScreen () {
-                const element = this.$el
+                const element = this.fullScreenEle || this.$el
                 const fullScreenMethod = element.requestFullScreen // W3C
                     || element.webkitRequestFullScreen // FireFox
                     || element.webkitExitFullscreen // Chrome等
@@ -257,8 +298,8 @@
 
 <style lang="postcss" scoped>
     .monaco-head {
-        line-height: 30px;
-        height: 30px;
+        line-height: 40px;
+        height: 40px;
         background-color: #2E2E2E;
         display: flex;
         justify-content: space-between;

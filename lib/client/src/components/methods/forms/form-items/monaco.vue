@@ -1,35 +1,99 @@
 <template>
-    <monaco
-        :value="renderCode"
-        :height="height"
-        :proposals="proposals"
-        ref="monaco"
-        @change="change">
-        <template v-slot:tools>
-            <i class="bk-drag-icon bk-drag-info-tips icon-style" v-bk-tooltips="functionTips"></i>
-            <i class="bk-drag-icon bk-drag-fix icon-style" @click="handleFixMethod" v-bk-tooltips="fixMethodTips"></i>
-            <slot name="tools"></slot>
-        </template>
-    </monaco>
+    <bk-resize-layout
+        class="function-monaco"
+        placement="bottom"
+        :initial-divide="showDebugPanel ? '35%' : '0'"
+        :border="false"
+        :style="{
+            height: height + 'px'
+        }"
+    >
+        <section slot="aside" class="function-debug" v-if="showDebug">
+            <debug-header
+                v-model="renderDebug"
+                :panels="computedPanels"
+            />
+            <debug-output
+                v-show="renderDebug === 'DebugOutput'"
+                class="debug-main"
+                :outputs="outputs"
+            />
+            <debug-param
+                v-show="renderDebug === 'DebugParam'"
+                class="debug-main"
+                :params="params"
+                @param-change="handleParamChange"
+            />
+            <debug-problem
+                v-show="renderDebug === 'DebugProblem'"
+                class="debug-main"
+                :problems="problems"
+                @show-problem="handleShowProblem"
+            />
+            <bk-button
+                theme="primary"
+                class="debug-button"
+                :loading="isDebuging"
+                @click="handleDebug"
+            >{{ showDebugPanel ? '执行调试' : '打开调试' }}</bk-button>
+            <i class="bk-drag-icon bk-drag-close-line" @click="handleCloseDebug"></i>
+        </section>
+        <monaco
+            :value="renderCode"
+            :height="height"
+            :proposals="proposals"
+            :model-markers="problems"
+            :full-screen-ele="$el"
+            ref="monaco"
+            slot="main"
+            @change="change">
+            <span
+                slot="title"
+                class="monaco-title"
+            >JS 编辑器</span>
+            <template v-slot:tools>
+                <i class="bk-drag-icon bk-drag-info-tips icon-style" v-bk-tooltips="functionTips"></i>
+                <i class="bk-drag-icon bk-drag-fix icon-style" @click="handleFixMethod" v-bk-tooltips="fixMethodTips"></i>
+                <slot name="tools"></slot>
+            </template>
+        </monaco>
+    </bk-resize-layout>
 </template>
 
 <script>
     import { camelCase, camelCaseTransformMerge } from 'change-case'
-    import monaco from '@/components/monaco'
+    import Monaco from '@/components/monaco'
+    import DebugHeader from './children/debug/header.vue'
+    import DebugOutput from './children/debug/output.vue'
+    import DebugParam from './children/debug/param.vue'
+    import DebugProblem from './children/debug/problem.vue'
     import mixins from './form-item-mixins'
     import { mapActions } from 'vuex'
-    import { FUNCTION_TIPS, FUNCTION_TYPE } from 'shared/function'
     import LC from '@/element-materials/core'
     import {
+        FUNCTION_TIPS,
+        FUNCTION_TYPE,
+        evalWithSandBox
+    } from 'shared/function'
+    import {
+        BUILDIN_VARIABLE_TYPE_LIST,
         determineShowPropInnerVariable,
         determineShowSlotInnerVariable
     } from 'shared/variable'
-    import { BUILDIN_VARIABLE_TYPE_LIST } from 'shared/variable/constant'
-    import { CustomError } from 'shared/custom-error'
+    import {
+        CustomError
+    } from 'shared/custom-error'
+    import {
+        debounce
+    } from 'shared/util'
 
     export default {
         components: {
-            monaco
+            Monaco,
+            DebugHeader,
+            DebugOutput,
+            DebugParam,
+            DebugProblem
         },
 
         mixins: [mixins],
@@ -37,7 +101,7 @@
         props: {
             height: {
                 type: [Number, String],
-                default: 458
+                default: 600
             },
             functionList: {
                 type: Array,
@@ -47,11 +111,19 @@
                 type: Array,
                 default: () => ([])
             },
+            apiList: {
+                type: Array,
+                default: () => ([])
+            },
             tips: {
                 type: String
             },
             tipWidth: {
                 type: Number
+            },
+            showDebug: {
+                type: Boolean,
+                default: true
             }
         },
 
@@ -68,7 +140,13 @@
                     ...FUNCTION_TIPS
                 },
                 proposals: [],
-                renderCode: ''
+                renderCode: '',
+                renderDebug: 'DebugOutput',
+                outputs: [],
+                problems: [],
+                params: [],
+                showDebugPanel: false,
+                isDebuging: false
             }
         },
 
@@ -83,6 +161,13 @@
                     placements: ['bottom-end'],
                     allowHtml: true
                 }
+            },
+            computedPanels () {
+                return [
+                    { name: 'DebugOutput', label: '调试结果' },
+                    { name: 'DebugParam', label: '参数设置', count: this.params.length },
+                    { name: 'DebugProblem', label: '问题', count: this.problems.length, isError: true }
+                ]
             }
         },
 
@@ -93,6 +178,8 @@
                     this.initMultVal()
                 }
                 this.initDefaultFunc()
+                // 函数内容变化的时候，检查函数内容
+                this.debounceCheckEslint(val)
             },
             'form.funcType' (type) {
                 if (this.multVal[type] !== this.form.funcBody) {
@@ -102,12 +189,24 @@
             },
             functionList () {
                 this.initProposals()
+            },
+            'form.funcParams': {
+                handler (val, oldVal) {
+                    if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
+                        this.params = val.map((key) => ({ key, value: '', format: 'value' }))
+                    }
+                },
+                immediate: true
+            },
+            'form.id' () {
+                this.outputs = []
             }
         },
 
         created () {
             this.initMultVal()
             this.initProposals()
+            this.debounceCheckEslint = debounce(this.checkEslint, 500)
         },
 
         methods: {
@@ -132,6 +231,7 @@
 
             initProposals () {
                 // 获取页面中使用到的函数和变量
+                this.proposals = []
                 const relatedMethodCodeMap = {}
                 const relatedVariableCodeMap = {}
                 const recTree = node => {
@@ -298,19 +398,175 @@
                 })
             },
 
+            checkEslint (funcBody) {
+                this
+                    .$store
+                    .dispatch(
+                        'functions/checkEslint',
+                        {
+                            ...this.form,
+                            funcBody
+                        }
+                    )
+                    .then((res) => {
+                        this.problems = res.data
+                    })
+            },
+
             change (funcBody) {
                 this.multVal[this.form.funcType] = funcBody
                 this.renderCode = funcBody
                 this.updateValue({ funcBody })
                 this.$emit('change', funcBody)
+            },
+
+            handleParamChange (val) {
+                this.params = val
+            },
+
+            handleShowProblem (problem) {
+                this.$refs.monaco.setPosition({
+                    lineNumber: problem.line,
+                    column: problem.column
+                })
+            },
+
+            handleCloseDebug () {
+                this.showDebugPanel = false
+            },
+
+            async handleDebug () {
+                // 打开调试面板
+                if (!this.showDebugPanel) {
+                    this.showDebugPanel = true
+                    return
+                }
+                this.renderDebug = 'DebugOutput'
+                this.outputs = []
+                this.isDebuging = true
+                // 收集方法
+                const collectOutput = (type, content) => {
+                    const iconMap = {
+                        info: 'bk-icon icon-angle-right-line',
+                        output: 'bk-icon icon-angle-left-line',
+                        error: 'bk-icon icon-close-circle-shape error'
+                    }
+                    this.outputs.push({
+                        icon: iconMap[type],
+                        content
+                    })
+                }
+                try {
+                    // 获取 api
+                    const apiList = await this.$store.dispatch('api/getApiList')
+                    const content = await evalWithSandBox(
+                        this.form.funcCode,
+                        this.params,
+                        this.functionList.map((item) => {
+                            let funcBody = item.funcBody
+                            let funcParams = item.funcParams
+                            // 由于函数间存在互相引用的场景，需要更新为当前编辑的内容进行调试
+                            if (item.funcCode === this.form.funcCode) {
+                                funcBody = this.form.funcBody
+                                funcParams = this.form.funcParams
+                            }
+                            return {
+                                ...item,
+                                funcBody,
+                                funcParams
+                            }
+                        }),
+                        this.variableList,
+                        apiList,
+                        {
+                            $store: this.$store,
+                            $http: this.$http,
+                            console: {
+                                log (...args) {
+                                    console.log(...args)
+                                    // 收集打印信息
+                                    collectOutput('info', args.join(' '))
+                                },
+                                warn (...args) {
+                                    console.warn(...args)
+                                    // 收集打印信息
+                                    collectOutput('info', args.join(' '))
+                                },
+                                error (...args) {
+                                    console.error(...args)
+                                    // 收集打印信息
+                                    collectOutput('error', args.join(' '))
+                                }
+                            }
+                        }
+                    )
+                    // 收集返回值
+                    collectOutput('output', content || 'undefined')
+                } catch (error) {
+                    // 收集错误信息
+                    collectOutput('error', error.message || error)
+                } finally {
+                    this.isDebuging = false
+                }
             }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
     /deep/ .function-tips {
         margin: 0;
         line-height: 16px;
+    }
+    .function-monaco {
+        overflow: hidden;
+        font-size: 12px;
+        .function-debug {
+            height: 100%;
+            position: relative;
+        }
+        .debug-main {
+            @mixin scroller;
+            height: calc(100% - 40px);
+            overflow: auto;
+        }
+        .debug-button {
+            position: absolute;
+            left: 16px;
+            top: -48px;
+        }
+        .bk-drag-close-line {
+            position: absolute;
+            right: 15.62px;
+            top: 15.62px;
+            color: #c4c6cc;
+            cursor: pointer;
+        }
+        .monaco-title {
+            font-size: 14px;
+            color: #C4C6CC;
+            padding-left: 25px;
+        }
+        /deep/ .bk-resize-layout-main {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            >section {
+                height: 100%;
+            }
+        }
+        /deep/ .bk-resize-layout-aside {
+            background: #212121;
+            z-index: 10;
+            border-top: none;
+        }
+        /deep/ .bk-resize-layout-aside-content {
+            overflow-x: visible !important;
+            overflow-y: visible;
+        }
     }
 </style>
