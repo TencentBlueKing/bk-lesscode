@@ -1,12 +1,11 @@
 <template>
     <section>
-        <bk-button class="import-button" @click="showImport">导入</bk-button>
+        <bk-button class="import-button" @click="toggleShowDialog(true)">导入</bk-button>
 
         <bk-dialog
             theme="primary"
             header-position="left"
             width="640"
-            :show-footer="false"
             v-model="isShowImport">
             <span slot="header">
                 {{ title }}
@@ -20,6 +19,7 @@
                 accept=".sql,.xlsx"
                 with-credentials
                 :limit="1"
+                :size="10"
                 :multiple="false"
                 :custom-request="handleRequest"
                 v-if="isShowImport"
@@ -35,6 +35,25 @@
                     <i class="bk-drag-icon bk-drag-download"></i>SQL 模板
                 </bk-link>
             </span>
+
+            <h5 class="result-message">
+                {{ resultMessage }}
+            </h5>
+
+            <h5 class="error-message">
+                {{ errorMessage }}
+            </h5>
+
+            <div class="dialog-footer" slot="footer">
+                <bk-button
+                    theme="primary"
+                    :loading="isLoadingData"
+                    @click="confirmImport">导入</bk-button>
+                <bk-button
+                    :disabled="isLoadingData"
+                    @click="toggleShowDialog(false)"
+                >取消</bk-button>
+            </div>
         </bk-dialog>
     </section>
 </template>
@@ -45,16 +64,30 @@
     export default defineComponent({
         props: {
             title: String,
-            tips: String
+            tips: String,
+            parseImport: Function,
+            handleImport: Function
         },
 
-        setup (_, { emit }) {
+        setup (props, { emit }) {
             const isShowImport = ref<boolean>(false)
-            // 展示导入 dialog
-            const showImport = () => {
-                isShowImport.value = true
+            const isLoadingData = ref(false)
+            const resultMessage = ref('')
+            const errorMessage = ref('')
+            const parseData = ref([])
+
+            // 清空状态
+            const clearStatus = () => {
+                resultMessage.value = ''
+                errorMessage.value = ''
+                parseData.value = []
             }
-            // 执行导入请求
+            // 展示导入 dialog
+            const toggleShowDialog = (isShow) => {
+                isShowImport.value = isShow
+                clearStatus()
+            }
+            // 执行导入请求并解析文件格式
             const handleRequest = (options) => {
                 const {
                     fileObj,
@@ -63,6 +96,9 @@
                     onSuccess
                 } = options
                 const [tableName, type] = fileList?.[0]?.name?.split('.')
+
+                // 每次导入需要清空上次导入的结果信息
+                clearStatus()
     
                 // 读取文件
                 const reader = new FileReader()
@@ -73,18 +109,22 @@
                 }
                 // 读取完成
                 reader.onload = (event) => {
-                    emit(
-                        'import',
-                        {
+                    props
+                        .parseImport({
                             data: {
                                 tableName,
                                 content: event.target.result
                             },
                             type
-                        }
-                    )
-                    onSuccess({ code: 0 }, fileObj)
-                    isShowImport.value = false
+                        })
+                        .then(({ data, message }) => {
+                            resultMessage.value = message
+                            parseData.value = data
+                            onSuccess({ code: 0 }, fileObj)
+                        })
+                        .catch((err) => {
+                            fileObj.errorMsg = err.message
+                        })
                 }
                 // 发生错误
                 reader.onerror = () => {
@@ -96,6 +136,22 @@
                     onProgress({}, 100)
                 }
             }
+            const confirmImport = () => {
+                resultMessage.value = ''
+                isLoadingData.value = true
+                return props
+                    .handleImport(parseData.value)
+                    .then(() => {
+                        isShowImport.value = false
+                        clearStatus()
+                    })
+                    .catch((err) => {
+                        errorMessage.value = err.message || err
+                    })
+                    .finally(() => {
+                        isLoadingData.value = false
+                    })
+            }
             // 下载模板
             const downloadTemplate = (type) => {
                 emit('downloadTemplate', type)
@@ -103,8 +159,12 @@
 
             return {
                 isShowImport,
-                showImport,
+                isLoadingData,
+                resultMessage,
+                errorMessage,
+                toggleShowDialog,
                 handleRequest,
+                confirmImport,
                 downloadTemplate
             }
         }
@@ -119,7 +179,7 @@
     .import-tip {
         display: inline-flex;
         align-items: center;
-        margin-bottom: 26px;
+        margin-bottom: 5px;
     }
     .bk-drag-download {
         font-size: 14px;
@@ -132,5 +192,12 @@
         font-size: 14px;
         vertical-align: middle;
         cursor: pointer;
+    }
+    .result-message {
+        margin: 0 0 5px;
+    }
+    .error-message {
+        margin: 0 0 5px;
+        color: #ff5656;
     }
 </style>

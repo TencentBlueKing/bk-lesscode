@@ -3,13 +3,6 @@
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
-                <span class="seperate-line">|</span>
-                <span class="bk-drag-icon template-logo" title="返回应用列表" @click="toProjects">
-                    <svg aria-hidden="true" width="16" height="16">
-                        <use xlink:href="#bk-drag-logo"></use>
-                    </svg>
-                </span>
-                <span class="seperate-line">|</span>
                 <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
                     <bk-option v-for="option in projectList"
                         :key="option.id"
@@ -199,21 +192,12 @@
                         url: 'componentManage',
                         children: [
                             {
-                                title: '自定义组件管理',
-                                url: 'componentManage',
+                                title: '导航布局管理',
+                                url: 'layout',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'componentManage'
-                                }
-                            },
-                            {
-                                title: 'API 管理',
-                                url: 'apiManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'apiManage'
+                                    name: 'layout'
                                 }
                             },
                             {
@@ -226,6 +210,15 @@
                                 }
                             },
                             {
+                                title: 'API 管理',
+                                url: 'apiManage',
+                                iamAction: 'develop_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'apiManage'
+                                }
+                            },
+                            {
                                 title: '凭证管理',
                                 url: 'credential',
                                 iamAction: 'develop_app',
@@ -235,14 +228,13 @@
                                 }
                             },
                             {
-                                title: '页面模板管理',
-                                url: 'templateManage',
+                                title: '变量管理',
+                                url: 'variableManage',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'templateManage'
-                                },
-                                redPoint: true
+                                    name: 'variableManage'
+                                }
                             },
                             {
                                 title: '文件管理',
@@ -254,22 +246,23 @@
                                 }
                             },
                             {
-                                title: '导航布局管理',
-                                url: 'layout',
+                                title: '自定义组件管理',
+                                url: 'componentManage',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'layout'
+                                    name: 'componentManage'
                                 }
                             },
                             {
-                                title: '变量管理',
-                                url: 'variableManage',
+                                title: '页面模板管理',
+                                url: 'templateManage',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'variableManage'
-                                }
+                                    name: 'templateManage'
+                                },
+                                redPoint: true
                             }
                         ]
                     },
@@ -535,8 +528,8 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 68px);
-        margin-top: 64px;
+        height: calc(100vh - 52px);
+        margin-top: 52px;
 
         &.aside-folded:not(.aside-hover) {
             .aside {
@@ -610,11 +603,11 @@
                     margin-left: -2px;
                 }
                 .select-project {
-                    width: 186px;
+                    width: 216px;
                     border: none;
                     margin-left: 2px;
                     .bk-select-name {
-                        font-size: 16px;
+                        font-size: 14px;
                         color: #313238;
                     }
                     &.is-focus {

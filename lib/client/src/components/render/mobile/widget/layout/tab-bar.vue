@@ -19,7 +19,7 @@
     export default defineComponent({
         setup () {
             const layoutName = 'mobileBottomMenu'
-            const { isSelectedRef, componentClickHandler, curTemplateData } = useComponentAction(false, layoutName)
+            const { isSelectedRef, componentClickHandler, curTemplateData } = useComponentAction(false, layoutName, 'MOBILE')
             return {
                 isTabbarSelected: isSelectedRef,
                 componentClickHandler,

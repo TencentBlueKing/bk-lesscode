@@ -40,7 +40,8 @@
                 const content = `<pre class="token-pre"><span class="token-tip">请先关联蓝鲸应用并获取凭证Token，<a href="/project/${this.projectId}/credential" target="_blank">跳转设置</a></span></pre>`
                 return {
                     content,
-                    disabled: this.hasToken
+                    disabled: this.hasToken,
+                    allowHtml: true
                 }
             }
         },

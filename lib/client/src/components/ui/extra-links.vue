@@ -1,10 +1,7 @@
 <template>
     <div class="extra-links">
-        <div v-if="showHelpBox" class="help-box" @click="helpClick" v-bk-tooltips="helpTooltips">
+        <div v-if="showHelpBox" class="link-item help-box" @click="helpClick" v-bk-tooltips="helpTooltips">
             <i class="dropdown-trigger-btn bk-icon icon-question-circle-shape" />
-        </div>
-        <div class="github-link" @click="goGithub" v-bk-tooltips="{ content: 'Github', placements: ['bottom'] }">
-            <i class="bk-drag-icon bk-drag-github-logo"></i>
         </div>
     </div>
 </template>
@@ -50,9 +47,6 @@
             }
         },
         methods: {
-            goGithub () {
-                window.open('https://github.com/TencentBlueKing/bk-lesscode/blob/master/readme.md')
-            }
         }
     }
 </script>
@@ -63,17 +57,8 @@
         width: 301px;
         align-items: center;
         justify-content: flex-end;
-        .github-link {
-            height: 52px;
-            width: 30px;
-            margin-left: 6px;
-            font-size: 16px;
-            line-height: 52px;
-            text-align: center;
-            cursor: pointer;
+        .link-item {
             margin-right: 10px;
-            position: relative;
-            top: -1px;
         }
         .help-box{
             display: flex;

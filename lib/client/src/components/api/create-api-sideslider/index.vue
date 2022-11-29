@@ -153,9 +153,9 @@
                 return new Promise((resolve, reject) => {
                     Promise
                         .all([
-                            basicRef.value.validate(),
-                            paramRef.value.validate(),
-                            responseRef.value.validate()
+                            basicRef.value?.validate(),
+                            paramRef.value?.validate(),
+                            responseRef.value?.validate()
                         ])
                         .then((res) => {
                             resolve(res)

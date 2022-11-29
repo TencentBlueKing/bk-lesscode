@@ -3,7 +3,7 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                查看表【{{tableStatus.basicInfo.tableName}}】
+                表【{{tableStatus.basicInfo.tableName}}】信息
                 <bk-divider direction="vertical"></bk-divider>
                 
                 <span
@@ -19,7 +19,12 @@
                         @click="goEdit"
                     >编辑</bk-button>
                 </span>
-                <export-table title="导出表" class="mr10" :only-export-all="true" @download="exportTables"></export-table>
+                <export-table
+                    class="mr10"
+                    :title="`导出表【${tableStatus.basicInfo.tableName}】结构`"
+                    :only-export-all="true"
+                    @download="exportTables"
+                ></export-table>
                 <bk-button size="small" @click="goRecord">变更记录</bk-button>
             </span>
         </render-header>
@@ -91,7 +96,7 @@
 
             const getDetail = () => {
                 isLoading.value = true
-                store.dispatch('dataSource/findOne', id).then((data) => {
+                store.dispatch('dataSource/findOne', { id }).then((data) => {
                     tableStatus.basicInfo.tableName = data.tableName
                     tableStatus.basicInfo.comment = data.comment
                     tableStatus.data = data.columns

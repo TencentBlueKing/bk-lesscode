@@ -9,7 +9,7 @@
     export default defineComponent({
         setup () {
             const layoutName = 'mobileEmptyLayout'
-            const pageSetting = useComponentAction(false, layoutName)
+            const pageSetting = useComponentAction(false, layoutName, 'MOBILE')
             return {
                 pageSetting
             }

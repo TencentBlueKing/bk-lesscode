@@ -3,7 +3,7 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                编辑表【{{originTableStatus.basicInfo.tableName}}】
+                编辑表【{{originTableStatus.basicInfo.tableName}}】信息
             </span>
         </render-header>
 
@@ -27,9 +27,10 @@
                     <import-table
                         class="import-table"
                         title="导入表结构"
-                        tips="如果导入 sql 文件，仅支持解析创建表的语法，且只支持系统可创建的字段类型。系统内置字段会默认添加且不可修改"
+                        tips="1. 如果导入 sql 文件，仅支持解析创建表的语法<br>2. 仅支持系统可创建的字段类型<br>3. 系统内置字段会默认添加且不可修改<br>4. 导入文件后会解析并更新表字段配置"
+                        :parse-import="parseImport"
+                        :handle-import="handleImport"
                         @downloadTemplate="downloadStructTemplate"
-                        @import="importTable"
                     />
                 </h5>
                 <field-table ref="fieldTableRef" :data="originTableStatus.data" @change="changeEdit(true)"></field-table>
@@ -132,7 +133,7 @@
                 tableStatus: finalTableStatus
             } = useTableStatus()
 
-            const id = router?.currentRoute?.query?.id
+            let id = ''
 
             const goBack = () => {
                 router.push({ name: 'showTable', query: { id } })
@@ -205,29 +206,41 @@
 
             const getDetail = () => {
                 isLoading.value = true
-                store.dispatch('dataSource/findOne', id).then((data) => {
+                store.dispatch('dataSource/findOne', router?.currentRoute?.query).then((data) => {
                     originTableStatus.basicInfo.tableName = data.tableName
                     originTableStatus.basicInfo.comment = data.comment
                     originTableStatus.data = data.columns
                     originTableStatus.disableEdit = data.source === 'nocode'
+                    id = data.id
                 }).catch((error) => {
                     messageError(error.message || error)
                 }).finally(() => {
                     isLoading.value = false
                 })
             }
-
-            const importTable = ({ data, type }) => {
-                try {
-                    const [tableInfo] = handleImportStruct([data], type)
-                    // 过滤掉基础字段设置，使用系统内置
-                    originTableStatus.data = [
-                        ...BASE_COLUMNS,
-                        ...tableInfo.columns.filter(column => !BASE_COLUMNS.find(baseColumn => baseColumn.name === column.name))
-                    ]
-                } catch (error) {
-                    messageError(error.message || error)
-                }
+            // 解析导入的表结构
+            const parseImport = ({ data, type }) => {
+                return new Promise((resolve, reject) => {
+                    try {
+                        const [tableInfo] = handleImportStruct([data], type)
+                        const columns = [
+                            ...BASE_COLUMNS,
+                            ...tableInfo.columns.filter(column => !BASE_COLUMNS.find(baseColumn => baseColumn.name === column.name))
+                        ]
+                        // 过滤掉基础字段设置，使用系统内置
+                        resolve({
+                            data: columns,
+                            message: `解析到【${columns.length}】个字段，请点击导入后修改字段配置`
+                        })
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            }
+            // 执行导入
+            const handleImport = (data) => {
+                originTableStatus.data = data
+                return Promise.resolve()
             }
 
             onBeforeMount(getDetail)
@@ -246,7 +259,8 @@
                 confirmSubmit,
                 changeEdit,
                 downloadStructTemplate,
-                importTable
+                parseImport,
+                handleImport
             }
         }
     })

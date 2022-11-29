@@ -8,13 +8,14 @@
             <monaco
                 class="variable-code"
                 ref="monaco"
-                :height="300"
+                :height="400"
                 :key="item.key"
                 :form="{ funcBody: value[item.key] }"
                 :function-list="functionList"
                 :variable-list="variableList"
                 :tips="tips"
                 :tip-width="500"
+                :show-debug="false"
                 @change="change(item.key, ...arguments)"
             >
             </monaco>

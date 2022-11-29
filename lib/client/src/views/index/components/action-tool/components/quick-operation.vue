@@ -59,7 +59,7 @@
                 quickOperationList: [
                     { keys: ['Ctrl / Cmd', 'C'], name: '复制' },
                     { keys: ['Ctrl / Cmd', 'V'], name: '粘贴' },
-                    // { keys: ['Ctrl / Cmd', 'X'], name: '剪切' },
+                    { keys: ['Ctrl / Cmd', 'X'], name: '剪切' },
                     // { keys: ['Ctrl / Cmd', 'Z'], name: '撤销' },
                     // { keys: ['Ctrl / Cmd', 'Y'], name: '恢复' },
                     // { keys: ['Ctrl / Cmd', 'S'], name: '保存' },
@@ -103,7 +103,7 @@
                 }
                 const copyKeyCode = [67]
                 const pastKeyCode = [86]
-                // const cutKeyCode = [88]
+                const cutKeyCode = [88]
                 const removeKeyCode = [8, 46]
                 
                 if (event.ctrlKey || event.metaKey) {
@@ -113,9 +113,9 @@
                     if (copyKeyCode.includes(event.keyCode)) {
                         LC.execCommand('copy')
                     }
-                    // if (cutKeyCode.includes(event.keyCode)) {
-                    //     LC.execCommand('cut')
-                    // }
+                    if (cutKeyCode.includes(event.keyCode)) {
+                        LC.execCommand('cut')
+                    }
                 } else {
                     if (removeKeyCode.includes(event.keyCode)) {
                         LC.execCommand('remove')

@@ -455,6 +455,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-router:before {
 	content: "\e187";
 }
+.bk-drag-paste:before {
+	content: "\e248";
+}
 .bk-drag-un-full-screen-2:before {
 	content: "\e21c";
 }
@@ -973,4 +976,16 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-xlsx:before {
 	content: "\e247";
+}
+.bk-drag-tree1:before {
+	content: "\e249";
+}
+.bk-drag-2-jiantou-you:before {
+	content: "\e24a";
+}
+.bk-drag-2-jiantou-zuo:before {
+	content: "\e24b";
+}
+.bk-drag-xuanzhongfuji:before {
+	content: "\e24c";
 }

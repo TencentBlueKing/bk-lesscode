@@ -1,7 +1,7 @@
 <template>
     <section class="variable-switchers">
         <template v-for="(item, index) in list">
-            <span :key="index">{{item.txt}}：</span>
+            <span class="variable-env-text" :key="index">{{item.txt}}：</span>
             <bk-switcher size="small" theme="primary" :value="value[item.key]" :key="item.key" @change="change(item.key, ...arguments)" class="variable-switcher"></bk-switcher>
         </template>
     </section>
@@ -18,6 +18,10 @@
 <style lang="postcss" scoped>
     .variable-switcher {
         margin-right: 50px;
+    }
+    .variable-env-text {
+        font-size: 12px;
+        color: #63656e;
     }
     .variable-switchers {
         background: #fafbfd;

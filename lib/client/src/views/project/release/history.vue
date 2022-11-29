@@ -34,7 +34,10 @@
                     <bk-table-column label="操作结果" prop="status" min-width="150">
                         <template slot-scope="{ row }">
                             <div class="status-result">
-                                <i v-if="row.status === 'running'" class="bk-drag-icon bk-drag-icon bk-drag-loading-2 history-status-icon"></i>
+                                <svg v-if="row.status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
+                                    <use xlink:href="#bk-drag-loading-2"></use>
+                                </svg>
+                                <!-- <i v-if="row.status === 'running'" class="bk-drag-icon bk-drag-icon bk-drag-loading-2 history-status-icon" class="loading-rotate"></i> -->
                                 <i v-else class="bk-drag-icon bk-drag-circle-shape history-status-icon" :class="[`icon-${row.status}`]"></i>
                                 <span>{{ typeMap[row.isOffline] }}{{ statusMap[row.status] }}</span>
                                 <span v-if="!row.isOffline" class="status-log-link" @click="showLog(row)">，查看详情</span>
@@ -222,6 +225,8 @@
                     background-color: #F0F1F5;
                 }
                 .status-result {
+                    display: flex;
+                    align-items: center;
                     .history-status-icon {
                         font-size: 8px;
                     }
@@ -236,6 +241,14 @@
                         color: #3a84ff;
                     }
                 }
+            }
+        }
+        .loading-rotate {
+            animation: icon-loading 1.5s linear infinite;
+        }
+        @keyframes icon-loading {
+            to {
+                transform:rotate(1turn);
             }
         }
     }
