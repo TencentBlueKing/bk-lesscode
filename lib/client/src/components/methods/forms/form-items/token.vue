@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="110" :model="form" ref="funcForm" :form-type="formType" v-if="form.funcType === 1">
-        <bk-form-item property="withToken" class="token-item">
+    <lc-form :label-width="110" :model="form" ref="funcForm" :form-type="formType" v-if="form.funcType === 1">
+        <lc-form-item property="withToken" class="token-item">
             <bk-checkbox
                 :key="hasToken"
                 :true-value="1"
@@ -10,8 +10,8 @@
                 v-bk-tooltips="tokenContent"
                 @change="updateToken"
             >蓝鲸应用认证</bk-checkbox>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>

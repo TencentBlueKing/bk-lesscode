@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
-        <bk-form-item
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
+        <lc-form-item
             label="函数标识"
             :required="true"
             :rules="[requireRule('函数标识'), codeRepeatRule, codeRule, keyWordRule]"
@@ -12,8 +12,8 @@
                 :disabled="disabled"
                 @input="(funcCode) => updateValue({ funcCode })">
             </bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>
