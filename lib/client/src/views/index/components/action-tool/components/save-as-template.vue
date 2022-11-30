@@ -13,7 +13,7 @@
         data () {
             return {
                 item: {
-                    icon: 'bk-drag-icon bk-drag-template-fill',
+                    icon: 'bk-drag-icon bk-drag-templateline',
                     text: '存为模板',
                     tips: '将画布内容区域（不包含导航部分）存为模板',
                     func: this.toggleShowTemplateDialog

@@ -261,8 +261,8 @@
     .button{
         flex: 0 0 auto;
         height: 20px;
-        padding: 0 3px;
-        margin-right: 4px;
+        padding: 0 4px;
+        margin-right: 2px;
         font-size: 12px;
         line-height: 20px;
         text-align: center;

@@ -197,7 +197,7 @@
                         <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
                             {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? `部署中...` : '部署'}}
                         </bk-button>
-                        <span :class="$style['release-tips']">由蓝鲸开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理</span>
+                        <span :class="$style['release-tips']">由PaaS平台-开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理</span>
                     </div>
                 </div>
             </div>

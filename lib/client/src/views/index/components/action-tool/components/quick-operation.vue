@@ -101,6 +101,9 @@
                 if (!this.isFocused) {
                     return
                 }
+                if (event.target && event.target.classList.contains('bk-form-input')) {
+                    return
+                }
                 const copyKeyCode = [67]
                 const pastKeyCode = [86]
                 const cutKeyCode = [88]
