@@ -101,6 +101,10 @@
                 if (!this.isFocused) {
                     return
                 }
+                // 如果当前焦点在input框，需要忽略快捷键监听
+                if (event.target && event.target.classList.contains('bk-form-input')) {
+                    return
+                }
                 const copyKeyCode = [67]
                 const pastKeyCode = [86]
                 const cutKeyCode = [88]
