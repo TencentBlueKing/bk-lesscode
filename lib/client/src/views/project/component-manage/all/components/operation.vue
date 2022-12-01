@@ -318,6 +318,9 @@
         }
         .sideslider-footer{
             padding-left: 120px;
+            .bk-button {
+                margin-right: 10px;
+            }
         }
 
         .bk-form-radio-button .bk-radio-button-text {

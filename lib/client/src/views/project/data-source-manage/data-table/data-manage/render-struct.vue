@@ -6,7 +6,16 @@
         </section>
 
         <section class="table-section">
-            <h5 class="section-title">字段配置</h5>
+            <h5 class="section-title">
+                字段配置
+                <bk-link
+                    v-if="environment.key === 'preview'"
+                    :href="`/project/${projectId}/data-source-manage/edit-table?tableName=${activeTable.tableName}`"
+                    target="_blank"
+                    theme="primary"
+                    class="title-link"
+                >设计表结构</bk-link>
+            </h5>
             <show-column-table :columns="activeTable.columns"></show-column-table>
         </section>
     </article>
@@ -19,6 +28,7 @@
     } from '@vue/composition-api'
     import infoTable from '../common/info-table.vue'
     import showColumnTable from '../common/show-column-table.vue'
+    import { useRoute } from '@/router'
 
     interface ITable {
         tableName: string,
@@ -31,7 +41,15 @@
             showColumnTable
         },
         props: {
-            activeTable: Object as PropType<ITable>
+            activeTable: Object as PropType<ITable>,
+            environment: Object as PropType<{ key: string, name: string }>
+        },
+        setup () {
+            const route = useRoute()
+            const projectId = route.params.projectId
+            return {
+                projectId
+            }
         }
     })
 </script>
@@ -49,6 +67,11 @@
             line-height: 19px;
             font-size: 14px;
             margin: 0 0 12px;
+        }
+        .title-link {
+            font-weight: normal;
+            vertical-align: baseline;
+            margin-left: 5px;
         }
     }
 </style>

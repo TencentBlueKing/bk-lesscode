@@ -3,13 +3,6 @@
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
-                <span class="seperate-line">|</span>
-                <span class="bk-drag-icon template-logo" title="返回应用列表" @click="toProjects">
-                    <svg aria-hidden="true" width="16" height="16">
-                        <use xlink:href="#bk-drag-logo"></use>
-                    </svg>
-                </span>
-                <span class="seperate-line">|</span>
                 <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
                     <bk-option v-for="option in projectList"
                         :key="option.id"
@@ -106,7 +99,7 @@
             <div class="page-top">
                 <h3 class="current">{{ currentPage }}</h3>
                 <div class="version-selector" v-if="isShowProjectVersionSelector">
-                    当前版本：
+                    应用当前版本：
                     <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
                 </div>
             </div>
@@ -194,17 +187,26 @@
                         ]
                     },
                     {
-                        title: '资源库',
+                        title: '资源管理',
                         icon: 'source',
                         url: 'componentManage',
                         children: [
                             {
-                                title: '自定义组件库',
-                                url: 'componentManage',
+                                title: '导航布局管理',
+                                url: 'layout',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
-                                    name: 'componentManage'
+                                    name: 'layout'
+                                }
+                            },
+                            {
+                                title: '函数管理',
+                                url: 'functionManage',
+                                iamAction: 'develop_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'functionManage'
                                 }
                             },
                             {
@@ -217,49 +219,12 @@
                                 }
                             },
                             {
-                                title: '函数库',
-                                url: 'functionManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'functionManage'
-                                }
-                            },
-                            {
                                 title: '凭证管理',
                                 url: 'credential',
                                 iamAction: 'develop_app',
                                 permission: false,
                                 toPath: {
                                     name: 'credential'
-                                }
-                            },
-                            {
-                                title: '页面模板库',
-                                url: 'templateManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'templateManage'
-                                },
-                                redPoint: true
-                            },
-                            {
-                                title: '文件库',
-                                url: 'fileManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'fileManage'
-                                }
-                            },
-                            {
-                                title: '布局模板实例',
-                                url: 'layout',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'layout'
                                 }
                             },
                             {
@@ -270,6 +235,34 @@
                                 toPath: {
                                     name: 'variableManage'
                                 }
+                            },
+                            {
+                                title: '文件管理',
+                                url: 'fileManage',
+                                iamAction: 'develop_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'fileManage'
+                                }
+                            },
+                            {
+                                title: '自定义组件管理',
+                                url: 'componentManage',
+                                iamAction: 'develop_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'componentManage'
+                                }
+                            },
+                            {
+                                title: '页面模板管理',
+                                url: 'templateManage',
+                                iamAction: 'develop_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'templateManage'
+                                },
+                                redPoint: true
                             }
                         ]
                     },
@@ -535,8 +528,8 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 68px);
-        margin-top: 64px;
+        height: calc(100vh - 52px);
+        margin-top: 52px;
 
         &.aside-folded:not(.aside-hover) {
             .aside {
@@ -610,11 +603,11 @@
                     margin-left: -2px;
                 }
                 .select-project {
-                    width: 186px;
+                    width: 216px;
                     border: none;
                     margin-left: 2px;
                     .bk-select-name {
-                        font-size: 16px;
+                        font-size: 14px;
                         color: #313238;
                     }
                     &.is-focus {

@@ -178,7 +178,8 @@
             },
             pageRouteList () {
                 const pageRouteList = this.layoutPageList.reduce((acc, cur) => {
-                    if (cur.pageType === this.platform) { // 只允许调准同平台路由
+                    const pageType = cur.pageType || 'PC'
+                    if (pageType === this.platform) { // 只允许调准同平台路由
                         const { id, layoutPath, path } = cur
                         const disabled = !id
                         acc.push({

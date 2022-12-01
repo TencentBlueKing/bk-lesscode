@@ -1,5 +1,5 @@
 <template>
-    <div class="component-manage-page">
+    <div class="router-manage-page">
         <div class="g-page-tab">
             <div class="tab-item" :class="{ active: routeType === 'PC' }" @click="handleType('PC')">PC 页面</div>
             <div class="tab-item" :class="{ active: routeType === 'MOBILE' }" @click="handleType('MOBILE')">Mobile 页面</div>
@@ -30,3 +30,8 @@
         }
     }
 </script>
+<style lang="postcss" scoped>
+    .router-manage-page {
+        height: 100%;
+    }
+</style>

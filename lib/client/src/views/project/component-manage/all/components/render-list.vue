@@ -9,6 +9,7 @@
         </div>
         <div class="component-list-content" v-bkloading="{ isLoading }">
             <bk-table
+                class="g-hairless-table"
                 :outer-border="false"
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
@@ -50,7 +51,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" align="left" width="160" />
+                <bk-table-column label="更新时间" prop="updateTime" align="left" width="160" :formatter="timeFormatter" />
                 <bk-table-column label="更新人" prop="updateUser" align="left" width="120" show-overflow-tooltip />
                 <bk-table-column label="操作" prop="statusText" align="left" width="200">
                     <template slot-scope="{ row }">
@@ -90,6 +91,7 @@
     import VersionLog from '@/components/version-log'
     import PublicScope from '../../public-scope'
     import typeSelect from '@/components/project/type-select'
+    import dayjs from 'dayjs'
 
     export default {
         name: '',
@@ -242,6 +244,9 @@
                 this.pagination.current = 1
                 this.pagination.limit = limit
                 this.fetchData()
+            },
+            timeFormatter (obj, con, val) {
+                return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : ''
             }
         }
     }
@@ -318,7 +323,7 @@
         }
         .component-list-content{
             min-height: calc(100vh - 250px);
-        
+
             .comp-type {
                 font-size: 16px;
                 color: #979ba5;

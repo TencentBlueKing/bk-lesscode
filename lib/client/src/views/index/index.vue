@@ -21,7 +21,7 @@
                 id="toolActionBox"
                 class="function-and-tool">
                 <operation-select v-model="operationType" />
-                <div class="spilt-line" />
+                <!-- <div class="spilt-line" /> -->
                 <!-- 保存、预览、快捷键等tool单独抽离 -->
                 <action-tool />
             </div>
@@ -170,7 +170,7 @@
                 },
                 {
                     title: '画布编辑区',
-                    content: '可在画布自由拖动组件、图标等进行页面布局',
+                    content: '可在画布自由拖动组件、图标等进行页面布局，选中组件或布局后可右键对选中项进行复制粘贴等快捷操作',
                     target: '#lesscodeDrawContent'
                 },
                 {
@@ -186,7 +186,7 @@
                 },
                 {
                     title: '页面操作',
-                    content: '可以查看并下载完整源码、对页面生命周期，路由，函数等进行配置，以及对内容进行保存，预览，清空等操作',
+                    content: '可以查看并下载完整源码，对页面生命周期、路由、函数等进行配置，以及对内容进行保存、预览、清空等操作',
                     target: '#toolActionBox'
                 },
                 {
@@ -365,7 +365,7 @@
     }
 </script>
 <style lang="postcss">
-    $headerHeight: 64px;
+    $headerHeight: 52px;
     $pageHeaderHeight: 52px;
 
     .lessocde-editor-page {

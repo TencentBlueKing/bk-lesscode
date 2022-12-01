@@ -70,7 +70,7 @@
                                     </div>
                                 </div>
                                 <span class="favorite-btn">
-                                    <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc }"></i>
+                                    <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false }"></i>
                                 </span>
                             </div>
                         </div>
@@ -603,6 +603,7 @@
             handleDownloadProject (project) {
                 this.$refs.downloadDialog.isShow = true
                 this.$refs.downloadDialog.projectId = project.id
+                this.$refs.downloadDialog.projectCode = project.projectCode
                 this.$refs.downloadDialog.projectName = project.projectName
             },
             handleDownloadTemplate (template) {
@@ -616,7 +617,7 @@
                 }).then((res) => {
                     const downlondEl = document.createElement('a')
                     const blob = new Blob([res])
-                    downlondEl.download = `bklesscode-template-${template.id}.vue`
+                    downlondEl.download = `bklesscode-template-${template.templateName}.vue`
                     downlondEl.href = URL.createObjectURL(blob)
                     downlondEl.style.display = 'none'
                     document.body.appendChild(downlondEl)
@@ -877,12 +878,6 @@
             height: 360px;
             overflow-y: auto;
             @mixin scroller;
-        }
-    }
-
-    /deep/ .dialog-footer {
-        button + button {
-            margin-left: 4px;
         }
     }
 </style>

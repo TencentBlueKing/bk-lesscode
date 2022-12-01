@@ -31,11 +31,13 @@ loadScript(urlPrefix + '/monaco-editor/min/vs/loader.js', function () {
     })
     window.MonacoEnvironment = {
         getWorkerUrl: function (workerId, label) {
-            return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                        self.MonacoEnvironment = {
-                            baseUrl: '${urlPrefix}/monaco-editor/min//'
-                        }
-                        importScripts('${urlPrefix}/monaco-editor/min/vs/base/worker/workerMain.js')`
+            return `data:text/javascript;charset=utf-8,${encodeURIComponent(
+                `
+                    self.MonacoEnvironment = {
+                        baseUrl: '${urlPrefix}/monaco-editor/min//'
+                    }
+                    importScripts('${urlPrefix}/monaco-editor/min/vs/base/worker/workerMain.js')
+                `
             )}`
         }
     }

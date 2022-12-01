@@ -55,9 +55,16 @@
                     const data = {
                         url: url.replace('{{appApigwPrefix}}', BK_APP_APIGW_PREFIX),
                         method: method.toLowerCase(),
-                        body: {},
                         headers: {},
-                        query_params
+                        query_params: {},
+                        body: {}
+                    }
+                    // 旧数据query_params的数据类型为Object，不做处理 @2022.11.10
+                    if (Array.isArray(query_params)) {
+                        query_params.forEach(item => {
+                            const { key, value } = item
+                            data.query_params[key] = value
+                        })
                     }
                     if (headers.length > 0) {
                         headers.forEach(item => {

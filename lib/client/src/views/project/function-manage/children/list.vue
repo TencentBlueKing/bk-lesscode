@@ -71,6 +71,11 @@
                     </template>
                 </bk-table-column>
             </bk-table>
+
+            <span class="function-tips">
+                提示：
+                <br>如果此处编辑的函数被预览页面使用，编辑函数后需要刷新预览页面让修改立即生效
+            </span>
         </section>
 
         <edit-func-sideslider
@@ -307,7 +312,7 @@
 
             exportFunction () {
                 const versionName = this.versionId ? `-${this.versionName}` : ''
-                downloadFile(getExportFunction(this.selectionData), `lesscode-${this.projectId}${versionName}-func.json`)
+                downloadFile(getExportFunction(this.selectionData), `bklesscode-${this.projectId}${versionName}-func.json`)
             },
 
             exportDemoFunction () {
@@ -351,8 +356,6 @@
                     }).catch((err) => {
                         if (err?.code === 499) {
                             this.messageHtmlError(err.message)
-                        } else {
-                            this.messageError(err.message || err)
                         }
                     }).finally(() => {
                         this.isUploading = false
@@ -394,11 +397,6 @@
             }
         }
         .function-table {
-            height: calc(100% - 46px);
-            /deep/ .bk-table-body-wrapper {
-                height: calc(100% - 43px);
-                overflow-y: auto;
-            }
             th.is-leaf {
                 border: none;
             }
@@ -412,6 +410,13 @@
                 text-overflow: ellipsis;
                 white-space: normal;
             }
+        }
+        .function-tips {
+            display: inline-block;
+            margin-top: 10px;
+            color: #979ba5;
+            font-size: 12px;
+            line-height: 16px;
         }
         .table-btn {
             color: #3a84ff;

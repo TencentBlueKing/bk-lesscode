@@ -85,6 +85,7 @@
             }
         },
         async created () {
+            console.log('preview-template')
             const script = document.createElement('script')
             script.src = `/${parseInt(this.projectId)}/component/preview-register.js?v=${this.versionId}`
             script.onload = () => {

@@ -12,6 +12,8 @@
 <template>
     <choose-function
         class="choose-event"
+        default-variable-format="event"
+        :format-include="['event', 'value', 'variable', 'expression']"
         :choosen-function="eventValue"
         :function-templates="eventConfig.functionTemplates || eventValue.eventTemplates"
         @change="handleChangeEvent"

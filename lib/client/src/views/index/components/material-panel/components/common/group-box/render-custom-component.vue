@@ -38,7 +38,7 @@
                 v-bkloading="{ isLoading: isDiscriptionLoading }">
                 <table>
                     <tr>
-                        <td class="label">来源项目：</td>
+                        <td class="label">来源应用：</td>
                         <td>{{ componentIntroduction.projectName }}</td>
                     </tr>
                     <tr>
