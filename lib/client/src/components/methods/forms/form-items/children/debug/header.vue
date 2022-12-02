@@ -2,12 +2,15 @@
     <ul class="debug-headers">
         <li
             v-for="panel in panels"
-            v-bk-tooltips="{ content: panel.tips }"
-            :key="panel.name"
+            v-bk-tooltips="{
+                content: panel.tips,
+                disabled: !panel.tips
+            }"
             :class="{
                 'debug-header': true,
                 active: value === panel.name
             }"
+            :key="panel.name"
             @click="$emit('input', panel.name)"
         >
             <span>{{ panel.label }}</span>

@@ -6,7 +6,7 @@
             class="debug-output"
         >
             <i :class="[output.icon, 'message-icon']"></i>
-            {{ output.content }}
+            {{ renderContent(output.content) }}
         </li>
     </ul>
 </template>
@@ -19,6 +19,30 @@
     export default defineComponent({
         props: {
             outputs: Array
+        },
+
+        setup () {
+            const renderContent = (content) => {
+                const contents = Array.isArray(content) ? content : [content]
+                const renders = contents.reduce((acc, cur) => {
+                    switch (typeof cur) {
+                        case 'object':
+                            acc.push(JSON.stringify(cur))
+                            break
+                        case 'undefined':
+                            acc.push('undefined')
+                            break
+                        default:
+                            acc.push(cur)
+                            break
+                    }
+                    return acc
+                }, [])
+                return renders.join(' ')
+            }
+            return {
+                renderContent
+            }
         }
     })
 </script>

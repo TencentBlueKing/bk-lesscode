@@ -84,7 +84,8 @@
         CustomError
     } from 'shared/custom-error'
     import {
-        debounce
+        debounce,
+        isEmpty
     } from 'shared/util'
 
     export default {
@@ -441,6 +442,10 @@
                     this.showDebugPanel = true
                     return
                 }
+                if (isEmpty(this.form.funcName)) {
+                    this.messageError('函数名称不能为空')
+                    return
+                }
                 this.renderDebug = 'DebugOutput'
                 this.outputs = []
                 this.isDebuging = true
@@ -459,17 +464,14 @@
                 try {
                     // 构造函数列表
                     const functionList = this.functionList.map((item) => {
-                        let funcBody = item.funcBody
-                        let funcParams = item.funcParams
                         // 由于函数间存在互相引用的场景，需要更新为当前编辑的内容进行调试
                         if (item.funcCode === this.form.funcCode) {
-                            funcBody = this.form.funcBody
-                            funcParams = this.form.funcParams
+                            return {
+                                ...this.form
+                            }
                         }
                         return {
-                            ...item,
-                            funcBody,
-                            funcParams
+                            ...item
                         }
                     })
                     // 新增函数需要单独加到列表里面
@@ -493,17 +495,17 @@
                                 log (...args) {
                                     console.log(...args)
                                     // 收集打印信息
-                                    collectOutput('info', args.join(' '))
+                                    collectOutput('info', args)
                                 },
                                 warn (...args) {
                                     console.warn(...args)
                                     // 收集打印信息
-                                    collectOutput('info', args.join(' '))
+                                    collectOutput('info', args)
                                 },
                                 error (...args) {
                                     console.error(...args)
                                     // 收集打印信息
-                                    collectOutput('error', args.join(' '))
+                                    collectOutput('error', args)
                                 }
                             }
                         }
