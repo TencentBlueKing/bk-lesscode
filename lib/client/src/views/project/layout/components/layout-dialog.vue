@@ -11,28 +11,28 @@
             ext-cls="layout-operate-dialog"
         >
             <bk-form ref="dialogForm" class="dialog-form" :label-width="90" :rules="dialog.formRules" :model="dialog.formData">
-                <bk-form-item label="模板名称" required property="showName" error-display-type="normal">
+                <bk-form-item label="名称" required property="showName" error-display-type="normal">
                     <bk-input ref="showNameInput"
                         maxlength="60"
                         v-model.trim="dialog.formData.showName"
-                        placeholder="请输入名称模板，60个字符以内">
+                        placeholder="请输入名称，60个字符以内">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="模板ID" required property="layoutCode" error-display-type="normal">
+                <bk-form-item label="ID" required property="layoutCode" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.formData.layoutCode"
                         placeholder="以小写字母开头，由字母与数字组成">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="模板路由" required property="routePath" error-display-type="normal">
+                <bk-form-item label="路由" required property="routePath" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.formData.routePath"
                         placeholder="请输入，由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成">
                         <template slot="prepend" v-if="currentLayout.layoutType === 'MOBILE'">
                             <div class="group-text">/mobile</div>
                         </template>
                     </bk-input>
-                    <p class="mt5 mb0 f12" slot="tip">模板实例路由将会作为应用一级路由，请谨慎命名</p>
+                    <p class="mt5 mb0 f12" slot="tip">导航布局路由将会作为本应用一级路由，请谨慎命名</p>
                 </bk-form-item>
-                <bk-form-item label="布局模板" v-if="action === 'create'" error-display-type="normal">
+                <bk-form-item label="布局实例" v-if="action === 'create'" error-display-type="normal">
                     <layout-thumb-list :toolkit="['select']" :list="defaultLayoutList" @change-checked="handleLayoutChecked" />
                 </bk-form-item>
             </bk-form>
@@ -177,9 +177,9 @@
             },
             action: {
                 handler: function (val) {
-                    this.title = val === 'create' ? '新建模板' : '修改模板'
+                    this.title = val === 'create' ? '新建导航布局' : '编辑导航布局'
                     this.requestMethod = val === 'create' ? 'layout/create' : 'layout/update'
-                    this.actionName = val === 'create' ? '新建' : '修改'
+                    this.actionName = val === 'create' ? '新建' : '编辑'
                 },
                 immediate: true
             }
@@ -280,7 +280,7 @@
     @import "@/css/mixins/scroller";
 
    .dialog-form {
-        margin: 30px 0;
+        margin-bottom: 30px;
         max-height: 446px;
         overflow-y: overlay;
         padding: 0 16px;

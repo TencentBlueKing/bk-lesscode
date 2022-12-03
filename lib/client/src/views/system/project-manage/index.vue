@@ -132,7 +132,7 @@
             @value-change="handleCreateDialogToggle">
             <span slot="header">
                 {{ isCopy ? '复制应用' : '创建应用' }}
-                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块' }"></i>
+                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
             </span>
             <bk-form ref="createForm" :label-width="86" :rules="dialog.create.formRules" :model="dialog.create.formData">
                 <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
@@ -153,8 +153,8 @@
                         :maxlength="100">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="布局模板" style="margin-top: 10px" v-if="!isCopy" error-display-type="normal">
-                    <span class="layout-desc">可多选，作为创建应用页面时可供选择的布局模板，便于应用中统一修改与配置</span>
+                <bk-form-item label="导航布局" style="margin-top: 10px" v-if="!isCopy" error-display-type="normal">
+                    <span class="layout-desc">可多选，作为创建应用页面时可供选择的导航布局，便于在应用中统一配置导航</span>
                     <layout-thumb-list :list="defaultLayoutList" @change-checked="handleLayoutChecked" @set-default="handleLayoutDefault" />
                 </bk-form-item>
             </bk-form>
@@ -618,6 +618,7 @@
             handleDownloadSource (project) {
                 this.$refs.downloadDialog.isShow = true
                 this.$refs.downloadDialog.projectId = project.id
+                this.$refs.downloadDialog.projectCode = project.projectCode
                 this.$refs.downloadDialog.projectName = project.projectName
             },
             handleSetTemplate (project) {
@@ -722,6 +723,11 @@
 </style>
 
 <style lang="postcss" scoped>
+    .projects {
+        max-width: 1680px;
+        margin: 0 auto;
+    }
+
     .create-dropdown {
         /deep/ .bk-dropdown-trigger .bk-button {
             font-size: 14px;
@@ -787,12 +793,6 @@
 
     .rename-form {
         margin: 12px 0;
-    }
-
-    /deep/ .dialog-footer {
-        button + button {
-            margin-left: 4px;
-        }
     }
 
     /deep/ .delete-dialog-wrapper {

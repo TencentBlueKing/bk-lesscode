@@ -8,6 +8,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            padding: 16px 24px;
 
             .filter {
                 display: flex;
@@ -31,6 +32,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            padding: 16px 24px;
 
             .filter {
                 display: flex;
@@ -62,7 +64,7 @@
                 .chart-title {
                     font-size: 18px;
                     font-weight: 700;
-                    text-align: center;
+                    text-align: left;
                     margin-bottom: 20px;
                 }
                 .chart-container {

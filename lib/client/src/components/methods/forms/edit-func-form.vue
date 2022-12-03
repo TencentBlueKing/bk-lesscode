@@ -71,10 +71,15 @@
             >保存</bk-button>
             <bk-button
                 v-if="showSaveUse"
+                class="mr5"
                 :loading="isSubmitting"
                 :disabled="!formChanged"
                 @click="handleSaveChooseFunction"
             >保存并使用</bk-button>
+            <bk-button
+                :loading="isSubmitting"
+                @click="handleClose"
+            >取消</bk-button>
         </footer>
     </main>
 </template>
@@ -155,7 +160,14 @@
                         resolve(form)
                     } catch (err) {
                         if (err?.code === 499) {
-                            this.messageHtmlError(err.message)
+                            this
+                                .$refs
+                                .monaco
+                                .fixMethod()
+                                .then(() => this.handleSaveFunction())
+                                .catch(() => {
+                                    this.messageHtmlError(err.message || err)
+                                })
                         } else if (err?.content) {
                             this.messageError(err.content || err)
                         } else {

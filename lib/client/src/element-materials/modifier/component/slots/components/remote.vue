@@ -56,14 +56,28 @@
 
         methods: {
             remoteChange (name, val, type, methodData) {
-                const slot = {
-                    ...this.slotVal,
+                // 更新 options
+                this.updateOptions(Object.keys(val?.[0] || {}))
+                // 更新值
+                this.copySlotVal = {
+                    ...this.copySlotVal,
                     val,
                     payload: {
-                        methodData
+                        methodData: {
+                            ...this.methodPayload,
+                            ...methodData
+                        }
                     }
                 }
-                this.change(slot, this.copyType)
+                this.triggleUpdate()
+            },
+
+            triggleUpdate () {
+                this.change(this.copySlotVal, this.copyType)
+            },
+
+            updateOptions (optionList) {
+                this.$emit('option-change', optionList)
             }
         }
     }

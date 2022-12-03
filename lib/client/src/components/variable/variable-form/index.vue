@@ -10,10 +10,17 @@
         <section slot="content" class="variable-form-main">
             <bk-form :label-width="84" :model="copyForm" ref="variableForm">
                 <bk-form-item label="变量名称" :required="true" :rules="[requireRule('变量名称'), nameRule]" property="variableName" error-display-type="normal">
-                    <bk-input v-model="copyForm.variableName"></bk-input>
+                    <bk-input
+                        placeholder="由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符"
+                        v-model="copyForm.variableName"
+                    ></bk-input>
                 </bk-form-item>
                 <bk-form-item label="变量标识" :required="true" :rules="[requireRule('变量标识'), codeRule, repeatRule, projectOnlyRule, keyWordRule]" property="variableCode" error-display-type="normal">
-                    <bk-input v-model="copyForm.variableCode" :disabled="!isAdd"></bk-input>
+                    <bk-input
+                        placeholder="由大小写英文字母组成，长度小于20个字符。不能是 JavaScript 保留字，且应用内唯一"
+                        :disabled="!isAdd"
+                        v-model="copyForm.variableCode"
+                    ></bk-input>
                 </bk-form-item>
                 <bk-form-item label="初始类型" :required="true" property="valueType" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.valueType" @change="resetValue">
@@ -41,7 +48,9 @@
                         <bk-radio :value="0" class="type-radio">环境统一配置</bk-radio>
                         <bk-radio :value="1" :disabled="copyForm.valueType === 6">分环境配置</bk-radio>
                     </bk-radio-group> -->
-                    <component :is="renderComponent"
+                    <component
+                        ref="defaultValue"
+                        :is="renderComponent"
                         :value.sync="copyForm.defaultValue"
                         :type="copyForm.defaultValueType"
                         :value-type="copyForm.valueType"
@@ -299,10 +308,10 @@
                         defaultItemValue = false
                         break
                     case 3:
-                        defaultItemValue = '[]'
+                        defaultItemValue = '[\n  "Jack",\n  "Lucy",\n  "Lily"\n]'
                         break
                     case 4:
-                        defaultItemValue = '{}'
+                        defaultItemValue = '{\n  "Age": 18,\n  "Name": "Jack"\n}'
                         break
                     case 5:
                         defaultItemValue = ''
@@ -344,7 +353,14 @@
                                 })
                                 .catch((err) => {
                                     if (err?.code === 499) {
-                                        this.messageHtmlError(err.message || err)
+                                        this
+                                            .$refs
+                                            .defaultValue
+                                            .fixMethod()
+                                            .then(this.handleSave)
+                                            .catch(() => {
+                                                this.messageHtmlError(err.message || err)
+                                            })
                                     } else {
                                         this.messageError(err.message || err)
                                     }

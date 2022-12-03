@@ -322,7 +322,7 @@
         .tips {
             margin-top: 10px;
             line-height: 20px;
-            color: #ea3636;
+            color: #63656e;
             font-weight: 400;
         }
     }

@@ -1,76 +1,60 @@
 <template>
     <section>
-        <div
-            class="g-prop-sub-title g-mb6 g-mt8 subline"
-            v-bk-tooltips="{
-                content: '用于赋值的字段名，不选则为 id',
-                placements: ['left-start'],
-                boundary: 'window'
-            }"
-        >id 配置</div>
-        <bk-select
-            class="g-mb8 h32"
-            :value="params.idKey"
-            :loading="isLoading"
-            @change="val => changeParams('idKey', val)"
-        >
-            <span
-                v-bk-overflow-tips="{ content: params.idKey }"
-                class="display-value"
-                slot="trigger"
+        <template v-for="key in keys">
+            <div
+                class="g-prop-sub-title g-mb6 g-mt8 subline"
+                :key="key.id + 'label'"
+                v-bk-tooltips="{
+                    content: key.tips,
+                    placements: ['left-start'],
+                    boundary: 'window'
+                }"
+            >{{ key.label }}</div>
+            <bk-select
+                class="g-mb8 h32"
+                :key="key.id"
+                :value="value[key.id]"
+                :loading="isLoading"
+                @change="val => changeParams(key.id, val)"
             >
-                {{ params.idKey }}
-                <i class="bk-select-angle bk-icon icon-angle-down"></i>
-            </span>
-            <bk-option
-                v-for="option in options"
-                :key="option"
-                :id="option"
-                :name="option"
-            />
-        </bk-select>
-        <div
-            class="g-prop-sub-title g-mb6 g-mt8 subline"
-            v-bk-tooltips="{
-                content: '用于展示的字段名，不选则为 name',
-                placements: ['left-start'],
-                boundary: 'window'
-            }"
-        >name 配置</div>
-        <bk-select
-            class="h32"
-            :value="params.nameKey"
-            :loading="isLoading"
-            @change="val => changeParams('nameKey', val)"
-        >
-            <span
-                v-bk-overflow-tips="{ content: params.nameKey }"
-                class="display-value"
-                slot="trigger"
-            >
-                {{ params.nameKey }}
-                <i class="bk-select-angle bk-icon icon-angle-down"></i>
-            </span>
-            <bk-option
-                v-for="option in options"
-                :key="option"
-                :id="option"
-                :name="option"
-            />
-        </bk-select>
+                <span
+                    v-bk-overflow-tips="{ content: value[key.id] }"
+                    class="display-value"
+                    slot="trigger"
+                >
+                    {{ value[key.id] }}
+                    <i class="bk-select-angle bk-icon icon-angle-down"></i>
+                </span>
+                <bk-option
+                    v-for="option in options"
+                    :key="option"
+                    :id="option"
+                    :name="option"
+                />
+            </bk-select>
+        </template>
     </section>
 </template>
 
 <script lang="ts">
     import {
-        defineComponent
+        defineComponent,
+        PropType,
+        watch,
+        getCurrentInstance
     } from '@vue/composition-api'
+
+    interface IKey {
+        id: string;
+        label: string;
+        tips: string;
+    }
 
     export default defineComponent({
         props: {
-            params: {
-                type: Object,
-                default: () => ({})
+            keys: {
+                type: Array as PropType<IKey[]>,
+                default: () => ([])
             },
             options: {
                 type: Array,
@@ -79,13 +63,46 @@
             isLoading: {
                 type: Boolean,
                 default: false
+            },
+            value: {
+                type: Object,
+                default: () => ({})
+            },
+            valueType: {
+                type: String
             }
         },
 
-        setup (_, { emit }) {
+        setup (props, { emit }) {
+            const instance = getCurrentInstance()
+
             const changeParams = (key, value) => {
-                emit('change', { key, value })
+                triggerUpdata({
+                    ...props.value,
+                    [key]: value
+                })
             }
+
+            const triggerUpdata = (val) => {
+                emit('change', val)
+            }
+
+            watch(
+                () => props.options,
+                () => {
+                    let value = props.keys.reduce((acc, cur) => {
+                        acc[cur.id] = props.options.includes(props.value[cur.id]) && props.value[cur.id]
+                            ? props.value[cur.id]
+                            : props.options?.[0]
+                        return acc
+                    }, {})
+                    // 未展示状态下，不需要设置key
+                    if ((instance.proxy?.$el as HTMLElement)?.style?.display === 'none') {
+                        value = {}
+                    }
+                    triggerUpdata(value)
+                }
+            )
 
             return {
                 changeParams

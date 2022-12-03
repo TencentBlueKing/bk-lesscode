@@ -221,11 +221,11 @@
                         'res'
                     ]
                 }
-                downloadFile(getExportFunction(demoExportFunc), 'lesscode-export-demo-market-func.json')
+                downloadFile(getExportFunction(demoExportFunc), 'bklesscode-export-demo-market-func.json')
             },
 
             exportMarketFuncs () {
-                downloadFile(getExportFunction(this.cardList), 'lesscode-market-func.json')
+                downloadFile(getExportFunction(this.cardList), 'bklesscode-market-func.json')
             }
         }
     }

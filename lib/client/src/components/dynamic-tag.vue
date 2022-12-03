@@ -108,6 +108,11 @@
                 color: #c4c6cc;
             }
         }
+        &:after {
+            display: table;
+            content: '';
+            clear: both;
+        }
     }
     .new-tag-input {
         float: left;

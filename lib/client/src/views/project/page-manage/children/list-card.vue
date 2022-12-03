@@ -54,7 +54,7 @@
                                 <i class="bk-drag-icon bk-drag-more-dot"></i>
                             </span>
                             <ul class="bk-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(page.id)">
-                                <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page.content, page.id, page.styleSetting)">下载源码</a></li>
+                                <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page)">下载源码</a></li>
                                 <li><a href="javascript:;" @click="handleRename(page)">重命名</a></li>
                                 <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
                                 <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
