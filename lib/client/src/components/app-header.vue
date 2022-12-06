@@ -49,9 +49,7 @@
                     <router-link custom exact to="/help" v-slot="{ href, isActive }">
                         <a :class="['popover-link', { active: isActive }]" target="_blank" :href="href">产品文档</a>
                     </router-link>
-                    <!-- <router-link custom exact to="/help/changelog" v-slot="{ href, isActive }"> -->
                     <a class="popover-link" href="javascript:;" @click="show = !show">版本日志</a>
-                    <!-- </router-link> -->
                     <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/issues">问题反馈</a>
                     <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/blob/master/readme.md">开源社区</a>
                 </template>
