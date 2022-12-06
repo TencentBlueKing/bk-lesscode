@@ -136,31 +136,28 @@
             <div class="panel-item" v-for="(panel, index) in renderChoosenFunction.params" :key="index">
                 <variable-select
                     class="select-param"
-                    :options="{ formatInclude: ['value', 'variable', 'expression'] }"
+                    :options="{ formatInclude }"
                     :value="panel"
                     @change="({ format, code }) => handleChangeParam(index, { format, code, value: '' })"
                 >
                     <span
+                        v-bk-tooltips="{
+                            content: '1. 配置的执行参数，会在函数执行的时候传入<br>2. 参数选择【事件】类型，则无需填写，函数执行的时候会使用组件事件提供的值作为参数（如表格组件的 page-change 事件会提供参数）<br>3. 组件事件提供的参数是优先接收的，确保放到前边<br>4. 参数还可以选择手动输入值、使用变量值或表达式',
+                            width: '350px',
+                            placements: ['left'],
+                            boundary: 'window'
+                        }"
                         class="param-title"
                         slot="title"
-                    >参数</span>
+                    >
+                        <span class="title">参数（{{ computedParamKeys[index] }}）</span>
+                    </span>
                     <bk-input
                         :value="panel.value"
-                        @change="value => handleChangeParam(index, { value })"
+                        @change="value => handleInputParam(index, { value })"
+                        @blur="triggleUpdate"
                     />
                 </variable-select>
-                <i class="bk-icon icon-minus-circle" @click="handleDeleteParam(index)"></i>
-            </div>
-            <div
-                class="panel-add"
-                v-bk-tooltips="{
-                    content: '配置的执行参数，会在函数执行的时候传入，且优先级最高',
-                    placements: ['left'],
-                    boundary: 'window'
-                }"
-                @click="handlePlusParam"
-            >
-                <i class="bk-icon icon-plus-circle"></i>添加函数执行参数
             </div>
         </template>
 
@@ -197,6 +194,14 @@
             showAddParams: {
                 type: Boolean,
                 default: true
+            },
+            formatInclude: {
+                type: Array,
+                default: () => (['value', 'variable', 'expression'])
+            },
+            defaultVariableFormat: {
+                type: String,
+                default: 'value'
             }
         },
 
@@ -205,7 +210,7 @@
                 functionTypeList: [
                     { name: 'functionTemplate', label: '事件模板' },
                     { name: 'functionMarket', label: '函数市场' },
-                    { name: 'functionList', label: '应用函数库' }
+                    { name: 'functionList', label: '应用函数管理' }
                 ],
                 searchFunctionName: '',
                 functionType: 'functionList',
@@ -250,6 +255,17 @@
                         break
                 }
                 return functionData || []
+            },
+
+            computedParamKeys () {
+                let functionData = {}
+                this.funcGroups.forEach((funcGroup) => {
+                    const usedFunction = funcGroup.children.find(functionData => functionData.funcCode === this.renderChoosenFunction.methodCode)
+                    if (usedFunction) {
+                        functionData = usedFunction
+                    }
+                }, {})
+                return functionData?.funcParams || []
             }
         },
 
@@ -257,6 +273,21 @@
             this.renderChoosenFunction = {
                 methodCode: this.choosenFunction?.methodCode || '',
                 params: [...this.choosenFunction?.params || []]
+            }
+
+            // 如果有选择函数，需要查找到对应的 params
+            if (this.renderChoosenFunction.methodCode) {
+                this.renderChoosenFunction.params = this.computedParamKeys.map((paramKey, index) => {
+                    let param = {
+                        value: '',
+                        code: '',
+                        format: this.defaultVariableFormat
+                    }
+                    if (this.choosenFunction?.params?.[index]) {
+                        param = this.choosenFunction.params[index]
+                    }
+                    return param
+                })
             }
         },
 
@@ -273,15 +304,17 @@
             },
 
             triggleUpdate () {
-                this.$emit('change', JSON.parse(JSON.stringify(this.renderChoosenFunction)))
+                if (window.event.sourceCapabilities) {
+                    this.$emit('change', JSON.parse(JSON.stringify(this.renderChoosenFunction)))
+                }
             },
 
             handleChooseFunction (functionData) {
                 this.renderChoosenFunction.methodCode = functionData.funcCode
-                this.renderChoosenFunction.params = functionData?.funcParams?.map((funcParam) => ({
-                    value: funcParam,
+                this.renderChoosenFunction.params = functionData?.funcParams?.map(() => ({
+                    value: '',
                     code: '',
-                    format: 'value'
+                    format: this.defaultVariableFormat
                 }))
                 this.triggleUpdate()
                 this.handleClose()
@@ -292,18 +325,8 @@
                 this.triggleUpdate()
             },
 
-            handleDeleteParam (index) {
-                this.renderChoosenFunction.params.splice(index, 1)
-                this.triggleUpdate()
-            },
-
-            handlePlusParam () {
-                this.renderChoosenFunction.params.push({
-                    value: '',
-                    code: '',
-                    format: 'value'
-                })
-                this.triggleUpdate()
+            handleInputParam (index, val) {
+                Object.assign(this.renderChoosenFunction.params[index], val)
             },
 
             handleEditFunction (functionData) {
@@ -347,6 +370,7 @@
 
             handleClear () {
                 this.renderChoosenFunction.methodCode = ''
+                this.renderChoosenFunction.params = []
                 this.$emit('clear')
             }
         }
@@ -387,6 +411,10 @@
             .param-title {
                 line-height: 25px;
             }
+            .title {
+                border-bottom: 1px dashed #979ba5;
+                cursor: pointer;
+            }
             /deep/ .display-content {
                 margin: 0;
             }
@@ -406,6 +434,10 @@
         line-height: 16px;
         cursor: pointer;
         color: #3A84FF;
+        &.disabled {
+            color: #a3c5fd;
+            cursor: not-allowed;
+        }
         i {
             padding-right: 2px;
         }

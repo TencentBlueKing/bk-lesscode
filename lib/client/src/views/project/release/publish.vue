@@ -197,7 +197,7 @@
                         <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
                             {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? `部署中...` : '部署'}}
                         </bk-button>
-                        <span :class="$style['release-tips']">由蓝鲸开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理</span>
+                        <span :class="$style['release-tips']">由PaaS平台-开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理</span>
                     </div>
                 </div>
             </div>
@@ -291,6 +291,7 @@
                 disabledRelease: false,
                 createLinkUrl: '',
                 latestInfo: {},
+                newVersionInfo: {},
                 stagInfo: {},
                 prodInfo: {},
                 envMap: {
@@ -369,6 +370,7 @@
                 const version = this.versionForm.releaseVersion
                 if (!version) {
                     tips = '部署版本号必填'
+                    tips += this.newVersionInfo?.version ? `，上一次部署版本号为：${this.newVersionInfo?.version}` : ''
                 } else if (!/^[A-za-z0-9\-\.\_]{1,40}$/.test(version)) {
                     tips = '仅支持英文、数字、下划线、中划线和英文句号'
                 }
@@ -419,6 +421,7 @@
                 this.prodInfo = res.prodInfo || {}
                 this.stagInfo = res.stagInfo || {}
                 this.latestInfo = res.latestInfo || {}
+                this.newVersionInfo = res.newVersionInfo || {}
                 this.createLinkUrl = res.createLinkUrl
             },
 
@@ -568,12 +571,12 @@
                             deployId: this.latestInfo.deployId
                         })
                         if ((detail.status === 'running' || detail.status === 'pending')) {
-                            // 如果超过10分钟，判定为失败
+                            // 如果超过30分钟，判定为失败
                             const tmpTime = this.latestInfo.createTime || this.latestInfo.updateTime
                             const createTime = dayjs(tmpTime).format('YYYY-MM-DD HH:mm:ss') || ''
                             const createTimeUnix = new Date(createTime).getTime()
                             const currentTimeUnix = new Date().getTime()
-                            if ((currentTimeUnix - createTimeUnix) > 600000) {
+                            if ((currentTimeUnix - createTimeUnix) > 1800000) {
                                 detail.status = 'failed'
                             }
                         }

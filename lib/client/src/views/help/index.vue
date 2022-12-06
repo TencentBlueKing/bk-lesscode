@@ -13,43 +13,40 @@
     <main class="help-main">
         <div class="main-container">
             <aside class="main-left-sidebar">
-                <div class="main-top">
-                    <div class="page-title">
-                        <!-- <span class="bk-drag-icon app-logo" @click="jump('projects')">
-                            <svg aria-hidden="true" width="22" height="22">
-                                <use xlink:href="#bk-drag-logo"></use>
-                            </svg>
-                        </span> -->
-                        <div class="app-name">
-                            产品使用文档
-                        </div>
-                    </div>
-                </div>
                 <div class="sidebar-panel">
                     <div class="sidebar-bd">
-                        <div class="nav-item">
-                            <div class="nav-title no-groupid"></div>
-                            <div class="nav-content" :class="$route.name === 'intro' ? 'nav-active' : ''" @click="jump('intro')">介绍</div>
-                            <div class="nav-content" :class="$route.name === 'start' ? 'nav-active' : ''" @click="jump('start')">快速上手</div>
-                            <div class="nav-content" :class="$route.name === 'grid' ? 'nav-active' : ''" @click="jump('grid')">栅格布局</div>
-                            <div class="nav-content" :class="$route.name === 'freeLayout' ? 'nav-active' : ''" @click="jump('freeLayout')">自由布局</div>
-                            <div class="nav-content" :class="$route.name === 'interactive' ? 'nav-active' : ''" @click="jump('interactive')">交互式组件</div>
-                            <div class="nav-content" :class="$route.name === 'layout-guide' ? 'nav-active' : ''" @click="jump('layout-guide')">布局模板使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'custom' ? 'nav-active' : ''" @click="jump('custom')">自定义组件开发指引</div>
-                            <div class="nav-content" :class="$route.name === 'method' ? 'nav-active' : ''" @click="jump('method')">函数使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'variable' ? 'nav-active' : ''" @click="jump('variable')">变量使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'directive' ? 'nav-active' : ''" @click="jump('directive')">指令使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'template-project' ? 'nav-active' : ''" @click="jump('template-project')">应用模板使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'template-page' ? 'nav-active' : ''" @click="jump('template-page')">页面模板使用指引</div>
-                            <div class="nav-content" :class="$route.name === 'develop' ? 'nav-active' : ''" @click="jump('develop')">二次开发指引</div>
-                            <div class="nav-content" :class="$route.name === 'table-search' ? 'nav-active' : ''" @click="jump('table-search')">表格查询实战案例</div>
-                            <div class="nav-content" :class="$route.name === 'changelog' ? 'nav-active' : ''" @click="jump('changelog')">更新日志</div>
+                        <div class="nav-list">
+                            <div class="nav-item" v-for="item in navList" :key="item.name">
+                                <div class="item-title">{{item.title}}</div>
+                                <template v-if="item.tree">
+                                    <bk-big-tree
+                                        ext-cls="tree-cls"
+                                        ref="trees"
+                                        selectable
+                                        enable-title-tip
+                                        default-expand-all
+                                        :data="item.childs"
+                                        @select-change="handlerSelectTreeData">
+                                    </bk-big-tree>
+                                </template>
+                                <template v-else>
+                                    <div class="nav-child"
+                                        v-for="child in item.childs"
+                                        :class="$route.name === child.name ? 'nav-active' : ''"
+                                        :key="child.name"
+                                        @click="jump(child.name)">
+                                        {{child.title}}
+                                    </div>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
             </aside>
             <div class="main-content">
-                <router-view :key="$route.path"></router-view>
+                <div class="container">
+                    <router-view :key="$route.path"></router-view>
+                </div>
             </div>
         </div>
     </main>
@@ -59,6 +56,101 @@
     import { getActualTop } from '@/common/util'
 
     export default {
+        data () {
+            return {
+                navList: [
+                    {
+                        title: '产品使用文档',
+                        name: 'doc',
+                        childs: [{
+                            title: '产品简介',
+                            name: 'intro'
+                        }, {
+                            title: '快速上手',
+                            name: 'start'
+                        }]
+                    },
+                    {
+                        title: '应用开发',
+                        name: 'app',
+                        tree: true,
+                        childs: [{
+                            name: '页面布局',
+                            level: 0,
+                            id: 'layout',
+                            children: [{
+                                name: '栅格布局',
+                                level: 1,
+                                id: 'grid'
+                            }, {
+                                name: '自由布局',
+                                level: 1,
+                                id: 'freeLayout'
+                            }, {
+                                name: '导航布局',
+                                level: 1,
+                                id: 'layout-guide'
+                            }]
+                        }, {
+                            name: '页面画布',
+                            level: 0,
+                            id: 'canvas',
+                            children: [{
+                                name: '变量使用指引',
+                                level: 1,
+                                id: 'variable'
+                            }, {
+                                name: '交互式组件使用指引',
+                                level: 1,
+                                id: 'interactive'
+                            }]
+                        }, {
+                            name: '交互函数',
+                            level: 0,
+                            id: 'function',
+                            children: [{
+                                name: '函数使用指引',
+                                level: 1,
+                                id: 'method'
+                            }]
+                        }, {
+                            name: '二次开发指引',
+                            level: 0,
+                            id: 'develop'
+                        }, {
+                            name: '自定义组件开发指引',
+                            level: 0,
+                            id: 'custom'
+                        }]
+                    },
+                    {
+                        title: '模板市场',
+                        name: 'template',
+                        childs: [{
+                            title: '应用模板使用指引',
+                            name: 'template-project'
+                        }, {
+                            title: '页面模板使用指引',
+                            name: 'template-page'
+                        }]
+                    }, {
+                        title: '实战案例',
+                        name: 'case',
+                        childs: [{
+                            title: '课程实战文档和视频',
+                            name: 'courses'
+                        }]
+                    }, {
+                        title: '日志',
+                        name: 'log',
+                        childs: [{
+                            title: '更新日志',
+                            name: 'changelog'
+                        }]
+                    }
+                ]
+            }
+        },
         watch: {
             '$route' (to, from) {
                 this.adjustAnchor()
@@ -66,6 +158,10 @@
         },
         mounted () {
             this.adjustAnchor()
+
+            setTimeout(() => {
+                document.querySelector('.nav-list .nav-child.nav-active')?.scrollIntoView()
+            }, 0)
         },
         methods: {
             adjustAnchor () {
@@ -98,9 +194,18 @@
              * @param {string} routeName routeName
              */
             jump (routeName) {
+                this.$refs.trees[0].setSelected(null)
                 this.$router.push({
                     name: routeName
                 })
+            },
+
+            handlerSelectTreeData (data) {
+                if (data.isLeaf) {
+                    this.$router.push({
+                        name: data.id
+                    })
+                }
             }
         }
     }
@@ -108,4 +213,54 @@
 
 <style lang="postcss">
     @import './index.css';
+    .container{
+        width: 1000px;
+        margin: 0 auto;
+    }
+    .tree-cls{
+        .bk-big-tree-node{
+            padding-left: 20px;
+            height: 40px;
+            line-height: 40px;
+            &:hover {
+                background-color: #f0f1f5;
+            }
+        }
+        .is-leaf{
+            .node-content{
+                padding-left: 20px;
+            }
+        }
+        .is-selected{
+            color: #2d8cf0;
+            background: #f0faff;
+        }
+    }
+    .nav-list{
+        .nav-item{
+            .item-title{
+                padding-left: 20px;
+                padding-bottom: 10px;
+                font-weight: 600;
+                font-size: 19px;
+                color: #313238;
+            }
+            .nav-child{
+                padding-left: 20px;
+                font-size: 14px;
+                line-height: 40px;
+                cursor: pointer;
+                .bk-drag-icon {
+                    font-size: 24px;
+                }
+                .name {
+                    margin-left: 10px;
+                }
+                &:hover {
+                    background-color: #f0f1f5;
+                }
+            }
+        }
+    }
+
 </style>

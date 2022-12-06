@@ -168,7 +168,7 @@
                             <i class="bk-drag-icon bk-drag-more-dot"></i>
                         </span>
                         <ul class="menu-list" slot="content">
-                            <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleDownloadSource(row.content, row.id, row.styleSetting)">下载源码</a></li>
+                            <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleDownloadSource(row)">下载源码</a></li>
                             <li><a href="javascript:;" @click="handleRename(row)">重命名</a></li>
                             <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleCopy(row)">复制</a></li>
                             <li><a href="javascript:;" @click="handleEditRoute(row)">修改路由</a></li>

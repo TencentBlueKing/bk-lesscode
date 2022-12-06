@@ -6,18 +6,6 @@
                 title="返回页面列表"
                 @click="handleBackPageList" />
             <span class="seperate-line">|</span>
-            <span
-                class="bk-drag-icon template-logo"
-                title="返回应用列表"
-                @click="handleBackProjectList">
-                <svg
-                    aria-hidden="true"
-                    width="16"
-                    height="16">
-                    <use xlink:href="#bk-drag-logo" />
-                </svg>
-            </span>
-            <span class="seperate-line">|</span>
             <div
                 id="editPageSwitchPage"
                 class="select-page-box">
@@ -170,14 +158,6 @@
                     }
                 })
             },
-            /**
-             * @desc 返回用户应用列表
-             */
-            handleBackProjectList () {
-                this.$router.push({
-                    name: 'projects'
-                })
-            },
             toggleSelect (isShow) {
                 if (isShow) {
                     this.selectPageId = parseInt(this.$route.params.pageId)
@@ -265,7 +245,7 @@
             .seperate-line {
                 width: 1px;
                 color: #d8d8d8;
-                margin-left: -2px;
+                margin: 0 2px 0 -2px;
             }
 
             .name-content {
@@ -299,8 +279,9 @@
                 flex: 1;
                 align-items: center;
                 height: 100%;
+                margin: 0 4px;
                 .select-page {
-                    width: 290px;
+                    width: 350px;
                     margin-left: 5px;
                     border: none;
                     background-color: #f0f1f5;
@@ -315,7 +296,7 @@
             }
         }
     }
-    
+
     .select-page-dropdown {
         .bk-select-search-input {
             padding: 0 10px 0 30px;

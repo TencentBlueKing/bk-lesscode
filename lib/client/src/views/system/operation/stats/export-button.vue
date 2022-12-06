@@ -3,8 +3,7 @@
 </template>
 
 <script>
-    import xlsx from 'node-xlsx'
-    import { downloadFile } from '@/common/util'
+    import * as XLSX from 'xlsx'
 
     export default {
         props: {
@@ -90,9 +89,7 @@
                 })
 
                 const data = [header, ...body]
-
-                const buffer = xlsx.build([{ name: this.tableSheetName, data }]) // Returns a buffer
-                downloadFile(buffer, `lesscode-stats-${this.name}.xlsx`)
+                this.generateXlsx(`lesscode-stats-${this.name}.xlsx`, data, this.tableSheetName)
             },
             handleCommonTimeDimExport () {
                 const blocks = []
@@ -117,9 +114,13 @@
                         blocks.push([])
                     }
                 })
-
-                const buffer = xlsx.build([{ name: '按时间', data: blocks }])
-                downloadFile(buffer, `lesscode-stats-${this.name}-${this.dim}.xlsx`)
+                this.generateXlsx(`lesscode-stats-${this.name}-${this.dim}.xlsx`, blocks, '按时间')
+            },
+            generateXlsx (fileName, data, sheetName) {
+                const wb = XLSX.utils.book_new()
+                const ws = XLSX.utils.aoa_to_sheet(data)
+                XLSX.utils.book_append_sheet(wb, ws, sheetName)
+                XLSX.writeFile(wb, fileName)
             },
             fistLetterUpper (str) {
                 return str.charAt(0).toUpperCase() + str.slice(1)

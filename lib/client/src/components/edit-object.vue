@@ -6,7 +6,12 @@
             @input="getDisplayJson"
             @blur="formatterValue"
         ></bk-input>
-        <json-viewer :value="displayJSON" :expand-depth="5" class="json-viewer" />
+        <json-viewer
+            :value="displayJSON"
+            :expand-depth="5"
+            :show-array-index="false"
+            class="json-viewer"
+        />
     </section>
 </template>
 

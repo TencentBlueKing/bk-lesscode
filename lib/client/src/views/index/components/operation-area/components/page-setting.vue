@@ -281,7 +281,7 @@
                     settingFields: [
                         {
                             id: 'layoutId',
-                            name: '布局模板',
+                            name: '导航布局',
                             type: 'select',
                             props: {
                                 clearable: false
@@ -408,8 +408,9 @@
                 return field.type === 'input' ? 'bk-input' : 'pageRouterSelect'
             },
             handleCancel () {
-                if (this.editField.field.from === 'style') this.page.styleSetting = JSON.parse(JSON.stringify(this.styleData))
+                if (this.editField.field.from === 'style') Object.assign(this.page.styleSetting, JSON.parse(JSON.stringify(this.styleData)))
                 this.$delete(this.errors, this.editField.field.id)
+                console.log('cancel style')
                 this.unsetEditField()
             },
             async handleConfirm () {
@@ -417,7 +418,7 @@
                 if (field.id === 'layoutId') {
                     this.$bkInfo({
                         title: '确认修改？',
-                        subTitle: '当前使用的布局模板未保存的配置会丢失',
+                        subTitle: '当前使用的导航布局未保存的配置会丢失',
                         theme: 'primary',
                         confirmFn: async () => {
                             await this.handleConfirmSave()
@@ -662,6 +663,7 @@
         /deep/ .style-setting {
             margin-left: 0;
             padding: 0 0;
+            width: auto;
             .style-title{
                 display: none;
               }
@@ -677,6 +679,7 @@
             .modifier-style {
                 margin-left: 0;
                 padding: 0 0;
+                width: auto;
               }
             .item-content div {
                 text-align: left !important;

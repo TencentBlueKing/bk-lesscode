@@ -120,7 +120,7 @@
                             'padding: 2px 5px; background: #42c02e; color: #fff; border-radius: 0 3px 3px 0; font-weight: bold;',
                             event)
             }
-            
+
             const activeLogCallback = event => {
                 console.log('\n')
                 console.log(`%c>> ${new Date().toString().slice(0, 25)}`,
@@ -185,7 +185,7 @@
         mounted () {
             this.componentData.mounted(this.$refs.root)
             LC._mounted()
-            
+
             const mousedownCallback = () => {
                 setMousedown(true)
             }
@@ -195,11 +195,11 @@
             const resetCallback = () => {
                 LC.clearMenu()
             }
-            
+
             document.body.addEventListener('mousedown', mousedownCallback)
             document.body.addEventListener('mouseup', mouseupCallback)
             document.body.addEventListener('click', resetCallback)
-            
+
             this.$once('hook:beforeDestroy', () => {
                 document.body.removeEventListener('mousedown', mousedownCallback)
                 document.body.removeEventListener('mouseup', mouseupCallback)
@@ -229,12 +229,14 @@
                     top: componentTop,
                     left: componentLeft
                 } = $childEl.getBoundingClientRect()
-                
+
                 const styles = {}
-                if (componentTop > boxTop + 3) {
+                // 如果被复制的组件已经有marginLeft或marginTop， 则不覆盖
+                const { marginTop: childMarginTop, marginLeft: childMarginLeft } = childNode.renderStyles || {}
+                if (componentTop > boxTop + 3 && !childMarginTop) {
                     styles['marginTop'] = '8px'
                 }
-                if (componentLeft > boxLeft + 3) {
+                if (componentLeft > boxLeft + 3 && !childMarginLeft) {
                     styles['marginLeft'] = '8px'
                 }
                 if (Object.keys(styles).length > 0) {

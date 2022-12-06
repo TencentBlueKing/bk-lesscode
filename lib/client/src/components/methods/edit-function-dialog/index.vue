@@ -12,7 +12,7 @@
                 <section slot="aside" class="func-left">
                     <h3 class="left-title">
                         <div class="title-name">
-                            <span class="function-lib">函数库</span>
+                            <span class="function-lib">函数管理</span>
                             <version-tag :version-name="versionName" />
                         </div>
                         <bk-popconfirm
@@ -458,6 +458,5 @@
     }
     .add-function-group {
         width: 340px;
-        margin-top: 6px;
     }
 </style>

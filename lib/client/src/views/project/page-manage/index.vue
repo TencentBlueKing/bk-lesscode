@@ -249,8 +249,8 @@
                 this.$refs.pageDialog.dialog.formData.pageRoute = ''
                 this.$refs.pageDialog.dialog.visible = true
             },
-            async handleDownloadSource (targetData, pageId, styleSetting) {
-                if (!targetData) {
+            async handleDownloadSource (page) {
+                if (!page.content) {
                     this.$bkMessage({
                         theme: 'error',
                         message: '该页面为空页面，无源码生成'
@@ -260,13 +260,13 @@
                 this.$store.dispatch('vueCode/getPageCode', {
                     projectId: this.projectId,
                     versionId: this.versionId,
-                    pageId,
-                    styleSetting,
+                    pageId: page.id,
+                    styleSetting: page.styleSetting,
                     from: 'download_page'
                 }).then((res) => {
                     const downlondEl = document.createElement('a')
                     const blob = new Blob([res])
-                    downlondEl.download = `bklesscode-${pageId}.vue`
+                    downlondEl.download = `bklesscode-page-${page.pageCode}.vue`
                     downlondEl.href = URL.createObjectURL(blob)
                     downlondEl.style.display = 'none'
                     document.body.appendChild(downlondEl)
@@ -400,6 +400,7 @@
                 this.$refs.downloadDialog.isShow = true
                 this.$refs.downloadDialog.projectId = this.projectId
                 this.$refs.downloadDialog.version = this.versionId ? `${this.currentVersion.id}:${this.currentVersion.version}` : ''
+                this.$refs.downloadDialog.projectCode = this.currentProject.projectCode
                 this.$refs.downloadDialog.projectName = this.currentProject.projectName
             },
             handleSearch (clear = false) {

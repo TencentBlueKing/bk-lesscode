@@ -10,7 +10,12 @@
                     @input="getDisplayJson(item.key, ...arguments)"
                     @blur="formatterValue(item.key)"
                 ></bk-input>
-                <json-viewer :value="displayJSON[item.key]" :expand-depth="5" class="json-viewer" />
+                <json-viewer
+                    :value="displayJSON[item.key]"
+                    :expand-depth="5"
+                    :show-array-index="false"
+                    class="json-viewer"
+                />
             </main>
         </template>
     </section>
@@ -91,7 +96,7 @@
             getErrMessage () {
                 const messageMap = {
                     3: '请输入 Array 格式数据',
-                    4: '请输入 Json 格式数据'
+                    4: '请输入 JSON 格式数据'
                 }
                 return messageMap[this.valueType]
             }
@@ -103,6 +108,7 @@
     .variable-txt {
         display: inline-block;
         font-size: 12px;
+        color: #63656e;
     }
     .variable-code {
         display: flex;

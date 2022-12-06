@@ -13,7 +13,7 @@
         "/create_project_by_app": {
             "post": {
                 "operationId": "create_project_by_app",
-                "description": "开发者中心创建lesscode类型应用时同步创建lesscode应用",
+                "description": "开发者中心创建LessCode类型应用时同步创建LessCode应用",
                 "tags": [],
                 "responses": {
                     "default": {

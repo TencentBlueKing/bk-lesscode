@@ -46,7 +46,7 @@
                 :form.sync="form"
                 :function-list="functionList"
                 :variable-list="variableList"
-                class="mt20"
+                class="monaco"
                 ref="monaco"
             ></form-monaco>
         </section>
@@ -140,7 +140,14 @@
                     this.$emit('success-submit')
                 }).catch((err) => {
                     if (err?.code === 499) {
-                        this.messageHtmlError(err.message)
+                        this
+                            .$refs
+                            .monaco
+                            .fixMethod()
+                            .then(this.handleSubmit)
+                            .catch(() => {
+                                this.messageHtmlError(err.message || err)
+                            })
                     } else {
                         this.messageError(err.message || err)
                     }
@@ -162,7 +169,14 @@
                     this.$emit('success-submit')
                 }).catch((err) => {
                     if (err?.code === 499) {
-                        this.messageHtmlError(err.message)
+                        this
+                            .$refs
+                            .monaco
+                            .fixMethod()
+                            .then(this.handleSubmit)
+                            .catch(() => {
+                                this.messageHtmlError(err.message || err)
+                            })
                     } else {
                         this.messageError(err.message || err)
                     }
@@ -193,10 +207,10 @@
 <style lang="postcss" scoped>
     .func-form-home {
         padding: 20px 30px;
-        /deep/ .func-form-item {
-            margin-top: 20px;
+        ::v-deep .func-form-item {
+            margin-top: 20px !important;
         }
-        /deep/ .func-title {
+        .func-title {
             margin: 19px 0 17px;
             padding-left: 4px;
         }
@@ -206,5 +220,8 @@
         button {
             margin-right: 10px;
         }
+    }
+    .monaco {
+        margin-top: 20px;
     }
 </style>

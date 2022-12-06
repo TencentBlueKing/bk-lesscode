@@ -1,32 +1,22 @@
 <template>
-    <section>
-        <remote
-            v-bind="$attrs"
-            :payload="methodPayload"
-            :default-value="copySlotVal.val"
-            :remote-validate="slotConfig.remoteValidate"
-            :change="remoteChange"
-            :describe="slotConfig"
-            :is-loading.sync="isLoading"
-        />
-        <select-key
-            :params="methodPayload.keys"
-            :options="optionList"
-            :is-loading="isLoading"
-            @change="changeParams"
-        />
-    </section>
+    <remote
+        v-bind="$attrs"
+        :payload="methodPayload"
+        :default-value="copySlotVal.val"
+        :remote-validate="slotConfig.remoteValidate"
+        :change="remoteChange"
+        :describe="slotConfig"
+        :is-loading.sync="isLoading"
+    />
 </template>
 
 <script>
     import Remote from '@/element-materials/modifier/component/props/components/strategy/remote'
     import safeStringify from '@/common/json-safe-stringify'
-    import SelectKey from './common/select-key.vue'
 
     export default {
         components: {
-            Remote,
-            SelectKey
+            Remote
         },
 
         props: {
@@ -50,7 +40,6 @@
         data () {
             return {
                 copySlotVal: JSON.parse(safeStringify(this.slotVal)),
-                optionList: [],
                 isLoading: false
             }
         },
@@ -68,27 +57,17 @@
         },
 
         methods: {
-            changeParams ({ key, value }) {
-                this.copySlotVal.payload.methodData.keys = {
-                    ...this.copySlotVal.payload.methodData.keys,
-                    [key]: value
-                }
-                this.triggleUpdate()
-            },
-
             remoteChange (name, val, type, methodData) {
-                this.optionList = Object.keys(val?.[0] || {})
+                // 更新 options
+                this.updateOptions(Object.keys(val?.[0] || {}))
+                // 更新值
                 this.copySlotVal = {
                     ...this.copySlotVal,
                     val,
                     payload: {
                         methodData: {
                             ...this.methodPayload,
-                            ...methodData,
-                            keys: {
-                                idKey: this.methodPayload?.keys?.idKey || this.optionList[0],
-                                nameKey: this.methodPayload?.keys?.nameKey || this.optionList[0]
-                            }
+                            ...methodData
                         }
                     }
                 }
@@ -97,6 +76,10 @@
 
             triggleUpdate () {
                 this.change(this.copySlotVal, this.copyType)
+            },
+
+            updateOptions (optionList) {
+                this.$emit('option-change', optionList)
             }
         }
     }

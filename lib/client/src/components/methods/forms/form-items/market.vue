@@ -14,10 +14,13 @@
                         :key="option.id"
                         :id="option.id"
                         :name="option.funcName">
-                        <div v-bk-tooltips="getTips(option.funcSummary)">{{ option.funcName }}</div>
+                        <span class="market-function-name">
+                            {{ option.funcName }}
+                            <i class="bk-icon icon-info" v-bk-tooltips="getTips(option.funcSummary)"></i>
+                        </span>
                     </bk-option>
                 </bk-select>
-                <i class="bk-icon icon-info">可使用函数市场模板快速创建，注意：选择后会覆盖当前函数的数据</i>
+                <i class="bk-icon icon-info mt10">可使用函数市场模板快速创建，注意：选择后会覆盖当前函数的数据</i>
             </bk-form-item>
         </bk-form>
         <h5 class="func-title">函数信息</h5>
@@ -46,7 +49,7 @@
                 const tips = transformTipsWidth(funcSummary, 350)
                 let tipObj = {
                     content: tips,
-                    placement: 'right',
+                    placement: 'left',
                     boundary: 'window'
                 }
                 if (typeof tips === 'object') {
@@ -98,11 +101,16 @@
         font-weight: 700;
         font-size: 14px;
     }
+    .market-function-name {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+    }
     .icon-info {
         display: block;
         text-align: left;
         line-height: 16px;
-        margin-top: 8px;
         font-size: 12px;
         &:before {
             margin-right: 4px;

@@ -12,7 +12,7 @@
         </section>
         <section class="monaco-editor"
             :style="{
-                height: calcSize(renderHeight),
+                height: `calc(${calcSize(renderHeight)} - 40px)`,
                 width: calcSize(renderWidth),
                 position: 'relative'
             }"
@@ -52,6 +52,14 @@
             proposals: {
                 type: Array,
                 default: () => ([])
+            },
+            // 编辑器代码异常信息
+            modelMarkers: {
+                type: Array,
+                default: () => ([])
+            },
+            fullScreenEle: {
+                type: HTMLDivElement
             }
         },
 
@@ -98,21 +106,41 @@
                 this.$nextTick(() => {
                     this.resize()
                 })
+            },
+
+            modelMarkers () {
+                this.setModelMarkers()
             }
         },
 
         mounted () {
             this.initMonaco()
-            window.addEventListener('resize', this.handleFullScreen)
             this.createDependencyProposals()
-        },
 
-        beforeDestroy () {
-            window.removeEventListener('resize', this.handleFullScreen)
-            setTimeout(() => {
-                this.editor?.dispose?.()
-                this.proposalsRef?.dispose?.()
-            }, 200)
+            // 全局监听事件
+            const handleMonacoRejection = (event) => {
+                if (event.reason && event.reason.name === 'Canceled') {
+                    // monaco editor promise cancelation
+                    event.preventDefault()
+                }
+            }
+            const handleEsc = (event) => {
+                if (event.code === 'Escape') {
+                    this.exitFullScreen()
+                }
+            }
+            window.addEventListener('unhandledrejection', handleMonacoRejection)
+            window.addEventListener('keyup', handleEsc)
+            // 销毁
+            this.$once('hook:beforeDestroy', () => {
+                window.removeEventListener('unhandledrejection', handleMonacoRejection)
+                window.removeEventListener('keyup', handleEsc)
+
+                setTimeout(() => {
+                    this.editor?.dispose?.()
+                    this.proposalsRef?.dispose?.()
+                }, 200)
+            })
         },
 
         methods: {
@@ -155,6 +183,7 @@
                         onDidChangeStorage () {}
                     }
                 })
+
                 this.editor.onDidChangeModelContent(event => {
                     const value = this.editor.getValue()
                     if (this.value !== value) {
@@ -166,6 +195,10 @@
                 this.$nextTick(() => {
                     this.editor.setValue(this.value)
                     this.editor.getAction('editor.action.formatDocument').run()
+                    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+                        noSemanticValidation: true,
+                        noSyntaxValidation: true
+                    })
                 })
             },
 
@@ -191,53 +224,61 @@
                 })
             },
 
-            handleFullScreen () {
-                if (document.fullscreenElement) {
-                    this.isFull = true
-                    return true
-                } else if (this.isFull) {
-                    this.isFull = false
-                    this.renderWidth = this.initWidth
-                    this.renderHeight = this.initHeight
-                    this.$nextTick().then(() => {
-                        this.editor.layout()
-                    })
-                }
-                return false
+            setModelMarkers () {
+                const markers = this.modelMarkers?.map(err => ({
+                    startLineNumber: err.line,
+                    endLineNumber: err.endLine,
+                    startColumn: err.column,
+                    endColumn: err.endColumn,
+                    message: `${err.message} (${err.ruleId})`,
+                    severity: 8
+                }))
+                const model = this.editor.getModel()
+                monaco.editor.setModelMarkers(model, 'ESLint', markers)
+            },
+
+            setPosition (position) {
+                this.editor?.focus()
+                this.editor?.setPosition(position)
             },
 
             exitFullScreen () {
-                const exitMethod = document.exitFullscreen // W3C
-                if (exitMethod) {
-                    exitMethod.call(document)
-                    this.$nextTick().then(() => {
-                        this.renderWidth = this.initWidth
-                        this.renderHeight = this.initHeight
-                        this.$emit('exitFullScreen')
-                    })
-                }
+                if (!this.isFull) return
+
+                this.isFull = false
+                const element = this.fullScreenEle || this.$el
+                element.style.position = this.openFullScreen.originStyle.position
+                element.style.top = this.openFullScreen.originStyle.top
+                element.style.bottom = this.openFullScreen.originStyle.bottom
+                element.style.left = this.openFullScreen.originStyle.left
+                element.style.right = this.openFullScreen.originStyle.right
+                element.style.zIndex = this.openFullScreen.originStyle.zIndex
+                element.style.margin = this.openFullScreen.originStyle.margin
+                element.style.height = this.openFullScreen.originStyle.height
+                element.style.width = this.openFullScreen.originStyle.width
+                this.$nextTick().then(() => {
+                    this.renderWidth = this.initWidth
+                    this.renderHeight = this.initHeight
+                    this.editor.layout()
+                    this.$emit('exitFullScreen')
+                })
             },
 
             openFullScreen () {
-                const element = this.$el
-                const fullScreenMethod = element.requestFullScreen // W3C
-                    || element.webkitRequestFullScreen // FireFox
-                    || element.webkitExitFullscreen // Chrome等
-                    || element.msRequestFullscreen // IE11
-                if (fullScreenMethod) {
-                    fullScreenMethod.call(element)
-                    this.$nextTick().then(() => {
-                        this.renderWidth = window.screen.width
-                        this.renderHeight = window.screen.height
-                        this.$emit('openFullScreen')
-                    })
-                } else {
-                    this.$bkMessage({
-                        showClose: true,
-                        message: this.$t('此浏览器不支持全屏操作，请使用chrome浏览器'),
-                        type: 'warning'
-                    })
-                }
+                this.isFull = true
+                const element = this.fullScreenEle || this.$el
+                this.openFullScreen.originStyle = JSON.parse(JSON.stringify(element.style))
+                element.style.position = 'fixed'
+                element.style.top = '0'
+                element.style.bottom = '0'
+                element.style.left = '0'
+                element.style.right = '0'
+                element.style.zIndex = 100
+                element.style.margin = '0px'
+                element.style.height = `${window.innerHeight}px`
+                element.style.width = `${window.innerWidth}px`
+                this.renderWidth = window.innerWidth
+                this.renderHeight = window.innerHeight
             },
 
             getMonaco () {
@@ -257,8 +298,8 @@
 
 <style lang="postcss" scoped>
     .monaco-head {
-        line-height: 30px;
-        height: 30px;
+        line-height: 40px;
+        height: 40px;
         background-color: #2E2E2E;
         display: flex;
         justify-content: space-between;

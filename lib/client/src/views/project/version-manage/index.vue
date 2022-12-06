@@ -17,6 +17,7 @@
         </div>
         <div class="page-body version-body" v-bkloading="{ isLoading: loading.list }">
             <bk-table
+                class="g-hairless-table"
                 :outer-border="false"
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
