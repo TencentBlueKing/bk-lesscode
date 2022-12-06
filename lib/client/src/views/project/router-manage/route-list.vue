@@ -569,6 +569,7 @@
                     path: '',
                     layoutId: group.layoutId,
                     layoutPath: group.layoutPath,
+                    layoutType: group.layoutType,
                     pageId: -1,
                     redirect: null,
                     ...extra
@@ -578,7 +579,7 @@
                 return this.type === 'MOBILE' && path.startsWith('/mobile') ? path.replace('/mobile', '') : path
             },
             getBindDisplayValue (route) {
-                const { pageId, pageName, redirect, isRoot } = route
+                const { pageId, pageName, redirect, path } = route
                 // 依据vue-router跳转路由优先
                 if (redirect) {
                     const targetRoute = this.routeFlatList.find(item => item.id === redirect) || {}
@@ -587,7 +588,7 @@
                 if (pageId !== -1) {
                     return pageName
                 }
-                return isRoot ? '未绑定根路由' : '未绑定'
+                return path === '' ? '未绑定根路由' : '未绑定'
             },
             checkRoutePath (value, isParent = false) {
                 let error = false
