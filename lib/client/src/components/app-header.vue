@@ -49,9 +49,9 @@
                     <router-link custom exact to="/help" v-slot="{ href, isActive }">
                         <a :class="['popover-link', { active: isActive }]" target="_blank" :href="href">产品文档</a>
                     </router-link>
-                    <router-link custom exact to="/help/changelog" v-slot="{ href, isActive }">
-                        <a :class="['popover-link', { active: isActive }]" target="_blank" :href="href">版本日志</a>
-                    </router-link>
+                    <!-- <router-link custom exact to="/help/changelog" v-slot="{ href, isActive }"> -->
+                    <a class="popover-link" href="javascript:;" @click="show = !show">版本日志</a>
+                    <!-- </router-link> -->
                     <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/issues">问题反馈</a>
                     <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/blob/master/readme.md">开源社区</a>
                 </template>
@@ -78,14 +78,36 @@
                 </template>
             </bk-popover>
         </div>
+        <bk-version-detail
+            :min-left-width="200"
+            :current-version="(versionMassage.versionList[0] || '').title"
+            :finished="finished"
+            :show.sync="show"
+            :version-list="versionMassage.versionList"
+            :version-detail="versionMassage.versionDetail"
+            :get-version-detail="handleGetVersionDetail"
+            :get-version-list="handleGetVersionList">
+            <template v-slot:default="content">
+                <div v-if="content.detail">
+                    <h2>【{{content.detail}}】版本更新明细</h2>
+                    <div v-for="(currentDetail, index) in versionMassage.currentDetailList" :key="index">
+                        <h1 class="change-log-header">{{currentDetail.reviseTitle}}</h1>
+                        <ul>
+                            <li class="change-log-msg" v-for="(massage,index1) in currentDetail.logMassage" :key="index1">[{{currentDetail.reviseTitle}}] {{massage}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </template>
+        </bk-version-detail>
     </header>
 </template>
 
 <script>
-    import { defineComponent, computed } from '@vue/composition-api'
+    import { defineComponent, computed, ref, reactive } from '@vue/composition-api'
     import { useStore } from '@/store'
     import { useRouter } from '@/router'
     import { IAM_ACTION } from 'shared/constant'
+    import logMassageList from './changelog-data'
 
     export default defineComponent({
         computed: {
@@ -96,6 +118,36 @@
         setup () {
             const store = useStore()
             const router = useRouter()
+            const finished = ref(false)
+            const show = ref(false)
+            const versionMassage = reactive({
+                versionList: [],
+                versionDetail: '',
+                currentDetailList: []
+            })
+            const handleGetVersionList = () => {
+                return new Promise(resolve => {
+                    const titleList = logMassageList.map(item => {
+                        return {
+                            title: item.date
+                        }
+                    })
+                    versionMassage.versionList = titleList
+                    finished.value = true
+                    resolve()
+                })
+            }
+            const handleGetVersionDetail = (v) => {
+                return new Promise(resolve => {
+                    versionMassage.versionDetail = v.title
+                    console.log('v', v.title)
+                    const currentIndex = logMassageList.findIndex(item => item.date === v.title)
+                    console.log(currentIndex, 'currentIndex')
+                    console.log(logMassageList[currentIndex].detailList)
+                    versionMassage.currentDetailList = logMassageList[currentIndex].detailList
+                    resolve()
+                })
+            }
 
             const iamNoResourcesPerm = computed(() => store.getters['iamNoResourcesPerm'])
 
@@ -152,10 +204,16 @@
             return {
                 userName,
                 menus,
+                show,
+                versionMassage,
+                finished,
                 isMenuActive,
                 isRouteContains,
                 goLogin,
-                toProjectList
+                toProjectList,
+                handleGetVersionList,
+                handleGetVersionDetail
+
             }
         }
     })
@@ -264,6 +322,7 @@
                 }
             }
         }
+       
     }
 
     .header-top-info-popover-theme {
@@ -280,6 +339,7 @@
             }
         }
     }
+
 </style>
 <style>
     .tippy-tooltip.header-top-info-popover-theme {
@@ -290,4 +350,23 @@
         border: 1px solid #DCDEE5;
         box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.10);
     }
+    .change-log-header {
+            padding-bottom: 5px;
+            font-size: 18px;
+            line-height: 1.225;
+            border-bottom: 1px solid #eee;
+            }
+    .change-log-msg {
+        line-height: 24px;
+    }
+    .change-log-msg::before {
+        width: 5px;
+        height: 5px;
+        margin: 0px 10px;
+        background-color: #63656e;
+        border-radius: 50%;
+        content: "";
+        display: inline-block;
+    }
+    
 </style>
