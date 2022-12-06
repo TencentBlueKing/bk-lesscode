@@ -134,10 +134,10 @@
                 }
             }
         },
-        "/getTableData": {
-            "get": {
-                "operationId": "getTableData",
-                "description": "获取lesscode数据源表的数据",
+        "/execQuerySql": {
+            "post": {
+                "operationId": "execQuerySql",
+                "description": "执行查询sql返回数据表数据",
                 "tags": [],
                 "responses": {
                     "default": {
@@ -150,8 +150,8 @@
                     "matchSubpath": false,
                     "backend": {
                         "type": "HTTP",
-                        "method": "get",
-                        "path": "/{env.subpath}api/open-api/getTableData/tableName/{tableName}",
+                        "method": "post",
+                        "path": "/{env.subpath}api/open-api/execQuerySql",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},
