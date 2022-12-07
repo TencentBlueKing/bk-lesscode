@@ -27,11 +27,11 @@ module.exports = {
     },
     dev: {
         // 本地开发数据库名
-        database: 'lesscodedata',
+        database: '',
         // 本地开发数据库用户名
-        username: 'root',
+        username: '',
         // 本地开发数据库密码
-        password: '1234',
+        password: '',
         // 本地开发host
         host: 'localhost',
         // 本地开发端口
