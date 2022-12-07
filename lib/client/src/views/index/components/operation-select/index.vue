@@ -82,13 +82,11 @@
             height: 100%;
             cursor: pointer;
             min-width: 60px;
+            margin-right: 10px;
             &:hover,
             &.active {
                 background-color: #e1ecff;
                 color: #3a84ff;
-            }
-            & ~ .select-item{
-                margin-left: 10px;
             }
             i {
                 font-size: 16px;

@@ -120,7 +120,7 @@
                         }
                     }
                 })
-                
+
                 const {
                     top: containerTop,
                     left: containerLeft,
@@ -135,7 +135,7 @@
                 } = componentData.$elm.getBoundingClientRect()
 
                 const dotBaseStyle = Object.assign({}, baseStyles)
-                
+
                 if (resizeWidthEnabel) {
                     state.dotWidthStyles = Object.assign({}, dotBaseStyle, {
                         top: `${top - containerTop + height / 2 - halfDotSize}px`,
@@ -222,7 +222,7 @@
         justify-content: center;
         height: 15px;
         width: 15px;
-        
+
         &:after{
             content: '';
             position: absolute;

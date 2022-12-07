@@ -26,7 +26,7 @@
                 @update="handleUpdate"
             />
             <h3 class="api-form-title">
-                默认请求参数
+                默认请求响应
                 <bk-button
                     class="api-response-button"
                     size="small"
@@ -153,9 +153,9 @@
                 return new Promise((resolve, reject) => {
                     Promise
                         .all([
-                            basicRef.value.validate(),
-                            paramRef.value.validate(),
-                            responseRef.value.validate()
+                            basicRef.value?.validate(),
+                            paramRef.value?.validate(),
+                            responseRef.value?.validate()
                         ])
                         .then((res) => {
                             resolve(res)

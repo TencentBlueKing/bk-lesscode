@@ -3,8 +3,8 @@
         <div class="history-container" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
             <div class="history-content">
                 <bk-table :data="list" type="small" ext-cls="history-table" empty-text="暂无部署记录">
-                    <bk-table-column label="关联的应用模块" prop="bindInfo" width="200" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column label="源码包类型" prop="releaseType" width="150" show-overflow-tooltip>
+                    <bk-table-column label="关联的应用模块" prop="bindInfo" min-width="120" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column label="源码包类型" prop="releaseType" width="120" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             {{releaseTypeMap[row.releaseType]}}
                             <span v-if="row.releaseType === 'PROJECT_VERSION'">
@@ -12,8 +12,8 @@
                             </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="部署环境" prop="env" :formatter="envFormatter" width="150"></bk-table-column>
-                    <bk-table-column label="部署包版本" prop="version" width="120" show-overflow-tooltip>
+                    <bk-table-column label="部署环境" prop="env" :formatter="envFormatter" width="100"></bk-table-column>
+                    <bk-table-column label="部署包版本" prop="version" width="100" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             <div v-if="row.codeUrl" class="status-result">
                                 <a class="status-log-link" :href="row.codeUrl">{{row.version}}</a>
@@ -22,7 +22,7 @@
                             <span v-else v-bk-tooltips.right="'本次部署无版本包生成'">{{row.version}} </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="部署执行的 Sql" width="120">
+                    <bk-table-column label="部署执行的 Sql" width="115">
                         <template slot-scope="{ row }">
                             <bk-button text @click="showSql(row)" v-if="row.releaseSqlIds">
                                 查看详情
@@ -30,19 +30,22 @@
                             <span v-else>--</span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="操作人" prop="createUser" :formatter="userFormatter" width="120"></bk-table-column>
-                    <bk-table-column label="操作结果" prop="status" width="220">
+                    <bk-table-column label="操作人" prop="createUser" :formatter="userFormatter" width="80"></bk-table-column>
+                    <bk-table-column label="操作结果" prop="status" min-width="150">
                         <template slot-scope="{ row }">
                             <div class="status-result">
-                                <i v-if="row.status === 'running'" class="bk-drag-icon bk-drag-icon bk-drag-loading-2 history-status-icon"></i>
+                                <svg v-if="row.status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
+                                    <use xlink:href="#bk-drag-loading-2"></use>
+                                </svg>
+                                <!-- <i v-if="row.status === 'running'" class="bk-drag-icon bk-drag-icon bk-drag-loading-2 history-status-icon" class="loading-rotate"></i> -->
                                 <i v-else class="bk-drag-icon bk-drag-circle-shape history-status-icon" :class="[`icon-${row.status}`]"></i>
                                 <span>{{ typeMap[row.isOffline] }}{{ statusMap[row.status] }}</span>
                                 <span v-if="!row.isOffline" class="status-log-link" @click="showLog(row)">，查看详情</span>
                             </div>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="操作时间" prop="createTime" :formatter="timeFormatter" width="180"></bk-table-column>
-                    <bk-table-column label="操作来源" prop="releaseType" :formatter="sourceFormatter" width="150"></bk-table-column>
+                    <bk-table-column label="操作时间" prop="createTime" :formatter="timeFormatter" width="150"></bk-table-column>
+                    <bk-table-column label="操作来源" prop="releaseType" :formatter="sourceFormatter" show-overflow-tooltip :min-width="120"></bk-table-column>
                 </bk-table>
             </div>
         </div>
@@ -210,10 +213,10 @@
 
 <style lang="postcss">
     .history-container {
-        margin: 16px 24px;
+        margin: 16px 20px;
 
         .history-content {
-            min-width: 1000px;
+            /* min-width: 1000px; */
 
             .history-table {
                 box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
@@ -222,6 +225,8 @@
                     background-color: #F0F1F5;
                 }
                 .status-result {
+                    display: flex;
+                    align-items: center;
                     .history-status-icon {
                         font-size: 8px;
                     }
@@ -236,6 +241,14 @@
                         color: #3a84ff;
                     }
                 }
+            }
+        }
+        .loading-rotate {
+            animation: icon-loading 1.5s linear infinite;
+        }
+        @keyframes icon-loading {
+            to {
+                transform:rotate(1turn);
             }
         }
     }

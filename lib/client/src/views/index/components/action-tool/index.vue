@@ -1,10 +1,11 @@
 <template>
     <div class="action-tool-list">
+        <show-function />
+        <div class="func-split-line" />
         <save-canvas />
         <preview />
         <save-as-template v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]" />
         <clear-canvas />
-        <show-function />
         <quick-operation />
     </div>
 </template>
@@ -37,5 +38,11 @@
         display: flex;
         align-items: center;
         height: 100%;
+    }
+    .func-split-line {
+        height: 22px;
+        width: 1px;
+        margin-left: 5px;
+        background-color: #dcdee5;
     }
 </style>

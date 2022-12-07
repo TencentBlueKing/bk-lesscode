@@ -53,7 +53,7 @@
                             :placeholder="pageCodePlaceholder">
                         </bk-input>
                     </bk-form-item>
-                    <bk-form-item label="布局模板" error-display-type="normal">
+                    <bk-form-item label="导航布局" error-display-type="normal">
                         <layout-thumb-list :toolkit="['select']" :list="showLayoutList" @change-checked="handleLayoutChecked" />
                         <bk-link theme="primary" class="jump-link" icon="bk-drag-icon bk-drag-jump-link" @click="handleCreateLayout">跳转新建</bk-link>
                     </bk-form-item>

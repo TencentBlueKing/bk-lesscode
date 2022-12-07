@@ -101,12 +101,16 @@
                 if (!this.isFocused) {
                     return
                 }
+                // 如果当前焦点在input框，需要忽略快捷键监听
+                if (event.target && event.target.classList.contains('bk-form-input')) {
+                    return
+                }
                 const copyKeyCode = [67]
                 const pastKeyCode = [86]
                 const cutKeyCode = [88]
                 const removeKeyCode = [8, 46]
                 
-                if (event.metaKey) {
+                if (event.ctrlKey || event.metaKey) {
                     if (pastKeyCode.includes(event.keyCode)) {
                         LC.execCommand('paste')
                     }

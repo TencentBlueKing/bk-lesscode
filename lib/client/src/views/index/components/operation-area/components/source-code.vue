@@ -52,7 +52,7 @@
                 return this.$route.params.pageId || ''
             },
             filename () {
-                return `bklesscode-${this.pageId}.vue`
+                return `bklesscode-page-${this.pageDetail?.pageCode}.vue`
             }
         },
         mounted () {
@@ -73,6 +73,7 @@
                     variableData: this.variableList
                 }).then(res => {
                     this.formatCode = res
+                    this.withNav = withNav
                 }).finally(() => {
                     this.isLoading = false
                 })

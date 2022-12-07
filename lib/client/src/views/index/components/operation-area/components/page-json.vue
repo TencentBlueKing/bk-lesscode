@@ -2,7 +2,7 @@
     <section>
         <code-viewer
             :code="code"
-            :filename="`bklesscode-${pageId}.json`"
+            :filename="`bklesscode-page-${pageDetail.pageCode}.json`"
             @show-edit-data="showEditData"
             page-type="json" />
         <json-view
@@ -21,6 +21,7 @@
     import JsonView from '@/element-materials/modifier/component/props/components/strategy/json-view.vue'
     import { circleJSON } from '@/common/util.js'
     import LC from '@/element-materials/core'
+    import { mapGetters } from 'vuex'
     import { bus } from '@/common/bus'
 
     export default {
@@ -41,6 +42,7 @@
             }
         },
         computed: {
+            ...mapGetters('page', ['pageDetail']),
             pageId () {
                 return this.$route.params.pageId || ''
             }

@@ -8,12 +8,13 @@
                     allowHtml: true,
                     content: '#column-title-tips'
                 }">
-                列配置:
+                列宽度配置:
             </span>
             <div id="column-title-tips">
                 <p>每一列栅格宽度占比为</p>
                 <p>该列配置值占总列配置值的百分比</p>
-                <p>建议总列配置值为 12 或 24</p>
+                <p>如总共有3列，值分别为1，2，1</p>
+                <p>则这三列的宽度分别为整行宽度的1/4，1/2，1/4</p>
             </div>
         </div>
         <div class="column-list">

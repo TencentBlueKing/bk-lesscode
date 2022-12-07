@@ -2,8 +2,8 @@
     <div :class="$style['bind-route-selector']">
         <bk-select :class="$style['select']"
             searchable
-            :clearable="false"
-            placeholder="未绑定"
+            :clearable="clearable"
+            :placeholder="placeholder"
             :loading="loading"
             :show-on-init="autofocus"
             v-model="bindValue">
@@ -37,6 +37,10 @@
             routeGroup: {
                 type: Array
             },
+            routeMap: {
+                type: Object,
+                default: () => ({})
+            },
             autofocus: {
                 type: Boolean,
                 default: true
@@ -49,8 +53,17 @@
             }
         },
         computed: {
+            isRootPath () {
+                return this.active.path === ''
+            },
             useRouteList () {
-                const routeList = this.routeGroup.map(({ children }) => children)
+                const routeGroup = [...this.routeGroup]
+                // PC端的根路由允许绑定移动端路由
+                if (this.active.layoutPath === '/' && this.isRootPath && this.active.layoutType === 'PC') {
+                    routeGroup.push(...this.routeMap['MOBILE'])
+                }
+
+                const routeList = routeGroup.map(({ defaultRoute, children }) => [defaultRoute, ...children])
                     .reduce((pre, cur) => pre.concat(cur), [])
                     .map(({ id, layoutPath, path, pageId, redirect }) => ({
                         id: this.getRouteId(id),
@@ -128,6 +141,15 @@
                         children: this.useRouteList
                     }
                 ]
+            },
+            clearable () {
+                return this.isRootPath
+            },
+            placeholder () {
+                if (!this.bindValue && this.isRootPath) {
+                    return '未绑定根路由'
+                }
+                return '未绑定'
             }
         },
         watch: {

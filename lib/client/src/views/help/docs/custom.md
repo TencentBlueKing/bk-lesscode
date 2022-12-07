@@ -36,11 +36,11 @@ cd component-project
 4. 进行组件功能开发（文件 ./index.vue）
 touch index.vue
 
-5. 暴露组件给 lesscode 的能力配置（文件 ./config.json）
+5. 暴露组件给 LessCode 的能力配置（文件 ./config.json）
 touch config.json
 ```
 
-### config.json（暴露给 lesscode 的能力配置）
+### config.json（暴露给 LessCode 的能力配置）
 
 <table class="table">
     <tr>
@@ -94,7 +94,7 @@ touch config.json
 </table>
 
 :::info
-events —— 组件内部支持 vue 的自定义事件（this.$emit('click')），配置希望那些事件可以暴露给 lesscode
+events —— 组件内部支持 vue 的自定义事件（this.$emit('click')），配置希望那些事件可以暴露给 LessCode
 :::
 
 ```js
@@ -173,7 +173,7 @@ directives —— 支持配置那些指令
 >
 > 3、去掉应用入口文件中的 `import Vue from 'vue'` 语句，确保自定义组件使用平台提供的 vue 实例，来注册指令、组件等
 >
-> 4、修改接口调用的方式，本地调试的接口调用统一修改为调用平台函数库的 getApiData 方法，注意本地调试接口与线上接口的字段是否存在差异
+> 4、修改接口调用的方式，本地调试的接口调用统一修改为调用平台函数管理中的 getApiData 方法，注意本地调试接口与线上接口的字段是否存在差异
 
 ### 开发完成打包
 
@@ -199,7 +199,7 @@ bklc build component-project
 
 #### 新建自定义组件
 
-> 在左侧可选 tab 中选中自定义组件库，进入自定义组件管理页面
+> 在左侧可选 tab 中选中自定义组件管理，进入自定义组件管理页面
 >
 > 点击新建按钮进行自定义组件上传操作，如果已上传过自定义组件会展示已上传的自定义组件可以在当前页面进行自定义组件管理操作
 >

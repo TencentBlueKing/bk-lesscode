@@ -55,6 +55,7 @@
                 fileList: displayList,
                 maxImageSize: FILE_MAX_LIMIT.IMAGE_SIZE,
                 maxFileSize: FILE_MAX_LIMIT.FILE_SIZE,
+                maxlength: 20,
                 beforeRemove: async (file) => {
                     if (!file.id) {
                         return
@@ -100,6 +101,7 @@
                 showTips: false,
                 maxImageSize: baseUploadProps.maxImageSize,
                 maxFileSize: baseUploadProps.maxFileSize,
+                maxlength: baseUploadProps.maxlength,
                 onStart: handleStart,
                 onProgress: handleProgress,
                 onSuccess: handleSuccess,
@@ -168,7 +170,7 @@
         :esc-close="false"
         :mask-close="false"
         header-position="left"
-        title="文件库">
+        title="文件管理">
         <div :class="$style['modal-container']">
             <div :class="$style['modal-head']">
                 <div :class="$style['buttons']">

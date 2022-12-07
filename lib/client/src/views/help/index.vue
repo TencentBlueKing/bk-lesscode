@@ -83,13 +83,13 @@
                                 level: 1,
                                 id: 'grid'
                             }, {
-                                name: '布局模板',
-                                level: 1,
-                                id: 'layout-guide'
-                            }, {
                                 name: '自由布局',
                                 level: 1,
                                 id: 'freeLayout'
+                            }, {
+                                name: '导航布局',
+                                level: 1,
+                                id: 'layout-guide'
                             }]
                         }, {
                             name: '页面画布',
@@ -134,6 +134,13 @@
                             name: 'template-page'
                         }]
                     }, {
+                        title: '实战案例',
+                        name: 'case',
+                        childs: [{
+                            title: '课程实战文档和视频',
+                            name: 'courses'
+                        }]
+                    }, {
                         title: '日志',
                         name: 'log',
                         childs: [{
@@ -151,6 +158,10 @@
         },
         mounted () {
             this.adjustAnchor()
+
+            setTimeout(() => {
+                document.querySelector('.nav-list .nav-child.nav-active')?.scrollIntoView()
+            }, 0)
         },
         methods: {
             adjustAnchor () {
@@ -251,5 +262,5 @@
             }
         }
     }
-    
+
 </style>

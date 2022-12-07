@@ -67,6 +67,7 @@
         }
         .panel-content{
             flex: 0 0 calc(100% - 42px);
+            max-width: calc(100% - 42px);
         }
     }
 </style>
