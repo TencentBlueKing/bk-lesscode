@@ -1,9 +1,9 @@
 <template>
     <component
-        :is="type"
+        :is="columnType"
         :formatter="bkTableFormatter"
         :render-header="renderHeader"
-        v-bind="item"
+        v-bind="$props"
     />
 </template>
 
@@ -14,8 +14,14 @@
         name: 'widget-table-column',
 
         props: {
+            columnType: String,
             type: String,
-            item: Object
+            label: String,
+            prop: String,
+            sortable: Boolean,
+            width: String,
+            filterable: Boolean,
+            align: String
         },
 
         data () {
@@ -32,7 +38,7 @@
                     {},
                     [
                         column.label,
-                        this.item.filterable
+                        this.filterable
                             ? h(
                                 'bk-popover',
                                 {
