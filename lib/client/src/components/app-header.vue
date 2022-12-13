@@ -49,9 +49,7 @@
                     <router-link custom exact to="/help" v-slot="{ href, isActive }">
                         <a :class="['popover-link', { active: isActive }]" target="_blank" :href="href">产品文档</a>
                     </router-link>
-                    <router-link custom exact to="/help/changelog" v-slot="{ href, isActive }">
-                        <a :class="['popover-link', { active: isActive }]" target="_blank" :href="href">版本日志</a>
-                    </router-link>
+                    <a class="popover-link" href="javascript:;" @click="log.changeIsShow()">版本日志</a>
                     <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/issues">问题反馈</a>
                     <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/blob/master/readme.md">开源社区</a>
                 </template>
@@ -78,30 +76,35 @@
                 </template>
             </bk-popover>
         </div>
+        <changelog ref="log"></changelog>
     </header>
 </template>
 
 <script>
-    import { defineComponent, computed } from '@vue/composition-api'
+    import { defineComponent, computed, ref } from '@vue/composition-api'
     import { useStore } from '@/store'
     import { useRouter } from '@/router'
     import { IAM_ACTION } from 'shared/constant'
+    import changelog from '@/components/changelog-version'
 
     export default defineComponent({
+        components: {
+            changelog
+        },
         computed: {
             currentRoute () {
                 return this.$route
             }
         },
+
         setup () {
             const store = useStore()
             const router = useRouter()
-
+            const log = ref()
             const iamNoResourcesPerm = computed(() => store.getters['iamNoResourcesPerm'])
-
+            
             const user = computed(() => store.getters['user'])
             const userName = computed(() => user.value?.username ?? '')
-
             const menus = computed(() => {
                 const list = [
                     {
@@ -128,7 +131,6 @@
 
                 return list.filter(item => item.authed)
             })
-
             const isMenuActive = (route) => {
                 const [topRoute] = router.currentRoute.matched
                 return route.name === topRoute?.meta?.owner
@@ -152,6 +154,7 @@
             return {
                 userName,
                 menus,
+                log,
                 isMenuActive,
                 isRouteContains,
                 goLogin,
@@ -264,6 +267,7 @@
                 }
             }
         }
+       
     }
 
     .header-top-info-popover-theme {
@@ -280,6 +284,7 @@
             }
         }
     }
+
 </style>
 <style>
     .tippy-tooltip.header-top-info-popover-theme {
@@ -290,4 +295,5 @@
         border: 1px solid #DCDEE5;
         box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.10);
     }
+    
 </style>
