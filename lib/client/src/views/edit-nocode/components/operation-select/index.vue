@@ -35,11 +35,11 @@
                         icon: 'bk-drag-huabu'
                     }
                 ]
-                if (!this.hideSetting) {
+                if (!this.hideJson) {
                     list.push({
-                        key: 'setting',
-                        label: '页面设置',
-                        icon: 'bk-drag-set'
+                        key: 'jsonSource',
+                        label: 'JSON',
+                        icon: 'bk-drag-json'
                     })
                 }
                 if (!this.hideFunc) {
@@ -49,11 +49,11 @@
                         icon: 'bk-drag-yemianhanshu'
                     })
                 }
-                if (!this.hideJson) {
+                if (!this.hideSetting) {
                     list.push({
-                        key: 'jsonSource',
-                        label: 'JSON',
-                        icon: 'bk-drag-json'
+                        key: 'setting',
+                        label: '页面设置',
+                        icon: 'bk-drag-set'
                     })
                 }
                 return list
@@ -76,6 +76,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            margin-right: 10px;
             padding: 0 6px;
             font-size: 12px;
             height: 100%;
@@ -85,9 +86,6 @@
             &.active {
                 background-color: #e1ecff;
                 color: #3a84ff;
-            }
-            & ~ .select-item{
-                margin-left: 10px;
             }
             i {
                 font-size: 16px;
