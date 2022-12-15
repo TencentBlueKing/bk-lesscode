@@ -91,7 +91,7 @@
                 
                 this.renderStyles = {
                     width: `${width - 40}px`,
-                    'min-height': `calc(100vh - ${top + 20}px)`
+                    'min-height': `calc(100vh - ${top + 25}px)`
                 }
             },
             calcOperationItemStyles () {
@@ -111,8 +111,9 @@
 
     .horizontal-wrapper{
         background: #fff;
+        background-clip: content-box;
         position: relative;
-        margin: 20px;
+        margin: 0 20px 20px;
         padding-top: 20px;
         height: 100%;
         overflow: auto;
