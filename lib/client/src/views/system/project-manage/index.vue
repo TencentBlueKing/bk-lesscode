@@ -120,7 +120,8 @@
             </div>
         </div>
 
-        <bk-dialog v-model="dialog.create.visible"
+        <lc-dialog
+            v-model="dialog.create.visible"
             render-directive="if"
             theme="primary"
             width="750"
@@ -134,30 +135,30 @@
                 {{ isCopy ? '复制应用' : '创建应用' }}
                 <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
             </span>
-            <bk-form ref="createForm" :label-width="86" :rules="dialog.create.formRules" :model="dialog.create.formData">
-                <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
+            <lc-form ref="createForm" :label-width="86" :rules="dialog.create.formRules" :model="dialog.create.formData">
+                <lc-form-item label="应用名称" required property="projectName" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.create.formData.projectName"
                         placeholder="由汉字，英文字母，数字组成，20个字符以内">
                     </bk-input>
-                </bk-form-item>
-                <bk-form-item label="应用ID" required property="projectCode" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item label="应用ID" required property="projectCode" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.create.formData.projectCode"
                         placeholder="由小写字母组成，长度小于16个字符，该ID将作为自定义组件前缀，创建后不可更改">
                     </bk-input>
-                </bk-form-item>
-                <bk-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
                     <bk-input
                         v-model.trim="dialog.create.formData.projectDesc"
                         :type="'textarea'"
                         :rows="3"
                         :maxlength="100">
                     </bk-input>
-                </bk-form-item>
-                <bk-form-item label="导航布局" style="margin-top: 10px" v-if="!isCopy" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item label="导航布局" style="margin-top: 10px" v-if="!isCopy" error-display-type="normal">
                     <span class="layout-desc">可多选，作为创建应用页面时可供选择的导航布局，便于在应用中统一配置导航</span>
                     <layout-thumb-list :list="defaultLayoutList" @change-checked="handleLayoutChecked" @set-default="handleLayoutDefault" />
-                </bk-form-item>
-            </bk-form>
+                </lc-form-item>
+            </lc-form>
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="primary"
@@ -165,9 +166,10 @@
                     @click="handleCreateConfirm">确定</bk-button>
                 <bk-button @click="handleCreateCancel" :disabled="dialog.create.loading">取消</bk-button>
             </div>
-        </bk-dialog>
+        </lc-dialog>
 
-        <bk-dialog v-model="dialog.rename.visible"
+        <lc-dialog
+            v-model="dialog.rename.visible"
             theme="primary"
             title="重命名"
             width="600"
@@ -175,15 +177,15 @@
             :auto-close="false"
             header-position="left"
             @after-leave="handleRenameDialogAfterLeave">
-            <bk-form ref="renameForm" class="rename-form" :label-width="90" :rules="dialog.rename.formRules" :model="dialog.rename.formData">
-                <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
+            <lc-form ref="renameForm" class="rename-form" :label-width="90" :rules="dialog.rename.formRules" :model="dialog.rename.formData">
+                <lc-form-item label="应用名称" required property="projectName" error-display-type="normal">
                     <bk-input ref="projectRenameInput"
                         maxlength="60"
                         v-model="dialog.rename.formData.projectName"
                         placeholder="由汉字，英文字母，数字组成，20个字符以内">
                     </bk-input>
-                </bk-form-item>
-            </bk-form>
+                </lc-form-item>
+            </lc-form>
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="primary"
@@ -192,9 +194,9 @@
                     @click="handleRenameConfirm">确定</bk-button>
                 <bk-button @click="handleRenameCancel" :disabled="dialog.rename.loading">取消</bk-button>
             </div>
-        </bk-dialog>
+        </lc-dialog>
 
-        <bk-dialog v-model="dialog.delete.visible"
+        <lc-dialog v-model="dialog.delete.visible"
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
@@ -204,16 +206,16 @@
             :mask-close="false"
             :auto-close="false"
             @value-change="handleDeleteDialogToggle">
-            <bk-form ref="deleteForm" class="delete-form" :label-width="0" :rules="dialog.delete.formRules" :model="dialog.delete.formData">
+            <lc-form ref="deleteForm" class="delete-form" :label-width="0" :rules="dialog.delete.formRules" :model="dialog.delete.formData">
                 <p class="confirm-name">请输入<em title="复制名称">“{{activatedProject.projectName}}”</em>确认</p>
-                <bk-form-item property="projectName" error-display-type="normal">
+                <lc-form-item property="projectName" error-display-type="normal">
                     <bk-input
                         maxlength="60"
                         v-model="dialog.delete.formData.projectName"
                         placeholder="请输入应用名称">
                     </bk-input>
-                </bk-form-item>
-            </bk-form>
+                </lc-form-item>
+            </lc-form>
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"
@@ -221,7 +223,7 @@
                     @click="handleDeleteConfirm">删除</bk-button>
                 <bk-button @click="handleDeleteCancel" :disabled="dialog.delete.loading">取消</bk-button>
             </div>
-        </bk-dialog>
+        </lc-dialog>
 
         <template-dialog ref="templateDialog" @preview="handlePreview" @to-page="handleGotoPage"></template-dialog>
 
@@ -245,6 +247,7 @@
     import SetTemplateDialog from '../components/set-template-dialog.vue'
     import relativeTime from 'dayjs/plugin/relativeTime'
     import 'dayjs/locale/zh-cn'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     dayjs.extend(relativeTime)
     dayjs.locale('zh-cn')
@@ -486,6 +489,7 @@
 
                     this.messageSuccess('应用创建成功')
                     this.dialog.create.visible = false
+                    window.leaveConfirm = false
 
                     setTimeout(() => {
                         this.handleGotoPage(projectId)
@@ -535,6 +539,7 @@
 
                     this.messageSuccess('重命名成功')
                     this.dialog.rename.visible = false
+                    window.leaveConfirm = false
 
                     const activeProject = this.projectList.find(project => project.id === id)
                     if (activeProject) {
@@ -558,6 +563,7 @@
 
                     this.messageSuccess('删除成功')
                     this.dialog.delete.visible = false
+                    window.leaveConfirm = false
 
                     this.getProjectList()
                 } catch (e) {
@@ -588,13 +594,22 @@
                 layout.isDefault = 1
             },
             handleCreateCancel () {
-                this.dialog.create.visible = false
+                leaveConfirm()
+                    .then(() => {
+                        this.dialog.create.visible = false
+                    })
             },
             handleRenameCancel () {
-                this.dialog.rename.visible = false
+                leaveConfirm()
+                    .then(() => {
+                        this.dialog.rename.visible = false
+                    })
             },
             handleDeleteCancel () {
-                this.dialog.delete.visible = false
+                leaveConfirm()
+                    .then(() => {
+                        this.dialog.delete.visible = false
+                    })
             },
             handleCreateDialogToggle () {
                 this.dialog.create.formData = { ...defaultCreateFormData }

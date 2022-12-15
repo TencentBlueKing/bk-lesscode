@@ -1,6 +1,6 @@
 <template>
     <section>
-        <bk-dialog v-model="isShow"
+        <lc-dialog v-model="isShow"
             render-directive="if"
             theme="primary"
             width="1080"
@@ -14,7 +14,12 @@
             <div slot="header">
                 <span slot="header">
                     从模板新建应用
-                    <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块' }"></i>
+                    <i
+                        class="bk-icon icon-info-circle"
+                        style="font-size: 14px;"
+                        v-bk-tooltips.top="{
+                            content: '创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块'
+                        }"></i>
                 </span>
             </div>
             <div class="layout-left">
@@ -63,31 +68,31 @@
                 </div>
             </div>
             <div class="layout-right">
-                <bk-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" :form-type="'vertical'">
-                    <bk-form-item label="当前已选模板" property="templateName" error-display-type="normal">
+                <lc-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" :form-type="'vertical'">
+                    <lc-form-item label="当前已选模板" property="templateName" error-display-type="normal">
                         <bk-input readonly v-model.trim="formData.templateName"
                             placeholder="模板名称">
                         </bk-input>
-                    </bk-form-item>
-                    <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
+                    </lc-form-item>
+                    <lc-form-item label="应用名称" required property="projectName" error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.projectName"
                             placeholder="由汉字，英文字母，数字组成，20个字符以内">
                         </bk-input>
-                    </bk-form-item>
-                    <bk-form-item label="应用ID" required property="projectCode" error-display-type="normal">
+                    </lc-form-item>
+                    <lc-form-item label="应用ID" required property="projectCode" error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.projectCode"
                             placeholder="由小写字母组成，长度小于16个字符，该ID将作为自定义组件前缀，创建后不可更改">
                         </bk-input>
-                    </bk-form-item>
-                    <bk-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
+                    </lc-form-item>
+                    <lc-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
                         <bk-input
                             v-model.trim="formData.projectDesc"
                             :type="'textarea'"
                             :rows="3"
                             :maxlength="100">
                         </bk-input>
-                    </bk-form-item>
-                </bk-form>
+                    </lc-form-item>
+                </lc-form>
             </div>
             <div class="dialog-footer" slot="footer">
                 <bk-button
@@ -96,13 +101,14 @@
                     @click="handleCreateConfirm">确定</bk-button>
                 <bk-button @click="handleDialogCancel" :disabled="loading">取消</bk-button>
             </div>
-        </bk-dialog>
+        </lc-dialog>
     </section>
 </template>
 
 <script>
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import { PROJECT_TEMPLATE_TYPE } from '@/common/constant'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     const defaultFormData = {
         templateName: '',
@@ -195,6 +201,7 @@
 
                     this.messageSuccess('应用创建成功')
                     this.isShow = false
+                    window.leaveConfirm = false
 
                     setTimeout(() => {
                         this.$emit('to-page', projectId)
@@ -251,7 +258,10 @@
                 }
             },
             handleDialogCancel () {
-                this.isShow = false
+                leaveConfirm()
+                    .then(() => {
+                        this.isShow = false
+                    })
             },
             handleDialogToggle () {
                 if (this.isShow) {

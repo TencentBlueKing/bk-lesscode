@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
-        <bk-form-item label="函数类型" property="funcType" class="func-form-item">
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
+        <lc-form-item label="函数类型" property="funcType" class="func-form-item">
             <bk-radio-group
                 :value="form.funcType"
                 @change="(funcType) => updateValue({ funcType })"
@@ -20,8 +20,8 @@
                     ></i>
                 </bk-radio-button>
             </bk-radio-group>
-        </bk-form-item>
-        <bk-form-item
+        </lc-form-item>
+        <lc-form-item
             label="函数调用参数"
             ref="funcParams"
             property="funcParams"
@@ -34,9 +34,9 @@
                 v-model="form.funcParams"
                 @change="(val) => tagChange('funcParams', val)">
             </dynamic-tag>
-        </bk-form-item>
+        </lc-form-item>
         <template v-if="form.funcType === 1">
-            <bk-form-item
+            <lc-form-item
                 label="Api"
                 property="apiChoosePath"
                 error-display-type="normal"
@@ -48,8 +48,8 @@
                     :disabled="disabled"
                     @change="handleSelectApi"
                 ></choose-api>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 ref="funcApiUrl"
                 label="请求地址"
                 property="funcApiUrl"
@@ -65,8 +65,8 @@
                     :disabled="disableEditUrl"
                     @change="(funcApiUrl) => updateValue({ funcApiUrl })"
                 ></bk-input>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 label="请求类型"
                 property="funcMethod"
                 error-display-type="normal"
@@ -87,14 +87,14 @@
                         :name="apiMethodName">
                     </bk-option>
                 </bk-select>
-            </bk-form-item>
+            </lc-form-item>
             <bk-button
                 class="get-remote-response bk-form-item func-form-item"
                 size="small"
                 :loading="isLoadingResponse"
                 @click="getRemoteResponse"
             >获取接口返回数据</bk-button>
-            <bk-form-item
+            <lc-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
                 label="请求参数"
                 property="remoteParams"
@@ -107,8 +107,8 @@
                     :variable-list="variableList"
                     @change="(apiQuery) => updateValue({ apiQuery })"
                 ></query-params>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 v-else
                 label="请求参数"
                 property="remoteParams"
@@ -122,8 +122,8 @@
                     @change="(apiBody) => updateValue({ apiBody })"
                 >
                 </body-params>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 label="接口返回数据参数名"
                 ref="remoteParams"
                 property="remoteParams"
@@ -136,7 +136,7 @@
                     v-model="form.remoteParams"
                     @change="(val) => tagChange('remoteParams', val)">
                 </dynamic-tag>
-            </bk-form-item>
+            </lc-form-item>
         </template>
         <bk-dialog
             width="1000"
@@ -149,7 +149,7 @@
                 :value="showFuncResponse.code"
             />
         </bk-dialog>
-    </bk-form>
+    </lc-form>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
-        <bk-form-item
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
+        <lc-form-item
             label="函数简介"
             property="funcSummary"
             error-display-type="normal"
@@ -15,8 +15,8 @@
                 :value="form.funcSummary"
                 @input="(funcSummary) => updateValue({ funcSummary })">
             </bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>

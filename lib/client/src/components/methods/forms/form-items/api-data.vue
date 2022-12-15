@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item" v-if="form.funcType === 1">
-        <bk-form-item
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item" v-if="form.funcType === 1">
+        <lc-form-item
             label="Api Data"
             property="funcApiData"
             error-display-type="normal"
@@ -15,8 +15,8 @@
                 :placeholder="`请输入请求体数据包，例如：{ name: {{name}}, age: 17 }`"
                 @input="(funcApiData) => updateValue({ funcApiData })">
             </bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>
