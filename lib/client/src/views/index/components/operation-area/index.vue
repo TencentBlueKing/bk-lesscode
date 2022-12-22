@@ -141,7 +141,7 @@
         background: #fff !important;
         background-clip: content-box;
         position: relative;
-        margin:0 20px 20px;
+        margin: 0 20px 20px;
         padding-top: 20px;
         height: 100%;
         overflow: auto;
