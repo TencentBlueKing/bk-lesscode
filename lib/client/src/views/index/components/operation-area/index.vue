@@ -1,8 +1,9 @@
 <template>
-    <div>
-        <bk-alert v-if="isTips" type="info"
+    <div :class="$style['top-wrapper']">
+        <bk-alert v-if="(isTips && operation === 'edit')" type="info"
             title="本页面包含交互式组件，可在页面组件树中查找并选中编辑"
             @close="handlerClose"
+            :class="$style['alert-wrapper']"
             closable></bk-alert>
         <div
             ref="root"
@@ -58,7 +59,8 @@
                 renderStyles: {},
                 oprationItemStyles: {
                     height: `calc(100vh - ${top}px - 20px)`
-                }
+                },
+                arrJson: []
             }
         },
         computed: {
@@ -73,12 +75,12 @@
                 return comMap[this.operation]
             },
             isTips () {
-                const arrJson = LC.getRoot().toJSON().renderSlots.default
+                this.arrJson = LC.getRoot()
                 this.projectId = parseInt(this.$route.params.projectId)
                 this.pageId = parseInt(this.$route.params.pageId)
-                console.log(arrJson, 'arrJson')
                 const interactivePageId = JSON.parse(localStorage.getItem('interactivePageTips')) || []
-                if (arrJson.filter(item => item.interactive).length > 0 && interactivePageId.indexOf(`${this.projectId}-${this.pageId}`) === -1) {
+                if (this.arrJson.toJSON().renderSlots.default.filter(item => item.interactive).length > 0
+                    && interactivePageId.indexOf(`${this.projectId}-${this.pageId}`) === -1) {
                     return true
                 } else {
                     return false
@@ -134,11 +136,20 @@
 <style lang="postcss" module>
     @import "@/css/mixins/scroller";
 
+    .top-wrapper{
+        height: 100%;
+    }
+    .alert-wrapper{
+        position:absolute;
+        top:-19px;
+        z-index: 1;
+        width: 100%;
+    }
     .horizontal-wrapper{
-        background: #fff;
+        background: #fff !important;
         background-clip: content-box;
         position: relative;
-        margin: 0 20px 20px;
+        margin:20px;
         padding-top: 20px;
         height: 100%;
         overflow: auto;
