@@ -77,7 +77,7 @@
                 this.arrJson = LC.getRoot()
                 this.pageId = `${this.$route.params?.projectId}-${this.$route.params?.pageId}`
                 const interactivePageId = JSON.parse(localStorage.getItem('interactivePageTips')) || []
-                if ((this.arrJson?.toJSON()?.renderSlots?.default || []).filter(item => item.interactive).length > 0
+                if ((this.arrJson.toJSON()?.renderSlots?.default || []).filter(item => item.interactive).length > 0
                     && interactivePageId.indexOf(this.pageId) === -1) {
                     return true
                 } else {
@@ -91,7 +91,7 @@
             const resizeObserverCallback = _.throttle(() => {
                 this.calcRenderStyles()
             }, 100)
-            
+
             const activeResizeObserver = new ResizeObserver(resizeObserverCallback)
             activeResizeObserver.observe(this.$refs.root)
             this.$once('hook:beforeDestroy', () => {
@@ -138,7 +138,7 @@
         height: 100%;
     }
     .horizontal-wrapper{
-        background: #fff !important;
+        background: #fff;
         background-clip: content-box;
         position: relative;
         margin: 0 20px 20px;
