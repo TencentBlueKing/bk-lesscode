@@ -75,7 +75,6 @@
             },
             isTips () {
                 this.arrJson = LC.getRoot()
-                this.pageId = `${this.$route.params?.projectId}-${this.$route.params?.pageId}`
                 const interactivePageId = JSON.parse(localStorage.getItem('interactivePageTips')) || []
                 if ((this.arrJson.toJSON()?.renderSlots?.default || []).filter(item => item.interactive).length > 0
                     && interactivePageId.indexOf(this.pageId) === -1) {
@@ -83,6 +82,9 @@
                 } else {
                     return false
                 }
+            },
+            pageId () {
+                return (`${this.$route.params.projectId}-${this.$route.params.pageId}`)
             }
         },
         mounted () {
