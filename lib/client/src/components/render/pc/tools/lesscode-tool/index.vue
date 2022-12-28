@@ -4,7 +4,8 @@
             ref="hoverRef"
             :class="$style['tools-hover']"
             :style="hoverStyles">
-            <div :class="$style['button']">
+            <div :class="$style['button']"
+                @click.stop="handlerHoverClick">
                 {{ hoverComponentData.componentId }}
             </div>
         </div>
@@ -64,6 +65,7 @@
     import useSlot from './hooks/use-slot'
     import _ from 'lodash'
     import { miniLimited } from 'shared/util.js'
+    import LC from '@/element-materials/core'
 
     const hideStyles = {
         display: 'none'
@@ -207,6 +209,13 @@
 
                 mobileContainer?.addEventListener('scroll', mobileHoverScrollHandler)
             })
+            /**
+             * @desc 鼠标hover点击状态
+             */
+            const handlerHoverClick = () => {
+                LC.clearMenu()
+                hoverComponentData.value.active()
+            }
 
             /** transfer dom 防止移动端overflow: hidden导致的无法显示问题 */
             onMounted(() => {
@@ -226,7 +235,8 @@
                 handleCopyPaste,
                 handleRemove,
                 handleShowMenu,
-                initStyle
+                initStyle,
+                handlerHoverClick
             }
         }
     }
@@ -277,6 +287,7 @@
         }
         &:hover{
             background: #1964E1;
+            cursor: pointer;
         }
     }
 </style>
