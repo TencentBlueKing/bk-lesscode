@@ -67,6 +67,7 @@
                 })
             },
             handlerCancel () {
+                this.categoryId = this.data.categoryId
                 this.$emit('update:isShow', false)
             },
             async handlerConfirm () {
