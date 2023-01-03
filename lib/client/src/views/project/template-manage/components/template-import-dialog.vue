@@ -131,7 +131,7 @@
                 this.dialog.formData.jsonStr = res.responseData.data
                 this.templateJson = JSON.parse(res.responseData.data)
                 if (typeof this.templateJson.template !== 'object' || typeof this.templateJson.vars !== 'object' || typeof this.templateJson.functions !== 'object') {
-                    this.$$bkMessage({
+                    this.$bkMessage({
                         theme: 'error',
                         message: '请上传符合规范的模板json'
                     })

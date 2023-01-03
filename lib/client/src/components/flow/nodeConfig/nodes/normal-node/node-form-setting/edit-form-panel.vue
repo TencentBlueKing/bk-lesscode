@@ -11,7 +11,6 @@
                     id="toolActionBox"
                     class="function-and-tool">
                     <operation-select v-model="operationType" :hide-setting="hideSetting" :hide-func="hideSetting"></operation-select>
-                    <div class="spilt-line"></div>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
                     <action-tool
                         :custom-save="true"
@@ -93,7 +92,7 @@
     .edit-form-panel {
         position: fixed;
         /* 全局导航高度 */
-        top: 64px;
+        top: 52px;
         right: 0;
         bottom: 0;
         left: 0;

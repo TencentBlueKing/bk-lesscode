@@ -1,9 +1,10 @@
 <template>
     <div class="action-tool-list">
+        <show-function v-if="!hideFunc" />
+        <div class="func-split-line" />
         <save v-if="!hideSave" :custom="customSave" @save="$emit('save', $event)" />
         <preview v-if="!hidePreview" />
         <clear v-if="!hideClear" />
-        <show-function v-if="!hideFunc" />
     </div>
 </template>
 <script>
@@ -33,5 +34,11 @@
         display: flex;
         align-items: center;
         height: 100%;
+    }
+    .func-split-line {
+        background-color: #dcdee5;
+        height: 22px;
+        margin-left: 5px;
+        width: 1px;
     }
 </style>
