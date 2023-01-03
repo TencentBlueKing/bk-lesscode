@@ -424,7 +424,7 @@
                     this.dialog.create.visible = false
 
                     setTimeout(() => {
-                        // this.handleGotoPage(projectId)
+                        this.handleGotoPage(projectId)
                     }, 300)
                 } catch (e) {
                     console.error(e)
@@ -436,7 +436,6 @@
                 try {
                     await this.$refs.projectForm.validate()
                     const importProjectData = this.$refs.projectForm?.importProjectData || {}
-                    console.log(importProjectData, 223)
                     if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
                         this.$bkMessage({
                             theme: 'error',
