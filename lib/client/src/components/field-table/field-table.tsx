@@ -284,12 +284,10 @@ export default defineComponent({
         // 组件外可以直接调用该方法判断是否校验通过
         const verification = () => {
             return new Promise((resolve, reject) => {
+                // 清空错误信息，重新校验
+                Object.keys(errorMap).forEach(key => delete errorMap[key])
                 // 待校验完成，防止input失焦的时候同时调用该方法。
                 setTimeout(async () => {
-                    // 有未处理错误直接 reject
-                    if (Object.keys(errorMap).length) {
-                        reject(new Error(Object.values<string>(errorMap)[0]))
-                    }
                     const length = props.data.length
                     for (const item of renderColumns) {
                         // 自定义列且没有自定义rules则不校验
