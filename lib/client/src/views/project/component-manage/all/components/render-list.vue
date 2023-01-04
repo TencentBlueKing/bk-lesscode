@@ -107,6 +107,7 @@
     import PublicCategory from '../../public-category'
     import typeSelect from '@/components/project/type-select'
     import dayjs from 'dayjs'
+    import { bus } from '@/common/bus'
 
     export default {
         name: '',
@@ -163,6 +164,10 @@
             this.fetchData()
             const isProd = process.env.V3_ENV === 'prod'
             this.tnpmPrefix = isProd ? '' : 'test-'
+            bus.$on('fetchData-table', this.fetchData)
+            this.$once('hook:beforeDestroy', () => {
+                bus.$off('fetchData-table', this.fetchData)
+            })
         },
         methods: {
             async fetchData () {

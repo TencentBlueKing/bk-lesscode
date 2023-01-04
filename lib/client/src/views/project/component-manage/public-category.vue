@@ -30,6 +30,7 @@
     </bk-dialog>
 </template>
 <script>
+    import { mapState } from 'vuex'
     export default {
         name: 'public-category',
         props: {
@@ -44,7 +45,6 @@
         },
         data () {
             return {
-                categoryList: [],
                 categoryId: '',
                 dialog: {
                     disabled: false,
@@ -52,20 +52,17 @@
                 }
             }
         },
+        computed: {
+            ...mapState({
+                categoryList: state => state.components.categoryList
+            })
+        },
         watch: {
             data (newData) {
                 this.categoryId = newData.categoryId
             }
         },
-        mounted () {
-            this.fetchCategoryList()
-        },
         methods: {
-            async fetchCategoryList () {
-                this.categoryList = await this.$store.dispatch('components/categoryList', {
-                    belongProjectId: parseInt(this.$route.params.projectId)
-                })
-            },
             handlerCancel () {
                 this.categoryId = this.data.categoryId
                 this.$emit('update:isShow', false)
