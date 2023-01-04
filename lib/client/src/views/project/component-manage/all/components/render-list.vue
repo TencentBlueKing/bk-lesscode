@@ -95,7 +95,8 @@
         <public-category
             :is-show.sync="isShowCategory"
             :data="currentCategoryDate"
-            @on-update="fetchData" />
+            @on-update="fetchData"
+            @on-add="handleComponentAdd" />
     </div>
 </template>
 <script>

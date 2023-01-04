@@ -85,6 +85,7 @@
                     this.messageSuccess('设置成功')
                     this.$emit('update:isShow', false)
                     this.$emit('on-update')
+                    this.$emit('on-add')
                 } catch (e) {
                     console.error(e)
                 } finally {
