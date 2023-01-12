@@ -61,7 +61,7 @@
                 <bk-table-column label="使用页面" prop="usingPage" min-width="280" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span :class="$style['component-pages']">
-                            <span>{{ row.pageList.map(_ => _.pageName).join('、') }}</span>
+                            <span>{{ (row.pageList || []).map(_ => _.pageName).join('、') }}</span>
                         </span>
                     </template>
                 </bk-table-column>

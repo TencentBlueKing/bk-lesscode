@@ -1,9 +1,22 @@
 <template>
-    <bk-form ref="infoForm" :label-width="type === 'newProject' ? 86 : 110" :rules="formRules" :model="formData" :form-type="formType">
+    <bk-form ref="infoForm" :label-width="type === 'newProject' ? 86 : 120" :rules="formRules" :model="formData" :form-type="formType">
         <bk-form-item v-if="type === 'templateProject'" label="当前已选模板">
             <bk-input readonly v-model.trim="templateName"
                 placeholder="请先选择模板">
             </bk-input>
+        </bk-form-item>
+        <bk-form-item v-if="type === 'importProject'" label="应用JSON文件" required error-display-type="normal">
+            <bk-upload
+                with-credentials
+                :multiple="false"
+                :url="uploadUrl"
+                :limit="1"
+                accept=".json"
+                desc="应用JSON可通过“导出”已有应用获得"
+                @on-success="handleUploadSuccess"
+                @on-error="handleUploadReset"
+                @on-delete="handleUploadReset"
+            ></bk-upload>
         </bk-form-item>
         <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
             <bk-input maxlength="60" v-model.trim="formData.projectName"
@@ -26,18 +39,6 @@
         <bk-form-item label="导航布局" style="margin-top: 10px" v-if="type === 'newProject'" error-display-type="normal">
             <span class="layout-desc">可多选，作为创建应用页面时可供选择的导航布局，便于在应用中统一配置导航</span>
             <layout-thumb-list :list="formLayoutList" @change-checked="handleLayoutChecked" @set-default="handleLayoutDefault" />
-        </bk-form-item>
-        <bk-form-item v-if="type === 'importProject'" label="导入应用json" required error-display-type="normal">
-            <bk-upload
-                with-credentials
-                :multiple="false"
-                :url="uploadUrl"
-                :limit="1"
-                accept=".json"
-                @on-success="handleUploadSuccess"
-                @on-error="handleUploadReset"
-                @on-delete="handleUploadReset"
-            ></bk-upload>
         </bk-form-item>
     </bk-form>
 </template>
@@ -140,7 +141,10 @@
                         theme: 'error',
                         message: '请上传符合规范的应用json'
                     })
+                    return
                 }
+                const projectData = this.importProjectData?.project || {}
+                Object.assign(this.formData, projectData)
             },
             handleUploadReset () {
                 this.importProjectData = {}
