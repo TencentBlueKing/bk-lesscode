@@ -181,6 +181,8 @@
 
         <download-dialog ref="downloadDialog"></download-dialog>
 
+        <export-dialog ref="exportDialog"></export-dialog>
+
         <set-template-dialog ref="setTemplateDialog" :refresh-list="getProjectList"></set-template-dialog>
     </main>
 </template>
@@ -190,6 +192,7 @@
     import dayjs from 'dayjs'
     import ProjectForm from '../components/project-form'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
+    import ExportDialog from '../components/export-dialog'
     import DownloadDialog from '../components/download-dialog'
     import TemplateDialog from '../components/template-dialog'
     import IconButtonToggle from '@/components/ui/icon-button-toggle.vue'
@@ -207,6 +210,7 @@
         components: {
             ProjectForm,
             PagePreviewThumb,
+            ExportDialog,
             DownloadDialog,
             TemplateDialog,
             SetTemplateDialog,
@@ -562,10 +566,10 @@
                 this.dialog.create.visible = true
             },
             async handleExport (project) {
-                window.open(`/api/project/export?projectId=${project.id}`, '_self')
-                setTimeout(() => {
-                    this.isShow = false
-                }, 500)
+                this.$refs.exportDialog.isShow = true
+                this.$refs.exportDialog.projectId = project.id
+                this.$refs.exportDialog.projectCode = project.projectCode
+                this.$refs.exportDialog.projectName = project.projectName
             },
             handleDownloadSource (project) {
                 this.$refs.downloadDialog.isShow = true
