@@ -2,6 +2,7 @@
     <div class="render-list">
         <div class="header">
             <bk-button theme="primary" @click="handleShowOperation">新建</bk-button>
+            <bk-button style="margin-left: 10px;" :disabled="!data.length" @click="handleExport">导出</bk-button>
             <div class="header-right">
                 <type-select class="type-select" @select-change="handleSelectChange"></type-select>
                 <a class="download-demo" href="/help/custom" target="_blank">组件开发指引</a>
@@ -171,6 +172,9 @@
                 this.componentId = 0
                 this.isShowOperation = true
                 this.editInfo = {}
+            },
+            async handleExport () {
+                window.open(`/api/component/export?belongProjectId=${this.$route.params.projectId}&compType=${this.compType}`, '_self')
             },
             handleVersionDetail (comp) {
                 this.currentVerionData = comp
