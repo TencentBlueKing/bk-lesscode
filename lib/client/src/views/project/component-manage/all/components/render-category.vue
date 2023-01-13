@@ -52,7 +52,6 @@
 </template>
 <script>
     import _ from 'lodash'
-    import { bus } from '@/common/bus'
 
     const getParentByRole = (path, role) => {
         for (let i = 0; i < path.length; i++) {
@@ -204,7 +203,6 @@
                             belongProjectId: parseInt(this.$route.params.projectId)
                         })
                         this.messageSuccess('编辑组件分类成功')
-                        bus.$emit('fetchData-table')
                     } else {
                         await this.$store.dispatch('components/categoryCreate', {
                             name: this.newCategory,
