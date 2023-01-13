@@ -101,7 +101,7 @@
     "change-case": "~4.1.1",
     "cheerio": "~1.0.0-rc.3",
     "co-views": "~2.1.0",
-    "compressing": "^1.5.1",
+    "compressing": "^1.6.3",
     "continuation-local-storage": "~3.2.1",
     "cookie": "~0.4.0",
     "core-js": "^3.25.5",

@@ -12,51 +12,16 @@
 <template>
     <main class="projects page-content">
         <div class="page-head">
-            <!-- <auth-button
-                theme="primary"
-                auth="create_app"
-                @click="handleCreate"
-                style="margin-right: 20px;"
-                class="w120">
-                新建
-            </auth-button> -->
-            <!-- <auth-button
-                theme="primary"
-                auth="script/create"
-                @click="test"
-                style="margin-right: 20px;"
-                permission="sdsd"
-                class="w120">
-                新建11
-            </auth-button> -->
             <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
                 <div class="dropdown-trigger-btn" slot="dropdown-trigger">
                     <bk-button theme="primary" icon-right="icon-angle-down">新建</bk-button>
                 </div>
                 <ul class="bk-dropdown-list" slot="dropdown-content">
-                    <!-- <li><a href="javascript:;" @click="handleCreate">空白应用</a></li>
-                    <li><a href="javascript:;" @click="handleTempCreate">从模板新建</a></li> -->
-                    <!-- <li>
-                        <a href="javascript:;">
-                            <auth-component auth="script/create">
-                                <span slot="forbid">空白应用</span>
-                                <span @click="handleCreate">空白应用</span>
-                            </auth-component>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <auth-component auth="script/create">
-                                <span slot="forbid">从模板新建</span>
-                                <span @click="handleTempCreate">从模板新建</span>
-                            </auth-component>
-                        </a>
-                    </li> -->
                     <template v-if="iamEnable">
                         <li>
                             <auth-component auth="create_app">
                                 <a href="javascript:;" slot="forbid">空白应用</a>
-                                <a href="javascript:;" slot="allow" @click="handleCreate">空白应用</a>
+                                <a href="javascript:;" slot="allow" @click="handleCreate('newProject')">空白应用</a>
                             </auth-component>
                         </li>
                         <li>
@@ -65,10 +30,17 @@
                                 <a href="javascript:;" slot="allow" @click="handleTempCreate">从模板新建</a>
                             </auth-component>
                         </li>
+                        <li>
+                            <auth-component auth="create_app">
+                                <a href="javascript:;" slot="forbid">导入应用</a>
+                                <a href="javascript:;" slot="allow" @click="handleCreate('importProject')">导入应用</a>
+                            </auth-component>
+                        </li>
                     </template>
                     <template v-else>
-                        <li><a href="javascript:;" @click="handleCreate">空白应用</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('newProject')">空白应用</a></li>
                         <li><a href="javascript:;" @click="handleTempCreate">从模板新建</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('importProject')">导入应用</a></li>
                     </template>
                 </ul>
             </bk-dropdown-menu>
@@ -111,6 +83,7 @@
                     @preview="handlePreview"
                     @to-page="handleGotoPage"
                     @copy="handleCopy"
+                    @export="handleExport"
                     @rename="handleRename"
                     @download="handleDownloadSource"
                     @set-template="handleSetTemplate"
@@ -128,42 +101,23 @@
             :mask-close="false"
             :auto-close="false"
             header-position="left"
-            ext-cls="project-create-dialog"
-            @value-change="handleCreateDialogToggle">
+            ext-cls="project-create-dialog">
             <span slot="header">
-                {{ isCopy ? '复制应用' : '创建应用' }}
+                {{ createDialogTitle }}
                 <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
             </span>
-            <bk-form ref="createForm" :label-width="86" :rules="dialog.create.formRules" :model="dialog.create.formData">
-                <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
-                    <bk-input maxlength="60" v-model.trim="dialog.create.formData.projectName"
-                        placeholder="由汉字，英文字母，数字组成，20个字符以内">
-                    </bk-input>
-                </bk-form-item>
-                <bk-form-item label="应用ID" required property="projectCode" error-display-type="normal">
-                    <bk-input maxlength="60" v-model.trim="dialog.create.formData.projectCode"
-                        placeholder="由小写字母组成，长度小于16个字符，该ID将作为自定义组件前缀，创建后不可更改">
-                    </bk-input>
-                </bk-form-item>
-                <bk-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
-                    <bk-input
-                        v-model.trim="dialog.create.formData.projectDesc"
-                        :type="'textarea'"
-                        :rows="3"
-                        :maxlength="100">
-                    </bk-input>
-                </bk-form-item>
-                <bk-form-item label="导航布局" style="margin-top: 10px" v-if="!isCopy" error-display-type="normal">
-                    <span class="layout-desc">可多选，作为创建应用页面时可供选择的导航布局，便于在应用中统一配置导航</span>
-                    <layout-thumb-list :list="defaultLayoutList" @change-checked="handleLayoutChecked" @set-default="handleLayoutDefault" />
-                </bk-form-item>
-            </bk-form>
+            <project-form
+                ref="projectForm"
+                :type="dialog.create.projectType"
+                :props-form-data="dialog.create.formData"
+                :default-layout-list="defaultLayoutList">
+            </project-form>
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="primary"
                     :loading="dialog.create.loading"
                     @click="handleCreateConfirm">确定</bk-button>
-                <bk-button @click="handleCreateCancel" :disabled="dialog.create.loading">取消</bk-button>
+                <bk-button @click="handleCancel('create')" :disabled="dialog.create.loading">取消</bk-button>
             </div>
         </bk-dialog>
 
@@ -190,7 +144,7 @@
                     :disabled="activatedProject.projectName === dialog.rename.formData.projectName"
                     :loading="dialog.rename.loading"
                     @click="handleRenameConfirm">确定</bk-button>
-                <bk-button @click="handleRenameCancel" :disabled="dialog.rename.loading">取消</bk-button>
+                <bk-button @click="handleCancel('rename')" :disabled="dialog.rename.loading">取消</bk-button>
             </div>
         </bk-dialog>
 
@@ -219,13 +173,15 @@
                     theme="danger"
                     :loading="dialog.delete.loading"
                     @click="handleDeleteConfirm">删除</bk-button>
-                <bk-button @click="handleDeleteCancel" :disabled="dialog.delete.loading">取消</bk-button>
+                <bk-button @click="handleCancel('delete')" :disabled="dialog.delete.loading">取消</bk-button>
             </div>
         </bk-dialog>
 
         <template-dialog ref="templateDialog" @preview="handlePreview" @to-page="handleGotoPage"></template-dialog>
 
         <download-dialog ref="downloadDialog"></download-dialog>
+
+        <export-dialog ref="exportDialog"></export-dialog>
 
         <set-template-dialog ref="setTemplateDialog" :refresh-list="getProjectList"></set-template-dialog>
     </main>
@@ -234,8 +190,9 @@
 <script>
     import { mapGetters } from 'vuex'
     import dayjs from 'dayjs'
-    import LayoutThumbList from '@/components/project/layout-thumb-list'
+    import ProjectForm from '../components/project-form'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
+    import ExportDialog from '../components/export-dialog'
     import DownloadDialog from '../components/download-dialog'
     import TemplateDialog from '../components/template-dialog'
     import IconButtonToggle from '@/components/ui/icon-button-toggle.vue'
@@ -249,17 +206,11 @@
     dayjs.extend(relativeTime)
     dayjs.locale('zh-cn')
 
-    const defaultCreateFormData = {
-        projectName: '',
-        projectCode: '',
-        projectDesc: '',
-        copyFrom: null
-    }
-
     export default {
         components: {
-            LayoutThumbList,
+            ProjectForm,
             PagePreviewThumb,
+            ExportDialog,
             DownloadDialog,
             TemplateDialog,
             SetTemplateDialog,
@@ -282,30 +233,8 @@
                     create: {
                         visible: false,
                         loading: false,
-                        formData: { ...defaultCreateFormData },
-                        formRules: {
-                            projectName: [
-                                {
-                                    regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
-                                    message: '由汉字，英文字母，数字组成，20个字符以内',
-                                    trigger: 'blur'
-                                }
-                            ],
-                            projectCode: [
-                                {
-                                    regex: /^[a-z]{1,16}$/,
-                                    message: '只能由小写字母组成, 16个字符以内',
-                                    trigger: 'blur'
-                                }
-                            ],
-                            projectDesc: [
-                                {
-                                    required: true,
-                                    message: '必填项',
-                                    trigger: 'blur'
-                                }
-                            ]
-                        }
+                        projectType: 'newProject',
+                        formData: {}
                     },
                     rename: {
                         visible: false,
@@ -315,11 +244,6 @@
                         },
                         formRules: {
                             projectName: [
-                                {
-                                    required: true,
-                                    message: '必填项',
-                                    trigger: 'blur'
-                                },
                                 {
                                     regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
                                     message: '由汉字，英文字母，数字组成，20个字符以内',
@@ -378,8 +302,9 @@
             filter () {
                 return this.$route.query.filter || ''
             },
-            isCopy () {
-                return this.dialog.create.formData.copyFrom !== null
+            createDialogTitle () {
+                const { projectType } = this.dialog.create
+                return projectType === 'copyProject' ? '复制应用' : (projectType === 'importProject') ? '导入应用' : '新建应用'
             },
             isSearch () {
                 return this.$route.query?.q?.length > 0
@@ -400,9 +325,6 @@
             this.getDefaultLayout()
         },
         methods: {
-            test () {
-                console.error('testtesttest')
-            },
             getCursorData () {
                 return {
                     active: true,
@@ -466,23 +388,69 @@
             },
             async handleCreateConfirm () {
                 try {
-                    await this.$refs.createForm.validate()
-                    const data = this.dialog.create.formData
-                    const layouts = this.layoutFullList.filter(layout => layout.checked || layout.type === 'mobile-empty').map(layout => {
-                        return {
-                            layoutId: layout.id,
-                            routePath: layout.defaultPath,
-                            isDefault: layout.isDefault,
-                            showName: layout.defaultName,
-                            layoutCode: layout.defaultCode,
-                            content: layout.defaultContent,
-                            layoutType: layout.layoutType
-                        }
-                    })
-                    data.layouts = layouts
+                    const data = this.$refs.projectForm.formData || {}
+                    await this.$refs.projectForm.validate()
 
+                    const { projectType } = this.dialog.create
+
+                    let actionMethod = 'project/create'
+                    if (projectType === 'newProject') {
+                        const layouts = this.layoutFullList.filter(layout => layout.checked || layout.type === 'mobile-empty').map(layout => {
+                            return {
+                                layoutId: layout.id,
+                                routePath: layout.defaultPath,
+                                isDefault: layout.isDefault,
+                                showName: layout.defaultName,
+                                layoutCode: layout.defaultCode,
+                                content: layout.defaultContent,
+                                layoutType: layout.layoutType
+                            }
+                        })
+                        data.layouts = layouts
+                    } else if (projectType === 'importProject') {
+                        actionMethod = 'project/import'
+                        const importProjectData = this.$refs.projectForm?.importProjectData || {}
+                        console.log(importProjectData, 223)
+                        if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
+                            this.$bkMessage({
+                                theme: 'error',
+                                message: '请先上传符合规范的应用json'
+                            })
+                            return
+                        }
+                        Object.assign(data, { importProjectData, copyFrom: undefined })
+                    }
+                    
                     this.dialog.create.loading = true
-                    const projectId = await this.$store.dispatch('project/create', { data })
+                    const projectId = await this.$store.dispatch(actionMethod, { data })
+
+                    this.messageSuccess('应用创建成功')
+                    this.dialog.create.visible = false
+
+                    setTimeout(() => {
+                        this.handleGotoPage(projectId)
+                    }, 300)
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.dialog.create.loading = false
+                }
+            },
+            async handleImportConfirm () {
+                try {
+                    await this.$refs.projectForm.validate()
+                    const importProjectData = this.$refs.projectForm?.importProjectData || {}
+                    if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: '请先上传符合规范的应用json'
+                        })
+                        return
+                    }
+                    const data = this.$refs.projectForm.formData
+                    Object.assign(data, { importProjectData })
+                    this.dialog.create.loading = true
+                    const projectId = await this.$store.dispatch('project/import', { data })
 
                     this.messageSuccess('应用创建成功')
                     this.dialog.create.visible = false
@@ -576,28 +544,8 @@
                 }
                 return true
             },
-            handleLayoutChecked (layout) {
-                layout.checked = !layout.checked
-                if (!layout.checked && layout.isDefault) {
-                    layout.isDefault = 0
-                    this.defaultLayoutList.filter(item => item.checked)[0].isDefault = 1
-                }
-            },
-            handleLayoutDefault (layout) {
-                this.defaultLayoutList.forEach(item => (item.isDefault = 0))
-                layout.isDefault = 1
-            },
-            handleCreateCancel () {
-                this.dialog.create.visible = false
-            },
-            handleRenameCancel () {
-                this.dialog.rename.visible = false
-            },
-            handleDeleteCancel () {
-                this.dialog.delete.visible = false
-            },
-            handleCreateDialogToggle () {
-                this.dialog.create.formData = { ...defaultCreateFormData }
+            handleCancel (type) {
+                this.dialog[type].visible = false
             },
             handleRenameDialogAfterLeave () {
                 this.dialog.rename.formData.projectName = ''
@@ -605,15 +553,23 @@
             handleDeleteDialogToggle () {
                 this.dialog.delete.formData.projectName = ''
             },
-            handleCreate () {
-                defaultCreateFormData.copyFrom = null
-                defaultCreateFormData.projectName = ''
+            handleCreate (type = 'newProject') {
+                this.dialog.create.projectType = type
+                this.dialog.create.formData.projectName = ''
+                this.dialog.create.formData.copyFrom = null
                 this.dialog.create.visible = true
             },
             async handleCopy (project) {
-                defaultCreateFormData.copyFrom = project.id
-                defaultCreateFormData.projectName = `${project.projectName}copy`
+                this.dialog.create.projectType = 'copyProject'
+                this.dialog.create.formData.copyFrom = project.id
+                this.dialog.create.formData.projectName = `${project.projectName}copy`
                 this.dialog.create.visible = true
+            },
+            async handleExport (project) {
+                this.$refs.exportDialog.isShow = true
+                this.$refs.exportDialog.projectId = project.id
+                this.$refs.exportDialog.projectCode = project.projectCode
+                this.$refs.exportDialog.projectName = project.projectName
             },
             handleDownloadSource (project) {
                 this.$refs.downloadDialog.isShow = true

@@ -63,36 +63,13 @@
                 </div>
             </div>
             <div class="layout-right">
-                <bk-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" :form-type="'vertical'">
-                    <bk-form-item label="当前已选模板" property="templateName" error-display-type="normal">
-                        <bk-input readonly v-model.trim="formData.templateName"
-                            placeholder="模板名称">
-                        </bk-input>
-                    </bk-form-item>
-                    <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
-                        <bk-input maxlength="60" v-model.trim="formData.projectName"
-                            placeholder="由汉字，英文字母，数字组成，20个字符以内">
-                        </bk-input>
-                    </bk-form-item>
-                    <bk-form-item label="应用ID" required property="projectCode" error-display-type="normal">
-                        <bk-input maxlength="60" v-model.trim="formData.projectCode"
-                            placeholder="由小写字母组成，长度小于16个字符，该ID将作为自定义组件前缀，创建后不可更改">
-                        </bk-input>
-                    </bk-form-item>
-                    <bk-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
-                        <bk-input
-                            v-model.trim="formData.projectDesc"
-                            :type="'textarea'"
-                            :rows="3"
-                            :maxlength="100">
-                        </bk-input>
-                    </bk-form-item>
-                </bk-form>
+                <project-form ref="projectForm" type="templateProject" :template-name="formData.templateName"></project-form>
             </div>
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="primary"
                     :loading="loading"
+                    :disabled="!formData.copyFrom"
                     @click="handleCreateConfirm">确定</bk-button>
                 <bk-button @click="handleDialogCancel" :disabled="loading">取消</bk-button>
             </div>
@@ -101,14 +78,12 @@
 </template>
 
 <script>
+    import ProjectForm from './project-form.vue'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import { PROJECT_TEMPLATE_TYPE } from '@/common/constant'
 
     const defaultFormData = {
         templateName: '',
-        projectName: '',
-        projectCode: '',
-        projectDesc: '',
         copyFrom: null
     }
     const projectTemplateType = [{ id: '', name: '全部' }].concat(PROJECT_TEMPLATE_TYPE)
@@ -116,6 +91,7 @@
     export default {
         name: 'template-dialog',
         components: {
+            ProjectForm,
             PagePreviewThumb
         },
         data () {
@@ -123,36 +99,6 @@
                 isShow: false,
                 loading: false,
                 formData: { ...defaultFormData },
-                formRules: {
-                    templateName: [
-                        {
-                            required: true,
-                            message: '必选项',
-                            trigger: 'click'
-                        }
-                    ],
-                    projectName: [
-                        {
-                            regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,200}$/,
-                            message: '由汉字，英文字母，数字组成，20个字符以内',
-                            trigger: 'blur'
-                        }
-                    ],
-                    projectCode: [
-                        {
-                            regex: /^[a-z]{1,16}$/,
-                            message: '只能由小写字母组成, 16个字符以内',
-                            trigger: 'blur'
-                        }
-                    ],
-                    projectDesc: [
-                        {
-                            required: true,
-                            message: '必填项',
-                            trigger: 'blur'
-                        }
-                    ]
-                },
                 filterLinks: [...projectTemplateType],
                 filter: '',
                 searchFilter: '',
@@ -187,18 +133,21 @@
             },
             async handleCreateConfirm () {
                 try {
-                    await this.$refs.templateForm.validate()
-                    const data = this.formData
+                    if (!this.formData.copyFrom) return
+                    const isValidate = await this.$refs.projectForm?.validate()
+                    const data = this.$refs.projectForm?.formData || {}
+                    data.copyFrom = this.formData.copyFrom
+                    if (isValidate) {
+                        this.loading = true
+                        const projectId = await this.$store.dispatch('project/create', { data })
 
-                    this.loading = true
-                    const projectId = await this.$store.dispatch('project/create', { data })
+                        this.messageSuccess('应用创建成功')
+                        this.isShow = false
 
-                    this.messageSuccess('应用创建成功')
-                    this.isShow = false
-
-                    setTimeout(() => {
-                        this.$emit('to-page', projectId)
-                    }, 300)
+                        setTimeout(() => {
+                            this.$emit('to-page', projectId)
+                        }, 300)
+                    }
                 } catch (e) {
                     console.error(e)
                 } finally {
