@@ -33,7 +33,16 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column label="组件ID" prop="type" align="left" show-overflow-tooltip />
-                <bk-table-column label="所属分类" prop="category" align="left" width="120" show-overflow-tooltip />
+                <bk-table-column label="所属分类" prop="category" align="left" show-overflow-tooltip>
+                    <template slot-scope="{ row }">
+                        <div class="component-scope">
+                            <span class="scope-name">
+                                {{ row.category }}
+                            </span>
+                            <i class="bk-icon icon-edit2" @click="handleCategory(row)" />
+                        </div>
+                    </template>
+                </bk-table-column>
                 <bk-table-column label="公开范围" prop="scope" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-scope">
@@ -84,6 +93,11 @@
             :is-show.sync="isShowPublicScope"
             :data="currentScopeData"
             @on-update="fetchData" />
+        <public-category
+            :is-show.sync="isShowCategory"
+            :data="currentCategoryDate"
+            @on-update="fetchData"
+            @on-add="handleComponentAdd" />
     </div>
 </template>
 <script>
@@ -91,6 +105,7 @@
     import Operation from './operation'
     import VersionLog from '@/components/version-log'
     import PublicScope from '../../public-scope'
+    import PublicCategory from '../../public-category'
     import typeSelect from '@/components/project/type-select'
     import dayjs from 'dayjs'
 
@@ -100,7 +115,8 @@
             Operation,
             VersionLog,
             PublicScope,
-            typeSelect
+            typeSelect,
+            PublicCategory
         },
         props: {
             categoryId: {
@@ -113,6 +129,7 @@
                 isShowOperation: false,
                 isShowVersionLog: false,
                 isShowPublicScope: false,
+                isShowCategory: false,
                 currentVerionData: {},
                 data: [],
                 publicScope: {},
@@ -121,6 +138,7 @@
                     scope: [],
                     comp: {}
                 },
+                currentCategoryDate: {},
                 pagination: {
                     count: 0,
                     limit: 10,
@@ -251,6 +269,10 @@
             },
             timeFormatter (obj, con, val) {
                 return val ? dayjs(val).format('YYYY-MM-DD HH:mm:ss') : ''
+            },
+            handleCategory (category) {
+                this.currentCategoryDate = category
+                this.isShowCategory = true
             }
         }
     }
