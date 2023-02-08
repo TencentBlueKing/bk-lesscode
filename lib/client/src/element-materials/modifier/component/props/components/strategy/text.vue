@@ -9,27 +9,13 @@
   specific language governing permissions and limitations under the License.
 -->
 
-<!-- <template functional>
-    <div>
-        <div class="text-title">文本配置：</div>
-        <div class="text-action">
-            <bk-input :value="props.defaultValue" @change="val => props.change('slots', val, props.type)" />
-        </div>
-    </div>
-</template> -->
 <template>
     <div>
         <div class="text-action">
-            <textarea v-if="isParagraph"
+            <textarea
                 rows="5"
                 style="height: auto; word-break: break-all;"
                 class="bk-form-textarea"
-                :class="isError && 'king-input-modifier-style-error'"
-                v-model="renderValue"
-                @input="handleChange" />
-            <input v-else
-                type="text"
-                class="bk-form-input"
                 :class="isError && 'king-input-modifier-style-error'"
                 v-model="renderValue"
                 @input="handleChange" />
@@ -68,11 +54,6 @@
             return {
                 isError: false,
                 renderValue: ''
-            }
-        },
-        computed: {
-            isParagraph () {
-                return this.type === 'paragraph'
             }
         },
         watch: {
