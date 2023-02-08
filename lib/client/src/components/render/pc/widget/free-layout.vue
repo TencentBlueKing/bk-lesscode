@@ -52,6 +52,7 @@
     import Draggable from '../components/draggable'
     import ResolveComponent from '../resolve-component'
     import { unitFilter } from 'shared/util.js'
+    import { autoStyle } from '@/common/util.js'
 
     export default {
         name: 'free-layout',
@@ -109,12 +110,12 @@
                     this.dragLine.check(this.drag.$elem, '[role="component-root"]')
                 }).on('end', () => {
                     this.dragLine.uncheck()
-                    const left = parseFloat(this.drag.$elem.style.left)
-                    const top = parseFloat(this.drag.$elem.style.top)
+                    const left = autoStyle(childNode, 'left', parseFloat(this.drag.$elem.style.left), true)
+                    const top = autoStyle(childNode, 'top', parseFloat(this.drag.$elem.style.top), true)
 
                     childNode.setStyle({
-                        left: left + 'px',
-                        top: top + 'px'
+                        left: left,
+                        top: top
                     })
                     childNode.active()
                     isMoveing = false
@@ -180,7 +181,7 @@
                         } else {
                             top = originalTop - containerTop - 15
                         }
-                        top = Math.max(top, 10) + 'px'
+                        top = autoStyle(childNode, 'top', Math.max(top, 10), true)
                     }
                     // left 位置计算
                     if (childNode.style.left) {
@@ -191,7 +192,7 @@
                         } else {
                             left = originalLeft - containerLeft - 15
                         }
-                        left = Math.max(left, 10) + 'px'
+                        left = autoStyle(childNode, 'left', Math.max(left, 10), true)
                     }
 
                     childNode.setStyle({
