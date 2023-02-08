@@ -2,6 +2,7 @@
     <section class="choose-perm-action-main">
         <slot name="header"></slot>
         <bk-select class="choose-perm-action-select" :loading="iamAppPermActionLoading"
+            ref="selectRef"
             searchable
             multiple
             display-tag
@@ -13,18 +14,27 @@
                 :id="option.id"
                 :name="option.displayName">
             </bk-option>
-            <div slot="extension" @click="goCreateAction" style="cursor: pointer;">
-                <i class="bk-icon icon-plus-circle"></i> 新增操作
+            <div slot="extension" @click="showCreatePermSlider = true" style="cursor: pointer;">
+                <i class="bk-icon icon-plus-circle"></i> 新建操作
             </div>
         </bk-select>
+        <app-perm-model-sideslider
+            :is-show="showCreatePermSlider"
+            :iam-app-perm="iamAppPerm"
+            :is-default-action="false"
+            @hide-sideslider="showCreatePermSlider = false"
+            @success="sidesliderSuccess"
+        />
     </section>
 </template>
 
 <script>
     import { IAM_APP_PERM_BUILDIN_ACTION } from 'shared/constant'
+    import AppPermModelSideslider from '@/views/project/app-perm-model/app-perm-model-sideslider.vue'
 
     export default {
         components: {
+            AppPermModelSideslider
         },
 
         props: {
@@ -36,9 +46,11 @@
 
         data () {
             return {
+                iamAppPerm: {},
                 iamAppPermActionList: [],
                 iamAppPermActionLoading: false,
-                selectVals: []
+                selectVals: [],
+                showCreatePermSlider: false
             }
         },
 
@@ -49,11 +61,22 @@
         },
 
         async created () {
-            await this.fetchIamAppPermAction()
+            await Promise.all([
+                this.fetchIamAppPerm(),
+                this.fetchIamAppPermAction()
+            ])
             this.selectVals.splice(0, this.selectVals.length, ...this.selectedActions.map(item => item.id))
         },
 
         methods: {
+            async fetchIamAppPerm () {
+                try {
+                    const res = await this.$store.dispatch('iam/getIamAppPerm', { projectId: this.projectId })
+                    this.iamAppPerm = Object.assign({}, res)
+                } catch (e) {
+                    console.error(e)
+                }
+            },
             async fetchIamAppPermAction () {
                 this.iamAppPermActionLoading = true
                 try {
@@ -90,10 +113,14 @@
                 this.$emit('clear-action')
             },
 
-            goCreateAction () {
-                this.$router.push({
-                    name: 'appPermModel'
+            async sidesliderSuccess () {
+                this.$bkMessage({
+                    theme: 'success',
+                    message: '新建操作成功'
                 })
+                this.showCreatePermSlider = false
+                await this.fetchIamAppPermAction()
+                this.$refs.selectRef.show()
             }
         }
     }
