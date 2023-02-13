@@ -5,7 +5,6 @@
             <bk-button style="margin-left: 10px;" :disabled="!data.length" @click="handleExport">导出</bk-button>
             <div class="header-right">
                 <type-select class="type-select" @select-change="handleSelectChange"></type-select>
-                <a class="download-demo" href="/help/custom" target="_blank">组件开发指引</a>
             </div>
         </div>
         <div class="component-list-content" v-bkloading="{ isLoading }">
