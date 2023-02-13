@@ -30,7 +30,7 @@
                 :disabled="dialog.disabled"
                 :loading="dialog.loading"
                 @click="handleConfirm">确定</bk-button>
-            <bk-button @click="handleCancel" :disabled="dialog.loading">取消</bk-button>
+            <bk-button @click="handleCancel" :disabled="dialog.loading" style="margin-left: 8px">取消</bk-button>
         </div>
     </bk-dialog>
 </template>
