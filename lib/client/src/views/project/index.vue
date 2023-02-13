@@ -102,6 +102,17 @@
                     应用当前版本：
                     <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
                 </div>
+                <div class="instructions" v-if="helpDocument">
+                    <a class="download-demo" :href="helpDocument" target="_blank">
+                        <svg class="bk-icon" style="width: 1.2em; height: 1.5em;vertical-align: text-top;fill: #3A84FF;" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <path fill="#3A84FF" d="M32,4C16.5,4,4,16.5,4,32c0,3.6,0.7,7.1,2,10.4V56c0,1.1,0.9,2,2,2h13.6C36,63.7,52.3,56.8,58,42.4S56.8,11.7,42.4,6C39.1,4.7,35.6,4,32,4z M32,56c-3.3,0-6.6-0.7-9.6-2H10V41.6C4.7,29.4,10.3,15.3,22.4,10S48.7,10.3,54,22.4S53.7,48.7,41.6,54C38.6,55.3,35.3,56,32,56z"></path>
+                                <circle fill="#737987" cx="31.3" cy="42.1" r="3"></circle>
+                                <path fill="#3A84FF" d="M32.1,18.9c5,0,8.3,2.8,8.3,6.9c0,2.6-1.3,4.5-3.8,6c-2.5,1.5-3,2.2-3,3.9v0.9H29v-1c-0.2-2.8,0.7-4.4,3.2-5.8c2.3-1.4,3-2.2,3-3.8s-1.3-2.8-3.3-2.8c-1.8-0.1-3.3,1.2-3.5,3c0,0.1,0,0.1,0,0.2h-4.8C23.6,22,26.7,18.9,32.1,18.9z"></path>
+                            </g>
+                        </svg>
+                        功能使用指引</a>
+                </div>
             </div>
             <extra-links></extra-links>
         </div>
@@ -384,6 +395,9 @@
             // 流程详情编辑页需要隐藏左侧导航
             hideSideNav () {
                 return this.$route.meta.hideSideNav
+            },
+            helpDocument () {
+                return this.$route.meta?.helpDocument
             }
         },
         beforeRouteUpdate (to, from, next) {
@@ -684,6 +698,17 @@
                         max-width: 320px;
                     }
                 }
+                
+                    .download-demo {
+                        font-size: 12px;
+                        line-height: 18px;
+                        color: #3A84FF;
+                        position: absolute;
+                        right: 24px;
+                        top: 18px;
+                 
+                    }
+                
             }
 
             .current {
