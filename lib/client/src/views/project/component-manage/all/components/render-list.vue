@@ -288,10 +288,6 @@
                 display: flex;
                 align-items: center;
             }
-            .download-demo{
-                font-size: 12px;
-                color: #3a84ff;
-            }
             .type-select{
             }
         }
