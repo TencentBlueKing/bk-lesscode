@@ -79,11 +79,7 @@
                 this.getFormData()
             }
         },
-        mounted () {
-            this.$el.addEventListener('click', this.clearSelectedComp)
-        },
         beforeDestroy () {
-            this.$el.removeEventListener('click', this.clearSelectedComp)
             this.$store.commit('nocode/dataManage/resetPageConfig')
             this.$store.commit('nocode/dataMange/setActiveNode', '')
         },
@@ -153,7 +149,6 @@
 <style lang="postcss" scoped>
     .bk-tab {
         padding: 4px;
-        max-width: calc(100% - 250px);
         background: #f0f1f5;
         border-radius: 2px;
         >>> .bk-tab-section {

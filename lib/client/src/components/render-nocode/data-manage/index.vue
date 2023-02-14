@@ -1,7 +1,7 @@
 <template>
     <draw-layout :hide-right-slot="false">
         <layout>
-            <div class="data-manage-page-wrapper">
+            <div ref="dataManageContent" class="data-manage-page-wrapper">
                 <form-data v-if="nocodeType === 'FORM_MANAGE'"></form-data>
                 <flow-data v-else-if="nocodeType === 'FLOW_MANAGE'"></flow-data>
             </div>
@@ -55,6 +55,18 @@
                 } else {
                     this.editType = 'FORM'
                 }
+            }
+        },
+        mounted () {
+            this.$refs.dataManageContent.addEventListener('click', this.clearSelectedComp)
+        },
+        beforeDestroy () {
+            this.$refs.dataManageContent.removeEventListener('click', this.clearSelectedComp)
+            this.$store.commit('nocode/dataManage/resetPageConfig')
+        },
+        methods: {
+            clearSelectedComp () {
+                this.$store.commit('nocode/dataManage/setSelectedComp')
             }
         }
     }

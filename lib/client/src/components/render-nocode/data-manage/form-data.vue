@@ -66,11 +66,7 @@
             this.getFormDetail()
             this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
         },
-        mounted () {
-            this.$el.addEventListener('click', this.clearSelectedComp)
-        },
         beforeDestroy () {
-            this.$el.removeEventListener('click', this.clearSelectedComp)
             this.$store.commit('nocode/dataManage/resetPageConfig')
         },
         methods: {
@@ -96,9 +92,6 @@
                 pageConfig.filters = this.filters
                 pageConfig.tableConfig = this.tableConfig
                 this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
-            },
-            clearSelectedComp () {
-                this.$store.commit('nocode/dataManage/setSelectedComp')
             }
         }
     }

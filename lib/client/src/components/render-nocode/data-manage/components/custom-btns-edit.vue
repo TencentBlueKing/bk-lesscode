@@ -12,19 +12,6 @@
                 {{ button.name }}
             </bk-button>
         </comp-box>
-        <!-- <bk-dropdown-menu
-            v-if="buttons.length > 4"
-            ref="dropdown"
-            @show="isDropdownShow = true"
-            @hide="isDropdownShow = false">
-            <div class="more-buttons-trigger" slot="dropdown-trigger">
-                更多
-                <i :class="['bk-icon icon-angle-down angle-icon', { 'active': isDropdownShow }]"></i>
-            </div>
-            <ul class="more-btns-list" slot="dropdown-content">
-                <li v-for="button in buttons.slice(4)" :key="button.id" class="button-item">{{ button.name }}</li>
-            </ul>
-        </bk-dropdown-menu> -->
         <bk-button
             v-bk-tooltips="buttons.length > 9 ? '按钮数量已达上限' : '添加按钮'"
             ext-cls="create-btn"
@@ -64,7 +51,7 @@
                     })
                 }
             },
-            getProperties (button, index) {
+            getProperties (button) {
                 const props = {}
                 Object.keys(button.props).forEach(key => {
                     props[key] = button.props[key].val
@@ -81,7 +68,7 @@
                     perms: []
                 }
                 if (buttons.length === 0) {
-                    button.props.theme = 'primary' // 第一个按钮主题默认值primary
+                    button.props.theme = { val: 'primary' } // 第一个按钮主题默认值primary
                 }
                 buttons.push(button)
                 this.updatePageConfig(buttons)
@@ -119,39 +106,6 @@
     }
     .button-wrapper {
         margin-right: 8px;
-    }
-    .more-buttons-trigger {
-        margin-right: 8px;
-        padding: 0 8px 0 16px;
-        height: 32px;
-        line-height: 32px;
-        font-size: 14px;
-        color: #63656e;
-        border: 1px solid #c4c6cc;
-        border-radius: 2px;
-        cursor: pointer;
-        .angle-icon {
-            display: inline-block;
-            font-size: 20px;
-            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
-            &.active {
-                transform: rotate(-180deg);
-            }
-        }
-    }
-    .more-btns-list {
-        .button-item {
-            padding: 0 16px;
-            height: 32px;
-            line-height: 32px;
-            font-size: 14px;
-            color: #63656e;
-            cursor: pointer;
-            &:hover {
-                color: #3a84ff;
-                background: #f0f1f5;
-            }
-        }
     }
     .create-btn {
         padding: 0;

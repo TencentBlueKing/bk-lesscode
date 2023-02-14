@@ -7,7 +7,7 @@
             </div>
             <bk-select :value="eventConfig.name" placeholder="请选择函数" @selected="handleEventConfigChange($event, 'name')">
                 <bk-option
-                    v-for="item in functions"
+                    v-for="item in functionList"
                     :key="item.id"
                     :id="item.id"
                     :name="item.name">
@@ -21,17 +21,21 @@
     import { cloneDeep } from 'lodash'
     export default {
         name: 'EventsSetting',
-        data () {
-            return {
-                functions: [
-                    { id: 'export', name: '导出' }
-                ]
-            }
-        },
         computed: {
             ...mapState('nocode/dataManage', ['activeNode', 'selectedComp', 'pageConfig']),
             eventConfig () {
                 return this.selectedComp.data.events.click
+            },
+            functionList () {
+                if (this.selectedComp.type === 'buttons') {
+                    return [
+                        { id: 'export', name: '导出' }
+                    ]
+                }
+                return [
+                    { id: 'rowDetail', name: '详情' },
+                    { id: 'rowDelete', name: '删除' }
+                ]
             }
         },
         methods: {
