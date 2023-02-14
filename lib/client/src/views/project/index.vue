@@ -105,7 +105,8 @@
                 <div class="instructions" v-if="helpDocument">
                     <a class="download-demo" :href="helpDocument" target="_blank">
                         <bk-icon class="bk-layout-component-kkgoknfg bkIcon1f258 bk-icon-help" type="question-circle"> </bk-icon>
-                        功能使用指引</a>
+                        使用指引
+                    </a>
                 </div>
             </div>
             <extra-links></extra-links>
