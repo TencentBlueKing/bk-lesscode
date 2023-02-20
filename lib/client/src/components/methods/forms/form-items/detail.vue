@@ -88,6 +88,17 @@
                     </bk-option>
                 </bk-select>
             </bk-form-item>
+            <bk-form-item property="withToken" class="func-form-item" v-if="showToken">
+                <bk-checkbox
+                    :true-value="1"
+                    :false-value="0"
+                    :value="form.withToken"
+                    v-bk-tooltips="{
+                        content: '勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）'
+                    }"
+                    @change="(withToken) => updateValue({ withToken })"
+                >蓝鲸应用认证</bk-checkbox>
+            </bk-form-item>
             <bk-button
                 class="get-remote-response bk-form-item func-form-item"
                 size="small"
@@ -195,6 +206,10 @@
             variableList: {
                 type: Array,
                 default: () => ([])
+            },
+            showToken: {
+                type: Boolean,
+                default: false
             }
         },
 
@@ -308,7 +323,8 @@
                             url,
                             type: this.form.funcMethod,
                             apiData,
-                            withToken: this.form.withToken
+                            withToken: this.form.withToken,
+                            projectId: this.form.projectId
                         }
                         return this
                             .$store

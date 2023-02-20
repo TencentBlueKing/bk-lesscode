@@ -97,6 +97,19 @@
             </bk-compose-form-item>
         </bk-form-item>
         <bk-form-item
+            property="withToken"
+        >
+            <bk-checkbox
+                :true-value="1"
+                :false-value="0"
+                :value="formData.withToken"
+                v-bk-tooltips="{
+                    content: '勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）'
+                }"
+                @change="update('withToken', ...arguments)"
+            >蓝鲸应用认证</bk-checkbox>
+        </bk-form-item>
+        <bk-form-item
             label="备注"
             property="summary"
         >
@@ -254,6 +267,7 @@
 
 <style lang="postcss" scoped>
     .basic-compose-url {
+        display: block;
         width: 100%;
         .compose-method {
             width: 150px;
