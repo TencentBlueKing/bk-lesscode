@@ -102,6 +102,12 @@
                     应用当前版本：
                     <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
                 </div>
+                <div class="instructions" v-if="helpDocument">
+                    <a class="download-demo" :href="helpDocument" target="_blank">
+                        <bk-icon class="bk-layout-component-kkgoknfg bkIcon1f258 bk-icon-help" type="question-circle"> </bk-icon>
+                        使用指引
+                    </a>
+                </div>
             </div>
             <extra-links></extra-links>
         </div>
@@ -384,6 +390,9 @@
             // 流程详情编辑页需要隐藏左侧导航
             hideSideNav () {
                 return this.$route.meta.hideSideNav
+            },
+            helpDocument () {
+                return this.$route.meta?.helpDocument
             }
         },
         beforeRouteUpdate (to, from, next) {
@@ -684,6 +693,19 @@
                         max-width: 320px;
                     }
                 }
+
+                    .download-demo {
+                        font-size: 12px;
+                        line-height: 18px;
+                        color: #3A84FF;
+                        position: absolute;
+                        right: 24px;
+                        top: 18px;
+                        .bk-icon-help {
+                            font-size: 14px !important;
+                        }
+                    }
+                
             }
 
             .current {
