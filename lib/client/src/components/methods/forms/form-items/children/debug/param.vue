@@ -10,8 +10,10 @@
                 <bk-input
                     class="param-value"
                     placeholder="请输入参数值"
+                    ref="paramInputRef"
                     :value="renderParam.value"
                     @change="(val) => changeParam(val, index)"
+                    @enter="handleEnter"
                 ></bk-input>
             </li>
         </ul>
@@ -32,10 +34,17 @@
 
         setup (props, { emit }) {
             const renderParams = ref([])
+            const paramInputRef = ref([])
 
             const changeParam = (val, index) => {
                 renderParams.value[index].value = val
                 emit('param-change', renderParams.value)
+            }
+
+            const handleEnter = () => {
+                paramInputRef.value?.forEach((inputRef) => {
+                    inputRef.blur()
+                })
             }
 
             watch(
@@ -50,7 +59,9 @@
 
             return {
                 renderParams,
-                changeParam
+                paramInputRef,
+                changeParam,
+                handleEnter
             }
         }
     })
