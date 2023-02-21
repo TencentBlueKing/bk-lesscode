@@ -9,7 +9,6 @@
         <section class="func-form-home" slot="content">
             <form-name :form.sync="form" ref="name" :function-list="functionList"></form-name>
             <form-detail :form.sync="form" ref="detail"></form-detail>
-            <form-token :form.sync="form" ref="token"></form-token>
             <form-summary :form.sync="form" :require-summary="true" ref="summary"></form-summary>
             <form-monaco :form.sync="form" :function-list="[]" class="monaco" ref="monaco"></form-monaco>
         </section>

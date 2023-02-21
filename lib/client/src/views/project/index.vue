@@ -225,15 +225,6 @@
                                 }
                             },
                             {
-                                title: '凭证管理',
-                                url: 'credential',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'credential'
-                                }
-                            },
-                            {
                                 title: '变量管理',
                                 url: 'variableManage',
                                 iamAction: 'develop_app',

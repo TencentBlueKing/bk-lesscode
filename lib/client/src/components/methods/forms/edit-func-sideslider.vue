@@ -32,12 +32,9 @@
             <form-detail
                 :form.sync="form"
                 :variable-list="variableList"
+                :show-token="true"
                 ref="detail"
             ></form-detail>
-            <form-token
-                :form.sync="form"
-                ref="token">
-            </form-token>
             <form-summary
                 :form.sync="form"
                 ref="summary"
