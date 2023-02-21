@@ -247,11 +247,7 @@
                     confirmLoading: true,
                     confirmFn: async () => {
                         try {
-                            await new Promise(resolve => {
-                                setTimeout(() => {
-                                    resolve('成功')
-                                }, 1500)
-                            })
+                            await this.$http.delete(`/data-source/user/tableName/${this.tableName}?id=${id}`)
                             this.$bkMessage({
                                 message: '删除成功',
                                 theme: 'success'
