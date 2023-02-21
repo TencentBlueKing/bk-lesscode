@@ -3,7 +3,7 @@
         <template v-if="selectedComp.data.id">
             <div class="comp-header">
                 <span class="id">{{ selectedComp.data.id }}</span>
-                <i class="bk-icon icon-delete"></i>
+                <i class="bk-icon icon-delete" v-bk-tooltips="'删除'" @click="handleDelete"></i>
             </div>
             <div class="tabs-wrapper">
                 <bk-tab :active.sync="activePanel" :label-height="24">
@@ -19,7 +19,8 @@
     </div>
 </template>
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapMutations } from 'vuex'
+    import cloneDeep from 'lodash.clonedeep'
     import Events from './events'
     import Perms from './perms'
     import Properties from './properties'
@@ -42,7 +43,7 @@
             }
         },
         computed: {
-            ...mapState('nocode/dataManage', ['selectedComp']),
+            ...mapState('nocode/dataManage', ['activeNode', 'selectedComp', 'pageConfig']),
             settingComp () {
                 const active = this.activePanel || 'properties'
                 return this.compMap[active]
@@ -52,6 +53,17 @@
             'selectedComp.data.id' () {
                 this.activePanel = this.panels[0].name
             }
+        },
+        methods: {
+            ...mapMutations('nocode/dataManage', ['setPageConfig']),
+            handleDelete () {
+                console.log(this.selectedComp)
+                const pageConfig = cloneDeep(this.pageConfig)
+                const compsConfig = this.activeNode ? pageConfig[this.activeNode] : pageConfig
+                const comps = compsConfig[this.selectedComp.type].filter(item => item.id !== this.selectedComp.data.id)
+                compsConfig[this.selectedComp.type] = comps
+                this.setPageConfig(pageConfig)
+            }
         }
     }
 </script>
@@ -60,10 +72,27 @@
         height: 100%;
     }
     .comp-header {
+        display: flex;
+        align-items: center;
+        padding-right: 20px;
         height: 42px;
         line-height: 42px;
         border-bottom: 1px solid #eaebf0;
         text-align: center;
+        .id {
+            padding: 0 10px;
+            width: 239px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .icon-delete {
+            flex: 1;
+            cursor: pointer;
+            &:hover {
+                color: #3a84ff;
+            }
+        }
     }
     .tabs-wrapper {
         margin: 10px 0;
