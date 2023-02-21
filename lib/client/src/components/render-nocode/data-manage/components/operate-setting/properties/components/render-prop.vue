@@ -13,7 +13,14 @@
             </div>
         </div>
         <div v-if="!fold" class="prop-value">
-            <bk-switcher v-if="config.type === 'boolean'" v-model="localVal.val" size="small" @change="$emit('change', localVal)"></bk-switcher>
+            <icon-select
+                v-if="['icon', 'icon-right'].includes(config.propertyDisplayName)"
+                type="string"
+                :default-value="localVal.val"
+                :name="config.propertyDisplayName"
+                :change="handleIconChange">
+            </icon-select>
+            <bk-switcher v-else-if="config.type === 'boolean'" v-model="localVal.val" size="small" @change="$emit('change', localVal)"></bk-switcher>
             <bk-select v-else-if="Array.isArray(config.options)" v-model="localVal.val" @change="$emit('change', localVal)">
                 <bk-option v-for="item in config.options" :key="item" :id="item" :name="item"></bk-option>
             </bk-select>
@@ -23,6 +30,7 @@
 </template>
 <script>
     import { toPascal } from 'shared/util'
+    import IconSelect from '@/element-materials/modifier/component/props/components/strategy/icon.vue'
 
     export default {
         name: 'RenderProp',
@@ -30,6 +38,9 @@
             caseConversion (val) {
                 return toPascal(val)
             }
+        },
+        components: {
+            IconSelect
         },
         props: {
             config: Object
@@ -48,6 +59,12 @@
         watch: {
             config (val) {
                 this.localVal = { ...val }
+            }
+        },
+        methods: {
+            handleIconChange (name, val) {
+                this.localVal.val = val
+                this.$emit('change', this.localVal)
             }
         }
     }

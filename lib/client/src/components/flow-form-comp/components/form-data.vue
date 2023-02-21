@@ -2,7 +2,13 @@
     <div class="form-data-manage">
         <template v-if="!formDetailLoading">
             <div class="opereate-btns">
-                <custom-buttons :buttons="config.buttons || []"></custom-buttons>
+                <custom-buttons
+                    :table-name="tableName"
+                    :fields="fields"
+                    :system-fields="systemFields"
+                    :table-config="tableConfig"
+                    :buttons="config.buttons || []">
+                </custom-buttons>
                 <i
                     v-if="filters.length > 0"
                     class="bk-icon icon-funnel filter-switch-icon"

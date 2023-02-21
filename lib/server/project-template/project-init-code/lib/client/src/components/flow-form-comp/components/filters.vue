@@ -130,7 +130,7 @@
     }
 </script>
 <style lang="postcss" scoped>
-    @import "@/css/mixins/scroller";
+    @import "@//css/mixins/scroller";
 
     .data-manage-filters {
         padding: 16px 4px;

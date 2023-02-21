@@ -31,12 +31,8 @@
                 ref="detail"
                 :form.sync="form"
                 :variable-list="variableList"
+                :show-token="true"
             ></form-detail>
-            <form-token
-                :form.sync="form"
-                ref="token"
-            >
-            </form-token>
             <form-summary
                 ref="summary"
                 :form.sync="form"

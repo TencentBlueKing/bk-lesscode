@@ -81,7 +81,7 @@
         },
         beforeDestroy () {
             this.$store.commit('nocode/dataManage/resetPageConfig')
-            this.$store.commit('nocode/dataMange/setActiveNode', '')
+            this.$store.commit('nocode/dataManage/setActiveNode', '')
         },
         methods: {
             async getInitData () {
