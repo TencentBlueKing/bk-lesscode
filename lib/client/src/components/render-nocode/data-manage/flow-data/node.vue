@@ -64,14 +64,14 @@
             }
         },
         computed: {
-            ...mapState('nocode/dataManage', ['activeNode']),
+            ...mapState('nocode/dataManage', ['activeNode', 'pageConfig']),
             ...mapGetters('page', ['pageDetail']),
             formIds () {
                 return this.flowConfig.formIds ? JSON.parse(this.flowConfig.formIds) : {}
             }
         },
         async created () {
-            this.nodesConfig = Array.isArray(this.pageDetail.content) ? { filters: [], tableConfig: [] } : cloneDeep(this.pageDetail.content)
+            this.nodesConfig = this.getNodesConfig()
             this.$store.commit('nocode/dataManage/setPageConfig', this.nodesConfig)
             await this.getInitData()
             if (this.nodes.length > 0) {
@@ -84,6 +84,13 @@
             this.$store.commit('nocode/dataManage/setActiveNode', '')
         },
         methods: {
+            getNodesConfig () {
+                if (Array.isArray(this.pageDetail.content)) {
+                    return { filters: [], tableConfig: [], tableActions: [], buttons: [] }
+                } else {
+                    return Object.assign({ tableActions: [], buttons: [] }, cloneDeep(this.pageDetail.content))
+                }
+            },
             async getInitData () {
                 try {
                     this.initDataLoading = true
@@ -128,14 +135,20 @@
                 }
             },
             handleUpdate (type, val) {
+                const pageConfig = cloneDeep(this.pageConfig)
+                if (!pageConfig[this.activeNode]) {
+                    pageConfig[this.activeNode] = {}
+                }
                 if (type === 'filters') {
                     this.nodesConfig[this.activeNode].filters = val
                     this.filters = val
+                    pageConfig[this.activeNode].filters = val
                 } else {
                     this.nodesConfig[this.activeNode].tableConfig = val
                     this.tableConfig = val
+                    pageConfig[this.activeNode].tableConfig = val
                 }
-                this.$store.commit('nocode/dataManage/setPageConfig', cloneDeep(this.nodesConfig))
+                this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
             },
             setActiveNode (id) {
                 this.$store.commit('nocode/dataManage/setActiveNode', id)
