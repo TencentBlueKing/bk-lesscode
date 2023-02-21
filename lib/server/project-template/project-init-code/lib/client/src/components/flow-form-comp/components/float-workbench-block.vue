@@ -28,7 +28,7 @@
         background: #ffffff;
         box-shadow: 0 3px 5px 0 rgba(25, 25, 41, 0.05);
         text-align: center;
-        z-index: 2500;
+        z-index: 1;
         cursor: pointer;
         & > i {
             font-size: 20px;

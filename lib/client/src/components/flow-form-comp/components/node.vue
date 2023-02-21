@@ -10,7 +10,14 @@
                 </bk-tab-panel>
             </bk-tab>
             <div class="opereate-btns">
-                <custom-buttons :buttons="buttons"></custom-buttons>
+                <custom-buttons
+                    :table-name="tableName"
+                    :node-name="currentNodeName"
+                    :fields="fields"
+                    :system-fields="systemFields"
+                    :table-config="tableConfig"
+                    :buttons="buttons">
+                </custom-buttons>
                 <i
                     v-if="filters.length > 0"
                     class="bk-icon icon-funnel filter-switch-icon"
@@ -95,6 +102,13 @@
             },
             tableName () {
                 return this.formDataMap[this.activeNode]?.tableName || ''
+            },
+            currentNodeName () {
+                if (this.activeNode) {
+                    const node = this.nodes.find(item => item.id === this.activeNode)
+                    return node ? node.name : ''
+                }
+                return ''
             }
         },
         async created () {

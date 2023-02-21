@@ -1,6 +1,7 @@
 <template>
     <div :class="[extCls]" test-posi-id="bk-member-selector">
         <bk-user-selector
+            ref="bkUserSelector"
             :value="value"
             class="ui-user-selector"
             :fixed-height="true"
@@ -8,6 +9,7 @@
             :disabled="disabled || hostLoading"
             :multiple="multiple"
             :placeholder="placeholder"
+            @blur="onBlur"
             @change="onChange">
         </bk-user-selector>
     </div>
@@ -84,6 +86,9 @@
             },
             onChange (value) {
                 this.$emit('change', value)
+            },
+            onBlur () {
+                this.$emit('blur')
             }
         }
     }
