@@ -10,8 +10,10 @@
                 :label="field.name"
                 :prop="field.key">
             </bk-table-column>
-            <bk-table-column label="操作" :label-width="150">
-                <bk-link theme="primary">详情</bk-link>
+            <bk-table-column label="操作" :min-width="150">
+                <div class="table-cell-actions-btns">
+                    <table-col-actions-edit></table-col-actions-edit>
+                </div>
             </bk-table-column>
             <bk-table-column type="setting" ref="settingCol1">
                 <bk-table-setting-content ref="settingCol" v-show="false">
@@ -54,8 +56,13 @@
     </div>
 </template>
 <script>
+    import TableColActionsEdit from './table-col-actions-edit.vue'
+
     export default {
         name: 'TableFields',
+        components: {
+            TableColActionsEdit
+        },
         props: {
             // 选中的字段
             fields: {
@@ -129,12 +136,25 @@
     }
 </script>
 <style lang="postcss" scoped>
->>> .bk-link-text {
-  font-size: 12px;
-  cursor: text;
+.detail-btn {
+    padding: 4px 8px 4px 0;
 }
->>> .bk-table:before{
-  background-color: #F0F1F5
+
+.bk-table {
+    &:before {
+        background-color: #f0f1f5;
+    }
+    >>> .bk-table-body-wrapper {
+        overflow: visible;
+        .cell {
+            overflow: visible;
+        }
+    }
+    .bk-table-body {
+        td {
+            background: #ffffff !important;
+        }
+    }
 }
 >>> .bk-table-column-setting{
   border-left: none;

@@ -53,6 +53,11 @@
             SelectAction
         },
 
+        props: {
+            custom: Boolean, // 使用自定义的方式使用组件，数据不通过LC管理
+            customVal: Array // custom为true时，传入配置数据
+        },
+
         data () {
             return {
                 renderPerms: [],
@@ -62,10 +67,15 @@
         },
 
         created () {
-            this.currentComponentNode = LC.getActiveNode()
-            const { renderPerms } = this.currentComponentNode
+            let perms = []
+            if (!this.custom) {
+                this.currentComponentNode = LC.getActiveNode()
+                perms = this.currentComponentNode.renderPerms
+            } else {
+                perms = this.customVal
+            }
 
-            this.renderPerms.splice(0, this.renderPerms.length, ...renderPerms)
+            this.renderPerms.splice(0, this.renderPerms.length, ...perms)
 
             // 兼容老数据展示
             // Object.keys(renderPerms || {}).forEach((key) => {
@@ -115,7 +125,10 @@
             },
 
             updateTargetData () {
-                this.currentComponentNode.setRenderPerms(this.renderPerms)
+                if (typeof this.currentComponentNode.setRenderPerms === 'function') {
+                    this.currentComponentNode.setRenderPerms(this.renderPerms)
+                }
+                this.$emit('change', this.renderPerms)
             }
         }
     }
