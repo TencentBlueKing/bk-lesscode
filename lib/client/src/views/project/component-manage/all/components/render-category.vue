@@ -25,7 +25,7 @@
                         @click="handleSelect(item.id)">
                         <i v-if="!searchValue" class="bk-drag-icon bk-drag-grag-fill drag-flag" />
                         <i class="bk-drag-icon bk-drag-folder-fill" />
-                        <div class="name">{{ item.name }}</div>
+                        <div class="name" v-tooltips="item.name">{{ item.name }}</div>
                         <div class="action">
                             <div class="btn edit-btn" @click.stop="handleEdit(item, $event)" role="operation">
                                 <i class="bk-icon icon-edit2" style="font-size: 20px;" />

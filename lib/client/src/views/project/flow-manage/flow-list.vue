@@ -52,13 +52,13 @@
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip>
+            <bk-table-column label="流程数据管理页" min-width="100px" property="managePageNames" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="预览环境部署状态">
+            <bk-table-column label="预览环境部署状态" min-width="100px">
                 <template slot-scope="{ row }">
                     <div class="deploy-status">
                         <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>

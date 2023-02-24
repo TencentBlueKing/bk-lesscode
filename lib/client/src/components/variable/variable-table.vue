@@ -10,7 +10,7 @@
             <bk-table-column label="变量名称" prop="variableName" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="变量标识" prop="variableCode" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="初始类型" prop="valueType" :formatter="valueTypeFormatter" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="默认值" width="300">
+            <bk-table-column label="默认值" width="300" show-overflow-tooltip>
                 <template slot-scope="props">
                     <span v-for="(val, key) in getDisplayDefaultValue(props.row)" :key="key" class="default-value" v-bk-overflow-tips>{{ `【${nameMap[key]}】${val}` }}</span>
                 </template>

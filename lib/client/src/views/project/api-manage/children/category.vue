@@ -65,7 +65,7 @@
                             'show-tool-name': category.showChange
                         }
                     ]"
-                    :title="category.name"
+                    v-tooltips="category.name"
                 >{{ category.name }}</span>
                 <bk-popconfirm
                     trigger="click"
@@ -501,7 +501,7 @@
 
     .category-list {
         height: calc(100% - 63px);
-        overflow-y: auto;
+        /* overflow-y: auto; */
         .exception-wrap-item {
             position: absolute;
             top: 50%;

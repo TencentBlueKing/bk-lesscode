@@ -12,7 +12,7 @@
             class="auth-manage-table">
             <bk-table-column label="操作类型" prop="actionName" show-overflow-tooltip></bk-table-column>
             <bk-table-column label="权限说明" prop="actionDesc" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="关联用户组" prop="createUser">
+            <bk-table-column label="关联用户组" prop="createUser" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="group-wrapper" v-if="row.groups.length">
                         <div class="group-item" v-for="(item, index) in row.groups" :key="index">
@@ -27,7 +27,7 @@
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="人员" prop="updateTime">
+            <bk-table-column label="人员" prop="updateTime" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="user-wrapper" v-if="row.users.length">
                         <div class="user-item" v-for="(item, index) in row.users" :key="index">
