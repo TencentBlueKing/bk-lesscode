@@ -33,7 +33,7 @@
                     arrow: false,
                     distance: 0
                 }">
-                <div class="add-filter-trigger">
+                <div class="add-filter-trigger" v-bk-tooltips="'添加筛选条件'">
                     <i class="bk-drag-icon bk-drag-add-line"></i>
                 </div>
                 <ul class="field-list-wrapper" slot="content">
