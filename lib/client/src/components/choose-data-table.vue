@@ -119,23 +119,6 @@
                         </span>
                     </bk-exception>
                     <bk-exception
-                        v-else-if="!projectInfo.token"
-                        ext-cls="exception-wrap-item exception-part"
-                        type="empty"
-                        scene="part"
-                    >
-                        <span
-                            class="data-base-tips"
-                        >
-                            需
-                            <bk-link
-                                :href="`/project/${projectInfo.id}/credential`"
-                                target="href"
-                            >生成凭证</bk-link>
-                            ，用于预览环境使用绑定的蓝鲸应用身份调用接口
-                        </span>
-                    </bk-exception>
-                    <bk-exception
                         v-else-if="tableGroups[1].children.length <= 0"
                         ext-cls="exception-wrap-item exception-part"
                         type="empty"
@@ -173,7 +156,6 @@
 </template>
 
 <script lang="ts">
-    import dayjs from 'dayjs'
     import {
         defineComponent,
         ref,
@@ -212,8 +194,7 @@
             const projectInfo = ref({
                 id: '',
                 appCode: '',
-                moduleCode: '',
-                token: ''
+                moduleCode: ''
             })
             const tableGroups = ref([
                 {
@@ -319,16 +300,12 @@
 
             // 获取项目相关信息
             const getProjectInfo = () => {
-                return Promise
-                    .all([
-                        store.dispatch('project/detail', { projectId }),
-                        store.dispatch('functions/getTokenList', projectId)
-                    ])
-                    .then(([project, token]) => {
+                return store
+                    .dispatch('project/detail', { projectId })
+                    .then((project) => {
                         projectInfo.value.id = project.id
                         projectInfo.value.appCode = project.appCode
                         projectInfo.value.moduleCode = project.moduleCode
-                        projectInfo.value.token = dayjs(token?.data?.[0]?.expiresTime).isAfter(dayjs()) ? token?.data?.[0] : ''
                     })
             }
 

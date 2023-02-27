@@ -1,7 +1,7 @@
 <template>
     <div class="node-data-manage" v-bkloading="{ isLoading: initDataLoading }">
-        <div v-if="!initDataLoading" class="node-tab-wrapper">
-            <bk-tab :active.sync="activeNode" :label-height="24" @tab-change="handleTabChange">
+        <div v-if="!initDataLoading" class="node-tabs-wrapper">
+            <bk-tab :active="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
                     :key="node.id"
@@ -9,9 +9,8 @@
                     :label="`【${node.name}】节点`">
                 </bk-tab-panel>
             </bk-tab>
-            <div class="opereate-btn">
-                <!-- <bk-button>导出</bk-button>
-                <bk-button>下载流程附件</bk-button> -->
+            <div class="operate-btns-area">
+                <custom-btns-edit></custom-btns-edit>
                 <i class="bk-icon icon-funnel filter-switch-icon" @click="showFilters = !showFilters"></i>
             </div>
         </div>
@@ -33,14 +32,17 @@
     </div>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import { messageError } from '@/common/bkmagic'
+    import CustomBtnsEdit from '../components/custom-btns-edit.vue'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
+
     export default {
         name: 'NodeDataManage',
         components: {
+            CustomBtnsEdit,
             Filters,
             TableFields
         },
@@ -54,7 +56,6 @@
             return {
                 initDataLoading: true,
                 nodes: [],
-                activeNode: '',
                 formContents: {},
                 nodesConfig: {},
                 filters: [],
@@ -63,24 +64,33 @@
             }
         },
         computed: {
+            ...mapState('nocode/dataManage', ['activeNode', 'pageConfig']),
             ...mapGetters('page', ['pageDetail']),
             formIds () {
                 return this.flowConfig.formIds ? JSON.parse(this.flowConfig.formIds) : {}
             }
         },
         async created () {
-            this.nodesConfig = Array.isArray(this.pageDetail.content) ? { filters: [], tableConfig: [] } : cloneDeep(this.pageDetail.content)
-            this.$store.commit('nocode/formSetting/setTableFields', this.nodesConfig)
+            this.nodesConfig = this.getNodesConfig()
+            this.$store.commit('nocode/dataManage/setPageConfig', this.nodesConfig)
             await this.getInitData()
             if (this.nodes.length > 0) {
-                this.activeNode = this.nodes[0].id
+                this.setActiveNode(this.nodes[0].id)
                 this.getFormData()
             }
         },
         beforeDestroy () {
-            this.$store.commit('nocode/formSetting/setTableFields', {})
+            this.$store.commit('nocode/dataManage/resetPageConfig')
+            this.$store.commit('nocode/dataManage/setActiveNode', '')
         },
         methods: {
+            getNodesConfig () {
+                if (Array.isArray(this.pageDetail.content)) {
+                    return { filters: [], tableConfig: [], tableActions: [], buttons: [] }
+                } else {
+                    return Object.assign({ tableActions: [], buttons: [] }, cloneDeep(this.pageDetail.content))
+                }
+            },
             async getInitData () {
                 try {
                     this.initDataLoading = true
@@ -111,7 +121,7 @@
                 }
             },
             handleTabChange (val) {
-                this.activeNode = val
+                this.setActiveNode(val)
                 if (val in this.nodesConfig) {
                     this.filters = this.nodesConfig[val].filters || []
                     this.tableConfig = this.nodesConfig[val].tableConfig || []
@@ -125,28 +135,33 @@
                 }
             },
             handleUpdate (type, val) {
+                const pageConfig = cloneDeep(this.pageConfig)
+                if (!pageConfig[this.activeNode]) {
+                    pageConfig[this.activeNode] = {}
+                }
                 if (type === 'filters') {
                     this.nodesConfig[this.activeNode].filters = val
                     this.filters = val
+                    pageConfig[this.activeNode].filters = val
                 } else {
                     this.nodesConfig[this.activeNode].tableConfig = val
                     this.tableConfig = val
+                    pageConfig[this.activeNode].tableConfig = val
                 }
-                this.$store.commit('nocode/formSetting/setTableFields', cloneDeep(this.nodesConfig))
+                this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
+            },
+            setActiveNode (id) {
+                this.$store.commit('nocode/dataManage/setActiveNode', id)
+            },
+            clearSelectedComp (e) {
+                this.$store.commit('nocode/dataManage/setSelectedComp')
             }
         }
     }
 </script>
 <style lang="postcss" scoped>
-    .node-tab-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 16px;
-    }
     .bk-tab {
         padding: 4px;
-        max-width: calc(100% - 250px);
         background: #f0f1f5;
         border-radius: 2px;
         >>> .bk-tab-section {
@@ -175,11 +190,11 @@
             }
         }
     }
-    .opereate-btn {
+    .operate-btns-area {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        max-width: 230px;
+        margin: 16px 0;
         .bk-button {
             cursor: inherit;
         }

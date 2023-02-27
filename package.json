@@ -1,6 +1,6 @@
 {
   "name": "lesscode",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "betterScripts": {
     "build": {
-      "command": "bk-cli-service-webpack build",
+      "command": "node node_modules/db-migrate/bin/db-migrate up --config ./lib/server/conf/db-migrate.json --migrations-dir ./lib/server/model/migrations -e prod && bk-cli-service-webpack build",
       "env": {
         "NODE_ENV": "production",
         "APP_CODE": "",

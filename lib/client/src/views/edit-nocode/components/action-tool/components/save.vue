@@ -54,7 +54,7 @@
                     this.saveFormList()
                 } else if (['FORM_MANAGE', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     const content = []
-                    content.push(JSON.stringify(this.$store.state.nocode.formSetting.tableFieldsConfig))
+                    content.push(JSON.stringify(this.$store.state.nocode.dataManage.pageConfig))
                     this.savePageContent(content)
                 } else if (this.nocodeType === 'MARKDOWN') {
                     const content = {

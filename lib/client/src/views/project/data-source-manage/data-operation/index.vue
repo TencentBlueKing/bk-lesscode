@@ -92,23 +92,6 @@
                     </span>
                 </bk-alert>
                 <bk-alert
-                    v-else-if="!projectInfo.token"
-                    type="warning"
-                    class="mb10"
-                >
-                    <span
-                        slot="title"
-                        class="data-base-tips"
-                    >
-                        需
-                        <bk-link
-                            :href="`/project/${projectInfo.id}/credential`"
-                            target="href"
-                        >生成凭证</bk-link>
-                        ，用于预览环境使用绑定的蓝鲸应用身份调用接口
-                    </span>
-                </bk-alert>
-                <bk-alert
                     v-else
                     type="warning"
                     class="mb10"
@@ -271,7 +254,6 @@
 </template>
 
 <script>
-    import dayjs from 'dayjs'
     import router from '@/router'
     import store from '@/store'
     import RenderHeader from '../data-table/common/header'
@@ -336,7 +318,6 @@
                 id: '',
                 appCode: '',
                 moduleCode: '',
-                token: ''
             })
             // 是否成功查询
             const isSuccessfulQuery = ref(false)
@@ -596,16 +577,12 @@
 
             // 获取项目相关信息
             const getProjectInfo = () => {
-                return Promise
-                    .all([
-                        store.dispatch('project/detail', { projectId }),
-                        store.dispatch('functions/getTokenList', projectId)
-                    ])
-                    .then(([project, token]) => {
+                return store
+                    .dispatch('project/detail', { projectId })
+                    .then((project) => {
                         projectInfo.value.id = project.id
                         projectInfo.value.appCode = project.appCode
                         projectInfo.value.moduleCode = project.moduleCode
-                        projectInfo.value.token = dayjs(token?.data?.[0]?.expiresTime).isAfter(dayjs()) ? token?.data?.[0] : ''
                     })
             }
 

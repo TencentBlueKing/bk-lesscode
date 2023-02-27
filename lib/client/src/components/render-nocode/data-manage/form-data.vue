@@ -1,10 +1,11 @@
 <template>
     <div class="form-data-manage">
-        <div class="operate-btns">
-            <i class="bk-icon icon-funnel filter-switch-icon" @click="isFiltersShow = !isFiltersShow"></i>
+        <div class="operate-btns-area">
+            <custom-btns-edit></custom-btns-edit>
+            <i class="bk-icon icon-funnel filter-switch-icon" @click="showFilters = !showFilters"></i>
         </div>
         <filters
-            v-show="isFiltersShow"
+            v-show="showFilters"
             :filters="filters"
             :fields="fields"
             :table-config="tableConfig"
@@ -21,15 +22,18 @@
     </div>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
+    import { cloneDeep } from 'lodash'
     import { FORM_SYS_FIELD } from '@/components/flow-form-comp/common/field.js'
     import { NO_VIEWED_FIELD } from '@/components/flow-form-comp/form/constants/forms.js'
+    import CustomBtnsEdit from './components/custom-btns-edit.vue'
     import Filters from './components/filters.vue'
     import TableFields from './components/table-fields.vue'
     export default {
         name: 'formData',
         components: {
+            CustomBtnsEdit,
             Filters,
             TableFields
         },
@@ -41,11 +45,12 @@
                 formDetail: {},
                 fields: [],
                 systemFields: FORM_SYS_FIELD,
-                isFiltersShow: true
+                showFilters: true
             }
         },
         computed: {
-            ...mapGetters('page', ['pageDetail'])
+            ...mapGetters('page', ['pageDetail']),
+            ...mapState('nocode/dataManage', ['pageConfig'])
         },
         created () {
             // 页面创建时content默认为数组
@@ -57,11 +62,12 @@
                 this.filters = filters
                 this.tableConfig = tableConfig
             }
+            const pageConfig = Array.isArray(this.pageDetail.content) ? { filters: [], tableConfig: [] } : cloneDeep(this.pageDetail.content)
             this.getFormDetail()
-            this.$store.commit('nocode/formSetting/setTableFields', { filters: this.filters, tableConfig: this.tableConfig })
+            this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
         },
         beforeDestroy () {
-            this.$store.commit('nocode/formSetting/setTableFields', {})
+            this.$store.commit('nocode/dataManage/resetPageConfig')
         },
         methods: {
             async getFormDetail () {
@@ -76,14 +82,16 @@
                 }
             },
             handleUpdate (type, val) {
+                const pageConfig = cloneDeep(this.pageConfig)
                 if (type === 'filters') {
                     this.filters = val
-                    this.$store.commit('nocode/formSetting/setTableFields', { filters: val, tableConfig: this.tableConfig })
                 } else {
                     this.tableConfig = val
                     this.filters = this.filters.filter(item => this.tableConfig.includes(item))
-                    this.$store.commit('nocode/formSetting/setTableFields', { filters: this.filters, tableConfig: val })
                 }
+                pageConfig.filters = this.filters
+                pageConfig.tableConfig = this.tableConfig
+                this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
             }
         }
     }
@@ -91,25 +99,27 @@
 <style lang="postcss" scoped>
     .form-data-manage {
       height: calc(100vh - 236px);
-        .operate-btns {
+        .operate-btns-area {
             display: flex;
             align-items: center;
-            flex-direction: row-reverse;
-            margin-bottom: 16px;
-            height: 32px;
-        }
-        .filter-switch-icon {
-            height: 32px;
-            line-height: 32px;
-            width: 32px;
-            text-align: center;
-            color: #979ba5;
-            border: 1px solid #c4c6cc;
-            border-radius: 2px;
-            background: #ffffff;
-            cursor: pointer;
-            &:hover {
-                color: #3a84ff;
+            justify-content: space-between;
+            margin: 16px 0;
+            .bk-button {
+                cursor: inherit;
+            }
+            .filter-switch-icon {
+                height: 32px;
+                line-height: 32px;
+                width: 32px;
+                text-align: center;
+                color: #979ba5;
+                border: 1px solid #c4c6cc;
+                border-radius: 2px;
+                background: #ffffff;
+                cursor: pointer;
+                &:hover {
+                    color: #3a84ff;
+                }
             }
         }
     }
