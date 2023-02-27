@@ -49,6 +49,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'categoryName')"
                     label="所属分类"
+                    min-width="100px"
                     show-overflow-tooltip
                     sortable
                 >
@@ -79,6 +80,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'query')"
                     label="默认请求参数"
+                    min-width="110px"
                     show-overflow-tooltip
                 >
                     <template slot-scope="props">
@@ -90,6 +92,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'response')"
                     label="请求响应示例"
+                    min-width="110px"
                     show-overflow-tooltip
                 >
                     <template slot-scope="props">
@@ -129,12 +132,15 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateUser')"
                     label="更新人"
+                    min-width="90px"
                     prop="updateUser"
                     sortable
+                    show-overflow-tooltip
                 ></bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateTime')"
                     label="更新时间"
+                    min-width="100px"
                     prop="updateTime"
                     :formatter="timeFormatter"
                     show-overflow-tooltip

@@ -49,7 +49,7 @@
                 <i class="bk-drag-icon bk-drag-folder-fill"></i>
                 <span
                     :class="['item-name', { 'show-tool-name': group.showChange }]"
-                    :title="group.groupName"
+                    v-tooltips="group.groupName"
                 >{{ group.groupName }}</span>
                 <bk-popconfirm
                     trigger="click"
@@ -476,7 +476,7 @@
 
     .group-list {
         height: calc(100% - 67px);
-        overflow-y: auto;
+        /* overflow-y: auto; */
         .exception-wrap-item {
             position: absolute;
             top: 50%;

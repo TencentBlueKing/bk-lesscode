@@ -12,7 +12,7 @@
                             </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="部署环境" prop="env" :formatter="envFormatter" width="100"></bk-table-column>
+                    <bk-table-column label="部署环境" prop="env" :formatter="envFormatter" width="100" show-overflow-tooltip></bk-table-column>
                     <bk-table-column label="部署包版本" prop="version" width="100" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             <div v-if="row.codeUrl" class="status-result">
@@ -30,7 +30,7 @@
                             <span v-else>--</span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="操作人" prop="createUser" :formatter="userFormatter" width="80"></bk-table-column>
+                    <bk-table-column label="操作人" prop="createUser" :formatter="userFormatter" width="80" show-overflow-tooltip></bk-table-column>
                     <bk-table-column label="操作结果" prop="status" min-width="150">
                         <template slot-scope="{ row }">
                             <div class="status-result">
