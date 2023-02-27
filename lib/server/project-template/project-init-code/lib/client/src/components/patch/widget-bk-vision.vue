@@ -39,16 +39,8 @@
         },
         data () {
             return {
+                app: {},
                 apiPrefix: `${process.env.BK_AJAX_URL_PREFIX}/bkvision/`
-            }
-        },
-        computed: {
-            waterMarkContent () {
-                const arr = []
-                arr.push(this.waterMark || 'bk-lesscode')
-                return {
-                    content: arr
-                }
             }
         },
         created () {
@@ -78,9 +70,9 @@
             },
             initPanel () {
                 if (window.BkVisionSDK) {
-                    this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, {
+                    this.app = this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, {
                         apiPrefix: '/api/bkvision/',
-                        waterMark: this.waterMarkContent,
+                        waterMark: { content: this.watchWark },
                         isFullScroll: this.isFullScroll,
                         isShowTools: this.isShowTools,
                         isShowRefresh: this.isShowRefresh,

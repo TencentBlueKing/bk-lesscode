@@ -39,19 +39,24 @@
         },
         data () {
             return {
+                // visionApp: {},
                 renderId: '',
-                apiPrefix: '/api/bkvision/'
+                apiPrefix: '/api/bkvision/',
+                cdnPrefix: 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/latest/'
             }
         },
         computed: {
-            waterMarkContent () {
-                const arr = []
-                arr.push(this.waterMark || 'bk-lesscode')
-                console.log(arr, 'wahtc')
+            dataInfo () {
                 return {
-                    content: arr
+                    apiPrefix: '/api/bkvision/',
+                    waterMark: { content: this.watchMark || 'bk-lesscode' },
+                    isFullScroll: this.isFullScroll,
+                    isShowTools: this.isShowTools,
+                    isShowRefresh: this.isShowRefresh,
+                    isShowTimeRange: this.isShowTimeRange
                 }
             }
+
         },
         watch: {
             uid (val) {
@@ -84,45 +89,56 @@
             }
         },
         methods: {
-            loadSdk () {
-                const link = document.createElement('link')
-                const script = document.createElement('script')
-                link.href = 'https://staticfile.qq.com/bkvision/p0964a9106c32428b99e3260d0fc63088/latest/main.css'
-                link.rel = 'stylesheet'
-                document.body.append(link)
-                script.src = 'https://staticfile.qq.com/bkvision/p0964a9106c32428b99e3260d0fc63088/latest/main.js'
-                document.body.append(script)
-                script.onload = () => {
-                    console.log('sdk load')
-                    this.initPanel()
-                }
+            async loadSdk () {
+                // const link = document.createElement('link')
+                // const script = document.createElement('script')
+                // link.href = 'https://staticfile.qq.com/bkvision/p0964a9106c32428b99e3260d0fc63088/latest/main.css'
+                // link.rel = 'stylesheet'
+                // document.body.append(link)
+                // script.src = 'https://staticfile.qq.com/bkvision/p0964a9106c32428b99e3260d0fc63088/latest/main.js'
+                // document.body.append(script)
+                // script.onload = () => {
+                //     console.log('sdk load')
+                //     this.initPanel()
+                // }
+                // const link = document.createElement('link')
+                // link.href = `${this.cdnPrefix}main.css`
+                // link.rel = 'stylesheet'
+                // document.body.append(link)
+                // await Promise.all([
+                //     // this.loadScript('chunk-vendors.js'),
+                //     // this.loadScript('chunk-bk-magic-vue.js'),
+                //     this.loadScript('main.js')
+                // ])
+                this.initPanel()
             },
-            initPanel () {
+            loadScript (file) {
+                return new Promise((resolve, reject) => {
+                    const url = this.cdnPrefix + file
+                    const script = document.createElement('script')
+                    script.src = url
+                    document.body.append(script)
+                    script.onload = () => {
+                        console.log('sdk load', file)
+                        resolve()
+                    }
+                })
+            },
+            async initPanel () {
+                console.log(window.BkVisionSDK, 22356)
                 if (window.BkVisionSDK) {
-                    console.log({
-                        apiPrefix: '/api/bkvision/',
-                        waterMark: this.waterMarkContent,
-                        isFullScroll: this.isFullScroll,
-                        isShowTools: this.isShowTools,
-                        isShowRefresh: this.isShowRefresh,
-                        isShowTimeRange: this.isShowTimeRange
-                    })
                     console.log(this.uid, 'uid', `#dashboard-${this.renderId}`)
-                    this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, {
-                        apiPrefix: '/api/bkvision/',
-                        waterMark: this.waterMarkContent,
-                        isFullScroll: this.isFullScroll,
-                        isShowTools: this.isShowTools,
-                        isShowRefresh: this.isShowRefresh,
-                        isShowTimeRange: this.isShowTimeRange
-                    })
+                    this.visionApp = this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, this.dataInfo)
+                    console.log(this.visionApp, 332112)
                 } else {
                     console.error('sdk 加载异常')
                 }
             },
             renderPanel () {
-                if (window.BkVisionSDK) {
-                    console.log('render')
+                console.log('rerender')
+                if (window.BkVisionSDK && this.visionApp) {
+                    console.log('render', this.visionApp)
+                    this.visionApp?.update()
                 } else {
                     console.error('sdk 加载异常')
                     this.initPanel()
