@@ -115,6 +115,7 @@
         },
         created () {
             this.getFormList()
+            console.log(this.field)
         },
         methods: {
             async getFormList () {
@@ -251,7 +252,7 @@
                             looped = true
                             return true
                         }
-                        const { type: relType, rules: relRules } = relField.meta.default_val_config || {}
+                        const { type: relType, rules: relRules } = relField?.meta.default_val_config || {}
                         if (relType === 'currentTable' && Array.isArray(relRules)) {
                             looped = this.checkLoopReference(relField.meta.default_val_config.rules, key)
                         }

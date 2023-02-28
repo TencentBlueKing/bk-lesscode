@@ -76,24 +76,30 @@
                 this.fields.forEach((item) => {
                     let value
                     if (item.key in this.value) {
+                        // 复制一份表单字段的值
                         value = cloneDeep(this.value[item.key])
                     } else if ('default' in item) {
+                        // 默认值
                         if (['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS', 'TABLE', 'IMAGE', 'FILE'].includes(item.type)) {
                             value = item.default ? item.default.split(',') : []
                         } else {
                             value = item.default
                         }
                     }
+                    // 记录配置有关联规则的字段
                     if (item.meta.default_val_config) {
                         fieldsWithRules.push(item)
                     }
+                    // 储存各个字段对应的初始值
                     fieldsValue[item.key] = value
                 })
                 this.localValue = fieldsValue
+                // 遍历配置有关联规则的字段
                 fieldsWithRules.forEach(async field => {
                     const { type, rules } = field.meta.default_val_config
                     if (type === 'currentTable') {
-                        const rule = this.getFulfillAssociationRule(rules)
+                        const rule = this.getFulfillAssociationRule(rules, field.type)
+                        // 找到满足条件的规则,那规则赋值初始值
                         if (rule) {
                             const value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
                             this.localValue[field.key] = value
@@ -136,10 +142,24 @@
                 associatedFields.forEach(async field => {
                     const { type, rules } = field.meta.default_val_config
                     if (type === 'currentTable') {
-                        const rule = this.getFulfillAssociationRule(rules)
+                        // 获取每个字段的有效规则
+                        const rule = this.getFulfillAssociationRule(rules, field.type)
                         if (rule) {
-                            const value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
+                            let value = null
+                            if (field.type === 'RATE') {
+                                // 遍历所有区间，看所绑定的字段值命中那个区间，评分组件的值就是该区间的值
+                                rule.intervals.forEach((item) => {
+                                    const triggerValue = this.localValue[key] * 1
+                                    if ((item.min <= triggerValue) && triggerValue < item.max) {
+                                        value = item.value
+                                    }
+                                })
+                            } else {
+                                value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
+                            }
                             this.localValue[field.key] = value
+                        } else if (field.type === 'RATE') {
+                            this.localValue[field.key] = 0
                         }
                     } else {
                         const res = await this.getAssociationFilterData(field.key)
@@ -167,18 +187,25 @@
                 })
             },
             // 获取当前表单满足联动规则设置的生效规则项
-            getFulfillAssociationRule (rules) {
+            getFulfillAssociationRule (rules, fieldType) {
+                // 某个字段所配置的所有规则
                 let fulfillRule = null
                 rules.forEach(group => {
+                    // 找出最后一条满足所有关联字段所设置条件的规则
                     const isfullFill = group.relations.every(relation => {
                         const { field: relFieldKey, type, value } = relation
-                        if (!(relFieldKey in this.localValue)) {
-                            return
-                        }
-                        if (type === 'CONST') {
-                            return isEqual(this.localValue[relFieldKey], value)
+                        // 如果是评分组件
+                        if (fieldType === 'RATE') {
+                            return this.getRateSatisfyIntervalRule(group, relation)
                         } else {
-                            return value in this.localValue && isEqual(this.localValue[relFieldKey], this.localValue[value])
+                            if (!(relFieldKey in this.localValue)) {
+                                return
+                            }
+                            if (type === 'CONST') {
+                                return isEqual(this.localValue[relFieldKey], value)
+                            } else {
+                                return value in this.localValue && isEqual(this.localValue[relFieldKey], this.localValue[value])
+                            }
                         }
                     })
                     if (isfullFill) {
@@ -186,6 +213,15 @@
                     }
                 })
                 return fulfillRule
+            },
+            // 获取当前满足评分组件的所设区间的规则
+            getRateSatisfyIntervalRule (group, relation) {
+                // 评分组件所绑定的字段默认为变量类型
+                const relationValue = relation.type === 'CONST' ? (relation.value * 1) : this.localValue[relation.value] * 1
+                const isContain = group.intervals.some((item) => {
+                    return (item.min <= relationValue) && (relationValue < item.max)
+                })
+                return isContain
             },
             // 获取关联他表字段的筛选数据
             getAssociationFilterData (key) {

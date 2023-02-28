@@ -1,4 +1,5 @@
 <template>
+    <!-- 渲染具体的组件内容 -->
     <div :class="['field-form-item', { 'half-row': field.layout === 'COL_6' }]">
         <div
             v-if="showLabel && !['DESC','DIVIDER'].includes(field.type)"
@@ -10,6 +11,7 @@
         <div class="field-form-content">
             <template v-if="fieldComp">
                 <component
+                    allow-edit
                     :is="fieldComp"
                     :field="field"
                     :disabled="isDisabled"
@@ -50,6 +52,7 @@
     import Tree from './fields/tree.vue'
     import Upload from './fields/upload.vue'
     import Divider from './fields/divider'
+    import Rate from './fields/rate'
 
     // 注册fields文件夹下所有字段类型组件
     // function registerField() {
@@ -89,7 +92,8 @@
             Textarea: Textarea,
             Tree: Tree,
             Upload: Upload,
-            Divider: Divider
+            Divider: Divider,
+            Rate: Rate
         },
         props: {
             field: {
@@ -125,6 +129,9 @@
             },
             needPagination () {
                 return this.$route.name !== 'editNocode'
+            },
+            comValue () {
+                return (this.field.type === 'RATE' && this.value) ? JSON.parse(this.value).value : this.value
             }
         }
         // beforeCreate() {
