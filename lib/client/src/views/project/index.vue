@@ -1,5 +1,6 @@
 <template>
     <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
+        <!--  -->
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
@@ -111,7 +112,7 @@
             </div>
             <extra-links></extra-links>
         </div>
-        <!-- 使用v-if因子组件依赖获取的应用信息 -->
+        <!-- 使用v-if因子组件依赖获取的应用信息 应用的页面列表-->
         <div class="main-container" v-bkloading="{ isLoading: pageLoading }">
             <router-view v-if="!pageLoading" :key="routeKey"></router-view>
         </div>

@@ -1,4 +1,5 @@
 <template>
+    <!-- 渲染在表单页面的组件单位 -->
     <div
         :class="[
             'field-element',
@@ -20,6 +21,7 @@
         </div>
         <div class="field-container">
             <div class="field-container-mask"></div>
+            <!-- 渲染具体的表单组件 -->
             <field-item :use-fixed-data-source="true" :field="field" :value="localValue[field.key]"></field-item>
         </div>
     </div>

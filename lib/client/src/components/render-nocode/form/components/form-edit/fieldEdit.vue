@@ -1,5 +1,6 @@
 <template>
     <div class="field-edit">
+        <!-- 表单右边设置区域  -->
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
@@ -36,12 +37,10 @@
                 <bk-form-item label="字段名称" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.name" :disabled="disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item
-                    label="唯一标识"
+                <bk-form-item label="唯一标识" v-if="!basicIsFolded"
                     desc-type="icon"
                     :desc="uniqe"
-                    desc-icon="bk-icon icon-question-circle"
-                    v-if="!basicIsFolded">
+                    desc-icon="bk-icon icon-question-circle">
                     <bk-input v-model.trim="fieldData.key" :disabled="disabled || fieldData.disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="布局" v-if="!basicIsFolded">
@@ -50,7 +49,7 @@
                         <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item label="上传模板附件" :ext-cls="'input-position '" v-if="fieldData.type === 'FILE' && !handleIsFolded">
+                <bk-form-item label="上传模板附件" v-if="fieldData.type === 'FILE' && !handleIsFolded" :ext-cls="'input-position '">
                     <bk-button :theme="'default'" title="点击上传" :disabled="disabled">
                         点击上传
                     </bk-button>
@@ -65,7 +64,7 @@
                         </li>
                     </ul>
                 </bk-form-item>
-                <bk-form-item v-if="fieldProps.fieldsDataSource.includes(fieldData.type)" label="数据源">
+                <bk-form-item label="数据源" v-if="fieldProps.fieldsDataSource.includes(fieldData.type)">
                     <bk-select
                         :value="fieldData.source_type"
                         :clearable="false"
@@ -84,17 +83,6 @@
                         @selected="handleSelectSystem">
                         <bk-option v-for="item in systemList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                     </bk-select>
-                    <!--                    <bk-select-->
-                    <!--                        class="mt8"-->
-                    <!--                        v-if="fieldData.source_type === 'API'"-->
-                    <!--                        v-model="fieldData.api_info.remote_api_id"-->
-                    <!--                        placeholder="请选择接口"-->
-                    <!--                        :clearable="false"-->
-                    <!--                        :disabled="systemApisLoading"-->
-                    <!--                        :loading="systemApisLoading"-->
-                    <!--                        @selected="handleSelectApi">-->
-                    <!--                        <bk-option v-for="item in apiList" :key="item.id" :id="item.id" :name="item.name"></bk-option>-->
-                    <!--                    </bk-select>-->
                     <bk-button
                         style="margin-top: 8px;"
                         theme="primary"
@@ -277,6 +265,7 @@
                 <template v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
                     <bk-form-item ext-cls="default-val" label="默认值">
                         <default-value
+                            
                             :field="fieldData"
                             :disabled="disabled"
                             @change="handleDefaultValChange">
@@ -371,7 +360,7 @@
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
     import { mapGetters } from 'vuex'
     import { transSchemeToArrayTypeTree } from '../../../common/apiScheme'
-
+        
     export default {
         name: 'formEdit',
         components: {
@@ -491,6 +480,7 @@
             }
         },
         methods: {
+            
             getRegexList (val) {
                 const result = REGX_CHIOCE_LIST.filter(item => item.type === val.type
                     || (Array.isArray(val.type) && item.type.includes(val.type)) // 主要是为了区分text 和 string 类型的正则规则  同时去除DATE DATETIME 的影响
@@ -624,10 +614,9 @@
                 this.resArrayTreeData = transSchemeToArrayTypeTree(this.apiDetail.response)
             },
             handleDefaultValChange (val) {
-                const formattedValue = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
+                this.fieldData.default = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
                     ? val.join(',')
                     : val
-                this.fieldData.default = formattedValue
                 this.change()
             },
             // 设置描述组件的值

@@ -6,6 +6,7 @@
             :disabled="disabled"
             @change="update">
         </bk-input>
+        
         <bk-select
             v-else-if="['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(field.type)"
             v-model="localVal"
@@ -63,7 +64,7 @@
     // 表单字段编辑时填写默认值组件
     import cloneDeep from 'lodash.clonedeep'
     import FieldItem from '@/components/flow-form-comp/form/fieldItem.vue'
-
+    
     export default {
         name: 'DetermineValue',
         components: {
@@ -81,6 +82,7 @@
         },
         data () {
             return {
+           
                 richTextVisible: false,
                 localVal: this.getLocalVal()
             }
@@ -106,6 +108,7 @@
                 }
                 return dftVal
             },
+            
             handleFieldValueChange (val) {
                 this.localVal = val
                 this.update()

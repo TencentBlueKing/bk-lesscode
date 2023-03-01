@@ -10,6 +10,7 @@
 -->
 
 <template>
+    <!-- 表单页面和表单管理页面 -->
     <main
         class="lessocde-editor-page"
         v-bkloading="{
@@ -131,14 +132,13 @@
                             versionId: this.versionId
                         })
                     ])
-
                     await this.$store.dispatch('variable/getAllVariable', {
                         projectId: this.projectId,
                         pageCode: pageDetail.pageCode,
                         versionId: this.versionId,
                         effectiveRange: 0
                     })
-
+                    // console.log(pageDetail)
                     this.$store.commit('page/setPageDetail', pageDetail || {})
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
