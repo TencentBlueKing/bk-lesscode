@@ -115,7 +115,6 @@
         },
         created () {
             this.getFormList()
-            console.log(this.field)
         },
         methods: {
             async getFormList () {

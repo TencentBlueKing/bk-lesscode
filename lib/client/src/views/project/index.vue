@@ -15,6 +15,11 @@
             <div class="side-bd" :class="{ 'no-click': pageLoading }"
                 @mouseenter="asideHover = true"
                 @mouseleave="asideHover = false">
+                <!-- <nav class="nav-list">
+                    <router-link tag="div" class="nav-item" v-for="item in navList" :key="item.title" :to="item.toPath">
+                        <i :class="`bk-drag-icon bk-drag-${item.icon}`"></i>{{ item.title }} <i v-if="item.redPoint" class="red-point"></i>
+                    </router-link>
+                </nav> -->
                 <bk-navigation-menu
                     ref="menu"
                     class="nav-list"
@@ -29,7 +34,16 @@
                         :id="menuItem.url"
                         @click="handleSelect">
                         <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
+                        <!-- <span class="item-title">{{menuItem.title}}</span> -->
                         <template v-if="menuItem.iamAction">
+                            <!-- <auth-component
+                                :permission="menuItem.iamAction === 'develop_app' ? curProject.canDevelop : curProject.canDeploy"
+                                :auth="menuItem.iamAction"
+                                :resource-id="$route.params.projectId"
+                                @before-show-permission-dialog="beforeShowPermissionDialog">
+                                <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-forbid-container-cls">{{menuItem.title}}</a>
+                                <span class="item-title" slot="allow">{{menuItem.title}}</span>
+                            </auth-component> -->
                             <auth-component
                                 :permission="menuItem.permission"
                                 :auth="menuItem.iamAction"
@@ -49,7 +63,16 @@
                                 :id="childrenItem.url"
                                 :url="childrenItem.url"
                                 @click="handleSelect">
+                                <!-- <span>{{ childrenItem.title }}</span> -->
                                 <template v-if="childrenItem.iamAction">
+                                    <!-- <auth-component
+                                        :permission="childrenItem.iamAction === 'develop_app' ? curProject.canDevelop : curProject.canDeploy"
+                                        :auth="childrenItem.iamAction"
+                                        :resource-id="$route.params.projectId"
+                                        @before-show-permission-dialog="beforeShowPermissionDialog">
+                                        <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-child-forbid-container-cls">{{childrenItem.title}}</a>
+                                        <span slot="allow">{{childrenItem.title}}</span>
+                                    </auth-component> -->
                                     <auth-component
                                         :permission="childrenItem.permission"
                                         :auth="childrenItem.iamAction"

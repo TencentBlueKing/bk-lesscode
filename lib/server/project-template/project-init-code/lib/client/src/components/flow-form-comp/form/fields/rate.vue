@@ -9,8 +9,8 @@
         name: 'Rate',
         props: {
             value: {
-                type: [Number, String],
-                default: '{}'
+                type: Number,
+                default: 0
             },
             disabled: {
                 type: Boolean,
@@ -26,14 +26,10 @@
                 defaultValue: parseInt(this.value || 0)
             }
         },
-        computed: {},
         watch: {
             value (newValue, oldValue) {
                 this.defaultValue = parseInt(newValue || 0)
             }
-        },
-        mounted () {
-        
         },
 
         methods: {
@@ -43,7 +39,3 @@
         }
     }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

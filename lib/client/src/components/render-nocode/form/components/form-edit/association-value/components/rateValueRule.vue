@@ -97,8 +97,6 @@
                 immediate: true
             }
         },
-        created () {},
-        mounted () {},
         methods: {
             changeTargetValue () {
                 let interval = {}
@@ -108,7 +106,6 @@
                         interval = item
                     }
                 })
-                this.rule.relations[0].type = 'VAR'
                 this.rule.target.value = interval?.value || 0
                 this.rule.target.type = 'CONST'
                 this.ruleChange()
@@ -120,6 +117,7 @@
             },
             ruleChange () {
                 this.rule.relations[0].value = this.rule.relations[0].field
+                this.rule.relations[0].type = 'VAR'
                 this.changeBindField()
                 this.$emit('change', this.rule)
             }

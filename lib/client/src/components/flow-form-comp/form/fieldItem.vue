@@ -26,7 +26,7 @@
     </div>
 </template>
 <script>
-    import { deepClone } from './util/index.js'
+    import { deepClone, getComBaseDefault } from './util/index.js'
     import { FIELDS_TYPES } from './constants/forms.js'
     import AutoNumber from './fields/autoNumber.vue'
     import Checkbox from './fields/checkbox.vue'
@@ -103,7 +103,7 @@
             value: {
                 type: [String, Number, Boolean, Array],
                 default () {
-                    return deepClone(FIELDS_TYPES.find(item => item.type === this.field.type)?.default || '')
+                    return deepClone(getComBaseDefault(FIELDS_TYPES, this.field.type))
                 }
             },
             showLabel: {

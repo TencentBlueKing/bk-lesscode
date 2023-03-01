@@ -185,12 +185,11 @@
             targetValVarList () {
                 const fields = this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
                 const type = this.field.type
-                if (['INT', 'DATE', 'DATETIME', 'MEMBER', 'MEMBERS'].includes(type)) {
+                if (['INT', 'DATE', 'DATETIME', 'MEMBER', 'MEMBERS', 'RATE'].includes(type)) {
                     return fields.filter(item => item.type === type)
                 } else if (!MULTIPLE_VALUE_TYPES.includes(type)) {
                     return fields.filter(item => {
-                        const bool = COMPARABLE_VALUE_TYPES.includes(item.type) && !MULTIPLE_VALUE_TYPES.includes(item.type)
-                        return type === 'RATE' ? item.type === 'RATE' && bool : bool
+                        return COMPARABLE_VALUE_TYPES.includes(item.type) && !MULTIPLE_VALUE_TYPES.includes(item.type)
                     })
                 }
                 return fields.filter(item => COMPARABLE_VALUE_TYPES.includes(item.type))

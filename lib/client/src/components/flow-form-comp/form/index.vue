@@ -158,8 +158,6 @@
                                 value = rule.target.type === 'CONST' ? rule.target.value : this.localValue[rule.target.value]
                             }
                             this.localValue[field.key] = value
-                        } else if (field.type === 'RATE') {
-                            this.localValue[field.key] = 0
                         }
                     } else {
                         const res = await this.getAssociationFilterData(field.key)
@@ -203,9 +201,8 @@
                             }
                             if (type === 'CONST') {
                                 return isEqual(this.localValue[relFieldKey], value)
-                            } else {
-                                return value in this.localValue && isEqual(this.localValue[relFieldKey], this.localValue[value])
                             }
+                            return value in this.localValue && isEqual(this.localValue[relFieldKey], this.localValue[value])
                         }
                     })
                     if (isfullFill) {
