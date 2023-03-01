@@ -32,15 +32,15 @@
                                 <i v-if="page.pageType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
                                 <i v-else class="bk-drag-icon bk-drag-pc"> </i>
                             </span>
-                            <div class="name" :title="page.pageName">{{page.pageName}}</div>
+                            <div class="name" v-bk-tooltips="{ content: page.pageName, disabled: !(page.pageName && page.pageName.length > 17) }">{{page.pageName}}</div>
                         </div>
                         <div class="route">
                             <svg class="label" width="22" height="14" viewBox="0 0 22 14">
                                 <rect x="0" width="22" height="14" rx="2" fill="#F0F1F5" />
                                 <text font-family="'PingFang SC','Microsoft Yahei'" fill="#979ba5" style="text-anchor: middle" font-size="8" x="11" y="10">路由</text>
                             </svg>
-                            <div class="path">
-                                <span class="fullpath" :title="routeMap[page.id].fullPath" v-if="routeMap[page.id].id">
+                            <div class="path" v-bk-tooltips="{ content: routeMap[page.id].fullPath, disabled: !(routeMap[page.id].fullPath && routeMap[page.id].fullPath.length > 32) }">
+                                <span class="fullpath" v-if="routeMap[page.id].id">
                                     {{routeMap[page.id].fullPath}}
                                 </span>
                                 <span class="unset" v-else>未配置</span>

@@ -3,8 +3,10 @@
         class="lesscode-editor-page-content"
         :page-type="pageType"
         v-bkloading="{ isLoading }">
+        <!-- 表单左边标签选择面板 -->
         <left-panel slot="left" :page-type="pageType" :disabled="disabled" @move="fieldPanelHover = true" @end="fieldPanelHover = false" />
         <layout style="background: #fff; height: 100%">
+            <!-- 表单面板 -->
             <form-content
                 :fields="fieldsList"
                 :curfield="crtField"
@@ -17,6 +19,7 @@
                 @clickOutSide="crtField = {}"
             />
         </layout>
+        <!-- 表单右边设置区域 -->
         <right-panel slot="right" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
     </draw-layout>
 

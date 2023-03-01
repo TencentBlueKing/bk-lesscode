@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="item-info">
-                        <span class="item-name">{{ template.templateName }}</span>
+                        <span class="item-name" :title=" template.templateName">{{ template.templateName }}</span>
                         <span
                             class="preview"
                             @click="handlePreview(template)">

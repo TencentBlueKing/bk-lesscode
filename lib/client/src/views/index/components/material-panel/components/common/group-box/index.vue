@@ -1,6 +1,6 @@
 <template>
     <div class="drag-group-box">
-        <div class="group-title" @click="handleToggle">
+        <div class="group-title" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
             <i
                 class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                 :class="{

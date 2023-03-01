@@ -37,7 +37,8 @@
                     :label="column.name"
                     :prop="column.id"
                     :width="column.width"
-                    :sortable="column.sortable">
+                    :sortable="column.sortable"
+                    :show-overflow-tooltip="column.tooltip">
                     <template slot-scope="{ row }">
                         <loading v-if="column.dynamic" :loading="fetching[column.id]">
                             <span v-if="column.type === 'number'">{{row[column.id] | formatCount}}</span>
@@ -77,8 +78,8 @@
                 },
                 orderBy: undefined,
                 columns: [
-                    { id: 'username', name: '用户名', width: '360' },
-                    { id: 'createTime', name: '创建时间', width: '320', sortable: 'custom', type: 'datetime' },
+                    { id: 'username', name: '用户名', width: '360', tooltip: true },
+                    { id: 'createTime', name: '创建时间', width: '320', sortable: 'custom', type: 'datetime', tooltip: true },
                     { id: 'projectCount', name: '应用数', sortable: 'custom', dynamic: true, type: 'number' },
                     { id: 'pageCount', name: '页面数', sortable: 'custom', dynamic: true, type: 'number' }
                 ],

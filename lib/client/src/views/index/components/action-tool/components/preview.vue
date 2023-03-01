@@ -54,6 +54,7 @@
                     const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
                     window.open(`/preview-mobile/project/${this.projectId}?pagePath=${fullPath}&pageCode=${this.pageDetail.pageCode}${versionQuery}`, '_blank')
                 } else {
+                    // 预览表单
                     const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
                     const routerUrl = `/preview/project/${this.projectId}${versionPath}${fullPath}?pageCode=${this.pageDetail.pageCode}`
                     window.open(routerUrl, '_blank')

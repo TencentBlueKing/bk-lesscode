@@ -46,7 +46,7 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column label="更新人" prop="updateUser"></bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
+                <bk-table-column label="更新时间" prop="updateTime" min-width="100px" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
                 <bk-table-column label="引用" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span

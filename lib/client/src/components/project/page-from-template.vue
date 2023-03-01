@@ -8,7 +8,8 @@
                             v-for="link in filterLinks"
                             :key="link.id"
                             :class="['link-item', { 'active': filter === link.id }]"
-                            @click="handleClickFilter(link.id)">
+                            @click="handleClickFilter(link.id)"
+                            :title="link.name">
                             {{link.name}}
                         </li>
                     </ul>
@@ -293,7 +294,11 @@
                     margin: 0 8px;
                     border-radius: 16px;
                     cursor: pointer;
-
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 2;
                     &:hover {
                         background: #E1ECFF;
                     }

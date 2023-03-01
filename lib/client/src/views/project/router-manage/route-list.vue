@@ -123,7 +123,10 @@
                                     </div>
                                 </div>
                                 <div :class="[$style['bind'], { [$style['disabled']]: editState.route !== null || removeLoading }]">
-                                    <div :class="$style['bind-name']" @click="handleEditBinding(route)" v-if="bindState.route !== route">
+                                    <div :class="$style['bind-name']" @click="handleEditBinding(route)"
+                                        v-if="bindState.route !== route" v-bk-tooltips="{
+                                            content: getBindDisplayValue(route),
+                                            disabled: !(getBindDisplayValue(route) && getBindDisplayValue(route).length > 29) }">
                                         {{getBindDisplayValue(route)}}
                                     </div>
                                     <bind-route-form v-else

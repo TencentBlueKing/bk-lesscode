@@ -242,6 +242,7 @@
                 }
             },
             handleConfirmClick () {
+                // 判断是不是流程页面或流程管理页面
                 if (['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.$emit('save')
                 } else {
@@ -254,6 +255,7 @@
                     await this.$refs.templateForm.validate()
 
                     let templateFormData = {}
+                    // nocodeType为空，且this.pageFrom为'TEMPLATE'
                     if (this.createFromTemplate) {
                         const template = this.selectTemplate
                         if (!template?.id) {
@@ -272,6 +274,7 @@
                         pageName: this.formData.pageName,
                         pageCode: this.formData.pageCode
                     }
+                    // 将表单数据提交，
                     const nameExist = await this.$store.dispatch('page/checkName', {
                         data: {
                             ...formData,
@@ -280,6 +283,7 @@
                             from: 'create'
                         }
                     })
+                    // 判断页面名称是否存在
                     if (nameExist) return
                     
                     const payload = {
@@ -290,7 +294,7 @@
                             formId: this.formId
                         }
                     }
-
+                    // 查找为默认的布局
                     const { id, routePath } = this.showLayoutList.find(layout => layout.checked)
                     payload.data.layout = { id, routePath }
                     if (this.showAddNavListSwitcher) {
@@ -298,11 +302,13 @@
                     }
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
+                        // 页面不是流程页面或流程管理页面
                         if (!['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                             this.$bkMessage({
                                 theme: 'success',
                                 message: '新建页面成功'
                             })
+                            // 判断this.nocodeType有没有值
                             const toPageRouteName = this.nocodeType ? 'editNocode' : 'new'
                             this.$router.push({
                                 name: toPageRouteName,
