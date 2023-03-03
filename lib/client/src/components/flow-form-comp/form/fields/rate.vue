@@ -9,7 +9,7 @@
         name: 'Rate',
         props: {
             value: {
-                type: [Number, String],
+                type: Number,
                 default: 0
             },
             disabled: {
