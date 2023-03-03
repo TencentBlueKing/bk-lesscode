@@ -106,6 +106,9 @@
                         interval = item
                     }
                 })
+                debugger
+
+                this.rule.relations[0].type = 'VAR'
                 this.rule.target.value = interval?.value || 0
                 this.rule.target.type = 'CONST'
                 this.ruleChange()
@@ -118,6 +121,7 @@
             ruleChange () {
                 this.rule.relations[0].value = this.rule.relations[0].field
                 this.rule.relations[0].type = 'VAR'
+                debugger
                 this.changeBindField()
                 this.$emit('change', this.rule)
             }
