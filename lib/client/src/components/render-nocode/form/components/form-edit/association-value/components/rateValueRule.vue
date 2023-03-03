@@ -98,7 +98,7 @@
             changeTargetValue () {
                 let interval = {}
                 this.rule.intervals.forEach((item) => {
-                    const defValue = this.bindField.default * 1
+                    const defValue = this.bindField?.default * 1
                     if (item.min <= defValue && defValue < item.max) {
                         interval = item
                     }
