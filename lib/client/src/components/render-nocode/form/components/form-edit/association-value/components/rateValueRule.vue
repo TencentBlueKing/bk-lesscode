@@ -28,9 +28,6 @@
             <span>区间值为</span>
             <bk-rate :rate="item.value" :edit="false"></bk-rate>
         </div>
-        <div class="tips-box">
-            以上条件均不满足时值为：<bk-rate :rate="0" :edit="false"></bk-rate>
-        </div>
     </div>
 </template>
 
@@ -101,16 +98,12 @@
             changeTargetValue () {
                 let interval = {}
                 this.rule.intervals.forEach((item) => {
-                    const defValue = this.bindField.default * 1
+                    const defValue = this.bindField?.default * 1
                     if (item.min <= defValue && defValue < item.max) {
                         interval = item
                     }
                 })
-                debugger
-
-                this.rule.relations[0].type = 'VAR'
                 this.rule.target.value = interval?.value || 0
-                this.rule.target.type = 'CONST'
                 this.ruleChange()
             },
             changeBindField () {
@@ -121,7 +114,7 @@
             ruleChange () {
                 this.rule.relations[0].value = this.rule.relations[0].field
                 this.rule.relations[0].type = 'VAR'
-                debugger
+                this.rule.target.type = 'CONST'
                 this.changeBindField()
                 this.$emit('change', this.rule)
             }
@@ -137,11 +130,5 @@
 }
 .interval-row{
     margin-top: 8px;
-}
-.tips-box{
-    display: flex;
-    align-items: center;
-    padding-left: 8px;
-    margin: 8px auto;
 }
 </style>
