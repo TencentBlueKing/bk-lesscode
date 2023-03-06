@@ -276,7 +276,7 @@
             overflow-y: auto;
             @mixin scroller;
         }
-        /deep/.bk-table-body-wrapper{
+        /deep/.bk-table-empty-block{
             height: 280px;
         }
       

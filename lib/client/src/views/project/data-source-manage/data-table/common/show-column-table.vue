@@ -15,6 +15,7 @@
         <bk-table-column label="可空" prop="nullable" :formatter="boolFormatter"></bk-table-column>
         <bk-table-column label="默认值" prop="default" show-overflow-tooltip></bk-table-column>
         <bk-table-column label="备注" prop="comment" show-overflow-tooltip></bk-table-column>
+        <empty-status slot="empty"></empty-status>
     </bk-table>
 </template>
 

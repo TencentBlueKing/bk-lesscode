@@ -107,6 +107,7 @@
                     </template>
                 </template>
             </bk-table-column>
+            <empty-status slot="empty"></empty-status>
         </bk-table>
 
         <app-perm-model-sideslider
