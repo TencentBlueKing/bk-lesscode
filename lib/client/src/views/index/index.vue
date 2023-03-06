@@ -33,6 +33,7 @@
                     placements: ['bottom']
                 }" />
         </div>
+        <!-- 编辑应用的普通页面 -->
         <template v-if="!isContentLoading && !isCustomComponentLoading">
             <draw-layout
                 class="lesscode-editor-page-content">

@@ -13,98 +13,106 @@
                     </div>
                 </template>
                 <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ `规则${groupIndex + 1}` }}</p>
-                <div class="relations-content">
-                    <div
-                        class="relation-item"
-                        v-for="(relation, index) in rule.relations"
-                        :key="`${relation.field}_${relation.type}_${index}`">
-                        当
-                        <bk-select
-                            v-model="relation.field"
-                            style="width: 130px;"
-                            size="small"
-                            placeholder="表单字段"
-                            :loading="!isCurrentTable && formListLoading"
-                            @change="change">
-                            <bk-option
-                                v-for="item in getRelFieldList()"
-                                :key="item.key"
-                                :id="item.key"
-                                :name="item.name">
-                            </bk-option>
-                        </bk-select>
-                        等于
-                        <bk-select
-                            style="width: 80px;"
-                            size="small"
-                            :clearable="false"
-                            :value="relation.type"
-                            @change="handleRelValTypeChange(relation, $event)">
-                            <bk-option id="CONST" name="常量"></bk-option>
-                            <bk-option id="VAR" name="变量"></bk-option>
-                        </bk-select>
-                        <div class="field-value" style="width: 160px; line-height: initial">
+                <!-- 判断是不是评分组件 -->
+                <template v-if="field.type === 'RATE' && isCurrentTable">
+                    <RateValueRule :rule="rule" :is-current-table="isCurrentTable" :form-list-loading="formListLoading"
+                        :rel-field-list="getRelFieldList()"
+                        @change="change"></RateValueRule>
+                </template>
+                <template v-else>
+                    <div class="relations-content">
+                        <div
+                            class="relation-item"
+                            v-for="(relation, index) in rule.relations"
+                            :key="`${relation.field}_${relation.type}_${index}`">
+                            当
                             <bk-select
-                                v-if="relation.type === 'VAR'"
-                                v-model="relation.value"
+                                v-model="relation.field"
+                                style="width: 130px;"
                                 size="small"
+                                placeholder="表单字段"
+                                :loading="!isCurrentTable && formListLoading"
                                 @change="change">
                                 <bk-option
-                                    v-for="item in getRelValVarList(relation.field)"
+                                    v-for="item in getRelFieldList()"
                                     :key="item.key"
                                     :id="item.key"
                                     :name="item.name">
                                 </bk-option>
                             </bk-select>
+                            等于
+                            <bk-select
+                                style="width: 80px;"
+                                size="small"
+                                :clearable="false"
+                                :value="relation.type"
+                                @change="handleRelValTypeChange(relation, $event)">
+                                <bk-option id="CONST" name="常量"></bk-option>
+                                <bk-option id="VAR" name="变量"></bk-option>
+                            </bk-select>
+                            <div class="field-value" style="width: 160px; line-height: initial">
+                                <bk-select
+                                    v-if="relation.type === 'VAR'"
+                                    v-model="relation.value"
+                                    size="small"
+                                    @change="change">
+                                    <bk-option
+                                        v-for="item in getRelValVarList(relation.field)"
+                                        :key="item.key"
+                                        :id="item.key"
+                                        :name="item.name">
+                                    </bk-option>
+                                </bk-select>
+                                <default-value
+                                    v-else
+                                    :field="getDeterminValField(relation)"
+                                    :disabled="disabled"
+                                    @change="handleRelVarValChange(relation, $event)">
+                                </default-value>
+                            </div>
+                            <div class="operate-btns">
+                                <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddRelation(groupIndex, index)"></i>
+                                <i :class="['bk-drag-icon bk-drag-reduce-fill', { disabled: rule.relations.length <= 1 }]" @click="handleDelRelation(groupIndex, index)"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="target-value" :key="`${rule.target.type}_${rule.target_value}_${groupIndex}`">
+                        <span style="white-space: nowrap;">值为</span>
+                        <bk-select
+                            v-if="isCurrentTable"
+                            :value="rule.target.type"
+                            style="margin-left: 8px; width: 80px;"
+                            size="small"
+                            :clearable="false"
+                            @change="handleTargetVarValTypeChange(rule.target, $event)">
+                            <bk-option id="CONST" name="常量"></bk-option>
+                            <bk-option id="VAR" name="变量"></bk-option>
+                        </bk-select>
+                        <div style="margin-left: 8px; width: 160px;">
+                            <bk-select
+                                v-if="rule.target.type === 'VAR'"
+                                v-model="rule.target.value"
+                                size="small"
+                                :placeholder="isCurrentTable ? '请选择本表字段' : '请选择他表字段'"
+                                :loading="!isCurrentTable && formListLoading"
+                                @change="change">
+                                <bk-option
+                                    v-for="item in targetValVarList"
+                                    :key="item.id"
+                                    :id="item.key"
+                                    :name="item.name">
+                                </bk-option>
+                            </bk-select>
+                            
                             <default-value
                                 v-else
-                                :field="getDeterminValField(relation)"
+                                :field="getFulfillRuleField(rule.target.value)"
                                 :disabled="disabled"
-                                @change="handleRelVarValChange(relation, $event)">
+                                @change="handleTargetVarValChange(rule.target, $event)">
                             </default-value>
-                                
-                        </div>
-                        <div class="operate-btns">
-                            <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddRelation(groupIndex, index)"></i>
-                            <i :class="['bk-drag-icon bk-drag-reduce-fill', { disabled: rule.relations.length <= 1 }]" @click="handleDelRelation(groupIndex, index)"></i>
                         </div>
                     </div>
-                </div>
-                <div class="target-value" :key="`${rule.target.type}_${rule.target_value}_${groupIndex}`">
-                    <span style="white-space: nowrap;">值为</span>
-                    <bk-select
-                        v-if="isCurrentTable"
-                        :value="rule.target.type"
-                        style="margin-left: 8px; width: 80px;"
-                        size="small"
-                        :clearable="false"
-                        @change="handleTargetVarValTypeChange(rule.target, $event)">
-                        <bk-option id="CONST" name="常量"></bk-option>
-                        <bk-option id="VAR" name="变量"></bk-option>
-                    </bk-select>
-                    <div style="margin-left: 8px; width: 160px;">
-                        <bk-select
-                            v-if="rule.target.type === 'VAR'"
-                            v-model="rule.target.value"
-                            size="small"
-                            :placeholder="isCurrentTable ? '请选择本表字段' : '请选择他表字段'"
-                            :loading="!isCurrentTable && formListLoading"
-                            @change="change">
-                            <bk-option
-                                v-for="item in targetValVarList"
-                                :key="item.id"
-                                :id="item.key"
-                                :name="item.name">
-                            </bk-option>
-                        </bk-select>
-                        <default-value
-                            v-else
-                            :field="getFulfillRuleField(rule.target.value)"
-                            :disabled="disabled"
-                            @change="handleTargetVarValChange(rule.target, $event)">
-                        </default-value>
-                    </div>
-                </div>
+                </template>
             </div>
         </vue-draggable>
         <bk-button
@@ -120,12 +128,14 @@
     import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import DefaultValue from '../default-value.vue'
+    import RateValueRule from './components/rateValueRule.vue'
     import { getTypeDefaultVal, COMPARABLE_VALUE_TYPES, MULTIPLE_VALUE_TYPES } from 'shared/no-code'
 
     export default {
         name: 'RelationRules',
         components: {
-            DefaultValue
+            DefaultValue,
+            RateValueRule
         },
         props: {
             disabled: Boolean,
@@ -175,10 +185,12 @@
             targetValVarList () {
                 const fields = this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
                 const type = this.field.type
-                if (['INT', 'DATE', 'DATETIME', 'MEMBER', 'MEMBERS'].includes(type)) {
+                if (['INT', 'DATE', 'DATETIME', 'MEMBER', 'MEMBERS', 'RATE'].includes(type)) {
                     return fields.filter(item => item.type === type)
                 } else if (!MULTIPLE_VALUE_TYPES.includes(type)) {
-                    return fields.filter(item => COMPARABLE_VALUE_TYPES.includes(item.type) && !MULTIPLE_VALUE_TYPES.includes(item.type))
+                    return fields.filter(item => {
+                        return COMPARABLE_VALUE_TYPES.includes(item.type) && !MULTIPLE_VALUE_TYPES.includes(item.type)
+                    })
                 }
                 return fields.filter(item => COMPARABLE_VALUE_TYPES.includes(item.type))
             }
@@ -194,7 +206,16 @@
             },
             // 规则字段可选列表
             getRelFieldList () {
-                return this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.key) : this.otherTableFields
+                const relFieldList = this.isCurrentTable ? this.fieldsList.filter(item => {
+                    let optionBool = item.key !== this.field.key
+                    // 评分组件只能选择数字类型的字段
+                    if (optionBool && this.field.type === 'RATE') {
+                        optionBool = item.type === 'INT'
+                    }
+                    return optionBool
+                }) : this.otherTableFields
+                
+                return relFieldList
             },
             // 规则字段值为变量时只能选本表字段
             // 字段可选列表只能是可比较值类型的字段，并排除已选中字段
@@ -273,7 +294,7 @@
                 target.value = val
                 this.change()
             },
-            change () {
+            change (e) {
                 this.$emit('change', this.localVal)
             }
         }

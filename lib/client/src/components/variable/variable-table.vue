@@ -98,7 +98,7 @@
                 type: Boolean,
                 default: false
             },
-            variableName: {
+            searchTxt: {
                 type: String,
                 default: ''
             }
@@ -132,7 +132,7 @@
 
             filterVariableList () {
                 return (this.variableList || []).filter((variable) => {
-                    return (variable.variableName || '').includes(this.variableName)
+                    return (variable.variableName || '').includes(this.searchTxt) || (variable.variableCode || '').includes(this.searchTxt)
                 })
             },
 
@@ -141,7 +141,7 @@
             },
 
             emptyType () {
-                if (this.variableName?.length > 0) {
+                if (this.searchTxt?.length > 0) {
                     return 'search'
                 }
                 return 'noData'

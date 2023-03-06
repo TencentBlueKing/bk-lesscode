@@ -59,6 +59,7 @@
                     <sort-select v-model="sort" @change="handleSortChange" />
                 </div>
             </div>
+            <!-- 应用页面列表 -->
             <div :class="['pages-body', { 'is-empty': !renderList.length }]">
                 <component
                     :is="listComponent"
