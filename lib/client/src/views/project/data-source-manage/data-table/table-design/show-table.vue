@@ -3,7 +3,7 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                表【{{tableStatus.basicInfo.tableName}}】信息
+                <span :title="tableStatus.basicInfo.tableName" class="header-title">表【{{tableStatus.basicInfo.tableName}}】信息</span>
                 <bk-divider direction="vertical"></bk-divider>
                 
                 <span
@@ -135,6 +135,8 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/ellipsis";
+
     .table-header {
         display: flex;
         align-items: center;
@@ -143,6 +145,9 @@
             padding: 10px;
             cursor: pointer;
             font-size: 14px;
+        }
+        .header-title {
+            @mixin ellipsis 450px;
         }
     }
     .table-main {

@@ -53,6 +53,7 @@
                     :label="column.name"
                     :prop="column.name"
                     :formatter="columnFormatter(column.type)"
+                    :render-header="renderHeader"
                     show-overflow-tooltip
                 ></bk-table-column>
             </template>
@@ -598,6 +599,19 @@
                 )
             }
 
+            const renderHeader = (h, data) => {
+                return h(
+                    'span',
+                    {
+                        attrs: {
+                            title: data.column.label
+                        },
+                        style: 'render-table-header'
+                    },
+                    data.column.label
+                )
+            }
+
             watch(
                 [environment, activeTable],
                 () => {
@@ -637,7 +651,8 @@
                 exportDatas,
                 handleDownloadTemplate,
                 parseImport,
-                handleImport
+                handleImport,
+                renderHeader
             }
         }
     })
