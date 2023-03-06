@@ -48,9 +48,7 @@
                             </li>
                         </div>
                         <div class="empty" v-show="!list.length">
-                            <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                                <div>暂无模板</div>
-                            </bk-exception>
+                            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
                         </div>
                     </div>
                 </div>
@@ -108,7 +106,8 @@
                 list: [],
                 pageLoading: false,
                 currentTemplate: {},
-                selectApplyTemplate: {}
+                selectApplyTemplate: {},
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -172,7 +171,10 @@
                     this.filterList = this.filterList.filter(item => item.offcialType === this.filter || item.categoryId === parseInt(this.filter))
                 }
                 if (this.searchFilter) {
+                    this.emptyType = 'search'
                     this.filterList = this.filterList.filter(item => item.templateName.toUpperCase().includes(this.searchFilter.toUpperCase()))
+                } else {
+                    this.emptyType = 'noData'
                 }
                 this.list = this.filterList.filter(item => item.templateType === this.platform || (this.platform === 'PC' && !item.templateType))
                 this.handleReSelect()
@@ -244,6 +246,9 @@
                     this.handleReSelect()
                 }
                 this.selectApplyTemplate = {}
+            },
+            handlerClearSearch (searchName) {
+                this.searchFilter = searchName
             }
         }
     }

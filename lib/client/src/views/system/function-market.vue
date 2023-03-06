@@ -48,13 +48,8 @@
                     </template>
                 </div>
             </bk-card>
-            <bk-exception class="exception-wrap-item" scene="part" type="empty" v-if="cardList.length <= 0">
-                暂无函数，
-                <bk-button :text="true" @click="showMarketFunc.isShow = true">
-                    立即创建
-                </bk-button>
-            </bk-exception>
         </section>
+        <empty-status v-if="computedCardList.length <= 0" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
 
         <edit-market-func-sideslider
             :is-show.sync="showMarketFunc.isShow"
@@ -130,9 +125,14 @@
             ...mapGetters(['iamNoResourcesPerm']),
             computedCardList () {
                 return this.cardList.filter(card => (card.funcName || '').includes(this.searchStr))
+            },
+            emptyType () {
+                if (this.searchStr?.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
-
         created () {
             this.initData()
         },
@@ -226,6 +226,9 @@
 
             exportMarketFuncs () {
                 downloadFile(getExportFunction(this.cardList), 'bklesscode-market-func.json')
+            },
+            handlerClearSearch (searchName) {
+                this.searchStr = searchName
             }
         }
     }

@@ -170,6 +170,7 @@
                         @setting-change="handleTableSettingChange">
                     </bk-table-setting-content>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </section>
 
@@ -317,6 +318,12 @@
             computedApiList () {
                 const searchReg = new RegExp(this.searchApiStr, 'i')
                 return this.apiList.filter((api) => searchReg.test(api.name))
+            },
+            emptyType () {
+                if (this.searchApiStr?.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
 
@@ -483,6 +490,10 @@
             handleTableSettingChange ({ fields, size }) {
                 this.tableSetting.size = size
                 this.tableSetting.selectedFields = fields
+            },
+
+            handlerClearSearch (searchEmpty) {
+                this.searchApiStr = searchEmpty
             }
         }
     }

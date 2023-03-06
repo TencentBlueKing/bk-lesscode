@@ -51,9 +51,7 @@
                                 </span>
                             </li>
                         </ul>
-                        <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part" v-else>
-                            <div>暂无搜索结果</div>
-                        </bk-exception>
+                        <empty-status v-else :type="emptyType" @clearSearch="handlerClearSearch" :part="false"></empty-status>
                     </aside>
                     <section class="data-main">
                         <bk-tab :active.sync="pageStatus.currentTab">
@@ -223,6 +221,10 @@
                 })
             }
 
+            const handlerClearSearch = () => {
+                pageStatus.tableName = ''
+            }
+
             const displayTableList = computed(() => {
                 return pageStatus.tableList.filter((table) => {
                     return table.tableName.includes(pageStatus.tableName)
@@ -235,6 +237,13 @@
                     prod: releaseInfo.isProdNeedUpdate
                 }
                 return updateMap[pageStatus.activeEnvironment.key]
+            })
+
+            const emptyType = computed(() => {
+                if (pageStatus.tableName) {
+                    return 'search'
+                }
+                return 'noData'
             })
 
             watch(
@@ -253,10 +262,12 @@
                 pageStatus,
                 displayTableList,
                 isShowUpdateInfo,
+                emptyType,
                 goBack,
                 goDeploy,
                 setEnvironment,
-                setActiveTable
+                setActiveTable,
+                handlerClearSearch
             }
         }
     })

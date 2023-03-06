@@ -67,6 +67,7 @@
                         </bk-popconfirm>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </main>
     </div>
@@ -92,7 +93,8 @@
                     current: 1,
                     count: 0,
                     limit: 10
-                }
+                },
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -114,6 +116,9 @@
                 }
                 if (this.keyword) {
                     params.flowName = this.keyword.trim()
+                    this.emptyType = 'search'
+                } else {
+                    this.emptyType = 'noData'
                 }
                 try {
                     const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
@@ -160,6 +165,10 @@
             handleSearch () {
                 this.pagination.current = 1
                 this.getFlowList()
+            },
+            handlerClearSearch () {
+                this.keyword = ''
+                this.handleSearch()
             }
         }
     }
