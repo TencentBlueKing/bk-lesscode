@@ -70,6 +70,7 @@
                 </bk-button>
             </template>
         </bk-table-column>
+        <empty-status slot="empty"></empty-status>
     </bk-table>
 </template>
 

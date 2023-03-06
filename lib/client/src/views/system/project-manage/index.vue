@@ -79,7 +79,7 @@
                     :is="listComponent"
                     :project-list="projectList"
                     :page-map="pageMap"
-                    :is-search="isSearch"
+                    :empty-type="emptyType"
                     :filter="filter"
                     @create="handleCreate"
                     @preview="handlePreview"
@@ -91,6 +91,7 @@
                     @set-template="handleSetTemplate"
                     @collect="handleCollect"
                     @release="handleRelease"
+                    @clearSearch="handlerClearSearch"
                 />
             </div>
         </div>
@@ -309,8 +310,11 @@
                 const { projectType } = this.dialog.create
                 return projectType === 'copyProject' ? '复制应用' : (projectType === 'importProject') ? '导入应用' : '新建应用'
             },
-            isSearch () {
-                return this.$route.query?.q?.length > 0
+            emptyType () {
+                if (this.$route.query?.q?.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
         watch: {
@@ -669,6 +673,9 @@
                     const projBUpdateTime = this.getUpdateInfo(projB)?.updateTime
                     return new Date(projBUpdateTime).getTime() - new Date(projAUpdateTime).getTime()
                 })
+            },
+            handlerClearSearch (searchEmpty) {
+                this.keyword = searchEmpty
             }
         }
     }

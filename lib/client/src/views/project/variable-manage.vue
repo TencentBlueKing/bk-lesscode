@@ -4,7 +4,7 @@
             <bk-button theme="primary" @click="showVariableForm">新建</bk-button>
             <bk-input class="header-input" placeholder="请输入变量名称或者标识进行搜索" clearable right-icon="bk-icon icon-search" v-model="searchTxt"></bk-input>
         </header>
-        <variable-table v-bkloading="{ isLoading }" :search-txt="searchTxt">
+        <variable-table v-bkloading="{ isLoading }" :search-txt="searchTxt" @clearSearch="handlerClearSearch">
             <span class="variable-tip">
                 提示：
                 <br>1. 可以在组件属性和指令的配置面板中使用该变量
@@ -76,6 +76,10 @@
                     isShow: true,
                     formData: {}
                 }
+            },
+
+            handlerClearSearch (searchName) {
+                this.searchTxt = searchName
             }
         }
     }

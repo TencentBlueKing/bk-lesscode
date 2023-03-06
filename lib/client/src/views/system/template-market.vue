@@ -74,11 +74,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="empty" v-show="!template.project.list.length">
-                            <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                                <div>暂无应用模板</div>
-                            </bk-exception>
-                        </div>
+                        <empty-status class="empty" v-show="!template.project.list.length" :type="projectEmptyType" @clearSearch="handlerClearSearchProject"></empty-status>
                     </div>
                 </div>
                 <div class="page-template">
@@ -135,11 +131,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="empty" v-show="!template.page.list.length">
-                            <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                                <div>暂无页面模板</div>
-                            </bk-exception>
-                        </div>
+                        <empty-status class="empty" v-show="!template.page.list.length" :type="pageEmptyType" @clearSearch="handlerClearSearchPage"></empty-status>
                     </div>
                 </div>
             </div>
@@ -350,7 +342,9 @@
                     }
                 },
                 pageLoading: false,
-                formLoading: false
+                formLoading: false,
+                projectEmptyType: 'noData',
+                pageEmptyType: 'noData'
             }
         },
         computed: {
@@ -438,27 +432,40 @@
                     case 'project':
                         this.template.project.list.splice(0, this.template.project.list.length, ...this.projectList)
                         if (this.template.project.filter !== '') {
+                            this.projectEmptyType = 'search'
                             this.template.project.list = this.template.project.list.filter(item => {
                                 return item.offcialType && item.offcialType.includes(this.template.project.filter)
                             })
+                        } else {
+                            this.projectEmptyType = 'noData'
                         }
+                        
                         if (this.template.project.keyword !== '') {
+                            this.projectEmptyType = 'search'
                             this.template.project.list = this.template.project.list.filter(item => {
                                 return item.projectName.toUpperCase().includes(this.template.project.keyword.toUpperCase())
                             })
+                        } else {
+                            this.projectEmptyType = 'noData'
                         }
                         break
                     case 'page':
                         this.template.page.list.splice(0, this.template.page.list.length, ...this.pageList)
                         if (this.template.page.filter !== '') {
+                            this.pageEmptyType = 'search'
                             this.template.page.list = this.template.page.list.filter(item => {
                                 return item.offcialType && item.offcialType.includes(this.template.page.filter)
                             })
+                        } else {
+                            this.pageEmptyType = 'noData'
                         }
                         if (this.template.page.keyword !== '') {
+                            this.pageEmptyType = 'search'
                             this.template.page.list = this.template.page.list.filter(item => {
                                 return item.templateName.toUpperCase().includes(this.template.page.keyword.toUpperCase())
                             })
+                        } else {
+                            this.pageEmptyType = 'noData'
                         }
                         break
                     default:
@@ -624,6 +631,12 @@
                     downlondEl.click()
                     document.body.removeChild(downlondEl)
                 })
+            },
+            handlerClearSearchProject (searchName) {
+                this.template.project.keyword = searchName
+            },
+            handlerClearSearchPage (searchName) {
+                this.template.page.keyword = searchName
             }
         }
     }

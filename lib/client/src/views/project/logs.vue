@@ -98,6 +98,7 @@
                         <span>{{row.operateDesc}}</span>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </div>
 
@@ -146,7 +147,8 @@
                     timeStart: '',
                     timeEnd: ''
                 },
-                dateShortcutSelectedIndex: 1
+                dateShortcutSelectedIndex: 1,
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -181,6 +183,7 @@
             },
             async getList () {
                 const params = this.getParams()
+                this.emptyType = 'search'
                 this.fetching.list = true
                 try {
                     const [list, total] = await this.$store.dispatch('logs/getList', { projectId: this.projectId, config: { params } })
@@ -224,6 +227,16 @@
             },
             handlePageChange (page) {
                 this.pagination.current = page
+                this.getList()
+            },
+            handlerClearSearch () {
+                const initData = {
+                    obj: '',
+                    code: '',
+                    status: ''
+                }
+                Object.assign(this.filter, initData)
+                this.emptyType = 'noData'
                 this.getList()
             }
         }
