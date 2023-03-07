@@ -142,7 +142,7 @@
                     })
                     return false
                 }
-                let message
+                let message = ''
                 this.$store.state.nocode.formSetting.fieldsList.some(field => {
                     if (!/^[a-zA-Z0-9_]*$/.test(field.key)) {
                         message = `字段【${field.name}】唯一标识需要由字母、数字、下划线组成`
