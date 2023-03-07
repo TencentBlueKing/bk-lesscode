@@ -799,8 +799,8 @@
                 & > div {
                     margin-bottom: 24px;
                 }
-                .is-source {
-                    margin-bottom: 4px;
+                .last-version-tips {
+                    margin-top: -20px;
                 }
                 .type,
                 .form-item {
