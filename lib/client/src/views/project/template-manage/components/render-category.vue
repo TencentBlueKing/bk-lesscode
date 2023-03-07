@@ -253,7 +253,7 @@
     .class-list{
         position: relative;
         z-index: 1;
-        height: calc(100vh - 120px);
+        height: calc(100% - 64px);
         .header{
             display: flex;
             padding: 16px 18px;

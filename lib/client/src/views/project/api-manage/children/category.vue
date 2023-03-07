@@ -489,7 +489,7 @@
         align-items: center;
         font-weight: normal;
         margin: 0;
-        padding: 16px 13px 15px 18px;
+        padding: 16px 13px 15px 16px;
         .head-input {
             margin-right: 7px;
         }
