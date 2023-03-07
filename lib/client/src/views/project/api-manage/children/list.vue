@@ -256,7 +256,7 @@
         { id: 'funcSummary', label: '备注' },
         { id: 'updateUser', label: '更新人' },
         { id: 'updateTime', label: '更新时间' },
-        { id: 'operation', label: '操作' }
+        { id: 'operation', label: '操作', disabled: true }
     ]
 
     export default {

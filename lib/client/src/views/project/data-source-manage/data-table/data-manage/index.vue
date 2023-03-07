@@ -45,9 +45,9 @@
                                     'table-item': true
                                 }"
                             >
-                                <span class="table-item-name">
+                                <span class="table-item-name" v-tooltips="item.tableName">
                                     <i class="bk-drag-icon bk-drag-data-table"></i>
-                                    {{ item.tableName }}
+                                    <span>{{ item.tableName }}</span>
                                 </span>
                             </li>
                         </ul>
@@ -274,6 +274,9 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+    @import "@/css/mixins/ellipsis";
+
     .table-header {
         display: flex;
         align-items: center;
@@ -292,6 +295,7 @@
             background: #fafbfd;
             height: 100%;
             overflow-y: auto;
+            @mixin scroller;
             .filter-table-name {
                 padding: 0 15px;
                 ::v-deep .right-icon {
@@ -302,6 +306,8 @@
                 margin-top: 9px;
             }
             .table-item {
+                width: 330px;
+                overflow: hidden;
                 padding: 0 15px;
                 height: 40px;
                 line-height: 19px;
@@ -320,10 +326,11 @@
                 }
             }
             .table-item-name {
+                @mixin ellipsis 100%, inline-block;
                 line-height: 19px;
                 flex: 1;
                 .bk-drag-data-table {
-                    margin-right: 3px;
+                    margin-right: 4px;
                     font-size: 16px;
                 }
             }

@@ -1,7 +1,7 @@
 <template>
     <div :class="[$style['logs'], 'page-content']">
         <div class="page-head" :class="$style['filter']">
-            <div :class="$style['filter-item']">
+            <div :class="[$style['filter-item'], $style['type']]">
                 <div :class="$style['label']">类型</div>
                 <div :class="$style['form-control']">
                     <bk-select :class="$style['select']" v-model="filter.obj" @change="handleFilterObjChange">
@@ -13,7 +13,7 @@
                     </bk-select>
                 </div>
             </div>
-            <div :class="$style['filter-item']">
+            <div :class="[$style['filter-item'], $style['type']]">
                 <div :class="$style['label']">操作类型</div>
                 <div :class="$style['form-control']">
                     <bk-select :class="$style['select']" v-model="filter.code">
@@ -276,6 +276,13 @@
                     }
                 }
 
+                &.type {
+                    flex: none;
+                    .form-control {
+                        width: 200px;
+                    }
+                }
+                    
                 &.status {
                     flex: none;
                     .form-control {
@@ -283,6 +290,7 @@
                     }
                 }
                 &.button {
+                    margin-left: 8px;
                     flex: none;
                 }
 
