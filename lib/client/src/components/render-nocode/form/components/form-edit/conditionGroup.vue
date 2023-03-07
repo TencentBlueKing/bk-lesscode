@@ -107,9 +107,11 @@
             // 确保至少有一个字段条件
             getLocalVal (val) {
                 const expressions = [{ key: '', condition: '', value: '' }]
-                let defaultVal
-                this.type === 'show_conditions' ? defaultVal = { type: 'and', expressions } : defaultVal = { type: 'and', expressions }
-                return Object.assign({}, defaultVal, cloneDeep(val))
+                // 给个编辑态的默认值
+                if (Object.keys(val).length === 0 || (val.expressions && val.expressions.length === 0)) {
+                    return { type: 'and', expressions }
+                }
+                return cloneDeep(val)
             },
             // 筛选条件字段
             getField (key) {
@@ -223,16 +225,6 @@
     color: #63656e;
     font-size: 14px;
     white-space: nowrap;
-    &:after {
-      content: '*';
-      position: absolute;
-      top: 50%;
-      height: 8px;
-      line-height: 1;
-      color: #ea3636;
-      font-size: 12px;
-      transform: translate(3px, -50%);
-    }
   }
 }
 .condition-list {
