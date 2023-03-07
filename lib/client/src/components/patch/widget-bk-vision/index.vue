@@ -48,12 +48,12 @@
         computed: {
             dataInfo () {
                 return {
-                    apiPrefix: '/api/bkvision/',
-                    waterMark: { content: this.watchMark || 'bk-lesscode' },
-                    isFullScroll: this.isFullScroll,
-                    isShowTools: this.isShowTools,
-                    isShowRefresh: this.isShowRefresh,
-                    isShowTimeRange: this.isShowTimeRange
+                    apiPrefix: '/api/bkvision/'
+                    // waterMark: { content: this.watchMark || 'bk-lesscode' },
+                    // isFullScroll: this.isFullScroll,
+                    // isShowTools: this.isShowTools,
+                    // isShowRefresh: this.isShowRefresh,
+                    // isShowTimeRange: this.isShowTimeRange
                 }
             }
 
@@ -90,26 +90,19 @@
         },
         methods: {
             async loadSdk () {
-                // const link = document.createElement('link')
-                // const script = document.createElement('script')
-                // link.href = 'https://staticfile.qq.com/bkvision/p0964a9106c32428b99e3260d0fc63088/latest/main.css'
-                // link.rel = 'stylesheet'
-                // document.body.append(link)
-                // script.src = 'https://staticfile.qq.com/bkvision/p0964a9106c32428b99e3260d0fc63088/latest/main.js'
-                // document.body.append(script)
-                // script.onload = () => {
-                //     console.log('sdk load')
-                //     this.initPanel()
-                // }
-                // const link = document.createElement('link')
-                // link.href = `${this.cdnPrefix}main.css`
-                // link.rel = 'stylesheet'
-                // document.body.append(link)
+                const link = document.createElement('link')
+                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/9c57c2d9ed7e41fb8375f7b0b00affc7/main.css'
+                link.rel = 'stylesheet'
+                document.body.append(link)
+                await this.loadScript('chunk-vendors.js')
+                await this.loadScript('chunk-bk-magic-vue.js')
+                await this.loadScript('main.js')
                 // await Promise.all([
                 //     // this.loadScript('chunk-vendors.js'),
                 //     // this.loadScript('chunk-bk-magic-vue.js'),
                 //     this.loadScript('main.js')
                 // ])
+                console.log('begin init')
                 this.initPanel()
             },
             loadScript (file) {
@@ -125,24 +118,21 @@
                 })
             },
             async initPanel () {
-                console.log(window.BkVisionSDK, 22356)
                 if (window.BkVisionSDK) {
-                    console.log(this.uid, 'uid', `#dashboard-${this.renderId}`)
                     this.visionApp = this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, this.dataInfo)
-                    console.log(this.visionApp, 332112)
                 } else {
                     console.error('sdk 加载异常')
                 }
             },
             renderPanel () {
-                console.log('rerender')
-                if (window.BkVisionSDK && this.visionApp) {
-                    console.log('render', this.visionApp)
-                    this.visionApp?.update()
-                } else {
-                    console.error('sdk 加载异常')
-                    this.initPanel()
-                }
+                // console.log('rerender')
+                // if (window.BkVisionSDK && this.visionApp) {
+                //     console.log('render', this.visionApp)
+                //     this.visionApp?.update()
+                // } else {
+                //     console.error('sdk 加载异常')
+                //     this.initPanel()
+                // }
             }
         }
     }
