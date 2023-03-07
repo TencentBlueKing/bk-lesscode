@@ -51,7 +51,7 @@
             const {
                 keyword,
                 list,
-                isSearch,
+                emptyType,
                 loading: listLoading,
                 displayList,
                 handleSearch
@@ -142,6 +142,10 @@
 
                 viewerProps.initialIndex = previewFileList.findIndex(item => item === file)
             }
+            
+            const handlerClearSearch = (searchName) => {
+                keyword.value = searchName
+            }
 
             function handleExport () {
                 window.open(`/api/file/export?projectId=${projectId.value}`, '_self')
@@ -160,7 +164,7 @@
             return {
                 keyword,
                 list,
-                isSearch,
+                emptyType,
                 listLoading,
                 uploadRef,
                 uploadProps,
@@ -177,7 +181,8 @@
                 handleExport,
                 handleToggleDisplayType,
                 handleRemove,
-                handleView
+                handleView,
+                handlerClearSearch
             }
         },
         beforeRouteLeave (to, from, next) {
@@ -228,10 +233,12 @@
                 v-show="!listLoading"
                 :is="listComponent"
                 :files="uploadFiles"
-                :is-search="isSearch"
+                :empty-type="emptyType"
                 :preview-enabled="true"
                 @remove="handleRemove"
-                @view="handleView">
+                @view="handleView"
+                @clear-search="handlerClearSearch"
+                @search="handleSearch">
             </component>
         </div>
 

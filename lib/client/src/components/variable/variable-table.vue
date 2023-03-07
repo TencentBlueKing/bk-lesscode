@@ -44,6 +44,7 @@
                     >删除</span>
                 </template>
             </bk-table-column>
+            <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </bk-table>
         <slot>
             <span class="variable-tip">
@@ -137,6 +138,13 @@
 
             projectId () {
                 return this.$route.params.projectId
+            },
+
+            emptyType () {
+                if (this.searchTxt?.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
 
@@ -282,6 +290,10 @@
                     }
                 })
                 return tips
+            },
+
+            handlerClearSearch (searchName) {
+                this.$emit('clearSearch', searchName)
             }
         }
     }

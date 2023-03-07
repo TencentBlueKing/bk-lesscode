@@ -98,6 +98,7 @@
                     </bk-popconfirm>
                 </template>
             </bk-table-column>
+            <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </bk-table>
         <create-flow-dialog :show.sync="isCreateDialogShow"></create-flow-dialog>
     </div>
@@ -132,7 +133,8 @@
                 keyword: '',
                 archiveId: null,
                 archivePopover: null,
-                isCreateDialogShow: false
+                isCreateDialogShow: false,
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -174,6 +176,9 @@
                 }
                 if (this.keyword) {
                     params.flowName = this.keyword.trim()
+                    this.emptyType = 'search'
+                } else {
+                    this.emptyType = 'noData'
                 }
                 const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
                 const { list, count } = res
@@ -217,6 +222,10 @@
                 const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
                 const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${pageCode}`
                 window.open(routerUrl, '_blank')
+            },
+            handlerClearSearch (searchName) {
+                this.keyword = searchName
+                this.getFlowList()
             }
         }
     }

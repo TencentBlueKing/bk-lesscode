@@ -69,14 +69,7 @@
                         <bk-button v-if="row.status === 1" text @click="handleOnline(row)">上架</bk-button>
                     </template>
                 </bk-table-column>
-                <bk-exception slot="empty" class="component-list-empty" type="empty">
-                    <div style="font-size: 12px">
-                        暂无组件
-                        <span>
-                            ，<bk-button text theme="primary" @click="handleShowOperation">立即创建</bk-button>
-                        </span>
-                    </div>
-                </bk-exception>
+                <empty-status slot="empty"></empty-status>
             </bk-table>
         </div>
         <operation

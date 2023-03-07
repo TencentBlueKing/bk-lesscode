@@ -66,7 +66,7 @@
                     :page-list="renderList"
                     :route-map="routeMap"
                     :nocode-type-map="nocodeTypeMap"
-                    :is-search="isSearch"
+                    :empty-type="emptyType"
                     @create="handleCreate"
                     @preview="handlePreview"
                     @edit="handleEditPage"
@@ -76,6 +76,7 @@
                     @delete="handleDelete"
                     @download="handleDownloadSource"
                     @create-form="handleCreateFormManage"
+                    @clear-search="handlerClearSearch"
                 />
             </div>
             <page-dialog ref="pageDialog" :action="action" :current-name="currentName" :refresh-list="getPageList"></page-dialog>
@@ -139,7 +140,8 @@
                     { name: 'list', icon: 'display-list', title: '列表' }
                 ],
                 listComponent: listCard.name,
-                sort: 'default'
+                sort: 'default',
+                emptyType: 'noData'
             }
         },
         provide () {
@@ -174,15 +176,12 @@
             },
             hasMobilePage () {
                 return this.pageList.find(page => page.pageType === 'MOBILE')
-            },
-            isSearch () {
-                return this.keyword?.length > 0
             }
         },
         watch: {
             keyword (val) {
                 if (!val) {
-                    this.handleSearch(false)
+                    this.handleSearch(true)
                 }
             }
         },
@@ -408,8 +407,10 @@
                 if (clear) {
                     this.keyword = ''
                     this.renderList = this.pageList.slice()
+                    this.emptyType = 'noData'
                 } else {
                     this.renderList = this.pageList.filter(item => item.pageName.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1)
+                    this.emptyType = 'search'
                 }
                 this.handleTypeChange()
 
@@ -467,6 +468,9 @@
             },
             sortByUpdateTime () {
                 this.renderList.sort((pageA, pageB) => new Date(pageB.updateTime).getTime() - new Date(pageA.updateTime).getTime())
+            },
+            handlerClearSearch (searchName) {
+                this.keyword = searchName
             }
         }
     }

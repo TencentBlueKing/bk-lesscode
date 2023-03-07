@@ -46,6 +46,7 @@
                         <template v-else>{{row[column.id]}}</template>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </div>
     </div>
@@ -84,7 +85,8 @@
                 fetching: {
                     base: false,
                     pageUsedCount: false
-                }
+                },
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -108,6 +110,12 @@
             },
             async getFuncBase () {
                 this.fetching.base = true
+                const dateRanges = this.filters.dateRange?.filter(item => item)
+                if (this.filters.keyword || dateRanges?.length) {
+                    this.emptyType = 'search'
+                } else {
+                    this.emptyType = 'noData'
+                }
                 try {
                     const { data: [list, total] } = await http.post('/operation/stats/func/base', this.params)
                     this.list = list.map((item) => ({
@@ -198,6 +206,11 @@
                 })
 
                 return results
+            },
+            handlerClearSearch () {
+                this.filters.dateRange = []
+                this.filters.keyword = ''
+                this.handleKeywordClear()
             }
         }
     }

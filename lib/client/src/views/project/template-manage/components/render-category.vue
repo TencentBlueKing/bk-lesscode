@@ -37,6 +37,7 @@
                         <div class="count">{{ item.count }}</div>
                     </div>
                 </transition-group>
+                <empty-status v-if="renderList.length <= 0" :type="emptyType" @clearSearch="handlerClearSearch" :part="false"></empty-status>
             </vue-draggable>
         </div>
         <div v-if="isShowCreate" ref="operation" class="category-operation" :style="operationStyles" @click.stop="">
@@ -86,6 +87,12 @@
                     top: `${this.operationPosition.top + 36}px`,
                     left: `${this.operationPosition.left - 26}px`
                 }
+            },
+            emptyType () {
+                if (this.searchValue) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
         created () {
@@ -234,6 +241,10 @@
                     this.messageSuccess('删除模板分类成功')
                     this.fetchData()
                 } catch {}
+            },
+            handlerClearSearch (searchName) {
+                this.searchValue = searchName
+                this.handleSearch(searchName)
             }
         }
     }
