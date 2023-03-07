@@ -55,9 +55,7 @@
                             </li>
                         </div>
                         <div class="empty" v-show="!list.length">
-                            <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                                <div>暂无应用模板</div>
-                            </bk-exception>
+                            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
                         </div>
                     </div>
                 </div>
@@ -105,6 +103,14 @@
                 templateList: [],
                 list: [],
                 pageLoading: false
+            }
+        },
+        computed: {
+            emptyType () {
+                if (this.searchFilter.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
         watch: {
@@ -209,6 +215,9 @@
                     this.formData = { ...defaultFormData }
                     this.getTemplateList()
                 }
+            },
+            handlerClearSearch (searchName) {
+                this.searchFilter = searchName
             }
         }
     }

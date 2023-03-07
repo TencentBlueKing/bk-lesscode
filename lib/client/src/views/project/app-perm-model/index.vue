@@ -44,19 +44,19 @@
                 </template>
             </bk-table-column>
             <bk-table-column label="操作ID" prop="actionId" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="操作类型">
+            <bk-table-column label="操作类型" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div v-if="row.actionType" :title="row.actionType">{{row.actionType}}</div>
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作描述">
+            <bk-table-column label="操作描述" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div v-if="row.actionDesc" :title="row.actionDesc">{{row.actionDesc}}</div>
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="关联资源">
+            <bk-table-column label="关联资源" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="related-resource-wrapper" v-if="row.actionRelatedResourceList.length">
                         <div class="related-resource-item" v-for="(item, index) in row.actionRelatedResourceList" :key="index">
@@ -66,7 +66,7 @@
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="引用">
+            <bk-table-column label="引用" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <template v-if="row.pageComponentRef && row.pageComponentRef.length">
                         <bk-popover placement="top">
@@ -107,6 +107,7 @@
                     </template>
                 </template>
             </bk-table-column>
+            <empty-status slot="empty"></empty-status>
         </bk-table>
 
         <app-perm-model-sideslider

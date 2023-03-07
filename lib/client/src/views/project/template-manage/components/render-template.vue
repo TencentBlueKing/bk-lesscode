@@ -37,7 +37,7 @@
                                         <i v-if="template.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
                                         <i v-else class="bk-drag-icon bk-drag-pc"> </i>
                                     </span>
-                                    <div class="name" :title="template.templateName">{{template.templateName}}</div>
+                                    <div class="name" v-tooltips="template.templateName">{{template.templateName}}</div>
                                 </div>
                                 <div class="stat">{{ template.updateUser || template.createUser }}</div>
                             </div>
@@ -57,12 +57,7 @@
                         <span v-if="template.isOffcial" class="default-tag">公开模板</span>
                     </div>
                 </div>
-                <div class="empty" v-show="(!templateList.length || !renderList.length) && !isLoading">
-                    <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                        <div v-if="!templateList.length" class="empty-page">暂无模板</div>
-                        <div v-else>无搜索结果</div>
-                    </bk-exception>
-                </div>
+                <empty-status class="empty" v-show="(!templateList.length || !renderList.length) && !isLoading" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </div>
             <template-edit-dialog ref="templateEditDialog" :refresh-list="refreshData"></template-edit-dialog>
             <template-import-dialog ref="templateImportDialog" :refresh-list="refreshData"></template-import-dialog>
@@ -106,7 +101,8 @@
                 pageRouteList: [],
                 routeGroup: [],
                 isLoading: true,
-                templateType: ''
+                templateType: '',
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -118,7 +114,7 @@
         watch: {
             keyword (val) {
                 if (!val) {
-                    this.handleSearch(false)
+                    this.handleSearch(true)
                 }
             },
             categoryId () {
@@ -228,8 +224,10 @@
                 if (clear) {
                     this.keyword = ''
                     this.renderList = this.templateList
+                    this.emptyType = 'noData'
                 } else {
                     this.renderList = this.templateList.filter(item => item.templateName.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1)
+                    this.emptyType = 'search'
                 }
                 this.handleTypeChange()
             },
@@ -272,13 +270,15 @@
                 } else if (this.templateType === 'MOBILE') {
                     this.renderList = this.renderList.filter(item => item.templateType === 'MOBILE')
                 }
+            },
+            handlerClearSearch (searchName) {
+                this.keyword = searchName
             }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
-/* page */
     .templates-content {
         padding: 16px 24px;
         display: flex;
@@ -295,6 +295,9 @@
             }
             .extra {
                 display: flex;
+                .type-select {
+                    margin-right: 8px;
+                }
             }
         }
         .templates-body {

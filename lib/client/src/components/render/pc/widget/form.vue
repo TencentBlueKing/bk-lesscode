@@ -13,10 +13,10 @@
     <div
         :class="{
             [$style['form']]: true,
-            [$style['empty']]: componentData.slot.default.length < 1
+            [$style['empty']]: formItemList.length < 1
         }">
         <bk-form
-            v-if="componentData.slot.default.length > 0"
+            v-if="formItemList.length > 0"
             v-bind="componentData.prop">
             <widget-form-item
                 v-for="formItemNode in componentData.slot.default"
@@ -39,6 +39,11 @@
             componentData: {
                 type: Object,
                 required: true
+            }
+        },
+        computed: {
+            formItemList () {
+                return this.componentData.slot.default?.filter(item => item.prop.property) || []
             }
         }
     }

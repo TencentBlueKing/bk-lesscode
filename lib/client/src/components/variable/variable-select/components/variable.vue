@@ -32,7 +32,7 @@
         </div>
         <div class="variable-list">
             <bk-input
-                placeholder="请输入变量名称进行搜索"
+                placeholder="请输入变量名称或者标识进行搜索"
                 behavior="simplicity"
                 class="variable-input"
                 left-icon="bk-icon icon-search"
@@ -326,7 +326,7 @@
                     return
                 }
                 this.renderVarialbeList = Object.freeze(this.wholeVariableList.reduce((result, variable) => {
-                    if (variable.variableName.includes(this.searchText)) {
+                    if (variable.variableName.includes(this.searchText) || variable.variableCode.includes(this.searchText)) {
                         result.push(variable)
                     }
                     return result

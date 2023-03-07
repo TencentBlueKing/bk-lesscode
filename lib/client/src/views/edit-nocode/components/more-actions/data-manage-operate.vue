@@ -50,6 +50,7 @@
         methods: {
             // 获取表单数据管理页关联的表单页
             async getFormPage () {
+                // console.log(this.pageDetail)
                 const res = await this.$store.dispatch('nocode/form/getFormRelatedPages', {
                     formId: this.pageDetail.formId,
                     type: 'FORM'

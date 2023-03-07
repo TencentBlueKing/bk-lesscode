@@ -44,7 +44,7 @@
                 </bk-table-column>
                 <bk-table-column label="公开范围" prop="scope" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
-                        <div class="component-scope">
+                        <div class="component-scope" :title="getScopeName(getPublicScope(row.id)[0])">
                             <span class="scope-name">
                                 {{ getScopeName(getPublicScope(row.id)[0]) }}
                             </span>
@@ -60,7 +60,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" align="left" width="160" :formatter="timeFormatter" />
+                <bk-table-column label="更新时间" prop="updateTime" align="left" width="160" :formatter="timeFormatter" show-overflow-tooltip />
                 <bk-table-column label="更新人" prop="updateUser" align="left" width="120" show-overflow-tooltip />
                 <bk-table-column label="操作" prop="statusText" align="left" width="200">
                     <template slot-scope="{ row }">
@@ -69,14 +69,7 @@
                         <bk-button v-if="row.status === 1" text @click="handleOnline(row)">上架</bk-button>
                     </template>
                 </bk-table-column>
-                <bk-exception slot="empty" class="component-list-empty" type="empty">
-                    <div style="font-size: 12px">
-                        暂无组件
-                        <span>
-                            ，<bk-button text theme="primary" @click="handleShowOperation">立即创建</bk-button>
-                        </span>
-                    </div>
-                </bk-exception>
+                <empty-status slot="empty"></empty-status>
             </bk-table>
         </div>
         <operation

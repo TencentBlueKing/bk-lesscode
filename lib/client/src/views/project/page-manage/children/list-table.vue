@@ -27,9 +27,9 @@
                 type: Object,
                 default: () => ({})
             },
-            isSearch: {
-                type: Boolean,
-                default: false
+            emptyType: {
+                type: String,
+                default: 'noData'
             }
         },
         inject: ['getRelativeTime', 'getFormManagePages'],
@@ -61,6 +61,9 @@
             const handleCreateFormManage = (page) => {
                 emit('create-form', page)
             }
+            const handlerClearSearch = (searchName) => {
+                emit('clear-search', searchName)
+            }
 
             return {
                 handleCreate,
@@ -71,7 +74,8 @@
                 handleEditRoute,
                 handleDelete,
                 handleDownloadSource,
-                handleCreateFormManage
+                handleCreateFormManage,
+                handlerClearSearch
             }
         }
     })
@@ -179,10 +183,7 @@
                 </template>
             </bk-table-column>
             <template #empty>
-                <bk-exception type="empty" scene="part">
-                    <div v-if="!isSearch" class="empty-page">暂无页面，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link></div>
-                    <div v-else>无搜索结果</div>
-                </bk-exception>
+                <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </template>
         </bk-table>
     </div>
@@ -242,6 +243,9 @@
             height: calc(100% - 43px);
             overflow-y: auto;
             @mixin scroller;
+        }
+        /deep/.bk-table-empty-block{
+            height: 280px;
         }
     }
     .bk-table-row {

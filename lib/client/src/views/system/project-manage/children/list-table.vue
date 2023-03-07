@@ -24,9 +24,9 @@
                 type: Object,
                 default: () => ({})
             },
-            isSearch: {
-                type: Boolean,
-                default: false
+            emptyType: {
+                type: String,
+                default: 'noData'
             },
             filter: {
                 type: String,
@@ -65,6 +65,9 @@
             const handleRelease = (projectId) => {
                 emit('release', projectId)
             }
+            const handlerClearSearch = (searchName) => {
+                emit('clearSearch', searchName)
+            }
 
             return {
                 handleCreate,
@@ -75,7 +78,8 @@
                 handleDownloadSource,
                 handleSetTemplate,
                 handleClickFavorite,
-                handleRelease
+                handleRelease,
+                handlerClearSearch
             }
         }
     })
@@ -210,24 +214,8 @@
                     </bk-popover>
                 </template>
             </bk-table-column>
-            <template #empty>
-                <bk-exception type="empty" scene="part">
-                    <div v-if="isSearch">无搜索结果</div>
-                    <div v-else>
-                        暂无应用
-                        <span v-show="!filter.length || filter === 'my'">
-                            ，
-                            <!-- <bk-link theme="primary" @click="handleCreate">立即创建</bk-link> -->
-                            <auth-button
-                                text
-                                theme="primary"
-                                auth="create_app"
-                                @click="handleCreate">
-                                立即创建
-                            </auth-button>
-                        </span>
-                    </div>
-                </bk-exception>
+            <template v-slot:empty>
+                <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </template>
         </bk-table>
     </div>
@@ -235,7 +223,7 @@
 
 <style lang="postcss" scoped>
     @import "@/css/mixins/scroller";
-
+ 
     .list-table {
         width: 100%;
         height: 100%;
@@ -288,6 +276,10 @@
             overflow-y: auto;
             @mixin scroller;
         }
+        /deep/.bk-table-empty-block{
+            height: 280px;
+        }
+      
     }
     .bk-table-row {
         .bk-button-text + .bk-button-text {

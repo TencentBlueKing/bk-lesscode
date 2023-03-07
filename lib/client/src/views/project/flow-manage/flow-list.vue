@@ -52,13 +52,13 @@
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip>
+            <bk-table-column label="流程数据管理页" min-width="100px" property="managePageNames" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="预览环境部署状态">
+            <bk-table-column label="预览环境部署状态" min-width="100px">
                 <template slot-scope="{ row }">
                     <div class="deploy-status">
                         <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>
@@ -98,6 +98,7 @@
                     </bk-popconfirm>
                 </template>
             </bk-table-column>
+            <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </bk-table>
         <create-flow-dialog :show.sync="isCreateDialogShow"></create-flow-dialog>
     </div>
@@ -132,7 +133,8 @@
                 keyword: '',
                 archiveId: null,
                 archivePopover: null,
-                isCreateDialogShow: false
+                isCreateDialogShow: false,
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -174,6 +176,9 @@
                 }
                 if (this.keyword) {
                     params.flowName = this.keyword.trim()
+                    this.emptyType = 'search'
+                } else {
+                    this.emptyType = 'noData'
                 }
                 const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
                 const { list, count } = res
@@ -217,6 +222,10 @@
                 const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
                 const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${pageCode}`
                 window.open(routerUrl, '_blank')
+            },
+            handlerClearSearch (searchName) {
+                this.keyword = searchName
+                this.getFlowList()
             }
         }
     }
