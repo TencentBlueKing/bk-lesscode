@@ -147,9 +147,9 @@
                     sortable
                 ></bk-table-column>
                 <bk-table-column
-                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'operation')"
                     label="操作"
-                    width="240"
+                    width="200"
+                    fixed="right"
                 >
                     <template slot-scope="props">
                         <span class="table-btn" @click="handleEditApi(props.row)">编辑</span>
@@ -256,7 +256,6 @@
         { id: 'funcSummary', label: '备注' },
         { id: 'updateUser', label: '更新人' },
         { id: 'updateTime', label: '更新时间' },
-        { id: 'operation', label: '操作', disabled: true }
     ]
 
     export default {
