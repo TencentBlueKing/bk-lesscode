@@ -641,7 +641,6 @@
         padding: 30px 24px;
         height: calc(100% - 44px);
         .to-link {
-            /* text-align: right; */
             width:calc(100% + 10px);
             background-color: #fafbfd;
             padding: 0 6px;
