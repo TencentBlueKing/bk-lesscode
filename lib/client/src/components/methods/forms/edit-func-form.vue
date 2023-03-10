@@ -34,14 +34,10 @@
                 <form-detail
                     :form.sync="form"
                     :variable-list="variableList"
+                    :show-token="true"
                     ref="detail"
                     form-type="vertical">
                 </form-detail>
-                <form-token
-                    :form.sync="form"
-                    ref="token"
-                    form-type="vertical">
-                </form-token>
                 <form-summary
                     :form.sync="form"
                     ref="summary"

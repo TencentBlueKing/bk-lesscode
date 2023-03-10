@@ -37,7 +37,8 @@
                     :label="column.name"
                     :prop="column.id"
                     :width="column.width"
-                    :sortable="column.sortable">
+                    :sortable="column.sortable"
+                    :show-overflow-tooltip="column.tooltip">
                     <template slot-scope="{ row }">
                         <loading v-if="column.dynamic" :loading="fetching[column.id]">
                             <span v-if="column.type === 'number'">{{row[column.id] | formatCount}}</span>
@@ -49,6 +50,7 @@
                         </template>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </div>
     </div>
@@ -77,8 +79,8 @@
                 },
                 orderBy: undefined,
                 columns: [
-                    { id: 'username', name: '用户名', width: '360' },
-                    { id: 'createTime', name: '创建时间', width: '320', sortable: 'custom', type: 'datetime' },
+                    { id: 'username', name: '用户名', width: '360', tooltip: true },
+                    { id: 'createTime', name: '创建时间', width: '320', sortable: 'custom', type: 'datetime', tooltip: true },
                     { id: 'projectCount', name: '应用数', sortable: 'custom', dynamic: true, type: 'number' },
                     { id: 'pageCount', name: '页面数', sortable: 'custom', dynamic: true, type: 'number' }
                 ],
@@ -88,7 +90,8 @@
                 },
                 fetching: {
                     base: false
-                }
+                },
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -113,6 +116,12 @@
             },
             async getUserBase () {
                 this.fetching.base = true
+                const dateRanges = this.filters.dateRange?.filter(item => item)
+                if (this.filters.keyword || dateRanges?.length) {
+                    this.emptyType = 'search'
+                } else {
+                    this.emptyType = 'noData'
+                }
                 try {
                     const { data: [list, total] } = await http.post('/operation/stats/user/base', this.params)
                     this.list = list.map((item) => ({
@@ -228,6 +237,11 @@
                 })
 
                 return results
+            },
+            handlerClearSearch () {
+                this.filters.dateRange = []
+                this.filters.keyword = ''
+                this.handleKeywordClear()
             }
         }
     }

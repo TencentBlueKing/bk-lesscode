@@ -43,6 +43,7 @@
     import Members from './fields/members.vue'
     import MultiSelect from './fields/multiSelect.vue'
     import Radio from './fields/radio.vue'
+    import Rate from './fields/rate.vue'
     import RichText from './fields/richText.vue'
     import Select from './fields/select.vue'
     import Table from './fields/table.vue'
@@ -89,6 +90,7 @@
             Textarea: Textarea,
             Tree: Tree,
             Upload: Upload,
+            Rate: Rate,
             Divider: Divider
         },
         props: {

@@ -1,5 +1,6 @@
 <template>
     <div class="field-edit">
+        <!-- 表单右边设置区域  -->
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
                 <bk-form-item label="内容" ext-cls="richtext-container">
@@ -36,12 +37,10 @@
                 <bk-form-item label="字段名称" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.name" :disabled="disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item
-                    label="唯一标识"
+                <bk-form-item label="唯一标识" v-if="!basicIsFolded"
                     desc-type="icon"
                     :desc="uniqe"
-                    desc-icon="bk-icon icon-question-circle"
-                    v-if="!basicIsFolded">
+                    desc-icon="bk-icon icon-question-circle">
                     <bk-input v-model.trim="fieldData.key" :disabled="disabled || fieldData.disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
                 <bk-form-item label="布局" v-if="!basicIsFolded">
@@ -50,7 +49,7 @@
                         <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item label="上传模板附件" :ext-cls="'input-position '" v-if="fieldData.type === 'FILE' && !handleIsFolded">
+                <bk-form-item label="上传模板附件" v-if="fieldData.type === 'FILE' && !handleIsFolded" :ext-cls="'input-position '">
                     <bk-button :theme="'default'" title="点击上传" :disabled="disabled">
                         点击上传
                     </bk-button>
@@ -65,7 +64,7 @@
                         </li>
                     </ul>
                 </bk-form-item>
-                <bk-form-item v-if="fieldProps.fieldsDataSource.includes(fieldData.type)" label="数据源">
+                <bk-form-item label="数据源" v-if="fieldProps.fieldsDataSource.includes(fieldData.type)">
                     <bk-select
                         :value="fieldData.source_type"
                         :clearable="false"
@@ -84,17 +83,6 @@
                         @selected="handleSelectSystem">
                         <bk-option v-for="item in systemList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                     </bk-select>
-                    <!--                    <bk-select-->
-                    <!--                        class="mt8"-->
-                    <!--                        v-if="fieldData.source_type === 'API'"-->
-                    <!--                        v-model="fieldData.api_info.remote_api_id"-->
-                    <!--                        placeholder="请选择接口"-->
-                    <!--                        :clearable="false"-->
-                    <!--                        :disabled="systemApisLoading"-->
-                    <!--                        :loading="systemApisLoading"-->
-                    <!--                        @selected="handleSelectApi">-->
-                    <!--                        <bk-option v-for="item in apiList" :key="item.id" :id="item.id" :name="item.name"></bk-option>-->
-                    <!--                    </bk-select>-->
                     <bk-button
                         style="margin-top: 8px;"
                         theme="primary"
@@ -162,8 +150,8 @@
                                 :true-value="0"
                                 :false-value="1"
                                 :disabled="disabled"
-                                v-model="fieldData.show_type"
-                                @change="change">
+                                :value="fieldData.show_type"
+                                @change="handleShowTypeChange">
                                 隐藏
                             </bk-checkbox>
                             <span v-show="fieldData.show_type === 0" @click="showTypeShow = true">条件编辑</span>
@@ -277,6 +265,7 @@
                 <template v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
                     <bk-form-item ext-cls="default-val" label="默认值">
                         <default-value
+                            
                             :field="fieldData"
                             :disabled="disabled"
                             @change="handleDefaultValChange">
@@ -294,7 +283,7 @@
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
-                            <span>  <bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleCheckedChange">添加额外填写说明</bk-checkbox></span>
+                            <span><bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleShowTipsChange">添加额外填写说明</bk-checkbox></span>
                             <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, 'extCls': 'custom-require-tips' }">效果预览</span>
                         </div>
                         <bk-input
@@ -371,7 +360,7 @@
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
     import { mapGetters } from 'vuex'
     import { transSchemeToArrayTypeTree } from '../../../common/apiScheme'
-
+        
     export default {
         name: 'formEdit',
         components: {
@@ -491,6 +480,7 @@
             }
         },
         methods: {
+            
             getRegexList (val) {
                 const result = REGX_CHIOCE_LIST.filter(item => item.type === val.type
                     || (Array.isArray(val.type) && item.type.includes(val.type)) // 主要是为了区分text 和 string 类型的正则规则  同时去除DATE DATETIME 的影响
@@ -534,19 +524,9 @@
                 this.fieldData.fileTemplate.splice(index, 1)
                 this.change()
             },
-            handleCheckedChange () {
+            // 是否显示表单tips切换
+            handleShowTipsChange () {
                 this.fieldData.tips = ''
-                this.change()
-            },
-            onConfirm (type, val) {
-                this.fieldData[type] = val
-                if (type === 'read_only_conditions') {
-                    this.readerOnlyShow = false
-                } else if (type === 'mandatory_conditions') {
-                    this.requireConfigShow = false
-                } else {
-                    this.showTypeShow = false
-                }
                 this.change()
             },
             // 数据源配置变更
@@ -555,7 +535,6 @@
                 this.dataSourceDialogShow = false
                 if (sourceType === 'CUSTOM') {
                     this.fieldData.choice = val.localVal
-                    console.log(val.localVal)
                     this.fieldData.default = val.localVal.find(item => item.isDefaultVal)?.key || ''
                     this.fieldData.isDisplayTag = !!val?.localValIsDisplayTag
                 } else if (sourceType === 'API') {
@@ -623,11 +602,17 @@
                 this.apiDetail = this.systemList.find(item => item.id === apiId)
                 this.resArrayTreeData = transSchemeToArrayTypeTree(this.apiDetail.response)
             },
+            // 默认值修改
             handleDefaultValChange (val) {
-                const formattedValue = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
+                this.fieldData.default = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
                     ? val.join(',')
                     : val
-                this.fieldData.default = formattedValue
+                this.change()
+            },
+            // 隐藏条件修改
+            handleShowTypeChange (val) {
+                this.fieldData.show_type = val
+                this.fieldData.show_conditions = val ? {} : { type: 'and', expressions: [{ key: '', condition: '', value: '' }] }
                 this.change()
             },
             // 设置描述组件的值
@@ -662,6 +647,7 @@
                 this.fieldData.choice.splice(index, 1, $event)
                 this.change()
             },
+            // 增加表单选项
             handleAddTableChoice () {
                 const len = this.fieldData.choice.length
                 this.fieldData.choice.push({
@@ -679,7 +665,19 @@
             change () {
                 this.fieldData.timeStamp = Date.parse(new Date())
                 this.$emit('change', this.fieldData)
-            }
+            },
+            // 属性配置保存
+            onConfirm (type, val) {
+                this.fieldData[type] = val
+                if (type === 'read_only_conditions') {
+                    this.readerOnlyShow = false
+                } else if (type === 'mandatory_conditions') {
+                    this.requireConfigShow = false
+                } else {
+                    this.showTypeShow = false
+                }
+                this.change()
+            },
         }
     }
 </script>

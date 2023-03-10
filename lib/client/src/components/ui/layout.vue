@@ -179,6 +179,7 @@
             height: 100%;
             background: #fff;
             overflow-y: auto;
+            @mixin scroller;
         }
     }
 </style>

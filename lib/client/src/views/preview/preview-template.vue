@@ -195,8 +195,6 @@
 </script>
 
 <style lang="postcss" scoped>
-    @import './../../components/render/mobile/area.scss';
-
     .area-wrapper {
         display: flex;
         justify-content: center;
@@ -213,6 +211,46 @@
                 overflow: hidden;
                 display: flex;
                 flex-direction: column;
+            }
+        }
+    }
+
+    .simulator-wrapper {
+        position: relative;
+        .device-phone-frame {
+            z-index: 1;
+            pointer-events: none;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            padding: 5% 6.5% 5.6%;
+            box-sizing: content-box;
+
+        }
+        .device-phone {
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-image: url(./../../images/phone.png);
+            background-size: 100% 100%;
+        }
+        .simulator-preview {
+            height: 100%;
+            width: 100%;
+            box-sizing: content-box;
+            padding: 6% 7.0% 5.6%;
+            display: flex;
+            flex-direction: column;
+            iframe {
+                flex: 1;
+            }
+            &::-webkit-scrollbar {
+                display: none;
             }
         }
     }

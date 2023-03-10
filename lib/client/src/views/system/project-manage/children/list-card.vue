@@ -54,7 +54,10 @@
                 </div>
                 <div class="item-ft">
                     <div class="col">
-                        <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
+                        <h3 class="name" v-bk-tooltips="{
+                            content: project.projectName,
+                            disabled: !(project.projectName && project.projectName.length > 20)}"
+                        >{{project.projectName}}</h3>
                         <div class="stat">{{getUpdateInfoMessage(project)}}</div>
                     </div>
                     <div class="col">
@@ -87,23 +90,19 @@
                                         <a href="javascript:;" slot="allow" @click="handleRename(project)">重命名</a>
                                     </auth-component>
                                 </li>
-                                <!-- <li>
-                                    <auth-component :permission="project.canDeploy" auth="deploy_app" :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">部署</a>
-                                        <a href="javascript:;" slot="allow" @click="handleRelease(project.id)">部署</a>
-                                    </auth-component>
-                                </li> -->
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
                                         <a href="javascript:;" slot="forbid">复制</a>
                                         <a href="javascript:;" slot="allow" @click="handleCopy(project)">复制</a>
                                     </auth-component>
                                 </li>
+                                <li>
+                                    <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
+                                        <a href="javascript:;" slot="forbid">导出</a>
+                                        <a href="javascript:;" slot="allow" @click="handleExport(project)">导出</a>
+                                    </auth-component>
+                                </li>
                                 <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
-                                    <!-- <auth-component :permission="project.canDevelop" auth="script/create">
-                                        <a href="javascript:;" slot="forbid">设为模板</a>
-                                        <a href="javascript:;" slot="allow" @click="handleSetTemplate(project)">设为模板</a>
-                                    </auth-component> -->
                                     <a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a>
                                 </li>
                             </ul>
@@ -130,23 +129,7 @@
             </div>
         </template>
         <div class="empty" v-else>
-            <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                <div v-if="isSearch">无搜索结果</div>
-                <div v-else>
-                    暂无应用
-                    <span v-show="!filter.length || filter === 'my'">
-                        ，
-                        <!-- <bk-link theme="primary" @click="handleCreate">立即创建</bk-link> -->
-                        <auth-button
-                            text
-                            theme="primary"
-                            auth="create_app"
-                            @click="handleCreate">
-                            立即创建
-                        </auth-button>
-                    </span>
-                </div>
-            </bk-exception>
+            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </div>
     </div>
 </template>
@@ -169,9 +152,9 @@
                 type: Object,
                 default: () => ({})
             },
-            isSearch: {
-                type: Boolean,
-                default: false
+            emptyType: {
+                type: String,
+                default: 'noData'
             },
             filter: {
                 type: String,
@@ -204,6 +187,9 @@
             handleCopy (project) {
                 this.$emit('copy', project)
             },
+            handleExport (project) {
+                this.$emit('export', project)
+            },
             handleSetTemplate (project) {
                 this.$emit('set-template', project)
             },
@@ -212,6 +198,9 @@
             },
             handleRelease (projectId) {
                 this.$emit('release', projectId)
+            },
+            handlerClearSearch (searchName) {
+                this.$emit('clearSearch', searchName)
             }
         }
     }
@@ -429,6 +418,9 @@
                 color: #979BA5;
                 padding: 4px 0;
             }
+        }
+        .empty {
+            justify-content: center;
         }
     }
 

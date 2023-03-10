@@ -31,7 +31,10 @@
                 type: Array,
                 default: () => []
             },
-            isSearch: Boolean
+            emptyType: {
+                type: String,
+                default: 'noData'
+            }
         },
         setup (props, { emit }) {
             const handleCopyLink = (file: UploadFile) => {
@@ -41,12 +44,17 @@
             const handleRemove = (file: UploadFile) => {
                 emit('remove', file)
             }
+            const handlerClearSearch = (searchName) => {
+                emit('clear-search', searchName)
+                emit('search')
+            }
             return {
                 UPLOAD_STATUS,
                 getFileUrl,
                 formatSize,
                 handleCopyLink,
-                handleRemove
+                handleRemove,
+                handlerClearSearch
             }
         }
     })
@@ -116,10 +124,7 @@
                 </template>
             </bk-table-column>
             <template #empty>
-                <bk-exception type="empty" scene="part">
-                    <span v-if="isSearch">未找到文件</span>
-                    <span v-else>暂无文件</span>
-                </bk-exception>
+                <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </template>
         </bk-table>
     </div>
@@ -222,6 +227,9 @@
             height: calc(100% - 43px);
             overflow-y: auto;
             @mixin scroller;
+        }
+        /deep/.bk-table-empty-block{
+            height: 280px;
         }
     }
     .bk-table-row {

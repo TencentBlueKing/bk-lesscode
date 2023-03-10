@@ -27,9 +27,10 @@
                     </table-cell-value>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作" :max-width="80">
+            <bk-table-column v-if="tableActions.length > 0" label="操作">
                 <template slot-scope="{ row }">
-                    <bk-button theme="primary" :text="true" @click="handleViewDetail(row.id)">详情</bk-button>
+                    <table-cell-actions :buttons="tableActions" @click="handleOperate($event, row)"></table-cell-actions>
+                <!-- <bk-button theme="primary" :text="true" @click="handleViewDetail(row.id)">详情</bk-button> -->
                 </template>
             </bk-table-column>
             <bk-table-column type="setting">
@@ -94,14 +95,17 @@
 <script>
     import TableCellValue from './table-cell-value.vue'
     import TableCellDetail from './table-cell-detail.vue'
+    import TableCellActions from './table-cell-actions.vue'
     import { isValEmpty } from '@/common/util'
     import TableView from './table-view'
     import { Viewer } from '@toast-ui/vue-editor'
+
     export default {
         name: 'TableFields',
         components: {
             TableCellValue,
             TableCellDetail,
+            TableCellActions,
             Viewer,
             TableView
         },
@@ -116,6 +120,10 @@
                 default: () => []
             },
             tableConfig: {
+                type: Array,
+                default: () => []
+            },
+            tableActions: {
                 type: Array,
                 default: () => []
             },
@@ -228,8 +236,30 @@
                     return '100'
                 }
             },
+            // 查看详情
             handleViewDetail (id) {
                 this.cellDetailId = id
+            },
+            // 删除数据
+            handleDelItem (id) {
+                this.$bkInfo({
+                    title: '确认删除该条数据？',
+                    confirmLoading: true,
+                    confirmFn: async () => {
+                        try {
+                            await this.$http.delete(`/data-source/user/tableName/${this.tableName}?id=${id}`)
+                            this.$bkMessage({
+                                message: '删除成功',
+                                theme: 'success'
+                            })
+                            this.getTableData()
+                            return true
+                        } catch (e) {
+                            console.warn(e)
+                            return false
+                        }
+                    }
+                })
             },
             handlePageChange (val) {
                 this.pagination.current = val
@@ -263,6 +293,17 @@
                 this.tableField = field
                 this.tableValue = value
                 this.showTableDetail = true
+            },
+            handleOperate (button, data) {
+                const { enable, name } = button.events.click
+                if (!enable) {
+                    return
+                }
+                if (name === 'rowDetail') {
+                    this.handleViewDetail(data.id)
+                } else if (name === 'rowDelete') {
+                    this.handleDelItem(data.id)
+                }
             }
         }
     }

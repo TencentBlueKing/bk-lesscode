@@ -7,27 +7,29 @@
                     <bk-form-item label="流程名称" :required="true">
                         <bk-input v-model="advancedData.name"></bk-input>
                     </bk-form-item>
-                    <bk-form-item label="撤回方式" :class="{ 'half-row-form': advancedData.revoke_config.type === 3 }">
-                        <bk-select
-                            v-model="advancedData.revoke_config.type"
-                            :clearable="false"
-                            @selected="onSelectRevokeType"
-                            :disabled="serviceData.is_builtin">
-                            <bk-option v-for="item in revokeTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                        </bk-select>
-                    </bk-form-item>
-                    <!-- 指定可撤回节点 -->
-                    <bk-form-item v-if="advancedData.revoke_config.type === 3" class="half-row-form">
-                        <bk-select
-                            v-model="advancedData.revoke_config.state"
-                            :clearable="false"
-                            :disabled="flowNodesLoading"
-                            :loading="flowNodesLoading">
-                            <bk-option v-for="item in flowNodes" :key="item.id" :id="item.id" :name="item.name || '新增节点'">
-                            </bk-option>
-                        </bk-select>
-                    </bk-form-item>
-                    <bk-form-item label="通知方式">
+                    <div class="multiple-form-wrapper">
+                        <bk-form-item label="撤回方式" :class="{ 'half-row-form': advancedData.revoke_config.type === 3 }">
+                            <bk-select
+                                v-model="advancedData.revoke_config.type"
+                                :clearable="false"
+                                @selected="onSelectRevokeType"
+                                :disabled="serviceData.is_builtin">
+                                <bk-option v-for="item in revokeTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                            </bk-select>
+                        </bk-form-item>
+                        <!-- 指定可撤回节点 -->
+                        <bk-form-item v-if="advancedData.revoke_config.type === 3" class="half-row-form">
+                            <bk-select
+                                v-model="advancedData.revoke_config.state"
+                                :clearable="false"
+                                :disabled="flowNodesLoading"
+                                :loading="flowNodesLoading">
+                                <bk-option v-for="item in flowNodes" :key="item.id" :id="item.id" :name="item.name || '新增节点'">
+                                </bk-option>
+                            </bk-select>
+                        </bk-form-item>
+                    </div>
+                    <bk-form-item label="通知方式" style="margin-top: 15px;">
                         <bk-checkbox-group
                             :value="advancedData.notify.map(item => item.type)"
                             @change="onSelectNotifyType">
@@ -40,19 +42,21 @@
                             </bk-checkbox>
                         </bk-checkbox-group>
                     </bk-form-item>
-                    <bk-form-item
-                        v-if="advancedData.notify.length > 0"
-                        label="通知频率"
-                        :class="{ 'half-row-form': advancedData.notify_rule === 'RETRY' }">
-                        <bk-select v-model="advancedData.notify_rule" :clearable="false">
-                            <bk-option v-for="item in notifyFrequencies" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                        </bk-select>
-                    </bk-form-item>
-                    <bk-form-item v-if="advancedData.notify_rule === 'RETRY'" class="half-row-form">
-                        <bk-select v-model="advancedData.notify_freq" :clearable="false">
-                            <bk-option v-for="item in frequencyList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                        </bk-select>
-                    </bk-form-item>
+                    <div class="multiple-form-wrapper">
+                        <bk-form-item
+                            v-if="advancedData.notify.length > 0"
+                            label="通知频率"
+                            :class="{ 'half-row-form': advancedData.notify_rule === 'RETRY' }">
+                            <bk-select v-model="advancedData.notify_rule" :clearable="false">
+                                <bk-option v-for="item in notifyFrequencies" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                            </bk-select>
+                        </bk-form-item>
+                        <bk-form-item v-if="advancedData.notify_rule === 'RETRY'" class="half-row-form">
+                            <bk-select v-model="advancedData.notify_freq" :clearable="false">
+                                <bk-option v-for="item in frequencyList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
+                            </bk-select>
+                        </bk-form-item>
+                    </div>
                 </bk-form>
             </div>
             <!-- <div class="extend-setting-btn">
@@ -265,15 +269,20 @@
         margin-left: 106px;
         &.bk-form {
             width: 680px;
-            /deep/ .bk-form-item+.bk-form-item {
-                margin-top: 15px;
-            }
         }
     }
-    .half-row-form {
-      display: inline-block;
-      width: calc(50% - 2px);
+    .bk-form-item {
+        width: 100%;
+        &.half-row-form {
+            width: calc(50% - 2px);
+        }
     }
+  }
+  .multiple-form-wrapper {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin-top: 15px;
   }
   .extend-setting-btn {
     margin-bottom: 8px;

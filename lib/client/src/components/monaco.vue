@@ -156,7 +156,6 @@
                     theme: 'vs-dark',
                     language: this.language,
                     fontSize: 14,
-                    fontFamily: 'Consolas',
                     cursorBlinking: 'solid',
                     fixedOverflowWidgets: true,
                     automaticLayout: true,
@@ -318,5 +317,6 @@
         color: #c4c6cc;
         cursor: pointer;
         margin-right: 8px;
+        font-size: 16px;
     }
 </style>

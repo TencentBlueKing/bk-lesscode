@@ -59,7 +59,19 @@
         },
         methods: {
             onConfirm () {
-                this.$emit('confirm', this.localValue)
+                if (this.validate()) {
+                    this.$emit('confirm', this.localValue)
+                }
+            },
+            validate () {
+                if (!('expressions' in this.localValue) || this.localValue.expressions.some(item => item.key === '' || item.condition === '' || item.value === '')) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: '条件配置项不能为空'
+                    })
+                    return false
+                }
+                return true
             },
             handleChangeValue (val) {
                 this.localValue = val

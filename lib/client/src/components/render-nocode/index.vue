@@ -1,7 +1,9 @@
 <template>
     <div class="render-content">
+        <!-- 表单页面 -->
         <render-form v-if="nocodeType === 'FORM'" @update="$emit('update', $event)" />
         <render-markdown v-else-if="nocodeType === 'MARKDOWN'"></render-markdown>
+        <!-- 表单数据管理和流程管理 -->
         <render-data-manage v-else-if="['FORM_MANAGE', 'FLOW_MANAGE'].includes(nocodeType)" type="edit" :nocode-type="nocodeType"></render-data-manage>
     </div>
 </template>

@@ -49,7 +49,7 @@
                 <i class="bk-drag-icon bk-drag-folder-fill"></i>
                 <span
                     :class="['item-name', { 'show-tool-name': group.showChange }]"
-                    :title="group.groupName"
+                    v-tooltips="group.groupName"
                 >{{ group.groupName }}</span>
                 <bk-popconfirm
                     trigger="click"
@@ -93,14 +93,7 @@
                     {{ group.funcCount }}
                 </span>
             </li>
-            <bk-exception
-                class="exception-wrap-item exception-part"
-                type="empty"
-                scene="part"
-                v-if="renderGroupList.length <= 0"
-            >
-                <div>暂无数据</div>
-            </bk-exception>
+            <empty-status v-if="renderGroupList.length <= 0" :type="emptyType" @clearSearch="handlerClearSearch" :part="false"></empty-status>
         </vue-draggable>
 
         <bk-dialog v-model="delObj.show"
@@ -155,6 +148,12 @@
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
+            },
+            emptyType () {
+                if (this.searchGroupString?.trim()?.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
 
@@ -335,6 +334,10 @@
                 setTimeout(() => {
                     this.$refs[refName]?.$refs?.input?.focus()
                 }, 0)
+            },
+            handlerClearSearch (searchName) {
+                this.searchGroupString = searchName
+                this.handerSearchGroup()
             }
         }
     }
@@ -461,7 +464,7 @@
         align-items: center;
         font-weight: normal;
         margin: 0;
-        padding: 16px 13px 15px 18px;
+        padding: 16px 13px 15px 16px;
         .head-input {
             margin-right: 7px;
         }
@@ -476,7 +479,7 @@
 
     .group-list {
         height: calc(100% - 67px);
-        overflow-y: auto;
+        /* overflow-y: auto; */
         .exception-wrap-item {
             position: absolute;
             top: 50%;

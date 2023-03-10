@@ -282,6 +282,7 @@
 
                 const typeMap = {
                     'array': 'json',
+                    'areatext': 'areatext',
                     'boolean': 'boolean',
                     'column': 'column',
                     'size': 'size',

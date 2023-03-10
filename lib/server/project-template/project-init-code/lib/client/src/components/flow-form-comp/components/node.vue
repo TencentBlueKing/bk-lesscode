@@ -10,8 +10,14 @@
                 </bk-tab-panel>
             </bk-tab>
             <div class="opereate-btns">
-                <!-- <bk-button>导出</bk-button>
-                <bk-button>下载流程附件</bk-button> -->
+                <custom-buttons
+                    :table-name="tableName"
+                    :node-name="currentNodeName"
+                    :fields="fields"
+                    :system-fields="systemFields"
+                    :table-config="tableConfig"
+                    :buttons="buttons">
+                </custom-buttons>
                 <i
                     v-if="filters.length > 0"
                     class="bk-icon icon-funnel filter-switch-icon"
@@ -32,6 +38,7 @@
                     v-if="tableName"
                     style="margin-top: 16px"
                     :table-config="tableConfig"
+                    :table-actions="tableActions"
                     :fields="fields"
                     :form-id="formIds[activeNode]"
                     :table-name="tableName"
@@ -45,12 +52,14 @@
     import { mapGetters } from 'vuex'
     import { formMap } from 'shared/form'
     import queryStrSearchMixin from '../common/query-str-search-mixin'
+    import CustomButtons from './custom-buttons.vue'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
 
     export default {
         name: 'NodeDataManage',
         components: {
+            CustomButtons,
             Filters,
             TableFields
         },
@@ -80,6 +89,8 @@
                 formDataMap: {},
                 filters: [],
                 tableConfig: [],
+                buttons: [],
+                tableActions: [],
                 showFilter: true,
                 filtersData: {}
             }
@@ -91,6 +102,13 @@
             },
             tableName () {
                 return this.formDataMap[this.activeNode]?.tableName || ''
+            },
+            currentNodeName () {
+                if (this.activeNode) {
+                    const node = this.nodes.find(item => item.id === this.activeNode)
+                    return node ? node.name : ''
+                }
+                return ''
             }
         },
         async created () {
@@ -153,14 +171,21 @@
                 }
             },
             setNodeTabConfig () {
+                let filters = []
+                let tableConfig = []
+                let buttons = []
+                let tableActions = []
                 if (this.activeNode in this.config) {
-                    this.filters = this.config[this.activeNode].filters || []
-                    this.tableConfig = this.config[this.activeNode].tableConfig || []
-                } else {
-                    this.filters = []
-                    this.tableConfig = []
-                    this.$set(this.config, this.activeNode, { filters: [], tableConfig: [] })
+                    filters = this.config[this.activeNode].filters || []
+                    tableConfig = this.config[this.activeNode].tableConfig || []
+                    buttons = this.config[this.activeNode].buttons || []
+                    tableActions = this.config[this.activeNode].tableActions || []
                 }
+                this.filters = filters
+                this.tableConfig = tableConfig
+                this.buttons = buttons
+                this.tableActions = tableActions
+                this.$set(this.config, this.activeNode, { filters, tableConfig, buttons, tableActions })
             },
             handleTabChange (val) {
                 const { path, hash, params, query } = this.$route
@@ -183,9 +208,9 @@
 </script>
 <style lang="postcss" scoped>
     .node-tab-wrapper {
-        display: flex;
+        /* display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-between; */
         margin-bottom: 16px;
     }
     .bk-tab {
@@ -223,7 +248,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        max-width: 230px;
+        margin: 16px 0;
         .bk-button {
             cursor: inherit;
         }

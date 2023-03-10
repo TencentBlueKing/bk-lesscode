@@ -65,7 +65,7 @@
                             'show-tool-name': category.showChange
                         }
                     ]"
-                    :title="category.name"
+                    v-tooltips="category.name"
                 >{{ category.name }}</span>
                 <bk-popconfirm
                     trigger="click"
@@ -115,14 +115,7 @@
                     {{ category.apiCount }}
                 </span>
             </li>
-            <bk-exception
-                class="exception-wrap-item exception-part"
-                type="empty"
-                scene="part"
-                v-if="renderCategoryList.length <= 0"
-            >
-                <div>暂无数据</div>
-            </bk-exception>
+            <empty-status v-if="renderCategoryList.length <= 0" :type="emptyType" @clearSearch="handlerClearSearch" :part="false"></empty-status>
         </vue-draggable>
 
         <bk-dialog v-model="delObj.show"
@@ -176,6 +169,12 @@
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
+            },
+            emptyType () {
+                if (this.searchCategoryString?.trim()?.length) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
 
@@ -360,6 +359,10 @@
                 setTimeout(() => {
                     this.$refs[refName]?.$refs?.input?.focus()
                 }, 0)
+            },
+            handlerClearSearch (searchName) {
+                this.searchCategoryString = searchName
+                this.handerSearchCategory()
             }
         }
     }
@@ -486,7 +489,7 @@
         align-items: center;
         font-weight: normal;
         margin: 0;
-        padding: 16px 13px 15px 18px;
+        padding: 16px 13px 15px 16px;
         .head-input {
             margin-right: 7px;
         }
@@ -501,7 +504,7 @@
 
     .category-list {
         height: calc(100% - 63px);
-        overflow-y: auto;
+        /* overflow-y: auto; */
         .exception-wrap-item {
             position: absolute;
             top: 50%;

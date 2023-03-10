@@ -35,7 +35,7 @@
                 class="debug-button"
                 :loading="isDebuging"
                 @click="handleDebug"
-            >{{ showDebugPanel ? '执行调试' : '打开调试' }}</bk-button>
+            >{{ showDebugPanel ? '执行调试' : '打开调试控制台' }}</bk-button>
             <i class="bk-drag-icon bk-drag-close-line" @click="handleCloseDebug"></i>
         </section>
         <monaco
@@ -194,13 +194,22 @@
             'form.funcParams': {
                 handler (val, oldVal) {
                     if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
-                        this.params = val.map((key) => ({ key, value: '', format: 'value' }))
+                        
+                        this.params = val.map((key) => {
+                            const param = this.params.find(param => param.key === key)
+                            return {
+                                key,
+                                value: param?.value || '',
+                                format: 'value'
+                            }
+                        })
                     }
                 },
                 immediate: true
             },
             'form.id' () {
                 this.outputs = []
+                this.params = this.form.funcParams.map((key) => ({ key, value: '', format: 'value' }))
             }
         },
 

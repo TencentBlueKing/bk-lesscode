@@ -1,5 +1,6 @@
 <template>
     <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
+        <!--  -->
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
@@ -102,10 +103,16 @@
                     应用当前版本：
                     <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
                 </div>
+                <div class="instructions" v-if="helpDocument">
+                    <a class="download-demo" :href="helpDocument" target="_blank">
+                        <bk-icon class="bk-layout-component-kkgoknfg bkIcon1f258 bk-icon-help" type="question-circle"> </bk-icon>
+                        使用指引
+                    </a>
+                </div>
             </div>
             <extra-links></extra-links>
         </div>
-        <!-- 使用v-if因子组件依赖获取的应用信息 -->
+        <!-- 使用v-if因子组件依赖获取的应用信息 应用的页面列表-->
         <div class="main-container" v-bkloading="{ isLoading: pageLoading }">
             <router-view v-if="!pageLoading" :key="routeKey"></router-view>
         </div>
@@ -216,15 +223,6 @@
                                 permission: false,
                                 toPath: {
                                     name: 'apiManage'
-                                }
-                            },
-                            {
-                                title: '凭证管理',
-                                url: 'credential',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'credential'
                                 }
                             },
                             {
@@ -384,6 +382,9 @@
             // 流程详情编辑页需要隐藏左侧导航
             hideSideNav () {
                 return this.$route.meta.hideSideNav
+            },
+            helpDocument () {
+                return this.$route.meta?.helpDocument
             }
         },
         beforeRouteUpdate (to, from, next) {
@@ -684,6 +685,19 @@
                         max-width: 320px;
                     }
                 }
+
+                    .download-demo {
+                        font-size: 12px;
+                        line-height: 18px;
+                        color: #3A84FF;
+                        position: absolute;
+                        right: 24px;
+                        top: 18px;
+                        .bk-icon-help {
+                            font-size: 14px !important;
+                        }
+                    }
+                
             }
 
             .current {

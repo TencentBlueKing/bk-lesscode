@@ -19,7 +19,7 @@
 
             <bk-table
                 class="function-table"
-                :data="functionList"
+                :data="computedFunctionList"
                 :outer-border="false"
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
@@ -46,7 +46,7 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column label="更新人" prop="updateUser"></bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
+                <bk-table-column label="更新时间" prop="updateTime" min-width="100px" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
                 <bk-table-column label="引用" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span
@@ -70,6 +70,7 @@
                         >删除</span>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
 
             <span class="function-tips">
@@ -168,6 +169,12 @@
             computedFunctionList () {
                 const searchReg = new RegExp(this.searchFunStr, 'i')
                 return this.functionList.filter((func) => searchReg.test(func.funcName))
+            },
+            emptyType () {
+                if (this.searchFunStr.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
 
@@ -363,6 +370,9 @@
                 } catch (err) {
                     this.$bkMessage({ theme: 'error', message: err.message || err })
                 }
+            },
+            handlerClearSearch (searchEmpty) {
+                this.searchFunStr = searchEmpty
             }
         }
     }
