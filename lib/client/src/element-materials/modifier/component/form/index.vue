@@ -229,9 +229,6 @@
                     code: 'primary',
                     renderValue: 'primary'
                 }))
-                submitBtnNode.setStyle({
-                    width: '88px'
-                })
                 
                 // 绑定click事件并生成事件模板
                 submitBtnNode.setRenderEvents({
@@ -268,7 +265,6 @@
                     renderValue: '取消'
                 })
                 cancelBtnNode.setStyle({
-                    width: '88px',
                     'marginLeft': '8px'
                 })
                 // 绑定click事件并生成事件模板
