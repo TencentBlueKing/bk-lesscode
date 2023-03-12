@@ -53,7 +53,7 @@
     import Upload from './fields/upload.vue'
     import Divider from './fields/divider'
     import Rate from './fields/rate'
-    import Comput from './fields/comput'
+    import Compute from './fields/compute'
     import Serial from './fields/serial.vue'
     
     // 注册fields文件夹下所有字段类型组件
@@ -96,7 +96,7 @@
             Upload: Upload,
             Divider: Divider,
             Rate: Rate,
-            Comput,
+            Compute,
             Serial
         },
         props: {

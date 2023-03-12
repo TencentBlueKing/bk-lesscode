@@ -100,7 +100,7 @@
     import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
     import _ from 'lodash'
     const LAYOUT_GROUP = ['DESC', 'DIVIDER']
-    const ASVANCED_CONTROLS = ['COMPUT', 'SERIAL']
+    const ASVANCED_CONTROLS = ['COMPUTE', 'SERIAL']
     export default {
         components: {
             draggable
