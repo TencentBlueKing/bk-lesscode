@@ -1,7 +1,7 @@
 <template>
     <div :class="[$style['routes'], 'page-content']" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
         <div :class="['info-flexible', $style['inner']]" v-show="!pageLoading">
-            <bk-link :class="$style['to-link']" theme="primary" @click="handleCreateLayout">导航布局管理</bk-link>
+            <bk-link :class="[$style['to-link'],'nav-link']" theme="primary" @click="handleCreateLayout">导航布局管理</bk-link>
             <div :class="$style['caption']">
                 <div :class="$style['col']">路由配置</div>
                 <div :class="$style['col']">绑定页面跳转路由</div>
@@ -925,13 +925,15 @@
     }
 
     :global {
-        .bk-link{
+        .nav-link {
+           &.bk-link {
                 justify-content: right;
                .bk-link-text {
                     font-size: 12px;
                     margin-bottom: 5px;
                 }
             }
+        }
         .edit-route-form {
             position: relative;
             .tips-icon {
