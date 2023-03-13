@@ -30,7 +30,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="operate-icons">
-                                        <i title="预览" v-if="(layout.type !== 'empty' && (layout.type && !layout.type.startsWith('mobile')))" class="bk-icon icon-eye click-icon" @click="handlePreview(layout)"></i>
+                                        <i title="预览" v-if="(layout.type !== 'empty' && (layout.type && layout.type !== 'mobile-empty'))" class="bk-icon icon-eye click-icon" @click="handlePreview(layout)"></i>
                                         <bk-dropdown-menu :ref="`moreActionDropdown${layout.id}`">
                                             <span slot="dropdown-trigger" class="more-menu-trigger">
                                                 <i class="bk-drag-icon bk-drag-more-dot"></i>
