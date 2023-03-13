@@ -58,7 +58,7 @@
                                         v-bk-tooltips="'添加子路由'"
                                         @click="handleAddSubRoute(group)"></i>
                                     <i :class="['bk-icon icon-eye click-icon',$style['icon-eye']]"
-                                        v-if="group.layoutPath !== '/' && group.layoutPath !== '/mobile/' && projectId"
+                                        v-if="group.type !== 'empty' && group.type !== 'mobile-empty' && projectId"
                                         v-bk-tooltips="'预览'" @click="handlePreview(group)"></i>
                                 </div>
                             </div>
@@ -272,17 +272,18 @@
                         this.$store.dispatch('route/getProjectRouteTree', params),
                         this.$store.dispatch('layout/getList', params)
                     ])
-                    this.layoutList = layoutList.map(({ id: layoutId, routePath: layoutPath, layoutType }) => ({ layoutId, layoutPath, layoutType }))
+                    this.layoutList = layoutList.map(({ id: layoutId, routePath: layoutPath, layoutType, type }) => ({ layoutId, layoutPath, layoutType, type }))
 
                     // 补全所有布局模板父路由，便于父路由下没有路由时能快速的创建
-                    this.layoutList.forEach(({ layoutId, layoutPath, layoutType }) => {
+                    this.layoutList.forEach(({ layoutId, layoutPath, layoutType, type }) => {
                         const index = routeGroup.findIndex(item => item.layoutId === layoutId)
                         if (index === -1) {
                             routeGroup.push({
                                 children: [],
                                 layoutId,
                                 layoutPath,
-                                layoutType
+                                layoutType,
+                                type
                             })
                         }
                     })
