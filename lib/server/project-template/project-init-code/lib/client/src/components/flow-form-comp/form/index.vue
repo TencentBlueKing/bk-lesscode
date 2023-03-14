@@ -16,6 +16,7 @@
     import { debounce, isEqual, cloneDeep } from 'lodash'
     import dayjs from 'dayjs'
     import conditionMixins from './condition-mixins'
+    import { computDateDiff, computeNumberResult } from './util/index.js'
     import FieldFormItem from './fieldItem.vue'
 
     export default {
@@ -45,7 +46,8 @@
         data () {
             return {
                 fieldsCopy: cloneDeep(this.fields),
-                localValue: {}
+                localValue: {},
+                computeConfigFields: []
             }
         },
         watch: {
@@ -73,6 +75,8 @@
             initFormValue () {
                 const fieldsValue = {}
                 const fieldsWithRules = []
+                this.computeConfigFields = []
+
                 this.fields.forEach((item) => {
                     let value
                     if (item.key in this.value) {
@@ -89,6 +93,9 @@
                     // 记录配置有关联规则的字段
                     if (item.meta.default_val_config) {
                         fieldsWithRules.push(item)
+                    }
+                    if (item.meta.compute_config_info) {
+                        this.computeConfigFields.push(item)
                     }
                     // 储存各个字段对应的初始值
                     fieldsValue[item.key] = value
@@ -114,6 +121,56 @@
                     }
                 })
                 this.$emit('change', this.localValue)
+            },
+            // 初始化计算组件数据
+            initComputeData (computeConfigFields) {
+                computeConfigFields.forEach((computeField) => {
+                    this.localValue[computeField.key] = this.changeComputeDefalutValue(computeField)
+                })
+            },
+            // 修改计算控件的值
+            changeComputeDefalutValue (computeField) {
+                const { type, dateTime, numberComput } = computeField.meta.compute_config_info
+                if (type === 'dateTime') {
+                    // 计算时间间隔
+                    if (this.changeDateTime(dateTime)) {
+                        return computDateDiff(computeField.meta.compute_config_info)
+                    }
+                    return computeField.default
+                } else {
+                    this.setBindFieldValue(numberComput)
+                    return computeNumberResult(numberComput)
+                }
+            },
+            // 修改日期计算组件的开始或结束日期的值
+            changeDateTime (dateTime) {
+                let isChange = false
+                // 日期计算
+                const dateKeys = ['creation_date', 'update_date', 'specify_date']
+                const dateTimeKeys = ['startDate', 'endDate']
+                dateTimeKeys.forEach((strItem) => {
+                    const key = dateTime[strItem].key
+                    if (!dateKeys.includes(key)) {
+                        // 找到对应的日期字段的值
+                        dateTime[strItem].value = this.localValue[key]
+                        isChange = true
+                    }
+                })
+                return isChange
+            },
+            // 设置绑定的字段值
+            setBindFieldValue (numberComput) {
+                let fieldsKey = 'computeFields'
+                if (numberComput.formula === 'customize') {
+                    fieldsKey = 'customizeFormula'
+                }
+                numberComput[fieldsKey] = numberComput[fieldsKey].map((item) => {
+                    const key = item.key || item
+                    return {
+                        key,
+                        value: this.localValue[key]
+                    }
+                })
             },
             // 解析是否有表单依赖变化的表单项，如果有则更新数据源配置，触发重新拉取数据逻辑
             parseDataSourceRelation (key, val) {
@@ -166,6 +223,7 @@
                         }
                     }
                 })
+                this.initComputeData(this.computeConfigFields)
             },
             // 获取关联规则中包含当前字段key的字段列表
             getValAssociatedFields (key) {

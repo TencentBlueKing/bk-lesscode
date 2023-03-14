@@ -11,6 +11,8 @@
     import { mapGetters } from 'vuex'
     import html2canvas from 'html2canvas'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
+    import { checkAccuracy } from '@/components/flow-form-comp/form/util/index.js'
+
     import { bus } from '@/common/bus'
     export default {
         components: {
@@ -160,8 +162,23 @@
                         isKeyValid = false
                         return true
                     }
+                    if (this.checkAccuracy(field)) {
+                        this.$bkMessage({
+                            theme: 'error',
+                            message: `字段【${field.name}】未设置默认时间精度`
+                        })
+                        isKeyValid = false
+                        return true
+                    }
                 })
                 return isKeyValid
+            },
+            // 检查计算组件的默认精度值
+            checkAccuracy (field) {
+                const computConfigInfo = field.meta.compute_config_info
+                if (computConfigInfo && computConfigInfo.type === 'dateTime' && computConfigInfo.dateTime.accuracyResult !== 'day' && !computConfigInfo.dateTime.defaultTime) {
+                    return checkAccuracy(computConfigInfo.dateTime.startDate.value, computConfigInfo.dateTime.endDate.value)
+                }
             },
             // 保存导航数据
             async saveTemplate () {
