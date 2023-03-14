@@ -46,7 +46,8 @@
         data () {
             return {
                 fieldsCopy: cloneDeep(this.fields),
-                localValue: {}
+                localValue: {},
+                computeConfigFields: []
             }
         },
         watch: {
@@ -74,7 +75,8 @@
             initFormValue () {
                 const fieldsValue = {}
                 const fieldsWithRules = []
-                const computeConfigFields = []
+                this.computeConfigFields = []
+
                 this.fields.forEach((item) => {
                     let value
                     if (item.key in this.value) {
@@ -93,7 +95,7 @@
                         fieldsWithRules.push(item)
                     }
                     if (item.meta.compute_config_info) {
-                        computeConfigFields.push(item)
+                        this.computeConfigFields.push(item)
                     }
                     // 储存各个字段对应的初始值
                     fieldsValue[item.key] = value
@@ -118,7 +120,6 @@
                         this.localValue[field.key] = field.type === 'DATE' ? dayjs().format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD HH:mm:ss')
                     }
                 })
-                this.initComputeData(computeConfigFields)
                 this.$emit('change', this.localValue)
             },
             // 初始化计算组件数据
@@ -137,9 +138,7 @@
                     }
                     return computeField.default
                 } else {
-                    this.getBindComputField(numberComput).forEach((field) => {
-                        field.value = this.localValue[field.key]
-                    })
+                    this.setBindFieldValue(numberComput)
                     return computeNumberResult(numberComput)
                 }
             },
@@ -150,52 +149,26 @@
                 const dateKeys = ['creation_date', 'update_date', 'specify_date']
                 const dateTimeKeys = ['startDate', 'endDate']
                 dateTimeKeys.forEach((strItem) => {
-                    if (!dateKeys.includes(dateTime[strItem].key)) {
+                    const key = dateTime[strItem].key
+                    if (!dateKeys.includes(key)) {
                         // 找到对应的日期字段的值
-                        dateTime[strItem].value = this.localValue[dateTime[strItem].key]
+                        dateTime[strItem].value = this.localValue[key]
                         isChange = true
                     }
                 })
                 return isChange
             },
-            // 获取绑定的计算字段
-            getBindComputField (numberComput) {
-                let fields = []
+            // 设置绑定的字段值
+            setBindFieldValue (numberComput) {
+                let fieldsKey = 'computeFields'
                 if (numberComput.formula === 'customize') {
-                    fields = numberComput.customizeFormula
-                } else {
-                    fields = numberComput.computeFields.map((item) => {
-                        return {
-                            key: item.key || item,
-                            value: 0
-                        }
-                    })
-                    numberComput.computeFields = fields
+                    fieldsKey = 'customizeFormula'
                 }
-                return fields
-            },
-            // 日期字段或数字字段的值修改后通知依赖它的计算组件修改值
-            noticeComputeComChange () {
-                this.fields.forEach((item) => {
-                    if (item.type === 'COMPUTE' && item.meta.compute_config_info) {
-                        const { type, dateTime, numberComput } = item.meta.compute_config_info
-                        let isChange = false
-                        if (type === 'dateTime') {
-                            isChange = this.changeDateTime(dateTime)
-                            if (isChange) {
-                                this.localValue[item.key] = computDateDiff(item.meta.compute_config_info)
-                            }
-                        } else {
-                            this.getBindComputField(numberComput).forEach((fieldItem) => {
-                                if (fieldItem.value !== this.localValue[fieldItem.key]) {
-                                    isChange = true
-                                    fieldItem.value = this.localValue[fieldItem.key]
-                                }
-                            })
-                            if (isChange) {
-                                this.localValue[item.key] = computeNumberResult(numberComput)
-                            }
-                        }
+                numberComput[fieldsKey] = numberComput[fieldsKey].map((item) => {
+                    const key = item.key || item
+                    return {
+                        key,
+                        value: this.localValue[key]
                     }
                 })
             },
@@ -250,6 +223,7 @@
                         }
                     }
                 })
+                this.initComputeData(this.computeConfigFields)
             },
             // 获取关联规则中包含当前字段key的字段列表
             getValAssociatedFields (key) {
@@ -325,7 +299,6 @@
                 this.handleParseCondition()
                 this.parseDataSourceRelation(key, value)
                 this.handleParseAssociation(key)
-                this.noticeComputeComChange()
             }
         }
     }

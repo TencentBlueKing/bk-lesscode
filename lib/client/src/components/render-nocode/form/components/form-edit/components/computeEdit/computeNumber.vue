@@ -95,7 +95,6 @@
 
 <script>
     import { mapGetters } from 'vuex'
-    import cloneDeep from 'lodash.clonedeep'
     
     import { getRealFormula, evalFun } from '@/components/flow-form-comp/form/util/index.js'
 
@@ -203,6 +202,14 @@
                 return str
             }
         },
+        watch: {
+            showFormulaConfigDialog (newVal) {
+                if (newVal) {
+                    this.cloneCustomizeFormula()
+                }
+            }
+        },
+
         created () {
             this.cloneCustomizeFormula()
         },
