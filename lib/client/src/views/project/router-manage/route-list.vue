@@ -1,6 +1,7 @@
 <template>
     <div :class="[$style['routes'], 'page-content']" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
         <div :class="['info-flexible', $style['inner']]" v-show="!pageLoading">
+            <bk-link :class="[$style['to-link'],'nav-link']" theme="primary" @click="handleCreateLayout">导航布局管理</bk-link>
             <div :class="$style['caption']">
                 <div :class="$style['col']">路由配置</div>
                 <div :class="$style['col']">绑定页面跳转路由</div>
@@ -49,11 +50,16 @@
                                     </div>
                                 </div>
                                 <div :class="[$style['opts'], { [$style['hide']]: editState.route !== null || removeLoading }]">
-                                    <i :class="['bk-icon icon-edit2 ml10', $style['icon']]" @click="handleEditLayoutPath(group)"></i>
+                                    <i :class="['bk-icon icon-edit2 ml10', $style['icon']]"
+                                        @click="handleEditLayoutPath(group)"
+                                        v-bk-tooltips="'编辑'"></i>
                                     <i :class="['bk-icon icon-plus', $style['icon']]"
                                         v-show="editState.type !== 'new'"
                                         v-bk-tooltips="'添加子路由'"
                                         @click="handleAddSubRoute(group)"></i>
+                                    <i :class="['bk-icon icon-eye click-icon',$style['icon-eye']]"
+                                        v-if="group.type !== 'empty' && group.type !== 'mobile-empty' && projectId"
+                                        v-bk-tooltips="'预览'" @click="handlePreview(group)"></i>
                                 </div>
                             </div>
                             <div :class="[$style['bind'], { [$style['disabled']]: editState.route !== null || removeLoading }]">
@@ -266,17 +272,18 @@
                         this.$store.dispatch('route/getProjectRouteTree', params),
                         this.$store.dispatch('layout/getList', params)
                     ])
-                    this.layoutList = layoutList.map(({ id: layoutId, routePath: layoutPath, layoutType }) => ({ layoutId, layoutPath, layoutType }))
+                    this.layoutList = layoutList.map(({ id: layoutId, routePath: layoutPath, layoutType, type }) => ({ layoutId, layoutPath, layoutType, type }))
 
                     // 补全所有布局模板父路由，便于父路由下没有路由时能快速的创建
-                    this.layoutList.forEach(({ layoutId, layoutPath, layoutType }) => {
+                    this.layoutList.forEach(({ layoutId, layoutPath, layoutType, type }) => {
                         const index = routeGroup.findIndex(item => item.layoutId === layoutId)
                         if (index === -1) {
                             routeGroup.push({
                                 children: [],
                                 layoutId,
                                 layoutPath,
-                                layoutType
+                                layoutType,
+                                type
                             })
                         }
                     })
@@ -614,6 +621,17 @@
                     const component = this.$refs[id]
                     component[0] && component[0].focus && component[0].focus()
                 })
+            },
+            handleCreateLayout () {
+                this.$router.push({
+                    name: 'layout',
+                    params: {
+                        projectId: this.projectId
+                    }
+                })
+            },
+            handlePreview (group) {
+                window.open(`/preview-template/project/${this.projectId}/${group.layoutId}?type=nav-template`, '_blank')
             }
         }
     }
@@ -623,7 +641,13 @@
     .routes {
         padding: 30px 24px;
         height: calc(100% - 44px);
-
+        .to-link {
+            width:calc(100% + 10px);
+            background-color: #fafbfd;
+            padding: 0 6px;
+            margin-left:-6px;
+        }
+    
         .inner {
             padding: 0;
             height: 100%;
@@ -747,6 +771,13 @@
                         & + .icon {
                             margin-left: 8px;
                         }
+                    }
+                    .icon-eye{
+                        width: 24px;
+                        height: 24px;
+                        font-size: 15px;
+                        line-height: 24px;
+                        margin-left: 8px ;
                     }
 
                     .add-trigger {
@@ -895,6 +926,15 @@
     }
 
     :global {
+        .nav-link {
+           &.bk-link {
+                justify-content: right;
+               .bk-link-text {
+                    font-size: 12px;
+                    margin-bottom: 5px;
+                }
+            }
+        }
         .edit-route-form {
             position: relative;
             .tips-icon {
@@ -928,4 +968,5 @@
             }
         }
     }
+
 </style>

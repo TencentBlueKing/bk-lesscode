@@ -150,8 +150,8 @@
                                 :true-value="0"
                                 :false-value="1"
                                 :disabled="disabled"
-                                v-model="fieldData.show_type"
-                                @change="change">
+                                :value="fieldData.show_type"
+                                @change="handleShowTypeChange">
                                 隐藏
                             </bk-checkbox>
                             <span v-show="fieldData.show_type === 0" @click="showTypeShow = true">条件编辑</span>
@@ -283,7 +283,7 @@
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
-                            <span>  <bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleCheckedChange">添加额外填写说明</bk-checkbox></span>
+                            <span><bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleShowTipsChange">添加额外填写说明</bk-checkbox></span>
                             <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, 'extCls': 'custom-require-tips' }">效果预览</span>
                         </div>
                         <bk-input
@@ -524,19 +524,9 @@
                 this.fieldData.fileTemplate.splice(index, 1)
                 this.change()
             },
-            handleCheckedChange () {
+            // 是否显示表单tips切换
+            handleShowTipsChange () {
                 this.fieldData.tips = ''
-                this.change()
-            },
-            onConfirm (type, val) {
-                this.fieldData[type] = val
-                if (type === 'read_only_conditions') {
-                    this.readerOnlyShow = false
-                } else if (type === 'mandatory_conditions') {
-                    this.requireConfigShow = false
-                } else {
-                    this.showTypeShow = false
-                }
                 this.change()
             },
             // 数据源配置变更
@@ -545,7 +535,6 @@
                 this.dataSourceDialogShow = false
                 if (sourceType === 'CUSTOM') {
                     this.fieldData.choice = val.localVal
-                    console.log(val.localVal)
                     this.fieldData.default = val.localVal.find(item => item.isDefaultVal)?.key || ''
                     this.fieldData.isDisplayTag = !!val?.localValIsDisplayTag
                 } else if (sourceType === 'API') {
@@ -613,10 +602,17 @@
                 this.apiDetail = this.systemList.find(item => item.id === apiId)
                 this.resArrayTreeData = transSchemeToArrayTypeTree(this.apiDetail.response)
             },
+            // 默认值修改
             handleDefaultValChange (val) {
                 this.fieldData.default = ['MULTISELECT', 'CHECKBOX', 'MEMBER', 'MEMBERS'].includes(this.fieldData.type)
                     ? val.join(',')
                     : val
+                this.change()
+            },
+            // 隐藏条件修改
+            handleShowTypeChange (val) {
+                this.fieldData.show_type = val
+                this.fieldData.show_conditions = val ? {} : { type: 'and', expressions: [{ key: '', condition: '', value: '' }] }
                 this.change()
             },
             // 设置描述组件的值
@@ -651,6 +647,7 @@
                 this.fieldData.choice.splice(index, 1, $event)
                 this.change()
             },
+            // 增加表单选项
             handleAddTableChoice () {
                 const len = this.fieldData.choice.length
                 this.fieldData.choice.push({
@@ -668,7 +665,19 @@
             change () {
                 this.fieldData.timeStamp = Date.parse(new Date())
                 this.$emit('change', this.fieldData)
-            }
+            },
+            // 属性配置保存
+            onConfirm (type, val) {
+                this.fieldData[type] = val
+                if (type === 'read_only_conditions') {
+                    this.readerOnlyShow = false
+                } else if (type === 'mandatory_conditions') {
+                    this.requireConfigShow = false
+                } else {
+                    this.showTypeShow = false
+                }
+                this.change()
+            },
         }
     }
 </script>
