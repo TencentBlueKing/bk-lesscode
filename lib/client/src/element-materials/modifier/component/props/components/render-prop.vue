@@ -160,6 +160,7 @@
     import TypePagination from './strategy/pagination.vue'
     import TypeRouteList from './strategy/route-list.vue'
     import TypeChartColor from './strategy/chart-color-set.vue'
+    import TypeRequestSelect from './strategy/request-select.vue'
 
     const getRealValue = (type, target) => {
         if (type === 'object') {
@@ -277,7 +278,8 @@
                     'srcset': TypeList,
                     'pagination': TypePagination,
                     'route': TypeRouteList,
-                    'chartColor': TypeChartColor
+                    'chartColor': TypeChartColor,
+                    'request-select': TypeRequestSelect
                 }
 
                 const typeMap = {
@@ -322,7 +324,8 @@
                     'srcset': 'srcset',
                     'pagination': 'pagination',
                     'route': 'route',
-                    'chartColor': 'chartColor'
+                    'chartColor': 'chartColor',
+                    'request-select': 'request-select'
                 }
 
                 let realType = config.type
