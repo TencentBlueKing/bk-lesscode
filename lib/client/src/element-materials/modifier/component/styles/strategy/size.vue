@@ -11,41 +11,45 @@
 
 <template>
     <style-layout title="尺寸">
-        <template v-for="item in sizeConfigRender">
-            <style-item
-                v-if="item.key === 'display' || (item.key !== 'display' && !isInline)"
-                :name="item.name"
-                :key="item.key">
-                <bk-select
+        <div class="size-container">
+            <template v-for="item in sizeConfigRender">
+                <style-item
                     v-if="item.key === 'display'"
-                    :value="item.value"
-                    font-size="medium"
-                    :clearable="false"
-                    @change="handleDisplayChange(item, $event)"
-                    style="width: 100%;">
-                    <bk-option id="block" name="block" />
-                    <bk-option id="inline" name="inline" />
-                    <bk-option id="inline-block" name="inline-block" />
-                    <bk-option id="unset" name="unset" />
-                </bk-select>
+                    :key="item.key"
+                    :name="item.name">
+                    <bk-select
+                        v-if="item.key === 'display'"
+                        :value="item.value"
+                        font-size="medium"
+                        :clearable="false"
+                        @change="handleDisplayChange(item, $event)"
+                        style="width: 100%;">
+                        <bk-option id="block" name="block" />
+                        <bk-option id="inline" name="inline" />
+                        <bk-option id="inline-block" name="inline-block" />
+                        <bk-option id="unset" name="unset" />
+                    </bk-select>
+                </style-item>
                 <size-input
-                    v-else
+                    v-if="(item.key !== 'display' && !isInline)"
+                    :key="item.key"
                     :value="item.value"
+                    :item="item"
                     @change="handleInputChange(item, $event)">
-                    <append-select
+                    <size-unit
                         :value="item.unit"
                         @change="handleSelectChange(item, $event)" />
                 </size-input>
-            </style-item>
-        </template>
+            </template>
+        </div>
     </style-layout>
 </template>
 
 <script>
     import StyleLayout from '../layout/index'
     import StyleItem from '../layout/item'
-    import AppendSelect from '@/components/modifier/append-select'
     import SizeInput from '@/components/modifier/size-input'
+    import SizeUnit from '@/components/modifier/size-unit'
     import { splitValueAndUnit } from '@/common/util'
     import { getCssProperties } from '../common/util'
     import defaultUnitMixin from '@/common/defaultUnit.mixin'
@@ -57,27 +61,33 @@
         },
         {
             name: '宽度',
-            key: 'width'
+            key: 'width',
+            font: '宽'
         },
         {
             name: '高度',
-            key: 'height'
+            key: 'height',
+            font: '高'
         },
         {
             name: '最小宽度',
-            key: 'minWidth'
+            key: 'minWidth',
+            icon: 'bk-drag-zuixiaokuandu'
         },
         {
             name: '最大宽度',
-            key: 'maxWidth'
+            key: 'maxWidth',
+            icon: 'bk-drag-zuidakuandu'
         },
         {
             name: '最小高度',
-            key: 'minHeight'
+            key: 'minHeight',
+            icon: 'bk-drag-zuixiaogaodu'
         },
         {
             name: '最大高度',
-            key: 'maxHeight'
+            key: 'maxHeight',
+            icon: 'bk-drag-zuidagaodu'
         }
     ]
     
@@ -85,7 +95,7 @@
         components: {
             StyleLayout,
             StyleItem,
-            AppendSelect,
+            SizeUnit,
             SizeInput
         },
         mixins: [defaultUnitMixin],
@@ -175,3 +185,11 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    .size-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+</style>

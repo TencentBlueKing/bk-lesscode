@@ -1,5 +1,9 @@
 <template>
-    <div
+    <div class="field-item drag-entry" :class="displayClass">
+        <i :class="['bk-drag-icon', 'comp-icon', data.icon || 'bk-drag-custom-comp-default']"></i> <span>{{ data.displayName }}</span>
+        <slot />
+    </div>
+    <!-- <div
         class="render-drag-item render-custom-component-item"
         :class="{
             [displayClass]: true,
@@ -60,7 +64,7 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 <script>
     import Tippy from 'bk-magic-vue/lib/utils/tippy'

@@ -40,7 +40,7 @@
                 <bk-button @click="handleRelease">我要发布</bk-button>
                 <div class="extra">
                     <template>
-                        <type-select v-if="hasMobilePage" @select-change="handleSelectChange"></type-select>
+                        <type-select class="type-select" v-if="hasMobilePage" @select-change="handleSelectChange"></type-select>
                         <span v-else class="total" v-show="renderList.length">共<em class="count">{{renderList.length}}</em>个页面</span>
                     </template>
                     <bk-input
@@ -525,6 +525,10 @@
                 align-items: center;
                 flex: none;
                 margin-left: auto;
+            }
+
+            .type-select {
+                margin-right: 8px;
             }
 
             .total {

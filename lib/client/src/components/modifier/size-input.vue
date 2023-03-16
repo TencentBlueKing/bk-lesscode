@@ -10,33 +10,41 @@
 -->
 
 <template>
-    <div class="bk-form-control control-append-group" :class="isError ? 'king-input-modifier-style-error' : ''">
-        <div class="bk-input-number">
-            <input type="text"
-                style="width: 100%"
-                class="bk-form-input"
-                @keydown="inputKeydownHandler($event)"
-                v-model="renderValue"
-                @input="handleChange" />
-            <span class="input-number-option">
-                <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
-                <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
-            </span>
+    <div class="size-item" :class="{ 'king-input-modifier-style-error': isError, 'size-item-focus': isFocus }">
+        <div class="input-prefix">
+            <span v-if="item.font">{{item.font}}</span>
+            <i v-else :class="`bk-drag-icon ${item.icon}`"></i>
         </div>
-        <div class="group-box group-append">
+        <div>
+            <bk-input type="number"
+                style="width: 62px"
+                class="style-size-input"
+                :placeholder="item.name"
+                v-model="renderValue"
+                @focus="() => isFocus = true"
+                @blur="() => isFocus = false"
+                
+                @input="handleChange" />
+        </div>
+        <div class="input-suffix">
             <slot></slot>
         </div>
     </div>
 </template>
 
 <script>
-    import { validateNaturalNumber, accAdd, accSub } from '@/common/util'
+    import { validateNaturalNumber } from '@/common/util'
+    import { mapGetters } from 'vuex'
 
     export default {
         model: {
             event: 'change'
         },
         props: {
+            item: {
+                type: Object,
+                default: () => ({})
+            },
             value: {
                 type: [String, Number],
                 required: true
@@ -52,6 +60,7 @@
         },
         data () {
             return {
+                isFocus: false,
                 isError: false,
                 // 数字输入框中允许输入的键盘按钮的 keyCode 集合
                 validKeyCodeList: [
@@ -65,6 +74,18 @@
                 ],
                 renderValue: 0
             }
+        },
+        computed: {
+            ...mapGetters('page', ['platform']),
+            extCls () {
+                return this.isMarginStyle ? 'king-select-append-input king-select-margin-style' : 'king-select-append-input'
+            },
+            unitList () {
+                return this.platform === 'PC'
+                    ? ['px', '%']
+                    : ['rpx', '%', 'px']
+            }
+
         },
         watch: {
             value: {
@@ -84,6 +105,10 @@
                 this.isError = false
 
                 this.$emit('change', val)
+            },
+
+            handleChangeUnit () {
+                this.$emit('')
             },
 
             /**
@@ -108,20 +133,57 @@
                     e.preventDefault()
                     this.sub()
                 }
-            },
-
-            add () {
-                this.renderValue = accAdd(this.renderValue, 1)
-                this.handleChange()
-            },
-
-            sub () {
-                if (parseFloat(this.renderValue) <= parseFloat(this.min)) {
-                    return
-                }
-                this.renderValue = accSub(this.renderValue, 1)
-                this.handleChange()
             }
         }
     }
 </script>
+
+<style lang="postcss">
+    .size-item-focus {
+        border-color: #3A84FF !important;
+    }
+    .size-item {
+        display: flex;
+        align-items: center;
+        border: 1px solid #C4C6CC;
+        border-radius: 2px;
+        width: 126px;
+        margin-top: 8px;
+        .input-prefix {
+            display: flex;
+            width: 32px;
+            justify-content: center;
+            i {
+                font-size: 20px;
+            }
+            span {
+                font-size: 12px;
+            }
+        }
+        .unit {
+            display: flex;
+            width: 32px;
+            justify-content: center;
+            i {
+                font-size: 20px;
+            }
+            span {
+                font-size: 12px;
+            }
+        }
+    }
+    .style-size-input {
+        .bk-form-input {
+            border: none;
+            border-left: 1px solid #EAEBF0;
+            border-radius: 0px;
+            padding: 0 4px;
+            &:focus {
+                border-left: 1px solid #EAEBF0 !important;
+            }
+        }
+        .input-number-option {
+            display: none;
+        }
+    }
+</style>

@@ -338,6 +338,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-tixing:before {
 	content: "\e245";
 }
+.bk-drag-yulan:before {
+	content: "\e264";
+}
 .bk-drag-github-logo:before {
 	content: "\e15c";
 }
@@ -988,4 +991,73 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-xuanzhongfuji:before {
 	content: "\e24c";
+}
+.bk-drag-qianjin:before {
+	content: "\e24f";
+}
+.bk-drag-undo-2:before {
+	content: "\e250";
+}
+.bk-drag-tubiao:before {
+	content: "\e24e";
+}
+.bk-drag-zuixiaokuandu:before {
+	content: "\e24d";
+}
+.bk-drag-zuidagaodu:before {
+	content: "\e251";
+}
+.bk-drag-juhe:before {
+	content: "\e252";
+}
+.bk-drag-zuidakuandu:before {
+	content: "\e254";
+}
+.bk-drag-ziti:before {
+	content: "\e253";
+}
+.bk-drag-zuixiaogaodu:before {
+	content: "\e255";
+}
+.bk-drag-zizhong:before {
+	content: "\e256";
+}
+.bk-drag-xinggao:before {
+	content: "\e25a";
+}
+.bk-drag-zitiyangshi:before {
+	content: "\e257";
+}
+.bk-drag-xiahuaxian:before {
+	content: "\e259";
+}
+.bk-drag-shanghuaxian:before {
+	content: "\e258";
+}
+.bk-drag-zhonghuaxian:before {
+	content: "\e25b";
+}
+.bk-drag-suojin:before {
+	content: "\e25d";
+}
+.bk-drag-zijianju:before {
+	content: "\e25c";
+}
+.bk-drag-zuoduiqi-2:before {
+	content: "\e260";
+}
+.bk-drag-juzhongduiqi:before {
+	content: "\e25f";
+}
+.bk-drag-youduiqi-2:before {
+	content: "\e261";
+}
+.bk-drag-liangduanduiqi:before {
+	content: "\e25e";
+}
+.bk-drag-dancijianju:before {
+	content: "\e262";
+}
+.bk-drag-zitidaxiao:before {
+	content: "\e263";
 }

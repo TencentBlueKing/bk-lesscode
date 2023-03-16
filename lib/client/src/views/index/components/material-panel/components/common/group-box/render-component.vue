@@ -1,9 +1,6 @@
 <template>
-    <div class="render-drag-item" :class="displayClass">
-        <div class="component-icon">
-            <i class="bk-drag-icon" :class="data.icon" />
-        </div>
-        <div class="component-name">{{ data.displayName }}</div>
+    <div class="field-item drag-entry" :class="displayClass">
+        <i :class="['bk-drag-icon', 'comp-icon', data.icon]"></i> <span>{{ data.displayName }}</span>
         <slot />
     </div>
 </template>

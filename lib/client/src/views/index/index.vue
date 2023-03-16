@@ -161,7 +161,7 @@
                     target: '#editPageLeftSideBar',
                     entry: () => {
                         // 切换组件树 tab
-                        document.body.querySelector('[role="component-tree-panel-tab"]').click()
+                        document.body.querySelector('[role="tree-panel-tab"]').click()
                     },
                     leave: () => {
                         // 离开时切换到组件选择 tab
