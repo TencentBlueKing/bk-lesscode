@@ -1,17 +1,17 @@
 <template>
     <div class="drag-group-box">
-        <div class="group-title" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
+        <div class="group-name" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
             <i
                 class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                 :class="{
                     floded: isFolded
                 }" />
             <span>{{ groupName }}</span>
-            <div
+            <!-- <div
                 v-if="$slots.tag"
                 class="tag">
                 <slot name="tag" />
-            </div>
+            </div> -->
         </div>
         <template v-if="!isFolded">
             <bk-exception
@@ -24,7 +24,7 @@
             <vue-draggable
                 v-else
                 :options="dragOptions"
-                class="group-content"
+                class="list-wrap"
                 :list="list"
                 :sort="false"
                 :group="dragGroup"
@@ -132,11 +132,117 @@
         }
     }
 </script>
+
 <style lang="postcss">
-    .drag-group-box{
+    .side-panel {
+        position: relative;
+        height: 100%;
+        box-shadow: 1px 0 0 0 #DCDEE5;
+        z-index: 1;
+    }
+
+    .panel-title {
+        padding: 0 16px;
+        height: 44px;
+        line-height: 44px;
+        font-size: 14px;
+        background: #ffffff;
+        border-top: 1px solid #dcdee5;
+        border-bottom: 1px solid #dcdee5;
+    }
+
+    .fields-list-container {
+        height: calc(100% - 56px);
+        overflow: hidden;
+        width: 100%;
+        background: #FFFFFF;
+        box-shadow: 1px 0 0 0 #DCDEE5;
+    }
+
+    .group-name {
+        padding: 0 12px;
+        height: 40px;
+        font-size: 12px;
+        color: #313238;
+        font-weight: Bold;
+        position: relative;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #dde4eb;
+        &:hover{
+            cursor: pointer;
+        }
+        .toggle-arrow {
+            position: absolute;
+            display: block;
+            line-height: 40px;
+            top: 0;
+            left: 0;
+            font-size: 24px;
+            color: #63656E;
+            transition: all .1s linear;
+            margin-right: 8px;
+            &.floded {
+                transform: rotate(-90deg);
+            }
+        }
+        span {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 28px;
+            line-height: 40px;
+        }
+    }
+
+    .list-wrap {
+        display: flex;
+        /* justify-content: space-between; */
+        flex-flow: row wrap;
+        padding-left: 10px;
+        &.disabled {
+            .field-item {
+                cursor: inherit;;
+            }
+        }
+    }
+
+    .field-item {
+        margin: 0 8px 8px 0;
+        padding: 0 4px 0 12px;
+        width: 134px;
+        height: 32px;
+        line-height: 32px;
+        color: #63656e;
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        cursor: move;
+        user-select: none;
+        font-size: 0;
+        span{
+            font-size: 12px;
+        }
+        &:not(.not-available):hover {
+            color: #3a84ff;
+            border-color: #3a84ff;
+        }
+        &.not-available {
+            color: #c4c6cc;
+            border-color: #dcdee5;
+            cursor: not-allowed;
+        }
+    }
+
+    .comp-icon {
+        font-size: 16px;
+        padding-right: 8px;
+    }
+
+    .drag-group-box {
         user-select: none;
         & ~ .drag-group-box{
-            margin-top: 12px;
+            margin-top: 8px;
         }
         .group-title{
             position: relative;

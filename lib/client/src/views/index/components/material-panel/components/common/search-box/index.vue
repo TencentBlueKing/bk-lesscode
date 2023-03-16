@@ -4,6 +4,7 @@
         v-bk-clickoutside="handleHideDropList">
         <bk-input
             ref="input"
+            ext-cls="page-search-input"
             right-icon="bk-icon icon-search"
             :value="keyword"
             :clearable="true"
@@ -196,6 +197,12 @@
         }
     }
 </script>
+<style>
+    .page-search-input input {
+        background-color: #F5F7FA;
+        border-radius: 2px;
+    }
+</style>
 <style lang="postcss" scoped>
     @import "@/css/mixins/scroller";
     @import "@/css/mixins/ellipsis";

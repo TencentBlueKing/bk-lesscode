@@ -10,18 +10,19 @@
 -->
 
 <template>
-    <div class="material-modifier" :style="{ '--width': tabLabelItemWidth }">
+    <div class="material-modifier">
         <template v-if="renderKey">
-            <bk-tab
-                :active="tabPanelActive"
-                type="unborder-card"
-                class="king-tab"
-                @tab-change="handleModifier">
-                <bk-tab-panel
-                    v-for="(tabPanel, panelIndex) in tabPanels"
-                    v-bind="tabPanel"
-                    :key="panelIndex" />
-            </bk-tab>
+            <div class="modifier-tab-container">
+                <div class="tab-div">
+                    <div class="select-tab">
+                        <template v-for="(tabPanel, panelIndex) in tabPanels">
+                            <div :key="panelIndex" @click="handleModifier(tabPanel.name)" class="tab-item" :class="{ 'active-tab': tabPanelActive === tabPanel.name }">
+                                {{tabPanel.label}}
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
             <div
                 ref="container"
                 class="material-modifier-container">
@@ -69,16 +70,15 @@
         data () {
             return {
                 tabPanels: [
-                    { name: 'styles', label: '样式', count: 40 },
-                    { name: 'props', label: '属性', count: 30 },
-                    { name: 'events', label: '事件', count: 20 },
-                    { name: 'directives', label: '指令', count: 10 }
+                    { name: 'styles', label: '样式' },
+                    { name: 'props', label: '属性' },
+                    { name: 'events', label: '事件' },
+                    { name: 'directives', label: '指令' }
                 ],
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
                 renderKey: '',
-                isModifierEmpty: false,
-                tabLabelItemWidth: '25%'
+                isModifierEmpty: false
             }
         },
         computed: {
@@ -105,21 +105,19 @@
 
                 // 目前只有 button 按钮有权限面板
                 if (target.type === 'bk-button') {
-                    this.tabLabelItemWidth = '20%'
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: '样式', count: 40 },
-                        { name: 'props', label: '属性', count: 30 },
-                        { name: 'events', label: '事件', count: 20 },
-                        { name: 'directives', label: '指令', count: 10 },
-                        { name: 'perms', label: '权限', count: 10 }
+                        { name: 'styles', label: '样式' },
+                        { name: 'props', label: '属性' },
+                        { name: 'events', label: '事件' },
+                        { name: 'directives', label: '指令' },
+                        { name: 'perms', label: '权限' }
                     ])
                 } else {
-                    this.tabLabelItemWidth = '25%'
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: '样式', count: 40 },
-                        { name: 'props', label: '属性', count: 30 },
-                        { name: 'events', label: '事件', count: 20 },
-                        { name: 'directives', label: '指令', count: 10 }
+                        { name: 'styles', label: '样式' },
+                        { name: 'props', label: '属性' },
+                        { name: 'events', label: '事件' },
+                        { name: 'directives', label: '指令' }
                     ])
                 }
             }
@@ -167,33 +165,32 @@
     @import "@/css/variable";
 
     .material-modifier {
-        .bk-tab.king-tab {
-            .bk-tab-header {
-                height: 47px;
-                border-bottom: 1px solid $boxBorderColor;
-                .bk-tab-label-wrapper {
-                    background: #fff;
-                    .bk-tab-label-list {
-                        width: 100%;
-                        height: 100%;
-                        padding: 0 20px;
-                        .bk-tab-label-item {
-                            width: calc(var(--width));
-                            line-height: 46px;
-                            min-width: auto;
-                            padding: 0 2px;
-                            &.active::after {
-                                left: 16%;
-                                width: 68%;
-                            }
-                        }
+        .modifier-tab-container {
+            height: 49px;
+            background: #fff;
+            padding: 8px 12px;
+            border-bottom: 1px solid $boxBorderColor;
+            .tab-div {
+                background: #F0F1F5;
+                padding: 4px 5px;
+                border-radius: 2px;
+                .select-tab {
+                    display: flex;
+                    .tab-item {
+                        flex: 1;
+                        font-size: 12px;
+                        color: #63656E;
+                        height: 24px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                    }
+                    .active-tab {
+                        background: #fff;
                     }
                 }
             }
-            .bk-tab-section {
-                padding: 0;
-            }
-
         }
         .material-modifier-container {
             @mixin scroller;
