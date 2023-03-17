@@ -11,14 +11,14 @@
             class="api-form-home"
             slot="content"
         >
-            <h3 class="api-form-title">基本设置</h3>
+            <h3 class="api-form-title">{{ $t('基本设置') }}</h3>
             <render-basic
                 class="api-form"
                 ref="basicRef"
                 :form-data="formData"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">默认请求参数</h3>
+            <h3 class="api-form-title">{{ $t('默认请求参数') }}</h3>
             <render-param
                 class="api-form"
                 ref="paramRef"
@@ -26,16 +26,14 @@
                 @update="handleUpdate"
             />
             <h3 class="api-form-title">
-                默认请求响应
+                {{ $t('默认请求响应') }}
                 <bk-button
                     class="api-response-button"
                     size="small"
                     :loading="isLoadingResponse"
-                    v-bk-tooltips="{
-                        content: '立即发送请求来获取请求响应，响应示例去除了数组中重复的部分。可以在响应结果字段提取中进行二次编辑'
-                    }"
+                    :v-bk-tooltips="$t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑')"
                     @click="getApiResponse"
-                >获取请求响应</bk-button>
+                >{{ $t('获取请求响应') }}</bk-button>
             </h3>
             <render-response
                 class="api-form"
@@ -54,10 +52,10 @@
                 class="mr10"
                 :loading="isSubmitting"
                 @click="submitApi"
-            >提交</bk-button>
+            >{{ $t('提交') }}</bk-button>
             <bk-button
                 @click="confirmClose"
-            >取消</bk-button>
+            >{{ $t('取消') }}</bk-button>
         </section>
     </bk-sideslider>
 </template>
@@ -134,8 +132,8 @@
             const confirmClose = () => {
                 if (formChanged.value) {
                     instance.proxy.$bkInfo({
-                        title: '请确认是否关闭',
-                        subTitle: '存在未保存的 API，关闭后不会保存更改',
+                        title: window.i18n.t('请确认是否关闭'),
+                        subTitle: window.i18n.t('存在未保存的 API，关闭后不会保存更改'),
                         confirmFn: handleClose
                     })
                 } else {
