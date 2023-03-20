@@ -169,7 +169,7 @@
                 this.$emit('on-change', categoryId)
             },
             handleShowCreate (event) {
-                const $target = getParentByRole(event.path, 'operation')
+                const $target = getParentByRole(event.path || event.composedPath(), 'operation')
                 const { top, left } = $target.getBoundingClientRect()
                 this.operationPosition = {
                     top,

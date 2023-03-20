@@ -306,8 +306,6 @@
                 margin-top: 9px;
             }
             .table-item {
-                width: 330px;
-                overflow: hidden;
                 padding: 0 15px;
                 height: 40px;
                 line-height: 19px;
@@ -326,7 +324,7 @@
                 }
             }
             .table-item-name {
-                @mixin ellipsis 100%, inline-block;
+                @mixin ellipsis 330px;
                 line-height: 19px;
                 flex: 1;
                 .bk-drag-data-table {
