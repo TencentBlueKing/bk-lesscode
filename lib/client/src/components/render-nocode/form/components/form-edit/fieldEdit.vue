@@ -265,7 +265,6 @@
                 <template v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
                     <bk-form-item ext-cls="default-val" label="默认值">
                         <default-value
-                            
                             :field="fieldData"
                             :disabled="disabled"
                             @change="handleDefaultValChange">
@@ -279,6 +278,13 @@
                         </association-value>
                     </bk-form-item>
                 </template>
+                <!-- 计算组件 -->
+                <bk-form-item label="计算类型" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
+                    <ComputeEdit
+                        :field="fieldData"
+                        @change="updateFieldData" />
+                </bk-form-item>
+               
                 <bk-form-item label="填写说明" v-if="!handleIsFolded">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
@@ -350,6 +356,7 @@
     import ConfigDescCompValueDialog from './configDescCompValueDialog'
     import TableHeaderSetting from './tableHeaderSetting.vue'
     import RichText from '@/components/flow-form-comp/form/fields/richText.vue'
+    import ComputeEdit from './components/computeEdit/index.vue'
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
@@ -372,7 +379,8 @@
             ShowTypeDialog,
             DataSourceDialog,
             ConfigDescCompValueDialog,
-            RichText
+            RichText,
+            ComputeEdit
         },
         model: {
             prop: 'value',

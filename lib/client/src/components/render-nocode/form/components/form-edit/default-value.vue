@@ -8,6 +8,7 @@
         </bk-input>
         
         <bk-select
+            :key="field.key"
             v-else-if="['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(field.type)"
             v-model="localVal"
             :multiple="['MULTISELECT', 'CHECKBOX'].includes(field.type)"
