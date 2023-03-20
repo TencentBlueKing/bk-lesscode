@@ -95,7 +95,7 @@
             },
             async freshList () {
                 try {
-                    const { url, key = 'id', value = 'name', isGroup = false } = this.payload
+                    const { url, key = 'id', value = 'name', isGroup = false, groupChildren = 'children' } = this.payload
                     console.log(this.payload, 8876)
                     if (!url) {
                         this.renderList = []
@@ -120,7 +120,7 @@
                         ...item,
                         id: item[key],
                         name: item[value],
-                        children: getChildren(item.children)
+                        children: getChildren(item[groupChildren])
                     }))
                     console.log(this.renderList, res.data?.data || res.data || [])
                 } catch (e) {
