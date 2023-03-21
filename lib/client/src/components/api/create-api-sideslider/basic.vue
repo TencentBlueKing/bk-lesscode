@@ -6,7 +6,7 @@
         :model="formData"
     >
         <bk-form-item
-            label="名称"
+            :label="$t('名称')"
             property="name"
             error-display-type="normal"
             :required="true"
@@ -17,13 +17,13 @@
             v-bkloading="{ isLoading: isLoadingApi }"
         >
             <bk-input
-                placeholder="请输入名称"
+                :placeholder="$t('请输入名称')"
                 :value="formData.name"
                 @change="update('name', ...arguments)"
             ></bk-input>
         </bk-form-item>
         <bk-form-item
-            label="标识"
+            :label="$t('标识')"
             property="code"
             error-display-type="normal"
             :required="true"
@@ -35,14 +35,14 @@
             v-bkloading="{ isLoading: isLoadingApi }"
         >
             <bk-input
-                placeholder="请输入标识，由大小写英文字母组成"
+                :placeholder="$t('请输入标识，由大小写英文字母组成')"
                 :value="formData.code"
                 :disabled="!!formData.id"
                 @change="update('code', ...arguments)"
             ></bk-input>
         </bk-form-item>
         <bk-form-item
-            label="分类"
+            :label="$t('分类')"
             property="categoryId"
             error-display-type="normal"
             :required="true"
@@ -66,7 +66,7 @@
             </bk-select>
         </bk-form-item>
         <bk-form-item
-            label="接口路径"
+            :label="$t('接口路径')"
             property="url"
             error-display-type="normal"
             :required="true"
@@ -90,7 +90,7 @@
                 </bk-select>
                 <bk-input
                     class="compose-url"
-                    placeholder="请输入接口地址"
+                    :placeholder="$t('请输入接口地址')"
                     :value="formData.url"
                     @change="update('url', ...arguments)"
                 ></bk-input>
@@ -103,19 +103,19 @@
                 :true-value="1"
                 :false-value="0"
                 :value="formData.withToken"
-                v-bk-tooltips="{
-                    content: '勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）'
+                :v-bk-tooltips="{
+                    content: $t('勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）')
                 }"
                 @change="update('withToken', ...arguments)"
-            >蓝鲸应用认证</bk-checkbox>
+            >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
         </bk-form-item>
         <bk-form-item
-            label="备注"
+            :label="$t('备注')"
             property="summary"
         >
             <bk-input
                 type="textarea"
-                placeholder="请输入备注"
+                :placeholder="$t('请输入备注')"
                 :value="formData.summary"
                 @change="update('summary', ...arguments)"
             ></bk-input>
@@ -212,7 +212,7 @@
             const getRequireRule = (name) => {
                 return {
                     required: true,
-                    message: `${name}是必填项，请修改后重试`,
+                    message: window.i18n.t('{0}是必填项，请修改后重试', [name]),
                     trigger: 'blur'
                 }
             }
@@ -220,7 +220,7 @@
             const getCodeRule = () => {
                 return {
                     validator: (val) => /^[A-Za-z]*$/.test(val),
-                    message: '由大小写英文字母组成',
+                    message: window.i18n.t('由大小写英文字母组成'),
                     trigger: 'blur'
                 }
             }
@@ -228,7 +228,7 @@
             const getCodeRepeatRule = () => {
                 return {
                     validator: (val) => !apiList.value.find(api => api.code === val && api.id !== props.formData.id),
-                    message: '标识在当前应用下重复，请修改后重试',
+                    message: window.i18n.t('标识在当前应用下重复，请修改后重试'),
                     trigger: 'blur'
                 }
             }
@@ -236,7 +236,7 @@
             const getNameRepeatRule = () => {
                 return {
                     validator: (val) => !apiList.value.find(api => api.name === val && api.id !== props.formData.id),
-                    message: '名称在当前应用下重复，请修改后重试',
+                    message: window.i18n.t('名称在当前应用下重复，请修改后重试'),
                     trigger: 'blur'
                 }
             }

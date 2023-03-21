@@ -88,9 +88,9 @@
             }
         },
         created () {
-            this.applyText = '去申请'
-            this.appliedText = '已申请'
-            this.cancelText = '取消'
+            this.applyText = this.$t('去申请')
+            this.appliedText = this.$t('已申请')
+            this.cancelText = this.$t('取消')
         },
         methods: {
             /**

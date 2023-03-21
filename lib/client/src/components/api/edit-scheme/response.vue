@@ -54,8 +54,8 @@
 
         setup (props, { emit }) {
             const tabs = [
-                { name: 'response', label: '响应示例' },
-                { name: 'edit', label: '响应结果字段提取' }
+                { name: 'response', label: window.i18n.t('响应示例') },
+                { name: 'edit', label: window.i18n.t('响应结果字段提取') }
             ]
             const currentInstance = getCurrentInstance()
             const activeTab = ref('response')
