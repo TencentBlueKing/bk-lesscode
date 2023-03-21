@@ -39,7 +39,7 @@
         },
         data () {
             return {
-                app: {},
+                // app: {},
                 apiPrefix: `${process.env.BK_AJAX_URL_PREFIX}/bkvision/`,
                 cdnPrefix: 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/latest/'
             }
@@ -64,6 +64,8 @@
                 await this.loadScript('chunk-vendors.js')
                 await this.loadScript('chunk-bk-magic-vue.js')
                 await this.loadScript('main.js')
+
+                this.initPanel()
             },
             loadScript (file) {
                 return new Promise((resolve, reject) => {
@@ -80,7 +82,7 @@
             initPanel () {
                 if (window.BkVisionSDK) {
                     this.app = this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, {
-                        apiPrefix: '/api/bkvision/'
+                        apiPrefix: this.apiPrefix
                         // waterMark: { content: this.watchWark },
                         // isFullScroll: this.isFullScroll,
                         // isShowTools: this.isShowTools,
