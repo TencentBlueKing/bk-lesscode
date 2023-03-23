@@ -64,7 +64,7 @@
                 await this.loadScript('chunk-vendors.js')
                 await this.loadScript('chunk-bk-magic-vue.js')
                 await this.loadScript('main.js')
-
+                console.log('begin init')
                 this.initPanel()
             },
             loadScript (file) {
@@ -81,6 +81,7 @@
             },
             initPanel () {
                 if (window.BkVisionSDK) {
+                    console.log('init bk-vision')
                     this.app = this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, {
                         apiPrefix: this.apiPrefix
                         // waterMark: { content: this.watchWark },
@@ -89,6 +90,7 @@
                         // isShowRefresh: this.isShowRefresh,
                         // isShowTimeRange: this.isShowTimeRange
                     })
+                    console.log(this.app, 'app inst')
                 } else {
                     console.error('sdk 加载异常')
                 }

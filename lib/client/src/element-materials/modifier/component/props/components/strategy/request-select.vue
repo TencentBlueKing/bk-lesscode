@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <bk-select style="width: 100%" v-model="renderValue" :loading="isLoading" :clearable="true" :searable="true" @change="handleChange" @toggle="toggleVisible">
+    <bk-select style="width: 100%" v-model="renderValue" :loading="isLoading" :clearable="true" searchable @change="handleChange" @toggle="toggleVisible">
         <template v-if="payload.isGroup">
             <bk-option-group
                 v-for="(group, index) in renderList"
@@ -85,7 +85,6 @@
             }
         },
         created () {
-            console.log(this.describe, 'request-select', 8875)
             const renderDescribe = cloneDeep(this.describe)
             this.payload = renderDescribe.payload || {}
         },
@@ -96,14 +95,12 @@
             async freshList () {
                 try {
                     const { url, key = 'id', value = 'name', isGroup = false, groupChildren = 'children' } = this.payload
-                    console.log(this.payload, 8876)
                     if (!url) {
                         this.renderList = []
                         return
                     }
                     this.isLoading = true
                     const res = await this.$http.get(url)
-                    console.log(res, 4522)
 
                     // 分组时处理children
                     const getChildren = (children) => {
