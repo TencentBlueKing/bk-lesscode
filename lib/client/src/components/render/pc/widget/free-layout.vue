@@ -12,11 +12,9 @@
 <template>
     <div
         :ref="componentData.componentId"
-        :class="{
-            [$style['free-layout']]: true,
-            [$style['empty']]: componentData.children.length < 1
-        }"
+        :class="$style['free-layout']"
         :style="componentData.style">
+        <span :class="$style['empty']" v-if="componentData.children.length < 1">{{$t('请拖入组件')}}</span>
         <Draggable
             :component-data="componentData"
             :list="componentData.slot.default"
@@ -232,23 +230,20 @@
         border: 1px dashed #ccc;
         /* 如果基础的 slot 可以拖拽需要设置这个屏蔽掉基础组件上面的 pointer-events: none 效果 */
         pointer-events: all;
-        &.empty{
+        .empty{
             background: #FAFBFD;
-            &::before{
-                content: "请拖入组件";
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 14px;
-                color: #C4C6CC;
-                pointer-events: all;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #C4C6CC;
+            pointer-events: all;
             }
-        }
     }
     .wrapper{
         & > [align-horizontal-left] {

@@ -1,7 +1,7 @@
 <template>
     <div :class="$style['area-wrapper']" id="mobileDrawContent">
         <div :class="$style['title']">
-            <span :class="$style['title-text']">编辑区</span>
+            <span :class="$style['title-text']">{{ $t('编辑区') }}</span>
             <div :class="$style['edit-button']">
                 <bk-dropdown-menu trigger="click">
                     <div

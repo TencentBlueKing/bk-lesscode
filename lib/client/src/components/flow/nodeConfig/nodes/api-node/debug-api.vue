@@ -1,13 +1,13 @@
 <template>
     <section class="debug-api-wrapper">
-        <bk-button class="trigger-btn" size="small" :loading="debugCalling" @click="callDebugFunction">调试API</bk-button>
+        <bk-button class="trigger-btn" size="small" :loading="debugCalling" @click="callDebugFunction">{{ $t('调试API') }}</bk-button>
         <bk-dialog
             v-model="dialogShow"
             width="700"
             header-position="left"
-            title="请求响应示例"
-            ok-text="提取响应字段"
-            cancel-text="关闭"
+            :title="$t('请求响应示例')"
+            :ok-text="$t('提取响应字段')"
+            :cancel-text="$t('关闭')"
             :auto-close="false"
             :quick-close="false"
             @confirm="handleExtractFields"
@@ -46,7 +46,7 @@
                 if (!url) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '请填写请求地址'
+                        message: this.$t('请填写请求地址')
                     })
                     return
                 }
@@ -82,7 +82,7 @@
                     }
                     const response = await this.$store.dispatch('nocode/flow/debugFlowApi', data)
                     if (response.errcode) {
-                        const errMessage = response.errmsg || '调试API请求失败，请记录请求参数联系管理员'
+                        const errMessage = response.errmsg || this.$t('调试API请求失败，请记录请求参数联系管理员')
                         this.$bkMessage({
                             theme: 'error',
                             message: errMessage

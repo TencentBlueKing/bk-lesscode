@@ -14,7 +14,7 @@
                     <field-item
                         v-if="isSelectComp(item.type)"
                         style="background: #ffffff"
-                        :placeholder="`请选择${item.name}`"
+                        :placeholder="$t('请选择{0}', [item.name])"
                         :field="item"
                         :show-label="false"
                         :value="localVal[item.key]"
@@ -25,7 +25,7 @@
                         style="width: 100%;"
                         type="daterange"
                         format="yyyy-MM-dd HH:mm:ss"
-                        :placeholder="`请输入${item.name}`"
+                        :placeholder="$t('请输入{0}', [item.name])"
                         :value="localVal[item.key]"
                         @change="handleDateTypeValChange(item.key, $event)">
                     </bk-date-picker>
@@ -33,15 +33,15 @@
                         v-else
                         v-model="localVal[item.key]"
                         style="width: 100%;"
-                        :placeholder="`请输入${item.name}`"
+                        :placeholder="$t('请输入{0}', [item.name])"
                         :type="item.type === 'INT' ? 'number' : 'text'"
                     />
                 </bk-form-item>
             </div>
         </bk-form>
         <div class="search-area">
-            <bk-button style="margin-right: 4px;" theme="primary" @click="update">查询</bk-button>
-            <bk-button @click="handleReset">重置</bk-button>
+            <bk-button style="margin-right: 4px;" theme="primary" @click="update">{{ $t('查询') }}</bk-button>
+            <bk-button @click="handleReset">{{ $t('重置') }}</bk-button>
         </div>
     </div>
 </template>
@@ -97,7 +97,7 @@
                         // 选择值类型的字段统一用select组件来做筛选
                         if (this.isSelectComp(fieldCopy.type)) {
                             fieldCopy.type = ['MULTISELECT', 'CHECKBOX'].includes(fieldCopy.type) ? 'MULTISELECT' : 'SELECT'
-                            fieldCopy.placeholder = `请选择${fieldCopy.name}`
+                            fieldCopy.placeholder = this.$t('请选择{0}', [fieldCopy.name])
                         }
                         filterFields.push(fieldCopy)
                         localVal[fieldCopy.key] = key in this.value ? cloneDeep(this.value[key]) : ''

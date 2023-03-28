@@ -12,10 +12,7 @@
 <template>
     <draggable
         ref="draggable"
-        :class="{
-            [$style['block']]: true,
-            [$style['empty']]: componentData.children.length < 1
-        }"
+        :class="$style['block']"
         :sort="true"
         :list="componentData.slot.default"
         :component-data="componentData"
@@ -27,6 +24,7 @@
                 'component'
             ]
         }">
+        <div :class="$style['empty']" v-if=" componentData.children.length < 1">{{$t('请拖入组件')}}</div>
         <resolve-component
             v-for="slotComponentData in componentData.slot.default"
             ref="component"
@@ -108,23 +106,20 @@
     .block{
         position: relative;
         border: 1px dashed #ccc;
-        &.empty{
+        .empty{
             min-height: 34px !important;
             background: #FAFBFD;
-            &::before{
-                content: "请拖入组件";
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 14px;
-                color: #C4C6CC;
-                pointer-events: all;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #C4C6CC;
+            pointer-events: all;
             }
-        }
     }
 </style>

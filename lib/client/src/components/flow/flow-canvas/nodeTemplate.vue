@@ -5,9 +5,9 @@
         @mousedown="onMousedown"
         @contextmenu.prevent="handleContextMenuClick">
         <!-- 开始节点 -->
-        <div v-if="node.type === 'START'" class="start-node"><div class="text">开始</div></div>
+        <div v-if="node.type === 'START'" class="start-node"><div class="text">{{ $t('开始') }}</div></div>
         <!-- 结束节点 -->
-        <div v-else-if="node.type === 'END'" class="end-node"><div class="text">结束</div></div>
+        <div v-else-if="node.type === 'END'" class="end-node"><div class="text">{{ $t('结束') }}</div></div>
         <!-- 并行网关 -->
         <div v-else-if="node.type === 'ROUTER-P'" class="gateway-node">
             <i class="bk-drag-icon bk-drag-parallel"></i>
@@ -34,21 +34,20 @@
                             @click="$emit('preview')">
                         </i>
                         <div id="create-ticket-page-tips">
-                            <span>已生成流程提单页</span>
-                            <bk-button style="padding: 0" size="small" :text="true" @click="$emit('preview')">预览</bk-button>
+                            <span>{{ $t('已生成流程提单页') }}</span>
+                            <bk-button style="padding: 0" size="small" :text="true" @click="$emit('preview')">{{ $t('预览') }}</bk-button>
                         </div>
                     </span>
-                    <span v-if="node.nodeInfo && node.nodeInfo.extras.data_source_id" class="system-add-icon">系统</span>
+                    <span v-if="node.nodeInfo && node.nodeInfo.extras.data_source_id" class="system-add-icon">{{ $t('系统') }}</span>
                 </div>
                 <p class="desc">
                     <span v-if="isDraft" style="color: #c4c6cc;">
-                        点击配置
-                    </span>
+                        {{ $t('点击配置') }} </span>
                     <template v-else>
-                        <span v-if="node.type === 'NORMAL'">处理人：{{ getProcessorName() }}</span>
-                        <span v-else-if="node.type === 'APPROVAL'">类型：{{ approvalType }} 处理人: {{ getProcessorName() }}</span>
+                        <span v-if="node.type === 'NORMAL'">{{ $t('处理人:') }}{{ getProcessorName() }}</span>
+                        <span v-else-if="node.type === 'APPROVAL'">{{$t('类型:') }} {{ approvalType }} {{ $t('处理人:') }} {{ getProcessorName() }}</span>
                         <span v-else-if="node.type === 'DATA_PROC'">
-                            目标表：{{ (node.nodeInfo && node.nodeInfo.extras.dataManager && node.nodeInfo.extras.dataManager.tableName) || '--' }}
+                            {{$t('目标表:')}}{{ (node.nodeInfo && node.nodeInfo.extras.dataManager && node.nodeInfo.extras.dataManager.tableName) || '--' }}
                         </span>
                         <span v-else-if="node.type === 'TASK'">
                             API：{{ (node.nodeInfo && node.nodeInfo.extras.api_info && node.nodeInfo.extras.api_info.url) || '--' }}
@@ -58,8 +57,8 @@
                 <i class="bk-drag-icon bk-drag-edit node-edit-icon" @click.stop="handleNodeClick"></i>
             </div>
             <div class="action-desc-area" v-if="!single && !hideNodeGuide && node.nodeInfo && node.nodeInfo.is_builtin">
-                <p><span>单击：</span>快速配置节点</p>
-                <p><span>右键：</span>调出快速添加节点菜单</p>
+                <p><span>{{ $t('单击：') }}</span>{{ $t('快速配置节点') }}</p>
+                <p><span>{{ $t('右键：') }}</span>{{ $t('调出快速添加节点菜单') }}</p>
                 <i class="bk-icon icon-close" @click.stop="closeNodeGuide"></i>
             </div>
         </div>
@@ -83,14 +82,12 @@
                 <span
                     :class="['action-item', { disabled: ['ROUTER-P', 'COVERAGE'].includes(node.type) }]"
                     @click.stop="$emit('onNodeClick', node)">
-                    配置
-                </span>
-                <span class="action-item" @click.stop="$emit('cloneNode', node.nodeInfo.id)">复制</span>
+                    {{ $t('配置') }} </span>
+                <span class="action-item" @click.stop="$emit('cloneNode', node.nodeInfo.id)">{{ $t('复制') }}</span>
                 <span
                     :class="['action-item', { disabled: node.nodeInfo && node.nodeInfo.is_builtin }]"
                     @click.stop="handleDeleteNode">
-                    删除
-                </span>
+                    {{ $t('删除') }} </span>
             </div>
         </div>
     </div>
@@ -147,9 +144,9 @@
             approvalType () {
                 if (this.node.nodeInfo) {
                     if (this.node.nodeInfo.is_multi) {
-                        return this.node.nodeInfo.is_sequential ? '顺序会签' : '随机会签'
+                        return this.node.nodeInfo.is_sequential ? this.$t('顺序会签') : this.$t('随机会签')
                     }
-                    return '或签'
+                    return this.$t('或签')
                 }
                 return '--'
             }

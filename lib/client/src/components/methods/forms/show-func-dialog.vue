@@ -7,7 +7,7 @@
         <section class="source-code">
             <section class="func-form-main">
                 <section class="func-form-wrapper">
-                    <h3 class="func-form-title">源码预览</h3>
+                    <h3 class="func-form-title">{{ $t('源码预览') }}</h3>
                     <form-name :form.sync="form" form-type="vertical" disabled></form-name>
                     <form-detail :form.sync="form" form-type="vertical" disabled></form-detail>
                     <form-summary :form.sync="form" form-type="vertical" disabled></form-summary>

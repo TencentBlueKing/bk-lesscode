@@ -48,8 +48,8 @@
             ></form-monaco>
         </section>
         <section slot="footer" class="add-footer">
-            <bk-button theme="primary" @click="handleSubmit" :loading="isSubmitting">提交</bk-button>
-            <bk-button @click="handleClose">取消</bk-button>
+            <bk-button theme="primary" @click="handleSubmit" :loading="isSubmitting">{{ $t('提交') }}</bk-button>
+            <bk-button @click="handleClose">{{ $t('取消') }}</bk-button>
         </section>
     </bk-sideslider>
 </template>
@@ -132,7 +132,7 @@
                 this.isSubmitting = true
                 this.editFunction(form).then(() => {
                     this.formChanged = false
-                    this.messageSuccess('编辑函数成功')
+                    this.messageSuccess(this.$t('编辑函数成功'))
                     this.handleClose()
                     this.$emit('success-submit')
                 }).catch((err) => {
@@ -161,7 +161,7 @@
                     versionId: this.currentVersionId
                 }).then(() => {
                     this.formChanged = false
-                    this.messageSuccess('新增函数成功')
+                    this.messageSuccess(this.$t('新增函数成功'))
                     this.handleClose()
                     this.$emit('success-submit')
                 }).catch((err) => {
@@ -189,8 +189,8 @@
                 }
                 if (this.formChanged) {
                     this.$bkInfo({
-                        title: '请确认是否关闭',
-                        subTitle: '存在未保存的函数，关闭后不会保存更改',
+                        title: this.$t('请确认是否关闭'),
+                        subTitle: this.$t('存在未保存的函数，关闭后不会保存更改'),
                         confirmFn
                     })
                 } else {

@@ -84,7 +84,7 @@
                     const responseParam = parseValue2Scheme(responseValue)
                     handleUpdate(responseParam)
                 } catch (error) {
-                    console.error(`输入有误，请重新输入：${error.message}`)
+                    console.error(window.i18n.t('输入有误，请重新输入：{0}', [error.message]))
                 }
             }
 

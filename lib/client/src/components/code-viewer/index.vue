@@ -12,7 +12,7 @@
 <template>
     <div :class="[$style['code-viewer'], { [$style['fullscreen']]: isFullscreen }]">
         <div :class="$style['toolbar']">
-            <p><span v-if="pageType === 'json'">仅包含页面内容区域JSON数据</span></p>
+            <p><span v-if="pageType === 'json'">{{ $t('仅包含页面内容区域JSON数据') }}</span></p>
             <div :class="$style['buttons']">
                 <i v-bk-tooltips="{ boundary: 'window', content: `复制${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
                 <i v-bk-tooltips="{ boundary: 'window', content: `下载${typeName}` }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
@@ -61,7 +61,7 @@
         },
         computed: {
             typeName () {
-                return this.pageType === 'json' ? 'JSON' : '源码'
+                return this.pageType === 'json' ? 'JSON' : this.$t('源码')
             }
         },
         mounted () {
@@ -96,7 +96,7 @@
                 const el = document.querySelector(`.${this.$style['code-viewer']}`)
                 if (!screenfull.isEnabled) {
                     this.$bkMessage({
-                        message: '浏览器不支持全屏',
+                        message: this.$t('浏览器不支持全屏'),
                         theme: 'error'
                     })
                     return false
@@ -119,7 +119,7 @@
                     document.getSelection().removeAllRanges()
                     document.getSelection().addRange(selected)
                 }
-                this.$bkMessage({ theme: 'primary', message: '复制成功', delay: 2000, dismissable: false })
+                this.$bkMessage({ theme: 'primary', message: this.$t('复制成功'), delay: 2000, dismissable: false })
             }
         }
     }

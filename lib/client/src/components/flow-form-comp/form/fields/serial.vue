@@ -1,8 +1,7 @@
 <!-- 自动编号 -->
 <template>
     <div>
-        自动编号
-    </div>
+        {{ $t('自动编号') }} </div>
 </template>
 
 <script>

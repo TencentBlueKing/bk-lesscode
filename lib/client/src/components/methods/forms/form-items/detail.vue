@@ -1,6 +1,6 @@
 <template>
     <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
-        <bk-form-item label="函数类型" property="funcType" class="func-form-item">
+        <bk-form-item :label="$t('函数类型')" property="funcType" class="func-form-item">
             <bk-radio-group
                 :value="form.funcType"
                 @change="(funcType) => updateValue({ funcType })"
@@ -22,13 +22,13 @@
             </bk-radio-group>
         </bk-form-item>
         <bk-form-item
-            label="函数调用参数"
+            :label="$t('函数调用参数')"
             ref="funcParams"
             property="funcParams"
             error-display-type="normal"
             class="func-form-item"
-            :rules="[getParamRule('函数调用参数')]"
-            :desc="{ width: 350, content: '调用该函数传入的参数列表，如果函数用于组件事件，则这里是组件事件回调的参数，组件事件回调参数具体可见组件文档。' }">
+            :rules="[getParamRule($t('函数调用参数'))]"
+            :desc="{ width: 350, content: $t('调用该函数传入的参数列表，如果函数用于组件事件，则这里是组件事件回调的参数，组件事件回调参数具体可见组件文档。') }">
             <dynamic-tag
                 :disabled="disabled"
                 v-model="form.funcParams"
@@ -40,7 +40,7 @@
                 label="Api"
                 property="apiChoosePath"
                 error-display-type="normal"
-                desc="使用 Api 管理的 api 做为模板，快速生成远程函数"
+                :desc="$t('使用 Api 管理的 api 做为模板，快速生成远程函数')"
                 class="func-form-item"
             >
                 <choose-api
@@ -51,13 +51,13 @@
             </bk-form-item>
             <bk-form-item
                 ref="funcApiUrl"
-                label="请求地址"
+                :label="$t('请求地址')"
                 property="funcApiUrl"
                 error-display-type="normal"
                 class="func-form-item"
-                desc="1. 请求地址中可以使用 {变量标识} 的格式来使用变量。<br> 2. 应用自建 API 和 数据表操作 API 的地址不可修改，每次执行实时获取 API 地址 <br> 3. 如果地址中有*，表示可以匹配任意字符串，请替换成真实的路径"
+                :desc="$t('1. 请求地址中可以使用 {变量标识} 的格式来使用变量。<br> 2. 应用自建 API 和 数据表操作 API 的地址不可修改，每次执行实时获取 API 地址 <br> 3. 如果地址中有*，表示可以匹配任意字符串，请替换成真实的路径')"
                 :required="true"
-                :rules="[requireRule('请求地址')]"
+                :rules="[requireRule($t('请求地址'))]"
             >
                 <bk-input
                     v-bkloading="{ isLoading: isLoadingUrl }"
@@ -67,12 +67,12 @@
                 ></bk-input>
             </bk-form-item>
             <bk-form-item
-                label="请求类型"
+                :label="$t('请求类型')"
                 property="funcMethod"
                 error-display-type="normal"
                 class="func-form-item"
                 :required="true"
-                :rules="[requireRule('请求类型')]"
+                :rules="[requireRule($t('请求类型'))]"
             >
                 <bk-select
                     :value="form.funcMethod"
@@ -94,20 +94,20 @@
                     :false-value="0"
                     :value="form.withToken"
                     v-bk-tooltips="{
-                        content: '勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）'
+                        content: $t('勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）')
                     }"
                     @change="(withToken) => updateValue({ withToken })"
-                >蓝鲸应用认证</bk-checkbox>
+                >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
             </bk-form-item>
             <bk-button
                 class="get-remote-response bk-form-item func-form-item"
                 size="small"
                 :loading="isLoadingResponse"
                 @click="getRemoteResponse"
-            >获取接口返回数据</bk-button>
+            >{{ $t('获取接口返回数据') }}</bk-button>
             <bk-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
-                label="请求参数"
+                :label="$t('请求参数')"
                 property="remoteParams"
                 error-display-type="normal"
                 class="func-form-item">
@@ -121,7 +121,7 @@
             </bk-form-item>
             <bk-form-item
                 v-else
-                label="请求参数"
+                :label="$t('请求参数')"
                 property="remoteParams"
                 error-display-type="normal"
                 class="func-form-item">
@@ -135,13 +135,13 @@
                 </body-params>
             </bk-form-item>
             <bk-form-item
-                label="接口返回数据参数名"
+                :label="$t('接口返回数据参数名')"
                 ref="remoteParams"
                 property="remoteParams"
                 error-display-type="normal"
-                desc="该参数用于接收Api返回数据，在函数中直接可使用该变量名来操作Api返回数据"
+                :desc="$t('该参数用于接收Api返回数据，在函数中直接可使用该变量名来操作Api返回数据')"
                 class="func-form-item"
-                :rules="[getParamRule('接口返回数据参数名')]">
+                :rules="[getParamRule($t('接口返回数据参数名'))]">
                 <dynamic-tag
                     :disabled="disabled"
                     v-model="form.remoteParams"
@@ -151,7 +151,7 @@
         </template>
         <bk-dialog
             width="1000"
-            title="查看接口返回值"
+            :title="$t('查看接口返回值')"
             v-model="showFuncResponse.show"
         >
             <monaco
@@ -216,8 +216,8 @@
         data () {
             return {
                 tempList: [
-                    { id: FUNCTION_TYPE.EMPTY, name: '空白函数' },
-                    { id: FUNCTION_TYPE.REMOTE, name: '远程函数', info: '建议以下几种情况使用 "远程函数":<br>1、远程API需要携带用户登录态认证<br>2、远程API无法跨域或纯前端访问' }
+                    { id: FUNCTION_TYPE.EMPTY, name: this.$t('空白函数') },
+                    { id: FUNCTION_TYPE.REMOTE, name: this.$t('远程函数'), info: this.$t('建议以下几种情况使用 "远程函数":<br>1、远程API需要携带用户登录态认证<br>2、远程API无法跨域或纯前端访问') }
                 ],
                 isLoadingResponse: false,
                 METHODS_WITHOUT_DATA,
@@ -316,7 +316,7 @@
                             if (variable) {
                                 return getVariableValue(variable)
                             } else {
-                                throw new Error(`函数请求地址里引用的变量【${variableCode}】不存在，请检查并创建该变量`)
+                                throw new Error(this.$t('函数请求地址里引用的变量【{0}】不存在，请检查并创建该变量', [variableCode]))
                             }
                         })
                         const httpData = {
@@ -348,7 +348,7 @@
             getParamRule (label) {
                 return {
                     validator: (val) => (val.length <= 0 || val.every(x => /^[A-Za-z]+$/.test(x))),
-                    message: `${label}由大小写英文字母组成`,
+                    message: this.$t('{0}由大小写英文字母组成', [label]),
                     trigger: 'blur'
                 }
             }

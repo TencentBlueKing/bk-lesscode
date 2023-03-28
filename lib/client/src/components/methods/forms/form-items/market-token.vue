@@ -5,7 +5,7 @@
                 :false-value="0"
                 v-model="copyForm.withToken"
                 @change="(val) => updateValue('withToken', val)"
-            >蓝鲸应用认证</bk-checkbox>
+            >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
         </bk-form-item>
     </bk-form>
 </template>
