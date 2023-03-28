@@ -284,7 +284,12 @@
                         :field="fieldData"
                         @change="updateFieldData" />
                 </bk-form-item>
-               
+                <!-- 自动编号 -->
+                <bk-form-item v-if="fieldData.type === 'SERIAL' && !handleIsFolded">
+                    <SerialEdit
+                        :field="fieldData"
+                        @change="updateFieldData" />
+                </bk-form-item>
                 <bk-form-item label="填写说明" v-if="!handleIsFolded">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
@@ -357,6 +362,7 @@
     import TableHeaderSetting from './tableHeaderSetting.vue'
     import RichText from '@/components/flow-form-comp/form/fields/richText.vue'
     import ComputeEdit from './components/computeEdit/index.vue'
+    import SerialEdit from './components/serialEdit.vue'
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
@@ -380,7 +386,8 @@
             DataSourceDialog,
             ConfigDescCompValueDialog,
             RichText,
-            ComputeEdit
+            ComputeEdit,
+            SerialEdit
         },
         model: {
             prop: 'value',
