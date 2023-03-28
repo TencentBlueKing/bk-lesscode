@@ -218,7 +218,7 @@ export default defineComponent({
             }
             return (
                 <bk-table-column
-                    label="操作"
+                    label={window.i18n.t('操作')}
                     width="100"
                     {...{ scopedSlots }}
                 />
@@ -238,7 +238,7 @@ export default defineComponent({
             const errorKey = `${column.prop}_${$index}`
             // 必填校验
             if (column.isRequire && isEmpty(value)) {
-                Vue.set(errorMap, errorKey, `${column.name}是必填项`)
+                Vue.set(errorMap, errorKey, window.i18n.t('{0}是必填项', [column.name]))
                 updateColumnKey(column)
                 return false
             }

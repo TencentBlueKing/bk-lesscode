@@ -38,7 +38,7 @@
                     :disabled="!editable"
                     @toggle="orgSelectOpen = !orgSelectOpen">
                     <div :class="['org-selector-trigger', { unselected: formData.processors === '' }]" slot="trigger">
-                        {{ formData.processors ? getOrganizationsPath(Number(formData.processors), organizationList) : '请选择' }}
+                        {{ formData.processors ? getOrganizationsPath(Number(formData.processors), organizationList) : $t('请选择') }}
                         <i :class="['select-angle-icon', 'bk-icon', 'icon-angle-down', { open: orgSelectOpen }]"></i>
                     </div>
                     <bk-big-tree
@@ -126,14 +126,14 @@
                     type: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: window.i18n.t('必填项'),
                             trigger: 'blur'
                         }
                     ],
                     processors: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: window.i18n.t('必填项'),
                             trigger: 'blur'
                         }
                     ]

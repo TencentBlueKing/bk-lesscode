@@ -198,8 +198,8 @@
                         root.appendChild(triggerEvent.child)
                     }
                     clearCanvas(
-                        'H5容器应在根节点上',
-                        'H5容器默认占满全屏，与其他容器不兼容，是否自动清空其他容器，仅保留H5容器',
+                        this.$t('H5容器应在根节点上'),
+                        this.$t('H5容器默认占满全屏，与其他容器不兼容，是否自动清空其他容器，仅保留H5容器'),
                         updateH5Layout)
                 }
             }

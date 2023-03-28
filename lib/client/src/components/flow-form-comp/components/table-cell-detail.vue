@@ -1,6 +1,6 @@
 <template>
     <bk-sideslider
-        :title="`详情【${tableName}】`"
+        :title="$t('详情【{0}】', [tableName])"
         ext-cls="table-cell-detail-sidelider"
         :width="800"
         :is-show="show"
@@ -39,8 +39,7 @@
                             style="margin-right: 8px"
                             @click="handleDownload(value[field.key])"
                             text>
-                            点击下载
-                        </bk-button>
+                            {{ $t('点击下载') }} </bk-button>
                         <span v-else>--</span>
                     </span>
                     <span v-else-if="field.type === 'TEXT'" v-html="textTrans(value[field.key])">

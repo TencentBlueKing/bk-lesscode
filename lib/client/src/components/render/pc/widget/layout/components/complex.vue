@@ -52,7 +52,7 @@
                         <i class="bk-icon icon-down-shape"></i>
                     </div>
                     <template slot="content">
-                        <div class="message-item" @click.stop="handleLogout">退出</div>
+                        <div class="message-item" @click.stop="handleLogout">{{ $t('退出') }}</div>
                     </template>
                 </bk-popover>
             </template>
@@ -360,7 +360,7 @@
                 this.handleOpenMenu()
             },
             handleLogout () {
-                this.messageWarn('请部署后使用本功能')
+                this.messageWarn(this.$t('请部署后使用本功能'))
             },
             handleClickEvent () {
                 unselectComponent()

@@ -15,7 +15,7 @@
                     </ul>
                     <bk-input
                         clearable
-                        :placeholder="'请输入模板名称'"
+                        :placeholder="$t('请输入模板名称')"
                         :right-icon="'bk-icon icon-search'"
                         :ext-cls="'search-input'"
                         v-model="searchFilter"
@@ -34,17 +34,17 @@
                                         <i class="bk-icon icon-check-1 checked-icon"></i>
                                     </div>
                                     <div class="layout-img">
-                                        <img :src="getPreviewImg(template.previewImg)" alt="模板缩略预览">
+                                        <img :src="getPreviewImg(template.previewImg)" :alt="$t('模板缩略预览')">
                                         <div v-if="template.isOffcial && template.hasInstall === false" class="mask">
-                                            <bk-button class="apply-btn" theme="primary" @click.stop="handleApply(template)">添加到本应用</bk-button>
+                                            <bk-button class="apply-btn" theme="primary" @click.stop="handleApply(template)">{{ $t('添加到本应用') }}</bk-button>
                                         </div>
                                     </div>
                                 </section>
                                 <div class="layout-name">
                                     <span class="template-name" :title="template.templateName">{{ template.templateName }}</span>
-                                    <span class="template-preview" @click.stop.prevent="handlePreview(template)">预览</span>
+                                    <span class="template-preview" @click.stop.prevent="handlePreview(template)">{{ $t('预览') }}</span>
                                 </div>
-                                <span v-if="template.isOffcial" class="default-share-tag">共享</span>
+                                <span v-if="template.isOffcial" class="default-share-tag">{{ $t('共享') }}</span>
                             </li>
                         </div>
                         <div class="empty" v-show="!list.length">
@@ -99,7 +99,7 @@
         },
         data () {
             return {
-                filterLinks: [{ id: '', name: '全部' }],
+                filterLinks: [{ id: '', name: this.$t('全部') }],
                 filter: '',
                 searchFilter: '',
                 templateList: [],
@@ -132,7 +132,7 @@
             async initData () {
                 try {
                     this.pageLoading = true
-                    this.filterLinks = [{ id: '', name: '全部' }]
+                    this.filterLinks = [{ id: '', name: this.$t('全部') }]
                     const [projectTemplateGroups, projectTemplateList, tmpMarketTemplateList] = await Promise.all([
                         this.$store.dispatch('pageTemplate/categoryList', { projectId: this.projectId }),
                         this.$store.dispatch('pageTemplate/list', { projectId: this.projectId }),
@@ -218,7 +218,7 @@
                 if (!template.content) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '该页面为空页面，请先编辑页面'
+                        message: this.$t('该页面为空页面，请先编辑页面')
                     })
                     return
                 }

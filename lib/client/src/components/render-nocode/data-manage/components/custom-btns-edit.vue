@@ -13,7 +13,7 @@
             </bk-button>
         </comp-box>
         <bk-button
-            v-bk-tooltips="buttons.length > 9 ? '按钮数量已达上限' : '添加按钮'"
+            v-bk-tooltips="buttons.length > 9 ? $t('按钮数量已达上限') : $t('添加按钮')"
             ext-cls="create-btn"
             icon="plus"
             :disabled="buttons.length > 9"
@@ -65,7 +65,7 @@
                 const buttons = this.buttons.slice(0)
                 const button = {
                     id: `Button-${uuid(8)}`,
-                    name: '按钮',
+                    name: this.$t('按钮'),
                     props: {},
                     events: { click: { enable: false, name: '' } },
                     perms: []

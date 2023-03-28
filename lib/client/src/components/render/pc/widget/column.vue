@@ -10,30 +10,33 @@
 -->
 
 <template>
-    <draggable
-        ref="draggable"
-        :class="{
-            [$style['column']]: true,
-            [$style['render-grid-empty']]: renderGrid.isColumnEmpty,
-            [$style['empty']]: componentData.children.length < 1
-        }"
-        :sort="true"
-        :list="componentData.slot.default"
-        :component-data="componentData"
-        :group="{
-            name: 'component',
-            pull: true,
-            put: [
-                'layout',
-                'component'
-            ]
-        }">
-        <resolve-component
-            v-for="slotComponentData in componentData.slot.default"
-            ref="component"
-            :key="slotComponentData.renderKey"
-            :component-data="slotComponentData" />
-    </draggable>
+    <div>
+        <div :class="$style['empty']" v-if="componentData.children.length < 1">{{$t('请拖入组件')}}</div>
+        <draggable
+            ref="draggable"
+            :class="{
+                [$style['column']]: true,
+                [$style['render-grid-empty']]: renderGrid.isColumnEmpty
+            }"
+            :sort="true"
+            :list="componentData.slot.default"
+            :component-data="componentData"
+            :group="{
+                name: 'component',
+                pull: true,
+                put: [
+                    'layout',
+                    'component'
+                ]
+            }">
+            <resolve-component
+                v-for="slotComponentData in componentData.slot.default"
+                ref="component"
+                :key="slotComponentData.renderKey"
+                :component-data="slotComponentData" />
+        </draggable>
+    </div>
+    
 </template>
 <script>
     import LC from '@/element-materials/core'
@@ -124,19 +127,16 @@
     }
     .empty{
         background: #FAFBFD;
-        &::before{
-            content: "请拖入组件";
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            color: #C4C6CC;
-            pointer-events: all;
-        }
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: #C4C6CC;
+        pointer-events: all;
     }
 </style>
