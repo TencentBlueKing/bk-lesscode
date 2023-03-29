@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        title="内容配置"
+        :title="$t('内容配置')"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"

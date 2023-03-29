@@ -13,8 +13,7 @@
     <header class="app-header">
         <div class="logo" @click="toProjectList">
             <img src="../images/logo.png" alt="logo">
-            蓝鲸可视化开发平台
-        </div>
+            {{ $t('蓝鲸可视化开发平台') }} </div>
         <nav class="top-nav">
             <ul class="menu">
                 <router-link
@@ -71,11 +70,11 @@
                 </div>
                 <template slot="content">
                     <router-link custom exact to="/help" v-slot="{ href, isActive }">
-                        <a :class="['popover-link', { active: isActive }]" target="_blank" :href="href">产品文档</a>
+                        <a :class="['popover-link', { active: isActive }]" target="_blank" :href="href">{{ $t('产品文档') }}</a>
                     </router-link>
-                    <a class="popover-link" href="javascript:;" @click="log.changeIsShow()">版本日志</a>
-                    <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/issues">问题反馈</a>
-                    <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/blob/master/readme.md">开源社区</a>
+                    <a class="popover-link" href="javascript:;" @click="log.changeIsShow()">{{ $t('版本日志') }}</a>
+                    <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/issues">{{ $t('问题反馈') }}</a>
+                    <a class="popover-link" target="_blank" href="https://github.com/TencentBlueKing/bk-lesscode/blob/master/readme.md">{{ $t('开源社区') }}</a>
                 </template>
             </bk-popover>
             <bk-popover class="info-item"
@@ -95,8 +94,7 @@
                 <template slot="content">
                     <a class="popover-link" href="javascript:void(0)"
                         @click="goLogin">
-                        退出登录
-                    </a>
+                        {{ $t('退出登录') }} </a>
                 </template>
             </bk-popover>
         </div>
@@ -126,7 +124,7 @@
             const languageList = [
                 {
                     id: 'zhCN',
-                    name: '中文',
+                    name: window.i18n.t('中文'),
                     icon: 'chinese'
                 },
                 {
@@ -146,22 +144,22 @@
                 const list = [
                     {
                         to: '/home',
-                        name: '产品介绍',
+                        name: window.i18n.t('产品介绍'),
                         authed: true
                     },
                     {
                         to: '/projects',
-                        name: '应用开发',
+                        name: window.i18n.t('应用开发'),
                         authed: true
                     },
                     {
                         to: '/marketplace',
-                        name: '资源市场',
+                        name: window.i18n.t('资源市场'),
                         authed: true
                     },
                     {
                         to: '/op',
-                        name: '运营数据',
+                        name: window.i18n.t('运营数据'),
                         authed: iamNoResourcesPerm.value[IAM_ACTION.view_operation_data[0]]
                     }
                 ]

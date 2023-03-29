@@ -21,8 +21,7 @@
                 </field-element>
             </template>
             <div v-else class="fields-empty">
-                请拖入组件
-            </div>
+                {{ $t('请拖入组件') }} </div>
         </draggable>
     </div>
 </template>
@@ -154,8 +153,8 @@
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
                     this.$bkInfo({
-                        title: '确认删除？',
-                        subTitle: '删除字段将会同时删除已存在该字段下的数据，你还要继续吗？',
+                        title: this.$t('确认删除？'),
+                        subTitle: this.$t('删除字段将会同时删除已存在该字段下的数据，你还要继续吗？'),
                         theme: 'danger',
                         confirmFn: async () => {
                             this.$emit('delete', index)
@@ -169,14 +168,14 @@
             getDefaultChoice (type) {
                 if (['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(type)) {
                     return [
-                        { key: 'XUANXIANG1', name: '选项1', color: '#FF8C00', isDefaultVal: true },
-                        { key: 'XUANXIANG2', name: '选项2', color: '#3A84FF', isDefaultVal: false }
+                        { key: 'XUANXIANG1', name: this.$t('选项1'), color: '#FF8C00', isDefaultVal: true },
+                        { key: 'XUANXIANG2', name: this.$t('选项2'), color: '#3A84FF', isDefaultVal: false }
                     ]
                 }
                 if (['TABLE'].includes(type)) {
                     return [
-                        { key: 'LIE1', name: '列1', choice: [], display: '', required: false },
-                        { key: 'LIE2', name: '列2', choice: [], display: '', required: false }
+                        { key: 'LIE1', name: this.$t('列1'), choice: [], display: '', required: false },
+                        { key: 'LIE2', name: this.$t('列2'), choice: [], display: '', required: false }
                     ]
                 }
                 return []

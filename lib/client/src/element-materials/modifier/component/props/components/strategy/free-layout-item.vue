@@ -11,7 +11,7 @@
 
 <template>
     <div class="no-prop">
-        <span>该组件暂无属性</span>
+        <span>{{ $t('该组件暂无属性') }}</span>
     </div>
 </template>
 <script>

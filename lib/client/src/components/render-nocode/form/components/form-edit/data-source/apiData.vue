@@ -1,15 +1,15 @@
 <template>
     <div class="api-wrapper">
         <bk-form ref="sourceForm" class="select-api" form-type="vertical" :rules="sourceRules" :model="localVal.api_info">
-            <bk-form-item v-if="changeSource" label="数据源" :required="true">
+            <bk-form-item v-if="changeSource" :label="$t('数据源')" :required="true">
                 <bk-select value="API" :clearable="false" @change="$emit('sourceTypeChange', $event)">
                     <bk-option v-for="item in sourceTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                 </bk-select>
             </bk-form-item>
-            <bk-form-item label="接入系统" property="remote_system_id" :required="true">
+            <bk-form-item :label="$t('接入系统')" property="remote_system_id" :required="true">
                 <bk-select
                     v-model="localVal.api_info.remote_system_id"
-                    placeholder="请选择系统"
+                    :placeholder="$t('请选择系统')"
                     :clearable="false"
                     :disabled="systemListLoading"
                     :loading="systemListLoading"
@@ -17,10 +17,10 @@
                     <bk-option v-for="item in systemList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                 </bk-select>
             </bk-form-item>
-            <bk-form-item label="接口" property="remote_api_id" :required="true">
+            <bk-form-item :label="$t('接口')" property="remote_api_id" :required="true">
                 <bk-select
                     v-model="localVal.api_info.remote_api_id"
-                    placeholder="请选择接口"
+                    :placeholder="$t('请选择接口')"
                     :clearable="false"
                     :disabled="systemApisLoading"
                     :loading="systemApisLoading"
@@ -30,7 +30,7 @@
             </bk-form-item>
         </bk-form>
         <div class="api-data">
-            <h4 class="section-title"><span v-bk-tooltips.top="'调用该API需要传递的参数信息'">请求参数</span></h4>
+            <h4 class="section-title"><span v-bk-tooltips.top="$t('调用该API需要传递的参数信息')">{{ $t('请求参数') }}</span></h4>
             <template v-if="apiDetail">
                 <get-request-params
                     v-if="apiDetail.method === 'GET'"
@@ -51,13 +51,13 @@
                     @change="handleReqValChange">
                 </post-request-params>
             </template>
-            <bk-exception v-else type="empty" scene="part">请选择接入系统和接口</bk-exception>
+            <bk-exception v-else type="empty" scene="part">{{ $t('请选择接入系统和接口') }}</bk-exception>
         </div>
         <div class="response-data">
-            <h4 class="section-title"><span v-bk-tooltips.top="'调用成功后API将会返回的参数信息'">返回数据</span></h4>
+            <h4 class="section-title"><span v-bk-tooltips.top="$t('调用成功后API将会返回的参数信息')">{{ $t('返回数据') }}</span></h4>
             <bk-form ref="resForm" class="response-select" form-type="vertical" :rules="resRules" :model="resFieldData">
-                <bk-form-item label="选取数组类型字段" property="source" :required="true">
-                    <bk-select placeholder="请选择字段" v-model="localVal.api_info.rsp_data" :clearable="false">
+                <bk-form-item :label="$t('选取数组类型字段')" property="source" :required="true">
+                    <bk-select :placeholder="$t('请选择字段')" v-model="localVal.api_info.rsp_data" :clearable="false">
                         <bk-big-tree
                             :data="resArrayTreeData"
                             :selectable="true"
@@ -66,7 +66,7 @@
                         </bk-big-tree>
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item label="选项key" property="key" :required="true">
+                <bk-form-item :label="$t('选项key')" property="key" :required="true">
                     <bk-select v-model="localVal.kv_relation.key" :clearable="false">
                         <bk-big-tree
                             :data="resFieldList"
@@ -76,7 +76,7 @@
                         </bk-big-tree>
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item label="选项name" property="name" :required="true">
+                <bk-form-item :label="$t('选项name')" property="name" :required="true">
                     <bk-select v-model="localVal.kv_relation.name" :clearable="false">
                         <bk-big-tree
                             :data="resFieldList"
@@ -137,14 +137,14 @@
                         {
                             required: true,
                             trigger: 'blur',
-                            message: '必填项'
+                            message: this.$t('必填项')
                         }
                     ],
                     remote_api_id: [
                         {
                             required: true,
                             trigger: 'blur',
-                            message: '必填项'
+                            message: this.$t('必填项')
                         }
                     ]
                 },
@@ -153,21 +153,21 @@
                         {
                             required: true,
                             trigger: 'blur',
-                            message: '必填项'
+                            message: this.$t('必填项')
                         }
                     ],
                     key: [
                         {
                             required: true,
                             trigger: 'blur',
-                            message: '必填项'
+                            message: this.$t('必填项')
                         }
                     ],
                     name: [
                         {
                             required: true,
                             trigger: 'blur',
-                            message: '必填项'
+                            message: this.$t('必填项')
                         }
                     ]
                 }

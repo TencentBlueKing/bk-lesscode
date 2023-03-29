@@ -15,7 +15,7 @@
                 :name="option.displayName">
             </bk-option>
             <div slot="extension" @click="showCreatePermSlider = true" style="cursor: pointer;">
-                <i class="bk-icon icon-plus-circle"></i> 新建操作
+                <i class="bk-icon icon-plus-circle"></i> {{ $t('新建操作') }}
             </div>
         </bk-select>
         <app-perm-model-sideslider
@@ -116,7 +116,7 @@
             async sidesliderSuccess () {
                 this.$bkMessage({
                     theme: 'success',
-                    message: '新建操作成功'
+                    message: this.$t('新建操作成功')
                 })
                 this.showCreatePermSlider = false
                 await this.fetchIamAppPermAction()

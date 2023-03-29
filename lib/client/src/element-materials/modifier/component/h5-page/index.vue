@@ -1,12 +1,12 @@
 <template>
     <div v-if="show" class="h5-container-config-wrapper">
-        <div class="h5-container-title">H5容器页面配置</div>
+        <div class="h5-container-title">{{ $t('H5容器页面配置') }}</div>
         <div class="h5-container-page-setting">
             <div class="h5-page"
                 v-for="(page, index) in h5Pages"
                 :key="index"
                 @click="toView(page, index)">
-                <span class="h5-page-title">第{{index + 1}}页</span>
+                <span class="h5-page-title">{{ $t('第{0}页', [index + 1]) }}</span>
                 <bk-button>{{page.componentId}}</bk-button>
                 <i class="bk-icon icon-minus-circle" @click="handleDelete(page)" />
             </div>
@@ -15,7 +15,7 @@
             v-show="pageCount <= 11"
             class="page-add"
             @click="handleAdd">
-            <span>添加 1 页</span>
+            <span>{{ $t('添加 1 页') }}</span>
             <i class="bk-icon icon-plus-circle" />
         </div>
     </div>

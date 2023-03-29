@@ -45,8 +45,8 @@
             const srcInputOtherProps = computed(() => {
                 const otherProps = {}
                 if (['href'].includes(props.name)) {
-                    otherProps.triggerText = '选择文件'
-                    otherProps.placeholder = '输入或选择文件作为链接地址'
+                    otherProps.triggerText = window.i18n.t('选择文件')
+                    otherProps.placeholder = window.i18n.t('输入或选择文件作为链接地址')
                 }
 
                 if (props.componentType.indexOf('image') !== -1 || props.componentType.indexOf('avatar') !== -1) {

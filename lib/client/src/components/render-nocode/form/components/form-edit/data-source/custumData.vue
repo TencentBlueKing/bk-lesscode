@@ -1,29 +1,29 @@
 <template>
     <div class="custom-data-wrapper">
         <div class="text-area">
-            <div class="custom-text">选项名</div>
-            <div class="custom-text">选项ID</div>
-            <div class="custom-text" style="margin-left: 8px">默认值</div>
-            <div class="custom-color" v-show="localValIsDisplayTag">标签颜色</div>
+            <div class="custom-text">{{ $t('选项名') }}</div>
+            <div class="custom-text">{{ $t('选项ID') }}</div>
+            <div class="custom-text" style="margin-left: 8px">{{ $t('默认值') }}</div>
+            <div class="custom-color" v-show="localValIsDisplayTag">{{ $t('标签颜色') }}</div>
         </div>
         <li v-for="(item, index) in localVal" class="cutsom-data-item" :key="index">
-            <bk-checkbox v-if="showRequire" class="required-checkbox" v-model="item.required">必填</bk-checkbox>
+            <bk-checkbox v-if="showRequire" class="required-checkbox" v-model="item.required">{{ $t('必填') }}</bk-checkbox>
             <div class="form-area">
                 <bk-input
                     class="custom-input"
-                    placeholder="请输入选项名"
+                    :placeholder="$t('请输入选项名')"
                     :maxlength="120"
                     v-model="item.name"
                     @change="handleValChange">
                 </bk-input>
                 <bk-input
                     class="custom-input"
-                    placeholder="请输入选项ID"
+                    :placeholder="$t('请输入选项ID')"
                     :maxlength="120"
                     v-model="item.key"
                     @change="handleValChange">
                 </bk-input>
-                <bk-radio :value="item.isDefaultVal" style="margin: 0 24px  0 8px;" @change="handleChangeDefaultVal(index)">设为下拉默认值</bk-radio>
+                <bk-radio :value="item.isDefaultVal" style="margin: 0 24px  0 8px;" @change="handleChangeDefaultVal(index)">{{ $t('设为下拉默认值') }}</bk-radio>
                 <bk-color-picker
                     v-show="localValIsDisplayTag"
                     v-model="item.color"
@@ -92,9 +92,9 @@
                 let msg = ''
                 this.localVal.some(item => {
                     if (!item.name) {
-                        msg = '选项名为必填项，请检查配置'
+                        msg = this.$t('选项名为必填项，请检查配置')
                     } else if (!item.key) {
-                        msg = '选项ID为必填项，请检查配置'
+                        msg = this.$t('选项ID为必填项，请检查配置')
                     }
                     if (msg) {
                         isValid = false

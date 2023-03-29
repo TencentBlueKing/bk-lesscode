@@ -40,7 +40,7 @@
             </div>
         </div>
         <div v-if="hasChild" class="menu-children-create" @click="handleAddChildren">
-            <i class="bk-icon icon-plus-circle" v-bk-tooltips="{ content: '添加二级导航', placement: 'top' }" />
+            <i class="bk-icon icon-plus-circle" v-bk-tooltips="{ content: $t('添加二级导航'), placement: 'top' }" />
         </div>
     </div>
 </template>
@@ -130,7 +130,7 @@
             },
             handleRemove () {
                 if (this.lastOne) {
-                    this.messageError('模板导航不能为空')
+                    this.messageError(this.$t('模板导航不能为空'))
                     return
                 }
                 this.$emit('on-delete')
