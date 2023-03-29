@@ -35,8 +35,8 @@
 </template>
 <script>
     const generateColumn = (index) => ({
-        label: window('单选项{0}', [index]),
-        value: window('单选项{0}', [index]),
+        label: window.i18n.t('单选项{0}', [index]),
+        value: window.i18n.t('单选项{0}', [index]),
         checked: false
     })
     export default {
