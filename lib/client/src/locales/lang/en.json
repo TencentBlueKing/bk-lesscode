@@ -1066,7 +1066,6 @@
   "配置自定义数据": "Configure custom data",
   "配置表单数据": "Configure form data",
   "隐藏": "hide",
-  "【{[n]}】字段只读条件设置": "【{[n]}】Field read-only condition setting",
   "列字段类型": "column field type",
   "列表头名称": "list header name",
   "基础控件": "basic control",
@@ -1494,5 +1493,19 @@
   "路由": "routing",
   "输入 icon 的名字": "Enter the name of the icon",
   "青色": "blue",
-  "黑色": "black"
+  "黑色": "black",
+  "logo 设置": "logo settings",
+  "logo栏的高度": "The height of the logo bar",
+  "【{n}】字段只读条件设置": "【{[n]}】Field read-only condition setting",
+  "【{n}】字段必填条件设置": "【{n}】Field required condition setting",
+  "【{n}】字段隐藏条件设置": "【{n}】Field hidden condition setting",
+  "主题配置": "theme configuration",
+  "侧边导航主色调": "Main color of side navigation",
+  "侧边导航背景": "side navigation background",
+  "应用名称": "Application Name",
+  "是否默认展开左侧栏": "Whether to expand the left column by default",
+  "移动端导航配置": "Mobile navigation configuration",
+  "顶部导航主色调": "Main color of top navigation",
+  "顶部导航的高度": "height of top navigation",
+  "顶部导航背景色": "Top navigation background color"
 }
