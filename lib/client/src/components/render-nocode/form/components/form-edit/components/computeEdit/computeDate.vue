@@ -15,7 +15,7 @@
                 </bk-option>
             </bk-select>
             <bk-date-picker
-                class="mg-top-5"
+                class="mg-top-5 w-272"
                 v-show="computConfigInfo.dateTime.startDate.key === 'specify_date'"
                 @change="($event) => {
                     dateChange($event,'startDate')
@@ -43,7 +43,7 @@
                 </bk-option>
             </bk-select>
             <bk-date-picker
-                class="mg-top-5"
+                class="mg-top-5 w-272"
                 v-show="computConfigInfo.dateTime.endDate.key === 'specify_date'"
                 @change="($event) => {
                     dateChange($event,'endDate')
@@ -213,6 +213,10 @@
 <style lang="postcss" scoped>
 .row-box{
     margin: 10px 0 ;
+    font-size: 12px;
+}
+.w-272{
+    width: 272px;
 }
 .mg-top-5{
     margin-top: 5px;

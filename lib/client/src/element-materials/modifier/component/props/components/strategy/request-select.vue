@@ -87,6 +87,7 @@
         created () {
             const renderDescribe = cloneDeep(this.describe)
             this.payload = renderDescribe.payload || {}
+            this.freshList()
         },
         methods: {
             toggleVisible (open) {

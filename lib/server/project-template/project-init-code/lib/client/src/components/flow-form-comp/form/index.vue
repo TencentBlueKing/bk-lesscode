@@ -97,6 +97,10 @@
                     if (item.meta.compute_config_info) {
                         this.computeConfigFields.push(item)
                     }
+                    // 隐藏自动编号字段
+                    if (item.type === 'SERIAL') {
+                        item.isHide = true
+                    }
                     // 储存各个字段对应的初始值
                     fieldsValue[item.key] = value
                 })

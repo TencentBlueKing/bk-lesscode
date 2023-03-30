@@ -139,8 +139,6 @@
                 LC.addEventListener('update', this.handleUpdatePreviewContent)
                 // 更新预览区域数据
                 LC.addEventListener('ready', this.initPerviewData)
-                // 卸载的时候，清除 storage 数据
-                LC.addEventListener('unload', this.clearPerviewData)
             })
 
             // 获取并设置当前版本信息
@@ -196,6 +194,8 @@
                     target: '#editPageSwitchPage'
                 }
             ]
+
+            window.addEventListener('beforeunload', this.clearPerviewData)
         },
         beforeDestroy () {
             // 路由离开的时候注销相关事件
@@ -203,7 +203,8 @@
             // 更新预览区域数据
             LC.removeEventListener('ready', this.initPerviewData)
             // 卸载的时候，清除 storage 数据
-            LC.removeEventListener('unload', this.clearPerviewData)
+            this.clearPerviewData()
+            window.removeEventListener('beforeunload', this.clearPerviewData)
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
         },
         beforeRouteLeave (to, from, next) {
