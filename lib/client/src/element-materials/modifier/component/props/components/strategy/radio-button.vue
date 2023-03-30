@@ -11,7 +11,7 @@
 
 <template>
     <div>
-        <div class="radio-title">radio-button可选项配置：</div>
+        <div class="radio-title">{{ $t('radio-button可选项配置：') }}</div>
         <div class="radio-item">
             <vue-draggable
                 class="group-list"
@@ -36,7 +36,7 @@
                                 <bk-input :value="item.value" @change="val => handleChange(val, 'value', index)" />
                             </div>
                             <div class="option-item">
-                                <div class="label">是否禁用</div>
+                                <div class="label">{{ $t('是否禁用') }}</div>
                                 <bk-checkbox :checked="item.disabled" @change="val => handleChange(val, 'disabled', index)" />
                             </div>
                         </section>
@@ -44,13 +44,13 @@
                 </transition-group>
             </vue-draggable>
         </div>
-        <div class="radio-add" @click="handleAdd">添加一项</div>
+        <div class="radio-add" @click="handleAdd">{{ $t('添加一项') }}</div>
     </div>
 </template>
 <script>
     const generateColumn = (index) => ({
-        label: `选项${index}`,
-        value: `选项${index}`,
+        label: window.i18n.t('选项{0}', [index]),
+        value: window.i18n.t('选项{0}', [index]),
         checked: false
     })
     export default {

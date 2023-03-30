@@ -4,7 +4,7 @@
         :position="{ top: 100 }"
         render-directive="if"
         width="800"
-        :title="'数据示例'"
+        :title="$t('数据示例')"
         header-position="left"
         :mask-close="false"
         :show-footer="false"

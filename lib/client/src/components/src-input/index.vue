@@ -22,11 +22,11 @@
             value: String,
             placeholder: {
                 type: String,
-                default: '可选择或粘贴链接'
+                default: window.i18n.t('可选择或粘贴链接')
             },
             triggerText: {
                 type: String,
-                default: '选择图片'
+                default: window.i18n.t('选择图片')
             },
             fileType: {
                 type: String,

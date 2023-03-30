@@ -20,7 +20,7 @@
             helpTooltips: {
                 type: Object,
                 default: () => ({
-                    content: '帮助',
+                    content: window.i18n.t('帮助'),
                     placements: ['bottom']
                 })
             }

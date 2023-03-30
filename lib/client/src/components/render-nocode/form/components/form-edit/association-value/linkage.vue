@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        title="配置联动规则"
+        :title="$t('配置联动规则')"
         class="default-val-linkage-dialog"
         width="560"
         render-directive="if"
@@ -13,18 +13,18 @@
         @confirm="handleConfirm"
         @cancel="close">
         <bk-form class="linkage-config-wrapper" form-type="vertical">
-            <bk-form-item label="联动内容">
+            <bk-form-item :label="$t('联动内容')">
                 <bk-radio-group :value="configData.type" @change="handleRuleTypeChange">
-                    <bk-radio value="currentTable">本表字段</bk-radio>
-                    <bk-radio value="otherTable">他表字段</bk-radio>
+                    <bk-radio value="currentTable">{{ $t('本表字段') }}</bk-radio>
+                    <bk-radio value="otherTable">{{ $t('他表字段') }}</bk-radio>
                     <bk-radio
                         v-if="['DATE', 'DATETIME'].includes(field.type)"
                         value="createTicketTime">
-                        默认为提交{{ `${field.type === 'DATE' ? '日期' : '时间'}` }}
+                        {{$t('默认为提交')}}{{ `${field.type === 'DATE' ? $t('日期') : $t('时间')}` }}
                     </bk-radio>
                 </bk-radio-group>
             </bk-form-item>
-            <bk-form-item v-if="configData.type === 'otherTable'" label="联动数据表">
+            <bk-form-item v-if="configData.type === 'otherTable'" :label="$t('联动数据表')">
                 <bk-select
                     style="width: 50%;"
                     size="small"
@@ -39,7 +39,7 @@
                 </bk-select>
             </bk-form-item>
             <bk-form-item
-                label="关联规则"
+                :label="$t('关联规则')"
                 desc-type="icon"
                 :desc="associationRuleTips">
                 <relation-rules
@@ -164,16 +164,16 @@
                         const hasRelationFormEmpty = group.relations.some(item => {
                             let msg
                             if (!item.field) {
-                                msg = '表单字段不能为空'
+                                msg = this.$t('表单字段不能为空')
                             } else if (!item.type) {
-                                msg = '表单字段值类型不能为空'
+                                msg = this.$t('表单字段值类型不能为空')
                             } else if (item.type === 'VAR' && !item.value) {
-                                msg = '表单字段变量值不能为空'
+                                msg = this.$t('表单字段变量值不能为空')
                             }
                             if (msg) {
                                 this.$bkMessage({
                                     theme: 'error',
-                                    message: `【规则${index + 1}】的${msg}`
+                                    message: this.$t('【规则{0}】的{1}', [(index + 1), msg])
                                 })
                                 return true
                             }
@@ -184,21 +184,21 @@
                         if (!group.target.type) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: `请选择【规则${index + 1}】值类型`
+                                message: this.$t('请选择【规则{0}】值类型', [index + 1])
                             })
                             return true
                         }
                         if (group.target.type === 'VAR' && !group.target.value) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: `请选择【规则${index + 1}】值变量`
+                                message: this.$t('请选择【规则{0}】值变量', [index + 1])
                             })
                             return true
                         }
                         if (this.checkLoopReference(this.configData.rules, this.field.key)) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: '当前字段联动规则存在循环配置的情况，请修改后保存'
+                                message: this.$t('当前字段联动规则存在循环配置的情况，请修改后保存')
                             })
                             return true
                         }
@@ -207,18 +207,18 @@
                     if (!this.configData.tableName) {
                         this.$bkMessage({
                             theme: 'error',
-                            message: '请选择联动数据表'
+                            message: this.$t('请选择联动数据表')
                         })
                         return false
                     }
                     const hasRelationFormEmpty = this.configData.rules[0].relations.some(item => {
                         let msg
                         if (!item.field) {
-                            msg = '关联规则的表单字段不能为空'
+                            msg = this.$t('关联规则的表单字段不能为空')
                         } else if (!item.type) {
-                            msg = '关联规则的表单字段值类型不能为空'
+                            msg = this.$t('关联规则的表单字段值类型不能为空')
                         } else if (item.type === 'VAR' && !item.value) {
-                            msg = '关联规则的表单字段变量值不能为空'
+                            msg = this.$t('关联规则的表单字段变量值不能为空')
                         }
                         if (msg) {
                             this.$bkMessage({
@@ -234,7 +234,7 @@
                     if (!this.configData.rules[0].target.value) {
                         this.$bkMessage({
                             theme: 'error',
-                            message: '请选择满足关联规则时的值变量'
+                            message: this.$t('请选择满足关联规则时的值变量')
                         })
                         return false
                     }

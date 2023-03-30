@@ -2,7 +2,7 @@
     <section>
         <div
             class="g-prop-sub-title g-mt8 g-mb6"
-        >数据表</div>
+        >{{ $t('数据表') }}</div>
         <choose-data-table
             class="g-mb8"
             :value="sourceData.tableName"

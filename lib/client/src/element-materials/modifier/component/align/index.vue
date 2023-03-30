@@ -3,10 +3,9 @@
         v-if="isShow"
         :class="$style['layout']">
         <div :class="$style['title']">
-            布局
-            <span
+            {{ $t('布局') }} <span
                 :class="$style['resize']"
-                v-bk-tooltips.top="'重置布局'"
+                v-bk-tooltips.top="$t('重置布局')"
                 @click="handleReset">
                 <i class="bk-drag-icon bk-drag-undo" />
             </span>
@@ -22,7 +21,7 @@
                         [$style['item']]: true,
                         [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-left'
                     }"
-                    v-bk-tooltips.top="'水平居左'"
+                    v-bk-tooltips.top="$t('水平居左')"
                     @click="handleHorizontalChange('align-horizontal-left')">
                     <i class="bk-drag-icon bk-drag-1_zuoduiqi" />
                 </div>
@@ -31,7 +30,7 @@
                         [$style['item']]: true,
                         [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-center'
                     }"
-                    v-bk-tooltips.top="'水平居中'"
+                    v-bk-tooltips.top="$t('水平居中')"
                     @click="handleHorizontalChange('align-horizontal-center')">
                     <i class="bk-drag-icon bk-drag-shuipingjuzhong" />
                 </div>
@@ -40,7 +39,7 @@
                         [$style['item']]: true,
                         [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-right'
                     }"
-                    v-bk-tooltips.top="'水平居右'"
+                    v-bk-tooltips.top="$t('水平居右')"
                     @click="handleHorizontalChange('align-horizontal-right')">
                     <i class="bk-drag-icon bk-drag-1_youduiqi" />
                 </div>
@@ -50,7 +49,7 @@
                         [$style['item']]: true,
                         [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-space-between'
                     }"
-                    v-bk-tooltips.top="'水平均分'"
+                    v-bk-tooltips.top="$t('水平均分')"
                     @click="handleHorizontalChange('align-horizontal-space-between')">
                     <i class="bk-drag-icon bk-drag-shuipingjunfen" />
                 </div>
@@ -61,7 +60,7 @@
                         [$style['item']]: true,
                         [$style['is-actived']]: renderAlign.vertical === 'align-vertical-top'
                     }"
-                    v-bk-tooltips.bottom="'顶部对齐'"
+                    v-bk-tooltips.bottom="$t('顶部对齐')"
                     @click="handleVerticalChange('align-vertical-top')">
                     <i class="bk-drag-icon bk-drag-1_dingduiqi" />
                 </div>
@@ -70,7 +69,7 @@
                         [$style['item']]: true,
                         [$style['is-actived']]: renderAlign.vertical === 'align-vertical-center'
                     }"
-                    v-bk-tooltips.bottom="'垂直居中'"
+                    v-bk-tooltips.bottom="$t('垂直居中')"
                     @click="handleVerticalChange('align-vertical-center')">
                     <i class="bk-drag-icon bk-drag-1_juzhongduiqi" />
                 </div>
@@ -79,7 +78,7 @@
                         [$style['item']]: true,
                         [$style['is-actived']]: renderAlign.vertical === 'align-vertical-bottom'
                     }"
-                    v-bk-tooltips.bottom="'底部对齐'"
+                    v-bk-tooltips.bottom="$t('底部对齐')"
                     @click="handleVerticalChange('align-vertical-bottom')">
                     <i class="bk-drag-icon bk-drag-1_diduiqi" />
                 </div>
