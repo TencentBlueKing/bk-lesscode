@@ -65,8 +65,8 @@
         data () {
             return {
                 steps: [
-                    { id: 'flowConfig', icon: 'bk-drag-icon bk-drag-flow-fill', text: '流程设计', func: this.handleStepChange('flowConfig') },
-                    { id: 'flowAdvancedConfig', icon: 'bk-drag-icon bk-drag-set', text: '流程设置', func: this.handleStepChange('flowAdvancedConfig') }
+                    { id: 'flowConfig', icon: 'bk-drag-icon bk-drag-flow-fill', text: this.$t('流程设计'), func: this.handleStepChange('flowConfig') },
+                    { id: 'flowAdvancedConfig', icon: 'bk-drag-icon bk-drag-set', text: this.$t('流程设置'), func: this.handleStepChange('flowAdvancedConfig') }
                 ],
                 flowId: this.$route.params.flowId,
                 listLoading: true,
@@ -178,7 +178,7 @@
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
                     this.$bkMessage({
                         theme: 'success',
-                        message: '流程部署成功'
+                        message: window.i18n.t('流程部署成功')
                     })
                 } catch (e) {
                     console.error(e.message || e)

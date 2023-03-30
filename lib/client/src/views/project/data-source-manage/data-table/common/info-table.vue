@@ -75,28 +75,28 @@
             const isLoading = ref(false)
             const canEditTableName = currentRoute?.name === 'createTable'
             const formFields = [
-                { label: '表名', required: true, disabled: !canEditTableName, property: 'tableName', placeholder: '开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64' },
-                { label: '存储引擎', disabled: true, property: 'engine' },
-                { label: '字符集', disabled: true, property: 'character' },
-                { label: '备注', property: 'comment' }
+                { label: window.i18n.t('表名'), required: true, disabled: !canEditTableName, property: 'tableName', placeholder: window.i18n.t('开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64') },
+                { label: window.i18n.t('存储引擎'), disabled: true, property: 'engine' },
+                { label: window.i18n.t('字符集'), disabled: true, property: 'character' },
+                { label: window.i18n.t('备注'), property: 'comment' }
             ]
             // 校验规则
             const rules = {
                 tableName: [
                     {
                         required: true,
-                        message: '表名是必填项',
+                        message: window.i18n.t('表名是必填项'),
                         trigger: 'blur'
                     },
                     {
                         regex: /^[a-z][a-z-_]*[a-z]$/,
-                        message: '开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64',
+                        message: window.i18n.t('开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64_0'),
                         trigger: 'blur'
                     }, {
                         validator (val) {
                             return tableList.findIndex((table) => (table.tableName === val && +table.id !== +tableId)) <= -1
                         },
-                        message: '表名不能重复',
+                        message: window.i18n.t('表名不能重复'),
                         trigger: 'blur'
                     }
                 ]

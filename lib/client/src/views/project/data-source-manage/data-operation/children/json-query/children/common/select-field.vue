@@ -19,13 +19,12 @@
             <span
                 class="field-title"
                 v-bk-tooltips="{
-                    content: distinct ? '去除（DISTINCT）' : '点击添加去重（DISTINCT）',
+                    content: distinct ? $t('去除（DISTINCT）') : $t('点击添加去重（DISTINCT）'),
                     disabled: disableDistinct
                 }"
                 @click="handleToggleDistinct"
             >
-                字段
-                <template
+                {{ $t('字段') }} <template
                     v-if="distinct"
                 >
                     （DISTINCT）
@@ -50,7 +49,7 @@
             <bk-input
                 v-if="displayAlias"
                 class="field-alias"
-                placeholder="别名"
+                :placeholder="$t('别名')"
                 :value="alias"
                 @change="handleChangeAlias"
             >
@@ -172,7 +171,7 @@
                 let message = ''
 
                 if (isEmpty(props.fieldId)) {
-                    message = '字段不能为空'
+                    message = window.i18n.t('字段不能为空')
                 } else if (props.customValidate) {
                     message = props?.customValidate?.({ functionName: props.functionName, fieldId: props.fieldId })
                 }

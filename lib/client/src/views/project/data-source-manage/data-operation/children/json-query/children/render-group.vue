@@ -34,7 +34,7 @@
                 theme="primary"
                 icon="bk-drag-icon bk-drag-plus-circle"
                 @click="handleInitHaving"
-            >添加 HAVING</bk-link>
+            >{{ $t('添加 HAVING') }}</bk-link>
             <select-condition
                 v-else
                 title="HAVING"
@@ -93,7 +93,7 @@
             const validate = ({ fieldId }) => {
                 let message = ''
                 if (!props.queryGroup?.fields?.find(field => field.fieldId === fieldId)) {
-                    message = 'HAVING 字段必须是查询的字段或者 GROUP 的条件字段'
+                    message = window.i18n.t('HAVING 字段必须是查询的字段或者 GROUP 的条件字段')
                 }
                 return message
             }

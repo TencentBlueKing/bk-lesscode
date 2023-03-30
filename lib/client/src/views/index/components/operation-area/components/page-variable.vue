@@ -1,16 +1,14 @@
 <template>
     <article class="page-variable-home">
         <header class="page-variable-header">
-            <h3 class="variable-header-title">本页面可用变量详情
+            <h3 class="variable-header-title">{{ $t('本页面可用变量详情') }}
                 <bk-button :text="true" title="primary" @click="showVariableForm" class="add-button">
                     <i class="bk-drag-icon bk-drag-add-line"></i>
-                    新建变量
-                </bk-button>
+                    {{ $t('新建变量') }} </bk-button>
             </h3>
-            <span>应用级变量的修改，请跳转至
+            <span>{{ $t('应用级变量的修改，请跳转至') }}
                 <a :href="`/project/${projectId}/variable-manage`" target="_blank" class="variable-header-link">
-                    变量管理
-                    <i class="bk-drag-icon bk-drag-jump-link"></i>
+                    {{ $t('变量管理') }} <i class="bk-drag-icon bk-drag-jump-link"></i>
                 </a>
             </span>
         </header>

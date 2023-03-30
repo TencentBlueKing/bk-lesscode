@@ -8,31 +8,31 @@
         :title="dialogTitle">
         <div slot="content" class="operation-content">
             <div class="component-guide">
-                <a href="/help/custom" target="_blank">组件开发指引</a>
+                <a href="/help/custom" target="_blank">{{ $t('组件开发指引') }}</a>
             </div>
             <bk-form ref="form" :label-width="90" :model="formData" :rules="rules">
-                <bk-form-item label="组件类型" required error-display-type="normal">
+                <bk-form-item :label="$t('组件类型')" required error-display-type="normal">
                     <bk-radio-group v-model="formData.compType">
                         <bk-radio-button value="PC">
                             <bk-radio :checked="formData.compType === 'PC'"
                             ></bk-radio>
                             <i class="bk-drag-icon bk-drag-pc"></i>
                             <div class="component-type-desc">
-                                <span class="comp-type-tag">PC 组件</span>
-                                <span>适用于搭建 PC 端 Web 界面</span>
+                                <span class="comp-type-tag">{{ $t('PC 组件') }}</span>
+                                <span>{{ $t('适用于搭建 PC 端 Web 界面') }}</span>
                             </div>
                         </bk-radio-button>
                         <bk-radio-button value="MOBILE">
                             <bk-radio :checked="formData.compType === 'MOBILE'"></bk-radio>
                             <i class="bk-drag-icon bk-drag-mobilephone"></i>
                             <div class="component-type-desc">
-                                <span class="comp-type-tag">Mobile 组件</span>
-                                <span>适用于搭建H5，小程序，APP页面</span>
+                                <span class="comp-type-tag">{{ $t('Mobile 组件') }}</span>
+                                <span>{{ $t('适用于搭建H5，小程序，APP页面') }}</span>
                             </div>
                         </bk-radio-button>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item label="组件包" required error-display-type="normal">
+                <bk-form-item :label="$t('组件包')" required error-display-type="normal">
                     <bk-upload
                         class="component-upload"
                         :tip="uploadTips"
@@ -43,17 +43,17 @@
                         accept=".zip"
                         @on-success="handleUploadSuccess" />
                 </bk-form-item>
-                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">下载demo示例包</bk-link>
-                <bk-form-item label="组件名称" required property="name" error-display-type="normal">
+                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">{{ $t('下载demo示例包') }}</bk-link>
+                <bk-form-item :label="$t('组件名称')" required property="name" error-display-type="normal">
                     <bk-input
                         :value="formData.displayName && formData.name ? `${formData.displayName}(${formData.name})` : ''"
-                        placeholder="上传组件包后解析config.json内的displayName和name配置生成"
+                        :placeholder="$t('上传组件包后解析config.json内的displayName和name配置生成')"
                         readonly />
                 </bk-form-item>
-                <bk-form-item label="组件ID" required property="type" error-display-type="normal">
-                    <bk-input :value="formData.type" placeholder="上传组件包后解析config.json内的type配置生成" readonly />
+                <bk-form-item :label="$t('组件ID')" required property="type" error-display-type="normal">
+                    <bk-input :value="formData.type" :placeholder="$t('上传组件包后解析config.json内的type配置生成')" readonly />
                 </bk-form-item>
-                <bk-form-item label="所属分类" required property="categoryId" error-display-type="normal">
+                <bk-form-item :label="$t('所属分类')" required property="categoryId" error-display-type="normal">
                     <bk-select v-model="formData.categoryId" :clearable="false">
                         <bk-option
                             v-for="item in categoryList"
@@ -62,16 +62,16 @@
                             :name="item.name" />
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item label="组件介绍" required property="description" error-display-type="normal">
+                <bk-form-item :label="$t('组件介绍')" required property="description" error-display-type="normal">
                     <bk-input v-model="formData.description" type="textarea" :maxlength="100" />
                 </bk-form-item>
-                <bk-form-item label="组件版本" required property="version" error-display-type="normal">
+                <bk-form-item :label="$t('组件版本')" required property="version" error-display-type="normal">
                     <div class="component-version-wraper">
-                        <bk-input v-model="formData.version" placeholder="版本号格式：1.x.x" style="width: 300px" />
-                        <span v-if="isEdit" class="last-version">上个版本为 {{ lastVersion }}</span>
+                        <bk-input v-model="formData.version" :placeholder="$t('版本号格式：1.x.x')" style="width: 300px" />
+                        <span v-if="isEdit" class="last-version">{{ $t('上个版本为 {0}', [lastVersion]) }}</span>
                     </div>
                 </bk-form-item>
-                <bk-form-item ref="log" label="版本日志" required property="log" error-display-type="normal">
+                <bk-form-item ref="log" :label="$t('版本日志')" required property="log" error-display-type="normal">
                     <mavon-editor
                         :external-link="false"
                         v-model="formData.log"
@@ -82,8 +82,8 @@
         </div>
         <div slot="footer">
             <div class="sideslider-footer">
-                <bk-button theme="primary" :loading="isSubmiting" @click="handleSubmit">提交</bk-button>
-                <bk-button theme="default" @click="handleCancel">取消</bk-button>
+                <bk-button theme="primary" :loading="isSubmiting" @click="handleSubmit">{{ $t('提交') }}</bk-button>
+                <bk-button theme="default" @click="handleCancel">{{ $t('取消') }}</bk-button>
             </div>
         </div>
     </bk-sideslider>
@@ -129,7 +129,7 @@
         computed: {
             ...mapGetters('project', ['currentProject']),
             dialogTitle () {
-                return this.data.id ? '更新自定义组件' : '新建自定义组件'
+                return this.data.id ? window.i18n.t('更新自定义组件') : window.i18n.t('新建自定义组件')
             },
             isEdit () {
                 return this.data.id
@@ -176,48 +176,45 @@
         },
         created () {
             this.belongProjectId = parseInt(this.$route.params.projectId)
-            this.uploadTips = `只允许上传ZIP包；
-            组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID(${this.currentProject.projectCode})前缀，即：${this.currentProject.projectCode}-xxx；
-            组件源码须使用平台提供的打包工具打包生成min.js文件后再上传。
-            `
-            this.versionLogPlaceholder = 'eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n'
+            this.uploadTips = window.i18n.t('只允许上传ZIP包；\n组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID({0})前缀，即：{0}-xxx；组件源码须使用平台提供的打包工具打包生成min.js文件后再上传。', [this.currentProject.projectCode, this.currentProject.projectCode] )
+            this.versionLogPlaceholder = window.i18n.t('eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n')
 
             this.markdownOption = {
                 defaultOpen: 'edit'
             }
             this.rules = {
                 name: [
-                    { required: true, message: '请先上传组件', trigger: 'blur' }
+                    { required: true, message: window.i18n.t('请先上传组件'), trigger: 'blur' }
                 ],
                 compType: [
-                    { required: true, message: '请选择组件类型', trigger: 'blur' }
+                    { required: true, message: window.i18n.t('请选择组件类型'), trigger: 'blur' }
                 ],
                 type: [
-                    { required: true, message: '请先上传组件', trigger: 'blur' },
+                    { required: true, message: window.i18n.t('请先上传组件'), trigger: 'blur' },
                     {
                         validator: value => /^[a-z][a-z\d]*(-[a-z\d]+)*$/.test(value),
-                        message: '组件type格式：以a-z开头，只允许a-z、0-9、-',
+                        message: window.i18n.t('组件type格式：以a-z开头，只允许a-z、0-9、-'),
                         trigger: 'blur'
                     }
                 ],
                 version: [
-                    { required: true, message: '组件版本不能为空', trigger: 'blur' },
+                    { required: true, message: window.i18n.t('组件版本不能为空'), trigger: 'blur' },
                     {
                         validator: value => {
                             return /^\d/.test(value) && tnpmVersionValid.re[tnpmVersionValid.t.FULL].test(value)
                         },
-                        message: '版本号格式：0.x.x',
+                        message: window.i18n.t('版本号格式：0.x.x'),
                         trigger: 'blur'
                     }
                 ],
                 categoryId: [
-                    { required: true, message: '所属分类不能为空', trigger: 'blur' }
+                    { required: true, message: window.i18n.t('所属分类不能为空'), trigger: 'blur' }
                 ],
                 description: [
-                    { required: true, message: '组件介绍不能为空', trigger: 'blur' }
+                    { required: true, message: window.i18n.t('组件介绍不能为空'), trigger: 'blur' }
                 ],
                 log: [
-                    { required: true, message: '版本日志不能为空', trigger: 'blur' }
+                    { required: true, message: window.i18n.t('版本日志不能为空'), trigger: 'blur' }
                 ]
             }
         },
@@ -249,13 +246,13 @@
                             id: this.data.id,
                             belongProjectId: this.belongProjectId
                         })
-                        this.messageSuccess('编辑组件成功')
+                        this.messageSuccess(window.i18n.t('编辑组件成功'))
                     } else {
                         await this.$store.dispatch('components/create', {
                             ...this.formData,
                             belongProjectId: this.belongProjectId
                         })
-                        this.messageSuccess('添加组件成功')
+                        this.messageSuccess(window.i18n.t('添加组件成功'))
                     }
                     this.$emit('on-add')
                     this.$emit('on-update')

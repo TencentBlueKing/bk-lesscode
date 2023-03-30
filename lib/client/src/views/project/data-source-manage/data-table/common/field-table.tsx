@@ -92,7 +92,7 @@ export default defineComponent({
     setup (props: ITableStatus, { emit }) {
         const tableFields: ITableField[] = [
             {
-                name: '字段名称',
+                name: window.i18n.t('字段名称'),
                 type: 'input',
                 prop: 'name',
                 isRequire: true,
@@ -101,31 +101,31 @@ export default defineComponent({
                         validator (val, row) {
                             return /^[a-zA-Z][a-zA-Z-_]*[a-zA-Z]$/.test(val)
                         },
-                        message: '开头和结尾需是大小写字母，中间可以是大小写字母、连字符和下划线。长度最少为2个字符'
+                        message: window.i18n.t('开头和结尾需是大小写字母，中间可以是大小写字母、连字符和下划线。长度最少为2个字符')
                     },
                     {
                         validator (val, row) {
                             return !tableList.find((table) => table.name === val && row.columnId !== table.columnId)
                         },
-                        message: '字段名称不能重复'
+                        message: window.i18n.t('字段名称不能重复')
                     },
                     {
                         validator (val, row) {
                             return !/^bk/.test(val)
                         },
-                        message: '字段名称不能以 bk 开头'
+                        message: window.i18n.t('字段名称不能以 bk 开头')
                     }
                 ]
             },
             {
-                name: '字段类型',
+                name: window.i18n.t('字段类型'),
                 type: 'select',
                 prop: 'type',
                 isRequire: true,
                 optionsList: FIELDS_TYPES
             },
             {
-                name: '长度',
+                name: window.i18n.t('长度'),
                 type: 'input',
                 componentProps: {
                     type: 'number'
@@ -139,18 +139,18 @@ export default defineComponent({
                         validator (val = 0, row) {
                             return row.type !== 'varchar' || (+val <= 15000 && +val > 0)
                         },
-                        message: 'varchar 类型的长度需大于 0 小于 15000'
+                        message: window.i18n.t('varchar 类型的长度需大于 0 小于 15000')
                     },
                     {
                         validator (val = 0, row) {
                             return row.type !== 'decimal' || (+val <= 65 && +val > 0)
                         },
-                        message: 'decimal 类型的长度需大于 0 小于 65'
+                        message: window.i18n.t('decimal 类型的长度需大于 0 小于 65')
                     }
                 ]
             },
             {
-                name: '小数点',
+                name: window.i18n.t('小数点'),
                 type: 'input',
                 prop: 'scale',
                 componentProps: {
@@ -164,12 +164,12 @@ export default defineComponent({
                         validator (val = 0, row) {
                             return row.type !== 'decimal' || (+val > 0 && +val < +row.length)
                         },
-                        message: '小数点字段需要大于 0 且小于长度字段'
+                        message: window.i18n.t('小数点字段需要大于 0 且小于长度字段')
                     }
                 ]
             },
             {
-                name: '索引',
+                name: window.i18n.t('索引'),
                 type: 'checkbox',
                 prop: 'index',
                 width: '100px',
@@ -178,13 +178,13 @@ export default defineComponent({
                 }
             },
             {
-                name: '可空',
+                name: window.i18n.t('可空'),
                 type: 'checkbox',
                 prop: 'nullable',
                 width: '100px'
             },
             {
-                name: '默认值',
+                name: window.i18n.t('默认值'),
                 type: 'input',
                 prop: 'default',
                 isReadonly (item, props) {
@@ -204,7 +204,7 @@ export default defineComponent({
                 }
             },
             {
-                name: '备注',
+                name: window.i18n.t('备注'),
                 type: 'input',
                 prop: 'comment'
             }
