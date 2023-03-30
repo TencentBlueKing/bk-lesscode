@@ -24,7 +24,10 @@
                 type: Array,
                 default: () => []
             },
-            isSearch: Boolean,
+            emptyType: {
+                type: String,
+                default: 'noData'
+            },
             previewEnabled: Boolean,
             cardWidth: Number,
             cardHeight: Number,
@@ -54,6 +57,10 @@
             const handleRemove = (file: UploadFile) => {
                 emit('remove', file)
             }
+            const handlerClearSearch = (searchName) => {
+                emit('clear-search', searchName)
+                emit('search')
+            }
 
             return {
                 UPLOAD_STATUS,
@@ -62,7 +69,8 @@
                 getFileUrl,
                 handleCopyLink,
                 handleRemove,
-                handlePreview
+                handlePreview,
+                handlerClearSearch
             }
         }
     })
@@ -122,10 +130,7 @@
             </div>
         </template>
         <div v-else class="list-empty">
-            <bk-exception type="empty" scene="part">
-                <span v-if="isSearch">未找到文件</span>
-                <span v-else>暂无文件</span>
-            </bk-exception>
+            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </div>
     </div>
 </template>

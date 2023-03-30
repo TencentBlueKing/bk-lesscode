@@ -1,7 +1,7 @@
 <template>
     <div :class="[$style['logs'], 'page-content']">
         <div class="page-head" :class="$style['filter']">
-            <div :class="$style['filter-item']">
+            <div :class="[$style['filter-item'], $style['type']]">
                 <div :class="$style['label']">类型</div>
                 <div :class="$style['form-control']">
                     <bk-select :class="$style['select']" v-model="filter.obj" @change="handleFilterObjChange">
@@ -13,7 +13,7 @@
                     </bk-select>
                 </div>
             </div>
-            <div :class="$style['filter-item']">
+            <div :class="[$style['filter-item'], $style['type']]">
                 <div :class="$style['label']">操作类型</div>
                 <div :class="$style['form-control']">
                     <bk-select :class="$style['select']" v-model="filter.code">
@@ -98,6 +98,7 @@
                         <span>{{row.operateDesc}}</span>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </div>
 
@@ -146,7 +147,8 @@
                     timeStart: '',
                     timeEnd: ''
                 },
-                dateShortcutSelectedIndex: 1
+                dateShortcutSelectedIndex: 1,
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -181,6 +183,7 @@
             },
             async getList () {
                 const params = this.getParams()
+                this.emptyType = 'search'
                 this.fetching.list = true
                 try {
                     const [list, total] = await this.$store.dispatch('logs/getList', { projectId: this.projectId, config: { params } })
@@ -225,6 +228,16 @@
             handlePageChange (page) {
                 this.pagination.current = page
                 this.getList()
+            },
+            handlerClearSearch () {
+                const initData = {
+                    obj: '',
+                    code: '',
+                    status: ''
+                }
+                Object.assign(this.filter, initData)
+                this.emptyType = 'noData'
+                this.getList()
             }
         }
     }
@@ -263,6 +276,13 @@
                     }
                 }
 
+                &.type {
+                    flex: none;
+                    .form-control {
+                        width: 200px;
+                    }
+                }
+                    
                 &.status {
                     flex: none;
                     .form-control {
@@ -270,6 +290,7 @@
                     }
                 }
                 &.button {
+                    margin-left: 8px;
                     flex: none;
                 }
 

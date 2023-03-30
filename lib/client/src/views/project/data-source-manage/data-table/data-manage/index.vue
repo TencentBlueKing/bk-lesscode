@@ -45,15 +45,13 @@
                                     'table-item': true
                                 }"
                             >
-                                <span class="table-item-name">
+                                <span class="table-item-name" v-tooltips="item.tableName">
                                     <i class="bk-drag-icon bk-drag-data-table"></i>
-                                    {{ item.tableName }}
+                                    <span>{{ item.tableName }}</span>
                                 </span>
                             </li>
                         </ul>
-                        <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part" v-else>
-                            <div>暂无搜索结果</div>
-                        </bk-exception>
+                        <empty-status v-else :type="emptyType" @clearSearch="handlerClearSearch" :part="false"></empty-status>
                     </aside>
                     <section class="data-main">
                         <bk-tab :active.sync="pageStatus.currentTab">
@@ -223,6 +221,10 @@
                 })
             }
 
+            const handlerClearSearch = () => {
+                pageStatus.tableName = ''
+            }
+
             const displayTableList = computed(() => {
                 return pageStatus.tableList.filter((table) => {
                     return table.tableName.includes(pageStatus.tableName)
@@ -235,6 +237,13 @@
                     prod: releaseInfo.isProdNeedUpdate
                 }
                 return updateMap[pageStatus.activeEnvironment.key]
+            })
+
+            const emptyType = computed(() => {
+                if (pageStatus.tableName) {
+                    return 'search'
+                }
+                return 'noData'
             })
 
             watch(
@@ -253,16 +262,21 @@
                 pageStatus,
                 displayTableList,
                 isShowUpdateInfo,
+                emptyType,
                 goBack,
                 goDeploy,
                 setEnvironment,
-                setActiveTable
+                setActiveTable,
+                handlerClearSearch
             }
         }
     })
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+    @import "@/css/mixins/ellipsis";
+
     .table-header {
         display: flex;
         align-items: center;
@@ -281,6 +295,7 @@
             background: #fafbfd;
             height: 100%;
             overflow-y: auto;
+            @mixin scroller;
             .filter-table-name {
                 padding: 0 15px;
                 ::v-deep .right-icon {
@@ -309,10 +324,11 @@
                 }
             }
             .table-item-name {
+                @mixin ellipsis 330px;
                 line-height: 19px;
                 flex: 1;
                 .bk-drag-data-table {
-                    margin-right: 3px;
+                    margin-right: 4px;
                     font-size: 16px;
                 }
             }

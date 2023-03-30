@@ -8,10 +8,11 @@
   an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
   specific language governing permissions and limitations under the License.
 -->
-
+<!-- 应用开发页面 -->
 <template>
     <main class="projects page-content">
         <div class="page-head">
+            <!-- 新建按钮 -->
             <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
                 <div class="dropdown-trigger-btn" slot="dropdown-trigger">
                     <bk-button theme="primary" icon-right="icon-angle-down">新建</bk-button>
@@ -71,13 +72,14 @@
                 <sort-select v-model="sort" :has-default="false" @change="handleSortChange" />
             </div>
         </div>
+        <!-- 应用列表 -->
         <div :class="['page-body', { 'is-empty': !projectList.length }]" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
             <div class="page-body-inner" v-show="!pageLoading">
                 <component
                     :is="listComponent"
                     :project-list="projectList"
                     :page-map="pageMap"
-                    :is-search="isSearch"
+                    :empty-type="emptyType"
                     :filter="filter"
                     @create="handleCreate"
                     @preview="handlePreview"
@@ -89,10 +91,11 @@
                     @set-template="handleSetTemplate"
                     @collect="handleCollect"
                     @release="handleRelease"
+                    @clearSearch="handlerClearSearch"
                 />
             </div>
         </div>
-
+        <!-- 创建应用弹窗 -->
         <bk-dialog v-model="dialog.create.visible"
             render-directive="if"
             theme="primary"
@@ -106,6 +109,7 @@
                 {{ createDialogTitle }}
                 <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
             </span>
+            <!-- 表单组件，根据projectType来判断是创建空白应用还是导入应用，还是从已有模板选择 -->
             <project-form
                 ref="projectForm"
                 :type="dialog.create.projectType"
@@ -120,7 +124,7 @@
                 <bk-button @click="handleCancel('create')" :disabled="dialog.create.loading">取消</bk-button>
             </div>
         </bk-dialog>
-
+        <!-- 应用重命名弹窗 -->
         <bk-dialog v-model="dialog.rename.visible"
             theme="primary"
             title="重命名"
@@ -147,7 +151,7 @@
                 <bk-button @click="handleCancel('rename')" :disabled="dialog.rename.loading">取消</bk-button>
             </div>
         </bk-dialog>
-
+        <!-- 删除应用确认弹窗 -->
         <bk-dialog v-model="dialog.delete.visible"
             render-directive="if"
             theme="primary"
@@ -306,8 +310,11 @@
                 const { projectType } = this.dialog.create
                 return projectType === 'copyProject' ? '复制应用' : (projectType === 'importProject') ? '导入应用' : '新建应用'
             },
-            isSearch () {
-                return this.$route.query?.q?.length > 0
+            emptyType () {
+                if (this.$route.query?.q?.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
         watch: {
@@ -617,6 +624,7 @@
                 this.$router.push(location).catch(e => e)
             },
             handleGotoPage (projectId) {
+                // 开发应用和页面管理时调用跳到@/views/project/page-manage
                 this.$router.push({
                     name: 'pageList',
                     params: {
@@ -665,6 +673,9 @@
                     const projBUpdateTime = this.getUpdateInfo(projB)?.updateTime
                     return new Date(projBUpdateTime).getTime() - new Date(projAUpdateTime).getTime()
                 })
+            },
+            handlerClearSearch (searchEmpty) {
+                this.keyword = searchEmpty
             }
         }
     }

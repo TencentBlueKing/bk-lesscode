@@ -147,9 +147,9 @@
                     sortable
                 ></bk-table-column>
                 <bk-table-column
-                    v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'operation')"
                     label="操作"
-                    width="240"
+                    width="200"
+                    fixed="right"
                 >
                     <template slot-scope="props">
                         <span class="table-btn" @click="handleEditApi(props.row)">编辑</span>
@@ -170,6 +170,7 @@
                         @setting-change="handleTableSettingChange">
                     </bk-table-setting-content>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </section>
 
@@ -255,7 +256,6 @@
         { id: 'funcSummary', label: '备注' },
         { id: 'updateUser', label: '更新人' },
         { id: 'updateTime', label: '更新时间' },
-        { id: 'operation', label: '操作' }
     ]
 
     export default {
@@ -317,6 +317,12 @@
             computedApiList () {
                 const searchReg = new RegExp(this.searchApiStr, 'i')
                 return this.apiList.filter((api) => searchReg.test(api.name))
+            },
+            emptyType () {
+                if (this.searchApiStr?.length > 0) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
 
@@ -483,6 +489,10 @@
             handleTableSettingChange ({ fields, size }) {
                 this.tableSetting.size = size
                 this.tableSetting.selectedFields = fields
+            },
+
+            handlerClearSearch (searchEmpty) {
+                this.searchApiStr = searchEmpty
             }
         }
     }

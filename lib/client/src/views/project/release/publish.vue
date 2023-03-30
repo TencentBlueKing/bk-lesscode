@@ -155,7 +155,7 @@
                         </div>
                     </div>
                     <div :class="[$style['form-item']]">
-                        <span :class="$style['version-label']">部署版本号</span>
+                        <span :class="[$style['version-label'], $style['required']]">部署版本号</span>
                         <div v-if="isProjVersion">
                             <bk-input
                                 placeholder="请输入部署版本号，仅支持英文、数字、下划线、中划线和英文句号"
@@ -797,7 +797,10 @@
                     margin-left: 18px;
                 }
                 & > div {
-                    margin-bottom: 28px;
+                    margin-bottom: 24px;
+                }
+                .last-version-tips {
+                    margin-top: -20px;
                 }
                 .type,
                 .form-item {
@@ -820,6 +823,17 @@
                     &.is-source {
                         align-items: flex-start;
                     }
+                }
+                .required:after {
+                    content: '*';
+                    display: inline-block;
+                    position: absolute;
+                    top: 50%;
+                    height: 8px;
+                    line-height: 1;
+                    font-size: 12px;
+                    color: #ea3636;
+                    transform: translate(3px, -50%);
                 }
                 .form-item {
                     position: relative;

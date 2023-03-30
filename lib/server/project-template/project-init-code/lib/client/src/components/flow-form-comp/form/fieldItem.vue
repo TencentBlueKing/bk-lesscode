@@ -43,6 +43,7 @@
     import Members from './fields/members.vue'
     import MultiSelect from './fields/multiSelect.vue'
     import Radio from './fields/radio.vue'
+    import Rate from './fields/rate.vue'
     import RichText from './fields/richText.vue'
     import Select from './fields/select.vue'
     import Table from './fields/table.vue'
@@ -50,6 +51,8 @@
     import Tree from './fields/tree.vue'
     import Upload from './fields/upload.vue'
     import Divider from './fields/divider'
+    import Compute from './fields/compute'
+    import Serial from './fields/serial.vue'
 
     // 注册fields文件夹下所有字段类型组件
     // function registerField() {
@@ -89,7 +92,10 @@
             Textarea: Textarea,
             Tree: Tree,
             Upload: Upload,
-            Divider: Divider
+            Rate: Rate,
+            Divider: Divider,
+            Compute,
+            Serial
         },
         props: {
             field: {

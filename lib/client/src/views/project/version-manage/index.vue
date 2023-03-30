@@ -66,14 +66,7 @@
                         <bk-button v-if="row.archiveFlag === 0" text @click="handleGoPageList(row)">进入页面管理</bk-button>
                     </template>
                 </bk-table-column>
-                <bk-exception slot="empty" class="component-list-empty" type="empty">
-                    <div style="font-size: 12px">
-                        暂无版本
-                        <span>
-                            ，<bk-button text theme="primary" @click="handleCreate">立即创建</bk-button>
-                        </span>
-                    </div>
-                </bk-exception>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </div>
 
@@ -116,7 +109,8 @@
                     data: {}
                 },
                 versionData: {},
-                keyword: ''
+                keyword: '',
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -127,7 +121,7 @@
         watch: {
             keyword (val) {
                 if (!val) {
-                    this.handleSearch(false)
+                    this.handleSearch(true)
                 }
             }
         },
@@ -170,8 +164,10 @@
                 if (clear) {
                     this.keyword = ''
                     this.displayList = this.list
+                    this.emptyType = 'noData'
                 } else {
                     this.displayList = this.list.filter(item => new RegExp(this.keyword, 'i').test(item.version))
+                    this.emptyType = 'search'
                 }
             },
             handleUpdated () {
@@ -205,6 +201,9 @@
                     placement: 'right'
                 }
                 return <span class="header-cell-with-tips" v-bk-tooltips={ directive }>{ data.column.label }</span>
+            },
+            handlerClearSearch (searchName) {
+                this.keyword = searchName
             }
         }
     }

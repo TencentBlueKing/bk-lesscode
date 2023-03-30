@@ -46,6 +46,7 @@
                     </bk-table-column>
                     <bk-table-column label="操作时间" prop="createTime" :formatter="timeFormatter" width="150"></bk-table-column>
                     <bk-table-column label="操作来源" prop="releaseType" :formatter="sourceFormatter" show-overflow-tooltip :min-width="120"></bk-table-column>
+                    <empty-status slot="empty"></empty-status>
                 </bk-table>
             </div>
         </div>

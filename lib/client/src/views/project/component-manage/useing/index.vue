@@ -77,6 +77,7 @@
                         </span>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </div>
 
@@ -132,7 +133,8 @@
                 },
                 verionDetail: {},
                 selectedProjectVersionId: '',
-                compType: 'ALL'
+                compType: 'ALL',
+                emptyType: 'noData'
             }
         },
         computed: {
@@ -199,11 +201,13 @@
             handleSearch () {
                 if (!this.keyword) {
                     this.list = this.data
+                    this.emptyType = 'noData'
                 } else {
                     this.list = this.data.filter(item => {
                         return item.displayName.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1
                             || item.name.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1
                     })
+                    this.emptyType = 'search'
                 }
                 this.handleTypeChange()
             },
@@ -220,6 +224,9 @@
             handleSelectChange (type) {
                 this.compType = type
                 this.handleSearch()
+            },
+            handlerClearSearch (searchName) {
+                this.keyword = searchName
             }
         }
     }

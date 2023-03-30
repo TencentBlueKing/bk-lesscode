@@ -37,6 +37,7 @@
                         <div class="count">{{ item.count }}</div>
                     </div>
                 </transition-group>
+                <empty-status v-if="renderList.length <= 0" :type="emptyType" @clearSearch="handlerClearSearch" :part="false"></empty-status>
             </vue-draggable>
         </div>
         <div v-if="isShowCreate" ref="operation" class="category-operation" :style="operationStyles" @click.stop="">
@@ -86,6 +87,12 @@
                     top: `${this.operationPosition.top + 36}px`,
                     left: `${this.operationPosition.left - 26}px`
                 }
+            },
+            emptyType () {
+                if (this.searchValue) {
+                    return 'search'
+                }
+                return 'noData'
             }
         },
         created () {
@@ -161,7 +168,7 @@
                 this.$emit('on-change', categoryId)
             },
             handleShowCreate (event) {
-                const $target = getParentByRole(event.path, 'operation')
+                const $target = getParentByRole(event.path || event.composedPath(), 'operation')
                 const { top, left } = $target.getBoundingClientRect()
                 this.operationPosition = {
                     top,
@@ -234,6 +241,10 @@
                     this.messageSuccess('删除模板分类成功')
                     this.fetchData()
                 } catch {}
+            },
+            handlerClearSearch (searchName) {
+                this.searchValue = searchName
+                this.handleSearch(searchName)
             }
         }
     }
@@ -242,7 +253,7 @@
     .class-list{
         position: relative;
         z-index: 1;
-        height: calc(100vh - 120px);
+        height: calc(100% - 64px);
         .header{
             display: flex;
             padding: 16px 18px;

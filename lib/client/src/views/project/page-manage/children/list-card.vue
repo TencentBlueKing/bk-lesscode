@@ -93,10 +93,7 @@
             </div>
         </template>
         <div class="empty" v-else>
-            <bk-exception type="empty" scene="part">
-                <div v-if="!isSearch" class="empty-page">暂无页面，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link></div>
-                <div v-else>无搜索结果</div>
-            </bk-exception>
+            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </div>
     </div>
 </template>
@@ -124,9 +121,9 @@
                 type: Object,
                 default: () => ({})
             },
-            isSearch: {
-                type: Boolean,
-                default: false
+            emptyType: {
+                type: String,
+                default: 'noData'
             }
         },
         inject: ['getRelativeTime', 'getFormManagePages'],
@@ -160,6 +157,9 @@
             },
             handleCreateFormManage (page) {
                 this.$emit('create-form', page)
+            },
+            handlerClearSearch (searchName) {
+                this.$emit('clear-search', searchName)
             }
         }
     }
@@ -380,6 +380,7 @@
             flex: 1;
             display: flex;
             align-items: center;
+            justify-content: center;
             .empty-page {
                 display: flex;
                 align-items: center;

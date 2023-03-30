@@ -10,6 +10,17 @@
             error-display-type="normal"
         >
             <bk-input
+                v-if="field.property === 'tableName'"
+                v-model="form[field.property]"
+                :placeholder="field.placeholder"
+                :maxlength="64"
+                :show-word-limit="true"
+                :disabled="field.disabled"
+                class="section-item"
+                @change="change"
+            ></bk-input>
+            <bk-input
+                v-else
                 v-model="form[field.property]"
                 :disabled="field.disabled"
                 class="section-item"
@@ -24,7 +35,7 @@
             class="table-field"
         >
             <span class="field-label">{{ field.label }}：</span>
-            <span class="field-value">{{ form[field.property] }}</span>
+            <span v-tooltips="form[field.property]" class="field-value">{{ form[field.property] }}</span>
         </li>
     </ul>
 </template>
@@ -64,7 +75,7 @@
             const isLoading = ref(false)
             const canEditTableName = currentRoute?.name === 'createTable'
             const formFields = [
-                { label: '表名', required: true, disabled: !canEditTableName, property: 'tableName' },
+                { label: '表名', required: true, disabled: !canEditTableName, property: 'tableName', placeholder: '开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64' },
                 { label: '存储引擎', disabled: true, property: 'engine' },
                 { label: '字符集', disabled: true, property: 'character' },
                 { label: '备注', property: 'comment' }
@@ -76,9 +87,10 @@
                         required: true,
                         message: '表名是必填项',
                         trigger: 'blur'
-                    }, {
+                    },
+                    {
                         regex: /^[a-z][a-z-_]*[a-z]$/,
-                        message: '开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度最少为2个字符',
+                        message: '开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64',
                         trigger: 'blur'
                     }, {
                         validator (val) {
@@ -145,6 +157,8 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/ellipsis";
+
     .section-item {
         width: 483px;
     }
@@ -159,12 +173,20 @@
             line-height: 36px;
             font-size: 12px;
             width: 260px;
+            margin-right: 10px;
+            display: flex;
             .field-label {
                 width: 60px;
                 display: inline-block;
             }
+            .field-value {
+                width: 200px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
             &:nth-child(even) {
-                width: calc(100% - 260px);
+                width: calc(100% - 280px);
             }
         }
     }
