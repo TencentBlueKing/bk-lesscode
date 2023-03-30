@@ -16,10 +16,11 @@
                 class="deploy-tips"
                 type="warning">
                 <div class="tips-content" slot="title">
-                    当前流程未部署，需部署后，预览环境才生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境，
-                    <bk-button style="padding: 0; height: 12px; line-height: 12px;" size="small" :text="true" :disabled="deployPending" @click="$emit('deploy')">立即部署流程</bk-button>
-                    或
-                    <router-link class="deploy-project-btn" :to="{ name: 'release', params: { projectId } }">部署应用</router-link>
+                    {{ $t('当前流程未部署，需部署后，预览环境才生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境，') }} 
+                    <bk-button style="padding: 0; height: 12px; line-height: 12px;" size="small" :text="true" :disabled="deployPending" @click="$emit('deploy')">
+                        {{ $t('立即部署流程') }}</bk-button>
+                    {{ $t('或') }}
+                    <router-link class="deploy-project-btn" :to="{ name: 'release', params: { projectId } }">{{ $t('部署应用') }}</router-link>
                 </div>
             </bk-alert>
             <flow-canvas
@@ -39,8 +40,7 @@
                 :loading="flowPending || deployPending"
                 :disabled="canvasDataLoading || deployPending"
                 @click="$emit('deploy')">
-                部署
-            </bk-button>
+                {{ $t('部署') }} </bk-button>
         </div>
         <div v-if="nodeConfigPanelShow" class="node-config-wrapper">
             <node-config

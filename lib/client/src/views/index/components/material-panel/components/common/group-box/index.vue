@@ -19,7 +19,7 @@
                 class="group-list-empty"
                 type="empty"
                 scene="part">
-                <span>暂无数据</span>
+                <span>{{ $t('暂无数据') }}</span>
             </bk-exception>
             <vue-draggable
                 v-else

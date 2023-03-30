@@ -1,8 +1,8 @@
 <template>
     <div class="component-manage-page">
         <div class="g-page-tab">
-            <div class="tab-item" :class="{ active: page === 'all' }" @click="handlePage('all')">所有组件</div>
-            <div class="tab-item" :class="{ active: page === 'useing' }" @click="handlePage('useing')">使用中的组件</div>
+            <div class="tab-item" :class="{ active: page === 'all' }" @click="handlePage('all')">{{ $t('所有组件') }}</div>
+            <div class="tab-item" :class="{ active: page === 'useing' }" @click="handlePage('useing')">{{ $t('使用中的组件') }}</div>
         </div>
         <component :is="pageCom" />
     </div>

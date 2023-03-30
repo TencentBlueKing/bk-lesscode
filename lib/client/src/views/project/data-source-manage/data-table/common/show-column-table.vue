@@ -6,15 +6,15 @@
         :outer-border="false"
         :data="columns"
     >
-        <bk-table-column label="字段名称" prop="name" show-overflow-tooltip></bk-table-column>
-        <bk-table-column label="字段类型" prop="type"></bk-table-column>
-        <bk-table-column label="主键" prop="primary" :formatter="boolFormatter"></bk-table-column>
-        <bk-table-column label="长度" prop="length"></bk-table-column>
-        <bk-table-column label="小数点" prop="scale"></bk-table-column>
-        <bk-table-column label="索引" prop="index" :formatter="boolFormatter"></bk-table-column>
-        <bk-table-column label="可空" prop="nullable" :formatter="boolFormatter"></bk-table-column>
-        <bk-table-column label="默认值" prop="default" show-overflow-tooltip></bk-table-column>
-        <bk-table-column label="备注" prop="comment" show-overflow-tooltip></bk-table-column>
+        <bk-table-column :label="$t('字段名称')" prop="name" show-overflow-tooltip></bk-table-column>
+        <bk-table-column :label="$t('字段类型')" prop="type"></bk-table-column>
+        <bk-table-column :label="$t('主键')" prop="primary" :formatter="boolFormatter"></bk-table-column>
+        <bk-table-column :label="$t('长度')" prop="length"></bk-table-column>
+        <bk-table-column :label="$t('小数点')" prop="scale"></bk-table-column>
+        <bk-table-column :label="$t('索引')" prop="index" :formatter="boolFormatter"></bk-table-column>
+        <bk-table-column :label="$t('可空')" prop="nullable" :formatter="boolFormatter"></bk-table-column>
+        <bk-table-column :label="$t('默认值')" prop="default" show-overflow-tooltip></bk-table-column>
+        <bk-table-column :label="$t('备注')" prop="comment" show-overflow-tooltip></bk-table-column>
         <empty-status slot="empty"></empty-status>
     </bk-table>
 </template>
@@ -32,9 +32,9 @@
         setup () {
             const boolFormatter = (row, column, cellValue, index) => {
                 const valMap = {
-                    true: '是'
+                    true: window.i18n.t('是')
                 }
-                return valMap[cellValue] || '否'
+                return valMap[cellValue] || window.i18n.t('否')
             }
             return {
                 boolFormatter

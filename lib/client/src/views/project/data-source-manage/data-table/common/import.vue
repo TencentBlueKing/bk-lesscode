@@ -1,6 +1,6 @@
 <template>
     <section>
-        <bk-button class="import-button" @click="toggleShowDialog(true)">导入</bk-button>
+        <bk-button class="import-button" @click="toggleShowDialog(true)">{{ $t('导入') }}</bk-button>
 
         <bk-dialog
             theme="primary"
@@ -26,13 +26,12 @@
             ></bk-upload>
 
             <span class="import-tip">
-                支持 XLSX，SQL 文件格式，
-                <bk-link theme="primary" @click="downloadTemplate('xlsx')">
-                    <i class="bk-drag-icon bk-drag-download"></i>XLSX 模板
+                {{ $t('支持 XLSX，SQL 文件格式，') }} <bk-link theme="primary" @click="downloadTemplate('xlsx')">
+                    <i class="bk-drag-icon bk-drag-download"></i>{{ $t('XLSX 模板') }}
                 </bk-link>
                 <bk-divider direction="vertical" class="tip-divider"></bk-divider>
                 <bk-link theme="primary" @click="downloadTemplate('sql')">
-                    <i class="bk-drag-icon bk-drag-download"></i>SQL 模板
+                    <i class="bk-drag-icon bk-drag-download"></i>{{ $t('SQL 模板') }}
                 </bk-link>
             </span>
 
@@ -48,11 +47,11 @@
                 <bk-button
                     theme="primary"
                     :loading="isLoadingData"
-                    @click="confirmImport">导入</bk-button>
+                    @click="confirmImport">{{ $t('导入') }}</bk-button>
                 <bk-button
                     :disabled="isLoadingData"
                     @click="toggleShowDialog(false)"
-                >取消</bk-button>
+                >{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -128,7 +127,7 @@
                 }
                 // 发生错误
                 reader.onerror = () => {
-                    fileObj.errorMsg = '上传文件失败'
+                    fileObj.errorMsg = window.i18n.t('上传文件失败')
                 }
                 // 执行完成
                 reader.onloadend = () => {

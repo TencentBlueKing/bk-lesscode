@@ -127,7 +127,7 @@
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: 'targetData格式错误'
+                        message: window.i18n.t('targetData格式错误')
                     })
                 }
 
