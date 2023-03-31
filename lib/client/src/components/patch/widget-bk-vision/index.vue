@@ -91,18 +91,12 @@
         methods: {
             async loadSdk () {
                 const link = document.createElement('link')
-                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/9c57c2d9ed7e41fb8375f7b0b00affc7/main.css'
+                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/c7f84f01a9284f4a9e8c38417e138ff9/main.css'
                 link.rel = 'stylesheet'
                 document.body.append(link)
                 await this.loadScript('chunk-vendors.js')
                 await this.loadScript('chunk-bk-magic-vue.js')
                 await this.loadScript('main.js')
-                // await Promise.all([
-                //     // this.loadScript('chunk-vendors.js'),
-                //     // this.loadScript('chunk-bk-magic-vue.js'),
-                //     this.loadScript('main.js')
-                // ])
-                console.log('begin init')
                 this.initPanel()
             },
             loadScript (file) {
