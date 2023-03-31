@@ -1,7 +1,7 @@
 <template>
     <div class="lesscode-deploy-process-status-item" :class="getClass()">
         <span>
-            {{ status === 'Running' ? '成功' : ['Starting', 'Pending'].includes(status) ? '部署中' : '异常' }}
+            {{ status === 'Running' ? '成功' : ['Starting', 'Pending'].includes(status) ? $t('部署中') : $t('异常') }}
             <template v-if="abnormalCount > 0">({{ abnormalCount }})</template>
         </span>
     </div>
