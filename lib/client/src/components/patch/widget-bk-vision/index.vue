@@ -91,7 +91,7 @@
         methods: {
             async loadSdk () {
                 const link = document.createElement('link')
-                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/c7f84f01a9284f4a9e8c38417e138ff9/main.css'
+                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/3c3de519287048dcb4c5a03d47ebf33f/main.css'
                 link.rel = 'stylesheet'
                 document.body.append(link)
                 await this.loadScript('chunk-vendors.js')
