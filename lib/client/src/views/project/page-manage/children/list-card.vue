@@ -16,11 +16,11 @@
                 <div class="item-bd">
                     <div class="preview" @click="handleEditPage(page)">
                         <flow-page-preview v-if="page.nocodeType === 'FLOW'" :flow-name="page.flowName"></flow-page-preview>
-                        <page-preview-thumb v-else alt="页面缩略预览" :page-id="page.id" />
+                        <page-preview-thumb v-else :alt="$t('页面缩略预览')" :page-id="page.id" />
                         <div class="mask">
                             <div class="operate-btns">
-                                <bk-button class="edit-btn" theme="primary">编辑</bk-button>
-                                <bk-button class="preview-btn" @click.stop="handlePreview(page)">预览</bk-button>
+                                <bk-button class="edit-btn" theme="primary">{{ $t('编辑') }}</bk-button>
+                                <bk-button class="preview-btn" @click.stop="handlePreview(page)">{{ $t('预览') }}</bk-button>
                             </div>
                         </div>
                     </div>
@@ -37,16 +37,16 @@
                         <div class="route">
                             <svg class="label" width="22" height="14" viewBox="0 0 22 14">
                                 <rect x="0" width="22" height="14" rx="2" fill="#F0F1F5" />
-                                <text font-family="'PingFang SC','Microsoft Yahei'" fill="#979ba5" style="text-anchor: middle" font-size="8" x="11" y="10">路由</text>
+                                <text font-family="'PingFang SC','Microsoft Yahei'" fill="#979ba5" style="text-anchor: middle" font-size="8" x="11" y="10">{{ $t('路由') }}</text>
                             </svg>
                             <div class="path" v-bk-tooltips="{ content: routeMap[page.id].fullPath, disabled: !(routeMap[page.id].fullPath && routeMap[page.id].fullPath.length > 32) }">
                                 <span class="fullpath" v-if="routeMap[page.id].id">
                                     {{routeMap[page.id].fullPath}}
                                 </span>
-                                <span class="unset" v-else>未配置</span>
+                                <span class="unset" v-else>{{ $t('未配置') }}</span>
                             </div>
                         </div>
-                        <div class="stat">{{ page.updateUser || page.createUser }} {{ getRelativeTime(page.updateTime) }}更新</div>
+                        <div class="stat">{{ page.updateUser || page.createUser }} {{ getRelativeTime(page.updateTime) }}{{$t('更新')}}</div>
                     </div>
                     <div class="col" v-if="page.nocodeType !== 'FLOW'">
                         <bk-dropdown-menu :ref="`moreActionDropdown${page.id}`">
@@ -54,12 +54,12 @@
                                 <i class="bk-drag-icon bk-drag-more-dot"></i>
                             </span>
                             <ul class="bk-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(page.id)">
-                                <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page)">下载源码</a></li>
-                                <li><a href="javascript:;" @click="handleRename(page)">重命名</a></li>
-                                <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
-                                <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
-                                <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(page)">生成数据管理页</a></li>
-                                <li><a href="javascript:;" @click="handleDelete(page)">删除</a></li>
+                                <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page)">{{ $t('下载源码') }}</a></li>
+                                <li><a href="javascript:;" @click="handleRename(page)">{{ $t('重命名') }}</a></li>
+                                <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">{{ $t('复制') }}</a></li>
+                                <li><a href="javascript:;" @click="handleEditRoute(page)">{{ $t('修改路由') }}</a></li>
+                                <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(page)">{{ $t('生成数据管理页') }}</a></li>
+                                <li><a href="javascript:;" @click="handleDelete(page)">{{ $t('删除') }}</a></li>
                             </ul>
                         </bk-dropdown-menu>
                     </div>
@@ -77,13 +77,13 @@
                             <span>{{getFormManagePages(page.formId).length}}</span>
                         </section>
                         <div slot="content" class="form-manage-list">
-                            <div class="list-title"><span>关联的表单数据管理页</span></div>
+                            <div class="list-title"><span>{{ $t('关联的表单数据管理页') }}</span></div>
                             <ul class="list-ul">
                                 <li v-for="item in getFormManagePages(page.formId)" :key="item.id">
                                     <i class="bk-drag-icon bk-drag-page"></i>
                                     <span class="name">{{item.pageName}}</span>
-                                    <i title="预览" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
-                                    <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
+                                    <i :title="$t('预览')" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
+                                    <i :title="$t('编辑')" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
                                 </li>
                             </ul>
                         </div>

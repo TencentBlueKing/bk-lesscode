@@ -30,7 +30,7 @@
         props: {
             placeholder: {
                 type: String,
-                default: this.$t('请选择')
+                default: '请选择'
             },
             disabled: {
                 type: Boolean,

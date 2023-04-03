@@ -2,7 +2,7 @@
     <section v-bkloading="{ isLoading: isLoading }" style="height: 100%">
         <main class="layout-inst-content" v-show="!isLoading">
             <div class="layout-inst-head">
-                <bk-button theme="primary" @click="handleCreate">新建</bk-button>
+                <bk-button theme="primary" @click="handleCreate">{{ $t('新建') }}</bk-button>
             </div>
             <div v-for="(group, index) in typedLayoutList" :key="index" class="layout-inst-body-group">
                 <div class="title">{{group.title}}</div>
@@ -11,8 +11,8 @@
                         <div class="layout-item" v-for="(layout, layoutIndex) in group.list" :key="layoutIndex">
                             <div class="item-bd">
                                 <div class="preview">
-                                    <img v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty'" :src="getPreviewImg(layout)" alt="布局缩略预览">
-                                    <div class="empty-preview-img" v-else>空白布局</div>
+                                    <img v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty'" :src="getPreviewImg(layout)" :alt="$t('布局缩略预览')">
+                                    <div class="empty-preview-img" v-else>{{ $t('空白布局') }}</div>
                                 </div>
                             </div>
                             <div class="item-ft">
@@ -25,33 +25,32 @@
                                         <div class="name" v-bk-tooltips="{ content: layout.showName, disabled: !(layout.showName && layout.showName.length > 16) }">{{layout.showName}}</div>
                                     </div>
                                     <div class="stat" :title="layout.routePath">
-                                        路由: {{layout.routePath}}
-                                    </div>
+                                        {{ $t('路由: {0}', [layout.routePath]) }} </div>
                                 </div>
                                 <div class="col">
                                     <div class="operate-icons">
-                                        <i title="预览" v-if="(layout.type !== 'empty' && (layout.type && layout.type !== 'mobile-empty'))" class="bk-icon icon-eye click-icon" @click="handlePreview(layout)"></i>
+                                        <i :title="$t('预览')" v-if="(layout.type !== 'empty' && (layout.type && layout.type !== 'mobile-empty'))" class="bk-icon icon-eye click-icon" @click="handlePreview(layout)"></i>
                                         <bk-dropdown-menu :ref="`moreActionDropdown${layout.id}`">
                                             <span slot="dropdown-trigger" class="more-menu-trigger">
                                                 <i class="bk-drag-icon bk-drag-more-dot"></i>
                                             </span>
                                             <ul class="bk-dropdown-list more-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(layout.id)">
-                                                <li class="action-item"><a href="javascript:;" @click="handleUpdate(layout)">编辑</a></li>
-                                                <li v-if="layout.layoutType !== 'MOBILE'" v-bk-tooltips.bottom="{ content: '导航布局已被使用，不可删除', disabled: !layoutPageMap[layout.id] }"
+                                                <li class="action-item"><a href="javascript:;" @click="handleUpdate(layout)">{{ $t('编辑') }}</a></li>
+                                                <li v-if="layout.layoutType !== 'MOBILE'" v-bk-tooltips.bottom="{ content: $t('导航布局已被使用，不可删除'), disabled: !layoutPageMap[layout.id] }"
                                                     :class="['action-item', { disabled: layoutPageMap[layout.id] }]">
-                                                    <a href="javascript:;" @click="handleDelete(layout)">删除</a>
+                                                    <a href="javascript:;" @click="handleDelete(layout)">{{ $t('删除') }}</a>
                                                 </li>
                                             </ul>
                                         </bk-dropdown-menu>
                                     </div>
                                 </div>
-                                <span v-if="layout.isDefault" class="default-tag checked">默认</span>
-                                <span v-else class="default-tag setting" @click.stop="handleSetDefault(layout)">设为默认</span>
+                                <span v-if="layout.isDefault" class="default-tag checked">{{ $t('默认') }}</span>
+                                <span v-else class="default-tag setting" @click.stop="handleSetDefault(layout)">{{ $t('设为默认') }}</span>
                             </div>
                         </div>
                         <div class="empty" v-show="!layoutList.length && !isLoading">
                             <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                                <div v-if="!layoutList.length" class="empty-page">暂无导航布局实例，<bk-link theme="primary" @click="handleCreate">立即创建</bk-link></div>
+                                <div v-if="!layoutList.length" class="empty-page">{{ $t('暂无导航布局实例，') }}<bk-link theme="primary" @click="handleCreate">{{ $t('立即创建') }}</bk-link></div>
                             </bk-exception>
                         </div>
                     </div>
@@ -141,8 +140,8 @@
                     return
                 }
                 this.$bkInfo({
-                    title: '确认删除该模板？',
-                    subTitle: `即将删除模板实例“${layout.showName}”？`,
+                    title: window.i18n.t('确认删除该模板？'),
+                    subTitle: window.i18n.t('即将删除模板实例“{0}”？', [layout.showName]),
                     theme: 'danger',
                     confirmFn: async () => {
                         await this.$store.dispatch('layout/delete', {
@@ -150,7 +149,7 @@
                         })
                         this.getLayoutList()
                     },
-                    okText: '删除',
+                    okText: window.i18n.t('删除'),
                     confirmLoading: true
                 })
             },
@@ -166,7 +165,7 @@
                         versionId: this.versionId
                     }
                     await this.$store.dispatch('layout/default', { data })
-                    this.messageSuccess('设置成功')
+                    this.messageSuccess(window.i18n.t('设置成功'))
 
                     // 更新数据状态
                     this.layoutList.forEach(item => {

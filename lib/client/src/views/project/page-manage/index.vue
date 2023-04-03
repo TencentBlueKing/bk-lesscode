@@ -15,37 +15,37 @@
             <div class="pages-head">
                 <bk-dropdown-menu :align="'left'" :ext-cls="'create-dropdown'" ref="createDropdown">
                     <div class="dropdown-trigger-btn" slot="dropdown-trigger">
-                        <bk-button theme="primary" icon-right="icon-angle-down">新建</bk-button>
+                        <bk-button theme="primary" icon-right="icon-angle-down">{{ $t('新建') }}</bk-button>
                     </div>
                     <ul class="bk-dropdown-list select-page-type" slot="dropdown-content">
-                        <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>PC自定义页面</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>PC表单页面</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')"><i class="bk-drag-icon bk-drag-pc"> </i>Markdown文档</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('MOBILE', '')"><i class="bk-drag-icon bk-drag-mobilephone"> </i>Mobile自定义页面</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('PC自定义页面') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('PC表单页面') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('Markdown文档') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('MOBILE', '')"><i class="bk-drag-icon bk-drag-mobilephone"> </i>{{ $t('Mobile自定义页面') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
                 <template>
                     <bk-dropdown-menu v-if="hasMobilePage" :align="'center'" :ext-cls="'preview-dropdown'">
                         <div class="dropdown-trigger-btn" slot="dropdown-trigger">
-                            <bk-button icon-right="icon-angle-down">预览应用</bk-button>
+                            <bk-button icon-right="icon-angle-down">{{ $t('预览应用') }}</bk-button>
                         </div>
                         <ul class="bk-dropdown-list" slot="dropdown-content">
-                            <li><a href="javascript:;" @click="handlePreviewPcProject">预览PC页面</a></li>
-                            <li><a href="javascript:;" @click="handlePreviewMobileProject">预览移动端页面</a></li>
+                            <li><a href="javascript:;" @click="handlePreviewPcProject">{{ $t('预览PC页面') }}</a></li>
+                            <li><a href="javascript:;" @click="handlePreviewMobileProject">{{ $t('预览移动端页面') }}</a></li>
                         </ul>
                     </bk-dropdown-menu>
-                    <bk-button v-else @click="handlePreviewPcProject">预览应用</bk-button>
+                    <bk-button v-else @click="handlePreviewPcProject">{{ $t('预览应用') }}</bk-button>
                 </template>
-                <bk-button @click="handleDownLoadProject">源码下载</bk-button>
-                <bk-button @click="handleRelease">我要发布</bk-button>
+                <bk-button @click="handleDownLoadProject">{{ $t('源码下载') }}</bk-button>
+                <bk-button @click="handleRelease">{{ $t('我要发布') }}</bk-button>
                 <div class="extra">
                     <template>
                         <type-select v-if="hasMobilePage" @select-change="handleSelectChange"></type-select>
-                        <span v-else class="total" v-show="renderList.length">共<em class="count">{{renderList.length}}</em>个页面</span>
+                        <span v-else class="total" v-show="renderList.length">{{ $t('共') }}<em class="count">{{renderList.length}}</em>{{ $t('个页面') }}</span>
                     </template>
                     <bk-input
                         style="width: 260px"
-                        placeholder="请输入页面名称"
+                        :placeholder="$t('请输入页面名称')"
                         :clearable="true"
                         :right-icon="'bk-icon icon-search'"
                         v-model="keyword"
@@ -136,8 +136,8 @@
                 pageType: 'ALL',
                 nocodeTypeMap: NOCODE_TYPE_MAP,
                 displayTypeIcons: [
-                    { name: 'card', icon: 'display-card', title: '卡片' },
-                    { name: 'list', icon: 'display-list', title: '列表' }
+                    { name: 'card', icon: 'display-card', title: window.i18n.t('卡片') },
+                    { name: 'list', icon: 'display-list', title: window.i18n.t('列表') }
                 ],
                 listComponent: listCard.name,
                 sort: 'default',
@@ -225,7 +225,7 @@
                 const initData = {
                     formId: page.formId,
                     pageCode: page.pageCode + 'manage',
-                    pageName: page.pageName + '_数据管理页'
+                    pageName: page.pageName + window.i18n.t('_数据管理页')
                 }
                 this.handleCreate('PC', 'FORM_MANAGE', initData)
             },
@@ -253,7 +253,7 @@
                 if (!page.content) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '该页面为空页面，无源码生成'
+                        message: window.i18n.t('该页面为空页面，无源码生成')
                     })
                     return
                 }
@@ -293,7 +293,7 @@
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
-                    title: `确认删除该${this.nocodeTypeMap.title[page.nocodeType] || '页面'}`,
+                    title: window.i18n.t('确认删除该') + (this.nocodeTypeMap.title[page.nocodeType] || window.i18n.t('页面')),
                     subHeader: this.getDeleteSubHeader(page.pageName, this.nocodeTypeMap.deleteTips[page.nocodeType] || ''),
                     theme: 'danger',
                     confirmFn: async () => {
@@ -326,7 +326,7 @@
                             'color': '#979BA5',
                             'font-size': '12px'
                         }
-                    }, `页面：${pageName}`),
+                    }, window.i18n.t('页面：{0}', [pageName])),
                     h('div', {
                         style: {
                             'color': '#63656E',
@@ -370,7 +370,7 @@
                 if (!page.nocodeType && !page.content) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '该页面为空页面，请先编辑页面',
+                        message: window.i18n.t('该页面为空页面，请先编辑页面'),
                         limit: 1
                     })
                     return
@@ -380,7 +380,7 @@
                 if (!route.id) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '页面未配置路由，请先配置',
+                        message: window.i18n.t('页面未配置路由，请先配置'),
                         limit: 1
                     })
                     return

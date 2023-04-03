@@ -2,13 +2,13 @@
     <div class="release-manage-page">
         <section v-if="!hasConfig">
             <bk-exception class="exception-wrap-item" type="500">
-                <span>暂未配置paas平台相关信息</span>
+                <span>{{ $t('暂未配置paas平台相关信息') }}</span>
             </bk-exception>
         </section>
         <section v-else>
             <div class="release-page-tab">
-                <div class="tab-item" :class="{ active: page === 'publish' }" @click="handlePage('publish')">发布部署</div>
-                <div class="tab-item" :class="{ active: page === 'history' }" @click="handlePage('history')">部署历史</div>
+                <div class="tab-item" :class="{ active: page === 'publish' }" @click="handlePage('publish')">{{ $t('发布部署') }}</div>
+                <div class="tab-item" :class="{ active: page === 'history' }" @click="handlePage('history')">{{ $t('部署历史') }}</div>
                 <!-- <div class="tab-item" :class="{ active: page === 'package' }" @click="handlePage('package')">版本包管理</div> -->
             </div>
             <section class="release-page-content">

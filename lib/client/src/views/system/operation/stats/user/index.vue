@@ -23,8 +23,8 @@
         data () {
             return {
                 panels: [
-                    { name: 'user', label: '按用户' },
-                    { name: 'time', label: '按时间' }
+                    { name: 'user', label: window.i18n.t('按用户') },
+                    { name: 'time', label: window.i18n.t('按时间') }
                 ],
                 active: ''
             }
