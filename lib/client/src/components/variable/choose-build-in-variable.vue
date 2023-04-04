@@ -8,7 +8,7 @@
                 v-for="(item, index) in BUILDIN_VARIABLE_TYPE_LIST"
                 :key="index"
                 :value="item.VAL">
-                {{ item.NAME }}
+                {{ $t(item.NAME) }}
             </bk-radio-button>
         </bk-radio-group>
         <div

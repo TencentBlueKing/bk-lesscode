@@ -22,7 +22,7 @@
                         }"
                         v-bk-tooltips="computedSlotTip"
                     >
-                        {{ describe.displayName }}
+                        {{ $t(describe.displayName) }}
                         <span v-if="describe.type && describe.type.length <= 1">
                             ({{ formData.valueType | capFirstLetter }})
                         </span>
@@ -218,7 +218,7 @@
              * @returns { Object }
              */
             computedSlotTip () {
-                const transformTips = transformTipsWidth(this.describe.tips)
+                const transformTips = transformTipsWidth(window.i18n.t(this.describe.tips))
                 const tips = typeof transformTips === 'string' ? { content: transformTips } : transformTips
                 const disabled = !this.describe.tips
                 return {

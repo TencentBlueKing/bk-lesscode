@@ -90,7 +90,7 @@
             <template v-if="describe.operation">
                 <div
                     v-bk-tooltips="{
-                        content: describe.operation.tips,
+                        content: $t(describe.operation.tips),
                         placement: 'left-start',
                         boundary: 'window'
                     }"
@@ -101,14 +101,14 @@
                         }
                     ]"
                 >
-                    {{ describe.operation.title }}
+                    {{ $t(describe.operation.title) }}
                 </div>
                 <bk-button
                     class="prop-operation"
                     size="small"
                     @click="describe.operation.click(formData, syncSlot)"
                 >
-                    {{ describe.operation.name }}
+                    {{ $t(describe.operation.name) }}
                 </bk-button>
             </template>
         </variable-select>
@@ -366,7 +366,7 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(this.describe.tips)
+                const tip = transformTipsWidth(window.i18n.t(this.describe.tips))
                 const commonOptions = {
                     disabled: !tip,
                     interactive: false,

@@ -8,7 +8,7 @@
                 v-for="(comList, groupName) in renderGroupComponentMap"
                 :key="groupName"
                 :list="comList"
-                :group-name="groupName">
+                :group-name="$t(groupName)">
                 <template v-for="component in comList">
                     <render-icon
                         v-if="groupName === '图标集合'"

@@ -44,7 +44,7 @@
                         <bk-input v-model="formData.actionDesc" :type="'textarea'" :rows="3" maxlength="255" :placeholder="$t('请输入操作描述')"></bk-input>
                     </bk-form-item>
                     <bk-form-item :label="$t('操作描述英文')" property="actionDescEn">
-                        <bk-input v-model="formData.actionDescEn" :type="'textarea'" :rows="3" maxlength="255" :placeholder="$t('操作描述英文_0')"></bk-input>
+                        <bk-input v-model="formData.actionDescEn" :type="'textarea'" :rows="3" maxlength="255" :placeholder="$t('操作描述英文')"></bk-input>
                     </bk-form-item>
                     <bk-form-item>
                         <bk-button ext-cls="mr5" theme="primary" :title="$t('提交')" @click.stop.prevent="validate" :loading="isChecking">{{ $t('提交') }}</bk-button>

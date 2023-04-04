@@ -24,7 +24,7 @@
                 <span
                     class="label mr10"
                     v-bk-tooltips="{
-                        content: eventConfig.tips,
+                        content: $t(eventConfig.tips),
                         disabled: !eventConfig.tips,
                         placements: ['left-start'],
                         width: 200,

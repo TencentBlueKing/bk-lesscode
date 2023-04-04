@@ -36,7 +36,7 @@
                         <bk-popover
                             ref="tipsPopoverRef"
                             placement="left-start"
-                            :content="event.tips"
+                            :content="$t(event.tips)"
                             :disabled="!event.tips"
                             :width="200"
                             boundary="window"

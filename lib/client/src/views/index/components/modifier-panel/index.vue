@@ -17,7 +17,7 @@
                         class="bk-drag-icon bk-drag-delet mr5"
                         id="del-component-right-sidebar"
                         @click="handleRemoveElement"
-                        :v-bk-tooltips="$t('删除')" />
+                        v-bk-tooltips="$t('删除')" />
                     <i class="bk-drag-icon"
                         v-show="componentData.isInteractiveComponent"
                         :class="componentData.interactiveShow ? 'bk-drag-visible-eye' : 'bk-drag-invisible-eye'"

@@ -52,14 +52,14 @@
                                 <div :class="[$style['opts'], { [$style['hide']]: editState.route !== null || removeLoading }]">
                                     <i :class="['bk-icon icon-edit2 ml10', $style['icon']]"
                                         @click="handleEditLayoutPath(group)"
-                                        :v-bk-tooltips="$t('编辑')"></i>
+                                        v-bk-tooltips=" $t('编辑')"></i>
                                     <i :class="['bk-icon icon-plus', $style['icon']]"
                                         v-show="editState.type !== 'new'"
-                                        :v-bk-tooltips="$t('添加子路由')"
+                                        v-bk-tooltips="$t('添加子路由')"
                                         @click="handleAddSubRoute(group)"></i>
                                     <i :class="['bk-icon icon-eye click-icon',$style['icon-eye']]"
                                         v-if="group.type !== 'empty' && group.type !== 'mobile-empty' && projectId"
-                                        :v-bk-tooltips="$t('预览')" @click="handlePreview(group)"></i>
+                                        v-bk-tooltips="$t('预览')" @click="handlePreview(group)"></i>
                                 </div>
                             </div>
                             <div :class="[$style['bind'], { [$style['disabled']]: editState.route !== null || removeLoading }]">

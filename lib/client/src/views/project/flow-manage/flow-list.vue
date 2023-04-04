@@ -20,7 +20,7 @@
                     @enter="handleSearch">
                 </bk-input>
                 <div class="archived-icon" @click="$router.push({ name: 'flowArchivedList' })">
-                    <i class="bk-drag-icon bk-drag-countdown" :v-bk-tooltips="$t('已归档流程')"></i>
+                    <i class="bk-drag-icon bk-drag-countdown" v-bk-tooltips="$t('已归档流程')"></i>
                 </div>
             </div>
         </div>

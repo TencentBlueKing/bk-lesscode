@@ -7,7 +7,7 @@
                 <bk-divider direction="vertical"></bk-divider>
                 
                 <span
-                    :v-bk-tooltips="{
+                    v-bk-tooltips="{
                         content: $t('表单页面自动生成的数据表不可以编辑'),
                         disabled: !tableStatus.disableEdit
                     }"

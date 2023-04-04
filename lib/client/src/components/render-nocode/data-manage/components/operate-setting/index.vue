@@ -3,7 +3,7 @@
         <template v-if="selectedComp.data.id">
             <div class="comp-header">
                 <span class="id">{{ selectedComp.data.id }}</span>
-                <i class="bk-icon icon-delete" :v-bk-tooltips="$t('删除')" @click="handleDelete"></i>
+                <i class="bk-icon icon-delete" v-bk-tooltips="$t('删除')" @click="handleDelete"></i>
             </div>
             <div class="tabs-wrapper">
                 <bk-tab :active.sync="activePanel" :label-height="24">
