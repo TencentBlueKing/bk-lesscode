@@ -222,7 +222,6 @@
     } from 'shared/util'
 
     import DayJSUtcPlugin from 'dayjs/plugin/utc'
-import { debug } from 'console'
     dayjs.extend(DayJSUtcPlugin)
 
     interface ITable {
