@@ -20,11 +20,16 @@
             <import-data
                 class="import-data"
                 title="导入数据"
-                tips="1. 如果导入 sql 文件，仅支持执行插入、更新、删除数据的语法 <br /> 2. 如果导入 sql 文件，时间类型的字段值需要用户转成0时区再执行"
+                :uploadKey="dataImportOperationType"
                 :parse-import="parseImport"
                 :handle-import="handleImport"
                 @downloadTemplate="handleDownloadTemplate"
             >
+                <template v-slot:tips="slotProps">
+                    <template v-if="slotProps.fileType === DATA_FILE_TYPE.XLSX">
+                        支持INSERT、UPDATE、DELETE三种操作，时间类型的值需要转成0时区，
+                    </template>
+                </template>
                 <template v-slot="slotProps">
                     <template v-if="slotProps.fileType === DATA_FILE_TYPE.XLSX">
                         <h5 class="import-title">操作类型</h5>
@@ -193,7 +198,7 @@
         reactive
     } from '@vue/composition-api'
     import Vue from 'vue'
-    import { messageError } from '@/common/bkmagic'
+    import { messageError, messageSuccess } from '@/common/bkmagic'
     import { bkInfoBox } from 'bk-magic-vue'
     import router from '@/router'
     import store from '@/store'
@@ -517,7 +522,7 @@
                 const apiData = {
                     environment: environment.value.key,
                     projectId,
-                    sql: `START TRANSACTION;${sql}COMMIT;`
+                    sql
                 }
                 return store.dispatch('dataSource/modifyOnlineDb', apiData)
             }
@@ -567,7 +572,8 @@
                             activeTable.value.columns.map(column => column.name)
                         )
                         resolve({
-                            data: list
+                            data: list,
+                            message: type === DATA_FILE_TYPE.XLSX ? `解析到【${list.length}】条数据，点击导入后根据所选的操作类型导入数据库` : ''
                         })
                     } catch (error) {
                         reject(error)
@@ -577,11 +583,20 @@
 
             // 执行导入
             const handleImport = (data, fileType) => {
+                // 导入成功提示消息
+                const handleImportSuccessMessage = (results) => {
+                    const affectedRows = results.reduce((acc, cur) => {
+                        acc += cur.affectedRows
+                        return acc
+                    }, 0)
+                    messageSuccess(`数据导入操作执行成功，数据库受影响的行数为：${affectedRows}`)
+                }
                 // sql 导入则直接执行 sql 语法
                 if (fileType === DATA_FILE_TYPE.SQL) {
-                    return modifyOnlineDb(data.content).then(() => {
+                    return modifyOnlineDb(data.content).then((results) => {
                         closeForm()
                         getDataList()
+                        handleImportSuccessMessage(results)
                     })
                 }
 
@@ -601,9 +616,6 @@
                     if (isEmpty(rest.createUser)) {
                         rest.createUser = userInfo.username
                     }
-                    if (dataImportOperationType.value === DATA_IMPORT_OPERATION_TYPE.ALL_INSERT.ID) {
-                        delete rest.id
-                    }
                     Object.defineProperty(
                         rest,
                         '_dataImportOperationType',
@@ -614,7 +626,7 @@
                     )
                     return rest
                 })
-                return updateDB(activeTable.value.tableName, filterList, new DataParse())
+                return updateDB(activeTable.value.tableName, filterList, new DataParse()).then(handleImportSuccessMessage)
             }
 
             const handleDownloadTemplate = (type) => {
@@ -636,7 +648,7 @@
                 }
                 // 过滤掉不需要导出的字段
                 const filterColumns = activeTable.value.columns.filter((column) => {
-                    return column.name !== 'id'
+                    return column.name !== 'id' || type === DATA_FILE_TYPE.XLSX
                 })
                 // 基于当前选择的表构建示例数据
                 const demoData = filterColumns.reduce((acc, cur) => {
@@ -647,7 +659,7 @@
                 downloadDataTemplate(
                     type,
                     {
-                        tableName: 'demo_data',
+                        tableName: activeTable.value?.tableName,
                         list: [demoData]
                     }
                 )

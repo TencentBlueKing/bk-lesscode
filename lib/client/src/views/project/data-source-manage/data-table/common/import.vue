@@ -38,11 +38,12 @@
                 :size="10"
                 :multiple="false"
                 :custom-request="handleRequest"
+                :key="uploadKey + fileType"
                 v-if="isShowImport"
             ></bk-upload>
 
             <span class="import-tip">
-                支持 {{ fileType }} 文件格式，
+                支持 {{ fileType }} 文件格式，<slot name="tips" :file-type="fileType"></slot>
                 <bk-link theme="primary" @click="downloadTemplate(fileType)">
                     <i class="bk-drag-icon bk-drag-download"></i>{{ fileType }} 模板
                 </bk-link>
@@ -73,7 +74,8 @@
 <script lang="ts">
     import {
         defineComponent,
-        ref
+        ref,
+        watch
     } from '@vue/composition-api'
     import {
         DATA_FILE_TYPE,
@@ -83,6 +85,8 @@
         props: {
             title: String,
             tips: String,
+            typeTips: String,
+            uploadKey: String,
             parseImport: Function,
             handleImport: Function
         },
@@ -179,6 +183,16 @@
             const downloadTemplate = (type) => {
                 emit('downloadTemplate', type)
             }
+
+            watch(
+                [
+                    () => props.uploadKey,
+                    () => fileType.value
+                ],
+                () => {
+                    clearStatus()
+                }
+            )
 
             return {
                 DATA_FILE_TYPE,
