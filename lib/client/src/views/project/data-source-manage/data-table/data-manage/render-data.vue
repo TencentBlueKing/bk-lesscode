@@ -26,7 +26,7 @@
                 @downloadTemplate="handleDownloadTemplate"
             >
                 <template v-slot:tips="slotProps">
-                    <template v-if="slotProps.fileType === DATA_FILE_TYPE.XLSX">
+                    <template v-if="slotProps.fileType === DATA_FILE_TYPE.SQL">
                         支持INSERT、UPDATE、DELETE三种操作，时间类型的值需要转成0时区，
                     </template>
                 </template>
@@ -615,6 +615,12 @@
                     }
                     if (isEmpty(rest.createUser)) {
                         rest.createUser = userInfo.username
+                    }
+                    // 新增导入和有唯一性约束的情况下，导入不需要id字段
+                    if (dataImportOperationType.value === DATA_IMPORT_OPERATION_TYPE.ALL_INSERT.ID
+                        || activeTable.value.columns.some(column => column.unique)
+                    ) {
+                        delete rest.id
                     }
                     Object.defineProperty(
                         rest,
