@@ -79,13 +79,13 @@
 </script>
 <style lang="postcss" module>
     @import "@/css/mixins/scroller";
-    $layoutLeftWidth: 340px;
+    $layoutLeftWidth: 342px;
     $layoutRightWidth: 300px;
 
     .draw-layout{
         position: relative;
         padding-right: 300px;
-        padding-left: 340px;
+        padding-left: 342px;
         transition: all .1s;
         &.is-left-collapsed{
             padding-left: 0;

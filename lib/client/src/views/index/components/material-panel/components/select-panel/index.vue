@@ -1,41 +1,49 @@
 <template>
     <div class="select-panel">
-        <div
-            class="tab-item"
-            :class="{
-                active: value === 'component'
-            }"
-            v-bk-tooltips.right="'组件库'"
-            role="component-panel-tab"
-            @click="handleChange('component')">
-            <i class="bk-drag-icon bk-drag-custom-comp-default" />
-        </div>
-        <div
-            class="tab-item"
-            :class="{
-                active: value === 'template'
-            }"
-            v-bk-tooltips.right="'页面模板管理'"
-            role="template-panel-tab"
-            @click="handleChange('template')">
-            <i class="bk-drag-icon bk-drag-template-fill" />
-        </div>
-        <div
-            class="tab-item"
-            :class="{
-                active: value === 'tree'
-            }"
-            v-bk-tooltips.right="'页面组件树'"
-            role="component-tree-panel-tab"
-            @click="handleChange('tree')">
-            <i class="bk-drag-icon bk-drag-level-down" />
-        </div>
+        <template v-for="panel in panelList">
+            <div :key="panel.key"
+                class="tab-item"
+                :class="{
+                    active: value === panel.key
+                }"
+                v-bk-tooltips.right="panel.tips"
+                :role="`${panel.key}-panel-tab`"
+                @click="handleChange(panel.key)">
+                <i :class="panel.icon" />
+            </div>
+        </template>
     </div>
 </template>
 <script>
     export default {
         props: {
             value: String
+        },
+        data () {
+            return {
+                panelList: [
+                    {
+                        key: 'component',
+                        tips: '组件库',
+                        icon: 'bk-drag-icon bk-drag-custom-comp-default'
+                    },
+                    {
+                        key: 'template',
+                        tips: '页面模板管理',
+                        icon: 'bk-drag-icon bk-drag-template-fill'
+                    },
+                    {
+                        key: 'icon',
+                        tips: 'Icon',
+                        icon: 'bk-icon icon-smile-shape'
+                    },
+                    {
+                        key: 'tree',
+                        tips: '页面组件树',
+                        icon: 'bk-drag-icon bk-drag-level-down'
+                    }
+                ]
+            }
         },
         methods: {
             handleChange (value) {

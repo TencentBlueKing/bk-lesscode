@@ -1,69 +1,67 @@
 <template>
     <div class="panel-component">
-        <div class="category-tabs">
-            <div
-                class="tab-item base-component-box"
-                :class="{ active: tab === 'baseComponent' }"
-                @click="handleChangeTab('baseComponent')">
-                <select-base-component v-model="baseComponent" />
-            </div>
-            <div
-                class="tab-item"
-                :class="{ active: tab === 'customComponent' }"
-                @click="handleChangeTab('customComponent')">
-                <span class="tab-item-label">自定义组件</span>
-            </div>
-        </div>
+        <select-tab
+            v-if="!isExternal"
+            :tab-list="tabList"
+            :current="tab"
+            :change-tab="handleChangeTab"
+        >
+        </select-tab>
         <div class="drag-component-list">
-            <component :is="com" :base-component="baseComponent" />
+            <component :is="com" :icon-type="tab" />
         </div>
     </div>
 </template>
 <script>
-    import SelectBaseComponent from './components/select-base-component.vue'
-    import RenderBaseComponent from './components/render-base-component'
-    import RenderCustomComponent from './components/render-custom-component'
-    import { mapGetters } from 'vuex'
+    import SelectTab from '../common/select-tab'
+    import RenderProjectIcon from './components/render-project-icon'
+    import RenderOffcialIcon from './components/render-offcial-icon'
+    import { mapGetters, mapState } from 'vuex'
 
     export default {
         name: '',
         components: {
-            SelectBaseComponent
+            SelectTab
         },
         data () {
             return {
-                tab: 'baseComponent',
-                baseComponent: 'bk'
+                tab: 'projectIcon',
+                tabList: [
+                    {
+                        key: 'projectIcon',
+                        name: 'Icon Cool图标'
+                    },
+                    {
+                        key: 'offcialIcon',
+                        name: '蓝鲸官方图标'
+                    }
+                ]
             }
         },
         computed: {
+            ...mapState(['isExternal']),
+            ...mapState('iconManage', ['iconList']),
             ...mapGetters('page', ['platform']),
             com () {
                 const comMap = {
-                    baseComponent: RenderBaseComponent,
-                    customComponent: RenderCustomComponent
+                    projectIcon: RenderProjectIcon,
+                    offcialIcon: RenderOffcialIcon
                 }
                 return comMap[this.tab]
             }
         },
         created () {
-            this.initPlatform()
+            const hasProjectIcon = this.iconList?.length > 0
+            this.tab = (this.isExternal || !hasProjectIcon) ? 'offcialIcon' : 'projectIcon'
         },
         methods: {
             handleChangeTab (tab) {
                 this.tab = tab
-            },
-            initPlatform () {
-                const map = {
-                    PC: 'bk',
-                    MOBILE: 'vant'
-                }
-                this.baseComponent = map[this.platform]
             }
         }
     }
 </script>
-<style lang="postcss">
+<style lang="postcss" scoped>
     @import "@/css/mixins/ellipsis";
     @import "@/css/mixins/scroller";
 
@@ -97,6 +95,7 @@
                 &.active {
                     color: #3A84FF;
                     background: #FFF;
+                    border-bottom: 2px solid #3A84FF;
                 }
                 .tab-item-label {
                     font-size: 12px;

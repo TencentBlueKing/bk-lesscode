@@ -15,6 +15,7 @@
     import SelectPanel from './components/select-panel'
     import PanelComponent from './components/panel-component'
     import PanelTemplate from './components/panel-template'
+    import PanelIcon from './components/panel-icon'
     import PanelTree from './components/panel-tree'
 
     export default {
@@ -23,6 +24,7 @@
             SelectPanel,
             PanelComponent,
             PanelTemplate,
+            PanelIcon,
             PanelTree
         },
         data () {
@@ -36,6 +38,7 @@
                 const comMap = {
                     component: PanelComponent,
                     template: PanelTemplate,
+                    icon: PanelIcon,
                     tree: PanelTree
                 }
                 return comMap[this.activePanel]

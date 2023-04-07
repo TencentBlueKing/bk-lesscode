@@ -11,20 +11,12 @@
 
 <template>
     <section class="panel-template" v-bkloading="{ isLoading }">
-        <div class="category-tabs">
-            <div
-                class="tab-item"
-                :class="{ active: tab === 'project' }"
-                @click="handleToggleTab('project')">
-                <span class="tab-item-label">页面模板</span>
-            </div>
-            <div
-                class="tab-item"
-                :class="{ active: tab === 'market' }"
-                @click="handleToggleTab('market')">
-                <span class="tab-item-label">模板市场</span>
-            </div>
-        </div>
+        <select-tab
+            :tab-list="tabList"
+            :current="tab"
+            :change-tab="handleToggleTab"
+        >
+        </select-tab>
         <div class="template-list">
             <search-box :list="renderTemplateList"
                 @on-change="handleSearchChange" />
@@ -80,6 +72,7 @@
     import { bus } from '@/common/bus'
     import GroupBox from '../common/group-box'
     import SearchBox from '../common/search-box'
+    import SelectTab from '../common/select-tab'
     import { mapGetters } from 'vuex'
 
     export default {
@@ -87,6 +80,7 @@
         components: {
             GroupBox,
             SearchBox,
+            SelectTab,
             templateEditDialog
         },
         props: {
@@ -99,6 +93,16 @@
             return {
                 isLoading: false,
                 tab: 'project',
+                tabList: [
+                    {
+                        key: 'project',
+                        name: '页面模板'
+                    },
+                    {
+                        key: 'market',
+                        name: '模板市场'
+                    }
+                ],
                 type: 'project',
                 dragOptions: {
                     disabled: false
@@ -285,28 +289,8 @@
     .panel-template{
         min-height: 100%;
         height: 100%;
-        .category-tabs{
-            display: flex;
-            border-bottom: 1px solid #ccc;
-            .tab-item {
-                flex: 1;
-                font-size: 14px;
-                padding: 0 8px;
-                margin-right: 4px;
-                margin-bottom: -1px;
-                height: 46px;
-                line-height: 46px;
-                white-space: nowrap;
-                text-align: center;
-                cursor: pointer;
-                &.active{
-                    color: #3a84ff;
-                    border-bottom: 2px solid #3a84ff;
-                }
-            }
-        }
         .search-box {
-            padding: 12px 20px;
+            padding: 6px 12px;
         }
         .template-list{
             height: calc(100% - 46px);
@@ -315,10 +299,9 @@
             @mixin scroller;
         }
         .template-item {
-            margin-top: 10px;
-            margin-left: 8px;
+            margin: 0 8px 16px 0;
             cursor: pointer;
-            width: 136px;
+            width: 134px;
             height: 111px;
             background: #ffffff;
             border: 1px solid #dcdee5;
