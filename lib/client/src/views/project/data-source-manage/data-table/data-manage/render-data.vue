@@ -26,7 +26,7 @@
                 @downloadTemplate="handleDownloadTemplate"
             >
                 <template v-slot:tips="slotProps">
-                    <template v-if="slotProps.fileType === DATA_FILE_TYPE.XLSX">
+                    <template v-if="slotProps.fileType === DATA_FILE_TYPE.SQL">
                         支持INSERT、UPDATE、DELETE三种操作，时间类型的值需要转成0时区，
                     </template>
                 </template>
