@@ -616,6 +616,12 @@
                     if (isEmpty(rest.createUser)) {
                         rest.createUser = userInfo.username
                     }
+                    // 新增导入和有唯一性约束的情况下，导入不需要id字段
+                    if (dataImportOperationType.value === DATA_IMPORT_OPERATION_TYPE.ALL_INSERT.ID
+                        || activeTable.value.columns.some(column => column.unique)
+                    ) {
+                        delete rest.id
+                    }
                     Object.defineProperty(
                         rest,
                         '_dataImportOperationType',
