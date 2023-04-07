@@ -31,7 +31,7 @@
                             class="edit-btn"
                             theme="primary"
                             @click="handleGotoPage(project.id)">
-                            {{ $t('开发应用') }} </auth-button>
+                            {{ $t('开发') }} </auth-button>
                         <auth-button
                             :permission="project.canDevelop"
                             auth="develop_app"

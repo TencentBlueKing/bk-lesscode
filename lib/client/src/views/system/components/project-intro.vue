@@ -41,7 +41,7 @@
                         desc: 'npm run build'
                     },
                     {
-                        title: '打包构建分析',
+                        title: window.i18n.t('打包构建分析'),
                         desc: 'npm run build:analyzer'
                     },
                     {

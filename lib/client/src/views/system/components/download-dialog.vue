@@ -13,7 +13,7 @@
         >
             <section>
                 <div style="margin-bottom: 16px;font-size:14px;">
-                    {{ $t('即将下载') }}载<span style="font-weight: bold;">【{{projectName}}】</span>{{ $t('完整源码包，解压后，您可以按照以下操作进行二次开发：') }}
+                    {{ $t('即将下载') }}<span style="font-weight: bold;">【{{projectName}}】</span>{{ $t('完整源码包，解压后，您可以按照以下操作进行二次开发：') }}
                 </div>
                 <section class="intro-container">
                     <intro style="font-size: 12px;" />
