@@ -59,10 +59,10 @@
                 :clearable="false"
                 @change="handleFontChange('fontStyle', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" :v-bk-tooltips="getTooltipsConfig($t('普通'))" />
-                <bk-option id="italic" name="italic" :v-bk-tooltips="getTooltipsConfig($t('斜体'))" />
-                <bk-option id="oblique" name="oblique" :v-bk-tooltips="getTooltipsConfig($t('倾斜体'))" />
-                <bk-option id="inherit" name="inherit" :v-bk-tooltips="getTooltipsConfig($t('继承父元素'))" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('普通'))" />
+                <bk-option id="italic" name="italic" v-bk-tooltips="getTooltipsConfig($t('斜体'))" />
+                <bk-option id="oblique" name="oblique" v-bk-tooltips="getTooltipsConfig($t('倾斜体'))" />
+                <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig($t('继承父元素'))" />
             </bk-select>
         </style-item>
         <style-item :name="$t('行高')" v-if="handleHasKey('lineHeight')">
@@ -103,10 +103,10 @@
                 :clearable="false"
                 @change="handleFontChange('textDecoration', $event)"
                 style="width: 100%;">
-                <bk-option id="none" name="none" :v-bk-tooltips="getTooltipsConfig($t('无修饰线'))" />
-                <bk-option id="underline" name="underline" :v-bk-tooltips="getTooltipsConfig($t('下划线'))" />
-                <bk-option id="overline" name="overline" :v-bk-tooltips="getTooltipsConfig($t('上划线'))" />
-                <bk-option id="line-through" name="line-through" :v-bk-tooltips="getTooltipsConfig($t('中划线'))" />
+                <bk-option id="none" name="none" v-bk-tooltips="getTooltipsConfig($t('无修饰线'))" />
+                <bk-option id="underline" name="underline" v-bk-tooltips="getTooltipsConfig($t('下划线'))" />
+                <bk-option id="overline" name="overline" v-bk-tooltips="getTooltipsConfig($t('上划线'))" />
+                <bk-option id="line-through" name="line-through" v-bk-tooltips="getTooltipsConfig($t('中划线'))" />
             </bk-select>
         </style-item>
         <style-item :name="$t('缩进')" v-if="handleHasKey('textIndent')">
@@ -121,8 +121,8 @@
                 :clearable="false"
                 @change="handleFontChange('textOverflow', $event)"
                 style="width: 100%;">
-                <bk-option id="clip" name="clip" :v-bk-tooltips="getTooltipsConfig($t('截断溢出文本'))" />
-                <bk-option id="ellipsis" name="ellipsis" :v-bk-tooltips="getTooltipsConfig($t('使用一个省略号来表示溢出文本'))" />
+                <bk-option id="clip" name="clip" v-bk-tooltips="getTooltipsConfig($t('截断溢出文本'))" />
+                <bk-option id="ellipsis" name="ellipsis" v-bk-tooltips="getTooltipsConfig($t('使用一个省略号来表示溢出文本'))" />
             </bk-select>
         </style-item>
         <style-item name="word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
@@ -132,9 +132,9 @@
                 :clearable="false"
                 @change="handleFontChange('wordBreak', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" :v-bk-tooltips="getTooltipsConfig($t('默认的换行规则'))" />
-                <bk-option id="break-all" name="break-all" :v-bk-tooltips="getTooltipsConfig($t('对于 non-CJK (CJK 指中文/日文/韩文) 文本，可在任意字符间断行'))" />
-                <bk-option id="keep-all" name="keep-all" :v-bk-tooltips="getTooltipsConfig($t('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal'))" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('默认的换行规则'))" />
+                <bk-option id="break-all" name="break-all" v-bk-tooltips="getTooltipsConfig($t('对于 non-CJK (CJK 指中文/日文/韩文) 文本，可在任意字符间断行'))" />
+                <bk-option id="keep-all" name="keep-all" v-bk-tooltips="getTooltipsConfig($t('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal'))" />
             </bk-select>
         </style-item>
         <style-item name="word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
@@ -144,8 +144,8 @@
                 :clearable="false"
                 @change="handleFontChange('wordWrap', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" :v-bk-tooltips="getTooltipsConfig($t('不换行'))" />
-                <bk-option id="break-word" name="break-word" :v-bk-tooltips="getTooltipsConfig($t('长单词内部换行'))" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('不换行'))" />
+                <bk-option id="break-word" name="break-word" v-bk-tooltips="getTooltipsConfig($t('长单词内部换行'))" />
             </bk-select>
         </style-item>
         <style-item name="white-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
@@ -155,12 +155,12 @@
                 :clearable="false"
                 @change="handleFontChange('whiteSpace', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" :v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被合并，换行符会被当作空白符来处理'))" />
-                <bk-option id="pre" name="pre" :v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被保留。在遇到换行符或者 br 元素时才会换行'))" />
-                <bk-option id="nowrap" name="nowrap" :v-bk-tooltips="getTooltipsConfig($t('和 normal 一样，连续的空白符会被合并。文本内的换行无效'))" />
-                <bk-option id="pre-wrap" name="pre-wrap" :v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被保留。在遇到换行符或者 br 元素时会换行，且可以自动换行'))" />
-                <bk-option id="pre-line" name="pre-line" :v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被合并。在遇到换行符或者 br 元素时会换行，且可以自动换行'))" />
-                <bk-option id="inherit" name="inherit" :v-bk-tooltips="getTooltipsConfig($t('继承父元素该属性'))" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被合并，换行符会被当作空白符来处理'))" />
+                <bk-option id="pre" name="pre" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被保留。在遇到换行符或者 br 元素时才会换行'))" />
+                <bk-option id="nowrap" name="nowrap" v-bk-tooltips="getTooltipsConfig($t('和 normal 一样，连续的空白符会被合并。文本内的换行无效'))" />
+                <bk-option id="pre-wrap" name="pre-wrap" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被保留。在遇到换行符或者 br 元素时会换行，且可以自动换行'))" />
+                <bk-option id="pre-line" name="pre-line" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被合并。在遇到换行符或者 br 元素时会换行，且可以自动换行'))" />
+                <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig($t('继承父元素该属性'))" />
             </bk-select>
         </style-item>
         <style-item :name="$t('垂直对齐')" v-if="handleHasKey('verticalAlign')">

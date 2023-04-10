@@ -28,7 +28,7 @@
                     <template v-slot:title>
                         <span
                             v-bk-tooltips="{
-                                content: directive.tips && directive.tips(lastDirectiveMap[genDirectiveKey(directive)]),
+                                content: directive.tips && $t(directive.tips(lastDirectiveMap[genDirectiveKey(directive)])),
                                 disabled: !directive.tips,
                                 width: 290
                             }"

@@ -227,7 +227,7 @@
                     { label: 'Object', id: 4 },
                     // { label: '图片地址', id: 5 },
                     {
-                        label: '计算变量',
+                        label: this.$t('计算变量'),
                         id: 6,
                         hidden: this.copyForm.effectiveRange === 0
                     }
@@ -247,7 +247,7 @@
                 const disabled = this.copyForm.valueType !== 6
                     && this.valueTypeInclude?.every((limitType) => !typeEnum[limitType]?.includes(this.copyForm.valueType))
                 return {
-                    content: this.$t('只允许使用【{n}，计算变量】类型的变量',{n : this.valueTypeInclude.join('，')}),
+                    content: this.$t('只允许使用【{n}，计算变量】类型的变量', { n: this.valueTypeInclude.join('，') }),
                     disabled
                 }
             }

@@ -31,7 +31,7 @@
                         {{ $t('已生成') }} <span style="font-weight: bold">{{ dataManagePages.length }}</span>
                         {{ $t('个数据管理页') }} </span>
                     <i
-                        :v-bk-tooltips="$t('继续添加')"
+                        v-bk-tooltips="$t('继续添加')"
                         class="bk-drag-icon bk-drag-add-line create-page-icon"
                         @click="handleCreateManagePage">
                     </i>
