@@ -100,6 +100,7 @@
     import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
     import _ from 'lodash'
     const LAYOUT_GROUP = ['DESC', 'DIVIDER']
+    const ASVANCED_CONTROLS = ['COMPUTE', 'SERIAL']
     export default {
         components: {
             draggable
@@ -131,11 +132,18 @@
                         name: '基础控件',
                         items: [],
                         isFolded: false
+                    },
+                    {
+                        name: '高级控件',
+                        items: [],
+                        isFolded: false
                     }
                 ]
                 fieldsArr.forEach(item => {
                     if (LAYOUT_GROUP.includes(item.type)) {
                         group[0].items.push(item)
+                    } else if (ASVANCED_CONTROLS.includes(item.type)) {
+                        group[2].items.push(item)
                     } else {
                         group[1].items.push(item)
                     }
@@ -271,10 +279,11 @@
 
 .fields-list-container {
   height: calc(100% - 56px);
-  overflow: hidden;
+  overflow: auto;
   width: 100%;
   background: #FFFFFF;
   box-shadow: 1px 0 0 0 #DCDEE5;
+  @mixin scroller;
 }
 
 .group-name {

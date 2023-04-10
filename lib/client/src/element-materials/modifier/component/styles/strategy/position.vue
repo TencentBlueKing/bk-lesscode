@@ -37,6 +37,18 @@
                         @change="handleSelectChange(item, $event)" />
                 </size-input>
             </style-item>
+            <position-graph>
+                <position-distance
+                    v-for="item in posConfigRender"
+                    :name="item.name"
+                    :key="item.key"
+                    :value="item.value"
+                    :unit="item.unit"
+                    :is-input="item.isInput"
+                    :distance="item.distanceStyle">
+                    <size-unit :value="item.unit"></size-unit>
+                </position-distance>
+            </position-graph>
         </template>
     </style-layout>
 </template>
@@ -49,23 +61,30 @@
     import { splitValueAndUnit } from '@/common/util'
     import { getCssProperties, getTooltipsConfig } from '../common/util'
     import defaultUnitMixin from '@/common/defaultUnit.mixin'
+    import positionGraph from '@/components/modifier/position-graph'
+    import positionDistance from '@/components/modifier/position-distance'
+    import SizeUnit from '@/components/modifier/size-unit'
 
     const posConfig = [
         {
             name: 'top',
-            key: 'top'
+            key: 'top',
+            distanceStyle: 'distance-top'
         },
         {
             name: 'left',
-            key: 'left'
+            key: 'left',
+            distanceStyle: 'distance-left'
         },
         {
             name: 'right',
-            key: 'right'
+            key: 'right',
+            distanceStyle: 'distance-right'
         },
         {
             name: 'bottom',
-            key: 'bottom'
+            key: 'bottom',
+            distanceStyle: 'distance-bottom'
         },
         {
             name: 'z-index',
@@ -78,7 +97,10 @@
             StyleLayout,
             StyleItem,
             AppendSelect,
-            SizeInput
+            SizeInput,
+            positionDistance,
+            positionGraph,
+            SizeUnit
         },
         mixins: [defaultUnitMixin],
         props: {
