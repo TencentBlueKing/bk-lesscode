@@ -12,6 +12,7 @@
         <bk-table-column label="长度" prop="length"></bk-table-column>
         <bk-table-column label="小数点" prop="scale"></bk-table-column>
         <bk-table-column label="索引" prop="index" :formatter="boolFormatter"></bk-table-column>
+        <bk-table-column label="唯一性约束" prop="unique" :formatter="boolFormatter"></bk-table-column>
         <bk-table-column label="可空" prop="nullable" :formatter="boolFormatter"></bk-table-column>
         <bk-table-column label="默认值" prop="default" show-overflow-tooltip></bk-table-column>
         <bk-table-column label="备注" prop="comment" show-overflow-tooltip></bk-table-column>

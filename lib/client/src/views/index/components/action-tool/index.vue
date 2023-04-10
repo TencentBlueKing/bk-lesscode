@@ -5,6 +5,7 @@
         <code-and-json />
         <quick-operation />
         <canvas-guide />
+        <ai v-if="isAiAvailable"/>
     </div>
 </template>
 <script>
@@ -15,6 +16,7 @@
     import CodeAndJson from './components/code-and-json'
     import QuickOperation from './components/quick-operation'
     import CanvasGuide from './components/canvas-guide'
+    import Ai from './components/ai.vue'
 
     export default {
         components: {
@@ -22,10 +24,12 @@
             ClearCanvas,
             CodeAndJson,
             QuickOperation,
-            CanvasGuide
+            CanvasGuide,
+            Ai
         },
         computed: {
-            ...mapGetters(['iamNoResourcesPerm'])
+            ...mapGetters(['iamNoResourcesPerm']),
+            ...mapGetters('ai', ['isAiAvailable'])
         }
     }
 </script>

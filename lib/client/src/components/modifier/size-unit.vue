@@ -47,12 +47,24 @@
 </script>
 
 <style lang="postcss">
-    .style-size-unit {
-        padding: 4px;
-        cursor: pointer;
+.dropdown-trigger-text{
+        width: 22px;
+        height: 16px;
+        line-height: 16px;
+        text-align: center;
         &:hover {
             background: #F0F1F5;
             border-radius: 2px;
         }
-    }
+        }
+    /* .style-size-unit {
+        padding: 4px;
+        cursor: pointer;
+        
+        &:hover {
+            background: #F0F1F5;
+            border-radius: 2px;
+        }
+    } */
+    
 </style>
