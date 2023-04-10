@@ -35,6 +35,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-plus-circle:before {
 	content: "\e21a";
 }
+.bk-drag-setting:before {
+	content: "\e26d";
+}
 .bk-drag-check-circle-fill:before {
 	content: "\e180";
 }
@@ -1060,4 +1063,28 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-zitidaxiao:before {
 	content: "\e263";
+}
+.bk-drag-shujuyuan:before {
+	content: "\e268";
+}
+.bk-drag-zidingyiye:before {
+	content: "\e267";
+}
+.bk-drag-markdown:before {
+	content: "\e265";
+}
+.bk-drag-biaodan:before {
+	content: "\e266";
+}
+.bk-drag-liuchengtidanye:before {
+	content: "\e269";
+}
+.bk-drag-yuanma-2:before {
+	content: "\e26a";
+}
+.bk-drag-shangxiaduicheng:before {
+	content: "\e26c";
+}
+.bk-drag-zuoyouduicheng:before {
+	content: "\e26b";
 }

@@ -1,0 +1,4 @@
+<template>
+    <section>
+    </section>
+</template>

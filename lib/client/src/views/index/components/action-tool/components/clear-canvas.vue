@@ -14,7 +14,7 @@
             return {
                 item: {
                     icon: 'bk-drag-icon bk-drag-delete',
-                    text: '清空',
+                    tips: '清空画布内容区域（不包含导航部分）',
                     func: this.handleClearAll
                 }
             }

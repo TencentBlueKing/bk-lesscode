@@ -174,7 +174,6 @@
     .lessocde-editor-page {
         min-width: 1366px;
         height: calc(100vh - $headerHeight);
-        margin-top: $headerHeight;
     }
     .lesscode-editor-page-header {
         position: relative;

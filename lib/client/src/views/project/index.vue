@@ -1,29 +1,27 @@
 <template>
     <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
-        <!--  -->
         <aside class="aside" v-if="!hideSideNav">
-            <div class="side-hd">
-                <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
-                <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
-                    <bk-option v-for="option in projectList"
-                        :key="option.id"
-                        :id="option.id"
-                        :name="option.projectName">
-                    </bk-option>
-                </bk-select>
+            <div class="side-hd" @mouseenter="asideHover = true" @mouseleave="asideHover = false">
+                <div class="open-select-menu-div" v-show="!asideFolded || asideHover">
+                    <!-- <div class="open-select-menu-div" :class="{ 'hidden-select': asideFolded && !asideHover }"> -->
+                    <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
+                    <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
+                        <bk-option v-for="option in projectList"
+                            :key="option.id"
+                            :id="option.id"
+                            :name="option.projectName">
+                        </bk-option>
+                    </bk-select>
+                </div>
+                <div v-show="asideFolded && !asideHover" class="fold-logo">
+                    {{(curProject.projectName || '').substr(0, 1)}}
+                </div>
             </div>
-            <div class="side-bd" :class="{ 'no-click': pageLoading }"
-                @mouseenter="asideHover = true"
-                @mouseleave="asideHover = false">
-                <!-- <nav class="nav-list">
-                    <router-link tag="div" class="nav-item" v-for="item in navList" :key="item.title" :to="item.toPath">
-                        <i :class="`bk-drag-icon bk-drag-${item.icon}`"></i>{{ item.title }} <i v-if="item.redPoint" class="red-point"></i>
-                    </router-link>
-                </nav> -->
+            <div class="side-bd" :class="{ 'no-click': pageLoading }" @mouseenter="asideHover = true" @mouseleave="asideHover = false">
                 <bk-navigation-menu
                     ref="menu"
                     class="nav-list"
-                    :unique-opened="defaultOpen"
+                    :unique-opened="false"
                     :default-active="defaultActive"
                     :toggle-active="true"
                     v-bind="defaultThemeColorProps">
@@ -34,16 +32,7 @@
                         :id="menuItem.url"
                         @click="handleSelect">
                         <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
-                        <!-- <span class="item-title">{{menuItem.title}}</span> -->
                         <template v-if="menuItem.iamAction">
-                            <!-- <auth-component
-                                :permission="menuItem.iamAction === 'develop_app' ? curProject.canDevelop : curProject.canDeploy"
-                                :auth="menuItem.iamAction"
-                                :resource-id="$route.params.projectId"
-                                @before-show-permission-dialog="beforeShowPermissionDialog">
-                                <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-forbid-container-cls">{{menuItem.title}}</a>
-                                <span class="item-title" slot="allow">{{menuItem.title}}</span>
-                            </auth-component> -->
                             <auth-component
                                 :permission="menuItem.permission"
                                 :auth="menuItem.iamAction"
@@ -63,16 +52,7 @@
                                 :id="childrenItem.url"
                                 :url="childrenItem.url"
                                 @click="handleSelect">
-                                <!-- <span>{{ childrenItem.title }}</span> -->
                                 <template v-if="childrenItem.iamAction">
-                                    <!-- <auth-component
-                                        :permission="childrenItem.iamAction === 'develop_app' ? curProject.canDevelop : curProject.canDeploy"
-                                        :auth="childrenItem.iamAction"
-                                        :resource-id="$route.params.projectId"
-                                        @before-show-permission-dialog="beforeShowPermissionDialog">
-                                        <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-child-forbid-container-cls">{{childrenItem.title}}</a>
-                                        <span slot="allow">{{childrenItem.title}}</span>
-                                    </auth-component> -->
                                     <auth-component
                                         :permission="childrenItem.permission"
                                         :auth="childrenItem.iamAction"
@@ -90,38 +70,42 @@
                     </bk-navigation-menu-item>
                 </bk-navigation-menu>
             </div>
-            <div class="side-ft">
+            <div class="side-ft" v-if="showMenuFooter">
                 <span class="nav-toggle" @click="asideFolded = !asideFolded">
-                    <i class="bk-drag-icon bk-drag-nav-toggle"></i>
+                    <i class="bk-icon icon-expand-line"></i>
                 </span>
             </div>
         </aside>
-        <div class="breadcrumbs" v-if="hasBreadcrumb">
-            <div class="page-top">
-                <h3 class="current">{{ currentPage }}</h3>
-                <div class="version-selector" v-if="isShowProjectVersionSelector">
-                    应用当前版本：
-                    <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
+        <section class="project-right-content">
+            <div class="breadcrumbs" v-if="hasBreadcrumb">
+                <div class="page-top">
+                    <h3 class="current">{{ currentPage }}</h3>
+                    <div class="version-selector" v-if="isShowProjectVersionSelector">
+                        应用当前版本：
+                        <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
+                    </div>
+                    <div class="instructions" v-if="helpDocument">
+                        <a class="download-demo" :href="helpDocument" target="_blank">
+                            <bk-icon class="bk-layout-component-kkgoknfg bkIcon1f258 bk-icon-help" type="question-circle"> </bk-icon>
+                            使用指引
+                        </a>
+                    </div>
                 </div>
-                <div class="instructions" v-if="helpDocument">
-                    <a class="download-demo" :href="helpDocument" target="_blank">
-                        <bk-icon class="bk-layout-component-kkgoknfg bkIcon1f258 bk-icon-help" type="question-circle"> </bk-icon>
-                        使用指引
-                    </a>
-                </div>
+                <extra-links></extra-links>
             </div>
-            <extra-links></extra-links>
-        </div>
-        <!-- 使用v-if因子组件依赖获取的应用信息 应用的页面列表-->
-        <div class="main-container" v-bkloading="{ isLoading: pageLoading }">
-            <router-view v-if="!pageLoading" :key="routeKey"></router-view>
-        </div>
+            <!-- 使用v-if因子组件依赖获取的应用信息 -->
+            <div class="main-container" v-bkloading="{ isLoading: pageLoading }">
+                <router-view v-if="!pageLoading" :key="routeKey"></router-view>
+            </div>
+        </section>
     </main>
 </template>
 
 <script>
     import { bus } from '@/common/bus'
     import ExtraLinks from '@/components/ui/extra-links'
+    import { PROJECT_NAV_LIST } from './project-data'
+
     export default {
         components: {
             ExtraLinks
@@ -133,235 +117,29 @@
                 projectVersionId: '',
                 curProject: {},
                 defaultActive: '',
-                // navList: [],
-                navList: [
-                    {
-                        title: '页面管理',
-                        icon: 'page',
-                        url: 'pageList',
-                        iamAction: 'develop_app',
-                        permission: false,
-                        toPath: {
-                            name: 'pageList'
-                        }
-                    },
-                    {
-                        title: '路由管理',
-                        icon: 'router',
-                        url: 'routes',
-                        iamAction: 'develop_app',
-                        permission: false,
-                        toPath: {
-                            name: 'routes'
-                        }
-                    },
-                    {
-                        title: '流程管理',
-                        icon: 'flow',
-                        url: 'flowList',
-                        iamAction: 'develop_app',
-                        permission: false,
-                        toPath: {
-                            name: 'flowList'
-                        }
-                    },
-                    {
-                        title: '数据源管理',
-                        icon: 'data-source-manage',
-                        url: 'tableList',
-                        toPath: {
-                            name: 'tableList'
-                        },
-                        children: [
-                            {
-                                title: '数据表管理',
-                                url: 'tableList',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'tableList'
-                                }
-                            },
-                            {
-                                title: '数据操作',
-                                url: 'dataOperation',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'dataOperation'
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        title: '资源管理',
-                        icon: 'source',
-                        url: 'componentManage',
-                        children: [
-                            {
-                                title: '导航布局管理',
-                                url: 'layout',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'layout'
-                                }
-                            },
-                            {
-                                title: '函数管理',
-                                url: 'functionManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'functionManage'
-                                }
-                            },
-                            {
-                                title: 'API 管理',
-                                url: 'apiManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'apiManage'
-                                }
-                            },
-                            {
-                                title: '变量管理',
-                                url: 'variableManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'variableManage'
-                                }
-                            },
-                            {
-                                title: '文件管理',
-                                url: 'fileManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'fileManage'
-                                }
-                            },
-                            {
-                                title: '自定义组件管理',
-                                url: 'componentManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'componentManage'
-                                }
-                            },
-                            {
-                                title: '页面模板管理',
-                                url: 'templateManage',
-                                iamAction: 'develop_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'templateManage'
-                                },
-                                redPoint: true
-                            }
-                        ]
-                    },
-                    {
-                        title: '发布管理',
-                        icon: '1_deploy-fill',
-                        url: 'release',
-                        children: [
-                            {
-                                title: '发布部署',
-                                icon: 'list-fill',
-                                url: 'release',
-                                iamAction: 'deploy_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'release'
-                                }
-                            },
-                            {
-                                title: '版本管理',
-                                icon: 'version',
-                                url: 'versions',
-                                iamAction: 'deploy_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'versions'
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        title: '权限管理',
-                        icon: 'auth-set',
-                        url: 'authManage',
-                        children: [
-                            {
-                                title: '应用管理权限',
-                                icon: 'user-group',
-                                url: 'authManage',
-                                iamAction: 'manage_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'authManage'
-                                }
-                            },
-                            {
-                                title: '应用权限模型',
-                                icon: 'info-fill',
-                                url: 'appPermModel',
-                                iamAction: 'manage_app',
-                                permission: false,
-                                toPath: {
-                                    name: 'appPermModel'
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        title: '基本信息',
-                        icon: 'set-fill',
-                        url: 'basicInfo',
-                        iamAction: 'develop_app',
-                        permission: false,
-                        toPath: {
-                            name: 'basicInfo'
-                        }
-                    },
-                    {
-                        title: '操作审计',
-                        icon: 'audit',
-                        url: 'logs',
-                        iamAction: 'develop_app',
-                        permission: false,
-                        toPath: {
-                            name: 'logs'
-                        }
-                    }
-                ],
+                navList: PROJECT_NAV_LIST,
                 projectList: [],
-                countdown: 3,
-                timer: null,
                 defaultThemeColorProps: {
-                    'item-default-bg-color': '#fff',
-                    'sub-menu-open-bg-color': '#fff',
-                    'item-hover-bg-color': '#f0f1f5',
-                    'item-hover-color': '#63656e',
-                    'item-active-bg-color': '#e1ecff',
+                    'item-default-color': '#96A2B9',
+                    'item-default-bg-color': '#0E1525',
+                    'item-active-color': '#FFF',
+                    'item-active-bg-color': '#3A84FF',
+                    'item-hover-bg-color': '#3A4561',
+                    'item-hover-color': '#FFF',
 
-                    // 这里写 3a84ff 会命中组件 bk-navigation-menu defItemActiveColor 里三元表达式的后面的结果
-                    'item-active-color': '#3a84fe',
-                    'item-default-color': '#63656e',
-                    'item-default-icon-color': '#63656e',
-                    'item-active-icon-color': '#63656e',
-                    'item-hover-icon-color': '#63656e',
-                    'item-child-icon-default-color': '#63656e',
-                    'item-child-icon-hover-color': '#63656e',
-                    'item-child-icon-active-color': '#3a84ff'
+                    'sub-menu-open-bg-color': '#000',
+                    
+                    'item-default-icon-color': '#96A2B9',
+                    'item-active-icon-color': '#FFF',
+                    'item-hover-icon-color': '#FFF',
+
+                    'item-child-icon-default-color': '#96A2B9',
+                    'item-child-icon-hover-color': '#FFF',
+                    'item-child-icon-active-color': '#FFF'
                 },
-                defaultOpen: true,
                 asideFolded: false,
-                asideHover: false
+                asideHover: false,
+                showMenuFooter: true
             }
         },
         computed: {
@@ -403,6 +181,15 @@
                 this.updateCurrentVersion(this.getInitialVersion())
                 bus.$on('update-project-version', this.updateCurrentVersion)
                 bus.$on('update-project-list', this.getProjectList)
+                bus.$on('is-fold-aside', ({ isFold = false, showMenuFooter = true }) => {
+                    this.asideFolded = isFold
+                    this.showMenuFooter = showMenuFooter
+                })
+
+                if (['new', 'editNocde'].indexOf(this.$route.name) > -1) {
+                    this.asideFolded = true
+                    this.showMenuFooter = false
+                }
 
                 this.projectId = parseInt(this.$route.params.projectId)
                 await this.getProjectList()
@@ -430,6 +217,7 @@
                     navList.splice(6, 1)
                 }
 
+                console.log(navList, 'navlist')
                 navList.forEach(item => {
                     dealPermission(item)
                     if (item.children) {
@@ -446,7 +234,6 @@
             }
         },
         async mounted () {
-            this.defaultOpen = false
             this.setDefaultActive()
         },
         methods: {
@@ -456,6 +243,7 @@
             },
             setDefaultActive () {
                 let name = this.$route.name
+                
                 // 数据源管理子页面，左侧数据源管理依然高亮选中
                 if ([
                     'tableList',
@@ -466,6 +254,11 @@
                     'dataManage'
                 ].includes(name)) {
                     name = 'tableList'
+                }
+
+                // 页面列表、画布，左侧选中页面管理
+                if (['pageList', 'new', 'editNocode'].includes(name)) {
+                    name = 'pageList'
                 }
                 this.defaultActive = name
             },
@@ -524,7 +317,7 @@
     .project-layout {
         --side-hd-height: 52px;
         --side-ft-height: 50px;
-        --aside-width: 258px;
+        --aside-width: 240px;
         --footer-height: 50px;
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
@@ -532,17 +325,17 @@
         height: calc(100vh - 52px);
         margin-top: 52px;
 
+        .project-right-content {
+            padding-left: 0px;
+            height: 100%;
+            width: 100%
+        }
+
         &.aside-folded:not(.aside-hover) {
             .aside {
                 width: var(--aside-folded-width);
                 .side-hd {
                     justify-content: center;
-
-                    .seperate-line,
-                    .template-logo,
-                    .select-project {
-                        display: none;
-                    }
                 }
                 .side-bd {
                     overflow: hidden;
@@ -571,15 +364,29 @@
             }
         }
 
+        &.aside-folded {
+            .aside {
+                position: absolute;
+                z-index: 2000;
+                height: calc(100% - 52px);
+            }
+            .project-right-content {
+                padding-left: 60px;
+            }
+        }
         .aside {
             position: relative;
             width: var(--aside-width);
             height: 100%;
             border-right: 1px solid #DCDEE5;
-            background: #FFF;
+            background: #0E1525;
             float: left;
             z-index: 1;
             transition: width .2s cubic-bezier(0.4, 0, 0.2, 1);
+
+            .side-hd-bd {
+                height: 100%;
+            }
 
             .side-hd {
                 height: var(--side-hd-height);
@@ -591,25 +398,30 @@
                     padding: 10px;
                     cursor: pointer;
                 }
-                .template-logo {
-                    margin: 0 10px;
-                    cursor: pointer;
-                    svg {
-                        vertical-align: middle;
-                    }
+                .open-select-menu-div {
+                    display: flex;
+                    align-items: center;
                 }
-                .seperate-line {
-                    width: 1px;
-                    color: #d8d8d8;
-                    margin-left: -2px;
+                .hidden-select {
+                    width: 0;
+                }
+                .fold-logo {
+                    width: 32px;
+                    height: 32px;
+                    background: #3A4561;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 2px;
                 }
                 .select-project {
-                    width: 216px;
+                    width: 188px;
+                    background: #2B313F;
                     border: none;
                     margin-left: 2px;
                     .bk-select-name {
                         font-size: 14px;
-                        color: #313238;
+                        color: #DCDEE5;
                     }
                     &.is-focus {
                         box-shadow: none;
@@ -627,7 +439,7 @@
                 height: var(--side-ft-height);
                 line-height: var(--side-ft-height);
                 width: 100%;
-                background: #fff;
+                background: #0E1525;
                 padding-left: 12px;
 
                 .nav-toggle {
@@ -640,8 +452,14 @@
                     transform: rotate(180deg);
                     transition: transform .2s cubic-bezier(0.4, 0, 0.2, 1);
 
-                    &:hover {
-                        opacity: .8;
+                    i {
+                        border-radius: 50%;
+                        cursor: pointer;
+                        padding: 8px;
+                        &:hover {
+                            background: linear-gradient(270deg,#253047,#263247);
+                            color: #d3d9e4;
+                        }
                     }
                 }
             }
@@ -720,12 +538,12 @@
         }
 
         .nav-list {
-            background: #fff !important;
+            background: #0E1525 !important;
             .menu-forbid-container-cls {
                 display: inline-block;
                 height: 40px;
                 line-height: 40px;
-                width: 187px;
+                width: 160px;
                 padding-left: 30px;
                 margin-left: -30px;
             }
@@ -744,37 +562,10 @@
             .menu-child{
                 .navigation-menu-item{
                     &:hover {
-                        background: #f0f1f5;
+                        background: #3A4561;
+                        /* background: #fff;
+                        opacity: 0.1; */
                     }
-                }
-            }
-            .nav-item {
-                display: flex;
-                align-items: center;
-                font-size: 14px;
-                height: 42px;
-                line-height: 42px;
-                padding: 0 12px 0 22px;
-                margin: 0;
-                white-space: nowrap;
-                cursor: pointer;
-                .item-title{
-                    font-size: 16px;
-                    margin-right: 16px;
-                    color: #63656E !important;
-                }
-
-                .bk-drag-icon {
-                    font-size: 16px;
-                    margin-right: 16px !important;
-                    color: #63656E !important;
-                }
-                &:hover {
-                    background: #F6F6F9;
-                }
-                &.router-link-active {
-                    background: #E1ECFF;
-                    color: #3A84FF;
                 }
             }
         }
@@ -782,6 +573,7 @@
         &.no-breadcrumb {
             .main-container {
                 height: 100%;
+                overflow: hidden;
             }
         }
     }

@@ -53,7 +53,6 @@
             return {
                 item: {
                     icon: 'bk-drag-icon bk-drag-keyboard',
-                    text: '快捷键',
                     func: () => {}
                 },
                 quickOperationList: [
