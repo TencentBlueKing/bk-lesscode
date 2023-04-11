@@ -151,10 +151,10 @@
                     name: JOIN_TYPE[type]
                 }))
             const fieldTypeList = Object
-                .keys(SQL_FUNCTION_TYPE)
+                .keys(SQL_FUNCTION_TYPE())
                 .map((type) => ({
-                    id: SQL_FUNCTION_TYPE[type].VAL,
-                    name: SQL_FUNCTION_TYPE[type].NAME
+                    id: SQL_FUNCTION_TYPE()[type].VAL,
+                    name: SQL_FUNCTION_TYPE()[type].NAME
                 }))
 
             // 校验

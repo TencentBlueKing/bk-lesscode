@@ -15,7 +15,7 @@
             <div class="pages-head">
                 <bk-dropdown-menu :align="'left'" :ext-cls="'create-dropdown'" ref="createDropdown">
                     <div class="dropdown-trigger-btn" slot="dropdown-trigger">
-                        <bk-button theme="primary" icon-right="icon-angle-down">{{ $t('新建') }}</bk-button>
+                        <bk-button theme="primary" icon-right="icon-angle-down" class="overflowhidden-oh">{{ $t('新建') }}</bk-button>
                     </div>
                     <ul class="bk-dropdown-list select-page-type" slot="dropdown-content">
                         <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('PC自定义页面') }}</a></li>
@@ -36,7 +36,7 @@
                     </bk-dropdown-menu>
                     <bk-button v-else @click="handlePreviewPcProject">{{ $t('预览应用') }}</bk-button>
                 </template>
-                <bk-button @click="handleDownLoadProject">{{ $t('源码下载') }}</bk-button>
+                <bk-button @click="handleDownLoadProject">{{ $t('源码下载') }} </bk-button>
                 <bk-button @click="handleRelease">{{ $t('我要发布') }}</bk-button>
                 <div class="extra">
                     <template>

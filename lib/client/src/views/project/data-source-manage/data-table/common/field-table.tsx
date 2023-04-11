@@ -57,7 +57,7 @@ export interface ITableStatus {
 function normalizeTableItem (item) {
     const normalizedItem = normalizeJson(item)
     // 默认列不可修改
-    if (BASE_COLUMNS.some(item => item.columnId === normalizedItem.columnId)) {
+    if (BASE_COLUMNS().some(item => item.columnId === normalizedItem.columnId)) {
         normalizedItem.isReadonly = true
     }
     return normalizedItem

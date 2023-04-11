@@ -360,7 +360,7 @@
                 this.editFuncObj.funcData = getDefaultFunction({
                     projectId: this.projectId,
                     funcType: FUNCTION_TYPE.REMOTE,
-                    funcBody: FUNCTION_TIPS[FUNCTION_TYPE.REMOTE] + 'return res\n',
+                    funcBody: FUNCTION_TIPS()[FUNCTION_TYPE.REMOTE] + 'return res\n',
                     funcApiUrl: row.url,
                     funcMethod: row.method,
                     apiQuery: row.query.map(parseScheme2UseScheme),
