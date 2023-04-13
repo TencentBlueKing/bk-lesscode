@@ -4,7 +4,7 @@
         <div class="row-box">
             <div class="title-box">
                 <span>编号预览</span>
-                <bk-button :text="true" title="primary" @click="showRuleDialog = true">
+                <bk-button :text="true" size="small" title="primary" @click="showRuleDialog = true">
                     配置编号规则
                 </bk-button>
             </div>
@@ -12,7 +12,7 @@
         </div>
         <div class="row-box">
             <span>重置周期</span>
-            <bk-select v-model="serialConfigInfo.resetCycle" searchable>
+            <bk-select v-model="serialConfigInfo.resetCycle" searchable :clearable="false">
                 <bk-option v-for="option in resetCycles" :key="option.id" :id="option.id" :name="option.name">
                 </bk-option>
             </bk-select>
