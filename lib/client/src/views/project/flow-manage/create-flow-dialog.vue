@@ -65,7 +65,7 @@
                             flowName,
                             summary,
                             projectId: this.projectId,
-                            meta: Object.assign({}, INIT_FLOW_STRUCTURE, { name: flowName })
+                            meta: Object.assign({}, INIT_FLOW_STRUCTURE(), { name: flowName })
                         }
                         const res = await this.$store.dispatch('nocode/flow/createFlow', params)
                         this.handleClose()

@@ -113,10 +113,10 @@
                     ></i> -->
                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
                         <i slot="forbid" custom-forbid-container-cls="forbid-container-cls" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                            v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
+                            v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"
                         ></i>
                         <i slot="allow" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                            v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
+                            v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"
                             @click.stop="handleClickFavorite(project)"
                         ></i>
                     </auth-component>

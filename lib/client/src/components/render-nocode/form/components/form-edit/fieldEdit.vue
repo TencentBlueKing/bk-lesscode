@@ -477,7 +477,7 @@
         methods: {
             
             getRegexList (val) {
-                const result = REGX_CHIOCE_LIST.filter(item => item.type === val.type
+                const result = REGX_CHIOCE_LIST().filter(item => item.type === val.type
                     || (Array.isArray(val.type) && item.type.includes(val.type)) // 主要是为了区分text 和 string 类型的正则规则  同时去除DATE DATETIME 的影响
                     || !item.type)
                 return result

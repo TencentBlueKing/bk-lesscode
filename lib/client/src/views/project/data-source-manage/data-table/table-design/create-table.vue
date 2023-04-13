@@ -113,7 +113,7 @@
                 basicFormRef,
                 fieldTableRef
             } = useTableStatus({
-                data: BASE_COLUMNS
+                data: BASE_COLUMNS()
             })
 
             const goBack = () => {
@@ -194,8 +194,8 @@
                     try {
                         const [tableInfo] = handleImportStruct([data], type)
                         const columns = [
-                            ...BASE_COLUMNS,
-                            ...tableInfo.columns.filter(column => !BASE_COLUMNS.find(baseColumn => baseColumn.name === column.name))
+                            ...BASE_COLUMNS(),
+                            ...tableInfo.columns.filter(column => !BASE_COLUMNS().find(baseColumn => baseColumn.name === column.name))
                         ]
                         // 过滤掉基础字段设置，使用系统内置
                         resolve({

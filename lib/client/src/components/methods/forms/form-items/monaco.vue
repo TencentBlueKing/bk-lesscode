@@ -138,7 +138,7 @@
                     placements: ['bottom-end']
                 },
                 multVal: {
-                    ...FUNCTION_TIPS
+                    ...FUNCTION_TIPS()
                 },
                 proposals: [],
                 renderCode: '',
@@ -154,7 +154,7 @@
         computed: {
             functionTips () {
                 return {
-                    content: `<pre class="function-tips">${this.tips || FUNCTION_TIPS[this.form.funcType]}</pre>`,
+                    content: `<pre class="function-tips">${this.tips || FUNCTION_TIPS()[this.form.funcType]}</pre>`,
                     appendTo: 'parent',
                     boundary: 'window',
                     width: this.tipWidth || 750,
@@ -223,7 +223,7 @@
 
             initMultVal (func = this.form) {
                 this.multVal = {
-                    ...FUNCTION_TIPS,
+                    ...FUNCTION_TIPS(),
                     [func.funcType]: func.funcBody
                 }
                 this.renderCode = this.multVal[this.form.funcType]
