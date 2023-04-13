@@ -519,7 +519,6 @@
             margin-bottom: 8px;
 
             button {
-                width: 86px;
                 &:not(:first-child) {
                     margin-left: 10px;
                 }
