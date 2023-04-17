@@ -1,6 +1,7 @@
 <template>
     <div class="right-panel">
         <layout-setting v-if="editType === 'LAYOUT'" :template-data="curTemplateData" />
+        <page-setting v-else-if="!field.type && pageDetail.id" />
         <form-setting v-else :field="field" :list="list" :disabled="disabled" @update="$emit('update', $event)" />
     </div>
 </template>
@@ -8,11 +9,13 @@
 <script>
     import FormSetting from './form-setting'
     import LayoutSetting from '@/element-materials/modifier/template'
+    import PageSetting from '@/element-materials/modifier/page'
     import { mapGetters } from 'vuex'
     export default {
         components: {
             FormSetting,
-            LayoutSetting
+            LayoutSetting,
+            PageSetting
         },
         props: {
             field: {
@@ -31,6 +34,7 @@
             }
         },
         computed: {
+            ...mapGetters('page', ['pageDetail']),
             ...mapGetters('drag', ['curTemplateData'])
         },
         watch: {

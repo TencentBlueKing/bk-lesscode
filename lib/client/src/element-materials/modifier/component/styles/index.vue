@@ -23,7 +23,7 @@
             :include="getConfig('size').include"
             :exclude="getConfig('size').exclude"
             :change="handleChange" />
-        <padding
+        <!-- <padding
             v-if="checkConfig('padding')"
             :value="lastStyles"
             :include="getConfig('padding').include"
@@ -34,6 +34,10 @@
             :value="lastStyles"
             :include="getConfig('margin').include"
             :exclude="getConfig('margin').exclude"
+            :change="handleChange" /> -->
+        <margin-padding
+            v-if="checkConfig('margin') || checkConfig('padding')"
+            :value="lastStyles"
             :change="handleChange" />
         <font-config
             v-if="checkConfig('font')"
@@ -80,8 +84,9 @@
     import StyleItem from './layout/item'
     import StyleCustom from './strategy/custom-style'
     import StyleSize from './strategy/size'
-    import StylePadding from './strategy/padding'
-    import StyleMargin from './strategy/margin'
+    // import StylePadding from './strategy/padding'
+    // import StyleMargin from './strategy/margin'
+    import StyleMarginPadding from './strategy/margin-padding'
     import StyleFont from './strategy/font'
     import StyleBorder from './strategy/border'
     import StylePosition from './strategy/position'
@@ -95,8 +100,9 @@
         StyleCustom,
         position: StylePosition,
         size: StyleSize,
-        padding: StylePadding,
-        margin: StyleMargin,
+        // padding: StylePadding,
+        // margin: StyleMargin,
+        marginPadding: StyleMarginPadding,
         fontConfig: StyleFont,
         pointer: StylePointer,
         background: StyleBackground,

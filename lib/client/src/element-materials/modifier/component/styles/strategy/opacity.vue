@@ -12,7 +12,8 @@
 <template>
     <style-layout title="透明度">
         <style-item name="opacity">
-            <div class="bk-form-control" style="width: 100%;">
+            <div class="opacity-container" style="width: 100%;">
+                <bk-slider ext-cls="border-radius-slider" :step="0.1" :max-value="1" v-model="opacityValue" @change="handleOpacityChange"></bk-slider>
                 <div class="bk-input-number">
                     <input type="text"
                         style="width: 100%"
@@ -104,7 +105,7 @@
                 if (parseFloat(this.opacityValue) >= 1) {
                     return
                 }
-                this.opacityValue = accAdd(this.opacityValue, 0.1)
+                this.opacityValue = Number(accAdd(this.opacityValue, 0.1))
                 this.handleOpacityChange()
             },
 
@@ -112,9 +113,23 @@
                 if (parseFloat(this.opacityValue) <= 0) {
                     return
                 }
-                this.opacityValue = accSub(this.opacityValue, 0.1)
+                this.opacityValue = Number(accSub(this.opacityValue, 0.1))
                 this.handleOpacityChange()
             }
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    .opacity-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 234px;
+        height: 32px;
+        .border-radius-slider {
+            width: 100px;
+            margin-right: 12px;
+        }
+    }
+</style>

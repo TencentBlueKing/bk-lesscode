@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    import intro from './project-intro.vue'
+    import intro from './project-intro'
     export default {
         name: 'download-dialog',
         components: {

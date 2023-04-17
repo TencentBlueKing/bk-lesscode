@@ -7,11 +7,9 @@
                     floded: isFolded
                 }" />
             <span>{{ groupName }}</span>
-            <!-- <div
-                v-if="$slots.tag"
-                class="tag">
+            <div v-if="$slots.tag">
                 <slot name="tag" />
-            </div> -->
+            </div>
         </div>
         <template v-if="!isFolded">
             <bk-exception
@@ -71,7 +69,7 @@
                     pull: 'clone',
                     put: false
                 },
-                isFolded: this.folded
+                isFolded: false
             }
         },
         computed: {
@@ -81,6 +79,7 @@
         },
         created () {
             this.newNode = null
+            this.isFolded = this.folded
         },
         methods: {
             handleToggle () {
@@ -159,130 +158,95 @@
         box-shadow: 1px 0 0 0 #DCDEE5;
     }
 
-    .group-name {
-        padding: 0 12px;
-        height: 40px;
-        font-size: 12px;
-        color: #313238;
-        font-weight: Bold;
-        position: relative;
-        display: flex;
-        align-items: center;
-        border-top: 1px solid #dde4eb;
-        &:hover{
-            cursor: pointer;
-        }
-        .toggle-arrow {
-            position: absolute;
-            display: block;
-            line-height: 40px;
-            top: 0;
-            left: 0;
-            font-size: 24px;
-            color: #63656E;
-            transition: all .1s linear;
-            margin-right: 8px;
-            &.floded {
-                transform: rotate(-90deg);
-            }
-        }
-        span {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 28px;
-            line-height: 40px;
-        }
-    }
-
-    .list-wrap {
-        display: flex;
-        /* justify-content: space-between; */
-        flex-flow: row wrap;
-        padding-left: 10px;
-        &.disabled {
-            .field-item {
-                cursor: inherit;;
-            }
-        }
-    }
-
-    .field-item {
-        margin: 0 8px 8px 0;
-        padding: 0 4px 0 12px;
-        width: 134px;
-        height: 32px;
-        line-height: 32px;
-        color: #63656e;
-        background: #ffffff;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        cursor: move;
-        user-select: none;
-        font-size: 0;
-        span{
+    .drag-group-box {
+        .group-name {
+            padding: 0 7px;
+            height: 40px;
             font-size: 12px;
+            color: #313238;
+            font-weight: Bold;
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #dde4eb;
+            &:hover{
+                cursor: pointer;
+            }
+            .toggle-arrow {
+                display: block;
+                line-height: 40px;
+                font-size: 24px;
+                color: #63656E;
+                transition: all .1s linear;
+                margin-right: 8px;
+                &.floded {
+                    transform: rotate(-90deg);
+                }
+            }
+            span {
+                display: block;
+                line-height: 40px;
+            }
+            .group-tag {
+                margin-left: 6px;
+                font-size: 12px;
+                font-weight: normal;
+                padding: 2px 4px;
+                color: #3A84FF;
+                background: #F0F5FF;
+                border-radius: 2px;
+            }
         }
-        &:not(.not-available):hover {
-            color: #3a84ff;
-            border-color: #3a84ff;
+
+        .list-wrap {
+            display: flex;
+            /* justify-content: space-between; */
+            flex-flow: row wrap;
+            padding-left: 10px;
+            &.disabled {
+                .field-item {
+                    cursor: inherit;;
+                }
+            }
         }
-        &.not-available {
-            color: #c4c6cc;
-            border-color: #dcdee5;
-            cursor: not-allowed;
+
+        .field-item {
+            margin: 0 8px 8px 0;
+            padding: 0 4px 0 12px;
+            width: 134px;
+            height: 32px;
+            line-height: 32px;
+            color: #63656e;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: move;
+            user-select: none;
+            font-size: 0;
+            span{
+                font-size: 12px;
+            }
+            &:not(.not-available):hover {
+                color: #3a84ff;
+                border-color: #3a84ff;
+            }
+            &.not-available {
+                color: #c4c6cc;
+                border-color: #dcdee5;
+                cursor: not-allowed;
+            }
         }
     }
 
     .comp-icon {
         font-size: 16px;
-        padding-right: 8px;
+        padding-right: 6px;
     }
 
     .drag-group-box {
         user-select: none;
         & ~ .drag-group-box{
             margin-top: 8px;
-        }
-        .group-title{
-            position: relative;
-            height: 40px;
-            line-height: 38px;
-            font-size: 14px;
-            background: #F5F6FA;
-            color: #63656E;
-            padding-left: 42px;
-            padding-right: 16px;
-            border-top: 1px solid #DCDEE5;
-            border-bottom: 1px solid #DCDEE5;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            cursor: pointer;
-            overflow: hidden;
-            .toggle-arrow{
-                position: absolute;
-                top: 7px;
-                left: 16px;
-                font-size: 24px;
-                color: #979BA5;
-                transition: all .1s linear;
-                &.floded{
-                    transform: rotate(-90deg);
-                }
-            }
-            .tag{
-                position: absolute;
-                top: -8px;
-                left: -26px;
-                width: 64px;
-                height: 30px;
-                font-size: 12px;
-                color: #fff;
-                background: #3A84FF;
-                transform: rotateZ(-45deg) scale(0.667);
-                text-align: center;
-            }
         }
         .group-list-empty{
             padding: 0 0 12px;

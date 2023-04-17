@@ -17,10 +17,17 @@
                     <bk-button
                         theme="primary"
                         @click="showEditStyle(true)">
-                        样式编辑
+                        CSS编辑
                     </bk-button>
                 </div>
             </style-item>
+            <textarea
+                rows="5"
+                style="height: auto; word-break: break-all; margin-top: 12px;cursor: not-allowed;border: none"
+                class="bk-form-textarea"
+                readonly
+                v-model="styleValue"
+            />
         </style-layout>
         <article
             v-if="isShow"
@@ -40,6 +47,7 @@
                     <div class="footer-wrapper">
                         <bk-button
                             theme="primary"
+                            style="margin-right: 8px"
                             @click.native="confirm">
                             保存
                         </bk-button>
@@ -97,6 +105,10 @@
                 }
                 return `.${className} {\n${mapStr}}`
             }
+        },
+        created () {
+            this.initMap = this.value.customStyle || {}
+            this.styleValue = this.initValue
         },
         methods: {
             showEditStyle (isShow = true) {

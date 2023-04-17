@@ -35,6 +35,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-plus-circle:before {
 	content: "\e21a";
 }
+.bk-drag-setting:before {
+	content: "\e26d";
+}
 .bk-drag-check-circle-fill:before {
 	content: "\e180";
 }
@@ -1060,4 +1063,79 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-zitidaxiao:before {
 	content: "\e263";
+}
+.bk-drag-shujuyuan:before {
+	content: "\e268";
+}
+.bk-drag-zidingyiye:before {
+	content: "\e267";
+}
+.bk-drag-markdown:before {
+	content: "\e265";
+}
+.bk-drag-biaodan:before {
+	content: "\e266";
+}
+.bk-drag-liuchengtidanye:before {
+	content: "\e269";
+}
+.bk-drag-yuanma-2:before {
+	content: "\e26a";
+}
+.bk-drag-shangxiaduicheng:before {
+	content: "\e26c";
+}
+.bk-drag-zuoyouduicheng:before {
+	content: "\e26b";
+}
+.bk-drag-zuobianju:before {
+	content: "\e26f";
+}
+.bk-drag-dingbianju:before {
+	content: "\e272";
+}
+.bk-drag-shubiaozhizhen:before {
+	content: "\e26e";
+}
+.bk-drag-crosshair:before {
+	content: "\e273";
+}
+.bk-drag-text-3:before {
+	content: "\e271";
+}
+.bk-drag-wait:before {
+	content: "\e274";
+}
+.bk-drag-move:before {
+	content: "\e275";
+}
+.bk-drag-help:before {
+	content: "\e270";
+}
+.bk-drag-gaodu:before {
+	content: "\e276";
+}
+.bk-drag-kuandu:before {
+	content: "\e277";
+}
+.bk-drag-xing-2:before {
+	content: "\e27a";
+}
+.bk-drag-lie-2:before {
+	content: "\e279";
+}
+.bk-drag-ziyoubuju:before {
+	content: "\e278";
+}
+.bk-drag-display-3:before {
+	content: "\e27b";
+}
+.bk-drag-morenziti:before {
+	content: "\e27d";
+}
+.bk-drag-xieti:before {
+	content: "\e27c";
+}
+.bk-drag-pointer:before {
+	content: "\e27e";
 }

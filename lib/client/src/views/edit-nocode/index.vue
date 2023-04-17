@@ -21,14 +21,17 @@
             <div
                 id="toolActionBox"
                 class="function-and-tool">
-                <operation-select v-model="operationType" :hide-json="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" :hide-func="nocodeType === 'MARKDOWN'" />
                 <!-- 保存、预览、快捷键等tool单独抽离 -->
-                <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" :hide-func="nocodeType === 'MARKDOWN'" />
+                <action-tool :hide-clear="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" :hide-json="['FORM_MANAGE', 'FLOW_MANAGE', 'MARKDOWN'].includes(nocodeType)" />
             </div>
-            <div class="actions-links-area">
+            <div style="display: flex;align-items: center">
+                <page-operate />
+                <!-- <more-actions></more-actions> -->
+            </div>
+            <!-- <div class="actions-links-area">
                 <more-actions></more-actions>
                 <extra-links :show-help-box="false" />
-            </div>
+            </div> -->
         </div>
         <div class="lesscode-editor-page-content" ref="root" v-if="!isContentLoading">
             <operation-area :operation="operationType" :nocode-type="nocodeType" />
@@ -38,9 +41,8 @@
 <script>
     import LC from '@/element-materials/core'
     import { mapGetters } from 'vuex'
-    import ExtraLinks from '@/components/ui/extra-links'
     import PageList from '../index/components/page-list'
-    import OperationSelect from './components/operation-select'
+    import PageOperate from './components/header-operate'
     import ActionTool from './components/action-tool'
     import OperationArea from './components/operation-area'
     import MoreActions from './components/more-actions/index'
@@ -50,8 +52,7 @@
         name: 'NocodePage',
         components: {
             PageList,
-            ExtraLinks,
-            OperationSelect,
+            PageOperate,
             ActionTool,
             OperationArea,
             MoreActions
@@ -174,7 +175,6 @@
     .lessocde-editor-page {
         min-width: 1366px;
         height: calc(100vh - $headerHeight);
-        margin-top: $headerHeight;
     }
     .lesscode-editor-page-header {
         position: relative;

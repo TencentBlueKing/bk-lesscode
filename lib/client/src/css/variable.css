@@ -16,6 +16,8 @@ $componentsPanelWidth: 250px;
 $settingPanelWidth: 15%;
 $settingPanelMinWidth: 300px;
 
+$borderColor: #ebf0f5;
 $boxBorderColor: #dcdee5;
 $formBorderColor: #c4c6cc;
 $newRedColor: #ea3636;
+$primaryColor: #3a84ff;

@@ -15,7 +15,7 @@
             :class="[$style['layout-center'],{ [$style['nocode-layout-center']]: isNocodeForm }]">
             <slot />
         </div>
-        <div v-if="!hideRightSlot" :class="$style['layout-right']">
+        <div :class="$style['layout-right']">
             <slot name="right" />
         </div>
         <div
@@ -201,6 +201,10 @@
             transform: rotate(0deg);
           }
         }
+      }
+      .layout-center {
+        height: calc(100% - 40px);
+        padding: 20px;
       }
       .layout-right{
         position: absolute;
