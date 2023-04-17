@@ -1,9 +1,9 @@
 <template>
     <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
         <aside class="aside" v-if="!hideSideNav">
-            <div class="side-hd" @mouseenter="asideHover = true" @mouseleave="asideHover = false">
-                <div class="open-select-menu-div" v-show="!asideFolded || asideHover">
-                    <!-- <div class="open-select-menu-div" :class="{ 'hidden-select': asideFolded && !asideHover }"> -->
+            <!-- <div class="side-hd" @mouseenter="asideHover = true" @mouseleave="asideHover = false"> -->
+            <div class="side-hd" @mouseenter="asideHover = true">
+                <div class="open-select-menu-div" v-if="!asideFolded || asideHover">
                     <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
                     <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
                         <bk-option v-for="option in projectList"
@@ -186,7 +186,7 @@
                     this.showMenuFooter = showMenuFooter
                 })
 
-                if (['new', 'editNocde'].indexOf(this.$route.name) > -1) {
+                if (['new', 'editNocode'].indexOf(this.$route.name) > -1) {
                     this.asideFolded = true
                     this.showMenuFooter = false
                 }
@@ -282,11 +282,20 @@
                 this.projectList = projectList
             },
             changeProject (id) {
-                this.$router.replace({
-                    params: {
-                        projectId: id
-                    }
-                })
+                if (this.$route.name === 'new' || this.$route.name === 'editNocode') {
+                    this.$router.push({
+                        name: 'pageList',
+                        params: {
+                            projectId: id
+                        }
+                    })
+                } else {
+                    this.$router.replace({
+                        params: {
+                            projectId: id
+                        }
+                    })
+                }
             },
             handleChangeProjectVersion (versionId, version) {
                 this.setCurrentVersion(version)
@@ -401,9 +410,7 @@
                 .open-select-menu-div {
                     display: flex;
                     align-items: center;
-                }
-                .hidden-select {
-                    width: 0;
+                    transition: all .2s;
                 }
                 .fold-logo {
                     width: 32px;

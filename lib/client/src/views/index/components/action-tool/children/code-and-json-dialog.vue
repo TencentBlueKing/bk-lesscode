@@ -95,10 +95,12 @@
                 this.codeType = val
             },
             initContent () {
+                console.log(this.pageDetail, 'pagedetail')
                 // json内容
-                if (['FORM', 'FLOW'].includes(this.nocodeType)) {
+                if (['FORM', 'FLOW'].includes(this.pageDetail?.nocodeType)) {
                     const content = this.$store.state.nocode.formSetting.fieldsList || []
                     this.json = circleJSON(content)
+                    console.log(this.json, this.$store.state.nocode.formSetting.fieldsList)
                 } else {
                     const root = LC.getRoot()
                     this.json = circleJSON(root.toJSON().renderSlots.default)
@@ -135,7 +137,7 @@
             },
             setImportData (name, data) {
                 if (data && Array.isArray(data)) {
-                    if (['FORM', 'FLOW'].includes(this.nocodeType)) {
+                    if (['FORM', 'FLOW'].includes(this.pageDetail?.nocodeType)) {
                         this.$store.commit('nocode/formSetting/setFieldsList', data)
                         bus.$emit('resetFieldList', data)
                         this.code = circleJSON(data)

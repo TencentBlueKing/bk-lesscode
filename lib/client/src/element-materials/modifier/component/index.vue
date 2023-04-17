@@ -13,15 +13,11 @@
     <div class="material-modifier">
         <template v-if="renderKey">
             <div class="modifier-tab-container">
-                <div class="tab-div">
-                    <div class="select-tab">
-                        <template v-for="(tabPanel, panelIndex) in tabPanels">
-                            <div :key="panelIndex" @click="handleModifier(tabPanel.name)" class="tab-item" :class="{ 'active-tab': tabPanelActive === tabPanel.name }">
-                                {{tabPanel.label}}
-                            </div>
-                        </template>
-                    </div>
-                </div>
+                <select-tab
+                    :tab-list="tabPanels"
+                    :active-item="tabPanelActive"
+                    :item-change="handleModifier">
+                </select-tab>
             </div>
             <div
                 ref="container"
@@ -52,6 +48,7 @@
 </template>
 <script>
     import LC from '@/element-materials/core'
+    import SelectTab from '@/components/ui/select-tab'
     import ModifierStyles from './styles'
     import ModifierSlots from './slots'
     import ModifierGird from './gird'
@@ -65,15 +62,18 @@
     import ModifierPerms from './perms'
 
     export default {
-        name: '',
+        id: '',
+        components: {
+            SelectTab
+        },
         inheritAttrs: false,
         data () {
             return {
                 tabPanels: [
-                    { name: 'styles', label: '样式' },
-                    { name: 'props', label: '属性' },
-                    { name: 'events', label: '事件' },
-                    { name: 'directives', label: '指令' }
+                    { id: 'styles', name: '样式' },
+                    { id: 'props', name: '属性' },
+                    { id: 'events', name: '事件' },
+                    { id: 'directives', name: '指令' }
                 ],
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
@@ -106,18 +106,18 @@
                 // 目前只有 button 按钮有权限面板
                 if (target.type === 'bk-button') {
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: '样式' },
-                        { name: 'props', label: '属性' },
-                        { name: 'events', label: '事件' },
-                        { name: 'directives', label: '指令' },
-                        { name: 'perms', label: '权限' }
+                        { id: 'styles', name: '样式' },
+                        { id: 'props', name: '属性' },
+                        { id: 'events', name: '事件' },
+                        { id: 'directives', name: '指令' },
+                        { id: 'perms', name: '权限' }
                     ])
                 } else {
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: '样式' },
-                        { name: 'props', label: '属性' },
-                        { name: 'events', label: '事件' },
-                        { name: 'directives', label: '指令' }
+                        { id: 'styles', name: '样式' },
+                        { id: 'props', name: '属性' },
+                        { id: 'events', name: '事件' },
+                        { id: 'directives', name: '指令' }
                     ])
                 }
             }
@@ -170,33 +170,13 @@
             background: #fff;
             padding: 8px 12px;
             border-bottom: 1px solid $boxBorderColor;
-            .tab-div {
-                background: #F0F1F5;
-                padding: 4px 5px;
-                border-radius: 2px;
-                .select-tab {
-                    display: flex;
-                    .tab-item {
-                        flex: 1;
-                        font-size: 12px;
-                        color: #63656E;
-                        height: 24px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        cursor: pointer;
-                    }
-                    .active-tab {
-                        background: #fff;
-                    }
-                }
-            }
         }
         .material-modifier-container {
             @mixin scroller;
-            height: calc(100vh - 167px - 93px);
+            height: calc(100vh - 104px - 42px - 84px);
             padding-bottom: 20px;
             overflow-y: auto;
+            overflow-x: hidden;
             position: relative;
         }
         /* bk-input 前后的 slot 文本样式 */

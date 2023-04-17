@@ -47,6 +47,7 @@
         border-top: 1px solid #dde4eb;
     }
     .ui-group-box {
+        margin-bottom: 8px;
         padding: 0 12px;
         .ui-group-name {
             margin-left: -6px;

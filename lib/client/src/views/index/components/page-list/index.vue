@@ -20,7 +20,10 @@
                         <div
                             class="name-content"
                             :title="`${pageDetail.pageName}【${projectDetail.projectName}】`">
-                            <div class="col-name">{{ pageDetail.pageName }}<span class="project-name">【{{ projectDetail.projectName }}】</span></div>
+                            <div class="col-icon">
+                                <i :class="showIcon"></i>
+                            </div>
+                            <div class="col-name">{{ pageDetail.pageName }}</div>
                             <div class="col-version">{{versionName}}</div>
                         </div>
                         <i class="bk-select-angle bk-icon icon-angle-down" />
@@ -54,7 +57,7 @@
                     </bk-option-group>
                 </bk-select>
             </div>
-            <create-page-entry />
+            <create-page-entry class="canvas-theme" />
         </div>
         <page-dialog ref="pageDialog" action="copy" />
     </div>
@@ -76,6 +79,7 @@
         },
         data () {
             return {
+                NOCODE_TYPE_MAP,
                 selectPageId: '',
                 classPageList: [
                     {
@@ -102,9 +106,21 @@
             ]),
             ...mapGetters('page', [
                 'pageDetail',
-                'pageList'
+                'pageList',
+                'platform'
             ]),
-            ...mapGetters('projectVersion', { versionName: 'currentVersionName' })
+            ...mapGetters('projectVersion', { versionName: 'currentVersionName' }),
+            showIcon () {
+                if (this.pageDetail.nocodeType) {
+                    return NOCODE_TYPE_MAP['icon'][this.pageDetail.nocodeType]
+                } else {
+                    if (this.platform === 'MOBILE') {
+                        return 'bk-drag-icon bk-drag-mobilephone'
+                    } else {
+                        return 'bk-drag-icon bk-drag-pc'
+                    }
+                }
+            }
         },
         watch: {
             pageList (val) {
@@ -220,25 +236,33 @@
             .name-content {
                 display: flex;
                 align-items: center;
-                font-size: 14px;
-                margin: 0 24px 0 10px;
-                .project-name {
-                    color: #979BA5;
-                }
+                font-size: 12px;
+                margin-right: 24px;
 
+                .col-icon {
+                    background: #EAEBF0;
+                    color: #979BA5;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
                 .col-name {
                     overflow: hidden;
                     white-space: nowrap;
                     text-overflow: ellipsis;
+                    color: #63656E;
+                    margin: 0 8px 0 6px;
+                    max-width: 160px;
                 }
                 .col-version {
-                    background: #dcdee5;
-                    border-radius: 9px;
-                    height: 18px;
+                    color: #979BA5;
+                    background: #FFF;
+                    border-radius: 2px;
                     font-size: 12px;
                     line-height: 18px;
-                    color: #63656e;
-                    padding: 0 8px;
+                    padding: 0 4px;
                     white-space: nowrap;
                 }
             }

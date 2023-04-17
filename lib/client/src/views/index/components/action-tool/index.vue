@@ -5,7 +5,7 @@
         <code-and-json />
         <quick-operation />
         <canvas-guide />
-        <ai v-if="isAiAvailable"/>
+        <ai v-if="isAiAvailable" />
     </div>
 </template>
 <script>

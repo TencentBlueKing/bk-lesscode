@@ -1,7 +1,7 @@
 <template>
     <section v-bkloading="{ isLoading: isLoading }" class="page-container">
         <div class="left-panel">
-            <menu-header></menu-header>
+            <menu-header :has-mobile-page="hasMobilePage"></menu-header>
             <div class="menu-container">
                 <div class="platform" v-if="hasMobilePage">
                     <div class="platform-tab">
@@ -9,20 +9,25 @@
                     </div>
                 </div>
                 <div class="search-and-create">
-                    <bk-input
-                        style="width: 238px"
-                        placeholder="请输入页面名称"
-                        :clearable="true"
-                        :right-icon="'bk-icon icon-search'"
-                        v-model="keyword"
-                        @clear="handleSearch(true)"
-                        @enter="handleSearch(false)">
-                    </bk-input>
+                    <search-box
+                        style="width: 100%;margin-right: 6px;"
+                        placeholder="页面名称"
+                        :list="renderList"
+                        :reset-keyword-on-change-list="false"
+                        @on-change="handleSearch" />
                     <create-page-entry />
                 </div>
             </div>
             <div class="menu-content">
-                <template v-for="(pageList, groupName) in routeGroupMap">
+                <template v-if="Object.keys(routeGroupMap).length < 1">
+                    <bk-exception
+                        class="group-list-empty"
+                        type="empty"
+                        scene="part">
+                        <span>暂无数据</span>
+                    </bk-exception>
+                </template>
+                <template v-else v-for="(pageList, groupName) in routeGroupMap">
                     <group-box
                         v-if="pageList.length > 0"
                         :key="groupName"
@@ -30,12 +35,12 @@
                         :group-name="groupName">
                         <template v-for="page in pageList">
                             <page-menu-item
+                                :key="page.pageId"
                                 :page="page"
                                 :current-page-id="currentPageId"
-                                :key="page.pageId"
-                                :page-route-list="pageRouteList"
-                                :route-group="routeGroup"
+                                :render-list="renderList"
                                 :change-current-page="changeCurrentPage"
+                                @toggleDialog="toggleDialog"
                                 @getPageList="initData" />
                         </template>
                     </group-box>
@@ -43,17 +48,7 @@
             </div>
         </div>
         <div class="right-content">
-            <div class="page-header">
-                <div class="page-info">
-                    <span class="icon-span"><i :style="{ color: NOCODE_TYPE_MAP['color'][currentPage.nocodeType || ''] }" :class="NOCODE_TYPE_MAP['icon'][currentPage.nocodeType || '']"></i></span>
-                    <span class="name-span">{{currentPage.pageName}}</span>
-                    <span class="tag-span">{{NOCODE_TYPE_MAP['title'][currentPage.nocodeType || '']}}</span>
-                </div>
-                <div class="page-operate">
-                    <bk-button theme="primary" @click="handleEditPage(currentPage)">编辑</bk-button>
-                    <bk-button @click="handlePreview(currentPage)">预览</bk-button>
-                </div>
-            </div>
+            <page-header :current-page="currentPage" />
             <div class="page-content">
                 <iframe
                     v-if="currentPageId"
@@ -68,31 +63,47 @@
                 </bk-exception> -->
             </div>
         </div>
+        <page-operate-dialog
+            :show-dialog="showDialog"
+            :dialog-payload="dialogPayload"
+            :page-route-list="pageRouteList"
+            :route-group="routeGroup"
+            @toggleDialog="toggleDialog"
+            @getPageList="initData"
+        />
     </section>
 </template>
 
 <script>
+    import PageOperateDialog from './children/page-operate-dialog'
     import MenuHeader from './children/menu-header'
     import CreatePageEntry from './children/create-page-entry'
     import PageMenuItem from './children/page-menu-item'
+    import PageHeader from './children/page-content-header'
     import SelectTab from '@/components/ui/select-tab'
     import GroupBox from '@/components/ui/group'
+    import SearchBox from '@/views/index/components/material-panel/components/common/search-box'
     import { defineComponent, reactive, ref, computed, onBeforeMount } from '@vue/composition-api'
     import usePageOperation from './children/use-page-operation'
     import store from '@/store'
     import router from '@/router'
-    import { NOCODE_TYPE_MAP } from '@/common/constant'
 
     export default defineComponent({
         components: {
             GroupBox,
+            SearchBox,
             MenuHeader,
             CreatePageEntry,
             PageMenuItem,
-            SelectTab
+            SelectTab,
+            PageHeader,
+            PageOperateDialog
+            // PageDialog,
+            // EditRouteDialog
         },
         setup () {
-            const { handleEditPage } = usePageOperation()
+            const { handleEditPage, handlePreview, getPreviewUrl } = usePageOperation()
+
             const projectId = router?.currentRoute?.params?.projectId
             const versionId = store.getters['projectVersion/currentVersionId']
             const params = { projectId: projectId, versionId }
@@ -102,8 +113,12 @@
             const platformActive = ref('PC')
             const keyword = ref('')
 
-            let renderList = []
+            const showDialog = ref(false)
+            const dialogPayload = ref({})
+
             let pageList = []
+            const renderList = ref([])
+            
             const pageRouteList = ref([])
             const routeGroupMap = ref({})
             const routeGroup = ref([])
@@ -139,7 +154,6 @@
                 pageRouteList.value = pageRouteArr
                 pageList = projectPageArr
 
-                console.log(routeTree, pageList, 'init')
                 hasMobilePage.value = pageList.filter(page => page.pageType === 'MOBILE').length > 0
 
                 routeGroup.value = routeTree
@@ -147,9 +161,8 @@
                 // 过滤platform
                 setRenderList()
                 // 默认选中第一个页面
-                const defaultId = renderList[0]?.pageId || {}
+                const defaultId = renderList.value[0]?.pageId || {}
                 changeCurrentPage(defaultId)
-                console.log(currentPage.value, 23665, renderList)
             }
 
             function handleSelectPlatform (val) {
@@ -157,85 +170,70 @@
                 setRenderList()
             }
 
-            function handleSearch (clear = false) {
-                // if (clear) {
-                //     keyword.value = ''
-                //     renderList.vallue = pageList.value.slice()
-                // } else {
-                //     renderList.value = pageList.value.filter(item => item.pageName.toLowerCase().indexOf(keyword.value.toLowerCase()) !== -1)
-                // }
+            function handleSearch (data) {
+                keyword.value = data?.name || ''
+                setRenderList()
             }
 
             function setRenderList () {
-                renderList = []
+                renderList.value = []
                 routeGroupMap.value = {}
                 routeGroup.value?.filter(route => route.layoutType === platformActive.value).map(item => {
                     const curChildren = item.children.filter(route => route.pageCode).map(route => {
-                        // 没有绑定页面的，不需要展示
+                        // 没有绑定页面的，不展示
                         const pageItem = pageList.find(page => page.id === route.pageId)
                         // delete pageItem.content
-                        Object.assign(route, pageItem)
-                        renderList.push(route)
+                        Object.assign(route, pageItem, { name: pageItem.pageName, content: '' })
+                        renderList.value.push(route)
                         return route
                     })
-                    if (routeGroupMap.value[item.showName]) {
-                        routeGroupMap.value[item.showName] = [...routeGroupMap.value[item.showName], ...curChildren]
+                    // 处于搜索状态
+                    if (keyword.value) {
+                        const searchItem = curChildren.find(item => item.pageName === keyword.value)
+                        if (searchItem?.pageName) {
+                            routeGroupMap.value[item.showName] = [searchItem]
+                        }
+                    // 搜索框为空
                     } else {
-                        routeGroupMap.value[item.showName] = curChildren || []
+                        if (routeGroupMap.value[item.showName]) {
+                            routeGroupMap.value[item.showName] = [...routeGroupMap.value[item.showName], ...curChildren]
+                        } else {
+                            routeGroupMap.value[item.showName] = curChildren || []
+                        }
                     }
                 })
+                console.log(renderList.value, 'renderlist')
             }
 
             function changeCurrentPage (id) {
                 currentPageId.value = id
-                currentPage.value = renderList.find(item => item.pageId === id)
-                const url = getIframeUrl()
+                currentPage.value = renderList.value.find(item => item.pageId === id)
+                const url = getPreviewUrl(currentPage.value)
                 iframeUrl.value = url
-                console.log(renderList, currentPage.value, iframeUrl.value)
+                console.log(renderList.value, currentPage.value, iframeUrl.value)
             }
 
-            function getIframeUrl () {
-                let url = ''
-                const { layoutPath, path } = currentPage.value
-                const fullPath = `${layoutPath}${layoutPath?.endsWith('/') ? '' : '/'}${path}`
-                if (currentPage.value?.layoutType === 'MOBILE') {
-                    const versionQuery = `${versionId ? `&version=${versionId}` : ''}`
-                    url = `/preview-mobile/project/${projectId}?pagePath=${fullPath}&pageCode=${currentPage.value?.pageCode}${versionQuery}`
-                } else {
-                    const versionPath = `${versionId ? `/version/${versionId}` : ''}`
-                    url = `/preview/project/${projectId}${versionPath}${fullPath}?pageCode=${currentPage.value?.pageCode}`
-                }
-                console.log(url, 'url')
-                return url
-            }
-
-            function handlePreview (page) {
-                if (!page.nocodeType && !page.content) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: '该页面为空页面，请先编辑页面',
-                        limit: 1
-                    })
-                    return
-                }
-
-                const url = getIframeUrl()
-                window.open(url, '_blank')
+            function toggleDialog (isShow, payload = {}) {
+                showDialog.value = isShow
+                dialogPayload.value = payload
             }
 
             return {
-                NOCODE_TYPE_MAP,
                 isLoading,
                 hasMobilePage,
                 platformActive,
                 platformList,
                 pageRouteList,
                 keyword,
+                renderList,
                 routeGroup,
                 routeGroupMap,
                 iframeUrl,
                 currentPageId,
                 currentPage,
+                showDialog,
+                dialogPayload,
+                toggleDialog,
                 initData,
                 handleSelectPlatform,
                 handleSearch,
@@ -286,33 +284,5 @@
     .right-content {
         width: 100%;
         height: 100%;
-        .page-header {
-            width: 100%;
-            height: 52px;
-            padding: 0 24px 0 16px;
-            background: #FFFFFF;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            .page-info {
-                .icon-span {
-                    padding: 5px 6px;
-                    background: #F5F7FA;
-                    border-radius: 2px;
-                    i {
-                        font-size: 16px;
-                    }
-                }
-                .name-span {
-                    margin: 0 6px;
-                }
-            }
-            .page-operate {
-                button {
-                    width: 88px;
-                    margin-right: 8px;
-                }
-            }
-        }
     }
 </style>

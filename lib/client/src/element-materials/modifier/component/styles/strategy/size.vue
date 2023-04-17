@@ -13,30 +13,14 @@
     <style-layout title="尺寸">
         <div class="size-container">
             <template v-for="item in sizeConfigRender">
-                <style-item
-                    v-if="item.key === 'display'"
-                    :key="item.key"
-                    :name="item.name">
-                    <bk-select
-                        v-if="item.key === 'display'"
-                        :value="item.value"
-                        font-size="medium"
-                        :clearable="false"
-                        @change="handleDisplayChange(item, $event)"
-                        style="width: 100%;">
-                        <bk-option id="block" name="block" />
-                        <bk-option id="inline" name="inline" />
-                        <bk-option id="inline-block" name="inline-block" />
-                        <bk-option id="unset" name="unset" />
-                    </bk-select>
-                </style-item>
                 <size-input
-                    v-if="(item.key !== 'display' && !isInline)"
+                    v-if="!isInline"
                     :key="item.key"
                     :value="item.value"
                     :item="item"
                     @change="handleInputChange(item, $event)">
                     <size-unit
+                        v-if="item.key !== 'display'"
                         :value="item.unit"
                         @change="handleSelectChange(item, $event)" />
                 </size-input>
@@ -47,8 +31,7 @@
 
 <script>
     import StyleLayout from '../layout/index'
-    import StyleItem from '../layout/item'
-    import SizeInput from '@/components/modifier/size-input'
+    import SizeInput from '@/components/modifier/icon-size-input'
     import SizeUnit from '@/components/modifier/size-unit'
     import { splitValueAndUnit } from '@/common/util'
     import { getCssProperties } from '../common/util'
@@ -56,8 +39,17 @@
 
     const sizeConfig = [
         {
+            tips: 'display',
             name: 'display',
-            key: 'display'
+            key: 'display',
+            icon: 'bk-drag-display-3',
+            type: 'select',
+            options: [
+                { id: 'block', name: 'block' },
+                { id: 'inline', name: 'inline' },
+                { id: 'inline-block', name: 'inline-block' },
+                { id: 'unset', name: 'unset' }
+            ]
         },
         {
             name: '宽度',
@@ -94,7 +86,6 @@
     export default {
         components: {
             StyleLayout,
-            StyleItem,
             SizeUnit,
             SizeInput
         },

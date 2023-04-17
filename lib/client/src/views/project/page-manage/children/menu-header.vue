@@ -6,53 +6,76 @@
                 <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
             </div>
             <div class="operate-icon">
-                <i v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play"></i>
+                <!-- <i v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play"></i> -->
+                <bk-dropdown-menu v-if="hasMobilePage" :align="'center'" :ext-cls="'preview-dropdown'">
+                    <div class="dropdown-trigger-btn" slot="dropdown-trigger">
+                        <i v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play"></i>
+                    </div>
+                    <ul class="bk-dropdown-list" slot="dropdown-content">
+                        <li><a href="javascript:;" @click="handlePreviewPcProject">预览PC页面</a></li>
+                        <li><a href="javascript:;" @click="handlePreviewMobileProject">预览移动端页面</a></li>
+                    </ul>
+                </bk-dropdown-menu>
+                <i v-else v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play" @click="handlePreviewPcProject"></i>
                 <i v-bk-tooltips="'下载项目源码'" class="bk-drag-icon bk-drag-download" @click="handleShowDownload"></i>
             </div>
         </div>
-        <download-dialog :project-info="currentProject" :is-show="showDownloadDialog"></download-dialog>
+        <download-dialog ref="downloadDialog"></download-dialog>
     </section>
 </template>
 
 <script>
     import downloadDialog from '@/views/system/components/download-dialog'
-    import { computed, defineComponent, ref } from '@vue/composition-api'
-    import store from '@/store'
-    import router from '@/router'
+    import { mapGetters } from 'vuex'
 
-    export default defineComponent({
+    export default {
         components: {
             downloadDialog
         },
-        setup () {
-            const projectVersionId = ref('')
-            const showDownloadDialog = ref(false)
-
-            const projectId = router?.currentRoute?.params?.projectId
-            projectVersionId.value = store.getters['projectVersion/currentVersionId']
-
-            const currentProject = computed(() => {
-                console.log('computed', store.getters['project/projectDetail'])
-                return store.getters['project/projectDetail']
-            })
-
-            function handleChangeProjectVersion (versionId, version) {
-                store.commit('projectVersion/setCurrentVersion', version)
+        props: {
+            hasMobilePage: {
+                type: Boolean,
+                default: false
             }
-
-            function handleShowDownload () {
-                showDownloadDialog.value = true
-            }
-
+        },
+        data () {
             return {
-                projectVersionId,
-                currentProject,
-                showDownloadDialog,
-                handleShowDownload,
-                handleChangeProjectVersion
+                projectVersionId: ''
+            }
+        },
+        computed: {
+            ...mapGetters('project', ['currentProject']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId', currentVersion: 'currentVersion' }),
+            projectId () {
+                return this.$route.params.projectId
+            }
+        },
+        created () {
+            this.projectVersionId = this.versionId
+        },
+        methods: {
+            handleChangeProjectVersion (versionId, version) {
+                this.$store.commit('projectVersion/setCurrentVersion', version)
+            },
+            handleShowDownload () {
+                this.$refs.downloadDialog.isShow = true
+                this.$refs.downloadDialog.projectId = this.projectId
+                this.$refs.downloadDialog.version = this.versionId ? `${this.currentVersion.id}:${this.currentVersion.version}` : ''
+                this.$refs.downloadDialog.projectCode = this.currentProject.projectCode
+                this.$refs.downloadDialog.projectName = this.currentProject.projectName
+            },
+            handlePreviewPcProject () {
+                // 跳转到预览入口页面
+                const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
+                window.open(`/preview/project/${this.projectId}${versionPath}/`, '_blank')
+            },
+            handlePreviewMobileProject () {
+                // 跳转到预览入口页面
+                const versionQuery = `${this.versionId ? `?version=${this.versionId}` : ''}`
+                window.open(`/preview-mobile/project/${this.projectId}${versionQuery}`, '_blank')
             }
         }
-    })
+    }
 </script>
 
 <style lang="postcss" scoped>

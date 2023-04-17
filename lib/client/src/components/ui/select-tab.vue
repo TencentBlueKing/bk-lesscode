@@ -2,8 +2,17 @@
     <div class="tab-div">
         <div class="select-tab">
             <template v-for="item in tabList">
-                <div :key="item.id" class="tab-item" :class="{ 'active-tab': activeItem === item.id }" :style="{ color: activeItem === item.id ? activeColor : '' }" @click="itemChange(item.id)">
-                    <i v-if="item.icon" :class="item.icon"></i>
+                <div
+                    :key="item.id"
+                    class="tab-item"
+                    :class="{ 'active-tab': activeItem === item.id }"
+                    @click="itemChange(item.id)"
+                    v-bk-tooltips="{
+                        content: item.tips,
+                        disabled: !item.tips
+                    }"
+                >
+                    <i v-if="item.icon" :class="`${item.icon} ${!item.name ? 'only-icon' : ''}`"></i>
                     <span>{{item.name}}</span>
                 </div>
             </template>
@@ -25,10 +34,6 @@
             itemChange: {
                 type: Function,
                 default: () => {}
-            },
-            activeColor: {
-                type: String
-                // default: '#fff'
             }
         }
     }
@@ -51,12 +56,19 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
+                &:hover {
+                    background: #EAEBF0;
+                }
                 i {
                     margin-right: 2px;
                 }
+                .only-icon {
+                    font-size: 14px;
+                }
             }
             .active-tab {
-                background: #fff;
+                color: $primaryColor;
+                background: #fff !important;
             }
         }
     }

@@ -11,7 +11,7 @@
 
 <template>
     <div class="modifier-style">
-        <div class="style-title">
+        <!-- <div class="style-title">
             {{ title }}
             <span
                 class="style-icon"
@@ -20,9 +20,21 @@
                 @click="handleClick">
                 <i class="bk-drag-icon bk-drag-undo" />
             </span>
-        </div>
-        <div class="style-action">
-            <slot />
+        </div> -->
+        <div class="ui-group-box">
+            <div class="ui-group-name" @click="handleToggle">
+                <i
+                    class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                    :class="{
+                        floded: isFolded
+                    }" />
+                <span>{{ title }}</span>
+            </div>
+            <div class="style-action">
+                <template v-if="!isFolded">
+                    <slot />
+                </template>
+            </div>
         </div>
     </div>
 </template>
@@ -39,7 +51,15 @@
                 default: false
             }
         },
+        data () {
+            return {
+                isFolded: this.folded
+            }
+        },
         methods: {
+            handleToggle () {
+                this.isFolded = !this.isFolded
+            },
             handleClick () {
                 this.$emit('reset')
             }
@@ -51,9 +71,8 @@
     .modifier-style {
         display: flex;
         flex-direction: column;
-        width: 276px;
+        /* width: 276px; */
         padding: 0 0 16px;
-        margin-left: 10px;
         .style-title {
             font-size: 12px;
             display: flex;
@@ -69,6 +88,44 @@
                 font-size: 16px;
                 line-height: 18px;
                 margin-left: 10px;
+            }
+        }
+    }
+    .ui-group-box {
+        padding: 0 8px 0 12px;
+        border-top: 1px solid #dde4eb;
+        .ui-group-name {
+            margin-left: -6px;
+            height: 40px;
+            font-size: 12px;
+            color: #313238;
+            font-weight: Bold;
+            position: relative;
+            display: flex;
+            align-items: center;
+            &:hover{
+                cursor: pointer;
+            }
+            .toggle-arrow {
+                position: absolute;
+                display: block;
+                line-height: 40px;
+                top: 0;
+                left: 0;
+                font-size: 24px;
+                color: #63656E;
+                transition: all .1s linear;
+                margin-right: 8px;
+                &.floded {
+                    transform: rotate(-90deg);
+                }
+            }
+            span {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 28px;
+                line-height: 40px;
             }
         }
     }

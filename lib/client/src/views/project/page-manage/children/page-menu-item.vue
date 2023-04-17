@@ -6,55 +6,47 @@
                 <span class="page-name" :title="page.pageName">{{ page.pageName }}</span>
             </div>
             <div>
+                <form-manage-page v-if="page.nocodeType === 'FORM' && getFormManagePages(page.formId).length" :manage-pages="getFormManagePages(page.formId)"></form-manage-page>
                 <span class="tag-span">{{NOCODE_TYPE_MAP['title'][page.nocodeType || '']}}</span>
                 <bk-dropdown-menu :ref="`moreActionDropdown${page.id}`">
                     <span slot="dropdown-trigger" class="more-menu-trigger">
                         <i class="bk-drag-icon bk-drag-more-dot"></i>
                     </span>
-                    <ul class="bk-dropdown-list page-item-ul" slot="dropdown-content" @click="hideDropdownMenu(page.id)">
+                    <ul class="bk-dropdown-list page-item-ul" slot="dropdown-content" @click.stop="hideDropdownMenu(page.id)">
                         <li><a href="javascript:;" @click="handleEditPage(page)">编辑</a></li>
-                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleCopy(page)">复制</a></li>
-                        <li><a href="javascript:;" @click="handleRename(page)">重命名</a></li>
-                        <li><a href="javascript:;" @click="handleEditRoute(page)">修改路由</a></li>
+                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleShowDialog(page, 'copy')">复制</a></li>
+                        <li><a href="javascript:;" @click="handleShowDialog(page, 'rename')">重命名</a></li>
+                        <li><a href="javascript:;" @click="handleShowDialog(page, 'editRoute')">修改路由</a></li>
                         <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page)">下载源码</a></li>
-                        <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(page)">生成数据管理页</a></li>
+                        <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleShowDialog(page, 'createFormManage')">生成数据管理页</a></li>
                         <li><a href="javascript:;" @click="handleDelete(page)">删除</a></li>
                     </ul>
                 </bk-dropdown-menu>
             </div>
         </div>
-        <page-dialog ref="pageDialog" :action="action" :current-name="currentName" :refresh-list="getPageList"></page-dialog>
-        <edit-route-dialog ref="editRouteDialog" :route-group="editRouteGroup" :current-route="currentRoute" @success="getPageList" />
     </section>
 </template>
 
 <script>
-    import pageDialog from '@/components/project/page-dialog'
-    import editRouteDialog from '@/components/project/edit-route-dialog'
-    import { getRouteFullPath } from 'shared/route'
     import { NOCODE_TYPE_MAP } from '@/common/constant'
+    import formManagePage from './form-manage-page.vue'
 
     export default {
         components: {
-            pageDialog,
-            editRouteDialog
+            formManagePage
         },
         props: {
             page: {
                 type: Object,
                 required: true
             },
+            renderList: {
+                type: Array,
+                default: () => ([])
+            },
             currentPageId: {
                 type: Number,
                 required: true
-            },
-            pageRouteList: {
-                type: Array,
-                default: () => ([])
-            },
-            routeGroup: {
-                type: Array,
-                default: () => ([])
             },
             changeCurrentPage: {
                 type: Function,
@@ -63,48 +55,26 @@
         },
         data () {
             return {
-                action: '',
-                currentName: '',
-                currentRoute: {},
-                editRouteGroup: [],
-                NOCODE_TYPE_MAP: NOCODE_TYPE_MAP
+                NOCODE_TYPE_MAP
             }
         },
         computed: {
             projectId () {
                 return this.$route.params.projectId
-            },
-            routeMap () {
-                const routeMap = {}
-                this.pageRouteList.forEach((route) => {
-                    const { id, pageId, layoutId } = route
-                    routeMap[pageId] = {
-                        id,
-                        pageId,
-                        layoutId,
-                        fullPath: id ? getRouteFullPath(route) : null
-                    }
-                })
-                console.log(routeMap, 'computedmap')
-                return routeMap
             }
         },
         methods: {
             getPageList () {
                 this.$emit('getPageList')
             },
+            getFormManagePages (formId) {
+                return this.renderList.filter(page => page.formId === formId && page.nocodeType === 'FORM_MANAGE')
+            },
             hideDropdownMenu (pageId) {
                 this.$refs[`moreActionDropdown${pageId}`]?.hide()
             },
-            async handleCopy (page) {
-                this.action = 'copy'
-                const layoutId = this.routeMap[page.id]?.layoutId
-                this.$refs.pageDialog.layoutId = layoutId
-                this.$refs.pageDialog.dialog.formData.id = page.id
-                this.$refs.pageDialog.dialog.formData.pageName = `${page.pageName}-copy`
-                this.$refs.pageDialog.dialog.formData.pageCode = ''
-                this.$refs.pageDialog.dialog.formData.pageRoute = ''
-                this.$refs.pageDialog.dialog.visible = true
+            handleShowDialog (page, type) {
+                this.$emit('toggleDialog', true, { page, type })
             },
             async handleDownloadSource (page) {
                 if (!page.content) {
@@ -131,30 +101,12 @@
                     document.body.removeChild(downlondEl)
                 })
             },
-            async handleRename (page) {
-                this.action = 'rename'
-                this.currentName = page.pageName
-                this.$refs.pageDialog.layoutId = null
-                this.$refs.pageDialog.dialog.formData.pageName = page.pageName
-                this.$refs.pageDialog.dialog.formData.id = page.id
-
-                this.$refs.pageDialog.dialog.visible = true
-            },
-            handleEditRoute (page) {
-                console.log(page, 'page')
-                this.$refs.editRouteDialog.dialog.visible = true
-                this.$refs.editRouteDialog.dialog.pageId = page.id
-                // this.editRouteGroup = this.routeGroup.filter(item => item.layoutType === (page.pageType || 'PC'))
-                this.editRouteGroup = this.routeGroup
-                this.currentRoute = this.routeMap[page.id]
-                console.log(this.routeGroup, this.editRouteGroup, this.currentRoute, 'EDITROUTE')
-            },
             handleDelete (page) {
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
-                    title: `确认删除该${this.nocodeTypeMap.title[page.nocodeType] || '页面'}`,
-                    subHeader: this.getDeleteSubHeader(page.pageName, this.nocodeTypeMap.deleteTips[page.nocodeType] || ''),
+                    title: `确认删除该${this.NOCODE_TYPE_MAP.title[page.nocodeType] || '页面'}`,
+                    subHeader: this.getDeleteSubHeader(page.pageName, this.NOCODE_TYPE_MAP.deleteTips[page.nocodeType] || ''),
                     theme: 'danger',
                     confirmFn: async () => {
                         await this.$store.dispatch('page/delete', {
@@ -232,6 +184,7 @@
 
 <style lang="postcss" scoped>
     @import "@/css/variable";
+    
     .bk-dropdown-list.page-item-ul {
         max-height: 200px;
     }
@@ -284,7 +237,7 @@
         .tag-span {
             background: #F5F7FA;
             border-radius: 2px;
-            padding: 2px 4px;
+            padding: 0px 4px;
             font-size: 12px;
         }
 

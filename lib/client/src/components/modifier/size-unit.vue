@@ -10,28 +10,42 @@
 -->
 
 <template>
-    <bk-dropdown-menu trigger="click">
-        <div class="dropdown-trigger-text" slot="dropdown-trigger">
-            <span class="style-size-unit">{{value}}</span>
-        </div>
-        <ul class="bk-dropdown-list" slot="dropdown-content">
-            <template v-for="unit in unitList">
-                <li :key="unit"><a href="javascript:;" @click="$emit('change', unit, $event)">{{unit}}</a></li>
-            </template>
-        </ul>
-    </bk-dropdown-menu>
+    <section>
+        <span v-if="readOnly" class="style-size-unit-span">{{value}}</span>
+        <!-- <bk-popover trigger="click" v-else>
+            <div class="dropdown-trigger-text" slot="dropdown-trigger">
+                <span class="style-size-unit">{{value}}</span>
+            </div>
+            <ul class="bk-dropdown-list bk-dropdown-list-unit" slot="dropdown-content">
+                <template v-for="unit in unitList">
+                    <li :key="unit"><a href="javascript:;" @click="$emit('change', unit, $event)">{{unit}}</a></li>
+                </template>
+            </ul>
+        </bk-popover> -->
+        <bk-dropdown-menu trigger="click" ext-cls="style-unit" v-else>
+            <div class="dropdown-trigger-text" slot="dropdown-trigger">
+                <span class="style-size-unit">{{value}}</span>
+            </div>
+            <ul class="bk-dropdown-list bk-dropdown-list-unit" slot="dropdown-content">
+                <template v-for="unit in unitList">
+                    <li :key="unit"><a href="javascript:;" @click="$emit('change', unit, $event)">{{unit}}</a></li>
+                </template>
+            </ul>
+        </bk-dropdown-menu>
+    </section>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
     export default {
-        model: {
-            event: 'change'
-        },
         props: {
             value: {
                 type: String,
                 required: true
+            },
+            readOnly: {
+                type: Boolean,
+                default: false
             }
         },
         computed: {
@@ -47,7 +61,13 @@
 </script>
 
 <style lang="postcss">
-.dropdown-trigger-text{
+    .style-unit .bk-dropdown-content {
+        z-index: 1000;
+    }
+    .bk-dropdown-unit-list {
+        z-index: 1000;
+    }
+    .dropdown-trigger-text {
         width: 22px;
         height: 16px;
         line-height: 16px;
@@ -56,15 +76,18 @@
             background: #F0F1F5;
             border-radius: 2px;
         }
-        }
-    /* .style-size-unit {
-        padding: 4px;
+    }
+    .style-size-unit-span {
+        cursor: default;
+        font-size: 12px;
+    }
+    .style-size-unit {
         cursor: pointer;
         
         &:hover {
             background: #F0F1F5;
             border-radius: 2px;
         }
-    } */
+    }
     
 </style>

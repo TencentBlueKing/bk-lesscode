@@ -18,7 +18,9 @@
         >
         </select-tab>
         <div class="template-list">
-            <search-box :list="renderTemplateList"
+            <search-box
+                模板
+                :list="renderTemplateList"
                 @on-change="handleSearchChange" />
             <group-box
                 v-for="(group) in renderGroupTemplateList"

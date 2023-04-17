@@ -176,6 +176,9 @@
                     setTimeout(() => {
                         this.$refs.projectDialogInput && this.$refs.projectDialogInput.$el.querySelector('input').focus()
                     }, 50)
+                } else {
+                    this.$emit('closeDialog')
+                    console.log('page dialog close')
                 }
             },
             action: {

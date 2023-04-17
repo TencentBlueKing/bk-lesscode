@@ -55,13 +55,15 @@
     .page-setting-modifier {
         height: 100%;
         background: #fff;
-        overflow-y: auto;
-        scroller: @mixin scroller;
+        overflow: hidden;
         .setting-type {
             padding: 8px 12px;
         }
     }
     .page-setting-container {
+        height: calc(100vh - 104px - 42px);
+        overflow-y: auto;
+        @mixin scroller;
         font-size: 12px;
         .field-display-name {
             cursor: pointer;

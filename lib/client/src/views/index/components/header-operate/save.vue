@@ -1,5 +1,5 @@
 <template>
-    <bk-button theme="primary" @click="handleSubmit">保存</bk-button>
+    <bk-button theme="primary" :loading="isLoading" @click="handleSubmit">保存</bk-button>
 </template>
 <script>
     import {
