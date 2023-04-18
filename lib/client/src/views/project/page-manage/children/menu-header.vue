@@ -17,7 +17,7 @@
                     </ul>
                 </bk-dropdown-menu>
                 <i v-else v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play" @click="handlePreviewPcProject"></i>
-                <i v-bk-tooltips="'下载项目源码'" class="bk-drag-icon bk-drag-download" @click="handleShowDownload"></i>
+                <i v-bk-tooltips="'下载应用源码'" class="bk-drag-icon bk-drag-download" @click="handleShowDownload"></i>
             </div>
         </div>
         <download-dialog ref="downloadDialog"></download-dialog>
