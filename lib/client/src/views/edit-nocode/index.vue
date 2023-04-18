@@ -173,7 +173,7 @@
     $pageHeaderHeight: 52px;
 
     .lessocde-editor-page {
-        min-width: 1366px;
+        min-width: 1220px;
         height: calc(100vh - $headerHeight);
     }
     .lesscode-editor-page-header {
