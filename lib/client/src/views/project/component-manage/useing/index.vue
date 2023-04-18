@@ -84,7 +84,7 @@
             render-directive="if"
             theme="primary"
             ext-cls="confirm-dialog-wrapper"
-            :title="$t('确认升级组件？')"
+            :title="$t('确认升级组件')"
             width="400"
             footer-position="center"
             :mask-close="false"

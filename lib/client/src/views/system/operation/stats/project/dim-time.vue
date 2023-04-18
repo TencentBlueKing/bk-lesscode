@@ -48,7 +48,7 @@
                     </template>
                 </bk-table-column>
                 <div class="append-tips" slot="append">
-                    <i>{{ $t('* 不包含Demo和已删除数据') }}</i>
+                    <i>* {{ $t('不包含Demo和已删除数据') }}</i>
                 </div>
             </bk-table>
         </div>

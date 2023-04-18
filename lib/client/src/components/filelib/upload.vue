@@ -169,7 +169,7 @@
         </div>
         <slot name="tip" v-bind="{ maxImageSize, maxFileSize }">
             <div class="tip" v-if="showTips">
-                {{ $t('支持上传图片大小 {0}M 以内，文件大小 {1}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等-0', [maxImageSize, maxFileSize]) }} </div>
+                {{ $t('支持上传图片大小 {0}M 以内，文件大小 {1}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等', [maxImageSize, maxFileSize]) }} </div>
         </slot>
     </div>
 </template>

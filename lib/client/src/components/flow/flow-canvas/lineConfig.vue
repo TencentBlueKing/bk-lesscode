@@ -26,7 +26,7 @@
                     <bk-form-item
                         v-if="formData.condition_type === 'by_field'"
                         :label="$t('条件组件关系')"
-                        desc="当所有条件组都满足且/或的条件时，节点才会流转"
+                        :desc="$t('当所有条件组都满足且/或的条件时，节点才会流转')"
                         desc-type="icon">
                         <line-condition ref="lineCondition" :condition="formData.condition" :line-id="line.id"></line-condition>
                     </bk-form-item>

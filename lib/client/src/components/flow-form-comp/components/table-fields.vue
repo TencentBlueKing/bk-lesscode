@@ -243,7 +243,7 @@
             // 删除数据
             handleDelItem (id) {
                 this.$bkInfo({
-                    title: this.$t('确认删除该条数据？'),
+                    title: this.$t('确认删除该条数据'),
                     confirmLoading: true,
                     confirmFn: async () => {
                         try {

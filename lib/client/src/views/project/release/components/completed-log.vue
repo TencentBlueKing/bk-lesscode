@@ -189,7 +189,7 @@
                 const interval = Math.ceil(end - start)
 
                 if (!interval) {
-                    return window.i18n.t('< 1秒')
+                    return '<' + window.i18n.t('1秒')
                 }
 
                 return this.getDisplayTime(interval)
@@ -198,7 +198,7 @@
             getDisplayTime (payload) {
                 let theTime = payload
                 if (theTime < 1) {
-                    return window.i18n.t('< 1秒')
+                    return '<' + window.i18n.t('1秒')
                 }
                 let middle = 0
                 let hour = 0

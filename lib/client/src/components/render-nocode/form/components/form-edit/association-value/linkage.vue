@@ -173,7 +173,8 @@
                             if (msg) {
                                 this.$bkMessage({
                                     theme: 'error',
-                                    message: this.$t('【规则{0}】的{1}', [(index + 1), msg])
+                                    message: `【${window.i18n.t('规则')}${index + 1}】${window.i18n.t('的')}${msg}`
+
                                 })
                                 return true
                             }

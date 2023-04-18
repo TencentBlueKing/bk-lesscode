@@ -6,7 +6,7 @@
                 <i class="bk-drag-icon bk-drag-info-tips" :class="$style['info-tips']"></i>
                 <span>{{ $t('未绑定') }}</span>
                 <i v-if="canEdit" class="bk-drag-icon bk-drag-edit" :class="$style['edit-setting-icon']" @click="showEdit = true"></i>
-                <span v-else @click="toBindApp" style="cursor: pointer;color: #3a84ff">{{ $t('，去绑定') }}</span>
+                <span v-else @click="toBindApp" style="cursor: pointer;color: #3a84ff">，{{ $t('去绑定') }}</span>
             </span>
         </div>
         <div v-else :class="$style['edit-setting']">

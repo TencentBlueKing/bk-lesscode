@@ -81,7 +81,7 @@
                     projectName: [
                         {
                             regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
-                            message: window.i18n.t('由汉字，英文字母，数字组成，20个字符以内_0'),
+                            message: window.i18n.t('由汉字，英文字母，数字组成，20个字符以内'),
                             trigger: 'blur'
                         }
                     ],

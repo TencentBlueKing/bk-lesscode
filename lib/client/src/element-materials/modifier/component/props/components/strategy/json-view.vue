@@ -174,7 +174,7 @@
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: this.$t('请输入正确的JSON格式数据-0')
+                        message: this.$t('请输入正确的JSON格式数据')
                     })
                 }
             },

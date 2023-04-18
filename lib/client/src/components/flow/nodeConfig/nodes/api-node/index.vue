@@ -46,9 +46,9 @@
                         </div>
                         <view-flow-variables :open-var-list.sync="openVarList"></view-flow-variables>
                         <div id="request-url-tips">
-                            <p>{{$t('1.非蓝鲸网关API，请先接入【蓝鲸网关】')}}</p>
-                            <p>{{$t('2.确保选择的蓝鲸网关API给蓝鲸应用ID【')}}{{BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}}{{$t('】已授权并设置了用户免认证策略')}}</p>
-                            <p><span v-pre>{{$t('3.请求地址可使用{{变量名}}引用流程上下文变量，比如')}}http://host/{{id}}</span>
+                            <p>{{`1.${$t('非蓝鲸网关API，请先接入')}【${$t('蓝鲸网关')}】`}}</p>
+                            <p>{{`2.${$t('确保选择的蓝鲸网关API给蓝鲸应用ID')}【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】${$t('已授权并设置了用户免认证策略')}`}}</p>
+                            <p><span v-pre>{{`3.${$t('请求地址可使用{{变量名}}引用流程上下文变量，比如')}http://host/${id}`}}</span>
                                 <bk-button
                                     style="padding: 0; height: initial; line-height: 14px;"
                                     size="small"
@@ -80,7 +80,7 @@
         </form-section>
         <form-section
             :title="$t('请求参数')"
-            :desc="$t('（调用该API需要传递的参数信息）')"
+            :desc="`（${$t('调用该API需要传递的参数信息')}）`"
             class="no-content-padding"
             style="margin-top: 16px;">
             <debug-api @extractScheme="handleExtractResponseFields"></debug-api>
@@ -102,7 +102,7 @@
         <!-- 返回数据 -->
         <form-section
             :title="$t('请求响应')"
-            :desc="$t('（设置该API请求响应数据中的字段为全局变量，全局变量可在该API节点之后的流程节点中使用）')"
+            :desc="`（${$t('设置该API请求响应数据中的字段为全局变量，全局变量可在该API节点之后的流程节点中使用')}）`"
             class="no-content-padding"
             style="margin-top: 16px;">
             <div class="response-data" style="width: 83%; margin-top: 22px;">

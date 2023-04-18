@@ -125,8 +125,8 @@
                         <div class="contidion">
                             <div id="require-tips" class="demo-html1">
                                 <p>{{ $t('选择为必填时，请确保字段配置满足以下两种情形之一，否则表单可能无法提交：') }}</p>
-                                <p>{{ $t('1、字段已设置默认值') }}</p>
-                                <p>{{ $t('2、字段可编辑且非隐藏') }}</p>
+                                <p>1、{{ $t('字段已设置默认值') }}</p>
+                                <p>2、{{ $t('字段可编辑且非隐藏') }}</p>
                             </div>
                             <bk-checkbox
                                 :true-value="'REQUIRE'"
@@ -139,7 +139,7 @@
                                     <i class="bk-icon icon-question-circle"></i>
                                 </span>
                             </bk-checkbox>
-                            <span v-show="fieldData.validate_type === 'REQUIRE'" @click="requireConfigShow = true">{{ $t('条件编辑-0') }}</span>
+                            <span v-show="fieldData.validate_type === 'REQUIRE'" @click="requireConfigShow = true">{{ $t('条件编辑') }}</span>
                         </div>
                         <div class="contidion">
                             <bk-checkbox

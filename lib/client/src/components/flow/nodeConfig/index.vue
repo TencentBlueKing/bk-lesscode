@@ -120,7 +120,7 @@
                     return
                 }
                 this.$bkInfo({
-                    title: this.$t('此操作会导致您的编辑没有保存，确认吗？'),
+                    title: this.$t('此操作会导致您的编辑没有保存，确认吗'),
                     type: 'warning',
                     width: 500,
                     confirmFn: () => {

@@ -8,7 +8,7 @@
                         <template slot-scope="{ row }">
                             {{releaseTypeMap[row.releaseType]}}
                             <span v-if="row.releaseType === 'PROJECT_VERSION'">
-                                {{`${row.fromProjectVersion === '' ? $t('(默认)') : (row.fromProjectVersion ? `(${row.fromProjectVersion})` : '') }` }}
+                                {{`${row.fromProjectVersion === '' ? `(${$t('默认')})` : (row.fromProjectVersion ? `(${row.fromProjectVersion})` : '') }` }}
                             </span>
                         </template>
                     </bk-table-column>
@@ -39,7 +39,7 @@
                                 <!-- <i v-if="row.status === 'running'" class="bk-drag-icon bk-drag-icon bk-drag-loading-2 history-status-icon" class="loading-rotate"></i> -->
                                 <i v-else class="bk-drag-icon bk-drag-circle-shape history-status-icon" :class="[`icon-${row.status}`]"></i>
                                 <span>{{ typeMap[row.isOffline] }}{{ statusMap[row.status] }}</span>
-                                <span v-if="!row.isOffline" class="status-log-link" @click="showLog(row)">{{ $t('，查看详情') }}</span>
+                                <span v-if="!row.isOffline" class="status-log-link" @click="showLog(row)">，{{ $t('查看详情') }}</span>
                             </div>
                         </template>
                     </bk-table-column>

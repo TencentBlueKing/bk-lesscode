@@ -23,7 +23,7 @@
                     <div class="flag">
                         <i class="bk-icon icon-check-1" />
                     </div>
-                    <div style="font-size: 24px; line-height: 31px; color: #313238">{{ $t('恭喜完成学习!') }}</div>
+                    <div style="font-size: 24px; line-height: 31px; color: #313238">{{ $t('恭喜完成学习') }}</div>
                     <div style="margin-top: 8px; font-size: 14px; line-height: 19px; color: #979BA5">{{ doneCountTime }} {{$t('秒后弹窗自动消失')}}</div>
                     <div style="margin-top: 20px">
                         <span style="font-size: 14px; line-height: 19px; color: #3480FF; cursor: pointer" @click="handleDone">{{ $t('立即体验') }}</span>
@@ -32,8 +32,8 @@
             </div>
             <div v-if="isShowStopDialog" class="guide-stop-box">
                 <div class="wraper">
-                    <div style="font-size: 24px; line-height: 31px; color: #313238">{{ $t('确认跳过学习？') }}</div>
-                    <div style="margin-top: 27px; font-size: 14px; line-height: 19px; color: #63656E">{{ $t('跳过此次学习，你可点击页面右上角的帮助指引，再次发起学习。') }}</div>
+                    <div style="font-size: 24px; line-height: 31px; color: #313238">{{ $t('确认跳过学习') }}</div>
+                    <div style="margin-top: 27px; font-size: 14px; line-height: 19px; color: #63656E">{{ $t('跳过此次学习，你可点击页面右上角的帮助指引，再次发起学习') }}</div>
                     <div style="margin-top: 22px;">
                         <img :src="helpImg" style="width: 157px; height: 157px" />
                     </div>

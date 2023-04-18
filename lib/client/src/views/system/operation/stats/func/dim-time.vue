@@ -48,7 +48,7 @@
                     </template>
                 </bk-table-column>
                 <div class="append-tips" slot="append">
-                    <i>{{ $t('* 不包含内置和已删除数据，同一页面使用同一函数多次被记作1次') }}</i>
+                    <i>* {{ $t('不包含内置和已删除数据，同一页面使用同一函数多次被记作1次') }}</i>
                 </div>
             </bk-table>
         </div>

@@ -67,7 +67,7 @@
                 </bk-form-item>
                 <bk-form-item :label="$t('组件版本')" required property="version" error-display-type="normal">
                     <div class="component-version-wraper">
-                        <bk-input v-model="formData.version" :placeholder="$t('版本号格式：1.x.x')" style="width: 300px" />
+                        <bk-input v-model="formData.version" :placeholder="$t('版本号格式') + '：1.x.x'" style="width: 300px" />
                         <span v-if="isEdit" class="last-version">{{ $t('上个版本为 {0}', [lastVersion]) }}</span>
                     </div>
                 </bk-form-item>
@@ -203,7 +203,7 @@
                         validator: value => {
                             return /^\d/.test(value) && tnpmVersionValid.re[tnpmVersionValid.t.FULL].test(value)
                         },
-                        message: window.i18n.t('版本号格式：0.x.x'),
+                        message: window.i18n.t('版本号格式') + '：0.x.x',
                         trigger: 'blur'
                     }
                 ],

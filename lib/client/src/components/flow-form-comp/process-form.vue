@@ -105,10 +105,10 @@
                     if ('num_range' in field) {
                         let msg = ''
                         if (typeof field.num_range[0] === 'number' && fieldVal.length < field.num_range[0]) {
-                            msg = this.$t('{0}表单的值数目不能小于${0}', [field.name, field.num_range[0]])
+                            msg = this.$t('{0}表单的值数目不能小于{1}', [field.name, field.num_range[0]])
                         }
                         if (typeof field.num_range[1] === 'number' && fieldVal.length > field.num_range[1]) {
-                            msg = this.$t('${field.name}表单的值数目不能大于${field.num_range[1]}', [field.name, field.num_range[1]])
+                            msg = this.$t('{0}表单的值数目不能大于{1}', [field.name, field.num_range[1]])
                         }
                         if (msg) {
                             valid = false

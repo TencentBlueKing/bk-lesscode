@@ -211,7 +211,7 @@
                         href: 'https://v3.bootcss.com/'
                     },
                     {
-                        name: window.i18n.t('kendo UI'),
+                        name: 'kendo UI',
                         icon: require('../../images/kendo.png'),
                         href: 'https://demos.telerik.com/kendo-ui/'
                     },

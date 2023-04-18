@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        :title="$t('【{n}】字段隐藏条件设置', { n: title })"
+        :title="`【${title}】${$t('字段隐藏条件设置')}`"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"

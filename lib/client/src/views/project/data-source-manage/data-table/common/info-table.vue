@@ -90,7 +90,7 @@
                     },
                     {
                         regex: /^[a-z][a-z-_]*[a-z]$/,
-                        message: window.i18n.t('开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64_0'),
+                        message: window.i18n.t('开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64'),
                         trigger: 'blur'
                     }, {
                         validator (val) {
