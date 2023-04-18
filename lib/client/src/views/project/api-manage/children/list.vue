@@ -253,7 +253,7 @@
         { id: 'useInfo', label: window.i18n.t('引用') },
         { id: 'funcSummary', label: window.i18n.t('备注') },
         { id: 'updateUser', label: window.i18n.t('更新人') },
-        { id: 'updateTime', label: window.i18n.t('更新时间') },
+        { id: 'updateTime', label: window.i18n.t('更新时间') }
     ]
 
     export default {

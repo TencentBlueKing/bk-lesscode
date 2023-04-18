@@ -1,6 +1,6 @@
 <template>
     <section class="select-table">
-        <span class="select-title">{{ $t('数据表') }}</span>
+        <span class="select-title" v-enClass="'overflowhidden-oh'" :title="$t('数据表')">{{ $t('数据表') }}</span>
         <bk-select
             :class="{
                 'select-main': true,
