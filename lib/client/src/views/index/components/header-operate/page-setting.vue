@@ -19,7 +19,7 @@
             
             // 清空当前选中的组件跟设置导航不可见
             function handleShowPageSetting () {
-                if (pageDetail?.nocodeType) {
+                if (!pageDetail?.nocodeType) {
                     // 自定义页面
                     const activeNode = LC.getActiveNode()
                     if (activeNode) {
