@@ -67,7 +67,8 @@
             return {
                 isShowFinisheDialog: false,
                 isShowStopDialog: false,
-                isDone: cookie.parse(document.cookie).hasOwnProperty(CACHE_KEY),
+                // isDone: cookie.parse(document.cookie).hasOwnProperty(CACHE_KEY),
+                isDone: true,
                 currentStepIndex: 0,
                 currentStep: {},
                 tipStyles: {},
@@ -102,8 +103,10 @@
             */
             init () {
                 if (!this.isDone) {
-                    document.body.appendChild(this.$refs.wraper)
-                    this.activeStep()
+                    this.$nextTick(() => {
+                        document.body.appendChild(this.$refs.wraper)
+                        this.activeStep()
+                    })
                 }
             },
             /**
