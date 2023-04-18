@@ -5,7 +5,7 @@
             <div class="side-hd" @mouseenter="asideHover = true">
                 <div class="open-select-menu-div" v-if="!asideFolded || asideHover">
                     <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
-                    <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
+                    <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject" search-placeholder="输入应用名称搜索">
                         <bk-option v-for="option in projectList"
                             :key="option.id"
                             :id="option.id"
