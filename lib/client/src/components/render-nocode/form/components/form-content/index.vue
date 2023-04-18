@@ -154,7 +154,7 @@
                 } else if (type === 'delete') {
                     this.$bkInfo({
                         title: this.$t('确认删除？'),
-                        subTitle: this.$t('删除字段将会同时删除已存在该字段下的数据，你还要继续吗？'),
+                        subTitle: this.$t('删除字段将会同时删除已存在该字段下的数据，你还要继续吗'),
                         theme: 'danger',
                         confirmFn: async () => {
                             this.$emit('delete', index)

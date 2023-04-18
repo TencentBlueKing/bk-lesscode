@@ -605,7 +605,7 @@
                 if (!tableName || fieldList.length === 0) {
                     this.$bkMessage({
                         theme: 'warning',
-                        message: this.$t('【{0}（{1}）】节点表单字段为空，请先配置表单', [name, id])
+                        message: `【${name}（${id}）】${window.i18n.t('节点表单字段为空，请先配置表单')}`
                     })
                     return
                 }

@@ -59,7 +59,7 @@
             :mask-close="false"
             :auto-close="false"
         >)
-            {{$t('确定删除成员{0}', [deleteObj.name])}}{{ deleteObj.roleId === 1 ? $t('管理员') : $t('开发者') }}{{$t('】角色权限')}}
+            {{`${$t('确定删除成员')}${deleteObj.name }？${$t('删除后该成员将失去应用')}【${ deleteObj.roleId === 1 ? $t('管理员') : $t('开发者') }】${$t('角色权限')}`}}
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"

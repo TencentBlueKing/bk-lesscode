@@ -192,7 +192,7 @@
             }
 
             (this as any).$bkInfo({
-                title: window.i18n.t('确认离开?'),
+                title: window.i18n.t('确认离开'),
                 subTitle: window.i18n.t('文件正在上传中，离开可能导致文件上传失败'),
                 confirmFn: async () => {
                     next()

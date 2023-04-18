@@ -48,9 +48,9 @@
         </bk-table>
         <slot>
             <span class="variable-tip">
-                {{ $t('提示：') }} <br>{{ $t('1. 可以在组件属性和指令的配置面板中使用该变量') }}
-                <br>{{ $t('2. 在函数插槽中可以使用【lesscode.变量标识】唤醒编辑器自动补全功能选择对应变量，来获取或者修改该变量的值') }}
-                <br>{{ $t('3. 在远程函数中，参数 Api Url 的值可用') }} <span v-pre>{{变量标识}}</span> {{ $t('来获取变量值，请求参数中可以通过选择变量的形式获取变量值') }}
+                {{ $t('提示：') }} <br>1. {{ $t('可以在组件属性和指令的配置面板中使用该变量') }}
+                <br>2. {{ $t('在函数插槽中可以使用【lesscode.变量标识】唤醒编辑器自动补全功能选择对应变量，来获取或者修改该变量的值') }}
+                <br>3. {{ $t('在远程函数中，参数 Api Url 的值可用') }} <span v-pre>{{变量标识}}</span> {{ $t('来获取变量值，请求参数中可以通过选择变量的形式获取变量值') }}
             </span>
         </slot>
 
@@ -267,7 +267,7 @@
                             (useInfo || []).forEach((detail) => {
                                 if (detail.type === 'v-bind') {
                                     const modifiers = (detail.modifiers || []).join('.')
-                                    const modifierStr = modifiers ? this.$t('，修饰符为{0}', [modifiers]) : ''
+                                    const modifierStr = modifiers ? '，' + this.$t('修饰符为{0}', [modifiers]) : ''
                                     tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】属性{3}', [pageCode, detail.componentId, detail.prop, modifierStr]))
                                 } else if (detail.source === 'prop') {
                                     tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】属性', [pageCode, detail.componentId, detail.key]))

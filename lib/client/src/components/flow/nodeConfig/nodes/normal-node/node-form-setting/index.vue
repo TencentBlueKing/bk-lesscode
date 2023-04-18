@@ -247,8 +247,8 @@
                                 'font-size': '14px'
                             }
                         }, [
-                            h('p', {}, this.$t('1.删除该流程提单页面，对应的流程数据不会删除')),
-                            h('p', { style: { 'margin-top': '8px' } }, this.$t('2.确认该信息后，需“保存”该节点配置方可生效'))
+                            h('p', {}, '1.' + this.$t('删除该流程提单页面，对应的流程数据不会删除')),
+                            h('p', { style: { 'margin-top': '8px' } }, '2.' + this.$t('确认该信息后，需“保存”该节点配置方可生效'))
                         ])
                     ]),
                     theme: 'danger',
@@ -293,9 +293,9 @@
                                 'font-size': '14px'
                             }
                         }, [
-                            h('p', { style: { 'margin': '14px 0 0 10px' } }, this.$t('1.已生成的流程提单页将同步被删除')),
-                            h('p', { style: { 'margin': '8px 0 0 10px' } }, this.$t('2.已生成的关联数据表及表数据将继续保留')),
-                            h('p', { style: { 'margin': '14px 0 0 0' } }, this.$t('确认删除吗？'))
+                            h('p', { style: { 'margin': '14px 0 0 10px' } }, '1.' + this.$t('已生成的流程提单页将同步被删除')),
+                            h('p', { style: { 'margin': '8px 0 0 10px' } }, '2.' + this.$t('已生成的关联数据表及表数据将继续保留')),
+                            h('p', { style: { 'margin': '14px 0 0 0' } }, this.$t('确认删除吗'))
                         ])
                     ]),
                     theme: 'danger',

@@ -71,7 +71,7 @@
         methods: {
             handleSelectFlow (val) {
                 this.$bkInfo({
-                    title: window.i18n.t('确认离开?'),
+                    title: window.i18n.t('确认离开'),
                     subTitle: window.i18n.t('您将离开流程页面，请确认相应修改已保存'),
                     confirmFn: async () => {
                         this.$router.push({

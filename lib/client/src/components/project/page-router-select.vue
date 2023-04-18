@@ -31,7 +31,7 @@
                 <template v-if="field.id === 'pageRoute'">
                     <div class="bk-option-content-default" :title="childSlot.props.name">
                         <div class="bk-option-name">
-                            {{childSlot.props.name}}<span class="bound" v-if="childSlot.props.disabled">{{ $t('（已绑定）') }}</span>
+                            {{childSlot.props.name}}<span class="bound" v-if="childSlot.props.disabled">（{{ $t('已绑定') }}）</span>
                         </div>
                     </div>
                 </template>

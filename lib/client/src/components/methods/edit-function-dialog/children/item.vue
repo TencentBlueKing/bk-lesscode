@@ -88,7 +88,7 @@
                 if (!this.computedPermissionInfo.hasPermission) return
 
                 this.$bkInfo({
-                    title: this.$t('确认要删除函数【{0}】？', [this.functionData.funcName]),
+                    title: this.$t('确认要删除函数【{0}】', [this.functionData.funcName]),
                     confirmLoading: true,
                     theme: 'danger',
                     confirmFn: () => {

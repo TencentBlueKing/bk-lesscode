@@ -55,7 +55,9 @@
                 property="funcApiUrl"
                 error-display-type="normal"
                 class="func-form-item"
-                :desc="$t('1. 请求地址中可以使用 {变量标识} 的格式来使用变量。<br> 2. 应用自建 API 和 数据表操作 API 的地址不可修改，每次执行实时获取 API 地址 <br> 3. 如果地址中有*，表示可以匹配任意字符串，请替换成真实的路径')"
+                :desc="`1. ${$t('请求地址中可以使用 {变量标识} 的格式来使用变量')}
+                        2. ${$t('应用自建 API 和 数据表操作 API 的地址不可修改，每次执行实时获取 API 地址')}
+                        3. ${$t('如果地址中有*，表示可以匹配任意字符串，请替换成真实的路径')}`"
                 :required="true"
                 :rules="[requireRule($t('请求地址'))]"
             >

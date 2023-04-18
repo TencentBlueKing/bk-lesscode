@@ -5,7 +5,7 @@
             <bk-radio value="or">{{ $t('或') }}</bk-radio>
         </bk-radio-group>
         <div v-for="(exp, index) in conditionData.expressions" class="line-condition-item" :key="index">
-            <div class="expression-label">{{ conditionData.type === 'and' ? $t('且') : $t('或') }}-条件组{{ index + 1 }}</div>
+            <div class="expression-label">{{ conditionData.type === 'and' ? $t('且') : $t('或') }}-{{$t('条件组')}}{{ index + 1 }}</div>
             <div class="condition-content-wrapper">
                 <i
                     v-if="conditionData.expressions.length > 1"

@@ -158,7 +158,7 @@
 
                 this.clickEmptyArea()
                 this.$bkInfo({
-                    title: this.$t('确认要删除函数分组【${0}】？', [this.group.groupName]),
+                    title: this.$t('确认要删除函数分组【{0}】', [this.group.groupName]),
                     confirmLoading: true,
                     theme: 'danger',
                     confirmFn: () => {

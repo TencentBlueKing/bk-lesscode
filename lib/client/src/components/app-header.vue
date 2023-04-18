@@ -124,7 +124,7 @@
             const languageList = [
                 {
                     id: 'zhCN',
-                    name: window.i18n.t('中文'),
+                    name: '中文',
                     icon: 'chinese'
                 },
                 {

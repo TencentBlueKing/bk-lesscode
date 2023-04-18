@@ -14,11 +14,11 @@
         <div :class="$style['toolbar']">
             <p><span v-if="pageType === 'json'">{{ $t('仅包含页面内容区域JSON数据') }}</span></p>
             <div :class="$style['buttons']">
-                <i v-bk-tooltips="{ boundary: 'window', content: `复制${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
-                <i v-bk-tooltips="{ boundary: 'window', content: `下载${typeName}` }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
-                <i v-if="pageType === 'json'" v-bk-tooltips="{ boundary: 'window', content: '导入JSON' }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>
-                <i v-if="pageType === 'code'" v-bk-tooltips="{ boundary: 'window', content: withNav ? '不包含导航源码' : '包含导航源码' }" :class="['bk-drag-icon', 'bk-drag-switcher', $style['icon'], { [$style['without-nav']]: !withNav }]" @click="switchWithNav"></i>
-                <i v-bk-tooltips="{ boundary: 'window', content: '全屏' }" :class="['bk-drag-icon', 'bk-drag-full-screen', $style['icon']]" @click="handleScreenfull"></i>
+                <i v-bk-tooltips="{ boundary: 'window', content: `${$t('复制')}${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
+                <i v-bk-tooltips="{ boundary: 'window', content: `${$t('下载')}${typeName}` }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
+                <i v-if="pageType === 'json'" v-bk-tooltips="{ boundary: 'window', content: $t('导入JSON') }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>
+                <i v-if="pageType === 'code'" v-bk-tooltips="{ boundary: 'window', content: withNav ? $t('不包含导航源码') : $t('包含导航源码') }" :class="['bk-drag-icon', 'bk-drag-switcher', $style['icon'], { [$style['without-nav']]: !withNav }]" @click="switchWithNav"></i>
+                <i v-bk-tooltips="{ boundary: 'window', content: $t('全屏') }" :class="['bk-drag-icon', 'bk-drag-full-screen', $style['icon']]" @click="handleScreenfull"></i>
             </div>
         </div>
         <div :class="$style['content']">

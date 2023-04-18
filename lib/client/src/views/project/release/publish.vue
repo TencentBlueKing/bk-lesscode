@@ -86,7 +86,7 @@
                 <div :class="$style['last-version-tips']" v-if="latestInfo.id">
                     <i :class="$style['tips-icon']" class="bk-drag-icon bk-drag-info-tips"></i>
                     <span :class="$style['tips-content']">{{ $t('最近{0}版本：', [typeMap[latestInfo.isOffline]]) }}<span v-html="getInfoTips(latestInfo, 'last')"></span></span>
-                    <span v-if="!latestInfo.isOffline" :class="$style['latest-log-link']" @click="showLog(latestInfo)">{{ $t('，查看日志') }}</span>
+                    <span v-if="!latestInfo.isOffline" :class="$style['latest-log-link']" @click="showLog(latestInfo)">，{{ $t('查看日志') }}</span>
                 </div>
                 <div :class="$style['release-form']">
                     <div :class="$style['type']">
@@ -149,7 +149,7 @@
                                         【{{ flow.flowName }}】
                                     </span>
                                 </template>
-                                {{ $t('有更新，未在预览环境部署验证，建议先验证流程再发布应用。') }} </p>
+                                {{ $t('有更新，未在预览环境部署验证，建议先验证流程再发布应用') }} </p>
                         </div>
                     </div>
                     <div :class="[$style['form-item']]">
@@ -232,7 +232,7 @@
                 :is-show.sync="isShowReleaseSql"
                 :quick-close="true"
                 :width="960"
-                :title="$t('数据库变更详情【') + versionForm.env === 'stag' ? $t('预发布环境') : $t('生产环境') + '】'">
+                :title="`${$t('数据库变更详情')}【${versionForm.env === 'stag' ? $t('预发布环境') : $t('生产环境')} 】`">
                 <div slot="content">
                     <monaco
                         read-only
@@ -367,7 +367,7 @@
                 const version = this.versionForm.releaseVersion
                 if (!version) {
                     tips = window.i18n.t('部署版本号必填')
-                    tips += this.newVersionInfo?.version ? window.i18n.t('，上一次部署版本号为：{0}', [this.newVersionInfo?.version]) : ''
+                    tips += this.newVersionInfo?.version ? '，' + window.i18n.t('上一次部署版本号为：{0}', [this.newVersionInfo?.version]) : ''
                 } else if (!/^[A-za-z0-9\-\.\_]{1,40}$/.test(version)) {
                     tips = window.i18n.t('仅支持英文、数字、下划线、中划线和英文句号')
                 }

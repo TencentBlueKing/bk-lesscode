@@ -54,7 +54,7 @@
                         <bk-popconfirm
                             trigger="click"
                             width="350"
-                            :title="$t('确认恢复改流程？')"
+                            :title="$t('确认恢复改流程')"
                             :content="$t('恢复后，关联的流程提单页，流程数据管理页也一并恢复')"
                             @confirm="handleRestoreConfirm">
                             <bk-button

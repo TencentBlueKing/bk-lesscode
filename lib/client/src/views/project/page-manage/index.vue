@@ -225,7 +225,7 @@
                 const initData = {
                     formId: page.formId,
                     pageCode: page.pageCode + 'manage',
-                    pageName: page.pageName + window.i18n.t('_数据管理页')
+                    pageName: page.pageName + '_' + window.i18n.t('数据管理页')
                 }
                 this.handleCreate('PC', 'FORM_MANAGE', initData)
             },
@@ -519,7 +519,6 @@
             margin-bottom: 8px;
 
             button {
-                width: 86px;
                 &:not(:first-child) {
                     margin-left: 10px;
                 }

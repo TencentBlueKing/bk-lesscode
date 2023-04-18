@@ -11,7 +11,7 @@
             error-display-type="normal"
             :required="true"
             :rules="[
-                getRequireRule('名称'),
+                getRequireRule($t('名称')),
                 getNameRepeatRule()
             ]"
             v-bkloading="{ isLoading: isLoadingApi }"
@@ -28,7 +28,7 @@
             error-display-type="normal"
             :required="true"
             :rules="[
-                getRequireRule('标识'),
+                getRequireRule($t('标识')),
                 getCodeRule(),
                 getCodeRepeatRule()
             ]"
@@ -47,7 +47,7 @@
             error-display-type="normal"
             :required="true"
             :rules="[
-                getRequireRule('分类')
+                getRequireRule($t('分类'))
             ]"
         >
             <bk-select
@@ -71,7 +71,7 @@
             error-display-type="normal"
             :required="true"
             :rules="[
-                getRequireRule('接口路径')
+                getRequireRule($t('接口路径'))
             ]"
         >
             <bk-compose-form-item class="basic-compose-url">

@@ -49,5 +49,6 @@
         width: 90px;
         background: #fff;
         display: inline-block;
+        margin-right: 8px;
     }
 </style>
