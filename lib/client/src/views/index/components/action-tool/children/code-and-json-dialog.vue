@@ -115,7 +115,6 @@
                 this.isLoading = true
                 const { projectId, pageId } = this
                 const targetData = JSON.parse(circleJSON(LC.getRoot().toJSON()?.renderSlots?.default) || '[]')
-                console.log(targetData, 'formatcode')
                 this.$store.dispatch('vueCode/getPageCode', {
                     targetData,
                     pageType: 'vueCode',
@@ -126,8 +125,6 @@
                     variableData: this.variableList
                 }).then(res => {
                     this.formatCode = res
-                    console.log(this.formatCode, 'formatcode..')
-                    this.withNav = withNav
                 }).finally(() => {
                     this.isLoading = false
                 })

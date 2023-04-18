@@ -27,6 +27,7 @@
 <script>
     import downloadDialog from '@/views/system/components/download-dialog'
     import { mapGetters } from 'vuex'
+    import { bus } from '@/common/bus'
 
     export default {
         components: {
@@ -55,7 +56,9 @@
         },
         methods: {
             handleChangeProjectVersion (versionId, version) {
-                this.$store.commit('projectVersion/setCurrentVersion', version)
+                // console.log(versionId, version)
+                // this.$store.commit('projectVersion/setCurrentVersion', version)
+                bus.$emit('update-project-version', version)
             },
             handleShowDownload () {
                 this.$refs.downloadDialog.isShow = true

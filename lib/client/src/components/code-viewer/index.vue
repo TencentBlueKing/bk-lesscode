@@ -78,7 +78,8 @@
                 return this.codeType === 'json' ? 'JSON' : '源码'
             },
             filename () {
-                return `bklesscode-page-${this.pageDetail?.pageCode}.${this.codeType}`
+                const suffix = this.codeType === 'json' ? 'json' : 'vue'
+                return `bklesscode-page-${this.pageDetail?.pageCode}.${suffix}`
             }
         },
         mounted () {
@@ -94,7 +95,8 @@
         },
         methods: {
             switchWithNav () {
-                this.$emit('change-with-nav', !this.withNav)
+                this.withNav = !this.withNav
+                this.$emit('change-with-nav', this.withNav)
             },
             showEditData () {
                 this.$emit('show-edit-data')
