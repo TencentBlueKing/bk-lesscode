@@ -56,6 +56,12 @@
             .name-span {
                 margin: 0 6px;
             }
+            .tag-span {
+                background: #F5F7FA;
+                border-radius: 2px;
+                padding: 2px 4px;
+                font-size: 12px;
+            }
         }
         .page-operate {
             button {

@@ -70,14 +70,22 @@
                 <bk-table-column
                     label="初始类型"
                     show-overflow-tooltip
-                    width="120">
+                    width="100">
                     <template slot-scope="props">
                         <span>{{ getVariableTypeText(props.row) }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column
+                    label="生效范围"
+                    show-overflow-tooltip
+                    width="100">
+                    <template slot-scope="props">
+                        <span>{{ getEffectiveRangeText(props.row) }}</span>
+                    </template>
+                </bk-table-column>
+                <bk-table-column
                     label="默认值"
-                    width="220">
+                    width="180">
                     <template slot-scope="props">
                         <span
                             v-for="(val, key) in getVariableDefaultValue(props.row)"
@@ -286,6 +294,17 @@
             getVariableTypeText ({ valueType }) {
                 const variableType = Object.keys(VARIABLE_TYPE).find((variableTypeKey) => VARIABLE_TYPE[variableTypeKey].VAL === valueType)
                 return VARIABLE_TYPE[variableType].NAME
+            },
+            /**
+             * @desc 生效范围展示文本
+             * @returns { String }
+             */
+            getEffectiveRangeText ({ effectiveRange }) {
+                const rangeMap = {
+                    0: '本应用',
+                    1: '本页面'
+                }
+                return rangeMap[effectiveRange]
             },
             /**
              * @desc 变量列表行样式

@@ -252,12 +252,6 @@
     .page-container {
         height: 100%;
         display: flex;
-        .tag-span {
-            background: #F5F7FA;
-            border-radius: 2px;
-            padding: 2px 4px;
-            font-size: 12px;
-        }
     }
     .left-panel {
         width: 300px;
