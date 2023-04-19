@@ -117,7 +117,7 @@
                 projectVersionId: '',
                 curProject: {},
                 defaultActive: '',
-                navList: PROJECT_NAV_LIST,
+                navList: [],
                 projectList: [],
                 defaultThemeColorProps: {
                     'item-default-color': '#96A2B9',
@@ -177,6 +177,7 @@
         },
         async created () {
             try {
+                this.navList = JSON.parse(JSON.stringify(PROJECT_NAV_LIST))
                 this.pageLoading = true
                 this.updateCurrentVersion(this.getInitialVersion())
                 bus.$on('update-project-version', this.updateCurrentVersion)
@@ -217,7 +218,6 @@
                     navList.splice(6, 1)
                 }
 
-                console.log(navList, 'navlist')
                 navList.forEach(item => {
                     dealPermission(item)
                     if (item.children) {

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent, computed } from '@vue/composition-api'
     import { useStore } from '@/store'
     import LC from '@/element-materials/core'
     import { bus } from '@/common/bus'
@@ -14,12 +14,11 @@
         setup () {
             const store = useStore()
 
-            const pageDetail = store.getters['page/pageDetail']
-            console.log(pageDetail, 'page setting detail')
+            const pageDetail = computed(() => store.getters['page/pageDetail'])
             
             // 清空当前选中的组件跟设置导航不可见
             function handleShowPageSetting () {
-                if (!pageDetail?.nocodeType) {
+                if (!pageDetail.value?.nocodeType) {
                     // 自定义页面
                     const activeNode = LC.getActiveNode()
                     if (activeNode) {
