@@ -67,7 +67,7 @@
                     <bk-form-item
                         :label="$t('本页面添加到导航菜单')"
                         v-if="showAddNavListSwitcher"
-                        :label-width="170"
+                        :label-width="$t('中文') === 'Chinese' ? 260 : 170"
                         error-display-type="normal">
                         <bk-switcher
                             theme="primary"

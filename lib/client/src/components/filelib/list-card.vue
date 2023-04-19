@@ -92,7 +92,7 @@
                                     activeColor: '#3a84ff'
                                 }"
                                 :title="$t('上传中')"
-                                :title-style="{ color: '#fff', fontSize: '12px' }"
+                                :title-style="{ color: '#fff', fontSize: '12px' , width: $t('中文') === 'Chinese' ? '120%' : '100%' }"
                                 :num-style="{ color: '#fff', fontSize: '14px' }"
                                 :percent="file.percentage / 100"
                                 v-if="file.status === UPLOAD_STATUS.UPLOADING">

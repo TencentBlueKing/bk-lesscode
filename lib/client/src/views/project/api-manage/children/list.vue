@@ -146,7 +146,7 @@
                 ></bk-table-column>
                 <bk-table-column
                     :label="$t('操作')"
-                    width="200"
+                    :width="$t('中文') === 'Chinese' ? 260 : 200"
                     fixed="right"
                 >
                     <template slot-scope="props">

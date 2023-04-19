@@ -25,7 +25,7 @@
                                 <div class="mask">
                                     <div class="operate-btns">
                                         <bk-button class="edit-btn" theme="primary" @click.stop="handlePreview(template)">{{ $t('预览') }}</bk-button>
-                                        <bk-button class="preview-btn" @click="handleDownloadSource(template)">{{ $t('下载源码') }}</bk-button>
+                                        <bk-button class="preview-btn" v-enClass="'en-preview-btn'" :title="$t('下载源码')" @click="handleDownloadSource(template)">{{ $t('下载源码') }}</bk-button>
                                     </div>
                                 </div>
                             </div>
@@ -433,7 +433,17 @@
                                 .preview-btn {
                                     width: 86px;
                                     margin-left: 10px;
-                                    margin-rihgt: 59px;
+                                
+                                }
+                                .en-preview-btn {
+                                    width: 100px;
+                                    /deep/ span {
+                                            display: block;
+                                            width: 80px;
+                                            overflow: hidden;
+                                            white-space: nowrap;
+                                            text-overflow: ellipsis;
+                                    }
                                 }
                             }
                         }

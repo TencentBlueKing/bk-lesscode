@@ -9,7 +9,7 @@
         :width="700"
         header-position="left">
         <div :class="{ 'scope-specify': scope === ScopeValue.Specify }">
-            <bk-radio-group v-model="scope" class="scope-radio-group">
+            <bk-radio-group v-model="scope" class="scope-radio-group" v-enClass="'en-scope-radio-group'">
                 <bk-radio :value="ScopeValue.Self">{{ $t('仅本应用') }}</bk-radio>
                 <bk-radio :value="ScopeValue.Specify">{{ $t('特定应用') }}</bk-radio>
                 <bk-radio :value="ScopeValue.All">{{ $t('所有应用，包含后续新增') }}</bk-radio>
@@ -184,5 +184,14 @@
             }
         }
     }
+    :global {
+        .en-scope-radio-group{
+            .bk-form-radio {
 
+                &:last-child {
+                    width: 315px;
+                }
+            }
+        }
+    }
 </style>
