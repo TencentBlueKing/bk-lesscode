@@ -376,7 +376,7 @@
         &.aside-folded {
             .aside {
                 position: absolute;
-                z-index: 2000;
+                z-index: 999;
                 height: calc(100% - 52px);
             }
             .project-right-content {

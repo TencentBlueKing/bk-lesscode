@@ -14,13 +14,12 @@
         <style-item name="opacity">
             <div class="opacity-container" style="width: 100%;">
                 <bk-slider ext-cls="border-radius-slider" :step="0.1" :max-value="1" v-model="opacityValue" @change="handleOpacityChange"></bk-slider>
-                <div class="bk-input-number">
+                <div class="bk-input-number" style="width: 68px">
                     <input type="text"
-                        style="width: 100%"
                         class="bk-form-input"
+                        :value="opacityValue"
                         @keydown="inputKeydownHandler($event)"
-                        v-model="opacityValue"
-                        @input="handleOpacityChange" />
+                        @input="handleInput" />
                     <span class="input-number-option">
                         <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
                         <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
@@ -68,8 +67,13 @@
             }
         },
         methods: {
+            handleInput (e) {
+                const val = e.target.value || 1
+                this.opacityValue = Number(val)
+                this.handleOpacityChange()
+            },
             handleOpacityChange () {
-                const val = this.opacityValue
+                const val = Number(this.opacityValue)
                 this.change('opacity', val)
             },
 
@@ -128,7 +132,7 @@
         width: 234px;
         height: 32px;
         .border-radius-slider {
-            width: 100px;
+            width: 92px;
             margin-right: 12px;
         }
     }

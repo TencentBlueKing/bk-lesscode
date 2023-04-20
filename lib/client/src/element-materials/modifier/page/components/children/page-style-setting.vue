@@ -11,9 +11,7 @@
                     </div>
                     <div class="setting-content">
                         <size-input :value="minWidth.value" @change="handleItemChange('minWidth', 'value', $event)" style="width: 100%">
-                            <div style="padding: 8px 4px;">
-                                <size-unit :value="minWidth.unit" @change="handleItemChange('minWidth', 'unit', $event)"></size-unit>
-                            </div>
+                            <size-unit :value="minWidth.unit" @change="handleItemChange('minWidth', 'unit', $event)"></size-unit>
                         </size-input>
                     </div>
                 </section>

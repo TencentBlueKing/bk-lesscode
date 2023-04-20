@@ -216,7 +216,7 @@
                 iconSizeData: {
                     fontFamily: {
                         type: 'select',
-                        icon: 'bk-drag-juhe',
+                        icon: 'bk-drag-ziti',
                         tips: '字体',
                         payload: {},
                         options: [

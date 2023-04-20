@@ -75,6 +75,7 @@
         /deep/ .bk-dropdown-trigger .trigger-content {
             width: 32px;
             height: 32px;
+            border-radius: 2px;
             background: $primaryColor;
             color: #fff;
             display: flex;

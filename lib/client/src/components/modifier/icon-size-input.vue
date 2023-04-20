@@ -10,8 +10,9 @@
 -->
 
 <template>
-    <div class="size-item" :class="{ 'king-input-modifier-style-error': isError, 'size-item-focus': isFocus }">
-        <div v-if="item.font || item.icon" class="input-prefix" :style="{ width: item.prefixWidth || '32px' }" v-bk-tooltips="{ content: item.tips || item.name, disabled: !(item.tips || item.name) }">
+    <div class="size-item" :class="{ 'king-input-modifier-style-error': isError, 'size-item-focus': isFocus }"
+        v-bk-tooltips="{ content: item.tips || item.name, disabled: !(item.tips || item.name) || !(item.font || item.icon), trigger: 'click' }">
+        <div v-if="item.font || item.icon" class="input-prefix" :style="{ width: item.prefixWidth || '32px' }" @click.stop>
             <span v-if="item.font">{{item.font}}</span>
             <i v-if="item.icon" :class="`bk-drag-icon ${item.icon}`"></i>
         </div>
@@ -35,7 +36,7 @@
                 @blur="() => isFocus = false"
                 
                 @input="handleChange" />
-            <div class="input-suffix" v-if="!item.noUnit">
+            <div class="input-suffix" v-if="!item.noUnit" @click.stop>
                 <slot>
                     <size-unit
                         read-only
@@ -125,9 +126,10 @@
         border: 1px solid #C4C6CC;
         border-radius: 2px;
         width: 126px;
-        margin-top: 8px;
+        margin-top: 12px;
         .input-prefix {
             cursor: default;
+            color: #979BA5;
             display: flex;
             justify-content: center;
             i {
