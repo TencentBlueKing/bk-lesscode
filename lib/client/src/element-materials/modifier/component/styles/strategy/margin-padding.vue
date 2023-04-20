@@ -30,7 +30,7 @@
                                 @innerClick="handleInnerClick"
                                 @change="handleInputChange(item, $event)"
                             >
-                                <size-unit :value="item.unit" @change="handleSelectChange(item, $event)">></size-unit>
+                                <size-unit :value="item.unit" @change="handleSelectChange(item, $event)" class="small-padding"></size-unit>
                             </distance-item>
                         </template>
                     </distance-container>
@@ -43,11 +43,10 @@
                     :unit="item.unit"
                     :value="item.value"
                     :distance="item.distanceStyle"
-                    container="margin-container"
                     @innerClick="handleInnerClick"
                     @change="handleInputChange(item, $event)"
                 >
-                    <size-unit :value="item.unit" @change="handleSelectChange(item, $event)">></size-unit>
+                    <size-unit :value="item.unit" @change="handleSelectChange(item, $event)" class="small-padding"></size-unit>
                 </distance-item>
             </template>
         </distance-container>
@@ -149,11 +148,17 @@
                 // 处理父容器的zindex问题，不处理的话padding的下拉单位会被遮挡
                 try {
                     if (isShow) {
-                        this.$refs[ref].$el.style['zIndex'] = 10
+                        this.$refs[ref].$el.style['zIndex'] = 100
+                        // this.$refs['margin-container'].$el.style['pointerEvents'] = 'none'
+                        // this.$refs['padding-container'].$el.style['pointerEvents'] = 'auto'
                     } else {
                         this.$refs[ref].$el.style['zIndex'] = ''
+                        // this.$refs['margin-container'].$el.style['pointerEvents'] = 'auto'
+                        // this.$refs['padding-container'].$el.style['pointerEvents'] = 'auto'
                     }
                     console.log(this.$refs[ref].$el.style['zIndex'], 'zindex')
+
+                    // console.log(this.$refs['margin-container'].$el.style, 'diff', this.$refs['padding-container'].$el.style)
                 } catch (err) {
                     console.log(err)
                 }

@@ -12,16 +12,6 @@
 <template>
     <section>
         <span v-if="readOnly" class="style-size-unit-span">{{value}}</span>
-        <!-- <bk-popover trigger="click" v-else>
-            <div class="dropdown-trigger-text" slot="dropdown-trigger">
-                <span class="style-size-unit">{{value}}</span>
-            </div>
-            <ul class="bk-dropdown-list bk-dropdown-list-unit" slot="dropdown-content">
-                <template v-for="unit in unitList">
-                    <li :key="unit"><a href="javascript:;" @click="$emit('change', unit, $event)">{{unit}}</a></li>
-                </template>
-            </ul>
-        </bk-popover> -->
         <bk-dropdown-menu trigger="click" ext-cls="style-unit" v-else>
             <div class="dropdown-trigger-text" slot="dropdown-trigger">
                 <span class="style-size-unit">{{value}}</span>
@@ -61,11 +51,17 @@
 </script>
 
 <style lang="postcss">
-    .style-unit .bk-dropdown-content {
+    /* .style-unit .bk-dropdown-content {
         z-index: 1000;
     }
     .bk-dropdown-unit-list {
         z-index: 1000;
+    } */
+    .small-padding .style-size-unit {
+        padding: 0;
+    }
+    .bk-dropdown-list-unit {
+        z-index: 3000;
     }
     .dropdown-trigger-text {
         width: 22px;
@@ -83,6 +79,7 @@
     }
     .style-size-unit {
         cursor: pointer;
+        padding: 2px 3px;
         
         &:hover {
             background: #F0F1F5;

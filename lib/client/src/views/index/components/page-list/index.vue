@@ -238,6 +238,7 @@
                 align-items: center;
                 font-size: 12px;
                 margin-right: 24px;
+                height: 32px;
 
                 .col-icon {
                     background: #EAEBF0;

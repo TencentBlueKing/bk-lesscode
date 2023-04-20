@@ -39,19 +39,6 @@
 
     const sizeConfig = [
         {
-            tips: 'display',
-            name: 'display',
-            key: 'display',
-            icon: 'bk-drag-display-3',
-            type: 'select',
-            options: [
-                { id: 'block', name: 'block' },
-                { id: 'inline', name: 'inline' },
-                { id: 'inline-block', name: 'inline-block' },
-                { id: 'unset', name: 'unset' }
-            ]
-        },
-        {
             name: '宽度',
             key: 'width',
             font: '宽'
@@ -80,6 +67,19 @@
             name: '最大高度',
             key: 'maxHeight',
             icon: 'bk-drag-zuidagaodu'
+        },
+        {
+            tips: 'display',
+            name: 'display',
+            key: 'display',
+            icon: 'bk-drag-display-3',
+            type: 'select',
+            options: [
+                { id: 'block', name: 'block' },
+                { id: 'inline', name: 'inline' },
+                { id: 'inline-block', name: 'inline-block' },
+                { id: 'unset', name: 'unset' }
+            ]
         }
     ]
     

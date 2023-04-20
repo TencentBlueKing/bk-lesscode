@@ -378,7 +378,8 @@
                     margin: 18px 0 14px;
                     .platform-icon {
                         font-size: 16px;
-                        padding: 2px;
+                        margin-right: 8px;
+                        padding: 2px 3px;
                         color: #979ba5;
                         border-radius: 2px;
                         background: #f0f1f5;

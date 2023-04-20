@@ -117,7 +117,7 @@
             align-items: center;
             border: 1px solid #C4C6CC;
             border-radius: 2px;
-            margin-top: 8px;
+            margin-top: 12px;
             .input-prefix {
                 cursor: default;
                 display: flex;

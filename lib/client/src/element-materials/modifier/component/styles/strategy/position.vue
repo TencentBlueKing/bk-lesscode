@@ -36,7 +36,7 @@
                         :distance="item.distanceStyle"
                         @change="handleInputChange(item, $event)"
                     >
-                        <size-unit :value="item.unit" @change="handleSelectChange(item, $event)">></size-unit>
+                        <size-unit :value="item.unit" @change="handleSelectChange(item, $event)" class="small-padding"></size-unit>
                     </distance-item>
                 </template>
             </distance-container>

@@ -36,7 +36,7 @@
 
 <style lang='postcss'>
     .style-item {
-        margin-top: 10px;
+        margin-top: 12px;
         &:first-child {
             margin-top: 4px;
         }
@@ -63,7 +63,7 @@
         }
     }
     .vertical-item {
-        margin-top: 12px;
+        /* margin-bottom: 12px; */
         .item-label {
             margin-bottom: 6px;
             width: 100%;

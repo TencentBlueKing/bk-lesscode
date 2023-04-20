@@ -127,6 +127,13 @@
         }
     }
 </script>
+<style lang="postcss">
+    .draw-page-modifier-panel {
+        .bk-select-name.medium-font {
+            font-size: 12px;
+        }
+    }
+</style>
 <style lang="postcss" scoped>
     .draw-page-modifier-panel {
         position: relative;

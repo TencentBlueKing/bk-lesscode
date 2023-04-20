@@ -69,6 +69,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #979BA5;
             &:hover{
                 color: #3a84ff;
             }
