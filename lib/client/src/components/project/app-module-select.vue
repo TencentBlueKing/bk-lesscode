@@ -36,7 +36,7 @@
                     </div>
                 </template>
             </bk-select>
-            <span :class="$style['operate-bind']">
+            <span :class="$style['operate-bind']" v-enClass="$style['en-operate-bind']">
                 <span @click="confirmBind">{{ $t('确定') }}</span> | <span @click="cancelBind">{{ $t('取消') }}</span>
             </span>
         </div>
@@ -254,6 +254,9 @@
                 cursor: pointer;
                 color: #3a84ff;
             }
+        }
+        .en-operate-bind {
+            width: 80px;
         }
     }
     .selector-create-item {

@@ -8,6 +8,7 @@
                             v-for="link in filterLinks"
                             :key="link.id"
                             :class="['link-item', { 'active': filter === link.id }]"
+                            v-enStyle="'overflow:visible'"
                             @click="handleClickFilter(link.id)"
                             :title="link.name">
                             {{link.name}}
@@ -36,7 +37,7 @@
                                     <div class="layout-img">
                                         <img :src="getPreviewImg(template.previewImg)" :alt="$t('模板缩略预览')">
                                         <div v-if="template.isOffcial && template.hasInstall === false" class="mask">
-                                            <bk-button class="apply-btn" theme="primary" @click.stop="handleApply(template)">{{ $t('添加到本应用') }}</bk-button>
+                                            <bk-button class="apply-btn" v-enClass="'en-apply-btn'" theme="primary" @click.stop="handleApply(template)">{{ $t('添加到本应用') }}</bk-button>
                                         </div>
                                     </div>
                                 </section>
@@ -313,6 +314,14 @@
                         color: #3A84FF;
                     }
                 }
+                .en-link-item {
+                    overflow:visible!important;
+                    
+                    &.active {
+                        background: #E1ECFF;
+                        color: #3A84FF;
+                    }
+                }
             }
 
             .template-container{
@@ -425,6 +434,9 @@
                             .apply-btn {
                                 display: none;
                                 margin-left: 42px;
+                            }
+                            .en-apply-btn {
+                                margin-left: 18px;
                             }
                         }
 

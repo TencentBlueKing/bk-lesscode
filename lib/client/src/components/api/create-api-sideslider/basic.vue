@@ -43,7 +43,7 @@
         </bk-form-item>
         <bk-form-item
             :label="$t('分类')"
-            :label-width="$t('中文') === 'Chinese' ? 110 : 100"
+            :label-width="$store.state.Language === 'en' ? 110 : 100"
             property="categoryId"
             error-display-type="normal"
             :required="true"
@@ -68,7 +68,7 @@
         </bk-form-item>
         <bk-form-item
             :label="$t('接口路径')"
-            :label-width="$t('中文') === 'Chinese' ? 110 : 100"
+            :label-width="$store.state.Language === 'en' ? 110 : 100"
             property="url"
             error-display-type="normal"
             :required="true"
