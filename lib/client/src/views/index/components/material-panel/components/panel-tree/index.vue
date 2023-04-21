@@ -17,13 +17,13 @@
                 ref="tree"
                 :selectable="true"
                 :expand-on-click="false"
-                class="component-tree"
+                ext-cls="component-tree"
                 @expand-change="checkIsAllExpanded"
                 @select-change="handleNodeSelect">
                 <div slot-scope="{ data: nodeData }">
                     <div class="component-tree-node-item">
                         <i
-                            class="bk-drag-icon"
+                            class="bk-drag-icon tree-node-item"
                             :class="nodeData.payload.componentData.material.icon" />
                         <span>{{ nodeData.name }}</span>
                         <i
@@ -306,6 +306,9 @@
                     position: relative;
                     padding-right: 30px;
                     font-size: 12px;
+                    .tree-node-item {
+                        margin-right: 8px;
+                    }
                     .component-eye-control {
                         position: absolute;
                         right: 18px;
@@ -316,7 +319,7 @@
                     }
                 }
                 &.is-root {
-                    padding-left: 10px;
+                    padding-left: 12px;
                 }
                 &.is-selected .node-icon {
                     color: #3a84ff;

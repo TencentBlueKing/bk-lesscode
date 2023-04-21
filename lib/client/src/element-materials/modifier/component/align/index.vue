@@ -1,5 +1,11 @@
 <template>
-    <div
+    <style-layout title="布局">
+        <div style="display: flex;">
+            <select-tab :style=" { 'margin-right': '8px', width: '134px' }" :tab-list="horizontalList" :active-item="renderAlign.horizontal" :item-change="(val) => handleHorizontalChange(val)" />
+            <select-tab style="width: 134px" :tab-list="verticalList" :active-item="renderAlign.vertical" :item-change="(val) => handleVerticalChange(val)" />
+        </div>
+    </style-layout>
+    <!-- <div
         v-if="isShow"
         :class="$style['layout']">
         <div :class="$style['title']">
@@ -85,20 +91,72 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 <script>
     import LC from '@/element-materials/core'
     import { isFreeLayoutProperty } from '@/element-materials/core/helper/utils.js'
+    import SelectTab from '@/components/ui/select-tab'
+    import StyleLayout from '../styles/layout/index'
 
     export default {
+        components: {
+            StyleLayout,
+            SelectTab
+        },
         data () {
             return {
                 isShow: false,
                 renderAlign: {
                     horizontal: '',
                     vertical: ''
+                },
+                verticalList: [
+                    {
+                        id: 'align-vertical-top',
+                        icon: 'bk-drag-icon bk-drag-1_dingduiqi',
+                        tips: '顶部对齐'
+                    },
+                    {
+                        id: 'align-vertical-center',
+                        icon: 'bk-drag-icon bk-drag-1_juzhongduiqi',
+                        tips: '垂直居中'
+                    },
+                    {
+                        id: 'align-vertical-bottom',
+                        icon: 'bk-drag-icon bk-drag-1_diduiqi',
+                        tips: '底部对齐'
+                    }
+                ]
+            }
+        },
+        computed: {
+            horizontalList () {
+                const renderList = [
+                    {
+                        id: 'align-horizontal-left',
+                        icon: 'bk-drag-icon bk-drag-1_zuoduiqi',
+                        tips: '水平居左'
+                    },
+                    {
+                        id: 'align-horizontal-center',
+                        icon: 'bk-drag-icon bk-drag-shuipingjuzhong',
+                        tips: '水平居中'
+                    },
+                    {
+                        id: 'align-horizontal-right',
+                        icon: 'bk-drag-icon bk-drag-1_youduiqi',
+                        tips: '水平居右'
+                    }
+                ]
+                if (!this.isInnerFreeLayout) {
+                    renderList.push({
+                        id: 'align-horizontal-space-between',
+                        icon: 'bk-drag-icon bk-drag-shuipingjunfen',
+                        tips: '水平均分'
+                    })
                 }
+                return renderList
             }
         },
         created () {

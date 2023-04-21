@@ -1,33 +1,21 @@
 <template>
     <section>
-        <group
-            class="setting-group"
-            :show-border-top="true"
-            group-name="页面样式配置">
+        <style-layout
+            title="页面样式配置">
             <template>
-                <section>
-                    <div class="setting-label">
-                        <span>最小宽度</span>：
-                    </div>
-                    <div class="setting-content">
-                        <size-input :value="minWidth.value" @change="handleItemChange('minWidth', 'value', $event)" style="width: 100%">
-                            <size-unit :value="minWidth.unit" @change="handleItemChange('minWidth', 'unit', $event)"></size-unit>
-                        </size-input>
-                    </div>
-                </section>
-                <section>
-                    <div class="setting-label">
-                        <span>背景色</span>：
-                    </div>
-                    <div class="setting-content">
-                        <bk-color-picker
-                            :value="styleSetting.backgroundColor"
-                            style="width: 100%;"
-                            @change="updateStyleSetting('backgroundColor', $event)" />
-                    </div>
-                </section>
+                <style-item name="最小宽度" type="vertical">
+                    <size-input :value="minWidth.value" @change="handleItemChange('minWidth', 'value', $event)" style="width: 100%">
+                        <size-unit :value="minWidth.unit" @change="handleItemChange('minWidth', 'unit', $event)"></size-unit>
+                    </size-input>
+                </style-item>
+                <style-item name="背景色" type="vertical">
+                    <bk-color-picker
+                        :value="styleSetting.backgroundColor"
+                        style="width: 100%;"
+                        @change="updateStyleSetting('backgroundColor', $event)" />
+                </style-item>
             </template>
-        </group>
+        </style-layout>
         <margin-padding :value="styleSetting" :change="updateStyleSetting">
         </margin-padding>
     </section>
@@ -35,7 +23,8 @@
 
 <script>
     import marginPadding from '../../../component/styles/strategy/margin-padding'
-    import Group from '@/components/ui/group'
+    import StyleLayout from '@/element-materials/modifier/component/styles/layout/index'
+    import StyleItem from '@/element-materials/modifier/component/styles/layout/item'
     import SizeInput from '@/components/modifier/icon-size-input'
     import SizeUnit from '@/components/modifier/size-unit'
     import { mapGetters } from 'vuex'
@@ -46,7 +35,8 @@
     export default {
         components: {
             marginPadding,
-            Group,
+            StyleLayout,
+            StyleItem,
             SizeInput,
             SizeUnit
         },

@@ -4,7 +4,7 @@
         v-bk-clickoutside="handleHideDropList">
         <bk-input
             ref="input"
-            ext-cls="page-search-input"
+            :ext-cls="inputCls"
             right-icon="bk-icon icon-search"
             :placeholder="placeholder"
             :value="keyword"
@@ -92,6 +92,10 @@
             resetKeywordOnChangeList: {
                 type: Boolean,
                 default: true
+            },
+            inputCls: {
+                type: String,
+                default: 'canvas-search-input'
             },
             placeholder: {
                 type: String
@@ -209,7 +213,7 @@
     }
 </script>
 <style lang="postcss">
-    .page-search-input input {
+    .canvas-search-input input {
         background-color: #F5F7FA;
         border-radius: 2px;
         border: 1px solid #fff;

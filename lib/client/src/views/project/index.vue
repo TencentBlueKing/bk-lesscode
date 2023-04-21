@@ -183,6 +183,7 @@
                 bus.$on('update-project-version', this.updateCurrentVersion)
                 bus.$on('update-project-list', this.getProjectList)
                 bus.$on('is-fold-aside', ({ isFold = false, showMenuFooter = true }) => {
+                    console.log(isFold, showMenuFooter, this.$route.name)
                     this.asideFolded = isFold
                     this.showMenuFooter = showMenuFooter
                 })

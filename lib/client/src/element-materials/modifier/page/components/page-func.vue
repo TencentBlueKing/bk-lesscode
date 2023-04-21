@@ -1,10 +1,8 @@
 <template>
     <div class="page-setting-container">
-        <group
-            class="setting-group"
+        <style-layout
             :key="groupName"
-            :show-border-top="true"
-            :group-name="groupName">
+            :title="groupName">
             <template v-for="func in lifeCycleList">
                 <section :key="func.id">
                     <div class="setting-content">
@@ -23,14 +21,14 @@
                     </div>
                 </section>
             </template>
-        </group>
+        </style-layout>
     </div>
 </template>
 
 <script>
-    import Group from '@/components/ui/group'
+    import StyleLayout from '@/element-materials/modifier/component/styles/layout/index'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
-    import { defineComponent, reactive, ref, computed } from '@vue/composition-api'
+    import { defineComponent, computed } from '@vue/composition-api'
     import store from '@/store'
 
     const lifeCycleDescMap = {
@@ -47,7 +45,7 @@
 
     export default defineComponent({
         components: {
-            Group,
+            StyleLayout,
             ChooseFunction
         },
         setup () {
@@ -83,4 +81,18 @@
 </script>
 
 <style lang="postcss" scoped>
+    .setting-label {
+        margin-bottom: 6px;
+    }
+    .setting-content {
+        margin-bottom: 12px;
+        .choose-event {
+            background: #f0f1f5;
+            border-radius: 2px;
+            padding: 8px;
+            &:hover {
+                box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
+            }
+        }
+    }
 </style>

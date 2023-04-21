@@ -24,15 +24,17 @@
                 :key="item.key"
                 :class="{
                     'selected': value === item.key
-                }">
-                <div @click="handleChange(item.key)">
-                    <span style="margin-right: 4px;">{{ item.name }}</span>
-                    <i class="bk-drag-icon bk-drag-vesion-fill"
-                        v-bk-tooltips="{
+                }"
+                @click="handleChange(item.key)">
+                <span style="margin-right: 4px;">{{ item.name }}</span>
+                <div class="icon-tags">
+                    <i class="bk-drag-icon bk-drag-info-tips"
+                        v-bk-tooltips.light="{
                             content: item.tooltip,
-                            placements: ['bottom-end'],
+                            placements: ['top-end'],
                             allowHtml: true
                         }" />
+                    <span>{{item.type}}</span>
                 </div>
             </div>
         </div>
@@ -55,18 +57,21 @@
                     PC: [
                         {
                             key: 'bk',
-                            name: '蓝鲸基础组件 (Vue)',
+                            name: '蓝鲸基础组件',
+                            type: 'Vue',
                             tooltip: '当前组件库版本为“2.4.15，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         },
                         {
                             key: 'element',
-                            name: 'Element UI (Vue)',
+                            name: 'Element UI',
+                            type: 'Vue',
                             tooltip: '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         }
                     ],
                     MOBILE: [{
                         key: 'vant',
-                        name: 'Vant UI (Vue)',
+                        name: 'Vant UI',
+                        type: 'Vue',
                         tooltip: '当前组件库版本为“2.12.39”，<a target="_blank" href="https://vant-ui.github.io/vant/v2/#/zh-CN/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                     }]
                 }
@@ -79,12 +84,12 @@
             },
             componentNameText () {
                 const currentLibrary = this.componentList.find(item => item.key === this.value)
-                return currentLibrary && currentLibrary.name
+                return currentLibrary && `${currentLibrary.name} (${currentLibrary.type})`
             }
         },
         methods: {
-            handleToggleSelectPanel () {
-                this.isShowSelectPanel = true
+            handleToggleSelectPanel (val) {
+                this.isShowSelectPanel = val
             },
             handleChange (value) {
                 this.$emit('input', value)
@@ -96,18 +101,39 @@
 <style lang="postcss" scoped>
     .select-base-component{
         .base-component-list{
+            width: 200px;
             .base-component-item{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
                 height: 32px;
-                line-height: 33px;
-                padding: 0 16px;
+                line-height: 32px;
+                padding: 0 8px 0 12px;
                 color: #63656e;
-                font-size: 14px;
-                text-decoration: none;
-                white-space: nowrap;
+                font-size: 12px;
                 &:hover,
-                &.selected{
-                    background-color: #eaf3ff;
+                &.selected {
+                    background-color: #E1ECFF;
                     color: #3a84ff;
+                    .icon-tags i,.icon-tags span {
+                        background-color: #EDF4FF;
+                        color: #3a84ff;
+                    }
+                }
+                .icon-tags {
+                    display: flex;
+                    align-items: center;
+                    .bk-drag-info-tips {
+                        display: inline-block;
+                        margin-right: 2px;
+                    }
+                    i,span {
+                        padding: 0px 3px;
+                        line-height: 18px;
+                        color: #979BA5;
+                        background: #F5F7FA;
+                        border-radius: 2px;
+                    }
                 }
             }
         }

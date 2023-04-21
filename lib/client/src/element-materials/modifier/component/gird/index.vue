@@ -157,9 +157,9 @@
         .column-title {
             display: flex;
             align-items: center;
-            height: 32px;
-            font-size: 14px;
-            font-weight: 500;
+            height: 40px;
+            font-size: 12px;
+            font-weight: bold;
             color: #606266;
             .label {
                 border-bottom: 1px dashed #979ba5;
@@ -169,6 +169,7 @@
         .column-list {
             display: flex;
             flex-direction: column;
+            font-size: 12px;
             .column-item {
                 display: flex;
                 align-items: center;

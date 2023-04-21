@@ -40,6 +40,7 @@
         width: 100%;
         height: 52px;
         padding: 0 24px 0 16px;
+        box-shadow: 0 3px 4px 0 #0000000a;
         background: #FFFFFF;
         display: flex;
         align-items: center;
@@ -58,6 +59,7 @@
             }
             .tag-span {
                 background: #F5F7FA;
+                color: #979BA5;
                 border-radius: 2px;
                 padding: 2px 4px;
                 font-size: 12px;

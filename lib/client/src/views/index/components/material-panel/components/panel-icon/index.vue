@@ -67,47 +67,6 @@
 
     .panel-component{
         height: 100%;
-        .category-tabs {
-            display: flex;
-            height: 42px;
-            user-select: none;
-
-            .tab-item {
-                display: flex;
-                justify-content: center;
-                /* align-items: center; */
-                height: 42px;
-                line-height: 42px;
-                background: #F5F7FA;
-                flex: 1 1;
-                font-size: 12px;
-                padding: 0 10px;
-                white-space: nowrap;
-                cursor: pointer;
-                user-select: none;
-                &:hover {
-                    color: #3A84FF;
-                    /* background: #FFF; */
-                }
-                &:first-child{
-                    margin-right: auto;
-                }
-                &.active {
-                    color: #3A84FF;
-                    background: #FFF;
-                    border-bottom: 2px solid #3A84FF;
-                }
-                .tab-item-label {
-                    font-size: 12px;
-                    @mixin ellipsis 110px;
-                }
-                .toggle-icon {
-                    line-height: 42px;
-                    overflow: hidden;
-                    display: inline-block;
-                }
-            }
-        }
         .search-box{
             padding: 6px 12px;
         }

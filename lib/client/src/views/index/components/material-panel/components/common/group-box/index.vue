@@ -1,5 +1,5 @@
 <template>
-    <div class="drag-group-box">
+    <div class="drag-group-box" :class="{ 'fold-box': isFolded }">
         <div class="group-name" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
             <i
                 class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
@@ -133,32 +133,11 @@
 </script>
 
 <style lang="postcss">
-    .side-panel {
-        position: relative;
-        height: 100%;
-        box-shadow: 1px 0 0 0 #DCDEE5;
-        z-index: 1;
+    .drag-group-box.fold-box {
+        margin-bottom: 0;
     }
-
-    .panel-title {
-        padding: 0 16px;
-        height: 44px;
-        line-height: 44px;
-        font-size: 14px;
-        background: #ffffff;
-        border-top: 1px solid #dcdee5;
-        border-bottom: 1px solid #dcdee5;
-    }
-
-    .fields-list-container {
-        height: calc(100% - 56px);
-        overflow: hidden;
-        width: 100%;
-        background: #FFFFFF;
-        box-shadow: 1px 0 0 0 #DCDEE5;
-    }
-
     .drag-group-box {
+        margin-bottom: 8px;
         .group-name {
             padding: 0 7px;
             height: 40px;
@@ -195,6 +174,17 @@
                 color: #3A84FF;
                 background: #F0F5FF;
                 border-radius: 2px;
+            }
+        }
+
+        .group-list-empty{
+            padding: 0 0 12px;
+            .part-img{
+                height: 72px;
+            }
+            .part-text {
+                font-size: 12px;
+                margin-top: -8px;
             }
         }
 
@@ -241,77 +231,5 @@
     .comp-icon {
         font-size: 16px;
         padding-right: 6px;
-    }
-
-    .drag-group-box {
-        user-select: none;
-        & ~ .drag-group-box{
-            margin-top: 8px;
-        }
-        .group-list-empty{
-            padding: 0 0 12px;
-            .part-img{
-                height: 72px;
-            }
-            .part-text {
-                font-size: 12px;
-                margin-top: -8px;
-            }
-        }
-        .group-content{
-            display: flex;
-            flex-wrap: wrap;
-            .render-drag-item{
-                position: relative;
-                width: 60px;
-                height: 68px;
-                text-align: center;
-                color: #979BA5;
-                border: 1px solid #DCDEE5;
-                border-radius: 2px;
-                background: #FAFBFD;
-                margin-top: 10px;
-                margin-left: 12px;
-                cursor: pointer;
-                &:hover{
-                    border: 1px solid #3a84ff;
-                    background: #3a84ff;
-                    color: #fff;
-                }
-                .component-icon{
-                    margin: 11px 0 2px 0;
-                }
-                .component-name{
-                    font-size: 12px;
-                    padding: 0 5px;
-                    margin-top: 1px;
-                    width: 100%;
-                    overflow: hidden;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    display: -webkit-box;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: normal;
-                    word-break: break-all;
-                }
-            }
-            .render-drag-icon-item{
-                width: 36px;
-                height: 36px;
-                margin-left: 12px;
-                margin-top: 10px;
-                background-color: #fafbfd;
-                color: #979ba5;
-                text-align: center;
-                font-size: 16px;
-                line-height: 36px;
-                cursor: pointer;
-                &:hover{
-                    background: #3a84ff;
-                    color: #fff;
-                }
-            }
-        }
     }
 </style>

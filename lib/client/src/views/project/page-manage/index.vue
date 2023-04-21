@@ -12,6 +12,7 @@
                     <search-box
                         style="width: 100%;margin-right: 6px;"
                         placeholder="页面名称"
+                        input-cls=""
                         :list="renderList"
                         :reset-keyword-on-change-list="false"
                         @on-change="handleSearch" />
@@ -256,7 +257,8 @@
         width: 300px;
         height: 100%;
         background: #FFFFFF;
-        box-shadow: 1px 0 0 0 $boxBorderColor;
+        /* box-shadow: 1px 0 0 0 $boxBorderColor; */
+        border-right: 1px solid $boxBorderColor;
         .menu-container {
             padding: 12px;
             .platform-tab {
