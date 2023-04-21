@@ -1,29 +1,17 @@
 <template>
     <div class="page-setting-container">
         <!-- 基本配置 -->
-        <group
-            class="setting-group"
-            :show-border-top="true"
-            group-name="基本配置">
+        <style-layout
+            title="基本配置">
             <template>
-                <section>
-                    <div class="setting-label">
-                        <span>页面名称</span>：
-                    </div>
-                    <div class="setting-content">
-                        <bk-input :value="pageDetail.pageName" />
-                    </div>
-                </section>
-                <section>
-                    <div class="setting-label">
-                        <span>页面ID</span>：
-                    </div>
-                    <div class="setting-content">
-                        <bk-input :value="pageDetail.id" disabled />
-                    </div>
-                </section>
+                <style-item name="页面名称" type="vertical">
+                    <bk-input :value="pageDetail.pageName" />
+                </style-item>
+                <style-item name="页面ID" type="vertical">
+                    <bk-input :value="pageDetail.id" disabled />
+                </style-item>
             </template>
-        </group>
+        </style-layout>
 
         <page-route-setting />
         <page-style-setting />
@@ -31,15 +19,17 @@
 </template>
 
 <script>
-    import Group from '@/components/ui/group'
+    import StyleLayout from '@/element-materials/modifier/component/styles/layout/index'
+    import StyleItem from '@/element-materials/modifier/component/styles/layout/item'
     import PageRouteSetting from './children/page-route-setting'
     import PageStyleSetting from './children/page-style-setting'
-    import { defineComponent, reactive, ref, computed } from '@vue/composition-api'
+    import { defineComponent, computed } from '@vue/composition-api'
     import store from '@/store'
 
     export default defineComponent({
         components: {
-            Group,
+            StyleLayout,
+            StyleItem,
             PageRouteSetting,
             PageStyleSetting
         },

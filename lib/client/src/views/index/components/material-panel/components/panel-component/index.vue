@@ -81,6 +81,8 @@
                 height: 42px;
                 line-height: 42px;
                 background: #F5F7FA;
+                border-bottom: 1px solid #EAEBF0;
+                border-right: 1px solid #EAEBF0;
                 flex: 1 1;
                 font-size: 12px;
                 padding: 0 10px;

@@ -1,38 +1,34 @@
 <template>
-    <group
-        class="setting-group"
-        :show-border-top="true"
-        :group-name="groupName">
+    <style-layout
+        :title="groupName">
         <template v-for="field in settingFields">
-            <section :key="field.id">
-                <div class="setting-label">
-                    <span>{{field.name}}</span>：
-                </div>
-                <div class="setting-content">
-                    <page-router-select
-                        :placeholder="field.placeholder"
-                        :field="field"
-                        :value.sync="renderValue[field.id]"
-                        :clearable="false"
-                        :class="[`form-component ${field.type}`, 'style-setting']"
-                        v-model.trim="renderValue[field.id]"
-                        @valueChange="handleConfirm"
-                    >
-                    </page-router-select>
-                </div>
-            </section>
+            <style-item :name="field.name" type="vertical" :key="field.id">
+                <page-router-select
+                    style="width: 100%"
+                    :placeholder="field.placeholder"
+                    :field="field"
+                    :value.sync="renderValue[field.id]"
+                    :clearable="false"
+                    :class="[`form-component ${field.type}`, 'style-setting']"
+                    v-model.trim="renderValue[field.id]"
+                    @valueChange="handleConfirm"
+                >
+                </page-router-select>
+            </style-item>
         </template>
-    </group>
+    </style-layout>
 </template>
 
 <script>
-    import Group from '@/components/ui/group'
+    import StyleLayout from '@/element-materials/modifier/component/styles/layout/index'
+    import StyleItem from '@/element-materials/modifier/component/styles/layout/item'
     import PageRouterSelect from '@/components/project/page-router-select'
     import { mapGetters } from 'vuex'
 
     export default {
         components: {
-            Group,
+            StyleLayout,
+            StyleItem,
             PageRouterSelect
         },
         data () {
@@ -42,7 +38,6 @@
                     layoutId: '',
                     pageRoute: ''
                 }
-                // settingFields:
             }
         },
         computed: {

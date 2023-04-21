@@ -34,7 +34,7 @@
 
             <bk-color-picker
                 :value="renderValueMap.color"
-                style="width: 126px;margin-top: 8px;"
+                style="width: 126px;margin-top: 12px;"
                 @change="handleFontChange('color', $event)" />
 
             <icon-size-input

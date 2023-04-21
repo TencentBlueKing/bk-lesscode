@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <div class="modifier-style">
+    <div class="modifier-style" :class="{ 'no-padding': isFolded }">
         <!-- <div class="style-title">
             {{ title }}
             <span
@@ -68,11 +68,13 @@
 </script>
 
 <style lang='postcss'>
+    .modifier-style.no-padding {
+        padding-bottom: 0;
+    }
     .modifier-style {
         display: flex;
         flex-direction: column;
-        /* width: 276px; */
-        padding: 0 0 16px;
+        padding-bottom: 16px;
         .style-title {
             font-size: 12px;
             display: flex;

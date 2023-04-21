@@ -235,6 +235,7 @@
             font-size: 14px;
         }
         .tag-span {
+            color: #979BA5;
             background: #F5F7FA;
             border-radius: 2px;
             padding: 0px 4px;

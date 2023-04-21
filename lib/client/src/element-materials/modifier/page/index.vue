@@ -48,7 +48,7 @@
     })
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
     @import "@/css/variable";
     @import "@/css/mixins/scroller";
 
@@ -68,23 +68,6 @@
         .field-display-name {
             cursor: pointer;
             border-bottom: 1px dashed #999;
-        }
-        .setting-label {
-            margin-bottom: 6px;
-        }
-        .setting-group {
-            padding: 0 12px;
-        }
-        .setting-content {
-            margin-bottom: 12px;
-            .choose-event {
-                background: #f0f1f5;
-                border-radius: 2px;
-                padding: 8px;
-                &:hover {
-                    box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
-                }
-            }
         }
     }
 </style>

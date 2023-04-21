@@ -9,7 +9,7 @@
                 <!-- <i v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play"></i> -->
                 <bk-dropdown-menu v-if="hasMobilePage" :align="'center'" :ext-cls="'preview-dropdown'">
                     <div class="dropdown-trigger-btn" slot="dropdown-trigger">
-                        <i v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play"></i>
+                        <i class="bk-drag-icon bk-drag-play"></i>
                     </div>
                     <ul class="bk-dropdown-list" slot="dropdown-content">
                         <li><a href="javascript:;" @click="handlePreviewPcProject">预览PC页面</a></li>
