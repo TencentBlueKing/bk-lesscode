@@ -227,7 +227,7 @@
     .list-table {
         width: 100%;
         height: 100%;
-        padding: 8px;
+        padding: 8px 0;
 
         .name-content {
             display: flex;

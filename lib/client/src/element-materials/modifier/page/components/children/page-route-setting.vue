@@ -14,6 +14,7 @@
                     @valueChange="handleConfirm"
                 >
                 </page-router-select>
+                {{renderValue}}
             </style-item>
         </template>
     </style-layout>

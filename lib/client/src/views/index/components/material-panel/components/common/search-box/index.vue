@@ -133,8 +133,7 @@
                 }
                 const reg = new RegExp(encodeRegexp(searchText), 'i')
                 const renderList = this.list.reduce((result, item) => {
-                    if (reg.test(item.type)
-                        || reg.test(item.name)
+                    if (reg.test(item.name)
                         || reg.test(item.displayName)) {
                         result.push(item)
                     }

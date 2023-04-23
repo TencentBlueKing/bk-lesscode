@@ -178,7 +178,6 @@
                     }, 50)
                 } else {
                     this.$emit('closeDialog')
-                    console.log('page dialog close')
                 }
             },
             action: {
