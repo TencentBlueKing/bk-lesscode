@@ -1,16 +1,17 @@
 <template>
     <bk-sideslider
         class="component-operation-sideslider"
+        v-enClass="'en-component-operation'"
         transfer
         :is-show="isShow"
         @update:isShow="handleCancel"
-        :width="796"
+        :width="$store.state.Language === 'en' ? 830 : 796"
         :title="dialogTitle">
-        <div slot="content" class="operation-content">
+        <div slot="content" class="operation-content" v-enClass="'en-operation-content'">
             <div class="component-guide">
                 <a href="/help/custom" target="_blank">{{ $t('组件开发指引') }}</a>
             </div>
-            <bk-form ref="form" :label-width="90" :model="formData" :rules="rules">
+            <bk-form ref="form" :label-width="$store.state.Language === 'en' ? 97 : 90" :model="formData" :rules="rules">
                 <bk-form-item :label="$t('组件类型')" required error-display-type="normal">
                     <bk-radio-group v-model="formData.compType">
                         <bk-radio-button value="PC">
@@ -361,6 +362,12 @@
 
         .bk-form-radio-button .bk-radio-button-input:checked+.bk-radio-button-text i{
             color: #3a84ff;
+        }
+    }
+    .operation-content{
+
+        .bk-form-radio-button .bk-radio-button-text {
+            width: 327px;
         }
     }
 </style>
