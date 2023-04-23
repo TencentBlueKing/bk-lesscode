@@ -10,6 +10,7 @@
         <div
             class="select-item"
             :class="{ active: value === 'vueCode' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('vueCode')">
             <i class="bk-drag-icon bk-drag-yuanma" />
             <span>{{ $t('源码') }}</span>
@@ -24,6 +25,7 @@
         <div
             class="select-item"
             :class="{ active: value === 'pageFunction' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('pageFunction')">
             <i class="bk-drag-icon bk-drag-yemianhanshu" />
             <span>{{ $t('页面函数') }}</span>
@@ -31,6 +33,7 @@
         <div
             class="select-item"
             :class="{ active: value === 'pageVariable' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('pageVariable')">
             <i class="bk-drag-icon bk-drag-page-variable" />
             <span>{{ $t('页面变量') }}</span>
@@ -38,6 +41,7 @@
         <div
             class="select-item"
             :class="{ active: value === 'setting' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('setting')">
             <i class="bk-drag-icon bk-drag-set" />
             <span>{{ $t('页面设置') }}</span>

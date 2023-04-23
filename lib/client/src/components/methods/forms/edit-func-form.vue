@@ -2,7 +2,7 @@
     <main class="func-main">
         <bk-resize-layout
             class="func-form-home"
-            :initial-divide="650"
+            :initial-divide="$store.state.Language === 'en' ? 605 : 650"
             :max="750"
             :border="false"
         >

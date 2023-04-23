@@ -16,7 +16,7 @@
             return {
                 item: {
                     icon: 'bk-drag-icon bk-drag-hanshuku',
-                    text: window.i18n.t('函数管理'),
+                    text: window.i18n.t('函数管理-abbr'),
                     func: this.showFunManage
                 },
                 isShowFun: false

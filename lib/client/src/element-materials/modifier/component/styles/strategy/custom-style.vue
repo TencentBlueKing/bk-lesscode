@@ -37,6 +37,7 @@
                 <div class="container-footer">
                     <div class="footer-wrapper">
                         <bk-button
+                            class="g-mr8"
                             theme="primary"
                             @click.native="confirm">
                             {{ $t('保存') }} </bk-button>

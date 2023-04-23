@@ -10,7 +10,7 @@
             </span>
         </div>
         <div v-else :class="$style['edit-setting']">
-            <bk-select :class="$style['saas-option']" v-model="tmpAppCode" :placeholder="$t('请选择应用')" :clearable="false" searchable :loading="isLoadingAppList" @toggle="toggleApplicationList" @selected="changeAppCode">
+            <bk-select :class="$style['saas-option']" v-enClass="$style['en-saas-option']" v-model="tmpAppCode" :placeholder="$t('请选择应用')" :clearable="false" searchable :loading="isLoadingAppList" @toggle="toggleApplicationList" @selected="changeAppCode">
                 <bk-option v-for="option in applicationList"
                     :key="option.application.id"
                     :id="option.application.code"
@@ -20,7 +20,7 @@
                     <a :href="`${createLinkUrl}/app/create`" target="_blank"><i class="bk-drag-icon bk-drag-add-line" />{{ $t('去创建应用') }}</a>
                 </div>
             </bk-select>
-            <bk-select :class="$style['saas-option']" v-model="tmpModuleCode" :placeholder="$t('请选择模块')" :clearable="false" searchable :loading="isLoadingModuleList" @toggle="toggleModuleList">
+            <bk-select :class="$style['saas-option']" v-enClass="$style['en-saas-option']" v-model="tmpModuleCode" :placeholder="$t('请选择模块')" :clearable="false" searchable :loading="isLoadingModuleList" @toggle="toggleModuleList">
                 <bk-option v-for="option in moduleList"
                     :key="option.id"
                     :id="option.name"
@@ -247,6 +247,9 @@
             width: 150px;
             height: 32px;
             margin-right: 6px;
+        }
+        .en-saas-option{
+            width: 195px;
         }
         .operate-bind {
             width: 60px;

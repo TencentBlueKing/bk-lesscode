@@ -19,7 +19,7 @@
                 <div class="target-arrow"></div>
             </div>
             <div v-if="isShowFinisheDialog" class="guide-finished-box">
-                <div class="wraper">
+                <div class="wraper" v-enStyle="'width:540px'">
                     <div class="flag">
                         <i class="bk-icon icon-check-1" />
                     </div>
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div v-if="isShowStopDialog" class="guide-stop-box">
-                <div class="wraper">
+                <div class="wraper" v-enStyle="'width:760px'">
                     <div style="font-size: 24px; line-height: 31px; color: #313238">{{ $t('确认跳过学习') }}</div>
                     <div style="margin-top: 27px; font-size: 14px; line-height: 19px; color: #63656E">{{ $t('跳过此次学习，你可点击页面右上角的帮助指引，再次发起学习') }}</div>
                     <div style="margin-top: 22px;">

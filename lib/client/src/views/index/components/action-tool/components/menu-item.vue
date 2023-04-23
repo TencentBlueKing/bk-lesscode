@@ -2,6 +2,7 @@
     <div class="item">
         <div
             class="item-text"
+            v-enStyle="'white-space: nowrap'"
             v-bk-tooltips="{
                 placement: 'bottom',
                 content: item.tips,
