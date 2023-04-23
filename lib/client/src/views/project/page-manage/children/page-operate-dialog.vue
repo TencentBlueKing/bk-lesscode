@@ -107,10 +107,10 @@
             },
             handleEditRoute (page) {
                 this.$refs.editRouteDialog.dialog.visible = true
-                this.$refs.editRouteDialog.dialog.pageId = page.id
+                this.$refs.editRouteDialog.dialog.pageId = page.pageId
                 // this.editRouteGroup = this.routeGroup.filter(item => item.layoutType === (page.pageType || 'PC'))
                 this.editRouteGroup = this.routeGroup
-                this.currentRoute = this.routeMap[page.id]
+                this.currentRoute = this.routeMap[page.pageId]
             },
             handleCreateFormManage (page) {
                 const initData = {
