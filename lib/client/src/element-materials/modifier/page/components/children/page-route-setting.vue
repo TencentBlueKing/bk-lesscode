@@ -14,7 +14,6 @@
                     @valueChange="handleConfirm"
                 >
                 </page-router-select>
-                {{renderValue}}
             </style-item>
         </template>
     </style-layout>
@@ -129,7 +128,6 @@
             },
 
             async handleConfirmSave (key, value) {
-                console.log(key, value)
                 try {
                     const data = {
                         pageRoute: {},

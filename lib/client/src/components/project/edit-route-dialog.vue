@@ -7,7 +7,6 @@
         :auto-close="false"
         header-position="left">
         <bk-form class="dialog-form" :label-width="86">
-            {{currentRoute}}
             <bk-form-item label="页面路由" error-display-type="normal">
                 <bk-select
                     searchable
