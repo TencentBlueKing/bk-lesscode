@@ -263,8 +263,11 @@
                     border-radius: 2px;
                     font-size: 12px;
                     line-height: 18px;
-                    padding: 0 4px;
                     white-space: nowrap;
+                    display: inline-block;
+                    padding: 2px 5px;
+                    display: inline-block;
+                    transform: scale(0.83, 0.83);
                 }
             }
 
