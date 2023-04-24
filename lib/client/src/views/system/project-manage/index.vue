@@ -62,6 +62,7 @@
                     :clearable="true"
                     :right-icon="'bk-icon icon-search'"
                     v-model="keyword"
+                    v-enStyle="'width: 275px'"
                     @clear="handleSearchClear"
                     @enter="handleSearchEnter">
                 </bk-input>

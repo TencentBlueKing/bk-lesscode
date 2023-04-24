@@ -114,6 +114,9 @@
     cursor: pointer;
     border-bottom: 1px dashed #313238;
 }
+.g-mr8{
+    margin-right: 8px;
+}
 
 @media screen and (min-width: 1660px) {
     .page-content {

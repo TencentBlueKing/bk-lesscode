@@ -6,7 +6,7 @@
                 v-bkloading="{ isLoading }"
                 :border="false"
                 :collapsible="true"
-                :initial-divide="270"
+                :initial-divide="$store.state.Language === 'en' ? 310 : 270"
                 :min="270"
             >
                 <section slot="aside" class="func-left">

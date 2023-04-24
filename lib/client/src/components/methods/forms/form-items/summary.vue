@@ -1,5 +1,5 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
+    <bk-form :label-width="$store.state.Language === 'en' ? 195 : 180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
         <bk-form-item
             :label="$t('函数简介')"
             property="funcSummary"
