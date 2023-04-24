@@ -5,7 +5,7 @@
                 <i :style="{ color: NOCODE_TYPE_MAP['color'][page.nocodeType || ''] }" :class="NOCODE_TYPE_MAP['icon'][page.nocodeType || '']"></i>
                 <span class="page-name" :title="page.pageName">{{ page.pageName }}</span>
             </div>
-            <div>
+            <div style="position: positive">
                 <form-manage-page v-if="page.nocodeType === 'FORM' && getFormManagePages(page.formId).length" :manage-pages="getFormManagePages(page.formId)"></form-manage-page>
                 <span class="tag-span">{{NOCODE_TYPE_MAP['title'][page.nocodeType || '']}}</span>
                 <bk-dropdown-menu :ref="`moreActionDropdown${page.id}`">
@@ -194,16 +194,13 @@
             color: $primaryColor;
             display: inline-block;
         }
-        .icon-and-name .page-name {
-            width: 105px;
-        }
         .tag-span {
             background: #A3C5FD;
             color: #FFF;
         }
     }
     .page-menu-item {
-        padding: 0 12px;
+        padding: 0 8px 0 12px;
         font-size: 12px;
         height: 32px;
         display: flex;
@@ -215,9 +212,6 @@
             .more-menu-trigger {
                 display: inline-block;
             }
-            .icon-and-name .page-name {
-                width: 105px;
-            }
         }
         .icon-and-name {
             display: flex;
@@ -225,7 +219,7 @@
             .page-name {
                 display: inline-block;
                 margin: 0 8px;
-                width: 120px;
+                width: 130px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -238,14 +232,24 @@
             color: #979BA5;
             background: #F5F7FA;
             border-radius: 2px;
-            padding: 0px 4px;
             font-size: 12px;
+            margin-right: 12px;
+            padding: 2px 5px;
+            display: inline-block;
+            transform: scale(0.83, 0.83);
+            
         }
 
         .more-menu-trigger {
             display: none;
-            padding-left: 6px;
+            /* padding-left: 6px; */
             color: #979BA5;
+            position: absolute;
+            right: 0px;
+            top: -14px;
+            &:hover {
+                color: $primaryColor;
+            }
         }
     }
 </style>

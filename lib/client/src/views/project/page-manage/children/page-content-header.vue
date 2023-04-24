@@ -61,8 +61,10 @@
                 background: #F5F7FA;
                 color: #979BA5;
                 border-radius: 2px;
-                padding: 2px 4px;
                 font-size: 12px;
+                padding: 2px 5px;
+                display: inline-block;
+                transform: scale(0.83, 0.83);
             }
         }
         .page-operate {

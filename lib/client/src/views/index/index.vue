@@ -231,7 +231,6 @@
                         projectId: this.projectId,
                         versionId: this.versionId
                     })
-                    console.log(this.$store, 'pagestate')
 
                     const variableList = await this.$store.dispatch('variable/getAllVariable', {
                         projectId: this.projectId,

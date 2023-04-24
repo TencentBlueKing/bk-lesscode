@@ -48,9 +48,8 @@
     }
     .ui-group-box {
         margin-bottom: 8px;
-        padding: 0 12px;
         .ui-group-name {
-            margin-left: -6px;
+            margin-left: 6px;
             height: 32px;
             font-size: 12px;
             color: #313238;
