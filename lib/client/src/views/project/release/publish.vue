@@ -90,14 +90,14 @@
                 </div>
                 <div :class="$style['release-form']">
                     <div :class="$style['type']">
-                        <span :class="$style['version-label']">{{ $t('部署环境') }}</span>
+                        <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('部署环境') }}</span>
                         <bk-radio-group v-model="versionForm.env" :class="$style['version-type']" @change="getReleaseSql">
                             <bk-radio value="stag">{{ $t('预发布环境') }}</bk-radio>
                             <bk-radio value="prod" style="margin-left: 70px">{{ $t('生产环境') }}</bk-radio>
                         </bk-radio-group>
                     </div>
                     <div :class="[$style['type'], $style['is-source']]">
-                        <span :class="$style['version-label']">{{ $t('源码包') }}</span>
+                        <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('源码包') }}</span>
                         <div>
                             <bk-radio-group v-model="versionForm.releaseType" :class="$style['version-type']" @change="getReleaseSql">
                                 <bk-radio value="PROJECT_VERSION">{{ $t('应用版本') }}
@@ -153,7 +153,7 @@
                         </div>
                     </div>
                     <div :class="[$style['form-item']]">
-                        <span :class="[$style['version-label'], $style['required']]">{{ $t('部署版本号') }}</span>
+                        <span :class="[$style['version-label'], $style['required']]" v-enClass="$style['en-version-label']">{{ $t('部署版本号') }}</span>
                         <div v-if="isProjVersion">
                             <bk-input
                                 :placeholder="$t('请输入部署版本号，仅支持英文、数字、下划线、中划线和英文句号')"
@@ -161,7 +161,7 @@
                                 style="width: 400px"
                                 v-model="versionForm.releaseVersion">
                             </bk-input>
-                            <p :class="$style['version-err-tips']" v-show="versionErrTips">{{versionErrTips}}</p>
+                            <p :class="$style['version-err-tips']" v-enStyle="'left:206px'" v-show="versionErrTips">{{versionErrTips}}</p>
                         </div>
                         <bk-select v-else-if="isSucVersion" :placeholder="$t('请选择要部署的历史版本')" style="width: 400px"
                             :clearable="false"
@@ -174,7 +174,7 @@
                         </bk-select>
                     </div>
                     <div :class="$style['form-item']" v-if="isProjVersion">
-                        <span :class="$style['version-label']">{{ $t('创建应用版本') }}</span>
+                        <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('创建应用版本') }}</span>
                         <bk-radio-group v-model="versionForm.isCreateProjVersion" :class="$style['version-type']">
                             <bk-radio :value="0">{{ $t('否') }}</bk-radio>
                             <bk-radio :value="1" style="margin-left: 50px">{{ $t('是，部署成功后创建应用版本并归档') }}</bk-radio>
@@ -182,7 +182,7 @@
                     </div>
                     <div :class="[$style['form-item'], 'version-publish-log']"
                         v-show="isProjVersion && versionForm.projVersionSelect && versionForm.isCreateProjVersion">
-                        <span :class="[$style['version-label']]">{{ $t('版本日志') }}</span>
+                        <span :class="[$style['version-label']]" v-enClass="$style['en-version-label']">{{ $t('版本日志') }}</span>
                         <mavon-editor
                             :external-link="false"
                             v-model="versionForm.versionLog"
@@ -191,7 +191,7 @@
                         <p :class="$style['version-err-tips']" v-show="versionLogErrTips">{{versionLogErrTips}}</p>
                     </div>
 
-                    <div :class="[$style['operate-btn'], $style['m-left']]">
+                    <div :class="[$style['operate-btn'], $style['m-left']]" v-enClass="$style['en-m-left']">
                         <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
                             {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? $t('部署中...') : $t('部署')}}
                         </bk-button>
@@ -788,6 +788,10 @@
                 .m-left {
                     margin-left: 110px;
                 }
+
+                .en-m-left {
+                    margin-left: 206px;
+                }
                 .release-tips {
                     color: #979ba5;
                     font-size: 12px;
@@ -806,6 +810,10 @@
                     .version-label {
                         flex: none;
                         width: 110px;
+                    }
+                    .en-version-label{
+                        flex: none;
+                        width: 260px;
                     }
                     .version-type {
                         display: inline;

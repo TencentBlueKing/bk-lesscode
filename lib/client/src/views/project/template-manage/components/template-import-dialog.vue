@@ -4,13 +4,13 @@
             render-directive="if"
             theme="primary"
             :title="dialogTitle"
-            width="600"
+            :width="$store.state.Language === 'en' ? 750 : 600"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
             ext-cls="template-import-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="import-dialog-form" :label-width="120" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="pageTemplateFrom" class="import-dialog-form" :label-width="$store.state.Language === 'en' ? 170 : 120" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('导入模板json')" required property="templateName" error-display-type="normal">
                     <bk-upload
                         with-credentials

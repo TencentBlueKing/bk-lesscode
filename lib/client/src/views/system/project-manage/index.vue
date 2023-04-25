@@ -62,7 +62,6 @@
                     :clearable="true"
                     :right-icon="'bk-icon icon-search'"
                     v-model="keyword"
-                    v-enStyle="'width: 275px'"
                     @clear="handleSearchClear"
                     @enter="handleSearchEnter">
                 </bk-input>
@@ -100,7 +99,7 @@
         <bk-dialog v-model="dialog.create.visible"
             render-directive="if"
             theme="primary"
-            width="750"
+            width="761"
             :position="{ top: 100 }"
             :mask-close="false"
             :auto-close="false"

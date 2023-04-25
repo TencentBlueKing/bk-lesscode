@@ -31,7 +31,7 @@
         <bk-table-column
             :label="$t('耗时')"
             prop="spendTime"
-            width="100"
+            :width="$store.state.Language ? 130 : 100"
             :formatter="spendTimeFormatter"
         />
         <bk-table-column
@@ -43,6 +43,7 @@
         <bk-table-column
             :label="$t('查询描述')"
             prop="condition"
+            width="140"
             show-overflow-tooltip
             :formatter="conditionFormatter"
         />
@@ -54,6 +55,7 @@
         <bk-table-column
             show-overflow-tooltip
             :label="$t('异常信息')"
+            min-width="160"
         >
             <template slot-scope="props">
                 <span>{{ props.row.message || '--' }}</span>

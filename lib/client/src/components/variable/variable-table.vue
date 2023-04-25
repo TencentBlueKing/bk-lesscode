@@ -7,10 +7,10 @@
             class="variable-table"
             size="medium"
         >
-            <bk-table-column :label="$t('变量名称')" prop="variableName" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('变量标识')" prop="variableCode" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('初始类型')" prop="valueType" :formatter="valueTypeFormatter" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('默认值')" width="300" show-overflow-tooltip>
+            <bk-table-column :label="$t('变量名称')" prop="variableName" :render-header="renderHeader" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('变量标识')" prop="variableCode" :render-header="renderHeader" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('初始类型')" prop="valueType" :render-header="renderHeader" :formatter="valueTypeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('默认值')" width="240" show-overflow-tooltip>
                 <template slot-scope="props">
                     <span v-for="(val, key) in getDisplayDefaultValue(props.row)" :key="key" class="default-value" v-bk-overflow-tips>{{ `【${nameMap[key]}】${val}` }}</span>
                 </template>
@@ -22,15 +22,15 @@
                     </span>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('生效范围')" prop="effectiveRange" :formatter="effectiveRangeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('生效范围')" prop="effectiveRange" :render-header="renderHeader" :formatter="effectiveRangeFormatter" show-overflow-tooltip></bk-table-column>
             <template v-if="!simpleDisplay">
-                <bk-table-column :label="$t('变量说明')" prop="description" show-overflow-tooltip>
+                <bk-table-column :label="$t('变量说明')" prop="description" :render-header="renderHeader" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.description || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('更新人')" prop="updateUser" show-overflow-tooltip width="150"></bk-table-column>
-                <bk-table-column :label="$t('更新时间')" prop="updateTime" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
+                <bk-table-column :label="$t('更新人')" prop="updateUser" show-overflow-tooltip min-width="100"></bk-table-column>
+                <bk-table-column :label="$t('更新时间')" prop="updateTime" :render-header="renderHeader" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
             </template>
             <bk-table-column :label="$t('操作')" width="120">
                 <template slot-scope="props">
@@ -50,7 +50,7 @@
             <span class="variable-tip">
                 {{ $t('提示：') }} <br>1. {{ $t('可以在组件属性和指令的配置面板中使用该变量') }}
                 <br>2. {{ $t('在函数插槽中可以使用【lesscode.变量标识】唤醒编辑器自动补全功能选择对应变量，来获取或者修改该变量的值') }}
-                <br>3. {{ $t('在远程函数中，参数 Api Url 的值可用') }} <span v-pre>{{变量标识}}</span> {{ $t('来获取变量值，请求参数中可以通过选择变量的形式获取变量值') }}
+                <br>3. {{ $t('在远程函数中，参数 Api Url 的值可用') }} <span v-text="$store.state.Language === 'en' ? '{{ variable identification }}' : '{{变量标识}}'"></span> {{ $t('来获取变量值，请求参数中可以通过选择变量的形式获取变量值') }}
             </span>
         </slot>
 
@@ -63,7 +63,7 @@
             footer-position="center"
             :mask-close="false"
             :auto-close="false">
-            {{ $t('确定删除变量【{ 0 }】？', [deleteObj.code]) }}<div class="dialog-footer" slot="footer">
+            {{ $t('确定删除变量【{0}】', [deleteObj.code]) }}<div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"
                     :loading="deleteObj.loading"
@@ -291,6 +291,18 @@
 
             handlerClearSearch (searchName) {
                 this.$emit('clearSearch', searchName)
+            },
+
+            renderHeader (h, data) {
+                return h(
+                    'span',
+                    {
+                        attrs: {
+                            title: data.column.label
+                        }
+                    },
+                    data.column.label
+                )
             }
         }
     }

@@ -95,6 +95,7 @@ export default defineComponent({
                 name: window.i18n.t('字段名称'),
                 type: 'input',
                 prop: 'name',
+                width: '110px',
                 isRequire: true,
                 rules: [
                     {
@@ -121,6 +122,7 @@ export default defineComponent({
                 name: window.i18n.t('字段类型'),
                 type: 'select',
                 prop: 'type',
+              
                 isRequire: true,
                 optionsList: FIELDS_TYPES
             },
@@ -153,6 +155,7 @@ export default defineComponent({
                 name: window.i18n.t('小数点'),
                 type: 'input',
                 prop: 'scale',
+                width: '115px',
                 componentProps: {
                     type: 'number'
                 },

@@ -327,7 +327,7 @@
             requireRule (name) {
                 return {
                     required: true,
-                    message: this.$t('{n}是必填项，请修改后重试', { n: name }),
+                    message: this.$t('{0}是必填项，请修改后重试', [name]),
                     trigger: 'blur'
                 }
             },

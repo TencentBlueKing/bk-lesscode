@@ -1,5 +1,5 @@
 <template>
-    <bk-form ref="infoForm" :label-width="type === 'newProject' ? 86 : 126" :rules="formRules" :model="formData" :form-type="formType">
+    <bk-form ref="infoForm" :label-width="type === 'newProject' ? 97 : 126" :rules="formRules" :model="formData" :form-type="formType">
         <bk-form-item v-if="type === 'templateProject'" :label="$t('当前已选模板')" :label-width="200">
             <bk-input readonly v-model.trim="templateName"
                 :placeholder="$t('请先选择模板')">

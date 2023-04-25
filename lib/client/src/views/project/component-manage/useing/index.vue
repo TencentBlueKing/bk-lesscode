@@ -33,7 +33,7 @@
                         <span :class="$style['component-name']">{{ row.displayName }}({{ row.name }})</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('来源应用')" prop="compSource" min-width="120" show-overflow-tooltip>
+                <bk-table-column :label="$t('来源应用')" prop="compSource" min-width="140" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{row.belongProjectId !== row.sourceProject.id ? row.sourceProject.projectName : $t('本应用')}}</span>
                     </template>

@@ -43,22 +43,22 @@
                     </router-link>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('流程描述')" property="summary" show-overflow-tooltip>
+            <bk-table-column :label="$t('流程描述')" :render-header="renderHeader" property="summary" show-overflow-tooltip>
                 <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
             </bk-table-column>
-            <bk-table-column :label="$t('流程表单页')" property="pageName" show-overflow-tooltip>
+            <bk-table-column :label="$t('流程表单页')" :render-header="renderHeader" property="pageName" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.pageId" class="link-btn" @click="handlePreviewPage(row.pageId, row.pageCode)">{{ row.pageName }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('流程数据管理页')" min-width="100px" property="managePageNames" show-overflow-tooltip>
+            <bk-table-column :label="$t('流程数据管理页')" :render-header="renderHeader" min-width="100px" property="managePageNames" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('预览环境部署状态')" min-width="100px">
+            <bk-table-column :label="$t('预览环境部署状态')" :render-header="renderHeader" min-width="100px">
                 <template slot-scope="{ row }">
                     <div class="deploy-status">
                         <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>
@@ -224,6 +224,17 @@
             handlerClearSearch (searchName) {
                 this.keyword = searchName
                 this.getFlowList()
+            },
+            renderHeader (h, data) {
+                return h(
+                    'span',
+                    {
+                        attrs: {
+                            title: data.column.label
+                        }
+                    },
+                    data.column.label
+                )
             }
         }
     }

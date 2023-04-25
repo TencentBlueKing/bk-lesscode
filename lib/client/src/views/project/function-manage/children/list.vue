@@ -27,26 +27,26 @@
                 @selection-change="selectionChange"
             >
                 <bk-table-column type="selection" width="60"></bk-table-column>
-                <bk-table-column :label="$t('函数名称')" prop="funcName" show-overflow-tooltip>
+                <bk-table-column :label="$t('函数名称')" prop="funcName" :min-width="120" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.funcName || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('函数标识')" prop="funcCode" show-overflow-tooltip>
+                <bk-table-column :label="$t('函数标识')" prop="funcCode" :min-width="140" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.funcCode || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('所属分类')" show-overflow-tooltip>
+                <bk-table-column :label="$t('所属分类')" :min-width="90" show-overflow-tooltip>
                     {{ groupName }}
                 </bk-table-column>
-                <bk-table-column :label="$t('简介')" prop="funcSummary" show-overflow-tooltip>
+                <bk-table-column :label="$t('简介')" prop="funcSummary" :min-width="110" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.funcSummary || '--' }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('更新人')" prop="updateUser"></bk-table-column>
-                <bk-table-column :label="$t('更新时间')" prop="updateTime" min-width="100px" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
+                <bk-table-column :label="$t('更新时间')" prop="updateTime" min-width="125px" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
                 <bk-table-column :label="$t('引用')" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span

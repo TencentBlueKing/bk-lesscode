@@ -1,5 +1,5 @@
 <template>
-    <bk-form :model="form" :label-width="82" ref="basicForm" v-if="isEdit" v-bkloading="{ isLoading }">
+    <bk-form :model="form" :label-width="$store.state.Language === 'en' ? 126 : 82" ref="basicForm" v-if="isEdit" v-bkloading="{ isLoading }">
         <bk-form-item
             v-for="field in formFields"
             :key="field.property"
@@ -17,6 +17,7 @@
                 :show-word-limit="true"
                 :disabled="field.disabled"
                 class="section-item"
+                v-enStyle="'width:650px'"
                 @change="change"
             ></bk-input>
             <bk-input
@@ -24,6 +25,7 @@
                 v-model="form[field.property]"
                 :disabled="field.disabled"
                 class="section-item"
+                v-enStyle="'width:650px'"
                 @change="change"
             ></bk-input>
         </bk-form-item>
