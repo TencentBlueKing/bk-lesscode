@@ -1,6 +1,6 @@
 <template>
     <menu-item
-        v-bkloading="{ isLoading: isLoading,size: 'mini' }"
+        v-bkloading="{ isLoading }"
         :item="item"
         :class="{
             disabled: isLocked
@@ -19,11 +19,12 @@
             MenuItem
         },
         props: {
-            custom: Boolean // 是否需要自定义保存逻辑
+            custom: Boolean, // 是否需要自定义保存逻辑
+            customLoading: Boolean
         },
         data () {
             return {
-                isLoading: false,
+                loading: false,
                 isLocked: false,
                 item: {
                     icon: 'bk-drag-icon bk-drag-save',
@@ -42,6 +43,9 @@
             },
             projectId () {
                 return this.$route.params.projectId
+            },
+            isLoading () {
+                return this.customLoading || this.loading
             }
         },
         methods: {
@@ -87,7 +91,7 @@
                     Object.assign(formData, { id: this.pageDetail.formId })
                 }
                 try {
-                    this.isLoading = true
+                    this.loading = true
                     const res = await this.$store.dispatch(`form/${action}`, formData)
                     if (res && res.id) {
                         this.savePreviewImg()
@@ -104,7 +108,7 @@
                 } catch (e) {
                     console.error(e)
                 } finally {
-                    this.isLoading = false
+                    this.loading = false
                 }
             },
             // 保存页面content
@@ -114,7 +118,7 @@
                     content
                 }
                 try {
-                    this.isLoading = true
+                    this.loading = true
                     const res = await this.$store.dispatch('page/update', {
                         data: {
                             pageData,
@@ -132,7 +136,7 @@
                 } catch (e) {
                     console.error(e)
                 } finally {
-                    this.isLoading = false
+                    this.loading = false
                 }
             },
             // 校验表单配置

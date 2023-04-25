@@ -3,22 +3,27 @@
         <div class="content-edit-container">
             <div class="edit-header">
                 <div class="nav-area">
-                    <i class="bk-drag-icon bk-drag-arrow-back back-icon" @click="close"></i>
+                    <i class="bk-drag-icon bk-drag-arrow-back back-icon" @click="$emit('back')"></i>
                     <div class="split-line"></div>
-                    <breadcrumb-nav :flow-config="flowConfig" @close="close" @closeNode="$emit('closeNode')"></breadcrumb-nav>
+                    <breadcrumb-nav
+                        :flow-config="flowConfig"
+                        :editable="formConfig.type !== 'USE_FORM'"
+                        @backToNode="$emit('backToNode')"
+                        @backToFlow="$emit('backToFlow')">
+                    </breadcrumb-nav>
                 </div>
                 <div
                     id="toolActionBox"
                     class="function-and-tool">
-                    <operation-select v-model="operationType" :hide-setting="hideSetting" :hide-func="hideSetting"></operation-select>
+                    <operation-select v-model="operationType" :hide-setting="!isCreateTicketPage" :hide-func="!isCreateTicketPage"></operation-select>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
                     <action-tool
                         :custom-save="true"
-                        :hide-save="hideSave"
-                        :hide-preview="hidePreview"
-                        :hide-func="hidePreview"
-                        :hide-clear="hideClear"
-                        @save="$emit('save', $event)">
+                        :hide-preview="!isCreateTicketPage"
+                        :hide-func="!isCreateTicketPage"
+                        :hide-clear="formConfig.type === 'USE_FORM'"
+                        :custom-loading="savePending"
+                        @save="handleSave">
                     </action-tool>
                 </div>
                 <extra-links></extra-links>
@@ -38,6 +43,8 @@
     </div>
 </template>
 <script>
+    import { mapState, mapGetters } from 'vuex'
+    import cloneDeep from 'lodash.clonedeep'
     import BreadcrumbNav from './breadcrumb-nav.vue'
     import ExtraLinks from '@/components/ui/extra-links'
     import OperationSelect from '@/views/edit-nocode/components/operation-select'
@@ -61,43 +68,151 @@
         },
         props: {
             hideSetting: Boolean,
-            hideSave: Boolean,
             hidePreview: Boolean,
-            hideClear: Boolean,
-            flowConfig: {
-                type: Object,
-                default: () => ({})
-            },
-            formConfig: {
-                type: Object,
-                default: () => ({})
-            }
+            workflowId: Number
         },
         data () {
             return {
-                operationType: 'edit'
+                operationType: 'edit',
+                savePending: false
+            }
+        },
+        computed: {
+            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig', 'initialFieldIds']),
+            ...mapState('nocode/flow', ['flowConfig', 'delCreateTicketPageId']),
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            projectId () {
+                return this.$route.params.projectId
+            },
+            isCreateTicketPage () {
+                return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state && this.flowConfig.pageId
             }
         },
         created () {
             this.$store.commit('nocode/formSetting/setFieldsList', this.formConfig.content)
         },
         methods: {
-            close () {
-                this.$emit('update:editFormPanelShow', false)
+            // 表单字段保存到itsm
+            saveItsmFields (content) {
+                const fields = content.map(item => {
+                    const field = cloneDeep(item)
+                    if (typeof item.id !== 'number') {
+                        field.id = null // itsm新建的字段需要传null
+                    }
+                    if (field.source_type === 'WORKSHEET') {
+                        field.source_type = 'CUSTOM_API'
+                        field.meta.data_config.source_type = 'WORKSHEET'
+                    }
+                    field.workflow = this.workflowId
+                    field.state = this.nodeData.id
+                    field.meta.columnId = field.columnId // 表单字段需要保存columnId，itsm不支持直接添加，存到meta里
+                    delete field.api_instance_id
+                    delete field.columnId
+                    return field
+                })
+                const deletedIds = []
+                this.initialFieldIds.forEach(id => {
+                    if (!fields.find(item => item.id === id)) {
+                        deletedIds.push(id)
+                    }
+                })
+                const params = {
+                    fields,
+                    state_id: this.nodeData.id,
+                    delete_ids: deletedIds
+                }
+                return this.$store.dispatch('nocode/flow/batchSaveFields', params)
+            },
+            // 表单配置保存到form表
+            saveFormConfig () {
+                const params = {
+                    pageId: this.flowConfig.pageId,
+                    id: this.flowConfig.id,
+                    nodeId: this.nodeData.id,
+                    projectId: this.projectId,
+                    versionId: this.versionId,
+                    formData: this.formConfig
+                }
+                return this.$store.dispatch('nocode/flow/editFlowNode', params)
+            },
+            // 更新itsm节点数据
+            updateItsmNode (formId) {
+                const fields = this.formConfig.content.map(field => field.id)
+                // itsm新建服务时,提单节点默认生成一个标题字段，需要保留，默认放到第一个
+                if (this.nodeData.is_first_state) {
+                    fields.unshift(this.nodeData.fields[0])
+                }
+                const params = {
+                    id: this.nodeData.id,
+                    data: {
+                        extras: {
+                            formConfig: {
+                                id: formId,
+                                type: this.formConfig.type
+                            }
+                        },
+                        fields
+                    }
+                }
+
+                return this.$store.dispatch('nocode/flow/patchNodeData', params)
+            },
+            // 更新表单的名称
+            updateFormName () {
+                const params = {
+                    id: this.formConfig.id,
+                    formName: this.formConfig.formName
+                }
+                return this.$store.dispatch('nocode/form/updateForm', params)
+            },
+            // 页面保存
+            async handleSave (content) {
+                this.savePending = true
+                try {
+                    const itsmFields = await this.saveItsmFields(content)
+                    const fields = []
+                    itsmFields.forEach(field => {
+                        if (this.nodeData.is_first_state && field.id === this.nodeData.fields[0]) {
+                            return
+                        }
+                        field.columnId = field.meta.columnId
+                        field.disabled = true
+                        delete field.meta.columnId
+                        if (field.meta.data_config?.source_type === 'WORKSHEET') {
+                            field.source_type = 'WORKSHEET'
+                        }
+                        fields.push(field)
+                    })
+                    this.$store.commit('nocode/nodeConfig/setFormConfig', { content: fields })
+                    this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
+                    const res = await this.saveFormConfig()
+                    this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
+                    this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
+                    await this.updateItsmNode(this.formConfig.id)
+                    await this.updateFormName()
+                    if (this.delCreateTicketPageId) { // 流程提单页被删除
+                        await this.$store.dispatch('page/delete', { pageId: this.delCreateTicketPageId })
+                        await this.$store.dispatch('nocode/flow/editFlow', { pageId: 0, id: this.flowConfig.id })
+                        this.$store.commit('nocode/flow/setDeletedPageId', null)
+                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
+                    }
+                    this.$bkMessage({
+                        message: '表单保存成功，表单配置关联数据表变更成功',
+                        theme: 'success'
+                    })
+                    this.$emit('save')
+                } catch (e) {
+                    console.error(e)
+                } finally {
+                    this.savePending = false
+                }
             }
         }
     }
 </script>
 <style lang="postcss" scoped>
     .edit-form-panel {
-        position: fixed;
-        /* 全局导航高度 */
-        top: 52px;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background: #fafbfd;
-        z-index: 3000;
+        height: 100%;
         overflow: auto;
     }
     .content-edit-container {

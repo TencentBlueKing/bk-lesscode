@@ -40,7 +40,7 @@
     </div>
 </template>
 <script>
-    import CreateFlowDialog from '../../create-flow-dialog.vue'
+    import CreateFlowDialog from '../../list/create-flow-dialog.vue'
 
     export default {
         name: 'FlowSelector',

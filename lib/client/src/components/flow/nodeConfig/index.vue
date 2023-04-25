@@ -8,20 +8,11 @@
             <component
                 ref="nodeComp"
                 :is="formCompDict[nodeData.type]"
+                :workflow-id="serviceData.workflow_id"
                 @close="handleClose">
             </component>
-            <!-- <div class="extend-setting-btn">
-                <span class="trigger-area" @click="extendSettingOpen = !extendSettingOpen">
-                    高级配置
-                    <i :class="['bk-icon', 'icon-angle-double-down', { opened: extendSettingOpen }]"></i>
-                </span>
-            </div>
-            <form-section v-show="extendSettingOpen" title="触发器" desc="（可以定义当满足条件时，要执行的特定动作）">
-                <div>触发器内容</div>
-            </form-section> -->
             <node-actions
                 :loading="nodeDetailLoading"
-                :service-data="serviceData"
                 @close="handleClose">
             </node-actions>
         </div>
@@ -35,7 +26,6 @@
     import DataProcessNode from './nodes/data-process-node.vue'
     import ApiNode from './nodes/api-node/index.vue'
     import ApprovalNode from './nodes/approval-node.vue'
-    import FormSection from './components/form-section.vue'
     import NodeActions from './components/node-actions.vue'
 
     export default {
@@ -45,7 +35,6 @@
             DataProcessNode,
             ApiNode,
             ApprovalNode,
-            FormSection,
             NodeActions
         },
         props: {
@@ -53,10 +42,6 @@
             serviceData: {
                 type: Object,
                 default: () => ({})
-            },
-            editable: {
-                type: Boolean,
-                default: true
             }
         },
         data () {
@@ -74,7 +59,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapState('nocode/nodeConfig', ['nodeData', 'isNodeDataChanged']),
+            ...mapState('nocode/nodeConfig', ['nodeData']),
             typeName () {
                 if (this.nodeData.type) {
                     return NODE_TYPE_LIST.find(item => item.type === this.nodeData.type).name
@@ -115,15 +100,13 @@
                 return true
             },
             handleClose () {
-                if (!this.isNodeDataChanged) {
-                    this.$emit('close')
-                    return
-                }
                 this.$bkInfo({
                     title: '此操作会导致您的编辑没有保存，确认吗？',
                     type: 'warning',
                     width: 500,
                     confirmFn: () => {
+                        const { projectId, flowId } = this.$route.params
+                        this.$router.push({ name: 'flowConfig', params: { projectId, flowId } })
                         this.$emit('close')
                     }
                 })
@@ -157,24 +140,6 @@
   padding: 24px;
   height: calc(100% - 48px);
   overflow: auto;
-  .extend-setting-btn {
-      margin: 16px 0 24px;
-      padding: 0 130px;
-  }
-  .trigger-area {
-      display: inline-flex;
-      align-items: center;
-      font-size: 12px;
-      color: #3a84ff;
-      cursor: pointer;
-      i {
-          font-size: 18px;
-          transition: transform 0.2s ease;
-          &.opened {
-              transform: rotate(-180deg);
-          }
-      }
-  }
 }
 .actions-wrapper {
     margin-top: 24px;

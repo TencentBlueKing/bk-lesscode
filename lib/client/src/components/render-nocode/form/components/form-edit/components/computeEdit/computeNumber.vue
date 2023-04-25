@@ -2,7 +2,7 @@
     <div>
         <div class="row-box">
             <span>计算公式</span>
-            <bk-select v-model="computConfigInfo.numberComput.formula" @change="update" searchable>
+            <bk-select v-model="computConfigInfo.numberComput.formula" :disabled="disabled" @change="update" searchable>
                 <bk-option v-for="option in formulaList"
                     :key="option.id"
                     :id="option.id"
@@ -12,7 +12,7 @@
         </div>
         <div class="row-box" v-if="computConfigInfo.numberComput.formula !== 'customize'">
             <span>计算字段</span>
-            <bk-select v-model="computConfigInfo.numberComput.computeFields" @change="update" searchable multiple>
+            <bk-select v-model="computConfigInfo.numberComput.computeFields" :disabled="disabled" @change="update" searchable multiple>
                 <bk-option v-for="option in intFieldsList"
                     :key="option.key"
                     :id="option.key"
@@ -28,11 +28,12 @@
         <div class="row-box">
             <span>单位</span>
             <bk-input v-model="computConfigInfo.numberComput.unit.value"
+                :disabled="disabled"
                 @show="isDropdownShow = true"
                 @hide="isDropdownShow = false"
                 @change="update"
                 :clearable="true">
-                <bk-dropdown-menu class="group-text " slot="prepend" ext-cls="ext-line-height">
+                <bk-dropdown-menu class="group-text " slot="prepend" ext-cls="ext-line-height" :disabled="disabled">
                     <bk-button type="primary" slot="dropdown-trigger">
                         <span v-if="computConfigInfo.numberComput.unit.position === 'prefix'">前缀</span>
                         <span v-else>后缀</span>
@@ -47,7 +48,7 @@
         </div>
         <div class="row-box">
             <span>保留小数位数</span>
-            <bk-input v-model="computConfigInfo.numberComput.decimal" @change="decimalChange" type="number" :max="10" :min="0" />
+            <bk-input v-model="computConfigInfo.numberComput.decimal" :disabled="disabled" @change="decimalChange" type="number" :max="10" :min="0" />
         </div>
         <!-- 配置公式 -->
         <bk-dialog v-model="showFormulaConfigDialog" title="配置公式" header-position="left" :esc-close="false"
@@ -61,6 +62,7 @@
                     <div class="top-box">
                         <bk-input
                             v-model="searchField"
+                            :disabled="disabled"
                             :placeholder="'输入引用字段名'"
                             :right-icon="'bk-icon icon-search'">
                         </bk-input>
@@ -76,10 +78,10 @@
                         <div class="symbol-item" v-for="(item,index) in computeChar" :key="index"
                             @click="handlerSymbolClick(item)">{{ item.name }}</div>
                         <div class="delete-btn">
-                            <bk-button class="mr10" @click="handlerDelete" :text="true" title="primary">
+                            <bk-button class="mr10" @click="handlerDelete" :text="true" :disabled="disabled" title="primary">
                                 删除
                             </bk-button>
-                            <bk-button @click="handlerReset" :text="true">
+                            <bk-button @click="handlerReset" :text="true" :disabled="disabled">
                                 重置
                             </bk-button>
                         </div>
@@ -108,7 +110,8 @@
             computConfigInfo: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

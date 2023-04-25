@@ -283,12 +283,14 @@
                 <bk-form-item label="计算类型" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
                     <ComputeEdit
                         :field="fieldData"
+                        :disabled="disabled"
                         @change="updateFieldData" />
                 </bk-form-item>
                 <!-- 自动编号 -->
                 <bk-form-item v-if="fieldData.type === 'SERIAL' && !handleIsFolded">
                     <SerialEdit
                         :field="fieldData"
+                        :disabled="disabled"
                         @change="updateFieldData" />
                 </bk-form-item>
                 <bk-form-item label="填写说明" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
@@ -316,6 +318,7 @@
             :title="fieldData.name"
             :show.sync="readerOnlyShow"
             :value="fieldData.read_only_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('read_only_conditions',val)">
         </read-only-dialog>
         <require-dialog
@@ -323,6 +326,7 @@
             :title="fieldData.name"
             :show.sync="requireConfigShow"
             :value="fieldData.mandatory_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('mandatory_conditions',val)">
         </require-dialog>
         <show-type-dialog
@@ -330,6 +334,7 @@
             :title="fieldData.name"
             :show.sync="showTypeShow"
             :value="fieldData.show_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('show_conditions',val)">
         </show-type-dialog>
         <data-source-dialog
@@ -338,6 +343,7 @@
             :source-type="fieldData.source_type"
             :field-type="fieldData.type"
             :value="sourceData"
+            :disabled="disabled"
             :api-detail="apiDetail"
             :is-display-tag="fieldData.isDisplayTag"
             :res-array-tree-data="resArrayTreeData"
@@ -346,6 +352,7 @@
         <config-desc-comp-value-dialog
             :show.sync="descCompValueShow"
             :value="fieldData.value"
+            :disabled="disabled"
             @confirm="handleDescValueChange">
         </config-desc-comp-value-dialog>
     </div>
