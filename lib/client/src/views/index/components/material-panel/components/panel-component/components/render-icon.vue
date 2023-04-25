@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-    import iconComponentList from '@/element-materials/materials/icon-list.js'
+    import iconComponentList from '@/element-materials/materials/vue2/icon-list.js'
     import GroupBox from '../../common/group-box'
     import SearchBox from '../../common/search-box'
     import RenderIcon from '../../common/group-box/render-icon'

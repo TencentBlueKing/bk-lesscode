@@ -18,6 +18,16 @@
                 @on-delete="handleUploadReset"
             ></bk-upload>
         </bk-form-item>
+        <bk-form-item v-if="type !== 'importProject'" label="VUE 版本" required property="framework" error-display-type="normal">
+            <bk-radio-group v-model="formData.framework" class="g-division-radio">
+                <bk-radio-button value="vue2">
+                    VUE 2
+                </bk-radio-button>
+                <bk-radio-button value="vue3">
+                    VUE 3
+                </bk-radio-button>
+            </bk-radio-group>
+        </bk-form-item>
         <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
             <bk-input maxlength="60" v-model.trim="formData.projectName"
                 placeholder="由汉字，英文字母，数字组成，20个字符以内">
@@ -49,7 +59,8 @@
     const defaultFormData = {
         projectCode: '',
         projectName: '',
-        projectDesc: ''
+        projectDesc: '',
+        framework: 'vue2'
     }
 
     export default {

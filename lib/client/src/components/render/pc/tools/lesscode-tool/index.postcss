@@ -1,0 +1,48 @@
+.tools-active,
+.tools-hover{
+    position: absolute;
+    display: flex;
+    padding-bottom: 4px;
+    user-select: none;
+}
+.tools-active{
+    .button{
+        background: #3A84FF;
+        cursor: pointer;
+    }
+}
+.tools-hover{
+    .button{
+        background: #A3C5FD;
+    }
+}
+.comp-id-button {
+    width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 6px !important;
+    text-align: left !important;
+}
+.button{
+    flex: 0 0 auto;
+    height: 20px;
+    padding: 0 4px;
+    margin-right: 2px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    pointer-events: all;
+    &.disabled{
+        background-color: #dcdee5;
+        color: #fff;
+        cursor: not-allowed;
+    }
+    &:hover{
+        background: #1964E1;
+        cursor: pointer;
+    }
+}

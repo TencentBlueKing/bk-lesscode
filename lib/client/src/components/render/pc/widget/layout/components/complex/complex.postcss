@@ -1,0 +1,41 @@
+.theme-style {
+    color: #fff;
+    opacity: 0.86;
+    font-weight: normal;
+}
+.component-wrapper .theme-desc {
+    @extend .theme-style;
+}
+.message-box.theme-header {
+    &:hover {
+        opacity: 1;
+    }
+    @extend .theme-style;
+}
+.complex-top-menu-wraper{
+    border: 1px  solid transparent;
+    &:hover{
+        border: 1px dashed #3a84ff;
+    }
+    &:global(.selected) {
+        border: 1px solid #3a84ff;
+    }
+    .theme-desc {
+        color: #fff;
+    }
+    :global(.navigation-header-item){
+        white-space: nowrap;
+        color: var(--color) !important;
+        &:hover {
+            color: var(--hover-color) !important;
+        }
+    }
+}
+.white-theme {
+    .theme-desc {
+        color: #313238;
+    }
+    .message-box.theme-header {
+        color: #63656E;
+    }
+}

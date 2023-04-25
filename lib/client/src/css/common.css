@@ -129,3 +129,14 @@
     background-size: 12px 16px;
     background-image: url("../images/lock.svg");
 }
+
+
+.g-division-radio {
+    display: flex;
+    .bk-form-radio-button {
+        flex: 1;
+    }
+    .bk-radio-button-text {
+        width: 100%;
+    }
+}

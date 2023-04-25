@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    import vanIconList from '@/element-materials/materials/vant/icon-list.js'
+    import vanIconList from '@/element-materials/materials/vue2/vant/icon-list.js'
 
     export default {
         props: {
