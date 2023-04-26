@@ -10,6 +10,7 @@
                 'debug-header': true,
                 active: value === panel.name
             }"
+            v-enStyle="'width: 130px'"
             :key="panel.name"
             @click="$emit('input', panel.name)"
         >

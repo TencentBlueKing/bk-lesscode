@@ -1209,7 +1209,7 @@
   "属性【{0}】的类型为 remote 但未选择远程函数": "属性【{0}】的类型为 remote 但未选择远程函数",
   "属性【{0}】的类型为 {1} 值为 {2}": "属性【{0}】的类型为 {1} 值为 {2}",
   "不支持的组件 * {0} *": "不支持的组件 * {0} *",
-  "registerMaterial: 组件 {n} 已存在:": "registerMaterial: 组件 {n} 已存在",
+  "registerMaterial: 组件 {n} 已存在": "registerMaterial: 组件 {n} 已存在",
   "如果画布中存在已下架的自定义组件，清空保存后将不能再被使用": "如果画布中存在已下架的自定义组件，清空保存后将不能再被使用",
   "确定清空画布": "确定清空画布？",
   "genSlotFormatValue 的参数值必须是 Object": "genSlotFormatValue 的参数值必须是 Object",

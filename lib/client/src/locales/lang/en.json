@@ -1209,7 +1209,7 @@
   "genDirectiveFormatValue 的参数值必须是 Object": "The parameter value of genDirectiveFormatValue must be Object",
   "genPropFormatValue 的参数值必须是 Object": "The parameter value of genPropFormatValue must be Object",
   "genSlotFormatValue 的参数值必须是 Object": "The parameter value of genSlotFormatValue must be Object",
-  "registerMaterial: 组件 {n} 已存在:": "Registermaterial: Component {n} already exists",
+  "registerMaterial: 组件 {n} 已存在": "Registermaterial: Component {n} already exists",
   "上移一层": "Bring Forward",
   "下移一层": "Move down",
   "不支持的组件 * {0} *": "Unsupported component * {0} *",
