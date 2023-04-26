@@ -17,7 +17,7 @@
                 <div class="field-label">
                     <span v-bk-tooltips="{ content: field.desc, disabled: !field.desc }" class="field-display-name">{{field.name}}</span>：
                 </div>
-                <div :class="['field-value', { 'is-loading': loadingState.includes(field) }]">
+                <div :class="['field-value', { 'is-loading': loadingState.includes(field) }]" v-enStyle="'width:490px'">
                     <template v-if="field !== editField.field">
                         <div class="field-content">
                             <span class="field-display-value">{{getFieldDisplayValue(field) || '--'}}</span>

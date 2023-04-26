@@ -362,7 +362,7 @@
                     if (usageArray.length) {
                         documentation = this.$t('变量使用情况：') + '\n' + documentation
                         usageArray.forEach((usage) => {
-                            documentation += this.$t('组件ID【${0}】的【{0}】', [usage.componentId, usage.key])`【${sourceNameMap[usage.source] || usage.source}】\n`
+                            documentation += this.$t('组件ID【{0}】的【{1}】', [usage.componentId, usage.key])`【${sourceNameMap[usage.source] || usage.source}】\n`
                         })
                     }
                     this.proposals.push({

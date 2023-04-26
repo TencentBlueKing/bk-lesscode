@@ -50,6 +50,7 @@
                         >
                             <bk-input
                                 class="choose-function-search"
+                                v-enStyle="'width: 360px'"
                                 left-icon="bk-icon icon-search"
                                 behavior="simplicity"
                                 v-model="searchFunctionName"
@@ -61,7 +62,7 @@
                                         :key="funcGroup.groupName"
                                         v-for="funcGroup in computedFunctionData"
                                     >
-                                        <span class="function-group-name">
+                                        <span class="function-group-name" v-enStyle="'width: 360px'">
                                             {{ funcGroup.groupName }}（{{ funcGroup.children.length }}）
                                         </span>
                                         <ul class="group-function-list">
