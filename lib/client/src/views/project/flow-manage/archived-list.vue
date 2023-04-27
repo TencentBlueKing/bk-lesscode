@@ -38,11 +38,11 @@
                         <span>{{ row.flowName }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('流程描述')" property="summary" show-overflow-tooltip>
+                <bk-table-column :label="$t('流程描述')" property="summary" show-overflow-tooltip :min-width="100">
                     <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
                 </bk-table-column>
-                <bk-table-column :label="$t('流程表单页')" property="pageName" show-overflow-tooltip></bk-table-column>
-                <bk-table-column :label="$t('流程数据管理页')" property="managePageNames" show-overflow-tooltip></bk-table-column>
+                <bk-table-column :label="$t('流程表单页')" property="pageName" show-overflow-tooltip :min-width="100"></bk-table-column>
+                <bk-table-column :label="$t('流程数据管理页')" property="managePageNames" show-overflow-tooltip :render-header="renderHeader"></bk-table-column>
                 <bk-table-column :label="$t('创建人')" property="createUser"></bk-table-column>
                 <bk-table-column :label="$t('创建时间')" show-overflow-tooltip>
                     <template slot-scope="{ row }">
@@ -167,6 +167,17 @@
             handlerClearSearch () {
                 this.keyword = ''
                 this.handleSearch()
+            },
+            renderHeader (h, data) {
+                return h(
+                    'span',
+                    {
+                        attrs: {
+                            title: data.column.label
+                        }
+                    },
+                    data.column.label
+                )
             }
         }
     }

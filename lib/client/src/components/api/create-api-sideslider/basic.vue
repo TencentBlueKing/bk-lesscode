@@ -68,7 +68,7 @@
         </bk-form-item>
         <bk-form-item
             :label="$t('接口路径')"
-            :label-width="$store.state.Language === 'en' ? 110 : 100"
+            :label-width="$store.state.Language === 'en' ? 120 : 100"
             property="url"
             error-display-type="normal"
             :required="true"

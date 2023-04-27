@@ -29,7 +29,7 @@
                     v-for="(field, index) in setting.settingFields"
                     class="setting-item"
                     :key="index">
-                    <div class="field-label">
+                    <div class="field-label" v-enStyle="'width: 126px'">
                         <span
                             v-bk-tooltips="{
                                 content: field.desc,

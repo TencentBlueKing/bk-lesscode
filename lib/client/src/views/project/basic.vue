@@ -36,7 +36,7 @@
             :mask-close="false"
             :auto-close="false"
             header-position="left">
-            <bk-form ref="editForm" :label-width="90" :rules="dialog.edit.formRules" :model="dialog.edit.formData">
+            <bk-form ref="editForm" :label-width="$store.state.Language === 'en' ? 100 : 90" :rules="dialog.edit.formRules" :model="dialog.edit.formData">
                 <bk-form-item :label="$t('应用名称')" required property="projectName">
                     <bk-input maxlength="60" v-model.trim="dialog.edit.formData.projectName"
                         :placeholder="$t('请输入应用名称，60个字符以内')">

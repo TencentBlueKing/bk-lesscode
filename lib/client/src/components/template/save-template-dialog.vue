@@ -3,7 +3,7 @@
         <bk-dialog v-model="isShow"
             render-directive="if"
             :title="$t('存为模板')"
-            width="600"
+            :width="$store.state.Language === 'en' ? 700 : 600"
             :mask-close="false"
             :auto-close="false"
             :close-icon="false"
@@ -12,7 +12,7 @@
             header-position="left"
             ext-cls="template-operate-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="95" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="$store.state.Language === 'en' ? 168 : 95" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('操作类型')" property="templateName" style="margin-bottom: 20px">
                     <bk-radio-group v-model="dialog.formData.saveType">
                         <bk-radio value="new" style="margin-right: 20px">{{ $t('存为新模板') }}</bk-radio>

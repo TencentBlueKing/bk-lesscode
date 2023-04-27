@@ -43,7 +43,7 @@
                         <span>{{ row.createTime | time }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('是否归档') " prop="archiveFlag" min-width="110" :render-header="renderArchiveHeader" sortable>
+                <bk-table-column :label="$t('是否归档') " prop="archiveFlag" min-width="180" :render-header="renderArchiveHeader" sortable>
                     <template slot-scope="{ row }">
                         <span>{{ row.archiveFlag ? $t('是') : $t('否') }}</span>
                     </template>

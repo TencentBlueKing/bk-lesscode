@@ -65,7 +65,7 @@
 <template>
     <bk-select
         class="sort-selector"
-        v-enClass="'en-sort-selector'"
+        v-enStyle="'width:140px'"
         prefix-icon="bk-icon icon-sort"
         :clearable="false"
         v-model="selected">
@@ -93,12 +93,5 @@
             }
         }
     }
-    .en-sort-selector {
-            ::v-deep {
-                .bk-select-name {
-                    padding-right: 22px;
-            }
-        }
-    }
-    
+
 </style>

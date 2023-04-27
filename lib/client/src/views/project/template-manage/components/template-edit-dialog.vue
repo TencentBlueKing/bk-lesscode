@@ -4,13 +4,13 @@
             render-directive="if"
             theme="primary"
             :title="dialogTitle"
-            width="600"
+            :width="$store.state.Language === 'en' ? 750 : 600"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
             ext-cls="template-edit-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="120" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="$store.state.Language === 'en' ? 168 : 120" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('模板名称')" required property="templateName" error-display-type="normal">
                     <bk-input ref="nameInput"
                         maxlength="40"

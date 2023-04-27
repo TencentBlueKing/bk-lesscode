@@ -140,6 +140,7 @@
             </bk-form-item>
             <bk-form-item
                 :label="$t('接口返回数据参数名')"
+                :label-width="$store.state.Language === 'en' ? 315 : 180"
                 ref="remoteParams"
                 property="remoteParams"
                 error-display-type="normal"

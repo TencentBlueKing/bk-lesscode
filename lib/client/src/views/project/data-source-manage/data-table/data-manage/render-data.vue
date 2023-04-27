@@ -1,6 +1,6 @@
 <template>
     <article>
-        <bk-alert type="warning" :title="$t('数据的增删改会直接影响到{0}，请谨慎操作',environment.name)"></bk-alert>
+        <bk-alert type="warning" :title="$t('数据的增删改会直接影响到{0}，请谨慎操作',[environment.name])"></bk-alert>
 
         <section class="render-data-header">
             <bk-button theme="primary" class="mr10" @click="addData">{{ $t('新增') }}</bk-button>
@@ -443,7 +443,7 @@
                         } else {
                             form[dateTimeColumn.name] = dayjs(form[dateTimeColumn.name])
                                 .utcOffset(0)
-                                .format(window.i18n.t('YYYY-MM-DD HH:mm:ss_0'))
+                                .format(window.i18n.t('YYYY-MM-DD HH:mm:ss'))
                         }
                     })
                 })

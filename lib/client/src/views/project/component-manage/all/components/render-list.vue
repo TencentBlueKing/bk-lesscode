@@ -31,8 +31,8 @@
                             src="/static/images/icon/off.svg" />
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('组件ID')" prop="type" align="left" show-overflow-tooltip />
-                <bk-table-column :label="$t('所属分类')" prop="category" align="left" show-overflow-tooltip>
+                <bk-table-column :label="$t('组件ID')" prop="type" :render-header="renderHeader" align="left" show-overflow-tooltip />
+                <bk-table-column :label="$t('所属分类')" prop="category" :render-header="renderHeader" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-scope">
                             <span class="scope-name">
@@ -42,7 +42,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('公开范围')" prop="scope" align="left" show-overflow-tooltip>
+                <bk-table-column :label="$t('公开范围')" prop="scope" :render-header="renderHeader" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-scope" :title="getScopeName(getPublicScope(row.id)[0])">
                             <span class="scope-name">
@@ -52,7 +52,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('最新版本')" prop="latestVersionId" align="left" width="120">
+                <bk-table-column :label="$t('最新版本')" prop="latestVersionId" :render-header="renderHeader" align="left" width="120">
                     <template slot-scope="{ row }">
                         <div class="component-version" @click="handleVersionDetail(row)">
                             <span>{{ row.version }}</span>
@@ -265,6 +265,17 @@
             handleCategory (category) {
                 this.currentCategoryDate = category
                 this.isShowCategory = true
+            },
+            renderHeader (h, data) {
+                return h(
+                    'span',
+                    {
+                        attrs: {
+                            title: data.column.label
+                        }
+                    },
+                    data.column.label
+                )
             }
         }
     }

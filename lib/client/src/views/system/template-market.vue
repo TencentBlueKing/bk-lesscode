@@ -111,7 +111,7 @@
                                     <div class="operate-btns">
                                         <bk-button style="margin-left: 17px;width: 86px" theme="primary" @click="handleAddToProject(page)">{{ $t('添加至应用') }}</bk-button>
                                         <bk-button style="margin-left: 10px;width: 76px" @click="handlePreviewTemplate(page)">{{ $t('预览') }}</bk-button>
-                                        <bk-button style="margin-left: 10px;width: 76px" @click="handleDownloadTemplate(page)">{{ $t('下载源码') }}</bk-button>
+                                        <bk-button style="margin-left: 10px;width: 76px" v-enClass="'en-btn-title'" :title="$t('下载源码')" @click="handleDownloadTemplate(page)">{{ $t('下载源码') }}</bk-button>
                                     </div>
                                 </div>
                                 <div class="item-ft">
@@ -727,6 +727,17 @@
                     top: 0;
                     left: 0;
                     height: 100%;
+                    .en-btn-title {
+                        /deep/ span {
+                                display: block;
+                                width: 100%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                text-align: center;
+                                padding: 0 2px;
+                            }
+                    }
                 }
                 .empty {
                     &::before {
