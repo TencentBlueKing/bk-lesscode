@@ -86,8 +86,7 @@
                         templateName: [
                             {
                                 required: true,
-                                message: '必填项',
-                                trigger: 'blur'
+                                message: '必填项'
                             },
                             {
                                 max: 40,

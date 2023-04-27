@@ -36,7 +36,7 @@
                     :value="backgroundSize.width"
                     :item="{ font: '宽', name: '宽度' }"
                     @change="handleBackgroundSizeChange('width', $event)"
-                    style="width: 100%">
+                    style="width: 100%;margin-top: 0">
                     <size-unit
                         :value="backgroundSize.widthUnit"
                         @change="handleBackgroundSizeChange('widthUnit', $event)" />
@@ -47,7 +47,7 @@
                     :value="backgroundSize.height"
                     :item="{ font: '高', name: '高度' }"
                     @change="handleBackgroundSizeChange('height', $event)"
-                    style="width: 100%">
+                    style="width: 100%;margin-top: 0">
                     <size-unit
                         :value="backgroundSize.heightUnit"
                         @change="handleBackgroundSizeChange('heightUnit', $event)" />
@@ -59,7 +59,7 @@
                     :value="backgroundPosition.x"
                     :item="{ icon: 'bk-drag-icon bk-drag-zuobianju', name: '左边距' }"
                     @change="handleBackgroundPositionChange('x', $event)"
-                    style="width: 100%">
+                    style="width: 100%;margin-top: 0">
                     <size-unit
                         :value="backgroundPosition.xUnit"
                         @change="handleBackgroundPositionChange('xUnit', $event)" />
@@ -70,7 +70,7 @@
                     :value="backgroundPosition.y"
                     :item="{ icon: 'bk-drag-icon bk-drag-dingbianju', name: '上边距' }"
                     @change="handleBackgroundPositionChange('y', $event)"
-                    style="width: 100%">
+                    style="width: 100%;margin-top: 0">
                     <size-unit
                         :value="backgroundPosition.yUnit"
                         @change="handleBackgroundPositionChange('yUnit', $event)" />

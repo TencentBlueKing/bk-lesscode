@@ -23,10 +23,14 @@
                 <span class="seperate-line">|</span>
             </div>
             <div :class="$style['buttons']">
+                <span v-if="codeType === 'code'" :class="$style['with-nav']">
+                    <bk-switcher :value="withNav" size="small" @change="switchWithNav" style="margin-right: 10px;" />
+                    {{ withNav ? '不包含导航源码' : '包含导航源码' }}
+                </span>
                 <i v-bk-tooltips="{ boundary: 'window', content: `复制${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
                 <i v-bk-tooltips="{ boundary: 'window', content: `下载${typeName}` }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
                 <i v-if="codeType === 'json'" v-bk-tooltips="{ boundary: 'window', content: '导入JSON' }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>
-                <i v-if="codeType === 'code'" v-bk-tooltips="{ boundary: 'window', content: withNav ? '不包含导航源码' : '包含导航源码' }" :class="['bk-drag-icon', 'bk-drag-switcher', $style['icon'], { [$style['without-nav']]: !withNav }]" @click="switchWithNav"></i>
+                <!-- <i v-if="codeType === 'code'" v-bk-tooltips="{ boundary: 'window', content: withNav ? '不包含导航源码' : '包含导航源码' }" :class="['bk-drag-icon', 'bk-drag-switcher', $style['icon'], { [$style['without-nav']]: !withNav }]" @click="switchWithNav"></i> -->
                 <i v-bk-tooltips="{ boundary: 'window', content: '全屏' }" :class="['bk-drag-icon', 'bk-drag-full-screen', $style['icon']]" @click="handleScreenfull"></i>
                 <i :class="['bk-drag-icon', 'bk-drag-close-line', $style['icon']]" @click="$emit('close')"></i>
             </div>
@@ -94,9 +98,9 @@
             screenfull.off('change', this.screenfullChange)
         },
         methods: {
-            switchWithNav () {
-                this.withNav = !this.withNav
-                this.$emit('change-with-nav', this.withNav)
+            switchWithNav (val) {
+                this.withNav = val
+                this.$emit('change-with-nav', val)
             },
             showEditData () {
                 this.$emit('show-edit-data')
@@ -192,6 +196,15 @@
             }
 
             .buttons {
+                display: flex;
+                align-items: center;
+                .with-nav {
+                    display: flex;
+                    align-items: center;
+                    font-size: 12px;
+                    margin-right: 30px;
+                    color: #979BA5;
+                }
                 .icon {
                     font-size: 16px;
                     color: #C4C6CC;
@@ -199,7 +212,7 @@
                     display: inline-block;
 
                     & + .icon {
-                        margin-left: 12px;
+                        margin-left: 16px;
                     }
 
                     &:hover {

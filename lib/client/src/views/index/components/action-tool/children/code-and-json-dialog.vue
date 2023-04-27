@@ -1,7 +1,8 @@
 <template>
     <bk-dialog v-model="isShow"
         :position="{ top: '10%', left: '10%' }"
-        :mask-close="false"
+        :show-mask="true"
+        :mask-close="true"
         :auto-close="false"
         :close-icon="false"
         :draggable="false"

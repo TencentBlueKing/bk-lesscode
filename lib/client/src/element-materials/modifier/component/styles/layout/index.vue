@@ -21,7 +21,7 @@
                 <i class="bk-drag-icon bk-drag-undo" />
             </span>
         </div> -->
-        <div class="ui-group-box">
+        <div class="style-group-box">
             <div class="ui-group-name" @click="handleToggle">
                 <i
                     class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
@@ -93,7 +93,7 @@
             }
         }
     }
-    .ui-group-box {
+    .style-group-box {
         padding: 0 8px 0 12px;
         border-top: 1px solid #dde4eb;
         .ui-group-name {

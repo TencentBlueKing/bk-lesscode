@@ -1,12 +1,14 @@
 <template>
     <div class="panel-tree">
-        <div class="tree-search-area">
+        <div class="tree-search-area canvas-search-input">
             <bk-input
                 class="tree-search"
+                placeholder="组件ID"
                 :right-icon="'bk-icon icon-search'"
                 :clearable="true"
                 @change="handleSearch" />
             <span
+                class="tree-toggle-span"
                 :class="['bk-drag-icon', treeFoldIcon]"
                 v-bk-tooltips="tooltip"
                 @click="handleToggleExpandTree">
@@ -285,7 +287,14 @@
             flex: 1;
             margin-right: 12px;
         }
-        .bk-drag-icon {
+        .tree-toggle-span {
+            display: flex;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            background: #F5F7FA;
+            color: #979BA5;
             cursor: pointer;
             &:hover {
                 color: #3a84ff;

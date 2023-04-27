@@ -96,7 +96,7 @@
             align-items: center;
             height: 32px;
             &:not(:first-child) {
-                margin-top: 10px;
+                margin-top: 12px;
             }
             .detail-name {
                 width: 44px;
@@ -117,7 +117,7 @@
             align-items: center;
             border: 1px solid #C4C6CC;
             border-radius: 2px;
-            margin-top: 12px;
+            margin-top: 0px;
             .input-prefix {
                 cursor: default;
                 display: flex;
