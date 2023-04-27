@@ -20,31 +20,31 @@
                         <span class="bk-drag-icon bk-drag-radius-sj" :class="!isAllBorder && 'active'" @click="isAllBorder = false"></span>
                     </div>
                     <bk-slider ext-cls="border-radius-slider" :max-value="99" v-model="borderRadius"></bk-slider>
-                    <icon-size-input v-model="borderRadius" :item="{ name: ' ' }" style="width: 68px" />
+                    <icon-size-input v-model="borderRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0px;" />
                 </div>
                 <div class="single-border-container" v-show="!isAllBorder">
                     <div class="row-container">
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-s.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <icon-size-input v-model="borderTopLeftRadius" :item="{ name: ' ' }" style="width: 68px" />
+                            <icon-size-input v-model="borderTopLeftRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-zs.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <icon-size-input v-model="borderTopRightRadius" :item="{ name: ' ' }" style="width: 68px" />
+                            <icon-size-input v-model="borderTopRightRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                     </div>
                     <div class="row-container">
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-ys.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <icon-size-input v-model="borderBottomLeftRadius" :item="{ name: ' ' }" style="width: 68px" />
+                            <icon-size-input v-model="borderBottomLeftRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-yx.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <icon-size-input v-model="borderBottomRightRadius" :item="{ name: ' ' }" style="width: 68px" />
+                            <icon-size-input v-model="borderBottomRightRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                     </div>
                 </div>
@@ -145,7 +145,7 @@
                     :placeholder="' '"
                     :item="{ font: 'x', 'noUnit': true }"
                     @change="handleBorderSliceChange('x', $event)"
-                    style="width: 85px">
+                    style="width: 85px;margin-top: 0">
                     <div></div>
                 </icon-size-input>
                 <icon-size-input
@@ -153,7 +153,7 @@
                     :item="{ font: 'y', 'noUnit': true }"
                     :placeholder="' '"
                     @change="handleBorderSliceChange('y', $event)"
-                    style="width: 85px">
+                    style="width: 85px;margin-top: 0">
                     <div></div>
                 </icon-size-input>
             </style-item>
@@ -392,7 +392,7 @@
                     justify-content: space-between;
                     align-items: center;
                     height: 32px;
-                    margin-top: 8px;
+                    margin-top: 12px;
                     .single-border {
                         position: relative;
                         display: flex;
@@ -427,7 +427,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 10px;
+        margin-top: 12px;
         .border-icons-container {
             width: 72px;
             .icons-box {

@@ -5,11 +5,12 @@
         trigger="click"
         @show="handleToggleSelectPanel(true)"
         @hide="handleToggleSelectPanel(false)">
-        <div slot="dropdown-trigger">
+        <div slot="dropdown-trigger" style="height:42px;">
             <span class="tab-item-label" v-bk-tooltips="{ content: componentNameText ,distance: 8 }">
                 {{ componentNameText }}
             </span>
             <i
+                style="margin-left: 4px"
                 class="bk-drag-icon toggle-icon"
                 :class="{
                     'bk-drag-angle-down-fill': isShowSelectPanel,
@@ -57,7 +58,7 @@
                     PC: [
                         {
                             key: 'bk',
-                            name: '蓝鲸基础组件',
+                            name: 'BKUI-VUE2',
                             type: 'Vue',
                             tooltip: '当前组件库版本为“2.4.15，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         },

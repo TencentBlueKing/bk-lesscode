@@ -16,12 +16,14 @@
                 <div style="width: 200px; text-align: right">
                     <bk-button
                         theme="primary"
+                        size="small"
                         @click="showEditStyle(true)">
                         CSS编辑
                     </bk-button>
                 </div>
             </style-item>
             <textarea
+                v-if="Object.keys(value.customStyle || {}).length"
                 rows="5"
                 style="height: auto; word-break: break-all; margin-top: 12px;cursor: not-allowed;border: none"
                 class="bk-form-textarea"

@@ -50,18 +50,22 @@
         </div>
         <div class="right-content">
             <page-header :current-page="currentPage" />
-            <div class="page-content">
+            <div class="page-content" v-if="currentPageId">
                 <iframe
-                    v-if="currentPageId"
+                    v-if="currentPage.content || currentPage.nocodeType"
                     width="100%"
                     height="100%"
                     style="border: none"
                     :src="iframeUrl"
                 >
                 </iframe>
-                <!-- <bk-exception v-else class="exception-wrap-item" type="empty">
-                    <span>暂未选中页面</span>
-                </bk-exception> -->
+                <bk-exception v-else class="exception-wrap-item" type="empty">
+                    <span>暂无页面内容</span>
+                    <div class="exception-desc">
+                        <span class="text">你可以通过编辑页面生成内容，</span>
+                        <span class="link-btn" @click="handleEditPage(currentPage)">立即编辑</span>
+                    </div>
+                </bk-exception>
             </div>
         </div>
         <page-operate-dialog
@@ -182,7 +186,7 @@
                         // 没有绑定页面的，不展示
                         const pageItem = pageList.find(page => page.id === route.pageId)
                         // delete pageItem.content
-                        Object.assign(route, pageItem, { name: pageItem.pageName, content: '' })
+                        Object.assign(route, pageItem, { name: pageItem.pageName })
                         renderList.value.push(route)
                         return route
                     })
@@ -277,5 +281,22 @@
     .right-content {
         width: 100%;
         height: 100%;
+
+        .exception-wrap-item {
+            margin-top: 80px;
+            .exception-desc {
+                display: flex;
+                align-items: center;
+                margin-top: 16px;
+                font-size: 14px;
+                .text {
+                    color: #979BA5;
+                }
+                .link-btn {
+                    cursor: pointer;
+                    color: $primaryColor;
+                }
+            }
+        }
     }
 </style>
