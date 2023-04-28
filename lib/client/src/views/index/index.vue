@@ -305,8 +305,8 @@
                     this.$store.commit('functions/setFunctionData', functionData)
                     this.$store.commit('api/setApiData', apiData)
 
+                    LC.setFramework(projectDetail.framework === 'vue3' ? 'vue3' : 'vue2')
                     syncVariableValue(pageDetail.content, variableList)
-
                     // 设置初始targetData
                     LC.parseData(pageDetail.content)
                     LC.pageStyle = pageDetail.styleSetting
