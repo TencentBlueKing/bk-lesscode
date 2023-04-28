@@ -1,0 +1,23 @@
+@import './bk-patch.css';
+
+.full-width {
+    width: 100%;
+}
+
+.center-content {
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app {
+    font-size: 14px;
+}
+
+.cursor-element {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 12px 16px;
+    background-image: url("../images/lock.svg");
+}

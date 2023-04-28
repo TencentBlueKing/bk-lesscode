@@ -347,6 +347,7 @@
                 const defaultSetting = {
                     isGenerateNav: false,
                     id: this.projectId + this.pageDetail.pageCode + this.versionId,
+                    framework: LC.getFramework(),
                     curTemplateData: {},
                     storageKey: 'ONLINE_PREVIEW_CONTENT',
                     types: ['reload', 'update_style']
@@ -357,6 +358,7 @@
                 const defaultSetting = {
                     isGenerateNav: true,
                     id: this.projectId + this.pageRoute.layoutPath + this.versionId,
+                    framework: LC.getFramework(),
                     curTemplateData: this.curTemplateData,
                     storageKey: 'ONLINE_PREVIEW_NAV',
                     types: ['reload']
