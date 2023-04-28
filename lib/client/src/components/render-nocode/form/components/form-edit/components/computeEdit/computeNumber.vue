@@ -323,6 +323,7 @@
 <style lang="postcss" scoped>
 .row-box{
     margin: 10px 0 ;
+    font-size: 12px;
 }
 .mg-top-5{
     margin-top: 5px;

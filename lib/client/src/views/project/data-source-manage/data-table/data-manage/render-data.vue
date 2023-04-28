@@ -21,10 +21,40 @@
                 class="import-data"
                 :title="$t('导入数据')"
                 :tips="$t('如果导入 sql 文件，仅支持解析插入数据的语法')"
+                :uploadKey="dataImportOperationType"
                 :parse-import="parseImport"
                 :handle-import="handleImport"
                 @downloadTemplate="handleDownloadTemplate"
-            />
+            >
+                <template v-slot:tips="slotProps">
+                    <template v-if="slotProps.fileType === DATA_FILE_TYPE.SQL">
+                        支持INSERT、UPDATE、DELETE三种操作，时间类型的值需要转成0时区，
+                    </template>
+                </template>
+                <template v-slot="slotProps">
+                    <template v-if="slotProps.fileType === DATA_FILE_TYPE.XLSX">
+                        <h5 class="import-title">操作类型</h5>
+                        <bk-radio-group
+                            v-model="dataImportOperationType"
+                            class="import-content"
+                        >
+                            <bk-radio-button
+                                v-for="item in Object.values(DATA_IMPORT_OPERATION_TYPE)"
+                                :value="item.ID"
+                                :key="item.ID"
+                            >
+                                <span
+                                    :class="{
+                                        'import-tips': true,
+                                        checked: dataImportOperationType === item.ID
+                                    }"
+                                    v-bk-tooltips="{ content: item.TIPS }"
+                                >{{ item.NAME }}</span>
+                            </bk-radio-button>
+                        </bk-radio-group>
+                    </template>
+                </template>
+            </import-data>
         </section>
 
         <bk-table
@@ -169,7 +199,7 @@
         reactive
     } from '@vue/composition-api'
     import Vue from 'vue'
-    import { messageError } from '@/common/bkmagic'
+    import { messageError, messageSuccess } from '@/common/bkmagic'
     import { bkInfoBox } from 'bk-magic-vue'
     import router from '@/router'
     import store from '@/store'
@@ -179,6 +209,8 @@
         DataJsonParser,
         DataSqlParser,
         FIELDS_TYPES,
+        DATA_FILE_TYPE,
+        DATA_IMPORT_OPERATION_TYPE,
         generateExportDatas,
         handleImportData
     } from 'shared/data-source'
@@ -268,6 +300,7 @@
                 size: 'small'
             })
             const downloadType = ref('')
+            const dataImportOperationType = ref(DATA_IMPORT_OPERATION_TYPE.ALL_INSERT.ID)
             const userInfo = store.state.user
 
             const calcTableSetting = () => {
@@ -487,7 +520,11 @@
             }
 
             const modifyOnlineDb = (sql) => {
-                const apiData = { environment: environment.value.key, projectId, sql }
+                const apiData = {
+                    environment: environment.value.key,
+                    projectId,
+                    sql
+                }
                 return store.dispatch('dataSource/modifyOnlineDb', apiData)
             }
 
@@ -496,15 +533,18 @@
             }
 
             const exportSelectDatas = (fileType) => {
-                // 导出数据过滤掉 id
+                // 生产 sql 语法不需要id
                 const datas = [{
                     tableName: activeTable.value.tableName,
                     list: dataStatus.selectRows.map((row) => {
-                        const { id, ...rest } = row
-                        return rest
+                        if (fileType === DATA_FILE_TYPE.SQL) {
+                            const { id, ...rest } = row
+                            return rest
+                        }
+                        return row
                     })
                 }]
-                const fileName = fileType === 'sql' ? `bklesscode-data-${projectId}.sql` : ''
+                const fileName = fileType === DATA_FILE_TYPE.SQL ? `bklesscode-data-${projectId}.sql` : ''
                 const files = generateExportDatas(datas, fileType, fileName)
                 files.forEach(({ name, content }) => {
                     downloadFile(content, name)
@@ -522,6 +562,7 @@
                     exportSelectDatas(fileType)
                 }
             }
+
             // 解析导入的数据
             const parseImport = ({ data, type }) => {
                 return new Promise((resolve, reject) => {
@@ -531,37 +572,68 @@
                             type,
                             activeTable.value.columns.map(column => column.name)
                         )
-                        // 去除 id，由 DB 自增长
-                        // 如果内置时间字段没填，去掉该字段，由系统自动生成
-                        // 如果内置用户没填，取当前登录人
-                        const filterList = list.map((item) => {
-                            const { id, createTime, updateTime, ...rest } = item
-                            if (!isEmpty(createTime)) {
-                                rest.createTime = createTime
-                            }
-                            if (!isEmpty(updateTime)) {
-                                rest.updateTime = updateTime
-                            }
-                            if (isEmpty(rest.updateUser)) {
-                                rest.updateUser = userInfo.username
-                            }
-                            if (isEmpty(rest.createUser)) {
-                                rest.createUser = userInfo.username
-                            }
-                            return rest
-                        })
                         resolve({
-                            data: filterList,
-                            message: window.i18n.t('解析到【{0}】条数据，点击导入后插入到数据库', [filterList.length])
+                            data: list,
+                            message: type === DATA_FILE_TYPE.XLSX ? window.i18n.t('解析到【{0}】条数据，点击导入后插入到数据库', [list.length]) : ''
                         })
                     } catch (error) {
                         reject(error)
                     }
                 })
             }
+
             // 执行导入
-            const handleImport = (data) => {
-                return updateDB(activeTable.value.tableName, data, new DataParse())
+            const handleImport = (data, fileType) => {
+                // 导入成功提示消息
+                const handleImportSuccessMessage = (results) => {
+                    const affectedRows = results.reduce((acc, cur) => {
+                        acc += cur.affectedRows
+                        return acc
+                    }, 0)
+                    messageSuccess(`数据导入操作执行成功，数据库受影响的行数为：${affectedRows}`)
+                }
+                // sql 导入则直接执行 sql 语法
+                if (fileType === DATA_FILE_TYPE.SQL) {
+                    return modifyOnlineDb(data.content).then((results) => {
+                        closeForm()
+                        getDataList()
+                        handleImportSuccessMessage(results)
+                    })
+                }
+
+                // 如果内置时间字段没填，去掉该字段，由系统自动生成
+                // 如果内置用户没填，取当前登录人
+                const filterList = data.map((item) => {
+                    const { createTime, updateTime, ...rest } = item
+                    if (!isEmpty(createTime)) {
+                        rest.createTime = createTime
+                    }
+                    if (!isEmpty(updateTime)) {
+                        rest.updateTime = updateTime
+                    }
+                    if (isEmpty(rest.updateUser)) {
+                        rest.updateUser = userInfo.username
+                    }
+                    if (isEmpty(rest.createUser)) {
+                        rest.createUser = userInfo.username
+                    }
+                    // 新增导入和有唯一性约束的情况下，导入不需要id字段
+                    if (dataImportOperationType.value === DATA_IMPORT_OPERATION_TYPE.ALL_INSERT.ID
+                        || activeTable.value.columns.some(column => column.unique)
+                    ) {
+                        delete rest.id
+                    }
+                    Object.defineProperty(
+                        rest,
+                        '_dataImportOperationType',
+                        {
+                            value: dataImportOperationType.value,
+                            enumerable: false
+                        }
+                    )
+                    return rest
+                })
+                return updateDB(activeTable.value.tableName, filterList, new DataParse()).then(handleImportSuccessMessage)
             }
 
             const handleDownloadTemplate = (type) => {
@@ -583,7 +655,7 @@
                 }
                 // 过滤掉不需要导出的字段
                 const filterColumns = activeTable.value.columns.filter((column) => {
-                    return column.name !== 'id'
+                    return column.name !== 'id' || type === DATA_FILE_TYPE.XLSX
                 })
                 // 基于当前选择的表构建示例数据
                 const demoData = filterColumns.reduce((acc, cur) => {
@@ -594,7 +666,7 @@
                 downloadDataTemplate(
                     type,
                     {
-                        tableName: 'demo_data',
+                        tableName: activeTable.value?.tableName,
                         list: [demoData]
                     }
                 )
@@ -628,11 +700,14 @@
             })
 
             return {
+                DATA_FILE_TYPE,
+                DATA_IMPORT_OPERATION_TYPE,
                 formRef,
                 dataStatus,
                 formStatus,
                 tableSetting,
                 downloadType,
+                dataImportOperationType,
                 getColumnRule,
                 columnFormatter,
                 timeFormatter,
@@ -668,5 +743,28 @@
     .edit-data-form {
         padding: 25px;
         min-height: calc(100vh - 60px);
+    }
+    .import-title {
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 20px;
+        margin: 0 0 6px;
+    }
+    .import-content {
+        margin-bottom: 25px;
+        .bk-form-radio-button {
+            width: 33.33%;
+        }
+        /deep/ .bk-radio-button-text {
+            width: 100%;
+        }
+    }
+    .import-tips {
+        border-bottom: 1px dashed #313238;
+        padding-bottom: 2px;
+        line-height: 20px;
+        &.checked {
+            border-bottom: 1px dashed #3a84ff;
+        }
     }
 </style>

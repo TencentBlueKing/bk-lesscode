@@ -12,6 +12,7 @@
         <bk-table-column :label="$t('长度')" prop="length"></bk-table-column>
         <bk-table-column :label="$t('小数点')" prop="scale"></bk-table-column>
         <bk-table-column :label="$t('索引')" prop="index" :formatter="boolFormatter"></bk-table-column>
+        <bk-table-column :label="$t('唯一性约束')" prop="unique" :formatter="boolFormatter"></bk-table-column>
         <bk-table-column :label="$t('可空')" prop="nullable" :formatter="boolFormatter"></bk-table-column>
         <bk-table-column :label="$t('默认值')" prop="default" show-overflow-tooltip></bk-table-column>
         <bk-table-column :label="$t('备注')" prop="comment" show-overflow-tooltip></bk-table-column>
