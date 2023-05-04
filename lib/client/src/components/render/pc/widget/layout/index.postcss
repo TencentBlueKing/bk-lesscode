@@ -68,14 +68,20 @@
     .side-menu-wraper{
         position: relative;
         height: calc(100vh - 300px);
-        border: 1px solid transparent;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid transparent;
         overflow-y: auto;
         @mixin scroller;
+        .lesscode-bk-menu {
+            pointer-events: none;
+        }
         &:hover{
-            border: 1px dashed #3a84ff;
+            border-top: 1px dashed #3a84ff;
+            border-bottom: 1px dashed #3a84ff;
         }
         &.selected{
-            border: 1px solid #3a84ff !important;
+            border-top: 1px solid #3a84ff !important;
+            border-bottom: 1px solid #3a84ff !important;
         }
     }
     .message-box{
