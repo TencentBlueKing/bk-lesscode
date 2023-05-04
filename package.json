@@ -74,7 +74,7 @@
     "@blueking/bkui-vue-complex": "0.0.8",
     "@blueking/bundless": "0.0.8",
     "@blueking/bundless-plugin-vue2": "0.0.10",
-    "@blueking/bundless-plugin-vue3": "0.0.8",
+    "@blueking/bundless-plugin-vue3": "^0.0.8",
     "@blueking/cli-service-webpack": "0.0.0-beta.73",
     "@blueking/magicbox-header": "~1.1.49",
     "@blueking/user-selector": "^1.0.7",
