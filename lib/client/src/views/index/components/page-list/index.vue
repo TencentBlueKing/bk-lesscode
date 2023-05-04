@@ -60,6 +60,7 @@
                             <i class="bk-icon icon-plus-circle" /> 新建PC自定义页面
                         </div>
                         <div
+                            v-if="!isVue3"
                             class="page-row"
                             @click="handleCreate('PC', 'FORM')">
                             <i class="bk-icon icon-plus-circle" /> 新建PC表单页面
@@ -125,7 +126,10 @@
                 'pageList',
                 'platform'
             ]),
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId', versionName: 'currentVersionName', getInitialVersion: 'initialVersion' })
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId', versionName: 'currentVersionName', getInitialVersion: 'initialVersion' }),
+            isVue3 () {
+                return this.projectDetail.framework === 'vue3'
+            }
         },
         watch: {
             pageList (val) {

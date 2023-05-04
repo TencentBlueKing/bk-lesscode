@@ -6,7 +6,7 @@
 
 <script>
     import { useRoute } from '@/router'
-    import simulatorMobile from '@/components/render/mobile/common/simulator-mobile.vue'
+    import simulatorMobile from '@/components/render/mobile/common/simulator-mobile/simulator-mobile'
     import getHeaderHeight from '@/components/render/mobile/common/mobile-header-height'
 
     export default {
@@ -40,7 +40,7 @@
 </script>
 
 <style lang="postcss" scoped>
-    @import './../../components/render/mobile/area.scss';
+    @import './../../components/render/mobile/area.postcss';
 
     .area-wrapper {
         display: flex;

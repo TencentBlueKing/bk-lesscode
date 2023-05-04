@@ -14,7 +14,7 @@
     import httpVueLoader from '@/common/http-vue-loader'
     import * as swiperAni from '@/common/swiper.animate.min.js'
     import '@/css/animate.min.css'
-    import mobileHeader from '@/components/render/mobile/common/mobile-header.vue'
+    import mobileHeader from '@/components/render/mobile/common/mobile-header/mobile-header'
 
     window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []
