@@ -6,7 +6,7 @@
 <script>
     import tabBar from './tab-bar.vue'
     import emptyLayout from './empty-layout.vue'
-    import { mapGetters } from 'vuex'
+    import store from '@/store'
 
     const componentMap = {
         'mobile-bottom': tabBar,
@@ -17,7 +17,9 @@
             tabBar
         },
         computed: {
-            ...mapGetters('layout', ['pageLayout']),
+            pageLayout () {
+                return store.getters['layout/pageLayout']
+            },
             component () {
                 const type = this.pageLayout?.layoutType
                 if (!componentMap[type]) {

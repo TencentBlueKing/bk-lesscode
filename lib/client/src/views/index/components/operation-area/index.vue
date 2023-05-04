@@ -35,7 +35,7 @@
     import LC from '@/element-materials/core'
 
     export default {
-        name: '',
+        name: 'operation-area',
         components: {
             Render
         },
