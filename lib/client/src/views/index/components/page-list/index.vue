@@ -59,7 +59,7 @@
             </div>
             <create-page-entry class="canvas-theme" />
         </div>
-        <page-dialog ref="pageDialog" action="copy" />
+        <page-dialog ref="pageDialog" action="copy" :refresh-list="getPageList" />
     </div>
 </template>
 <script>
@@ -81,7 +81,7 @@
             return {
                 NOCODE_TYPE_MAP,
                 selectPageId: '',
-                classPageList: [
+                emptyClassPageList: [
                     {
                         id: 'PC',
                         name: 'PC 页面',
@@ -96,7 +96,8 @@
                         icon: 'bk-drag-mobilephone',
                         children: []
                     }
-                ]
+                ],
+                classPageList: []
             }
         },
         computed: {
@@ -134,6 +135,7 @@
         },
         methods: {
             initClassPageList () {
+                this.classPageList = JSON.parse(JSON.stringify(this.emptyClassPageList))
                 this.pageList.forEach(page => {
                     if (page.pageType === 'MOBILE') {
                         this.classPageList[1].children.push(page)
@@ -208,6 +210,13 @@
                 this.$refs.pageDialog.dialog.formData.pageRoute = ''
                 this.$refs.pageDialog.dialog.visible = true
                 this.$refs.pageSelect.close()
+            },
+            async getPageList () {
+                const pageList = await this.$store.dispatch('page/getList', {
+                    projectId: this.projectId,
+                    versionId: this.versionId
+                })
+                this.$store.commit('page/setPageList', pageList || [])
             }
         }
     }

@@ -34,16 +34,6 @@
                         </template>
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item
-                    label="本页面添加到导航菜单"
-                    v-if="action === 'create' && showAddNavListSwitcher"
-                    :label-width="170"
-                    error-display-type="normal">
-                    <bk-switcher
-                        theme="primary"
-                        :value="isAddNavList"
-                        @change="(val) => isAddNavList = val" />
-                </bk-form-item>
             </bk-form>
             <div class="dialog-footer" slot="footer">
                 <bk-button
@@ -100,6 +90,11 @@
                                 required: true,
                                 message: '必填项',
                                 trigger: 'blur'
+                            },
+                            {
+                                validator: this.checkName,
+                                message: '该页面名称已存在',
+                                trigger: 'blur'
                             }
                         ],
                         pageCode: [
@@ -111,6 +106,11 @@
                             {
                                 regex: /^[a-z][a-zA-Z0-9]{0,60}$/,
                                 message: '以小写字母开头，由字母与数字组成',
+                                trigger: 'blur'
+                            },
+                            {
+                                validator: this.checkName,
+                                message: '该页面ID已存在',
                                 trigger: 'blur'
                             }
                         ],
@@ -165,9 +165,6 @@
             },
             isMobile () {
                 return this.dialog.formData.pageType === 'MOBILE'
-            },
-            showAddNavListSwitcher () {
-                return this.selectedLayout.type && !['empty', 'mobile-empty'].includes(this.selectedLayout.type)
             }
         },
         watch: {
@@ -198,6 +195,24 @@
             this.layoutList = await this.$store.dispatch('layout/getList', { projectId: this.projectId, versionId: this.versionId })
         },
         methods: {
+            async checkName () {
+                const nameExist = await this.$store.dispatch('page/checkName', {
+                    data: {
+                        pageName: this.dialog.formData.pageName,
+                        pageCode: this.dialog.formData.pageCode,
+                        projectId: this.projectId,
+                        versionId: this.versionId,
+                        currentName: this.currentName,
+                        from: this.action,
+                        blurCheck: true
+                    }
+                })
+                if (nameExist) {
+                    return false
+                } else {
+                    return true
+                }
+            },
             async handleDialogConfirm () {
                 this.dialog.loading = true
                 try {
@@ -228,14 +243,6 @@
                             pageData,
                             projectId: this.projectId,
                             versionId: this.versionId
-                        }
-                    }
-                    if (this.action === 'create') {
-                        const { id, routePath } = this.layoutList.find(layout => layout.checked)
-                        payload.data.layout = { id, routePath }
-
-                        if (this.showAddNavListSwitcher) {
-                            payload.data.pageData.isAddNav = this.isAddNavList
                         }
                     }
                     const res = await this.$store.dispatch(this.requestMethod, payload)

@@ -12,16 +12,22 @@
 <template>
     <section>
         <span v-if="readOnly" class="style-size-unit-span">{{value}}</span>
-        <bk-dropdown-menu trigger="click" ext-cls="style-unit" v-else>
-            <div class="dropdown-trigger-text" slot="dropdown-trigger">
+        <bk-select
+            v-else
+            @change="(val) => $emit('change', val)"
+            ext-cls="style-unit"
+            ext-popover-cls="style-unit-content"
+        >
+            <div slot="trigger" class="dropdown-trigger-text">
                 <span class="style-size-unit">{{value}}</span>
             </div>
-            <ul class="bk-dropdown-list bk-dropdown-list-unit" slot="dropdown-content">
-                <template v-for="unit in unitList">
-                    <li :key="unit"><a href="javascript:;" @click="$emit('change', unit, $event)">{{unit}}</a></li>
-                </template>
-            </ul>
-        </bk-dropdown-menu>
+            <bk-option
+                v-for="(unit, index) in unitList"
+                :key="index"
+                :id="unit"
+                :name="unit">
+            </bk-option>
+        </bk-select>
     </section>
 </template>
 
@@ -51,17 +57,8 @@
 </script>
 
 <style lang="postcss">
-    /* .style-unit .bk-dropdown-content {
-        z-index: 1000;
-    }
-    .bk-dropdown-unit-list {
-        z-index: 1000;
-    } */
     .small-padding .style-size-unit {
         padding: 0;
-    }
-    .bk-dropdown-list-unit {
-        z-index: 3000;
     }
     .dropdown-trigger-text {
         width: 22px;
@@ -86,5 +83,14 @@
             border-radius: 2px;
         }
     }
-    
+    .style-unit {
+        border: none;
+        &.is-focus {
+            box-shadow: none;
+        }
+    }
+    .style-unit-content {
+        font-size: 12px;
+        width: 52px !important;
+    }
 </style>

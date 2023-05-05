@@ -95,35 +95,7 @@
                 />
             </div>
         </div>
-        <!-- 创建应用弹窗 -->
-        <bk-dialog v-model="dialog.create.visible"
-            render-directive="if"
-            theme="primary"
-            width="750"
-            :position="{ top: 100 }"
-            :mask-close="false"
-            :auto-close="false"
-            header-position="left"
-            ext-cls="project-create-dialog">
-            <span slot="header">
-                {{ createDialogTitle }}
-                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
-            </span>
-            <!-- 表单组件，根据projectType来判断是创建空白应用还是导入应用，还是从已有模板选择 -->
-            <project-form
-                ref="projectForm"
-                :type="dialog.create.projectType"
-                :props-form-data="dialog.create.formData"
-                :default-layout-list="defaultLayoutList">
-            </project-form>
-            <div class="dialog-footer" slot="footer">
-                <bk-button
-                    theme="primary"
-                    :loading="dialog.create.loading"
-                    @click="handleCreateConfirm">确定</bk-button>
-                <bk-button @click="handleCancel('create')" :disabled="dialog.create.loading">取消</bk-button>
-            </div>
-        </bk-dialog>
+        
         <!-- 应用重命名弹窗 -->
         <bk-dialog v-model="dialog.rename.visible"
             theme="primary"
@@ -181,7 +153,9 @@
             </div>
         </bk-dialog>
 
-        <template-dialog ref="templateDialog" @preview="handlePreview" @to-page="handleGotoPage"></template-dialog>
+        <create-empty-project-dialog ref="createDialog" />
+
+        <template-dialog ref="templateDialog" @preview="handlePreview"></template-dialog>
 
         <download-dialog ref="downloadDialog"></download-dialog>
 
@@ -194,11 +168,11 @@
 <script>
     import { mapGetters } from 'vuex'
     import dayjs from 'dayjs'
-    import ProjectForm from '../components/project-form'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import ExportDialog from '../components/export-dialog'
     import DownloadDialog from '../components/download-dialog'
     import TemplateDialog from '../components/template-dialog'
+    import CreateEmptyProjectDialog from '../components/create-empty-project-dialog'
     import IconButtonToggle from '@/components/ui/icon-button-toggle.vue'
     import SortSelect from '@/components/project/sort-select'
     import ListCard from './children/list-card.vue'
@@ -212,11 +186,11 @@
 
     export default {
         components: {
-            ProjectForm,
             PagePreviewThumb,
             ExportDialog,
             DownloadDialog,
             TemplateDialog,
+            CreateEmptyProjectDialog,
             SetTemplateDialog,
             IconButtonToggle,
             SortSelect,
@@ -234,12 +208,6 @@
                     { name: '我收藏的', value: 'favorite' }
                 ],
                 dialog: {
-                    create: {
-                        visible: false,
-                        loading: false,
-                        projectType: 'newProject',
-                        formData: {}
-                    },
                     rename: {
                         visible: false,
                         loading: false,
@@ -283,8 +251,6 @@
                 activatedProject: {},
                 pageLoading: true,
                 projectCodeOldValue: '',
-                defaultLayoutList: [],
-                layoutFullList: [],
                 displayTypeIcons: [
                     { name: 'card', icon: 'display-card', title: '卡片' },
                     { name: 'list', icon: 'display-list', title: '列表' }
@@ -306,10 +272,6 @@
             filter () {
                 return this.$route.query.filter || ''
             },
-            createDialogTitle () {
-                const { projectType } = this.dialog.create
-                return projectType === 'copyProject' ? '复制应用' : (projectType === 'importProject') ? '导入应用' : '新建应用'
-            },
             emptyType () {
                 if (this.$route.query?.q?.length > 0) {
                     return 'search'
@@ -329,7 +291,6 @@
         },
         created () {
             this.getProjectList()
-            this.getDefaultLayout()
         },
         methods: {
             getCursorData () {
@@ -341,21 +302,6 @@
             },
             hideSelectorPanel () {
                 console.error('hideSelectorPanel')
-            },
-            async getDefaultLayout () {
-                try {
-                    const layoutList = await this.$store.dispatch('layout/getPlatformList')
-                    layoutList.forEach(item => {
-                        const isEmptyType = ['empty', 'mobile-empty'].includes(item.type)
-                        item.isDefault = isEmptyType
-                        item.checked = isEmptyType
-                        item.disabled = isEmptyType
-                    })
-                    this.layoutFullList = layoutList
-                    this.defaultLayoutList = this.layoutFullList.filter(item => item.type !== 'mobile-empty')
-                } catch (e) {
-                    console.error(e)
-                }
             },
             async getProjectList () {
                 this.pageLoading = true
@@ -393,84 +339,7 @@
                     updateTime: project.createTime
                 }
             },
-            async handleCreateConfirm () {
-                try {
-                    const data = this.$refs.projectForm.formData || {}
-                    await this.$refs.projectForm.validate()
-
-                    const { projectType } = this.dialog.create
-
-                    let actionMethod = 'project/create'
-                    if (projectType === 'newProject') {
-                        const layouts = this.layoutFullList.filter(layout => layout.checked || layout.type === 'mobile-empty').map(layout => {
-                            return {
-                                layoutId: layout.id,
-                                routePath: layout.defaultPath,
-                                isDefault: layout.isDefault,
-                                showName: layout.defaultName,
-                                layoutCode: layout.defaultCode,
-                                content: layout.defaultContent,
-                                layoutType: layout.layoutType
-                            }
-                        })
-                        data.layouts = layouts
-                    } else if (projectType === 'importProject') {
-                        actionMethod = 'project/import'
-                        const importProjectData = this.$refs.projectForm?.importProjectData || {}
-                        console.log(importProjectData, 223)
-                        if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
-                            this.$bkMessage({
-                                theme: 'error',
-                                message: '请先上传符合规范的应用json'
-                            })
-                            return
-                        }
-                        Object.assign(data, { importProjectData, copyFrom: undefined })
-                    }
-                    
-                    this.dialog.create.loading = true
-                    const projectId = await this.$store.dispatch(actionMethod, { data })
-
-                    this.messageSuccess('应用创建成功')
-                    this.dialog.create.visible = false
-
-                    setTimeout(() => {
-                        this.handleGotoPage(projectId)
-                    }, 300)
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.dialog.create.loading = false
-                }
-            },
-            async handleImportConfirm () {
-                try {
-                    await this.$refs.projectForm.validate()
-                    const importProjectData = this.$refs.projectForm?.importProjectData || {}
-                    if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
-                        this.$bkMessage({
-                            theme: 'error',
-                            message: '请先上传符合规范的应用json'
-                        })
-                        return
-                    }
-                    const data = this.$refs.projectForm.formData
-                    Object.assign(data, { importProjectData })
-                    this.dialog.create.loading = true
-                    const projectId = await this.$store.dispatch('project/import', { data })
-
-                    this.messageSuccess('应用创建成功')
-                    this.dialog.create.visible = false
-
-                    setTimeout(() => {
-                        this.handleGotoPage(projectId)
-                    }, 300)
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.dialog.create.loading = false
-                }
-            },
+            
             async handleCollect (project) {
                 try {
                     const favorite = project.favorite ? 0 : 1
@@ -561,16 +430,16 @@
                 this.dialog.delete.formData.projectName = ''
             },
             handleCreate (type = 'newProject') {
-                this.dialog.create.projectType = type
-                this.dialog.create.formData.projectName = ''
-                this.dialog.create.formData.copyFrom = null
-                this.dialog.create.visible = true
+                this.$refs.createDialog.projectType = type
+                this.$refs.createDialog.formData.projectName = ''
+                this.$refs.createDialog.formData.copyFrom = null
+                this.$refs.createDialog.visible = true
             },
             async handleCopy (project) {
-                this.dialog.create.projectType = 'copyProject'
-                this.dialog.create.formData.copyFrom = project.id
-                this.dialog.create.formData.projectName = `${project.projectName}copy`
-                this.dialog.create.visible = true
+                this.$refs.createDialog.projectType = 'copyProject'
+                this.$refs.createDialog.formData.copyFrom = project.id
+                this.$refs.createDialog.formData.projectName = `${project.projectName}copy`
+                this.$refs.createDialog.visible = true
             },
             async handleExport (project) {
                 this.$refs.exportDialog.isShow = true
@@ -784,90 +653,6 @@
         .dialog-footer {
             button {
                 width: 86px;
-            }
-        }
-    }
-
-    .project-create-dialog {
-        .layout-desc {
-            font-size: 12px;
-            color: #979BA5;
-        }
-        .layout-list {
-            display: flex;
-            margin-left: 10px;
-            .list-item {
-                position: relative;
-                width: 158px;
-                height: 120px;
-                background: #ffffff;
-                border-radius: 2px;
-                &:hover {
-                    .default-setting {
-                        display: block;
-                    }
-                }
-                .default-span {
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                    border-radius: 2px;
-                    font-size: 12px;
-                    padding: 0 5px;
-                }
-                .default-checked {
-                    cursor: default;
-                    color: #fff;
-                    background: #FFB848;
-                }
-                .default-setting {
-                    display: none;
-                    background: #e1ecff;
-                    color: #3a84ff;
-                    cursor: pointer;
-                }
-                .checked-icon-div {
-                    position: absolute;
-                    right: 0;
-                    bottom: 0;
-                    width: 34px;
-                    height: 32px;
-                    background: linear-gradient(135deg,transparent 50%,#3a84ff 50%);
-                    border-radius: 0px 2px 0px;
-                    text-align: right;
-                    .checked-icon {
-                        display: block;
-                        color: #fff;
-                        font-size: 20px;
-                        margin: 12px 0 0 12px;
-                    }
-                }
-            }
-            .layout-empty-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #979ba5;
-                font-size: 12px;
-                border: 1px solid #c4c6cc;
-                cursor: default;
-            }
-            .layout-item {
-                cursor: pointer;
-                border: 1px solid #dcdee5;
-                margin-left: 12px;
-                .layout-img {
-                    margin: 6px 6px 0;
-                    img {
-                        width: 146px;
-                        height: 88px;
-                    }
-                }
-                .layout-info {
-                    text-align: center;
-                    font-size: 12px;
-                    color: #63656e;
-                }
             }
         }
     }

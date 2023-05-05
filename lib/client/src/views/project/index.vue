@@ -1,23 +1,16 @@
 <template>
     <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
-        <aside class="aside" v-if="!hideSideNav">
-            <!-- <div class="side-hd" @mouseenter="asideHover = true" @mouseleave="asideHover = false"> -->
-            <div class="side-hd" @mouseenter="asideHover = true">
-                <div class="open-select-menu-div" v-if="!asideFolded || asideHover">
+        <aside class="aside" v-if="!hideSideNav" @mouseenter="asideHover = true" @mouseleave="asideHover = false">
+            <div class="side-hd">
+                <div class="open-select-menu-div" v-show="!asideFolded || asideHover">
                     <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
-                    <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject" search-placeholder="输入应用名称搜索">
-                        <bk-option v-for="option in projectList"
-                            :key="option.id"
-                            :id="option.id"
-                            :name="option.projectName">
-                        </bk-option>
-                    </bk-select>
+                    <select-project :project-list="projectList" />
                 </div>
                 <div v-show="asideFolded && !asideHover" class="fold-logo">
                     {{(curProject.projectName || '').substr(0, 1)}}
                 </div>
             </div>
-            <div class="side-bd" :class="{ 'no-click': pageLoading }" @mouseenter="asideHover = true" @mouseleave="asideHover = false">
+            <div class="side-bd" :class="{ 'no-click': pageLoading }">
                 <bk-navigation-menu
                     ref="menu"
                     class="nav-list"
@@ -70,8 +63,8 @@
                     </bk-navigation-menu-item>
                 </bk-navigation-menu>
             </div>
-            <div class="side-ft" v-if="showMenuFooter">
-                <span class="nav-toggle" @click="asideFolded = !asideFolded">
+            <div class="side-ft" v-if="showMenuFooter" @mouseenter.stop>
+                <span class="nav-toggle" @click="toggleNav">
                     <i class="bk-icon icon-expand-line"></i>
                 </span>
             </div>
@@ -103,11 +96,14 @@
 
 <script>
     import { bus } from '@/common/bus'
+    import SelectProject from '@/components/project/select-project'
     import ExtraLinks from '@/components/ui/extra-links'
+
     import { PROJECT_NAV_LIST } from './project-data'
 
     export default {
         components: {
+            SelectProject,
             ExtraLinks
         },
         data () {
@@ -181,9 +177,8 @@
                 this.pageLoading = true
                 this.updateCurrentVersion(this.getInitialVersion())
                 bus.$on('update-project-version', this.updateCurrentVersion)
-                bus.$on('update-project-list', this.getProjectList)
+                bus.$on('update-project-info', this.updateProjectInfo)
                 bus.$on('is-fold-aside', ({ isFold = false, showMenuFooter = true }) => {
-                    console.log(isFold, showMenuFooter, this.$route.name)
                     this.asideFolded = isFold
                     this.showMenuFooter = showMenuFooter
                 })
@@ -194,8 +189,7 @@
                 }
 
                 this.projectId = parseInt(this.$route.params.projectId)
-                await this.getProjectList()
-                await this.setCurrentProject()
+                await this.updateProjectInfo()
 
                 // 在 setCurrentProject 请求之后再赋值，因为 setCurrentProject 请求会给 curProject 设置 canXXXX 等操作的属性
                 const dealPermission = (item) => {
@@ -242,6 +236,16 @@
                 e.preventDefault()
                 e.stopPropagation()
             },
+            toggleNav () {
+                this.asideFolded = !this.asideFolded
+                if (this.asideFolded) {
+                    this.asideHover = false
+                }
+            },
+            async updateProjectInfo () {
+                await this.getProjectList()
+                await this.setCurrentProject()
+            },
             setDefaultActive () {
                 let name = this.$route.name
                 
@@ -282,22 +286,6 @@
                 const projectList = await this.$store.dispatch(url, { config: {} })
                 this.projectList = projectList
             },
-            changeProject (id) {
-                if (this.$route.name === 'new' || this.$route.name === 'editNocode') {
-                    this.$router.push({
-                        name: 'pageList',
-                        params: {
-                            projectId: id
-                        }
-                    })
-                } else {
-                    this.$router.replace({
-                        params: {
-                            projectId: id
-                        }
-                    })
-                }
-            },
             handleChangeProjectVersion (versionId, version) {
                 this.setCurrentVersion(version)
             },
@@ -320,8 +308,10 @@
     @import "@/css/mixins/ellipsis";
     @import "@/css/mixins/scroller";
 
-    .select-project-dropdown .bk-select-search-input {
-        padding: 0 10px 0 30px;
+    .select-project-dropdown {
+        .bk-select-search-input {
+            padding: 0 10px 0 30px;
+        }
     }
 
     .project-layout {
@@ -396,6 +386,7 @@
 
             .side-hd-bd {
                 height: 100%;
+                position: relative;
             }
 
             .side-hd {
@@ -416,11 +407,12 @@
                 .fold-logo {
                     width: 32px;
                     height: 32px;
-                    background: #3A4561;
+                    background: rgb(45, 53, 66);
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     border-radius: 2px;
+                    color: #DCDEE5;
                 }
                 .select-project {
                     width: 188px;
@@ -570,7 +562,7 @@
             .menu-child{
                 .navigation-menu-item{
                     &:hover {
-                        background: #3A4561;
+                        background: #242838;
                         /* background: #fff;
                         opacity: 0.1; */
                     }
