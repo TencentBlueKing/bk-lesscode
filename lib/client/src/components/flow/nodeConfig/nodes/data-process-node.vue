@@ -7,7 +7,7 @@
                 class="data-process-node-form"
                 :rules="rules"
                 :model="dataProcessConfig">
-                <bk-form-item :label="$t('节点名称')" property="name" :required="true">
+                <bk-form-item :label="$t('form_节点名称')" property="name" :required="true">
                     <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
                 </bk-form-item>
                 <bk-form-item :label="$t('处理人')" :required="true">
@@ -21,12 +21,12 @@
                     </processors>
                 </bk-form-item>
                 <div class="action-select-area">
-                    <bk-form-item :label="$t('节点动作')" property="action" :required="true">
+                    <bk-form-item :label="$t('form_节点动作')" property="action" :required="true">
                         <bk-select :value="dataProcessConfig.action" :clearable="false" :disabled="!editable" @selected="handleSelectAction">
                             <bk-option v-for="item in actions" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
-                    <bk-form-item :label="$t('目标表单')" property="tableName" class="target-form" :required="true">
+                    <bk-form-item :label="$t('form_目标表单')" property="tableName" class="target-form" :required="true">
                         <bk-select
                             :value="dataProcessConfig.tableName"
                             :clearable="false"
@@ -49,7 +49,7 @@
                         </i>
                     </bk-form-item>
                 </div>
-                <bk-form-item :label="$t('字段映射规则')">
+                <bk-form-item :label="$t('form_字段映射规则')">
                     <template v-if="dataProcessConfig.action && dataProcessConfig.tableName !== ''">
                         <!-- 满足条件，删除、更新动作存在 -->
                         <div v-if="['DELETE', 'EDIT'].includes(dataProcessConfig.action)" class="rules-section">
@@ -324,7 +324,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else :class="['data-empty', { disabled: !editable }]" @click="handleAddMapping(-1)">{{ $t('点击添加-0') }}</div>
+                            <div v-else :class="['data-empty', { disabled: !editable }]" @click="handleAddMapping(-1)">{{ $t('点击添加') }}</div>
                         </div>
                     </template>
                     <bk-exception v-else class="no-data" type="empty" scene="part">{{ $t('请选择节点动作和目标表单') }}</bk-exception>

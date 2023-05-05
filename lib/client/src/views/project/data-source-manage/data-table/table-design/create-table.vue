@@ -24,7 +24,10 @@
                     <import-table
                         class="import-table"
                         :title="$t('导入表结构')"
-                        :tips="`1. ${$t('如果导入 sql 文件，仅支持解析创建表的语法')}<br>2. ${$t('仅支持系统可创建的字段类型')}<br>3.${$t('系统内置字段会默认添加且不可修改')}} <br>4. ${$t('导入文件后会解析并更新表字段配置')}`"
+                        :tips="`1. ${$t('如果导入 sql 文件，仅支持解析创建表的语法')}<br>
+                                2. ${$t('仅支持系统可创建的字段类型')}<br>
+                                3.${$t('系统内置字段会默认添加且不可修改')}} <br>
+                                4. ${$t('导入文件后会解析并更新表字段配置')}`"
                         :parse-import="parseImport"
                         :handle-import="handleImport"
                         @downloadTemplate="downloadStructTemplate"

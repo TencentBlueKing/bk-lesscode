@@ -17,7 +17,7 @@
                 @change="handleValueChange('backgroundColor', $event)"
                 style="width: 100%;" />
         </style-item>
-        <style-item :name="$t('背景图')" v-if="handleHasKey('backgroundImage')">
+        <style-item :name="$t('form_背景图')" v-if="handleHasKey('backgroundImage')">
             <bk-switcher
                 :value="backgroundImageShow"
                 theme="primary"

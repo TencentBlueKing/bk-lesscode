@@ -5,14 +5,14 @@
         transfer
         :is-show="isShow"
         @update:isShow="handleCancel"
-        :width="$store.state.Language === 'en' ? 830 : 796"
+        :width="$store.state.Language === 'en' ? 907 : 796"
         :title="dialogTitle">
         <div slot="content" class="operation-content" v-enClass="'en-operation-content'">
             <div class="component-guide">
                 <a href="/help/custom" target="_blank">{{ $t('组件开发指引') }}</a>
             </div>
-            <bk-form ref="form" :label-width="$store.state.Language === 'en' ? 97 : 90" :model="formData" :rules="rules">
-                <bk-form-item :label="$t('组件类型')" required error-display-type="normal">
+            <bk-form ref="form" :label-width="$store.state.Language === 'en' ? 174 : 90" :model="formData" :rules="rules">
+                <bk-form-item :label="$t('form_组件类型')" required error-display-type="normal">
                     <bk-radio-group v-model="formData.compType">
                         <bk-radio-button value="PC">
                             <bk-radio :checked="formData.compType === 'PC'"
@@ -33,7 +33,7 @@
                         </bk-radio-button>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item :label="$t('组件包')" required error-display-type="normal">
+                <bk-form-item :label="$t('form_组件包')" required error-display-type="normal">
                     <bk-upload
                         class="component-upload"
                         :tip="uploadTips"
@@ -44,8 +44,8 @@
                         accept=".zip"
                         @on-success="handleUploadSuccess" />
                 </bk-form-item>
-                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">{{ $t('下载demo示例包') }}</bk-link>
-                <bk-form-item :label="$t('组件名称')" required property="name" error-display-type="normal">
+                <bk-link class="component-demo-link" v-enClass="'en-component-demo-link'" theme="primary" @click="handleDownloadDemo">{{ $t('下载demo示例包') }}</bk-link>
+                <bk-form-item :label="$t('form_组件名称')" required property="name" error-display-type="normal">
                     <bk-input
                         :value="formData.displayName && formData.name ? `${formData.displayName}(${formData.name})` : ''"
                         :placeholder="$t('上传组件包后解析config.json内的displayName和name配置生成')"
@@ -63,16 +63,16 @@
                             :name="item.name" />
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item :label="$t('组件介绍')" required property="description" error-display-type="normal">
+                <bk-form-item :label="$t('form_组件介绍')" required property="description" error-display-type="normal">
                     <bk-input v-model="formData.description" type="textarea" :maxlength="100" />
                 </bk-form-item>
-                <bk-form-item :label="$t('组件版本')" required property="version" error-display-type="normal">
+                <bk-form-item :label="$t('form_组件版本')" required property="version" error-display-type="normal">
                     <div class="component-version-wraper">
                         <bk-input v-model="formData.version" :placeholder="$t('版本号格式') + '：1.x.x'" style="width: 300px" />
                         <span v-if="isEdit" class="last-version">{{ $t('上个版本为 {0}', [lastVersion]) }}</span>
                     </div>
                 </bk-form-item>
-                <bk-form-item ref="log" :label="$t('版本日志')" required property="log" error-display-type="normal">
+                <bk-form-item ref="log" :label="$t('form_版本日志')" required property="log" error-display-type="normal">
                     <mavon-editor
                         :external-link="false"
                         v-model="formData.log"
@@ -323,6 +323,9 @@
                     font-size: 12px;
                 }
             }
+            .en-component-demo-link{
+                margin-left: 174px;
+            }
         }
         .sideslider-footer{
             padding-left: 120px;
@@ -364,7 +367,7 @@
             color: #3a84ff;
         }
     }
-    .operation-content{
+    .en-operation-content{
 
         .bk-form-radio-button .bk-radio-button-text {
             width: 327px;

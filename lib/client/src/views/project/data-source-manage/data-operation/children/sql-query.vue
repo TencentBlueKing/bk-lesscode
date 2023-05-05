@@ -38,7 +38,7 @@
                     </span>
                     <i
                         v-if="data.isTable"
-                        v-bk-tooltips="{ content: '点击生成查询该表SQL' }"
+                        v-bk-tooltips="{ content: $t('点击生成查询该表SQL') }"
                         class="bk-drag-icon bk-drag-sql"
                         @click.stop="handleAddQuerySql(data)"
                     ></i>

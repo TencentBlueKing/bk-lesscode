@@ -7,7 +7,7 @@
         :auto-close="false"
         header-position="left">
         <bk-form class="dialog-form" :label-width="86">
-            <bk-form-item :label="$t('页面路由')" error-display-type="normal">
+            <bk-form-item :label="$t('form_页面路由')" error-display-type="normal">
                 <bk-select
                     searchable
                     :clearable="false"

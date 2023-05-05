@@ -5,13 +5,13 @@
                 <bk-form-item :label="$t('用户名：')">
                     {{userData.username}}
                 </bk-form-item>
-                <bk-form-item :label="$t('中文名：')">
+                <bk-form-item :label="$t('form_中文名：')">
                     {{userData.chname}}
                 </bk-form-item>
-                <bk-form-item :label="$t('联系电话：')">
+                <bk-form-item :label="$t('form_联系电话：')">
                     {{userData.phone}}
                 </bk-form-item>
-                <bk-form-item :label="$t('常用邮箱：')">
+                <bk-form-item :label="$t('form_常用邮箱：')">
                     {{userData.email}}
                 </bk-form-item>
             </bk-form>

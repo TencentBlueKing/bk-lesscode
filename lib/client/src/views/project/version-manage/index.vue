@@ -5,7 +5,7 @@
                 <bk-button theme="primary" @click="handleCreate">{{ $t('新建') }}</bk-button>
             </div>
             <div class="search-bar">
-                <bk-input :placeholder="$t('应用版本')"
+                <bk-input :placeholder="$t('form_应用版本')"
                     style="width: 400px"
                     :clearable="true"
                     right-icon="bk-icon icon-search"

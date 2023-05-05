@@ -9,7 +9,7 @@
         >
             <bk-table-column
                 show-overflow-tooltip
-                :label="$t('请求地址')"
+                :label="$t('form_请求地址')"
                 prop="url"
             >
                 <template slot-scope="props">

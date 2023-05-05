@@ -7,9 +7,9 @@
             class="variable-table"
             size="medium"
         >
-            <bk-table-column :label="$t('变量名称')" prop="variableName" :render-header="renderHeader" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('变量标识')" prop="variableCode" :render-header="renderHeader" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('初始类型')" prop="valueType" :render-header="renderHeader" :formatter="valueTypeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('变量名称')" prop="variableName" :render-header="renderHeaderAddTitle" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('变量标识')" prop="variableCode" :render-header="renderHeaderAddTitle" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('初始类型')" prop="valueType" :render-header="renderHeaderAddTitle" :formatter="valueTypeFormatter" show-overflow-tooltip></bk-table-column>
             <bk-table-column :label="$t('默认值')" width="240" show-overflow-tooltip>
                 <template slot-scope="props">
                     <span v-for="(val, key) in getDisplayDefaultValue(props.row)" :key="key" class="default-value" v-bk-overflow-tips>{{ `【${nameMap[key]}】${val}` }}</span>
@@ -22,15 +22,15 @@
                     </span>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('生效范围')" prop="effectiveRange" :render-header="renderHeader" :formatter="effectiveRangeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('生效范围')" prop="effectiveRange" :render-header="renderHeaderAddTitle" :formatter="effectiveRangeFormatter" show-overflow-tooltip></bk-table-column>
             <template v-if="!simpleDisplay">
-                <bk-table-column :label="$t('变量说明')" prop="description" :render-header="renderHeader" show-overflow-tooltip>
+                <bk-table-column :label="$t('变量说明')" prop="description" :render-header="renderHeaderAddTitle" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.description || '--' }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('更新人')" prop="updateUser" show-overflow-tooltip min-width="100"></bk-table-column>
-                <bk-table-column :label="$t('更新时间')" prop="updateTime" :render-header="renderHeader" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
+                <bk-table-column :label="$t('更新时间')" prop="updateTime" :render-header="renderHeaderAddTitle" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
             </template>
             <bk-table-column :label="$t('操作')" width="120">
                 <template slot-scope="props">
@@ -84,6 +84,7 @@
     import dayjs from 'dayjs'
     import { mapGetters, mapActions, mapState } from 'vuex'
     import VariableForm from '@/components/variable/variable-form/index.vue'
+    import { renderHeaderAddTitle } from '@/common/util'
 
     export default {
         components: {
@@ -292,18 +293,7 @@
             handlerClearSearch (searchName) {
                 this.$emit('clearSearch', searchName)
             },
-
-            renderHeader (h, data) {
-                return h(
-                    'span',
-                    {
-                        attrs: {
-                            title: data.column.label
-                        }
-                    },
-                    data.column.label
-                )
-            }
+            renderHeaderAddTitle
         }
     }
 </script>

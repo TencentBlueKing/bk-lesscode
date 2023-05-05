@@ -11,14 +11,14 @@
             ext-cls="template-edit-dialog"
         >
             <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="$store.state.Language === 'en' ? 168 : 120" :rules="dialog.formRules" :model="dialog.formData">
-                <bk-form-item :label="$t('模板名称')" required property="templateName" error-display-type="normal">
+                <bk-form-item :label="$t('form_模板名称')" required property="templateName" error-display-type="normal">
                     <bk-input ref="nameInput"
                         maxlength="40"
                         v-model.trim="dialog.formData.templateName"
                         :placeholder="$t('请输入模板名称，40个字符以内')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('模板分类')" required property="categoryId" error-display-type="normal">
+                <bk-form-item :label="$t('form_模板分类')" required property="categoryId" error-display-type="normal">
                     <bk-select
                         :clearable="false"
                         v-model="dialog.formData.categoryId"
@@ -29,18 +29,18 @@
                     </bk-select>
                 </bk-form-item>
                 <section v-if="actionType === 'update'" style="margin-top: 20px;">
-                    <bk-form-item :label="$t('模板封面')" property="previewImg" error-display-type="normal">
+                    <bk-form-item :label="$t('form_模板封面')" property="previewImg" error-display-type="normal">
                         <src-input v-model="dialog.formData.previewImg" file-type="img" @change="handleImgChange" />
                     </bk-form-item>
                 </section>
                 <section v-if="iamNoResourcesPerm[$IAM_ACTION.manage_platform[0]] && actionType === 'update'" style="margin-top: 20px;">
-                    <bk-form-item :label="$t('设为公开模板')" required property="isOffcial" error-display-type="normal">
+                    <bk-form-item :label="$t('form_设为公开模板')" required property="isOffcial" error-display-type="normal">
                         <bk-radio-group v-model="dialog.formData.isOffcial">
                             <bk-radio :value="1" style="margin-right: 20px;">{{ $t('是') }}</bk-radio>
                             <bk-radio :value="0">{{ $t('否') }}</bk-radio>
                         </bk-radio-group>
                     </bk-form-item>
-                    <bk-form-item :label="$t('公开模板分类')" required property="offcialType" error-display-type="normal">
+                    <bk-form-item :label="$t('form_公开模板分类')" required property="offcialType" error-display-type="normal">
                         <bk-select
                             :clearable="false"
                             v-model="dialog.formData.offcialType"

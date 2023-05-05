@@ -1,9 +1,9 @@
 <template>
     <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
         <bk-form-item
-            :label="$t('函数标识')"
+            :label="$t('form_函数标识')"
             :required="true"
-            :rules="[requireRule($t('函数标识')), codeRepeatRule, codeRule, keyWordRule]"
+            :rules="[requireRule($t('form_函数标识')), codeRepeatRule, codeRule, keyWordRule]"
             property="funcCode"
             error-display-type="normal">
             <bk-input

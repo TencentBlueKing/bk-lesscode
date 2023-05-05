@@ -34,12 +34,12 @@
 
             <page-from-template :platform="platform" :create-from-template="createFromTemplate" :template-change="changeTemplate" :nocode-type="nocodeType">
                 <bk-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" form-type="vertical">
-                    <bk-form-item :label="$t('当前已选模板')" :label-width="$store.state.Language === 'en' ? 210 : 150" property="templateName" error-display-type="normal" v-if="createFromTemplate">
+                    <bk-form-item :label="$t('form_当前已选模板')" :label-width="$store.state.Language === 'en' ? 210 : 150" property="templateName" error-display-type="normal" v-if="createFromTemplate">
                         <bk-input readonly v-model.trim="selectTemplate.templateName"
                             :placeholder="$t('模板名称')">
                         </bk-input>
                     </bk-form-item>
-                    <bk-form-item :label="$t('页面名称')" required property="pageName" error-display-type="normal">
+                    <bk-form-item :label="$t('form_页面名称')" required property="pageName" error-display-type="normal">
                         <bk-input
                             maxlength="60"
                             v-model.trim="formData.pageName"
@@ -51,11 +51,11 @@
                             :placeholder="pageCodePlaceholder">
                         </bk-input>
                     </bk-form-item>
-                    <bk-form-item :label="$t('导航布局')" error-display-type="normal">
+                    <bk-form-item :label="$t('form_导航布局')" error-display-type="normal">
                         <layout-thumb-list :toolkit="['select']" :list="showLayoutList" @change-checked="handleLayoutChecked" />
                         <bk-link theme="primary" class="jump-link" icon="bk-drag-icon bk-drag-jump-link" @click="handleCreateLayout">{{ $t('跳转新建') }}</bk-link>
                     </bk-form-item>
-                    <bk-form-item :label="$t('页面路由')" required property="pageRoute"
+                    <bk-form-item :label="$t('form_页面路由')" required property="pageRoute"
                         error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.pageRoute"
                             :placeholder="$t('由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')">
@@ -65,7 +65,7 @@
                         </bk-input>
                     </bk-form-item>
                     <bk-form-item
-                        :label="$t('本页面添加到导航菜单')"
+                        :label="$t('form_本页面添加到导航菜单')"
                         v-if="showAddNavListSwitcher"
                         :label-width="$store.state.Language === 'en' ? 260 : 170"
                         error-display-type="normal">
