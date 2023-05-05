@@ -130,6 +130,11 @@
                             required: true,
                             message: '必填项',
                             trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该页面名称已存在',
+                            trigger: 'blur'
                         }
                     ],
                     pageCode: [
@@ -141,6 +146,11 @@
                         {
                             regex: /^[a-z][a-z0-9]{0,60}$/,
                             message: '以小写字母开头，由小写字母与数字组成,少于60个字符',
+                            trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该页面ID已存在',
                             trigger: 'blur'
                         }
                     ],
@@ -247,6 +257,23 @@
                     this.$emit('save')
                 } else {
                     this.save()
+                }
+            },
+            async checkName () {
+                const nameExist = await this.$store.dispatch('page/checkName', {
+                    data: {
+                        pageName: this.dialog.formData.pageName,
+                        pageCode: this.dialog.formData.pageCode,
+                        projectId: this.projectId,
+                        versionId: this.versionId,
+                        from: 'create',
+                        blurCheck: true
+                    }
+                })
+                if (nameExist) {
+                    return false
+                } else {
+                    return true
                 }
             },
             async save () {
