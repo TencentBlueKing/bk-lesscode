@@ -25,7 +25,7 @@
   "{{n}}分级管理员": "{{n}} rating administrator",
   "上传失败": "Upload Failed",
   "上传失败：{{n}}": "Upload failed: {{n}}",
-  "下架失败": "Failed to offline",
+  "下架失败": "Failed to archive",
   "不在有效运行时间内，已退出": "Exited out of valid running time",
   "修改操作失败：: {{n}}": "Modify operation failed:: {{n}}",
   "出现错误的pageId：{{n}}": "Wrong pageId: {{n}}",
