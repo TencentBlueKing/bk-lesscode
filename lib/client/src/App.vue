@@ -111,6 +111,7 @@
                 bus.$off('not-exist', this.notExistHold)
             })
             await this.$store.dispatch('checkIamNoResourcesPerm')
+            await this.$store.dispatch('ai/checkAiAvailable')
         },
 
         mounted () {

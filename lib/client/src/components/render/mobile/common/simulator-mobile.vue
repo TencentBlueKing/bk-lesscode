@@ -17,6 +17,8 @@
 
 <script>
     import mobileHeader from './mobile-header.vue'
+    import '@vant/touch-emulator' // PC端模拟移动端事件 用于预览
+    
     export default {
         components: {
             mobileHeader

@@ -1,5 +1,6 @@
 <template>
     <div class="field-edit">
+        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">自动编号控件在表单填写时不可见，表单值由配置规则确定</div>
         <!-- 表单右边设置区域  -->
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
@@ -43,7 +44,7 @@
                     desc-icon="bk-icon icon-question-circle">
                     <bk-input v-model.trim="fieldData.key" :disabled="disabled || fieldData.disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('布局')" v-if="!basicIsFolded">
+                <bk-form-item :label="$t('布局')" v-if="!basicIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-radio-group v-model="fieldData.layout" @change="change">
                         <bk-radio value="COL_6" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">{{ $t('半行') }}</bk-radio>
                         <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">{{ $t('整行') }}</bk-radio>
@@ -63,7 +64,7 @@
                         </li>
                     </ul>
                 </bk-form-item>
-                <bk-form-item :label="$t('form_数据源')" v-if="fieldProps.fieldsDataSource.includes(fieldData.type)">
+                <bk-form-item :label="$t('数据源')" v-if="fieldProps.fieldsDataSource.includes(fieldData.type)">
                     <bk-select
                         :value="fieldData.source_type"
                         :clearable="false"
@@ -110,7 +111,7 @@
                     </table-header-setting>
                     <span class="add-chocie" @click="handleAddTableChoice">{{ $t('添加') }}</span>
                 </bk-form-item>
-                <bk-form-item :label="$t('form_填写属性')" v-if="!handleIsFolded">
+                <bk-form-item v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <div class="attr-value">
                         <div class="contidion">
                             <bk-checkbox
@@ -235,7 +236,7 @@
                             {{ $t('个选项') }} </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item :label="$t('form_校验方式')" v-if="!handleIsFolded">
+                <bk-form-item :label="$t('form_校验方式')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-select
                         v-model="fieldData.regex"
                         :clearable="false"
@@ -266,13 +267,18 @@
                     </bk-form-item>
                 </template>
                 <!-- 计算组件 -->
-                <bk-form-item :abel="$t('form_计算类型')" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
+                <bk-form-item :label="$t('form_计算类型')" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
                     <ComputeEdit
                         :field="fieldData"
                         @change="updateFieldData" />
                 </bk-form-item>
-               
-                <bk-form-item :label="$t('form_填写说明')" v-if="!handleIsFolded">
+                <!-- 自动编号 -->
+                <bk-form-item v-if="fieldData.type === 'SERIAL' && !handleIsFolded">
+                    <SerialEdit
+                        :field="fieldData"
+                        @change="updateFieldData" />
+                </bk-form-item>
+                <bk-form-item :label="$t('form_填写说明')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
@@ -331,7 +337,6 @@
         </config-desc-comp-value-dialog>
     </div>
 </template>
-
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import DefaultValue from './default-value.vue'
@@ -344,6 +349,7 @@
     import TableHeaderSetting from './tableHeaderSetting.vue'
     import RichText from '@/components/flow-form-comp/form/fields/richText.vue'
     import ComputeEdit from './components/computeEdit/index.vue'
+    import SerialEdit from './components/serialEdit.vue'
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
@@ -367,7 +373,8 @@
             DataSourceDialog,
             ConfigDescCompValueDialog,
             RichText,
-            ComputeEdit
+            ComputeEdit,
+            SerialEdit
         },
         model: {
             prop: 'value',
@@ -690,6 +697,10 @@
   }
   /deep/ .bk-form-checkbox .bk-checkbox-text{
     font-size: 12px;
+  }
+  .serial-tips {
+    font-size: 12px;
+    margin: 10px 0 5px;
   }
 }
 /deep/ .bk-form-control {

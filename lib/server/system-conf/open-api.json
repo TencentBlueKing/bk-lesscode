@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "basePath": "/",
     "info": {
-        "version": "1.1.0",
+        "version": "1.1.9",
         "title": "bk-lesscode",
         "description": "bk-lesscode 对外接口"
     },
@@ -245,6 +245,130 @@
                         "type": "HTTP",
                         "method": "post",
                         "path": "/{env.subpath}api/nocode/executeApi",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": false
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/get_project_list": {
+            "get": {
+                "operationId": "get_my_project_list",
+                "description": "获取有应用开发权限的应用列表",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/get_project_list",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/get_project_tables": {
+            "get": {
+                "operationId": "get_project_tables",
+                "description": "根据projctId获取lesscode应用下数据表列表",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/get_project_tables",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/get_project_table_cols": {
+            "get": {
+                "operationId": "get_project_table_cols",
+                "description": "根据projctId和tableName获取数据表的字段列表",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "get",
+                        "path": "/{env.subpath}api/open/get_project_table_cols",
+                        "matchSubpath": false,
+                        "timeout": 0,
+                        "upstreams": {},
+                        "transformHeaders": {}
+                    },
+                    "authConfig": {
+                        "userVerifiedRequired": true
+                    },
+                    "disabledStages": [],
+                    "descriptionEn": null
+                }
+            }
+        },
+        "/exec_query_sql": {
+            "post": {
+                "operationId": "exec_query_sql",
+                "description": "根据projectId和sql获取应用预览环境数据表数据",
+                "tags": [],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                },
+                "x-bk-apigateway-resource": {
+                    "isPublic": true,
+                    "allowApplyPermission": true,
+                    "matchSubpath": false,
+                    "backend": {
+                        "type": "HTTP",
+                        "method": "post",
+                        "path": "/{env.subpath}api/open/exec_query_sql",
                         "matchSubpath": false,
                         "timeout": 0,
                         "upstreams": {},

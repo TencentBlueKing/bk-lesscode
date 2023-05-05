@@ -73,6 +73,7 @@
         StructJsonParser,
         StructSqlParser,
         handleImportStruct,
+        normalizeJson,
         BASE_COLUMNS
     } from 'shared/data-source'
     import {
@@ -151,7 +152,7 @@
                     // 基于用户修改的表格生成 sql
                     const originTable = {
                         ...originTableStatus.basicInfo,
-                        columns: originTableStatus.data,
+                        columns: originTableStatus.data.map(val => normalizeJson(val)),
                         id
                     }
                     const modifyTable = {
