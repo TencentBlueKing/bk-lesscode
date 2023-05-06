@@ -121,7 +121,7 @@
                 selectFormDialogShow: false, // 选择表单弹窗
                 previewFormContent: [], // 预览表单字段
                 previewFormDialogShow: false, // 预览弹窗
-                isUnset: false
+                isUnset: false // 人工节点是否配置表单
             }
         },
         computed: {

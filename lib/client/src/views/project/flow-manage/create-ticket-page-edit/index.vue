@@ -3,7 +3,7 @@
         <edit-form-panel
             v-if="!loading"
             :workflow-id="serviceData.workflow_id"
-            @save="handleSave"
+            @save="deployFlow"
             @back="handleBack"
             @backToNode="handleBackToNode"
             @backToFlow="handleBackToFlow">
@@ -103,9 +103,43 @@
                 this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                 this.$store.commit('nocode/nodeConfig/setInitialFieldIds', content)
             },
-            handleSave () {},
+            // 部署流程
+            // 流程提单页编辑保存时，调用部署接口，流程接口不合法则提示用户回到流程编辑界面修改
+            async deployFlow () {
+                const {
+                    is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
+                } = this.serviceData
+                const data = {
+                    can_ticket_agency: false,
+                    display_type: 'INVISIBLE',
+                    workflow_config: {
+                        is_supervise_needed,
+                        notify,
+                        notify_freq,
+                        notify_rule,
+                        revoke_config,
+                        supervise_type,
+                        supervisor,
+                        is_revocable: this.serviceData.revoke_config.type !== 0,
+                        is_auto_approve: false
+                    }
+                }
+                await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
+                await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
+                this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
+                this.$bkMessage({
+                    theme: 'success',
+                    message: '流程部署成功'
+                })
+            },
             handleBack () {
-                this.handleBackToFlow()
+                this.$router.push({
+                    name: 'pageList',
+                    params: {
+                        projectId: this.projectId
+                    }
+                })
             },
             handleBackToNode () {
                 const { projectId, flowId } = this.$route.params

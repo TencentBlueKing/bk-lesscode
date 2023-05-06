@@ -204,7 +204,7 @@
                         </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
+                <!-- <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
                     <div>
                         <div class="range-control">
                             <bk-checkbox
@@ -248,7 +248,7 @@
                             个选项
                         </div>
                     </div>
-                </bk-form-item>
+                </bk-form-item> -->
                 <bk-form-item label="校验方式" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-select
                         v-model="fieldData.regex"

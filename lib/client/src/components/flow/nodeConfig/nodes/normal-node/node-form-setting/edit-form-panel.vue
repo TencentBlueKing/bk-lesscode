@@ -3,13 +3,13 @@
         <div class="content-edit-container">
             <div class="edit-header">
                 <div class="nav-area">
-                    <i class="bk-drag-icon bk-drag-arrow-back back-icon" @click="$emit('back')"></i>
+                    <i class="bk-drag-icon bk-drag-arrow-back back-icon" @click="handleBack('back')"></i>
                     <div class="split-line"></div>
                     <breadcrumb-nav
                         :flow-config="flowConfig"
                         :editable="formConfig.type !== 'USE_FORM'"
-                        @backToNode="$emit('backToNode')"
-                        @backToFlow="$emit('backToFlow')">
+                        @backToNode="handleBack('backToNode')"
+                        @backToFlow="handleBack('backToFlow')">
                     </breadcrumb-nav>
                 </div>
                 <div
@@ -206,6 +206,15 @@
                 } finally {
                     this.savePending = false
                 }
+            },
+            handleBack (type) {
+                this.$bkInfo({
+                    title: '确认离开?',
+                    subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                    confirmFn: async () => {
+                        this.$emit(type)
+                    }
+                })
             }
         }
     }
