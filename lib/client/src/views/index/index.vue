@@ -15,7 +15,7 @@
         v-bkloading="{
             isLoading: isContentLoading || isCustomComponentLoading
         }">
-        <div class="lesscode-editor-page-header">
+        <div v-if="!isContentLoading && !isCustomComponentLoading" class="lesscode-editor-page-header">
             <page-list />
             <div
                 id="toolActionBox"

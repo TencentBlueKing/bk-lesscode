@@ -11,10 +11,11 @@
 
 <template>
     <style-layout title="边距" :icon-show="true" @reset="handleReset">
-        <distance-container title="MARGIN" style="height: 140px;" ref="margin-container">
+        <i slot="header" class="bk-drag-icon bk-drag-undo-2" @click.stop="handleReset" v-bk-tooltips="{ content: '重置属性值' }"></i>
+        <distance-container title="MARGIN" style="height: 140px;">
             <template v-slot:center>
                 <section style="margin-left: 42px;margin-top: 10px;width: 190px;padding: 2px;background: #fff;">
-                    <distance-container title="PADDING" ref="padding-container">
+                    <distance-container title="PADDING">
                         <template v-slot:center>
                             <div class="padding-blank-center">
                             </div>
@@ -26,8 +27,6 @@
                                 :unit="item.unit"
                                 :value="item.value"
                                 :distance="item.distanceStyle"
-                                container="padding-container"
-                                @innerClick="handleInnerClick"
                                 @change="handleInputChange(item, $event)"
                             >
                                 <size-unit :value="item.unit" @change="handleSelectChange(item, $event)" class="small-padding"></size-unit>
@@ -43,7 +42,6 @@
                     :unit="item.unit"
                     :value="item.value"
                     :distance="item.distanceStyle"
-                    @innerClick="handleInnerClick"
                     @change="handleInputChange(item, $event)"
                 >
                     <size-unit :value="item.unit" @change="handleSelectChange(item, $event)" class="small-padding"></size-unit>
@@ -144,25 +142,6 @@
             this.initData()
         },
         methods: {
-            handleInnerClick (ref, isShow) {
-                // 处理父容器的zindex问题，不处理的话padding的下拉单位会被遮挡
-                try {
-                    if (isShow) {
-                        this.$refs[ref].$el.style['zIndex'] = 100
-                        // this.$refs['margin-container'].$el.style['pointerEvents'] = 'none'
-                        // this.$refs['padding-container'].$el.style['pointerEvents'] = 'auto'
-                    } else {
-                        this.$refs[ref].$el.style['zIndex'] = ''
-                        // this.$refs['margin-container'].$el.style['pointerEvents'] = 'auto'
-                        // this.$refs['padding-container'].$el.style['pointerEvents'] = 'auto'
-                    }
-                    console.log(this.$refs[ref].$el.style['zIndex'], 'zindex')
-
-                    // console.log(this.$refs['margin-container'].$el.style, 'diff', this.$refs['padding-container'].$el.style)
-                } catch (err) {
-                    console.log(err)
-                }
-            },
             initData () {
                 this.marginConfig.map(item => {
                     item.value = splitValueAndUnit('value', this.value[item.key])
@@ -174,7 +153,6 @@
                 })
             },
             handleInputChange (item, val) {
-                console.log(item, val, 5544)
                 item.value = val
                 const newValue = val === '' ? '' : val + item.unit
 

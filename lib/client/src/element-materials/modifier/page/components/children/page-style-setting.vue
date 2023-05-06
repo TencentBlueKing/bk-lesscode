@@ -75,7 +75,6 @@
         },
         methods: {
             updateStyleSetting (key, value) {
-                console.log(key, value, 8899)
                 const styleSetting = Object.assign({}, this.page.styleSetting, { [key]: value })
                 this.$store.commit('page/setPageDetail', {
                     ...this.page,

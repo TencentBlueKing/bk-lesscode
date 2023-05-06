@@ -67,8 +67,7 @@
             return {
                 isShowFinisheDialog: false,
                 isShowStopDialog: false,
-                // isDone: cookie.parse(document.cookie).hasOwnProperty(CACHE_KEY),
-                isDone: true,
+                isDone: cookie.parse(document.cookie).hasOwnProperty(CACHE_KEY),
                 currentStepIndex: 0,
                 currentStep: {},
                 tipStyles: {},
@@ -89,7 +88,7 @@
             window.__lesscodeEditPageGuide = this
         },
         mounted () {
-            this.init()
+            setTimeout(this.init(), 1000)
             window.addEventListener('resize', this.handleReize)
         },
         beforeDestroy () {

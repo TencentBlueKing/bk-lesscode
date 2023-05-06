@@ -1,7 +1,7 @@
 <template>
     <div :class="distance">
-        <span class="distance-number" :class="value ? 'set' : 'unset'" @click="handleIsInput" v-if="!isInput">{{ value ? (value + unit) : 0 }}</span>
-        <div v-else class="distance-item-edit">
+        <span class="distance-number" :class="value ? 'set' : 'unset'" @click="handleIsInput" v-show="!isInput">{{ value ? (value + unit) : 0 }}</span>
+        <div v-show="isInput" class="distance-item-edit">
             <bk-input
                 v-model="renderValue"
                 type="number"
@@ -35,10 +35,6 @@
             },
             unit: {
                 type: String
-            },
-            container: {
-                type: String,
-                default: ''
             }
         },
         data () {
@@ -50,12 +46,6 @@
         watch: {
             value (val) {
                 this.renderValue = val
-            },
-            isInput (val) {
-                // 如果有传container属性，需要处理zindex层级问题
-                if (this.container) {
-                    this.$emit('innerClick', this.container, val)
-                }
             }
         },
         methods: {
@@ -64,7 +54,6 @@
                 this.handleChange(val)
             },
             handleChange (val) {
-                console.log(val, 'valuechnage')
                 this.$emit('change', val)
             },
             handleIsInput  () {

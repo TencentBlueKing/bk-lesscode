@@ -11,24 +11,19 @@
 
 <template>
     <div class="modifier-style" :class="{ 'no-padding': isFolded }">
-        <!-- <div class="style-title">
-            {{ title }}
-            <span
-                class="style-icon"
-                v-if="iconShow"
-                v-bk-tooltips.top="'重置属性值'"
-                @click="handleClick">
-                <i class="bk-drag-icon bk-drag-undo" />
-            </span>
-        </div> -->
         <div class="style-group-box">
             <div class="ui-group-name" @click="handleToggle">
-                <i
-                    class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
-                    :class="{
-                        floded: isFolded
-                    }" />
-                <span>{{ title }}</span>
+                <template>
+                    <i
+                        class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                        :class="{
+                            floded: isFolded
+                        }" />
+                    <span>{{ title }}</span>
+                </template>
+                <div class="operate-icon">
+                    <slot name="header" />
+                </div>
             </div>
             <div class="style-action">
                 <template v-if="!isFolded">
@@ -128,6 +123,12 @@
                 top: 0;
                 left: 28px;
                 line-height: 40px;
+            }
+            .operate-icon {
+                position: absolute;
+                right: 2px;
+                color: #979BA5;
+                font-size: 14px;
             }
         }
     }
