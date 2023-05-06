@@ -20,7 +20,13 @@
 </template> -->
 
 <template>
-    <bk-select style="width: 100%" v-model="renderValue" @change="handleChange" :clearable="clearable">
+    <bk-select
+        style="width: 100%"
+        v-model="renderValue"
+        :clearable="clearable"
+        :multiple="isMultiple"
+        @change="handleChange"
+    >
         <bk-option
             v-for="option in renderDescribe.options"
             :key="option"
@@ -38,7 +44,7 @@
     export default {
         props: {
             defaultValue: {
-                type: [String, Number],
+                type: [String, Number, Array],
                 required: true
             },
             name: {
@@ -67,7 +73,11 @@
             }
         },
         computed: {
-            ...mapGetters('drag', ['curSelectedComponentData'])
+            ...mapGetters('drag', ['curSelectedComponentData']),
+
+            isMultiple () {
+                return Array.isArray(this.defaultValue)
+            }
         },
         watch: {
             defaultValue: {
