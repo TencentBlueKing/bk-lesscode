@@ -3,22 +3,22 @@
         <div class="info-flexible" v-show="!pageLoading">
             <div class="title">{{ $t('基本信息') }}</div>
             <bk-form class="info-list" :label-width="150">
-                <bk-form-item :label="$t('应用名称：')">
+                <bk-form-item :label="$t('form_应用名称：')">
                     {{projectDetail.projectName}}
                 </bk-form-item>
                 <bk-form-item :label="$t('应用ID：')">
                     {{projectDetail.projectCode}}
                 </bk-form-item>
-                <bk-form-item :label="$t('绑定蓝鲸应用模块：')" :desc="$t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改')">
+                <bk-form-item :label="$t('form_绑定蓝鲸应用模块：')" :desc="$t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改')">
                     <app-module-select :can-edit="true"></app-module-select>
                 </bk-form-item>
-                <bk-form-item :label="$t('应用简介：')">
+                <bk-form-item :label="$t('form_应用简介：')">
                     {{projectDetail.projectDesc}}
                 </bk-form-item>
-                <bk-form-item :label="$t('创建人：')">
+                <bk-form-item :label="$t('form_创建人：')">
                     {{projectDetail.createUser}}
                 </bk-form-item>
-                <bk-form-item :label="$t('创建时间：')">
+                <bk-form-item :label="$t('form_创建时间：')">
                     {{projectDetail.createTime | time}}
                 </bk-form-item>
                 <bk-form-item class="buttons">
@@ -37,7 +37,7 @@
             :auto-close="false"
             header-position="left">
             <bk-form ref="editForm" :label-width="$store.state.Language === 'en' ? 100 : 90" :rules="dialog.edit.formRules" :model="dialog.edit.formData">
-                <bk-form-item :label="$t('应用名称')" required property="projectName">
+                <bk-form-item :label="$t('form_应用名称')" required property="projectName">
                     <bk-input maxlength="60" v-model.trim="dialog.edit.formData.projectName"
                         :placeholder="$t('请输入应用名称，60个字符以内')">
                     </bk-input>
@@ -47,7 +47,7 @@
                         :placeholder="$t('请输入，由全小写字母组成，该ID将作为自定义组件前缀，创建后不可更改')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('应用简介')" required property="projectDesc">
+                <bk-form-item :label="$t('form_应用简介')" required property="projectDesc">
                     <bk-input
                         v-model.trim="dialog.edit.formData.projectDesc"
                         :type="'textarea'"

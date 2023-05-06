@@ -119,7 +119,7 @@
             :mask-close="false"
             v-model="deleteData.show"
         >
-            {{ $t('确定删除【id：{0}】？', [deleteData.form.id]) }} <div class="dialog-footer" slot="footer">
+            {{ $t('确定删除【id：{0}】', [deleteData.form.id]) }} <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"
                     :loading="deleteData.isloading"

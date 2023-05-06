@@ -32,7 +32,7 @@
                     </bk-input>
                     <p class="mt5 mb0 f12" slot="tip">{{ $t('导航布局路由将会作为本应用一级路由，请谨慎命名') }}</p>
                 </bk-form-item>
-                <bk-form-item :label="$t('布局实例')" v-if="action === 'create'" error-display-type="normal">
+                <bk-form-item :label="$t('form_布局实例')" v-if="action === 'create'" error-display-type="normal">
                     <layout-thumb-list :toolkit="['select']" :list="defaultLayoutList" @change-checked="handleLayoutChecked" />
                 </bk-form-item>
             </bk-form>

@@ -134,7 +134,7 @@
             header-position="left"
             @after-leave="handleRenameDialogAfterLeave">
             <bk-form ref="renameForm" class="rename-form" :label-width="90" :rules="dialog.rename.formRules" :model="dialog.rename.formData">
-                <bk-form-item :label="$t('应用名称')" required property="projectName" error-display-type="normal">
+                <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
                     <bk-input ref="projectRenameInput"
                         maxlength="60"
                         v-model="dialog.rename.formData.projectName"

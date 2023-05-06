@@ -11,7 +11,7 @@
             ext-cls="template-import-dialog"
         >
             <bk-form ref="pageTemplateFrom" class="import-dialog-form" :label-width="$store.state.Language === 'en' ? 170 : 120" :rules="dialog.formRules" :model="dialog.formData">
-                <bk-form-item :label="$t('导入模板json')" required property="templateName" error-display-type="normal">
+                <bk-form-item :label="$t('form_导入模板json')" required property="templateName" error-display-type="normal">
                     <bk-upload
                         with-credentials
                         :multiple="false"
@@ -23,14 +23,14 @@
                         @on-delete="handleUploadReset"
                     ></bk-upload>
                 </bk-form-item>
-                <bk-form-item :label="$t('模板名称')" required property="templateName" error-display-type="normal">
+                <bk-form-item :label="$t('form_模板名称')" required property="templateName" error-display-type="normal">
                     <bk-input ref="nameInput"
                         maxlength="60"
                         v-model.trim="dialog.formData.templateName"
                         :placeholder="$t('请输入模板名称，50个字符以内')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('模板分类')" required property="categoryId" error-display-type="normal">
+                <bk-form-item :label="$t('form_模板分类')" required property="categoryId" error-display-type="normal">
                     <bk-select
                         :clearable="false"
                         v-model="dialog.formData.categoryId"

@@ -11,17 +11,17 @@
             ext-cls="set-template-dialog"
         >
             <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="120">
-                <bk-form-item :label="$t('是否公开')" required property="isOffcial" error-display-type="normal">
+                <bk-form-item :label="$t('form_是否公开')" required property="isOffcial" error-display-type="normal">
                     <bk-radio-group v-model="formData.isOffcial">
                         <bk-radio :value="1" style="margin-right: 20px;">{{ $t('是') }}</bk-radio>
                         <bk-radio :value="0">{{ $t('否') }}</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
                 <section v-if="formData.isOffcial">
-                    <bk-form-item :label="$t('模板封面')" property="templateImg" error-display-type="normal" style="margin-top: 20px">
+                    <bk-form-item :label="$t('form_模板封面')" property="templateImg" error-display-type="normal" style="margin-top: 20px">
                         <src-input v-model="formData.templateImg" :project-id="projectId" file-type="img" @change="handleImgChange" />
                     </bk-form-item>
-                    <bk-form-item :label="$t('应用模板分类')" required property="offcialType" error-display-type="normal">
+                    <bk-form-item :label="$t('form_应用模板分类')" required property="offcialType" error-display-type="normal">
                         <bk-select
                             :clearable="false"
                             v-model="formData.offcialType"

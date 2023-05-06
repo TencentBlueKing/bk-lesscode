@@ -77,9 +77,9 @@
             const isLoading = ref(false)
             const canEditTableName = currentRoute?.name === 'createTable'
             const formFields = [
-                { label: window.i18n.t('表名'), required: true, disabled: !canEditTableName, property: 'tableName', placeholder: window.i18n.t('开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64') },
-                { label: window.i18n.t('存储引擎'), disabled: true, property: 'engine' },
-                { label: window.i18n.t('字符集'), disabled: true, property: 'character' },
+                { label: window.i18n.t('form_表名'), required: true, disabled: !canEditTableName, property: 'tableName', placeholder: window.i18n.t('开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64') },
+                { label: window.i18n.t('form_存储引擎'), disabled: true, property: 'engine' },
+                { label: window.i18n.t('form_字符集'), disabled: true, property: 'character' },
                 { label: window.i18n.t('备注'), property: 'comment' }
             ]
             // 校验规则

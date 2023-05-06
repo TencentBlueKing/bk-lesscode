@@ -3,8 +3,8 @@
         <div class="history-container" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
             <div class="history-content">
                 <bk-table :data="list" type="small" ext-cls="history-table" :empty-text="$t('暂无部署记录')">
-                    <bk-table-column :label="$t('关联的应用模块')" prop="bindInfo" :render-header="renderHeader" min-width="120" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column :label="$t('源码包类型')" prop="releaseType" :render-header="renderHeader" width="120" show-overflow-tooltip>
+                    <bk-table-column :label="$t('关联的应用模块')" prop="bindInfo" :render-header="renderHeaderAddTitle" min-width="120" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('源码包类型')" prop="releaseType" :render-header="renderHeaderAddTitle" width="120" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             {{releaseTypeMap[row.releaseType]}}
                             <span v-if="row.releaseType === 'PROJECT_VERSION'">
@@ -12,8 +12,8 @@
                             </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column :label="$t('部署环境')" prop="env" :render-header="renderHeader" :formatter="envFormatter" width="100" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column :label="$t('部署包版本')" prop="version" :render-header="renderHeader" width="100" show-overflow-tooltip>
+                    <bk-table-column :label="$t('部署环境')" prop="env" :render-header="renderHeaderAddTitle" :formatter="envFormatter" width="100" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('部署包版本')" prop="version" :render-header="renderHeaderAddTitle" width="100" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             <div v-if="row.codeUrl" class="status-result">
                                 <a class="status-log-link" :href="row.codeUrl">{{row.version}}</a>
@@ -75,6 +75,7 @@
     import completedLog from './components/completed-log'
     import runningLog from './components/running-log'
     import monaco from '@/components/monaco.vue'
+    import { renderHeaderAddTitle } from '@/common/util'
     export default {
         components: {
             completedLog,
@@ -207,17 +208,7 @@
                     this.isLoadingSql = false
                 })
             },
-            renderHeader (h, data) {
-                return h(
-                    'span',
-                    {
-                        attrs: {
-                            title: data.column.label
-                        }
-                    },
-                    data.column.label
-                )
-            }
+            renderHeaderAddTitle
         }
     }
 </script>

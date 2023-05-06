@@ -7,8 +7,8 @@
         :title="isEdit ? $t('编辑版本') : $t('新建版本')">
         <div slot="content" class="form-content">
             <bk-alert class="alert-info" type="info" :title="$t('基于“默认”版本内容新建')" v-if="!isEdit"></bk-alert>
-            <bk-form :label-width="90" :model="formData" :rules="rules" ref="form">
-                <bk-form-item :label="$t('应用版本')" :required="true" property="version" error-display-type="normal">
+            <bk-form :label-width="$store.state.Language === 'en' ? 120 : 90" :model="formData" :rules="rules" ref="form">
+                <bk-form-item :label="$t('form_应用版本')" :required="true" property="version" error-display-type="normal">
                     <bk-input
                         :placeholder="$t('请输入版本号，仅支持英文、数字、下划线、中划线和英文句号')"
                         maxlength="30"
@@ -16,7 +16,7 @@
                         v-model="formData.version">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('版本日志')" :required="true" property="versionLog" error-display-type="normal" ref="versionLog">
+                <bk-form-item :label="$t('form_版本日志')" :required="true" property="versionLog" error-display-type="normal" ref="versionLog">
                     <mavon-editor
                         :external-link="false"
                         v-model="formData.versionLog"

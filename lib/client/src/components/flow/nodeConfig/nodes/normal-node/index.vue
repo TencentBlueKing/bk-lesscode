@@ -7,7 +7,7 @@
                 form-type="vertical"
                 :rules="rules"
                 :model="nodeData">
-                <bk-form-item :label="$t('节点名称')" property="name" :required="true">
+                <bk-form-item :label="$t('form_节点名称')" property="name" :required="true">
                     <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
                 </bk-form-item>
                 <bk-form-item :label="$t('处理人')" :required="true">

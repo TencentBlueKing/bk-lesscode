@@ -8,13 +8,13 @@
                 </div> -->
                 <div class="filter-area">
                     <bk-form form-type="vertical" class="filter-form">
-                        <bk-form-item :label="$t('创建人')">
+                        <bk-form-item :label="$t('form_创建人')">
                             <bk-input></bk-input>
                         </bk-form-item>
-                        <bk-form-item :label="$t('创建时间')">
+                        <bk-form-item :label="$t('form_创建时间')">
                             <bk-date-picker size="small"></bk-date-picker>
                         </bk-form-item>
-                        <bk-form-item :label="$t('单号')">
+                        <bk-form-item :label="$t('form_单号')">
                             <bk-input></bk-input>
                         </bk-form-item>
                         <bk-form-item :label="$t('状态')">

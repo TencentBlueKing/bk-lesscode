@@ -25,7 +25,7 @@
                 :rules="rules"
                 :label-width="100">
                 <bk-form-item
-                    :label="$t('字段名称')"
+                    :label="$t('form_字段名称')"
                     required
                     property="property"
                     error-display-type="normal">
@@ -41,7 +41,7 @@
                     <bk-input v-model="formItemData.label" />
                 </bk-form-item>
                 <bk-form-item
-                    :label="$t('表单项类型')"
+                    :label="$t('form_表单项类型')"
                     error-display-type="normal">
                     <bk-select v-model="formItemData.type">
                         <bk-option

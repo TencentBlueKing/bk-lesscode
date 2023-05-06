@@ -9,10 +9,10 @@
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
-                <bk-form-item :label="$t('展示文字')">
+                <bk-form-item :label="$t('form_展示文字')">
                     <bk-input v-model.trim="fieldData.default" :disabled="disabled" @change="change"></bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('文字位置')">
+                <bk-form-item :label="$t('form_文字位置')">
                     <bk-select
                         v-model="fieldData.deviderAttr.align"
                         :disabled="disabled"
@@ -20,7 +20,7 @@
                         <bk-option v-for="option in alignList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item :label="$t('线条颜色')">
+                <bk-form-item :label="$t('form_线条颜色')">
                     <bk-color-picker v-model="fieldData.deviderAttr.color" size="small" ::disabled="disabled" @change="change" transfer>
                     </bk-color-picker>
                 </bk-form-item>
@@ -35,10 +35,10 @@
                     />
                     <span>{{ $t('基础属性') }}</span>
                 </div>
-                <bk-form-item :label="$t('字段名称')" v-if="!basicIsFolded">
+                <bk-form-item :label="$t('form_字段名称')" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.name" :disabled="disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('唯一标识')" v-if="!basicIsFolded"
+                <bk-form-item :label="$t('form_唯一标识')" v-if="!basicIsFolded"
                     desc-type="icon"
                     :desc="uniqe"
                     desc-icon="bk-icon icon-question-circle">
@@ -50,7 +50,7 @@
                         <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">{{ $t('整行') }}</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item :label="$t('上传模板附件')" v-if="fieldData.type === 'FILE' && !handleIsFolded" :ext-cls="'input-position '">
+                <bk-form-item :label="$t('form_上传模板附件')" v-if="fieldData.type === 'FILE' && !handleIsFolded" :ext-cls="'input-position '">
                     <bk-button :theme="'default'" :title="$t('点击上传')" :disabled="disabled">
                         {{ $t('点击上传') }} </bk-button>
                     <input type="file" :value="fileVal" class="input-file" :disabled="disabled" @change="handleAddFiles">
@@ -102,7 +102,7 @@
                     />
                     <span>{{ $t('填写属性') }}</span>
                 </div>
-                <bk-form-item :label="$t('表头配置')" v-if="fieldData.type === 'TABLE' && !handleIsFolded">
+                <bk-form-item :label="$t('form_表头配置')" v-if="fieldData.type === 'TABLE' && !handleIsFolded">
                     <table-header-setting
                         :list="fieldData.choice"
                         @move="handleChangeTableHeader"
@@ -154,7 +154,7 @@
                         </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item :label="$t('控制上传范围')" v-if="fieldData.type === 'IMAGE' && !handleIsFolded">
+                <bk-form-item :label="$t('form_控制上传范围')" v-if="fieldData.type === 'IMAGE' && !handleIsFolded">
                     <div>
                         <div class="range-control">
                             <bk-checkbox
@@ -195,7 +195,7 @@
                             {{ $t('张图') }} </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item :label="$t('控制选择范围')" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
+                <bk-form-item :label="$t('form_控制选择范围')" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
                     <div>
                         <div class="range-control">
                             <bk-checkbox
@@ -236,7 +236,7 @@
                             {{ $t('个选项') }} </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item :label="$t('校验方式')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
+                <bk-form-item :label="$t('form_校验方式')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-select
                         v-model="fieldData.regex"
                         :clearable="false"
@@ -258,7 +258,7 @@
                             @change="handleDefaultValChange">
                         </default-value>
                     </bk-form-item>
-                    <bk-form-item :label="$t('值联动规则')">
+                    <bk-form-item :label="$t('form_值联动规则')">
                         <association-value
                             :field="fieldData"
                             :disabled="disabled"
@@ -267,7 +267,7 @@
                     </bk-form-item>
                 </template>
                 <!-- 计算组件 -->
-                <bk-form-item :abel="$t('计算类型')" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
+                <bk-form-item :label="$t('form_计算类型')" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
                     <ComputeEdit
                         :field="fieldData"
                         @change="updateFieldData" />
@@ -278,7 +278,7 @@
                         :field="fieldData"
                         @change="updateFieldData" />
                 </bk-form-item>
-                <bk-form-item :label="$t('填写说明')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
+                <bk-form-item :label="$t('form_填写说明')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
@@ -337,7 +337,6 @@
         </config-desc-comp-value-dialog>
     </div>
 </template>
-
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import DefaultValue from './default-value.vue'

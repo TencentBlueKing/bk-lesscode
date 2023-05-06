@@ -1,7 +1,7 @@
 <template>
     <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item" v-if="form.funcType === 1">
         <bk-form-item
-            label="Api Data"
+            label="API Data"
             property="funcApiData"
             error-display-type="normal"
             :rules="[objRule]"

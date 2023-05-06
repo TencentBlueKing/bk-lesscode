@@ -67,13 +67,13 @@
             </bk-select>
         </bk-form-item>
         <bk-form-item
-            :label="$t('接口路径')"
+            :label="$t('form_接口路径')"
             :label-width="$store.state.Language === 'en' ? 120 : 100"
             property="url"
             error-display-type="normal"
             :required="true"
             :rules="[
-                getRequireRule($t('接口路径'))
+                getRequireRule($t('form_接口路径'))
             ]"
         >
             <bk-compose-form-item class="basic-compose-url">

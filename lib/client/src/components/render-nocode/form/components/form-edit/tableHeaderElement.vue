@@ -5,10 +5,10 @@
             <i class="bk-icon icon-close item-remove" @click="$emit('remove')"></i>
         </div>
         <bk-form :label-width="270" form-type="vertical">
-            <bk-form-item :label="$t('列表头名称')">
+            <bk-form-item :label="$t('form_列表头名称')">
                 <bk-input v-model="localValue.name" @change="change"></bk-input>
             </bk-form-item>
-            <bk-form-item :label="$t('列字段类型')">
+            <bk-form-item :label="$t('form_列字段类型')">
                 <bk-select
                     v-model="localValue.display"
                     style="background: #fff"
@@ -16,7 +16,7 @@
                     <bk-option v-for="option in typeList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                 </bk-select>
             </bk-form-item>
-            <bk-form-item :label="$t('数据源配置')" v-if="['select','multiselect'].includes(localValue.display)">
+            <bk-form-item :label="$t('form_数据源配置')" v-if="['select','multiselect'].includes(localValue.display)">
                 <div class="option-setting" v-for="(option,index) in localValue.options" :key="option.id">
                     <bk-input
                         :placeholder="$t('选项名')"

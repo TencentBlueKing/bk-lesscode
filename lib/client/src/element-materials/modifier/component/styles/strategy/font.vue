@@ -70,14 +70,14 @@
                 <append-select :value="unitMap.lineHeight" @change="handleSelectChange('lineHeight', $event)" />
             </size-input>
         </style-item>
-        <style-item :name="$t('字符间距')" v-if="handleHasKey('letterSpacing')">
+        <style-item :name="$t('form_字符间距')" v-if="handleHasKey('letterSpacing')">
             <font-size-input
                 :value="renderValueMap.letterSpacing"
                 :placeholder="$t('请输入')"
                 @change="handleFontWithUnitChange('letterSpacing', $event)"
                 style="width: 100%" />
         </style-item>
-        <style-item :name="$t('单词间距')" v-if="handleHasKey('wordSpacing')">
+        <style-item :name="$t('form_单词间距')" v-if="handleHasKey('wordSpacing')">
             <font-size-input
                 :value="renderValueMap.wordSpacing"
                 :placeholder="$t('请输入')"
@@ -163,7 +163,7 @@
                 <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig($t('继承父元素该属性'))" />
             </bk-select>
         </style-item>
-        <style-item :name="$t('垂直对齐')" v-if="handleHasKey('verticalAlign')">
+        <style-item :name="$t('form_垂直对齐')" v-if="handleHasKey('verticalAlign')">
             <bk-select
                 :value="renderValueMap.verticalAlign"
                 font-size="medium"
