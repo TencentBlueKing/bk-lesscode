@@ -38,7 +38,6 @@
         </div>
         <div v-if="!serviceDataLoading" class="flow-edit-main">
             <router-view
-                :flow-config="flowConfig"
                 :service-data="serviceData"
                 :deploy-pending="deployPending"
                 @deploy="deployFlow">
@@ -86,9 +85,12 @@
             }
         },
         watch: {
-            '$route.params.flowId' (val) {
-                this.flowId = val
-                this.getflowConfig()
+            '$route.params.flowId' (val, oldVal) {
+                console.log(val, oldVal)
+                if (val !== oldVal) {
+                    this.flowId = val
+                    this.getflowConfig()
+                }
             }
         },
         async created () {

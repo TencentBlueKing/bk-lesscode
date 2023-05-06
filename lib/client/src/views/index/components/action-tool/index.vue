@@ -7,6 +7,7 @@
         <save-as-template v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]" />
         <clear-canvas />
         <quick-operation />
+        <ai v-if="isAiAvailable"/>
     </div>
 </template>
 <script>
@@ -18,6 +19,7 @@
     import ClearCanvas from './components/clear-canvas'
     import ShowFunction from './components/show-function'
     import QuickOperation from './components/quick-operation'
+    import Ai from './components/ai.vue'
 
     export default {
         components: {
@@ -26,10 +28,12 @@
             SaveAsTemplate,
             ClearCanvas,
             ShowFunction,
-            QuickOperation
+            QuickOperation,
+            Ai
         },
         computed: {
-            ...mapGetters(['iamNoResourcesPerm'])
+            ...mapGetters(['iamNoResourcesPerm']),
+            ...mapGetters('ai', ['isAiAvailable']),
         }
     }
 </script>

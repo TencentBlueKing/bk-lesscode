@@ -25,8 +25,8 @@
         <form-section title="表单配置" style="margin-top: 16px;" v-bkloading="{ isLoading: formContentLoading }">
             <node-form-setting
                 ref="formSetting"
-                :flow-config="flowConfig"
                 :form-content-loading="formContentLoading"
+                :workflow-id="workflowId"
                 @close="$emit('close')">
             </node-form-setting>
         </form-section>
@@ -46,6 +46,9 @@
             FormSection,
             Processors,
             NodeFormSetting
+        },
+        props: {
+            workflowId: Number
         },
         data () {
             return {
