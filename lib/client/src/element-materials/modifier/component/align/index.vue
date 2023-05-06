@@ -1,97 +1,11 @@
 <template>
-    <style-layout title="布局">
+    <style-layout title="布局" v-if="isShow">
+        <i slot="header" class="bk-drag-icon bk-drag-undo-2" @click.stop="handleReset" v-bk-tooltips="{ content: '重置布局' }"></i>
         <div style="display: flex;">
             <select-tab :style=" { 'margin-right': '8px', width: '134px' }" :tab-list="horizontalList" :active-item="renderAlign.horizontal" :item-change="(val) => handleHorizontalChange(val)" />
             <select-tab style="width: 134px" :tab-list="verticalList" :active-item="renderAlign.vertical" :item-change="(val) => handleVerticalChange(val)" />
         </div>
     </style-layout>
-    <!-- <div
-        v-if="isShow"
-        :class="$style['layout']">
-        <div :class="$style['title']">
-            布局
-            <span
-                :class="$style['resize']"
-                v-bk-tooltips.top="'重置布局'"
-                @click="handleReset">
-                <i class="bk-drag-icon bk-drag-undo" />
-            </span>
-        </div>
-        <div
-            :class="{
-                [$style['container']]: true,
-                [$style['inner-free-layout']]: isInnerFreeLayout
-            }">
-            <div :class="$style['row']">
-                <div
-                    :class="{
-                        [$style['item']]: true,
-                        [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-left'
-                    }"
-                    v-bk-tooltips.top="'水平居左'"
-                    @click="handleHorizontalChange('align-horizontal-left')">
-                    <i class="bk-drag-icon bk-drag-1_zuoduiqi" />
-                </div>
-                <div
-                    :class="{
-                        [$style['item']]: true,
-                        [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-center'
-                    }"
-                    v-bk-tooltips.top="'水平居中'"
-                    @click="handleHorizontalChange('align-horizontal-center')">
-                    <i class="bk-drag-icon bk-drag-shuipingjuzhong" />
-                </div>
-                <div
-                    :class="{
-                        [$style['item']]: true,
-                        [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-right'
-                    }"
-                    v-bk-tooltips.top="'水平居右'"
-                    @click="handleHorizontalChange('align-horizontal-right')">
-                    <i class="bk-drag-icon bk-drag-1_youduiqi" />
-                </div>
-                <div
-                    v-if="!isInnerFreeLayout"
-                    :class="{
-                        [$style['item']]: true,
-                        [$style['is-actived']]: renderAlign.horizontal === 'align-horizontal-space-between'
-                    }"
-                    v-bk-tooltips.top="'水平均分'"
-                    @click="handleHorizontalChange('align-horizontal-space-between')">
-                    <i class="bk-drag-icon bk-drag-shuipingjunfen" />
-                </div>
-            </div>
-            <div :class="$style['row']">
-                <div
-                    :class="{
-                        [$style['item']]: true,
-                        [$style['is-actived']]: renderAlign.vertical === 'align-vertical-top'
-                    }"
-                    v-bk-tooltips.bottom="'顶部对齐'"
-                    @click="handleVerticalChange('align-vertical-top')">
-                    <i class="bk-drag-icon bk-drag-1_dingduiqi" />
-                </div>
-                <div
-                    :class="{
-                        [$style['item']]: true,
-                        [$style['is-actived']]: renderAlign.vertical === 'align-vertical-center'
-                    }"
-                    v-bk-tooltips.bottom="'垂直居中'"
-                    @click="handleVerticalChange('align-vertical-center')">
-                    <i class="bk-drag-icon bk-drag-1_juzhongduiqi" />
-                </div>
-                <div
-                    :class="{
-                        [$style['item']]: true,
-                        [$style['is-actived']]: renderAlign.vertical === 'align-vertical-bottom'
-                    }"
-                    v-bk-tooltips.bottom="'底部对齐'"
-                    @click="handleVerticalChange('align-vertical-bottom')">
-                    <i class="bk-drag-icon bk-drag-1_diduiqi" />
-                </div>
-            </div>
-        </div>
-    </div> -->
 </template>
 <script>
     import LC from '@/element-materials/core'

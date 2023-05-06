@@ -14,7 +14,8 @@
         <span v-if="readOnly" class="style-size-unit-span">{{value}}</span>
         <bk-select
             v-else
-            @change="(val) => $emit('change', val)"
+            :value="value"
+            @change="changeUnit"
             ext-cls="style-unit"
             ext-popover-cls="style-unit-content"
         >
@@ -52,6 +53,11 @@
                     : ['rpx', '%', 'px']
             }
 
+        },
+        methods: {
+            changeUnit (val) {
+                this.$emit('change', val)
+            }
         }
     }
 </script>
