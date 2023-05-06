@@ -211,12 +211,27 @@
                 this.$refs.pageDialog.dialog.visible = true
                 this.$refs.pageSelect.close()
             },
-            async getPageList () {
+            async getPageList (newPageId) {
                 const pageList = await this.$store.dispatch('page/getList', {
                     projectId: this.projectId,
                     versionId: this.versionId
                 })
                 this.$store.commit('page/setPageList', pageList || [])
+                if (newPageId) {
+                    this.$bkInfo({
+                        title: '是否跳转到新复制的页面画布？',
+                        subTitle: '选否则继续留在当前页面画布',
+                        width: 500,
+                        confirmFn: () => {
+                            this.$router.replace({
+                                name: 'new',
+                                params: {
+                                    pageId: newPageId
+                                }
+                            })
+                        }
+                    })
+                }
             }
         }
     }
@@ -291,9 +306,12 @@
                     border: none;
                     background-color: #f0f1f5;
                     &:hover {
+                        border: none;
+                        box-shadow: none;
                         background-color: #dedee5;
                     }
                     &.is-focus {
+                        border: none;
                         box-shadow: none;
                         background-color: #dedee5;
                     }

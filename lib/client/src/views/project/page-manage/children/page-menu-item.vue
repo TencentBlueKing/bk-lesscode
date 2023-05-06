@@ -5,7 +5,7 @@
                 <i :style="{ color: NOCODE_TYPE_MAP['color'][page.nocodeType || ''] }" :class="NOCODE_TYPE_MAP['icon'][page.nocodeType || '']"></i>
                 <span class="page-name" :title="page.pageName">{{ page.pageName }}</span>
             </div>
-            <div style="position: positive">
+            <div class="tag-and-operate" style="position: positive">
                 <form-manage-page v-if="page.nocodeType === 'FORM' && getFormManagePages(page.formId).length" :manage-pages="getFormManagePages(page.formId)"></form-manage-page>
                 <span class="tag-span">{{NOCODE_TYPE_MAP['title'][page.nocodeType || '']}}</span>
                 <bk-dropdown-menu :ref="`moreActionDropdown${page.id}`">
@@ -225,6 +225,10 @@
                 white-space: nowrap;
             }
         }
+        .tag-and-operate {
+            display: flex;
+            align-items: center;
+        }
         i {
             font-size: 14px;
         }
@@ -242,11 +246,10 @@
 
         .more-menu-trigger {
             display: none;
-            /* padding-left: 6px; */
             color: #979BA5;
             position: absolute;
             right: 0px;
-            top: -14px;
+            top: -8px;
             &:hover {
                 color: $primaryColor;
             }
