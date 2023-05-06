@@ -56,7 +56,7 @@
                     <div class="col">
                         <h3 class="name" v-bk-tooltips="{
                             content: project.projectName,
-                            disabled: !(project.projectName && project.projectName.length > 20)}"
+                            disabled: !(project.projectName && project.projectName.length > 20) }"
                         >{{project.projectName}}</h3>
                         <div class="stat">{{getUpdateInfoMessage(project)}}</div>
                     </div>
@@ -126,6 +126,7 @@
                     </auth-component>
                 </span>
                 <span v-if="project.isOffcial" class="default-tag">应用模板</span>
+                <frameworkTag :framework="project.framework"></frameworkTag>
             </div>
         </template>
         <div class="empty" v-else>
@@ -137,11 +138,13 @@
 <script>
     import { mapGetters } from 'vuex'
     import pagePreviewThumb from '@/components/project/page-preview-thumb.vue'
+    import frameworkTag from '@/components/framework-tag.vue'
 
     export default {
         name: 'project-list-card',
         components: {
-            pagePreviewThumb
+            pagePreviewThumb,
+            frameworkTag
         },
         props: {
             projectList: {
@@ -224,7 +227,7 @@
 
         .project-item {
             position: relative;
-            height: 240px;
+            height: 260px;
             margin: 0;
             padding: 6px;
             background: #fff;
@@ -418,6 +421,7 @@
                 color: #979BA5;
                 padding: 4px 0;
             }
+            
         }
         .empty {
             justify-content: center;

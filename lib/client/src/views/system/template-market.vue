@@ -119,14 +119,20 @@
                                 </div>
                                 <div class="item-ft">
                                     <div class="col">
-                                        <div class="page-name">
-                                            <span class="page-type">
-                                                <i v-if="page.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
-                                                <i v-else class="bk-drag-icon bk-drag-pc"> </i>
-                                            </span>
-                                            <div class="name" :title="page.templateName">{{page.templateName}}</div>
+                                        <div class="col-warp">
+                                            <div>
+                                                <div class="page-name">
+                                                    <span class="page-type">
+                                                        <i v-if="page.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
+                                                        <i v-else class="bk-drag-icon bk-drag-pc"> </i>
+                                                    </span>
+                                                    <div class="name" :title="page.templateName">{{page.templateName}}</div>
+                                            
+                                                </div>
+                                                <div class="stat">{{`由 ${page.createUser || 'admin'} 上传`}}</div>
+                                            </div>
+                                            <frameworkTag class="framewor-op" :framework="page.framework"></frameworkTag>
                                         </div>
-                                        <div class="stat">{{`由 ${page.createUser || 'admin'} 上传`}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -251,6 +257,7 @@
     import { PROJECT_TEMPLATE_TYPE, PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import { parseFuncAndVar } from '@/common/parse-function-var'
     import LC from '@/element-materials/core'
+    import frameworkTag from '@/components/framework-tag.vue'
 
     const PROJECT_TYPE_LIST = [{ id: '', name: '全部' }].concat(PROJECT_TEMPLATE_TYPE)
     const PAGE_TYPE_LIST = [{ id: '', name: '全部' }].concat(PAGE_TEMPLATE_TYPE)
@@ -265,7 +272,8 @@
         name: 'template-market',
         components: {
             DownloadDialog,
-            PagePreviewThumb
+            PagePreviewThumb,
+            frameworkTag
         },
         data () {
             return {
@@ -698,6 +706,16 @@
         }
         .page-item{
              margin: 0 14px 30px 0;
+             .col-warp{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                .framewor-op{
+                    position: absolute;
+                    right: -30px;
+                }
+             }
         }
         .project-item, .page-item {
             position: relative;
