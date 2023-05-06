@@ -220,7 +220,9 @@
                 if (newPageId) {
                     this.$bkInfo({
                         title: '是否跳转到新复制的页面画布？',
-                        subTitle: '选否则继续留在当前页面画布',
+                        subTitle: '跳转到新页面前请确保当前画布内容已保存，选否则继续留在当前页面画布',
+                        okText: '是',
+                        cancelText: '否',
                         width: 500,
                         confirmFn: () => {
                             this.$router.replace({
