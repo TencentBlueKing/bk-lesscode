@@ -252,7 +252,7 @@
                             message: `${this.actionName}成功`
                         })
                         this.dialog.visible = false
-                        this.refreshList()
+                        this.refreshList(res)
                     }
                 } catch (err) {
                     console.error(err)
