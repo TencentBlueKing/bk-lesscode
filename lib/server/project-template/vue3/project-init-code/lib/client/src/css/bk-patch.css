@@ -28,10 +28,7 @@
 .bk-navigation-wrapper .navigation-container .container-content {
     padding: 0px !important;
 }
-.lesscode-bk-popover.lesscode-bk-pop2-content {
-    padding: 0 !important;
-}
-.bk-popover.bk-pop2-content {
+.empty-padding.bk-popover.bk-pop2-content {
     padding: 0 !important;
 }
 

@@ -54,3 +54,14 @@ td,th {
     width: 0;
     height: 0;
 }
+.empty-padding.lesscode-bk-popover.lesscode-bk-pop2-content {
+    padding: 0 !important;
+}
+.lesscode-bk-color-picker-icon .icon-angle-down, .lesscode-bk-cascader-node .icon-angle-right{
+    &::before {
+        content: '' !important;
+    }
+}
+.lesscode-bk-menu-submenu .submenu-header-icon {
+    color: #96a2b9;
+}
