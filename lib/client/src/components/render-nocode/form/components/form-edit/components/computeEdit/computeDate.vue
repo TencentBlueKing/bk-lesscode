@@ -4,6 +4,7 @@
             <span>开始日期</span>
             <bk-select
                 v-model="computConfigInfo.dateTime.startDate.key"
+                :disabled="disabled"
                 @change="($event) => {
                     dateSourceChange($event,'startDate')
                 }"
@@ -17,6 +18,7 @@
             <bk-date-picker
                 class="mg-top-5 w-272"
                 v-show="computConfigInfo.dateTime.startDate.key === 'specify_date'"
+                :disabled="disabled"
                 @change="($event) => {
                     dateChange($event,'startDate')
                 }"
@@ -32,6 +34,7 @@
             <span>结束日期</span>
             <bk-select
                 v-model="computConfigInfo.dateTime.endDate.key"
+                :disabled="disabled"
                 @change="($event) => {
                     dateSourceChange($event,'endDate')
                 }"
@@ -45,6 +48,7 @@
             <bk-date-picker
                 class="mg-top-5 w-272"
                 v-show="computConfigInfo.dateTime.endDate.key === 'specify_date'"
+                :disabled="disabled"
                 @change="($event) => {
                     dateChange($event,'endDate')
                 }"
@@ -60,6 +64,7 @@
             <span>结果精度</span>
             <bk-select
                 v-model="computConfigInfo.dateTime.accuracyResult"
+                :disabled="disabled"
                 @change="computDateDiff">
                 <bk-option v-for="option in accuracyResultList"
                     :key="option.value"
@@ -71,7 +76,7 @@
         <!-- 日期精度不是day且开始和结束日期精度都未到时分秒时显示该配置项 -->
         <div class="row-box" v-show="checkAccuracy && computConfigInfo.dateTime.accuracyResult !== 'day'">
             <span>日期字段为选择精确到时间时，默认为</span>
-            <bk-time-picker v-model="computConfigInfo.dateTime.defaultTime" :placeholder="'选择时间'" @change="computDateDiff"></bk-time-picker>
+            <bk-time-picker v-model="computConfigInfo.dateTime.defaultTime" :disabled="disabled" :placeholder="'选择时间'" @change="computDateDiff"></bk-time-picker>
         </div>
     </div>
 </template>
@@ -91,7 +96,8 @@
             computConfigInfo: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

@@ -12,18 +12,27 @@
         </div>
         <div class="row-box">
             <span>重置周期</span>
-            <bk-select v-model="serialConfigInfo.resetCycle" searchable :clearable="false">
+            <bk-select v-model="serialConfigInfo.resetCycle" searchable :clearable="false" :disabled="disabled">
                 <bk-option v-for="option in resetCycles" :key="option.id" :id="option.id" :name="option.name">
                 </bk-option>
             </bk-select>
         </div>
         <div class="row-box">
             <span>初始值</span>
-            <bk-input v-model="serialConfigInfo.initNumber" @change="initNumberChange" type="number" :min="1"></bk-input>
+            <bk-input v-model="serialConfigInfo.initNumber" @change="initNumberChange" type="number" :min="1" :disabled="disabled"></bk-input>
         </div>
         <!-- 编号规则 -->
-        <bk-dialog v-model="showRuleDialog" ext-cls="dialog-style" title="配置编号规则" header-position="left" :esc-close="false"
-            :auto-close="false" width="500px" :mask-close="false" @confirm="handlerConfirm" @cancel="handlerCancel">
+        <bk-dialog
+            v-model="showRuleDialog"
+            ext-cls="dialog-style"
+            title="配置编号规则"
+            header-position="left"
+            :esc-close="false"
+            :auto-close="false"
+            :width="500"
+            :mask-close="false"
+            @confirm="handlerConfirm"
+            @cancel="handlerCancel">
             <div class="rule-box">
                 <draggable v-model="serialConfigInfo.serialRules" force-fallback="true" group="people" animation="500"
                     @end="draggableEnd">
@@ -37,32 +46,50 @@
                             <div class="input-warp">
                                 <i class="icon bk-drag-icon bk-drag-grag-fill" />
                                 <template v-if="item.type === 'serialNumber'">
-                                    <bk-input class="input-item" v-model="item.configValue"
-                                        @change="($event) => serialNumberChange($event, item)" type="number" :min="4"
-                                        :max="10">
+                                    <bk-input
+                                        class="input-item"
+                                        v-model="item.configValue"
+                                        @change="($event) => serialNumberChange($event, item)"
+                                        type="number"
+                                        :min="4"
+                                        :max="10"
+                                        :disabled="disabled">
                                         <template slot="append">
                                             <div class="group-text">位</div>
                                         </template>
                                     </bk-input>
                                 </template>
                                 <template v-else-if="item.type === 'date'">
-                                    <bk-select v-model="item.configValue" class="input-item"
-                                        @change="($event) => dateChange($event, item)" searchable>
+                                    <bk-select
+                                        v-model="item.configValue"
+                                        class="input-item"
+                                        searchable
+                                        :disabled="disabled"
+                                        @change="($event) => dateChange($event, item)">
                                         <bk-option v-for="option in dateFormats" :key="option.id" :id="option.id"
                                             :name="option.name"></bk-option>
                                     </bk-select>
                                 </template>
                                 <template v-else-if="item.type === 'formField'">
-                                    <bk-select v-model="item.configValue" class="input-item"
-                                        @change="($event) => formFieldChange($event, item)" searchable>
+                                    <bk-select
+                                        v-model="item.configValue"
+                                        class="input-item"
+                                        searchable
+                                        :disabled="disabled"
+                                        @change="($event) => formFieldChange($event, item)">
                                         <bk-option v-for="option in fields" :key="option.key" :id="option.key"
                                             :name="option.name"></bk-option>
                                     </bk-select>
                                 </template>
                                 <template v-else-if="item.type === 'customizeChar'">
-                                    <bk-input class="input-item" v-model="item.configValue"
-                                        @change="($event) => customizeCharChange($event, item)" :clearable="true"
-                                        :maxlength="100"></bk-input>
+                                    <bk-input
+                                        class="input-item"
+                                        v-model="item.configValue"
+                                        :clearable="true"
+                                        :maxlength="100"
+                                        :disabled="disabled"
+                                        @change="($event) => customizeCharChange($event, item)">
+                                    </bk-input>
                                 </template>
                             </div>
 
@@ -71,9 +98,9 @@
                 </draggable>
             </div>
             <div class="row-box add-btn">
-                <bk-dropdown-menu trigger="click">
+                <bk-dropdown-menu trigger="click" :disabled="disabled">
                     <div slot="dropdown-trigger">
-                        <bk-button :text="true" title="primary">
+                        <bk-button :text="true" title="primary" :disabled="disabled">
                             <i class="icon bk-drag-icon bk-drag-add-line" />
                             <span>添加规则</span>
                         </bk-button>
@@ -107,7 +134,8 @@
             computConfigInfo: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

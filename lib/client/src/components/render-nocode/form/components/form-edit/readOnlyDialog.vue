@@ -10,7 +10,7 @@
         :value="show"
         @confirm="onConfirm"
         @cancel="$emit('update:show', false)">
-        <condition-group :value="value" @change="handleChangeValue" :fields="fieldList">
+        <condition-group :value="value" @change="handleChangeValue" :fields="fieldList" :disabled="disabled">
         </condition-group>
     </bk-dialog>
 </template>
@@ -50,7 +50,8 @@
             fieldList: {
                 type: Array,
                 default: () => []
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

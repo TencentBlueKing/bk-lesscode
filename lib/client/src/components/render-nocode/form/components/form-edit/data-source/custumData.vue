@@ -14,6 +14,7 @@
                     placeholder="请输入选项名"
                     :maxlength="120"
                     v-model="item.name"
+                    :disabled="disabled"
                     @change="handleValChange">
                 </bk-input>
                 <bk-input
@@ -21,14 +22,16 @@
                     placeholder="请输入选项ID"
                     :maxlength="120"
                     v-model="item.key"
+                    :disabled="disabled"
                     @change="handleValChange">
                 </bk-input>
-                <bk-radio :value="item.isDefaultVal" style="margin: 0 24px  0 8px;" @change="handleChangeDefaultVal(index)">设为下拉默认值</bk-radio>
+                <bk-radio :value="item.isDefaultVal" style="margin: 0 24px  0 8px;" :disabled="disabled" @change="handleChangeDefaultVal(index)">设为下拉默认值</bk-radio>
                 <bk-color-picker
                     v-show="localValIsDisplayTag"
                     v-model="item.color"
                     style="width: 75px;"
                     :show-value="false"
+                    :disabled="disabled"
                     @change="handleValChange"
                     transfer>
                 </bk-color-picker>
@@ -56,7 +59,8 @@
             localValIsDisplayTag: {
                 type: Boolean,
                 default: false
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {
@@ -70,6 +74,9 @@
         },
         methods: {
             handleAddItem (index) {
+                if (this.disabled) {
+                  return
+                }
                 const dataItem = { name: '', key: '', color: '', isDefaultVal: false }
                 if (this.fieldType === 'TABLE') {
                     dataItem.required = false
@@ -78,7 +85,7 @@
                 this.handleValChange()
             },
             handleDeleteItem (index) {
-                if (this.localVal.length < 2) {
+                if (this.disabled || this.localVal.length < 2) {
                     return
                 }
                 this.localVal.splice(index, 1)
@@ -176,6 +183,7 @@
 
   .bk-drag-add-fill,
   .bk-drag-reduce-fill {
+    margin-right: 4px;
     font-size: 16px;
     color: #c4c6cc;
     cursor: pointer;
