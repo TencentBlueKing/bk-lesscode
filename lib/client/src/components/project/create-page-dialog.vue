@@ -262,8 +262,8 @@
             async checkName () {
                 const nameExist = await this.$store.dispatch('page/checkName', {
                     data: {
-                        pageName: this.dialog.formData.pageName,
-                        pageCode: this.dialog.formData.pageCode,
+                        pageName: this.formData.pageName,
+                        pageCode: this.formData.pageCode,
                         projectId: this.projectId,
                         versionId: this.versionId,
                         from: 'create',
