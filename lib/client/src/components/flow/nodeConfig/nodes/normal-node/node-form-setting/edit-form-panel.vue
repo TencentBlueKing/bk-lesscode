@@ -8,8 +8,8 @@
                     <breadcrumb-nav
                         :flow-config="flowConfig"
                         :editable="formConfig.type !== 'USE_FORM'"
-                        @backToNode="handleBack('backToNode')"
-                        @backToFlow="handleBack('backToFlow')">
+                        @backToFlow="handleBack('backToFlow')"
+                        @backToNode="handleBack('backToNode')">
                     </breadcrumb-nav>
                 </div>
                 <div

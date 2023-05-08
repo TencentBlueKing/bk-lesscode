@@ -134,12 +134,17 @@
                 })
             },
             handleBack () {
-                this.$router.push({
-                    name: 'pageList',
-                    params: {
-                        projectId: this.projectId
-                    }
-                })
+                // 从节点配置中进入的提单页，返回时回到节点配置页。通过url的from字段标识
+                if (this.$route.query.from === 'node') {
+                    this.handleBackToNode()
+                } else {
+                    this.$router.push({
+                        name: 'pageList',
+                        params: {
+                            projectId: this.projectId
+                        }
+                    })
+                }
             },
             handleBackToNode () {
                 const { projectId, flowId } = this.$route.params
