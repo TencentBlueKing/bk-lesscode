@@ -16,7 +16,7 @@
                 <span :title="props.row.desc">{{ props.row.desc || '--' }}</span>
             </template>
         </bk-table-column>
-        <bk-table-column :label="$t('参数值')" width="290" fixed="right">
+        <bk-table-column :label="$t('table_参数值')" width="290" fixed="right">
             <template slot-scope="props">
                 <div class="params-value">
                     <slot v-bind:row="props.row"></slot>

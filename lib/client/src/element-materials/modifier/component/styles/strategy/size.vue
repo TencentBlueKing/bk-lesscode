@@ -52,7 +52,7 @@
 
     const sizeConfig = [
         {
-            name: 'display',
+            name: 'Display',
             key: 'display'
         },
         {

@@ -39,9 +39,9 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
-            <bk-table-column :label="$t('单号')" property="sn"></bk-table-column>
-            <bk-table-column :label="$t('创建人')" property="creator"></bk-table-column>
-            <bk-table-column :label="$t('创建时间')" property="create_at"></bk-table-column>
+            <bk-table-column :label="$t('table_单号')" property="sn"></bk-table-column>
+            <bk-table-column :label="$t('table_创建人')" property="creator"></bk-table-column>
+            <bk-table-column :label="$t('table_创建时间')" property="create_at"></bk-table-column>
             <bk-table-column :label="$t('状态')" property="status_name">
                 <template slot-scope="{ row }">
                     <span :style="{ padding: '4px 10px', borderRadius: '2px', color: row.color, backgroundColor: row.backgroundColor }">

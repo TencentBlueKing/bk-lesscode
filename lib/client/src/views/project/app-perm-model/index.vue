@@ -37,25 +37,25 @@
             v-bkloading="{ isLoading }"
             class="app-perm-model-table">
             <!-- { actionName: '页面访问', actionId: 'IAM_APP_PERM_BUILDIN_ACTION', actionType: '查看(view)', actionDesc: '页面访问权限', relatedResource: ''} -->
-            <bk-table-column :label="$t('操作名称')" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_操作名称')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     {{row.actionName}}<span class="buildin" v-if="row.actionId === IAM_APP_PERM_BUILDIN_ACTION">{{ $t('内置') }}</span>
                 </template>
             </bk-table-column>
             <bk-table-column :label="$t('操作ID')" prop="actionId" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('操作类型')" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_操作类型')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div v-if="row.actionType" :title="row.actionType">{{row.actionType}}</div>
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('操作描述')" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_操作描述')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div v-if="row.actionDesc" :title="row.actionDesc">{{row.actionDesc}}</div>
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('关联资源')" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_关联资源')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="related-resource-wrapper" v-if="row.actionRelatedResourceList.length">
                         <div class="related-resource-item" v-for="(item, index) in row.actionRelatedResourceList" :key="index">
@@ -82,7 +82,7 @@
                     </template>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('是否同步到权限中心')" :render-header="renderHeader">
+            <bk-table-column :label="$t('table_是否同步到权限中心')" :render-header="renderHeader">
                 <template slot-scope="{ row }">
                     <div v-if="row.registeredStatus === 1" style="color: #2dcb56">{{ $t('已同步') }}</div>
                     <div v-else-if="row.registeredStatus === 0" style="color: #979ba5">{{ $t('未同步') }}</div>
