@@ -32,7 +32,7 @@
                                 <bk-radio :value="false" :disabled="!isEdit">{{ $t('否') }}</bk-radio>
                             </bk-radio-group>
                         </bk-form-item>
-                        <bk-form-item :label="$t('关联资源')" property="actionRelatedResourceId" v-if="formData.hasRelated">
+                        <bk-form-item :label="$t('form_关联资源')" property="actionRelatedResourceId" v-if="formData.hasRelated">
                             <bk-select v-model="formData.actionRelatedResourceId" :placeholder="$t('请选择资源')" multiple>
                                 <bk-option v-for="item in relatedResourceList" :key="item.id"
                                     :id="item.id" :name="item.name">

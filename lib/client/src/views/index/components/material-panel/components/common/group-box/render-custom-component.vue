@@ -38,23 +38,23 @@
                 v-bkloading="{ isLoading: isDiscriptionLoading }">
                 <table>
                     <tr>
-                        <td class="label">{{ $t('来源应用：') }}</td>
+                        <td class="label">{{ $t('table_来源应用：') }}</td>
                         <td>{{ componentIntroduction.projectName }}</td>
                     </tr>
                     <tr>
-                        <td class="label">{{ $t('最新版本：') }}</td>
+                        <td class="label">{{ $t('table_最新版本：') }}</td>
                         <td>{{ componentIntroduction.lastVersion }}</td>
                     </tr>
                     <tr>
-                        <td class="label">{{ $t('当前版本：') }}</td>
+                        <td class="label">{{ $t('table_当前版本：') }}</td>
                         <td>{{ componentIntroduction.version }}</td>
                     </tr>
                     <tr>
-                        <td class="label">{{ $t('上传人：') }}</td>
+                        <td class="label">{{ $t('table_上传人：') }}</td>
                         <td>{{ componentIntroduction.updateUser }}</td>
                     </tr>
                     <tr>
-                        <td class="label">{{ $t('组件简介：') }}</td>
+                        <td class="label">{{ $t('table_组件简介：') }}</td>
                         <td>{{ componentIntroduction.description }}</td>
                     </tr>
                 </table>
