@@ -154,6 +154,10 @@
                 this.configData.rules = rules
             },
             handleConfirm () {
+                if (this.disabled) {
+                    this.close()
+                    return
+                }
                 if (!this.validate()) {
                     return
                 }

@@ -312,6 +312,10 @@
                 serialRule.serialValue = initNumber.padStart(configValue, '0')
             },
             handlerConfirm () {
+                if (this.disabled) {
+                    this.handlerCancel()
+                    return
+                }
                 // 检查自定义规则是否有值
                 const bool = this.serialConfigInfo.serialRules.some((item) => {
                     return !item.serialValue && item.type === 'customizeChar'

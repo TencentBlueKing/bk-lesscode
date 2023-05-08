@@ -7,7 +7,7 @@
                     <div class="split-line"></div>
                     <breadcrumb-nav
                         :flow-config="flowConfig"
-                        :editable="formConfig.type !== 'USE_FORM'"
+                        :editable="!isUseForm"
                         @backToFlow="handleBack('backToFlow')"
                         @backToNode="handleBack('backToNode')">
                     </breadcrumb-nav>
@@ -21,8 +21,10 @@
                         :custom-save="true"
                         :hide-preview="!isCreateTicketPage"
                         :hide-func="!isCreateTicketPage"
-                        :hide-clear="formConfig.type === 'USE_FORM'"
+                        :hide-clear="isUseForm"
                         :custom-loading="savePending"
+                        :save-disabled="isUseForm"
+                        :save-tips="isUseForm ? '复用表单模式下，表单项不支持编辑' : ''"
                         @save="handleSave">
                     </action-tool>
                 </div>
@@ -33,7 +35,7 @@
                     v-show="operationType === 'edit'"
                     page-type="FLOW"
                     :content="formConfig.content"
-                    :disabled="formConfig.type === 'USE_FORM'">
+                    :disabled="isUseForm">
                 </nocode-form>
                 <page-setting v-if="operationType === 'setting'"></page-setting>
                 <page-function v-if="operationType === 'pageFunction'"></page-function>
@@ -86,6 +88,10 @@
             },
             isCreateTicketPage () {
                 return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state && this.flowConfig.pageId
+            },
+            // 是否为复用表单
+            isUseForm () {
+                return this.formConfig.type === 'USE_FORM'
             }
         },
         created () {
