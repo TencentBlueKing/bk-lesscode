@@ -66,7 +66,7 @@
             @save="isUnset = false"
             @backToFlow="$emit('close')"
             @backToNode="handleBackToNode"
-            @back="editFormPanelShow = false">
+            @back="handleBackToNode">
         </edit-form-panel>
         <select-form-dialog
             :method="selectedType"

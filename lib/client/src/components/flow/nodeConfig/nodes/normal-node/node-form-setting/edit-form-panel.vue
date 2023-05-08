@@ -23,8 +23,6 @@
                         :hide-func="!isCreateTicketPage"
                         :hide-clear="isUseForm"
                         :custom-loading="savePending"
-                        :save-disabled="isUseForm"
-                        :save-tips="isUseForm ? '复用表单模式下，表单项不支持编辑' : ''"
                         @save="handleSave">
                     </action-tool>
                 </div>
@@ -71,7 +69,8 @@
         props: {
             hideSetting: Boolean,
             hidePreview: Boolean,
-            workflowId: Number
+            workflowId: Number,
+            isCreateTicketPage: Boolean
         },
         data () {
             return {
@@ -85,9 +84,6 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
-            },
-            isCreateTicketPage () {
-                return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state && this.flowConfig.pageId
             },
             // 是否为复用表单
             isUseForm () {

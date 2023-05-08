@@ -2,6 +2,7 @@
     <div v-bkloading="{ isLoading: loading }" class="create-ticket-page-edit">
         <edit-form-panel
             v-if="!loading"
+            :is-create-ticket-page="true"
             :workflow-id="serviceData.workflow_id"
             @save="deployFlow"
             @back="handleBack"
