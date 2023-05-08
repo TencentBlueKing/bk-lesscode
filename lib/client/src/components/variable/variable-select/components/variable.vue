@@ -58,7 +58,7 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column
-                    :label="$t('变量名称')"
+                    :label="$t('table_变量名称')"
                     prop="variableName"
                     show-overflow-tooltip
                     width="120" />
@@ -68,7 +68,7 @@
                     show-overflow-tooltip
                     width="120" />
                 <bk-table-column
-                    :label="$t('初始类型')"
+                    :label="$t('table_初始类型')"
                     show-overflow-tooltip
                     width="120">
                     <template slot-scope="props">

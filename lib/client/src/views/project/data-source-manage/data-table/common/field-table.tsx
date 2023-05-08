@@ -92,7 +92,7 @@ export default defineComponent({
     setup (props: ITableStatus, { emit }) {
         const tableFields: ITableField[] = [
             {
-                name: window.i18n.t('字段名称'),
+                name: window.i18n.t('table_字段名称'),
                 type: 'input',
                 prop: 'name',
                 width: '110px',
@@ -119,7 +119,7 @@ export default defineComponent({
                 ]
             },
             {
-                name: window.i18n.t('字段类型'),
+                name: window.i18n.t('table_字段类型'),
                 type: 'select',
                 prop: 'type',
               

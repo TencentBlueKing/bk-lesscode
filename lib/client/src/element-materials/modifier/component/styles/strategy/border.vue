@@ -125,7 +125,7 @@
                 @borderColorChange="handleBorderColorChange('borderLeft', $event)"
             ></border-detail>
         </div>
-        <style-item :name="$t('边框图片')">
+        <style-item :name="$t('form_边框图片')">
             <bk-switcher
                 :value="borderImage.show"
                 theme="primary"
