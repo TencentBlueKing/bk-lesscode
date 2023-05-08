@@ -8,8 +8,8 @@
                 <bk-table :data="list" type="small" ext-cls="member-table">
                     <bk-table-column :label="$t('姓名')" prop="userName"></bk-table-column>
                     <bk-table-column :label="$t('角色')" prop="roleId" :formatter="showViewType"></bk-table-column>
-                    <bk-table-column :label="$t('添加人')" prop="createUser"></bk-table-column>
-                    <bk-table-column :label="$t('添加时间')" prop="createTime"></bk-table-column>
+                    <bk-table-column :label="$t('table_添加人')" prop="createUser"></bk-table-column>
+                    <bk-table-column :label="$t('table_添加时间')" prop="createTime"></bk-table-column>
                     <bk-table-column :label="$t('操作')" width="150">
                         <template slot-scope="props">
                             <bk-button theme="primary" text :disabled="false" @click="editView(props.row)">{{ $t('编辑') }}</bk-button>

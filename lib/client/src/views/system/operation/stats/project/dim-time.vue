@@ -100,8 +100,8 @@
                     { id: 'count', name: window.i18n.t('数量') }
                 ],
                 totalColumns: [
-                    { id: 'project', name: window.i18n.t('应用总数') },
-                    { id: 'page', name: window.i18n.t('页面总数') }
+                    { id: 'project', name: window.i18n.t('table_应用总数') },
+                    { id: 'page', name: window.i18n.t('table_页面总数') }
                 ]
             }
         },

@@ -34,7 +34,7 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
-            <bk-table-column :label="$t('流程名称')" property="flowName" show-overflow-tooltip :min-width="120">
+            <bk-table-column :label="$t('table_流程名称')" property="flowName" show-overflow-tooltip :min-width="120">
                 <template slot-scope="{ row }">
                     <router-link
                         class="link-btn"
@@ -43,22 +43,22 @@
                     </router-link>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('流程描述')" :render-header="renderHeaderAddTitle" property="summary" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_流程描述')" :render-header="renderHeaderAddTitle" property="summary" show-overflow-tooltip>
                 <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
             </bk-table-column>
-            <bk-table-column :label="$t('流程表单页')" :render-header="renderHeaderAddTitle" property="pageName" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_流程表单页')" :render-header="renderHeaderAddTitle" property="pageName" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.pageId" class="link-btn" @click="handlePreviewPage(row.pageId, row.pageCode)">{{ row.pageName }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('流程数据管理页')" :render-header="renderHeaderAddTitle" min-width="100px" property="managePageNames" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_流程数据管理页')" :render-header="renderHeaderAddTitle" min-width="100px" property="managePageNames" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('预览环境部署状态')" :render-header="renderHeaderAddTitle" min-width="100px">
+            <bk-table-column :label="$t('table_预览环境部署状态')" :render-header="renderHeaderAddTitle" min-width="100px">
                 <template slot-scope="{ row }">
                     <div class="deploy-status">
                         <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>
@@ -66,8 +66,8 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('创建人')" property="createUser"></bk-table-column>
-            <bk-table-column :label="$t('创建时间')" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_创建人')" property="createUser"></bk-table-column>
+            <bk-table-column :label="$t('table_创建时间')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     {{ row.createTime | timeFormatter }}
                 </template>

@@ -193,7 +193,6 @@
 
 <script>
     import { mapGetters } from 'vuex'
-    import dayjs from 'dayjs'
     import ProjectForm from '../components/project-form'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import ExportDialog from '../components/export-dialog'
@@ -204,12 +203,8 @@
     import ListCard from './children/list-card.vue'
     import ListTable from './children/list-table.vue'
     import SetTemplateDialog from '../components/set-template-dialog.vue'
-    import relativeTime from 'dayjs/plugin/relativeTime'
-    import 'dayjs/locale/zh-cn'
-
-    dayjs.extend(relativeTime)
-    dayjs.locale('zh-cn')
-
+    import dayjs from '@/common/dayjs'
+    
     export default {
         components: {
             ProjectForm,

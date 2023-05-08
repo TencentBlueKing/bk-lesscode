@@ -24,7 +24,7 @@
                 :header-cell-style="{ background: '#f0f1f5' }"
                 :data="list"
                 v-show="!isLoading">
-                <bk-table-column :label="$t('组件名称')" prop="compName" min-width="180" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_组件名称')" prop="compName" min-width="180" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span :class="$style['comp-type']">
                             <i v-if="row.compType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
@@ -33,7 +33,7 @@
                         <span :class="$style['component-name']">{{ row.displayName }}({{ row.name }})</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('来源应用')" prop="compSource" min-width="140" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_来源应用')" prop="compSource" min-width="140" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{row.belongProjectId !== row.sourceProject.id ? row.sourceProject.projectName : $t('本应用')}}</span>
                     </template>
@@ -50,7 +50,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('最新版本')" prop="latestVersion" width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_最新版本')" prop="latestVersion" width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div :class="$style['component-version']" @click="handleVersionDetail(row)">
                             <span>{{ row.version }}</span>
@@ -58,7 +58,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('使用页面')" prop="usingPage" min-width="280" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_使用页面')" prop="usingPage" min-width="280" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span :class="$style['component-pages']">
                             <span>{{ (row.pageList || []).map(_ => _.pageName).join('、') }}</span>

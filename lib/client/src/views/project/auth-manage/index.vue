@@ -10,9 +10,9 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             v-bkloading="{ isLoading }"
             class="auth-manage-table">
-            <bk-table-column :label="$t('操作类型')" prop="actionName" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('权限说明')" prop="actionDesc" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('关联用户组')" prop="createUser" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_操作类型')" prop="actionName" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_权限说明')" prop="actionDesc" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_关联用户组')" prop="createUser" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="group-wrapper" v-if="row.groups.length">
                         <div class="group-item" v-for="(item, index) in row.groups" :key="index">

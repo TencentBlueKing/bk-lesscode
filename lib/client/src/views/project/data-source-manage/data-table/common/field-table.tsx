@@ -152,7 +152,7 @@ export default defineComponent({
                 ]
             },
             {
-                name: window.i18n.t('小数点'),
+                name: window.i18n.t('table_小数点'),
                 type: 'input',
                 prop: 'scale',
                 width: '115px',

@@ -27,7 +27,7 @@
                         <bk-table style="margin-top: 6px;"
                             :data="usingCompList">
                             <bk-table-column
-                                :label="$t('组件名称')"
+                                :label="$t('table_组件名称')"
                             >
                                 <template slot-scope="{ row }">
                                     <span class="component-name">{{ row.displayName }}({{ row.name }})</span>
@@ -38,7 +38,7 @@
                                 prop="type">
                             </bk-table-column>
                             <bk-table-column
-                                :label="$t('组件版本')"
+                                :label="$t('table_组件版本')"
                                 prop="version">
                             </bk-table-column>
                         </bk-table>

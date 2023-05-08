@@ -13,7 +13,7 @@
         @page-limit-change="handlePageLimitChange"
     >
         <bk-table-column
-            :label="$t('查询时间')"
+            :label="$t('table_查询时间')"
             prop="createTime"
             width="170"
             :formatter="timeFormatter"
@@ -29,19 +29,19 @@
             </template>
         </bk-table-column>
         <bk-table-column
-            :label="$t('耗时')"
+            :label="$t('table_耗时')"
             prop="spendTime"
             :width="$store.state.Language ? 130 : 100"
             :formatter="spendTimeFormatter"
         />
         <bk-table-column
-            :label="$t('数据源')"
+            :label="$t('table_数据源')"
             prop="dataSourceType"
             width="150"
             :formatter="dataSourceTypeFormatter"
         />
         <bk-table-column
-            :label="$t('查询描述')"
+            :label="$t('table_查询描述')"
             prop="condition"
             width="140"
             show-overflow-tooltip
@@ -54,7 +54,7 @@
         />
         <bk-table-column
             show-overflow-tooltip
-            :label="$t('异常信息')"
+            :label="$t('table_异常信息')"
             min-width="160"
         >
             <template slot-scope="props">
