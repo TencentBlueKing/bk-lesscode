@@ -103,9 +103,8 @@
                 this.$store.commit('nocode/nodeConfig/setFormConfig', { content, code, formName })
                 this.$store.commit('nocode/nodeConfig/setInitialFieldIds', content)
             },
-            // 部署流程
-            // 流程提单页编辑保存时，调用部署接口，流程接口不合法则提示用户回到流程编辑界面修改
-            async deployFlow () {
+            // 保存流程配置数据，部署流程之前需要调用
+            async updateItsmServiceData () {
                 const {
                     is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
                 } = this.serviceData
@@ -124,8 +123,49 @@
                         is_auto_approve: false
                     }
                 }
-                await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
-                await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                return new Promise((resolve, reject) => {
+                    this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
+                        .then(() => {
+                            resolve()
+                        }).catch((error) => {
+                            const h = this.$createElement
+                            this.$bkMessage({
+                                theme: 'error',
+                                ellipsisLine: 3,
+                                message: h('p', {}, [
+                                    `该表单对应流程【${this.flowConfig.flowName}】保存失败：`,
+                                    `${error.message.replace('流程保存失败:', '')}，`,
+                                    h('bk-button', { props: { text: true }, on: { click: this.handleBackToFlow } }, '点击修改流程')
+                                ])
+                            })
+                            reject(error.message)
+                        })
+                })
+            },
+            // 部署流程
+            async deployItsmFlow () {
+                return new Promise((resolve, reject) => {
+                    this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                        .then(() => {
+                            resolve()
+                        }).catch((error) => {
+                            const h = this.$createElement
+                            this.$bkMessage({
+                                theme: 'error',
+                                message: h('p', {}, [
+                                    `该表单对应流程【${this.flowConfig.flowName}】部署失败：${error.message}`,
+                                    h('bk-button', { props: { text: true }, on: { click: this.handleBackToFlow } }, '点击修改流程')
+                                ])
+                            })
+                            reject(error.message)
+                        })
+                })
+            },
+            // 部署流程
+            // 流程提单页编辑保存时，调用部署接口，流程接口不合法则提示用户回到流程编辑界面修改
+            async deployFlow () {
+                await this.updateItsmServiceData()
+                await this.deployItsmFlow()
                 await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
                 this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
                 this.$bkMessage({

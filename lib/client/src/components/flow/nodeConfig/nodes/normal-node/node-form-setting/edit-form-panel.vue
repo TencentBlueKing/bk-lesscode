@@ -145,6 +145,7 @@
                 const params = {
                     id: this.nodeData.id,
                     data: {
+                        is_draft: false, // 提单节点置为已配置状态，传到itsm做标记
                         extras: {
                             formConfig: {
                                 id: formId,
