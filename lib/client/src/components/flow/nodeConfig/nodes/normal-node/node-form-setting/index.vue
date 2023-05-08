@@ -278,7 +278,11 @@
                 const { id, content, tableName: code, formName } = form
                 // 引用和复用表单都需要把itsm的字段id清空，保存时重新创建新的字段
                 const contentArr = JSON.parse(content).map(item => {
-                    return { ...item, id: null }
+                    const field = { ...item, id: null }
+                    if (this.selectedType === 'COPY_FORM') {
+                        delete field.disabled
+                    }
+                    return field
                 })
                 this.selectFormDialogShow = false
                 if (this.selectedType === 'COPY_FORM') {
