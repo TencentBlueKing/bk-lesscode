@@ -151,7 +151,7 @@
                 return group
             },
             isFieldDisable (type) {
-                return this.pageType === 'FLOW' && [...LAYOUT_GROUP, ...ADVANCED_GROUP].includes(type)
+                return this.pageType === 'FLOW' && [...LAYOUT_GROUP, ...ADVANCED_GROUP, 'RATE'].includes(type)
             },
             handleMove () {
                 this.$emit('move')

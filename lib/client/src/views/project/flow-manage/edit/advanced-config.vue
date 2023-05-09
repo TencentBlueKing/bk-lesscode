@@ -198,42 +198,57 @@
                 this.advancedData.notify = notify
                 this.advancedData.notify_rule = val.length > 0 ? 'ONCE' : 'NONE'
             },
+            // 保存流程配置数据
+            async updateItsmServiceData () {
+                const {
+                    id,
+                    notify,
+                    notify_freq,
+                    notify_rule,
+                    revoke_config,
+                    show_all_workflow,
+                    show_my_create_workflow
+                } = this.advancedData
+                const serviceConfig = {
+                    workflow_config: {
+                        notify,
+                        notify_freq,
+                        notify_rule,
+                        revoke_config,
+                        is_revocable: revoke_config.type !== 0,
+                        show_all_workflow,
+                        show_my_create_workflow,
+                        // 以下为流程服务必需字段
+                        is_supervise_needed: false,
+                        supervise_type: 'EMPTY',
+                        supervisor: '',
+                        is_auto_approve: false
+                    },
+                    // 以下为流程服务必需字段
+                    can_ticket_agency: false,
+                    display_type: 'INVISIBLE'
+                }
+                return new Promise((resolve, reject) => {
+                    this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
+                        .then(() => {
+                            resolve()
+                        }).catch((error) => {
+                            const h = this.$createElement
+                            this.$bkMessage({
+                                theme: 'error',
+                                ellipsisLine: 3,
+                                message: error.message
+                            })
+                            reject(error.message)
+                        })
+                })
+            },
             handleSave () {
                 this.$refs.advancedForm.validate().then(async () => {
-                    try {
+                    try{
                         this.advancedPending = true
-                        const {
-                            id,
-                            name,
-                            notify,
-                            notify_freq,
-                            notify_rule,
-                            revoke_config,
-                            show_all_workflow,
-                            show_my_create_workflow
-                        } = this.advancedData
-                        const isRevocable = revoke_config.type !== 0
-                        const serviceConfig = {
-                            workflow_config: {
-                                notify,
-                                notify_freq,
-                                notify_rule,
-                                revoke_config,
-                                is_revocable: isRevocable,
-                                show_all_workflow,
-                                show_my_create_workflow,
-                                // 以下为流程服务必需字段
-                                is_supervise_needed: false,
-                                supervise_type: 'EMPTY',
-                                supervisor: '',
-                                is_auto_approve: false
-                            },
-                            // 以下为流程服务必需字段
-                            can_ticket_agency: false,
-                            display_type: 'INVISIBLE'
-                        }
-                        await this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
-                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })
+                        await this.updateItsmServiceData()
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: this.advancedData.name })
                         this.$router.push({ name: 'flowList' })
                     } catch (e) {
                         console.error(e.message || e)

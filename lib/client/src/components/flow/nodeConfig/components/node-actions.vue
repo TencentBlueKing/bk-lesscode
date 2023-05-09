@@ -146,13 +146,13 @@
             // 创建提单页
             async handleCreatePageConfirm () {
                 try {
-                    const pageId = await this.$refs.createPageDialog.save()
-                    if (pageId) {
-                        this.$store.commit('nocode/flow/setFlowConfig', { pageId })
-                        await this.updateFlowPageId(pageId)
+                    const pageData = await this.$refs.createPageDialog.save()
+                    if (pageData) {
+                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: pageData.id })
+                        await this.updateFlowPageId(pageData.id)
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
-                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
                         this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                        this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', pageData)
 
                         this.$refs.createPageDialog.isShow = false
                         this.$bkMessage({

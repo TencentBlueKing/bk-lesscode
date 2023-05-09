@@ -236,6 +236,10 @@
             },
             // 确认公式
             handlerConfirm () {
+                if (this.disabled) {
+                    this.handlerCancel()
+                    return
+                }
                 this.checkFormula().then((res) => {
                     this.showFormulaConfigDialog = false
                     this.computConfigInfo.numberComput.customizeFormula = this.customizeFormula
