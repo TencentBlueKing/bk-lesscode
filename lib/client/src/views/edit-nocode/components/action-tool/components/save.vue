@@ -3,7 +3,7 @@
         v-bkloading="{ isLoading }"
         :item="item"
         :class="{
-            disabled: isLocked
+            disabled
         }" />
 </template>
 
@@ -20,7 +20,9 @@
         },
         props: {
             custom: Boolean, // 是否需要自定义保存逻辑
-            customLoading: Boolean
+            customLoading: Boolean,
+            disabled: Boolean,
+            saveTips: String
         },
         data () {
             return {
@@ -29,6 +31,7 @@
                 item: {
                     icon: 'bk-drag-icon bk-drag-save',
                     text: '保存',
+                    tips: this.saveTips,
                     func: this.handleSubmit
                 }
             }
@@ -50,6 +53,9 @@
         },
         methods: {
             async handleSubmit () {
+                if (this.disabled) {
+                    return
+                }
                 if (this.custom) {
                     if (this.validateForm()) {
                         this.$emit('save', this.$store.state.nocode.formSetting.fieldsList)
@@ -234,3 +240,9 @@
         }
     }
 </script>
+<style lang="postcss" scoped>
+    .item.disabled {
+        color: #c2c4c6;
+        cursor: not-allowed;
+    }
+</style>

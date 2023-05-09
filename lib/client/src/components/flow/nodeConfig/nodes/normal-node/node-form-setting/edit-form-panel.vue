@@ -7,9 +7,9 @@
                     <div class="split-line"></div>
                     <breadcrumb-nav
                         :flow-config="flowConfig"
-                        :editable="formConfig.type !== 'USE_FORM'"
-                        @backToNode="handleBack('backToNode')"
-                        @backToFlow="handleBack('backToFlow')">
+                        :editable="!isUseForm"
+                        @backToFlow="handleBack('backToFlow')"
+                        @backToNode="handleBack('backToNode')">
                     </breadcrumb-nav>
                 </div>
                 <div
@@ -21,7 +21,7 @@
                         :custom-save="true"
                         :hide-preview="!isCreateTicketPage"
                         :hide-func="!isCreateTicketPage"
-                        :hide-clear="formConfig.type === 'USE_FORM'"
+                        :hide-clear="isUseForm"
                         :custom-loading="savePending"
                         @save="handleSave">
                     </action-tool>
@@ -33,7 +33,7 @@
                     v-show="operationType === 'edit'"
                     page-type="FLOW"
                     :content="formConfig.content"
-                    :disabled="formConfig.type === 'USE_FORM'">
+                    :disabled="isUseForm">
                 </nocode-form>
                 <page-setting v-if="operationType === 'setting'"></page-setting>
                 <page-function v-if="operationType === 'pageFunction'"></page-function>
@@ -69,7 +69,8 @@
         props: {
             hideSetting: Boolean,
             hidePreview: Boolean,
-            workflowId: Number
+            workflowId: Number,
+            isCreateTicketPage: Boolean
         },
         data () {
             return {
@@ -84,8 +85,9 @@
             projectId () {
                 return this.$route.params.projectId
             },
-            isCreateTicketPage () {
-                return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state && this.flowConfig.pageId
+            // 是否为复用表单
+            isUseForm () {
+                return this.formConfig.type === 'USE_FORM'
             }
         },
         created () {
@@ -145,6 +147,7 @@
                 const params = {
                     id: this.nodeData.id,
                     data: {
+                        is_draft: false, // 提单节点置为已配置状态，传到itsm做标记
                         extras: {
                             formConfig: {
                                 id: formId,

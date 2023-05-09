@@ -14,7 +14,7 @@
                     <span
                         :class="['related-item-name', { 'not-empty': hasCreatedTicketPage }]"
                         @click="handlePageClick">
-                        {{ hasCreatedTicketPage ? pageDetail.pageName : '--' }}
+                        {{ hasCreatedTicketPage ? createTicketPage.pageName : '--' }}
                     </span>
                     <i
                         v-if="hasCreatedTicketPage"
@@ -66,7 +66,7 @@
             @save="isUnset = false"
             @backToFlow="$emit('close')"
             @backToNode="handleBackToNode"
-            @back="editFormPanelShow = false">
+            @back="handleBackToNode">
         </edit-form-panel>
         <select-form-dialog
             :method="selectedType"
@@ -88,7 +88,6 @@
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import PreviewFormDialog from './preview-form-dialog.vue'
-    import PreviewMixin from '@/views/edit-nocode/preview-mixin'
 
     export default {
         name: 'NodeFormSetting',
@@ -97,7 +96,6 @@
             SelectFormDialog,
             PreviewFormDialog
         },
-        mixins: [PreviewMixin],
         props: {
             formContentLoading: Boolean,
             workflowId: Number
@@ -116,7 +114,6 @@
                 },
                 selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
                 pageDetailLoading: false,
-                pageDetail: {},
                 editFormPanelShow: false, // 表单编辑
                 selectFormDialogShow: false, // 选择表单弹窗
                 previewFormContent: [], // 预览表单字段
@@ -126,7 +123,7 @@
         },
         computed: {
             ...mapGetters(['user']),
-            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
+            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig', 'createTicketPage']),
             ...mapState('nocode/flow', ['flowConfig', 'delCreateTicketPageId']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
 
@@ -153,7 +150,7 @@
                 try {
                     this.pageDetailLoading = true
                     const res = await this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId })
-                    this.pageDetail = res
+                    this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', res)
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -205,7 +202,7 @@
                                 'color': '#979BA5',
                                 'font-size': '12px'
                             }
-                        }, `页面：${this.pageDetail.pageName}`),
+                        }, `页面：${this.createTicketPage.pageName}`),
                         h('div', {
                             style: {
                                 'color': '#63656E',
@@ -220,7 +217,8 @@
                     ]),
                     theme: 'danger',
                     confirmFn: () => {
-                        this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
+                        this.$store.commit('nocode/flow/setDeletedPageId', this.createTicketPage.id)
+                        this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', {})
                     }
                 })
             },
@@ -272,7 +270,8 @@
                     confirmFn: () => {
                         this.isUnset = true
                         this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
-                        this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
+                        this.$store.commit('nocode/flow/setDeletedPageId', this.createTicketPage.id)
+                        this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', {})
                     }
                 })
             },
@@ -281,7 +280,11 @@
                 const { id, content, tableName: code, formName } = form
                 // 引用和复用表单都需要把itsm的字段id清空，保存时重新创建新的字段
                 const contentArr = JSON.parse(content).map(item => {
-                    return { ...item, id: null }
+                    const field = { ...item, id: null }
+                    if (this.selectedType === 'COPY_FORM') {
+                        delete field.disabled
+                    }
+                    return field
                 })
                 this.selectFormDialogShow = false
                 if (this.selectedType === 'COPY_FORM') {
@@ -296,7 +299,11 @@
             handlePageClick () {
                 if (this.flowConfig.pageId && !this.delCreateTicketPageId) {
                     const { projectId, flowId } = this.$route.params
-                    this.$router.push({ name: 'createTicketPageEdit', params: { projectId, flowId, pageId: this.flowConfig.pageId } })
+                    this.$router.push({
+                        name: 'createTicketPageEdit',
+                        params: { projectId, flowId, pageId: this.flowConfig.pageId },
+                        query: { from: 'node' }
+                    })
                 }
             },
             // 关联数据表点击

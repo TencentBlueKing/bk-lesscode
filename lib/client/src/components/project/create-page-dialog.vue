@@ -319,7 +319,7 @@
                             })
                         }
                     }
-                    return res
+                    return { id: res, pageName: this.formData.pageName }
                 } catch (e) {
                     console.error(e)
                 } finally {

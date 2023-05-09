@@ -9,12 +9,9 @@
                 ref="nodeComp"
                 :is="formCompDict[nodeData.type]"
                 :workflow-id="serviceData.workflow_id"
-                @close="handleClose">
+                @close="goToFlow">
             </component>
-            <node-actions
-                :loading="nodeDetailLoading"
-                @close="handleClose">
-            </node-actions>
+            <node-actions :loading="nodeDetailLoading"></node-actions>
         </div>
     </div>
 </template>
@@ -105,11 +102,14 @@
                     type: 'warning',
                     width: 500,
                     confirmFn: () => {
-                        const { projectId, flowId } = this.$route.params
-                        this.$router.push({ name: 'flowConfig', params: { projectId, flowId } })
-                        this.$emit('close')
+                        this.goToFlow()
                     }
                 })
+            },
+            goToFlow () {
+                const { projectId, flowId } = this.$route.params
+                this.$router.push({ name: 'flowConfig', params: { projectId, flowId } })
+                this.$emit('close')
             }
         }
     }

@@ -60,6 +60,10 @@
         },
         methods: {
             onConfirm () {
+                if (this.disabled) {
+                    this.$emit('update:show', false)
+                    return
+                }
                 if (this.validate()) {
                     this.$emit('confirm', this.localValue)
                 }

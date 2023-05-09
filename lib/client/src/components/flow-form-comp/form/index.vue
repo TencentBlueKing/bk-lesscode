@@ -4,6 +4,7 @@
             <field-form-item
                 v-if="!field.isHide"
                 :key="field.key"
+                :disabled="disabled"
                 :field="field"
                 :use-fixed-data-source="useFixedDataSource"
                 :value="localValue[field.key]"
@@ -41,7 +42,8 @@
             value: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {
