@@ -14,8 +14,8 @@
         >
             <bk-table-column :label="$t('姓名')" prop="username" show-overflow-tooltip></bk-table-column>
             <bk-table-column :label="$t('角色')" prop="roleId" show-overflow-tooltip :formatter="roleFormatter"></bk-table-column>
-            <bk-table-column :label="$t('添加人')" prop="createUser" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('添加时间')" prop="updateTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
+            <bk-table-column :label="$t('table_添加人')" prop="createUser" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_添加时间')" prop="updateTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
             <bk-table-column :label="$t('操作')" width="180">
                 <template slot-scope="props">
                     <bk-button class="table-bth" text @click="editMember(props.row)" :disabled="!!operateTip(props.row)" :title="operateTip(props.row)">{{ $t('编辑') }}</bk-button>

@@ -3,8 +3,8 @@
         <div class="history-container" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
             <div class="history-content">
                 <bk-table :data="list" type="small" ext-cls="history-table" :empty-text="$t('暂无部署记录')">
-                    <bk-table-column :label="$t('关联的应用模块')" prop="bindInfo" :render-header="renderHeaderAddTitle" min-width="120" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column :label="$t('源码包类型')" prop="releaseType" :render-header="renderHeaderAddTitle" width="120" show-overflow-tooltip>
+                    <bk-table-column :label="$t('table_关联的应用模块')" prop="bindInfo" :render-header="renderHeaderAddTitle" min-width="120" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('table_源码包类型')" prop="releaseType" :render-header="renderHeaderAddTitle" width="120" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             {{releaseTypeMap[row.releaseType]}}
                             <span v-if="row.releaseType === 'PROJECT_VERSION'">
@@ -12,7 +12,7 @@
                             </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column :label="$t('部署环境')" prop="env" :render-header="renderHeaderAddTitle" :formatter="envFormatter" width="100" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('table_部署环境')" prop="env" :render-header="renderHeaderAddTitle" :formatter="envFormatter" width="100" show-overflow-tooltip></bk-table-column>
                     <bk-table-column :label="$t('部署包版本')" prop="version" :render-header="renderHeaderAddTitle" width="100" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             <div v-if="row.codeUrl" class="status-result">
@@ -22,7 +22,7 @@
                             <span v-else v-bk-tooltips.right="$t('本次部署无版本包生成')">{{row.version}} </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column :label="$t('部署执行的 Sql')" width="115">
+                    <bk-table-column :label="$t('table_部署执行的 Sql')" width="115">
                         <template slot-scope="{ row }">
                             <bk-button text @click="showSql(row)" v-if="row.releaseSqlIds">
                                 {{ $t('查看详情') }} </bk-button>
@@ -30,7 +30,7 @@
                         </template>
                     </bk-table-column>
                     <bk-table-column :label="$t('操作人')" prop="createUser" :formatter="userFormatter" width="80" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column :label="$t('操作结果')" prop="status" min-width="150">
+                    <bk-table-column :label="$t('table_操作结果')" prop="status" min-width="150">
                         <template slot-scope="{ row }">
                             <div class="status-result">
                                 <svg v-if="row.status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
@@ -43,8 +43,8 @@
                             </div>
                         </template>
                     </bk-table-column>
-                    <bk-table-column :label="$t('操作时间')" prop="createTime" :formatter="timeFormatter" width="150"></bk-table-column>
-                    <bk-table-column :label="$t('操作来源')" prop="releaseType" :formatter="sourceFormatter" show-overflow-tooltip :min-width="120"></bk-table-column>
+                    <bk-table-column :label="$t('table_操作时间')" prop="createTime" :formatter="timeFormatter" width="150"></bk-table-column>
+                    <bk-table-column :label="$t('table_操作来源')" prop="releaseType" :formatter="sourceFormatter" show-overflow-tooltip :min-width="120"></bk-table-column>
                     <empty-status slot="empty"></empty-status>
                 </bk-table>
             </div>

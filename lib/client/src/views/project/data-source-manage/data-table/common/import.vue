@@ -16,7 +16,7 @@
                 ></i>
             </span>
 
-            <h5 class="import-title">文件类型</h5>
+            <h5 class="import-title">{{$t('文件类型')}}</h5>
             <bk-radio-group
                 v-model="fileType"
                 class="import-content"
@@ -43,9 +43,9 @@
             ></bk-upload>
 
             <span class="import-tip">
-                {{ $t('支持 {0} 文件格式，', fileType) }}<slot name="tips" :file-type="fileType"></slot>
+                {{ $t('支持 {0} 文件格式，', [fileType]) }}<slot name="tips" :file-type="fileType"></slot>
                 <bk-link theme="primary" @click="downloadTemplate(fileType)">
-                    <i class="bk-drag-icon bk-drag-download"></i>{{ $t('{0} 模板', fileType) }}
+                    <i class="bk-drag-icon bk-drag-download"></i>{{ $t('{0} 模板', [fileType]) }}
                 </bk-link>
             </span>
 

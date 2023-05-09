@@ -23,7 +23,7 @@
                 :header-cell-style="{ background: '#f0f1f5' }"
                 :data="displayList"
                 v-show="!loading.list">
-                <bk-table-column :label="$t('应用版本')" prop="version" min-width="120" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_应用版本')" prop="version" min-width="120" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-version" @click="handleVersionDetail(row)">
                             <span>{{ row.version }}</span>
@@ -31,19 +31,19 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('更新人')" prop="updateUser" min-width="120" show-overflow-tooltip></bk-table-column>
-                <bk-table-column :label="$t('更新日期')" prop="updateTime" min-width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="120" show-overflow-tooltip></bk-table-column>
+                <bk-table-column :label="$t('table_更新日期')" prop="updateTime" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{ row.updateTime | time }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('创建人')" prop="createUser" min-width="120" show-overflow-tooltip />
-                <bk-table-column :label="$t('创建日期') " prop="operateDesc" min-width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_创建人')" prop="createUser" min-width="120" show-overflow-tooltip />
+                <bk-table-column :label="$t('table_创建日期') " prop="operateDesc" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{ row.createTime | time }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('是否归档') " prop="archiveFlag" min-width="180" :render-header="renderArchiveHeader" sortable>
+                <bk-table-column :label="$t('table_是否归档') " prop="archiveFlag" min-width="180" :render-header="renderArchiveHeader" sortable>
                     <template slot-scope="{ row }">
                         <span>{{ row.archiveFlag ? $t('是') : $t('否') }}</span>
                     </template>

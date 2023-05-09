@@ -18,7 +18,7 @@
                 :pagination="pagination"
                 @page-change="handlePageChange"
                 @page-limit-change="handlePageLimitChange">
-                <bk-table-column :label="$t('组件名称')" prop="name" align="left" min-width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_组件名称')" prop="name" align="left" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span class="comp-type">
                             <i v-if="row.compType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
@@ -42,7 +42,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('公开范围')" prop="scope" :render-header="renderHeaderAddTitle" align="left" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_公开范围')" prop="scope" :render-header="renderHeaderAddTitle" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-scope" :title="getScopeName(getPublicScope(row.id)[0])">
                             <span class="scope-name">
@@ -52,7 +52,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('最新版本')" prop="latestVersionId" :render-header="renderHeaderAddTitle" align="left" width="120">
+                <bk-table-column :label="$t('table_最新版本')" prop="latestVersionId" :render-header="renderHeaderAddTitle" align="left" width="120">
                     <template slot-scope="{ row }">
                         <div class="component-version" @click="handleVersionDetail(row)">
                             <span>{{ row.version }}</span>
@@ -60,8 +60,8 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('更新时间')" prop="updateTime" align="left" width="160" :formatter="timeFormatter" show-overflow-tooltip />
-                <bk-table-column :label="$t('更新人')" prop="updateUser" align="left" width="120" show-overflow-tooltip />
+                <bk-table-column :label="$t('table_更新时间')" prop="updateTime" align="left" width="160" :formatter="timeFormatter" show-overflow-tooltip />
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser" align="left" width="120" show-overflow-tooltip />
                 <bk-table-column :label="$t('操作')" prop="statusText" align="left" width="200">
                     <template slot-scope="{ row }">
                         <bk-button v-if="row.status === 0" text @click="handleUpdate(row)">{{ $t('更新') }}</bk-button>

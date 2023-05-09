@@ -80,9 +80,9 @@
                 orderBy: undefined,
                 columns: [
                     { id: 'username', name: window.i18n.t('用户名'), width: '360', tooltip: true },
-                    { id: 'createTime', name: window.i18n.t('创建时间'), width: '320', sortable: 'custom', type: 'datetime', tooltip: true },
-                    { id: 'projectCount', name: window.i18n.t('应用数'), sortable: 'custom', dynamic: true, type: 'number' },
-                    { id: 'pageCount', name: window.i18n.t('页面数'), sortable: 'custom', dynamic: true, type: 'number' }
+                    { id: 'createTime', name: window.i18n.t('table_创建时间'), width: '320', sortable: 'custom', type: 'datetime', tooltip: true },
+                    { id: 'projectCount', name: window.i18n.t('table_应用数'), sortable: 'custom', dynamic: true, type: 'number' },
+                    { id: 'pageCount', name: window.i18n.t('table_页面数'), sortable: 'custom', dynamic: true, type: 'number' }
                 ],
                 filters: {
                     keyword: '',

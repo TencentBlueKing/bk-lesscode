@@ -29,7 +29,7 @@
                         <span>{{ props.row.description || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('更新人')" prop="updateUser" show-overflow-tooltip min-width="100"></bk-table-column>
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser" show-overflow-tooltip min-width="100"></bk-table-column>
                 <bk-table-column :label="$t('table_更新时间')" prop="updateTime" :render-header="renderHeaderAddTitle" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
             </template>
             <bk-table-column :label="$t('操作')" width="120">

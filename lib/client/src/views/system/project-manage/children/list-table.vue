@@ -93,7 +93,7 @@
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :data="projectList">
-            <bk-table-column :label="$t('应用名称')" prop="projectName" min-width="210" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_应用名称')" prop="projectName" min-width="210" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['name-content', { favorite: row.favorite }]">
                         <auth-button
@@ -115,12 +115,12 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{getUpdateInfo(row).updateUser}}
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{getUpdateInfo(row).updateTimeFromNow}}
                 </template>

@@ -38,12 +38,12 @@
             @page-limit-change="handlePageLimitChange"
             @selection-change="selectionChange">
             <bk-table-column type="selection" width="60"></bk-table-column>
-            <bk-table-column :label="$t('表名')" prop="tableName" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('存储引擎')" min-width="100">InnoDB</bk-table-column>
-            <bk-table-column :label="$t('字符集')" min-width="100">utf8mb4</bk-table-column>
+            <bk-table-column :label="$t('table_表名')" prop="tableName" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_存储引擎')" min-width="100">InnoDB</bk-table-column>
+            <bk-table-column :label="$t('table_字符集')" min-width="100">utf8mb4</bk-table-column>
             <bk-table-column :label="$t('备注')" prop="summary" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('更新人')" prop="updateUser" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('更新时间')" prop="updateTime" width="160" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_更新人')" prop="updateUser" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_更新时间')" prop="updateTime" width="160" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
             <bk-table-column :label="$t('操作')" width="220">
                 <template slot-scope="props">
                     <bk-button class="mr10" theme="primary" text @click="goToDataDesign(props.row)">{{ $t('表结构设计') }}</bk-button>

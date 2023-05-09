@@ -72,7 +72,7 @@
                     {{ $t('绑定应用的{0}，未开启 GCS-MySql增强服务，无法进行数据管理，请尝试', [pageStatus.activeEnvironment.name]) }} <bk-button text @click="goDeploy">{{ $t('重新部署') }}</bk-button>
                     {{ $t('后再试') }} </div>
                 <div v-else-if="pageStatus.errorCode === 'NOT_BIND_APPLICATION'">
-                    {{ $t('本应用暂未绑定蓝鲸应用，请绑定蓝鲸应用并') }} <bk-button text @click="goDeploy">{{ $t('部署_0') }}</bk-button>
+                    {{ $t('本应用暂未绑定蓝鲸应用，请绑定蓝鲸应用并') }} <bk-button text @click="goDeploy">{{ $t('部署') }}</bk-button>
                     {{ $t('后再试') }} </div>
                 <div v-else-if="!pageStatus.tableList.length">
                     {{ pageStatus.activeEnvironment.name }}{{$t('未查询到表，无法进行数据管理，请')}}
