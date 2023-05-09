@@ -52,7 +52,7 @@
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig', 'initialFieldIds']),
-            ...mapState('nocode/flow', ['flowConfig', 'delCreateTicketPageId']),
+            ...mapState('nocode/flow', ['flowConfig']),
             projectId () {
                 return this.$route.params.projectId
             },
@@ -72,10 +72,6 @@
             }
         },
         methods: {
-            // 删除流程提单页
-            deleteCreateTicketPage () {
-                return this.$store.dispatch('page/delete', { pageId: this.delCreateTicketPageId })
-            },
             // 更新itsm节点数据
             updateItsmNode () {
                 const data = cloneDeep(this.nodeData)
@@ -100,33 +96,19 @@
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
             },
-            // 更新流程提单页面pageId
-            updateFlowPageId (pageId) {
-                const params = {
-                    pageId,
-                    id: this.flowConfig.id
-                }
-                return this.$store.dispatch('nocode/flow/editFlow', params)
-            },
             async handleSaveClick (createPage = false) {
                 try {
                     const result = await this.$parent.validate()
                     if (!result) {
                         return
                     }
+                    debugger
                     if (createPage) {
                         this.createPagePending = true
                         this.$refs.createPageDialog.isShow = true
                         return
                     }
                     this.savePending = true
-                    // 流程提单页被删除
-                    if (this.nodeData.type === 'NORMAL' && this.delCreateTicketPageId) {
-                        await this.deleteCreateTicketPage()
-                        await this.updateFlowPageId(0)
-                        this.$store.commit('nocode/flow/setDeletedPageId', null)
-                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
-                    }
                     await this.updateItsmNode()
                     await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
@@ -149,9 +131,7 @@
                     const pageData = await this.$refs.createPageDialog.save()
                     if (pageData) {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId: pageData.id })
-                        await this.updateFlowPageId(pageData.id)
-                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
-                        this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, pageId: pageData.id })
                         this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', pageData)
 
                         this.$refs.createPageDialog.isShow = false

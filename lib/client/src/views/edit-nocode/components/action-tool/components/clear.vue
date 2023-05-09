@@ -1,5 +1,5 @@
 <template>
-    <menu-item :item="item" />
+    <menu-item :item="item" :class="{ disabled}" />
 </template>
 
 <script>
@@ -9,17 +9,25 @@
         components: {
             MenuItem
         },
+        props: {
+            disabled: Boolean,
+            tips: String
+        },
         data () {
             return {
                 item: {
                     icon: 'bk-drag-icon bk-drag-delete',
                     text: '清空',
+                    tips: this.tips,
                     func: this.handleClearAll
                 }
             }
         },
         methods: {
             async handleClearAll () {
+                if (this.disabled) {
+                    return
+                }
                 this.$bkInfo({
                     title: '是否清空画布?',
                     subTitle: '清空将会清除画布下所有配置，且无法恢复，你还要继续吗？',
@@ -33,3 +41,9 @@
         }
     }
 </script>
+<style lang="postcss" scoped>
+    .item.disabled {
+        color: #c2c4c6;
+        cursor: not-allowed;
+    }
+</style>

@@ -22,7 +22,7 @@
             custom: Boolean, // 是否需要自定义保存逻辑
             customLoading: Boolean,
             disabled: Boolean,
-            saveTips: String
+            tips: String
         },
         data () {
             return {
@@ -31,7 +31,7 @@
                 item: {
                     icon: 'bk-drag-icon bk-drag-save',
                     text: '保存',
-                    tips: this.saveTips,
+                    tips: this.tips,
                     func: this.handleSubmit
                 }
             }

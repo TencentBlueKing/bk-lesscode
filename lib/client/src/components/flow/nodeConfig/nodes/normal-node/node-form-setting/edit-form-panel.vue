@@ -21,7 +21,8 @@
                         :custom-save="true"
                         :hide-preview="!isCreateTicketPage"
                         :hide-func="!isCreateTicketPage"
-                        :hide-clear="isUseForm"
+                        :disabled="isUseForm"
+                        :disabled-tips="isUseForm ? '复用表单模式下表单不可编辑' : ''"
                         :custom-loading="savePending"
                         @save="handleSave">
                     </action-tool>
@@ -80,7 +81,7 @@
         },
         computed: {
             ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig', 'initialFieldIds']),
-            ...mapState('nocode/flow', ['flowConfig', 'delCreateTicketPageId']),
+            ...mapState('nocode/flow', ['flowConfig']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
@@ -193,12 +194,6 @@
                     this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
                     await this.updateItsmNode(this.formConfig.id)
                     await this.updateFormName()
-                    if (this.delCreateTicketPageId) { // 流程提单页被删除
-                        await this.$store.dispatch('page/delete', { pageId: this.delCreateTicketPageId })
-                        await this.$store.dispatch('nocode/flow/editFlow', { pageId: 0, id: this.flowConfig.id })
-                        this.$store.commit('nocode/flow/setDeletedPageId', null)
-                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
-                    }
                     this.$bkMessage({
                         message: '表单保存成功，表单配置关联数据表变更成功',
                         theme: 'success'
