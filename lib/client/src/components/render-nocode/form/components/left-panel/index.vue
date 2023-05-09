@@ -80,10 +80,10 @@
                         <li
                             v-for="field in group.items"
                             v-bk-tooltips="{
-                                disabled: pageType !== 'FLOW' || !layoutGroup.includes(field.type),
+                                disabled: !isFieldDisable(field.type),
                                 content: $t('流程表单暂不支持布局类型控件')
                             }"
-                            :class="['field-item drag-entry', { 'not-available': pageType === 'FLOW' && layoutGroup.includes(field.type) }]"
+                            :class="['field-item drag-entry', { 'not-available': isFieldDisable(field.type) }]"
                             :data-type="field.type"
                             :key="field.type">
                             <i :class="['comp-icon',field.icon]"></i> <span>{{ field.name }}</span>
@@ -100,7 +100,7 @@
     import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
     import _ from 'lodash'
     const LAYOUT_GROUP = ['DESC', 'DIVIDER']
-    const ASVANCED_CONTROLS = ['COMPUTE', 'SERIAL']
+    const ADVANCED_GROUP = ['COMPUTE', 'SERIAL']
     export default {
         components: {
             draggable
@@ -142,13 +142,16 @@
                 fieldsArr.forEach(item => {
                     if (LAYOUT_GROUP.includes(item.type)) {
                         group[0].items.push(item)
-                    } else if (ASVANCED_CONTROLS.includes(item.type)) {
+                    } else if (ADVANCED_GROUP.includes(item.type)) {
                         group[2].items.push(item)
                     } else {
                         group[1].items.push(item)
                     }
                 })
                 return group
+            },
+            isFieldDisable (type) {
+                return this.pageType === 'FLOW' && [...LAYOUT_GROUP, ...ADVANCED_GROUP, 'RATE'].includes(type)
             },
             handleMove () {
                 this.$emit('move')

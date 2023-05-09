@@ -70,59 +70,12 @@
             }
         },
         methods: {
-            // 表单字段保存到itsm
-            saveItsmFields () {
-                const fields = this.formConfig.content.map(item => {
-                    const field = cloneDeep(item)
-                    if (typeof item.id !== 'number') {
-                        field.id = null // itsm新建的字段需要传null
-                    }
-                    if (field.source_type === 'WORKSHEET') {
-                        field.source_type = 'CUSTOM_API'
-                        field.meta.data_config.source_type = 'WORKSHEET'
-                    }
-                    field.workflow = this.serviceData.workflow_id
-                    field.state = this.nodeData.id
-                    field.meta.columnId = field.columnId // 表单字段需要保存columnId，itsm不支持直接添加，存到meta里
-                    delete field.api_instance_id
-                    delete field.columnId
-                    return field
-                })
-                const deletedIds = []
-                this.initialFieldIds.forEach(id => {
-                    if (!fields.find(item => item.id === id)) {
-                        deletedIds.push(id)
-                    }
-                })
-                const params = {
-                    fields,
-                    state_id: this.nodeData.id,
-                    delete_ids: deletedIds
-                }
-                return this.$store.dispatch('nocode/flow/batchSaveFields', params)
-            },
-            // 表单配置保存到form表
-            saveFormConfig (pageId = null) {
-                const params = {
-                    pageId,
-                    id: this.flowConfig.id,
-                    nodeId: this.nodeData.id,
-                    projectId: this.projectId,
-                    versionId: this.versionId,
-                    formData: this.formConfig
-                }
-                return this.$store.dispatch('nocode/flow/editFlowNode', params)
-            },
-            // 更新流程提单页面pageId
-            updateFlowPageId (pageId) {
-                const params = {
-                    pageId,
-                    id: this.flowConfig.id
-                }
-                return this.$store.dispatch('nocode/flow/editFlow', params)
+            // 删除流程提单页
+            deleteCreateTicketPage () {
+                return this.$store.dispatch('page/delete', { pageId: this.delCreateTicketPageId })
             },
             // 更新itsm节点数据
-            updateItsmNode (formId) {
+            updateItsmNode () {
                 const data = cloneDeep(this.nodeData)
                 // 流程服务校验desc字段不为空，节点上没有可配置desc的地方，故先删除
                 delete data.desc
@@ -130,17 +83,6 @@
                 if (data.type === 'APPROVAL') {
                     if (!data.is_multi) {
                         data.finish_condition = {}
-                    }
-                } else if (data.type === 'NORMAL') {
-                    const formFieldsId = this.formConfig.content.map(field => field.id)
-                    data.fields = [...formFieldsId]
-                    // itsm新建服务时,提单节点默认生成一个标题字段，需要保留，默认放到第一个
-                    if (this.nodeData.is_first_state) {
-                        data.fields.unshift(this.nodeData.fields[0])
-                    }
-                    data.extras.formConfig = {
-                        id: formId,
-                        type: this.formConfig.type
                     }
                 } else if (data.type === 'TASK') {
                     if (METHODS_WITHOUT_DATA.includes(data.extras.api_info.method)) {
@@ -156,17 +98,13 @@
                 }
                 return this.$store.dispatch('nocode/flow/updateNode', data)
             },
-            // 更新表单的名称
-            updateFormName () {
+            // 更新流程提单页面pageId
+            updateFlowPageId (pageId) {
                 const params = {
-                    id: this.formConfig.id,
-                    formName: this.formConfig.formName
+                    pageId,
+                    id: this.flowConfig.id
                 }
-                return this.$store.dispatch('nocode/form/updateForm', params)
-            },
-            // 删除流程提单页
-            deleteCreateTicketPage () {
-                return this.$store.dispatch('page/delete', { pageId: this.delCreateTicketPageId })
+                return this.$store.dispatch('nocode/flow/editFlow', params)
             },
             async handleSaveClick (createPage = false) {
                 try {
@@ -176,49 +114,24 @@
                     }
                     if (createPage) {
                         this.createPagePending = true
-                    } else {
-                        this.savePending = true
+                        this.$refs.createPageDialog.isShow = true
+                        return
                     }
-                    if (this.nodeData.type === 'NORMAL') {
-                        const itsmFields = await this.saveItsmFields()
-                        const content = []
-                        itsmFields.forEach(field => {
-                            if (this.nodeData.is_first_state && field.id === this.nodeData.fields[0]) {
-                                return
-                            }
-                            field.columnId = field.meta.columnId
-                            field.disabled = true
-                            delete field.meta.columnId
-                            if (field.meta.data_config?.source_type === 'WORKSHEET') {
-                                field.source_type = 'WORKSHEET'
-                            }
-                            content.push(field)
-                        })
-                        this.$store.commit('nocode/nodeConfig/setFormConfig', { content })
-                        this.$store.commit('nocode/nodeConfig/setInitialFieldIds', itsmFields)
-                        const res = await this.saveFormConfig(this.flowConfig.pageId)
-                        this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
-                        this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
-                        await this.updateItsmNode(this.formConfig.id)
-                        await this.updateFormName()
-                        if (createPage) {
-                            this.$refs.createPageDialog.isShow = true
-                            return
-                        } else if (this.delCreateTicketPageId) { // 流程提单页被删除
-                            await this.deleteCreateTicketPage()
-                            await this.updateFlowPageId(0)
-                            this.$store.commit('nocode/flow/setDeletedPageId', null)
-                            this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
-                        }
-                    } else {
-                        await this.updateItsmNode()
+                    this.savePending = true
+                    // 流程提单页被删除
+                    if (this.nodeData.type === 'NORMAL' && this.delCreateTicketPageId) {
+                        await this.deleteCreateTicketPage()
+                        await this.updateFlowPageId(0)
+                        this.$store.commit('nocode/flow/setDeletedPageId', null)
+                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
                     }
+                    await this.updateItsmNode()
                     await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
                     this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
 
                     this.$bkMessage({
-                        message: this.nodeData.type === 'NORMAL' ? this.$t('节点保存成功，表单配置关联数据表变更成功') : this.$t('节点保存成功'),
+                        message: this.$t('节点保存成功'),
                         theme: 'success'
                     })
                 } catch (e) {
@@ -231,13 +144,13 @@
             // 创建提单页
             async handleCreatePageConfirm () {
                 try {
-                    const pageId = await this.$refs.createPageDialog.save()
-                    if (pageId) {
-                        this.$store.commit('nocode/flow/setFlowConfig', { pageId })
-                        await this.updateFlowPageId(pageId)
+                    const pageData = await this.$refs.createPageDialog.save()
+                    if (pageData) {
+                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: pageData.id })
+                        await this.updateFlowPageId(pageData.id)
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
-                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
                         this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                        this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', pageData)
 
                         this.$refs.createPageDialog.isShow = false
                         this.$bkMessage({

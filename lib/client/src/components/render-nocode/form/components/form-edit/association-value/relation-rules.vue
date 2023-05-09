@@ -1,6 +1,6 @@
 <template>
     <div class="relation-rules-wrapper">
-        <vue-draggable handle=".drag-icon" :list="localVal" @change="change">
+        <vue-draggable handle=".drag-icon" :list="localVal" :disabled="disabled" @change="change">
             <div class="rule-group" v-for="(rule, groupIndex) in localVal" :key="groupIndex">
                 <template v-if="isCurrentTable">
                     <div class="rule-group-operate">
@@ -15,7 +15,11 @@
                 <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ ($t('规则{0}'), [(groupIndex + 1)]) }}</p>
                 <!-- 判断是不是评分组件 -->
                 <template v-if="field.type === 'RATE' && isCurrentTable">
-                    <RateValueRule :rule="rule" :is-current-table="isCurrentTable" :form-list-loading="formListLoading"
+                    <RateValueRule
+                        :rule="rule"
+                        :disabled="disabled"
+                        :is-current-table="isCurrentTable"
+                        :form-list-loading="formListLoading"
                         :rel-field-list="getRelFieldList()"
                         @change="change"></RateValueRule>
                 </template>
@@ -31,6 +35,7 @@
                                 size="small"
                                 :placeholder="$t('表单字段')"
                                 :loading="!isCurrentTable && formListLoading"
+                                :disabled="disabled"
                                 @change="change">
                                 <bk-option
                                     v-for="item in getRelFieldList()"
@@ -43,6 +48,7 @@
                                 style="width: 80px;"
                                 size="small"
                                 :clearable="false"
+                                :disabled="disabled"
                                 :value="relation.type"
                                 @change="handleRelValTypeChange(relation, $event)">
                                 <bk-option id="CONST" :name="$t('常量')"></bk-option>
@@ -53,6 +59,7 @@
                                     v-if="relation.type === 'VAR'"
                                     v-model="relation.value"
                                     size="small"
+                                    :disabled="disabled"
                                     @change="change">
                                     <bk-option
                                         v-for="item in getRelValVarList(relation.field)"
@@ -82,6 +89,7 @@
                             style="margin-left: 8px; width: 80px;"
                             size="small"
                             :clearable="false"
+                            :disabled="disabled"
                             @change="handleTargetVarValTypeChange(rule.target, $event)">
                             <bk-option id="CONST" :name="$t('常量')"></bk-option>
                             <bk-option id="VAR" :name="$t('变量')"></bk-option>
@@ -93,6 +101,7 @@
                                 size="small"
                                 :placeholder="isCurrentTable ? $t('请选择本表字段') : $t('请选择他表字段')"
                                 :loading="!isCurrentTable && formListLoading"
+                                :disabled="disabled"
                                 @change="change">
                                 <bk-option
                                     v-for="item in targetValVarList"
@@ -101,7 +110,6 @@
                                     :name="item.name">
                                 </bk-option>
                             </bk-select>
-                            
                             <default-value
                                 v-else
                                 :field="getFulfillRuleField(rule.target.value)"
@@ -117,6 +125,7 @@
             v-if="isCurrentTable"
             size="small"
             :text="true"
+            :disabled="disabled"
             @click="handleAddGroup()">
             {{ $t('继续添加规则') }} </bk-button>
     </div>
@@ -248,10 +257,16 @@
                 this.change()
             },
             handleDelGroup (index) {
+                if (this.disabled) {
+                    return
+                }
                 this.localVal.splice(index, 1)
                 this.change()
             },
             handleAddRelation (groupIndex, index) {
+                if (this.disabled) {
+                    return
+                }
                 this.localVal[groupIndex].relations.splice(index + 1, 0, {
                     field: '',
                     type: '',
@@ -260,7 +275,7 @@
                 this.change()
             },
             handleDelRelation (groupIndex, index) {
-                if (this.localVal[groupIndex].relations.length <= 1) {
+                if (this.disabled || this.localVal[groupIndex].relations.length <= 1) {
                     return
                 }
                 this.localVal[groupIndex].relations.splice(index, 1)

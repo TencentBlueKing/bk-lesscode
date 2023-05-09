@@ -16,6 +16,7 @@
                     <bk-checkbox
                         :true-value="true"
                         :false-value="false"
+                        :disabled="disabled"
                         v-model="localValIsDisplayTag">
                         <span v-bk-tooltips="showTagToolTips">{{ $t('显示为标签') }}</span>
                     </bk-checkbox>
@@ -25,11 +26,11 @@
         <data-source
             v-if="show"
             ref="dataSource"
-            :app-id="appId"
             :source-type="sourceType"
             :field-type="fieldType"
             :use-variable="true"
             :value="localVal"
+            :disabled="disabled"
             :local-val-is-display-tag="localValIsDisplayTag"
             :api-detail="apiDetail"
             :res-array-tree-data="resArrayTreeData"
@@ -74,10 +75,10 @@
                 type: Boolean,
                 default: false
             },
-            appId: String,
             sourceType: String,
             fieldType: String,
-            value: [Array, Object] // 自定义数据为Array，api数据、表单数据为Object`
+            value: [Array, Object], // 自定义数据为Array，api数据、表单数据为Object`
+            disabled: Boolean
         },
         data () {
             return {

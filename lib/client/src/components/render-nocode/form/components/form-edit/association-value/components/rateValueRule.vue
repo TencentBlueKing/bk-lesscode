@@ -11,6 +11,7 @@
                 size="small"
                 :placeholder="$t('表单字段')"
                 :loading="!isCurrentTable && formListLoading"
+                :disabled="disabled"
                 @change="ruleChange">
                 <bk-option
                     v-for="item in relFieldList"
@@ -22,11 +23,11 @@
             <span>{{ $t('的值处于') }}</span>
         </div>
         <div class="interval-row" v-for="(item,intervalIndex) in rule.intervals " :key="intervalIndex">
-            <bk-input v-model="item.min" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
+            <bk-input v-model="item.min" :disabled="disabled" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
             ~
-            <bk-input v-model="item.max" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
+            <bk-input v-model="item.max" :disabled="disabled" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
             <span>{{ $t('区间值为')}}</span>
-            <bk-rate :rate="item.value" :edit="false"></bk-rate>
+            <bk-rate :rate="item.value" :disabled="disabled" :edit="false"></bk-rate>
         </div>
     </div>
 </template>
@@ -47,7 +48,8 @@
             relFieldList: {
                 type: Array,
                 default: () => []
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

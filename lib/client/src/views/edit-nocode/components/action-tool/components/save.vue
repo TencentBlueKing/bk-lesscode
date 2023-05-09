@@ -1,9 +1,9 @@
 <template>
     <menu-item
-        v-bkloading="{ isLoading: isLoading,size: 'mini' }"
+        v-bkloading="{ isLoading }"
         :item="item"
         :class="{
-            disabled: isLocked
+            disabled
         }" />
 </template>
 
@@ -19,15 +19,19 @@
             MenuItem
         },
         props: {
-            custom: Boolean // 是否需要自定义保存逻辑
+            custom: Boolean, // 是否需要自定义保存逻辑
+            customLoading: Boolean,
+            disabled: Boolean,
+            saveTips: String
         },
         data () {
             return {
-                isLoading: false,
+                loading: false,
                 isLocked: false,
                 item: {
                     icon: 'bk-drag-icon bk-drag-save',
                     text: window.i18n.t('保存'),
+                    tips: this.saveTips,
                     func: this.handleSubmit
                 }
             }
@@ -42,10 +46,16 @@
             },
             projectId () {
                 return this.$route.params.projectId
+            },
+            isLoading () {
+                return this.customLoading || this.loading
             }
         },
         methods: {
             async handleSubmit () {
+                if (this.disabled) {
+                    return
+                }
                 if (this.custom) {
                     if (this.validateForm()) {
                         this.$emit('save', this.$store.state.nocode.formSetting.fieldsList)
@@ -87,7 +97,7 @@
                     Object.assign(formData, { id: this.pageDetail.formId })
                 }
                 try {
-                    this.isLoading = true
+                    this.loading = true
                     const res = await this.$store.dispatch(`form/${action}`, formData)
                     if (res && res.id) {
                         this.savePreviewImg()
@@ -104,7 +114,7 @@
                 } catch (e) {
                     console.error(e)
                 } finally {
-                    this.isLoading = false
+                    this.loading = false
                 }
             },
             // 保存页面content
@@ -114,7 +124,7 @@
                     content
                 }
                 try {
-                    this.isLoading = true
+                    this.loading = true
                     const res = await this.$store.dispatch('page/update', {
                         data: {
                             pageData,
@@ -132,7 +142,7 @@
                 } catch (e) {
                     console.error(e)
                 } finally {
-                    this.isLoading = false
+                    this.loading = false
                 }
             },
             // 校验表单配置
@@ -230,3 +240,9 @@
         }
     }
 </script>
+<style lang="postcss" scoped>
+    .item.disabled {
+        color: #c2c4c6;
+        cursor: not-allowed;
+    }
+</style>

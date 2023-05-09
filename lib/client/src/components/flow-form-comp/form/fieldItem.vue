@@ -129,7 +129,7 @@
             },
             // 默认规则设置为禁止填写 和 字段设置为禁止编辑的时候禁止编辑
             isDisabled () {
-                return this.field.is_readonly
+                return this.field.is_readonly || this.disabled
             },
             needPagination () {
                 return this.$route.name !== 'editNocode'

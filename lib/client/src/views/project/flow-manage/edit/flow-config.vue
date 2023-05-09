@@ -45,7 +45,6 @@
         <div v-if="nodeConfigPanelShow" class="node-config-wrapper">
             <node-config
                 :node-id="crtNode"
-                :flow-config="flowConfig"
                 :service-data="serviceData"
                 @close="closeConfigPanel">
             </node-config>
@@ -93,8 +92,15 @@
                 return this.flowConfig.deployed === 0
             }
         },
-        created () {
-            this.getFlowStructData()
+        async created () {
+            await this.getFlowStructData()
+            if (this.$route.query.nodeId) {
+                const nodeId = Number(this.$route.query.nodeId)
+                if (this.canvasData.nodes.find(node => node.id === nodeId)) {
+                    this.crtNode = nodeId
+                    this.nodeConfigPanelShow = true
+                }
+            }
         },
         methods: {
             // 获取流程图结构详情
@@ -123,6 +129,8 @@
                 }
                 this.nodeConfigPanelShow = true
                 this.crtNode = node.id
+                const { projectId, flowId } = this.$route.params
+                this.$router.push({ name: 'flowConfig', params: { projectId, flowId }, query: { nodeId: node.id } })
             },
             closeConfigPanel () {
                 this.nodeConfigPanelShow = false
