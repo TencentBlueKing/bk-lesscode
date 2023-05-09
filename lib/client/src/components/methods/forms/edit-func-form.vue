@@ -83,6 +83,9 @@
 <script>
     import mixins from './form-mixins'
     import { mapGetters, mapActions } from 'vuex'
+    import {
+        triggerEventListener
+    } from '@/common/watcher'
 
     export default {
         mixins: [mixins],
@@ -153,6 +156,8 @@
                         }
                         // 保存或者更新完需要及时刷新列表，以供画布使用最新的数据
                         await this.refreshLayoutFunctionList()
+                        // 触发函数更新事件
+                        triggerEventListener(form.funcCode)
                         resolve(form)
                     } catch (err) {
                         if (err?.code === 499) {

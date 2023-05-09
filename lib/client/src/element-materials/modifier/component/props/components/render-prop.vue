@@ -86,29 +86,24 @@
                     </template>
                 </template>
             </div>
-
-            <template v-if="describe.operation">
+            <template v-if="showUpdateColumn">
                 <div
                     v-bk-tooltips="{
-                        content: describe.operation.tips,
+                        content: '使用值覆盖表头的默认列，请确认后再操作',
                         placement: 'left-start',
                         boundary: 'window'
                     }"
-                    :class="[
-                        'g-prop-sub-title g-mb6 g-mt12',
-                        {
-                            'g-config-subline': describe.operation.tips
-                        }
-                    ]"
+                    class="g-prop-sub-title g-mb6 g-mt12 g-config-subline"
                 >
-                    {{ describe.operation.title }}
+                    操作
                 </div>
                 <bk-button
                     class="prop-operation"
                     size="small"
-                    @click="describe.operation.click(formData, syncSlot)"
+                    :loading="isSyncing"
+                    @click="updateColumn"
                 >
-                    {{ describe.operation.name }}
+                    更新表头
                 </bk-button>
             </template>
         </variable-select>
@@ -241,7 +236,8 @@
                 selectValueType: '',
                 formData: {},
                 isRenderValueCom: false,
-                isShowProp: true
+                isShowProp: true,
+                isSyncing: false
             }
         },
         computed: {
@@ -413,6 +409,16 @@
             },
             isFormModel () {
                 return this.componentType === 'widget-form' && this.name === 'model'
+            },
+            showUpdateColumn () {
+                return this.name === 'data' && [
+                    'bk-table',
+                    'el-table',
+                    'folding-table',
+                    'search-table',
+                    'widget-bk-table',
+                    'widget-el-table'
+                ].includes(this.componentType)
             }
         },
         watch: {
@@ -588,15 +594,6 @@
 
                     let val = getRealValue(type, value)
 
-                    // 防止数据量太大，画布区卡死
-                    if (Array.isArray(val)
-                        && val.length > 100
-                        && ['remote', 'table-data-source', 'data-source', 'select-data-source'].includes(this.formData.valueType)
-                    ) {
-                        val = val.slice(0, 100)
-                        this.messageInfo(`属性【${name}】的值大于 100 条，画布区限制渲染 100 条。实际数据请在预览或者部署后查看`)
-                    }
-
                     if (this.formData.valueType === 'remote') {
                         // 配置的是远程函数、数据源
                         // code 此时无效，设置为 null
@@ -669,6 +666,13 @@
                             }
                         })
                     })
+                })
+            },
+
+            updateColumn () {
+                this.isSyncing = true
+                this.syncSlot(this.name).finally(() => {
+                    this.isSyncing = false
                 })
             }
         }

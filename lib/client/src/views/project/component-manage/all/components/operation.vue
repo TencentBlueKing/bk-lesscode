@@ -32,6 +32,16 @@
                         </bk-radio-button>
                     </bk-radio-group>
                 </bk-form-item>
+                <bk-form-item label="VUE 版本" required error-display-type="normal">
+                    <bk-radio-group v-model="formData.framework">
+                        <bk-radio-button value="vue2" class="middle-text">
+                            VUE 2
+                        </bk-radio-button>
+                        <bk-radio-button value="vue3" class="middle-text">
+                            VUE 3
+                        </bk-radio-button>
+                    </bk-radio-group>
+                </bk-form-item>
                 <bk-form-item label="组件包" required error-display-type="normal">
                     <bk-upload
                         class="component-upload"
@@ -101,7 +111,8 @@
         categoryId: '',
         description: '',
         log: '',
-        compType: 'PC'
+        compType: 'PC',
+        framework: 'vue2'
     })
     export default {
         name: '',
@@ -157,7 +168,8 @@
                     categoryId,
                     version,
                     description,
-                    versionLog
+                    versionLog,
+                    framework
                 } = newData
                 this.formData.name = name
                 this.formData.displayName = displayName
@@ -166,6 +178,7 @@
                 this.formData.categoryId = categoryId
                 this.formData.description = description
                 this.formData.log = versionLog
+                this.formData.framework = framework
                 this.lastVersion = version
             },
             'formData.log' (log) {
@@ -331,6 +344,9 @@
             .bk-button {
                 margin-right: 10px;
             }
+        }
+        .middle-text .bk-radio-button-text {
+            justify-content: center;
         }
 
         .bk-form-radio-button .bk-radio-button-text {

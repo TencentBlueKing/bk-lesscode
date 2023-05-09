@@ -20,7 +20,7 @@
                 :last-value="lastProps[key]"
                 :name="key"
                 :key="key"
-                :sync-slot="(val) => syncSlot(val, key)"
+                :syncSlot="syncSlot"
                 @on-change="handleChange" />
         </template>
     </div>
@@ -30,6 +30,7 @@
     import { bus } from '@/common/bus'
     import LC from '@/element-materials/core'
     import RenderProp from './components/render-prop'
+    import useDatasource from '@/hooks/use-datasource'
 
     export default {
         name: 'modifier-prop',
@@ -154,13 +155,13 @@
             /**
              * 通过 table 的 data 推导出 table 列的配置
              */
-            syncSlot (propData, key) {
+            async syncSlot (key) {
                 const {
                     format,
                     payload,
                     renderValue = [],
                     valueType
-                } = propData
+                } = this.componentNode.renderProps[key]
 
                 // 需要同步 prop 配置到 slot 的场景
                 // 同时满足下面的条件
@@ -181,13 +182,15 @@
                     // 默认同步 第一个 slot
                     const slotName = Object.keys(this.material.slots)[0]
                     const slotConfig = this.material.slots[slotName]
-                    // 通过数据表配置的 columns
-                    const dataSourceColumns = payload.sourceData?.columns || []
                     // 通过值类型计算的 columns
                     const firstValue = renderValue[0] || {}
-                    const valueColumns = Object.keys(firstValue)
-                    // 基于类型设置表头信息
-                    const columns = valueType === 'table-data-source' ? dataSourceColumns : valueColumns
+                    let columns = Object.keys(firstValue)
+                    // 通过接口获取 columns
+                    if (valueType === 'table-data-source') {
+                        const { getTable } = useDatasource()
+                        const table = await getTable(this.$route.params.projectId, payload.sourceData?.tableName, payload.sourceData?.dataSourceType)
+                        columns = table?.columns?.map(column => column.name) || []
+                    }
                     // 获取自定义column配置，这个配置比较复杂不覆盖
                     const renderSlot = this.componentNode.renderSlots[slotName]
                     const slotRenderValue = renderSlot.renderValue || []
