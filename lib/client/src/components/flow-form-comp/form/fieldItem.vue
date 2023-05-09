@@ -53,7 +53,9 @@
     import Upload from './fields/upload.vue'
     import Divider from './fields/divider'
     import Rate from './fields/rate'
-
+    import Compute from './fields/compute'
+    import Serial from './fields/serial.vue'
+    
     // 注册fields文件夹下所有字段类型组件
     // function registerField() {
     //   const fields = require.context('./fields/', false, /\w+\.(vue)$/);
@@ -93,7 +95,9 @@
             Tree: Tree,
             Upload: Upload,
             Divider: Divider,
-            Rate: Rate
+            Rate: Rate,
+            Compute,
+            Serial
         },
         props: {
             field: {
@@ -125,7 +129,7 @@
             },
             // 默认规则设置为禁止填写 和 字段设置为禁止编辑的时候禁止编辑
             isDisabled () {
-                return this.field.is_readonly
+                return this.field.is_readonly || this.disabled
             },
             needPagination () {
                 return this.$route.name !== 'editNocode'

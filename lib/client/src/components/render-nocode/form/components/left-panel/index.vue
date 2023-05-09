@@ -80,10 +80,10 @@
                         <li
                             v-for="field in group.items"
                             v-bk-tooltips="{
-                                disabled: pageType !== 'FLOW' || !layoutGroup.includes(field.type),
-                                content: '流程表单暂不支持布局类型控件'
+                                disabled: !isFieldDisable(field.type),
+                                content: '流程表单暂不支持该类型控件'
                             }"
-                            :class="['field-item drag-entry', { 'not-available': pageType === 'FLOW' && layoutGroup.includes(field.type) }]"
+                            :class="['field-item drag-entry', { 'not-available': isFieldDisable(field.type) }]"
                             :data-type="field.type"
                             :key="field.type">
                             <i :class="['comp-icon',field.icon]"></i> <span>{{ field.name }}</span>
@@ -100,6 +100,7 @@
     import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
     import _ from 'lodash'
     const LAYOUT_GROUP = ['DESC', 'DIVIDER']
+    const ADVANCED_GROUP = ['COMPUTE', 'SERIAL']
     export default {
         components: {
             draggable
@@ -131,16 +132,26 @@
                         name: '基础控件',
                         items: [],
                         isFolded: false
+                    },
+                    {
+                        name: '高级控件',
+                        items: [],
+                        isFolded: false
                     }
                 ]
                 fieldsArr.forEach(item => {
                     if (LAYOUT_GROUP.includes(item.type)) {
                         group[0].items.push(item)
+                    } else if (ADVANCED_GROUP.includes(item.type)) {
+                        group[2].items.push(item)
                     } else {
                         group[1].items.push(item)
                     }
                 })
                 return group
+            },
+            isFieldDisable (type) {
+                return this.pageType === 'FLOW' && [...LAYOUT_GROUP, ...ADVANCED_GROUP, 'RATE'].includes(type)
             },
             handleMove () {
                 this.$emit('move')
@@ -271,10 +282,11 @@
 
 .fields-list-container {
   height: calc(100% - 56px);
-  overflow: hidden;
+  overflow: auto;
   width: 100%;
   background: #FFFFFF;
   box-shadow: 1px 0 0 0 #DCDEE5;
+  @mixin scroller;
 }
 
 .group-name {

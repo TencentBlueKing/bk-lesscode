@@ -15,11 +15,12 @@
         <bk-form class="linkage-config-wrapper" form-type="vertical">
             <bk-form-item label="联动内容">
                 <bk-radio-group :value="configData.type" @change="handleRuleTypeChange">
-                    <bk-radio value="currentTable">本表字段</bk-radio>
-                    <bk-radio value="otherTable">他表字段</bk-radio>
+                    <bk-radio value="currentTable" :disabled="disabled">本表字段</bk-radio>
+                    <bk-radio value="otherTable" :disabled="disabled">他表字段</bk-radio>
                     <bk-radio
                         v-if="['DATE', 'DATETIME'].includes(field.type)"
-                        value="createTicketTime">
+                        value="createTicketTime"
+                        :disabled="disabled">
                         默认为提交{{ `${field.type === 'DATE' ? '日期' : '时间'}` }}
                     </bk-radio>
                 </bk-radio-group>
@@ -29,7 +30,8 @@
                     style="width: 50%;"
                     size="small"
                     v-model="configData.tableName"
-                    :loading="formListLoading">
+                    :loading="formListLoading"
+                    :disabled="disabled">
                     <bk-option
                         v-for="form in formList"
                         :key="form.tableName"
@@ -152,6 +154,10 @@
                 this.configData.rules = rules
             },
             handleConfirm () {
+                if (this.disabled) {
+                    this.close()
+                    return
+                }
                 if (!this.validate()) {
                     return
                 }

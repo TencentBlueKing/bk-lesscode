@@ -10,7 +10,7 @@
         :value="show"
         @confirm="onConfirm"
         @cancel="$emit('update:show', false)">
-        <field-item :field="field" @change="handleChangeValue"></field-item>
+        <field-item :field="field" :disabled="disabled" @change="handleChangeValue"></field-item>
     </bk-dialog>
 </template>
 
@@ -28,7 +28,8 @@
                 type: Boolean,
                 default: false
             },
-            value: String
+            value: String,
+            disabled: Boolean
         },
         data () {
             return {

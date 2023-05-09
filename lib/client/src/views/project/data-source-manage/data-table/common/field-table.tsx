@@ -178,6 +178,15 @@ export default defineComponent({
                 }
             },
             {
+                name: '唯一约束',
+                type: 'checkbox',
+                prop: 'unique',
+                width: '100px',
+                isReadonly (item, props) {
+                    return ['text', 'json'].includes(props?.row?.type)
+                }
+            },
+            {
                 name: '可空',
                 type: 'checkbox',
                 prop: 'nullable',

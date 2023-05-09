@@ -268,7 +268,7 @@
                             axis: { x, y }
                         }
                     }
-                    this.$store.dispatch('nocode/flow/updateNodePos', params)
+                    this.$store.dispatch('nocode/flow/patchNodeData', params)
                 } catch (e) {
                     console.error(e)
                 }

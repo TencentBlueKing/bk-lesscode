@@ -152,8 +152,8 @@
                         return
                     }
                     const {
-                        width: componentWidth,
-                        height: componentHeight
+                        offsetWidth: componentWidth,
+                        offsetHeight: componentHeight
                     } = $elem
 
                     const {
@@ -170,6 +170,7 @@
 
                     let top = 0
                     let left = 0
+                    const borderWidth = 2 // border占用了2px
                     // 组件默认不能超过容器范围
                     // top 位置计算
 
@@ -187,12 +188,12 @@
                     if (childNode.style.left) {
                         left = unitFilter(childNode.style.left)
                     } else {
-                        if (originalLeft + componentWidth > containerRight) {
-                            left = containerRight - containerLeft - componentWidth
+                        if (originalLeft + componentWidth + borderWidth > containerRight) {
+                            left = containerRight - containerLeft - componentWidth - borderWidth
                         } else {
                             left = originalLeft - containerLeft - 15
                         }
-                        left = autoStyle(childNode, 'left', Math.max(left, 10), true)
+                        left = autoStyle(childNode, 'left', left, true)
                     }
 
                     childNode.setStyle({

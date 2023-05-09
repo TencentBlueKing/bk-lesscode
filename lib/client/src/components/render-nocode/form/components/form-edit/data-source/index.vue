@@ -5,6 +5,7 @@
             v-if="sourceType === 'CUSTOM'"
             ref="custom"
             :value="value"
+            :disabled="disabled"
             :show-require="fieldType === 'TABLE'"
             :local-val-is-display-tag="localValIsDisplayTag"
             @update="$emit('change', $event)">
@@ -19,6 +20,7 @@
             :source-type-list="sourceTypeList"
             :use-variable="useVariable"
             :value="value"
+            :disabled="disabled"
             :api-detail="apiDetail"
             :res-array-tree-data="resArrayTreeData"
             @sourceTypeChange="$emit('sourceTypeChange', $event)"
@@ -34,6 +36,7 @@
             :source-type-list="sourceTypeList"
             :use-variable="useVariable"
             :value="value"
+            :disabled="disabled"
             @sourceTypeChange="$emit('sourceTypeChange', $event)"
             @update="$emit('change', $event)">
         </worksheet-data>
@@ -78,7 +81,8 @@
                 type: Boolean,
                 default: false
             },
-            value: [Array, Object] // 自定义数据为Array，api数据、表单数据为Object
+            value: [Array, Object], // 自定义数据为Array，api数据、表单数据为Object
+            disabled: Boolean
         },
         data () {
             return {

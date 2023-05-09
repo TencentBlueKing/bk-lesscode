@@ -51,6 +51,8 @@
     import Tree from './fields/tree.vue'
     import Upload from './fields/upload.vue'
     import Divider from './fields/divider'
+    import Compute from './fields/compute'
+    import Serial from './fields/serial.vue'
 
     // 注册fields文件夹下所有字段类型组件
     // function registerField() {
@@ -91,7 +93,9 @@
             Tree: Tree,
             Upload: Upload,
             Rate: Rate,
-            Divider: Divider
+            Divider: Divider,
+            Compute,
+            Serial
         },
         props: {
             field: {

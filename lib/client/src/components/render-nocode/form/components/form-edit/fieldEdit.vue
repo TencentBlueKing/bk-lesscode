@@ -1,5 +1,6 @@
 <template>
     <div class="field-edit">
+        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">自动编号控件在表单填写时不可见，表单值由配置规则确定</div>
         <!-- 表单右边设置区域  -->
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
@@ -43,7 +44,7 @@
                     desc-icon="bk-icon icon-question-circle">
                     <bk-input v-model.trim="fieldData.key" :disabled="disabled || fieldData.disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="布局" v-if="!basicIsFolded">
+                <bk-form-item label="布局" v-if="!basicIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-radio-group v-model="fieldData.layout" @change="change">
                         <bk-radio value="COL_6" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">半行</bk-radio>
                         <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
@@ -112,7 +113,7 @@
                     </table-header-setting>
                     <span class="add-chocie" @click="handleAddTableChoice">添加</span>
                 </bk-form-item>
-                <bk-form-item label="填写属性" v-if="!handleIsFolded">
+                <bk-form-item v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <div class="attr-value">
                         <div class="contidion">
                             <bk-checkbox
@@ -203,7 +204,7 @@
                         </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
+                <!-- <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
                     <div>
                         <div class="range-control">
                             <bk-checkbox
@@ -247,8 +248,8 @@
                             个选项
                         </div>
                     </div>
-                </bk-form-item>
-                <bk-form-item label="校验方式" v-if="!handleIsFolded">
+                </bk-form-item> -->
+                <bk-form-item label="校验方式" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-select
                         v-model="fieldData.regex"
                         :clearable="false"
@@ -265,7 +266,6 @@
                 <template v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
                     <bk-form-item ext-cls="default-val" label="默认值">
                         <default-value
-                            
                             :field="fieldData"
                             :disabled="disabled"
                             @change="handleDefaultValChange">
@@ -279,7 +279,21 @@
                         </association-value>
                     </bk-form-item>
                 </template>
-                <bk-form-item label="填写说明" v-if="!handleIsFolded">
+                <!-- 计算组件 -->
+                <bk-form-item label="计算类型" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
+                    <ComputeEdit
+                        :field="fieldData"
+                        :disabled="disabled"
+                        @change="updateFieldData" />
+                </bk-form-item>
+                <!-- 自动编号 -->
+                <bk-form-item v-if="fieldData.type === 'SERIAL' && !handleIsFolded">
+                    <SerialEdit
+                        :field="fieldData"
+                        :disabled="disabled"
+                        @change="updateFieldData" />
+                </bk-form-item>
+                <bk-form-item label="填写说明" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
@@ -304,6 +318,7 @@
             :title="fieldData.name"
             :show.sync="readerOnlyShow"
             :value="fieldData.read_only_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('read_only_conditions',val)">
         </read-only-dialog>
         <require-dialog
@@ -311,6 +326,7 @@
             :title="fieldData.name"
             :show.sync="requireConfigShow"
             :value="fieldData.mandatory_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('mandatory_conditions',val)">
         </require-dialog>
         <show-type-dialog
@@ -318,6 +334,7 @@
             :title="fieldData.name"
             :show.sync="showTypeShow"
             :value="fieldData.show_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('show_conditions',val)">
         </show-type-dialog>
         <data-source-dialog
@@ -326,6 +343,7 @@
             :source-type="fieldData.source_type"
             :field-type="fieldData.type"
             :value="sourceData"
+            :disabled="disabled"
             :api-detail="apiDetail"
             :is-display-tag="fieldData.isDisplayTag"
             :res-array-tree-data="resArrayTreeData"
@@ -334,6 +352,7 @@
         <config-desc-comp-value-dialog
             :show.sync="descCompValueShow"
             :value="fieldData.value"
+            :disabled="disabled"
             @confirm="handleDescValueChange">
         </config-desc-comp-value-dialog>
     </div>
@@ -350,6 +369,8 @@
     import ConfigDescCompValueDialog from './configDescCompValueDialog'
     import TableHeaderSetting from './tableHeaderSetting.vue'
     import RichText from '@/components/flow-form-comp/form/fields/richText.vue'
+    import ComputeEdit from './components/computeEdit/index.vue'
+    import SerialEdit from './components/serialEdit.vue'
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
@@ -372,7 +393,9 @@
             ShowTypeDialog,
             DataSourceDialog,
             ConfigDescCompValueDialog,
-            RichText
+            RichText,
+            ComputeEdit,
+            SerialEdit
         },
         model: {
             prop: 'value',
@@ -695,6 +718,10 @@
   }
   /deep/ .bk-form-checkbox .bk-checkbox-text{
     font-size: 12px;
+  }
+  .serial-tips {
+    font-size: 12px;
+    margin: 10px 0 5px;
   }
 }
 /deep/ .bk-form-control {

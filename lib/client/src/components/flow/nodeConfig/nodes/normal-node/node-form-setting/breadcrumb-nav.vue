@@ -19,12 +19,12 @@
         </template>
         <div v-else class="breadcrumb-content">
             <i class="bk-drag-icon bk-drag-flow-fill flow-icon"></i>
-            <span class="up-level-nav" @click="$emit('closeNode')">{{ flowConfig.flowName }}</span>
+            <span class="up-level-nav" @click="$emit('backToFlow')">{{ flowConfig.flowName }}</span>
             /
-            <span class="up-level-nav" @click="$emit('close')">{{ nodeData.name }}</span>
+            <span class="up-level-nav" @click="$emit('backToNode')">{{ nodeData.name }}</span>
             /
             <span class="form-name">{{ formConfig.formName }}</span>
-            <i class="bk-drag-icon bk-drag-edit edit-icon" @click="handleEditClick"></i>
+            <i v-if="editable" class="bk-drag-icon bk-drag-edit edit-icon" @click="handleEditClick"></i>
         </div>
     </div>
 </template>
@@ -36,6 +36,10 @@
             flowConfig: {
                 type: Object,
                 default: () => ({})
+            },
+            editable: {
+                type: Boolean,
+                default: true
             }
         },
         data () {
