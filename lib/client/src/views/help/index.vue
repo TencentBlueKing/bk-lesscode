@@ -71,7 +71,7 @@
                         }]
                     },
                     {
-                        title: window.i18n.t('应用开发'),
+                        title: window.i18n.t('abbr_应用开发'),
                         name: 'app',
                         tree: true,
                         childs: [{
@@ -139,13 +139,6 @@
                         childs: [{
                             title: window.i18n.t('课程实战文档和视频'),
                             name: 'courses'
-                        }]
-                    }, {
-                        title: window.i18n.t('日志'),
-                        name: 'log',
-                        childs: [{
-                            title: window.i18n.t('更新日志'),
-                            name: 'changelog'
                         }]
                     }
                 ]

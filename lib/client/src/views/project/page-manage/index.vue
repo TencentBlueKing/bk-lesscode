@@ -18,10 +18,10 @@
                         <bk-button theme="primary" icon-right="icon-angle-down" class="overflowhidden-oh">{{ $t('新建') }}</bk-button>
                     </div>
                     <ul class="bk-dropdown-list select-page-type" slot="dropdown-content">
-                        <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('PC自定义页面') }}</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('PC表单页面') }}</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('Markdown文档') }}</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('MOBILE', '')"><i class="bk-drag-icon bk-drag-mobilephone"> </i>{{ $t('Mobile自定义页面') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_PC自定义页面') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_PC表单页面') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_Markdown文档') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('MOBILE', '')"><i class="bk-drag-icon bk-drag-mobilephone"> </i>{{ $t('select_Mobile自定义页面') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
                 <template>
