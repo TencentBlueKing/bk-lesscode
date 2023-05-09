@@ -52,6 +52,7 @@
                                     <span class="template-name" :title="template.projectName">{{ template.projectName }}</span>
                                     <span class="template-preview" @click.stop.prevent="handlePreview(template.id)">预览</span>
                                 </div>
+                                <frameworkTag class="frameworkTag-op" :framework="template.framework"></frameworkTag>
                             </li>
                         </div>
                         <div class="empty" v-show="!list.length">
@@ -79,6 +80,7 @@
     import ProjectForm from './project-form.vue'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import { PROJECT_TEMPLATE_TYPE } from '@/common/constant'
+    import frameworkTag from '@/components/framework-tag.vue'
 
     const defaultFormData = {
         templateName: '',
@@ -90,7 +92,8 @@
         name: 'template-dialog',
         components: {
             ProjectForm,
-            PagePreviewThumb
+            PagePreviewThumb,
+            frameworkTag
         },
         data () {
             return {
@@ -376,6 +379,11 @@
                                 display: none;
                                 color: #3A84FF;
                             }
+                        }
+                        .frameworkTag-op{
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
                         }
                     }
                 }
