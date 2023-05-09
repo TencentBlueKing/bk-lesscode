@@ -68,7 +68,7 @@
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :data="files">
-            <bk-table-column :label="$t('文件名称')" prop="name" min-width="210" sortable show-overflow-tooltip>
+            <bk-table-column :label="$t('table_文件名称')" prop="name" min-width="210" sortable show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['filename-content', row.status]">
                         <file-icon :is-card="false" :file="row" />
@@ -98,8 +98,8 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('创建人')" prop="createUser" min-width="110" sortable show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('创建时间')" prop="createTime" min-width="200" sortable show-overflow-tooltip>
+            <bk-table-column :label="$t('table_创建人')" prop="createUser" min-width="110" sortable show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_创建时间')" prop="createTime" min-width="200" sortable show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <span>{{row.createTime | time}}</span>
                 </template>

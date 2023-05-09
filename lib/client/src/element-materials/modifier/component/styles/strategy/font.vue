@@ -26,7 +26,7 @@
                 <bk-option id="Helvetica, sans-serif" name="Helvetica" />
             </bk-select>
         </style-item>
-        <style-item :name="$t('字号字重')" v-if="handleHasKey('fontSize') || handleHasKey('fontWeight')">
+        <style-item :name="$t('form_字号字重')" v-if="handleHasKey('fontSize') || handleHasKey('fontWeight')">
             <font-size-input :value="renderValueMap.fontSize" @change="handleFontWithUnitChange('fontSize', $event)" />
             <bk-select
                 :value="renderValueMap.fontWeight"
@@ -52,7 +52,7 @@
                 style="width: 100%;"
                 @change="handleFontChange('color', $event)" />
         </style-item>
-        <style-item :name="$t('字体样式')" v-if="handleHasKey('fontStyle')">
+        <style-item :name="$t('form_字体样式')" v-if="handleHasKey('fontStyle')">
             <bk-select
                 :value="renderValueMap.fontStyle"
                 font-size="medium"
@@ -65,26 +65,26 @@
                 <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig($t('继承父元素'))" />
             </bk-select>
         </style-item>
-        <style-item :name="$t('行高')" v-if="handleHasKey('lineHeight')">
+        <style-item :name="$t('form_行高')" v-if="handleHasKey('lineHeight')">
             <size-input :value="renderValueMap.lineHeight" @change="handleInputChange('lineHeight', $event)">
                 <append-select :value="unitMap.lineHeight" @change="handleSelectChange('lineHeight', $event)" />
             </size-input>
         </style-item>
-        <style-item :name="$t('字符间距')" v-if="handleHasKey('letterSpacing')">
+        <style-item :name="$t('form_字符间距')" v-if="handleHasKey('letterSpacing')">
             <font-size-input
                 :value="renderValueMap.letterSpacing"
                 :placeholder="$t('请输入')"
                 @change="handleFontWithUnitChange('letterSpacing', $event)"
                 style="width: 100%" />
         </style-item>
-        <style-item :name="$t('单词间距')" v-if="handleHasKey('wordSpacing')">
+        <style-item :name="$t('form_单词间距')" v-if="handleHasKey('wordSpacing')">
             <font-size-input
                 :value="renderValueMap.wordSpacing"
                 :placeholder="$t('请输入')"
                 @change="handleFontWithUnitChange('wordSpacing', $event)"
                 style="width: 100%" />
         </style-item>
-        <style-item name="text-align" :tips="$t('文本的水平对齐方式')" v-if="handleHasKey('textAlign')">
+        <style-item name="Text-align" :tips="$t('文本的水平对齐方式')" v-if="handleHasKey('textAlign')">
             <bk-select
                 :value="renderValueMap.textAlign"
                 font-size="medium"
@@ -96,7 +96,7 @@
                 <bk-option id="right" name="right" />
             </bk-select>
         </style-item>
-        <style-item name="text-decoration" :tips="$t('文本的修饰线')" v-if="handleHasKey('textDecoration')">
+        <style-item name="Text-decoration" :tips="$t('文本的修饰线')" v-if="handleHasKey('textDecoration')">
             <bk-select
                 :value="renderValueMap.textDecoration"
                 font-size="medium"
@@ -114,7 +114,7 @@
                 <append-select :value="unitMap.textIndent" @change="handleSelectChange('textIndent', $event)" />
             </size-input>
         </style-item>
-        <style-item name="text-overflow" :tips="$t('如何展示溢出文本')" v-if="handleHasKey('textOverflow')">
+        <style-item name="Text-overflow" :tips="$t('如何展示溢出文本')" v-if="handleHasKey('textOverflow')">
             <bk-select
                 :value="renderValueMap.textOverflow"
                 font-size="medium"
@@ -125,7 +125,7 @@
                 <bk-option id="ellipsis" name="ellipsis" v-bk-tooltips="getTooltipsConfig($t('使用一个省略号来表示溢出文本'))" />
             </bk-select>
         </style-item>
-        <style-item name="word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
+        <style-item name="Word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
             <bk-select
                 :value="renderValueMap.wordBreak"
                 font-size="medium"
@@ -137,7 +137,7 @@
                 <bk-option id="keep-all" name="keep-all" v-bk-tooltips="getTooltipsConfig($t('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal'))" />
             </bk-select>
         </style-item>
-        <style-item name="word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
+        <style-item name="Word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
             <bk-select
                 :value="renderValueMap.wordWrap"
                 font-size="medium"
@@ -148,7 +148,7 @@
                 <bk-option id="break-word" name="break-word" v-bk-tooltips="getTooltipsConfig($t('长单词内部换行'))" />
             </bk-select>
         </style-item>
-        <style-item name="white-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
+        <style-item name="White-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
             <bk-select
                 :value="renderValueMap.whiteSpace"
                 font-size="medium"
@@ -163,7 +163,7 @@
                 <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig($t('继承父元素该属性'))" />
             </bk-select>
         </style-item>
-        <style-item :name="$t('垂直对齐')" v-if="handleHasKey('verticalAlign')">
+        <style-item :name="$t('form_垂直对齐')" v-if="handleHasKey('verticalAlign')">
             <bk-select
                 :value="renderValueMap.verticalAlign"
                 font-size="medium"

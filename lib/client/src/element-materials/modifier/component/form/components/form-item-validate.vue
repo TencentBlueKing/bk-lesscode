@@ -22,7 +22,7 @@
                 </div>
                 <section style="margin-top: 20px;padding: 10px 20px 15px;">
                     <bk-form :label-width="120">
-                        <bk-form-item :label="$t('校验方式')" error-display-type="normal">
+                        <bk-form-item :label="$t('form_校验方式')" error-display-type="normal">
                             <bk-select
                                 :value="item.type"
                                 :clearable="false"

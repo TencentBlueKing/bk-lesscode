@@ -12,7 +12,7 @@
 <template>
     <section>
         <style-layout :title="$t('自定义样式')">
-            <style-item :name="$t('自定义样式')">
+            <style-item :name="$t('form_自定义样式')">
                 <div style="width: 200px; text-align: right">
                     <bk-button
                         theme="primary"

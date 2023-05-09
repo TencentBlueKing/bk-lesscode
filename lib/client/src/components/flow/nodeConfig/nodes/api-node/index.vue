@@ -8,7 +8,7 @@
                 :model="formData"
                 :rules="rules">
                 <div class="select-api">
-                    <bk-form-item :label="$t('节点名称')" property="nodeName" :required="true">
+                    <bk-form-item :label="$t('form_节点名称')" property="nodeName" :required="true">
                         <bk-input v-model="formData.nodeName" @change="handleNameChange"></bk-input>
                     </bk-form-item>
                     <bk-form-item :label="$t('处理人')" :required="true">
@@ -30,7 +30,7 @@
                         </choose-api>
                     </bk-form-item>
                     <bk-form-item
-                        :label="$t('请求地址')"
+                        :label="$t('form_请求地址')"
                         property="url"
                         desc-type="icon"
                         :desc="apiURLTips"
@@ -59,7 +59,7 @@
                         </div>
                     </bk-form-item>
                     <bk-form-item
-                        :label="$t('请求类型')"
+                        :label="$t('form_请求类型')"
                         property="method"
                         :required="true">
                         <bk-select

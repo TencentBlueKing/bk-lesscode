@@ -35,7 +35,7 @@
                             <h3>{{ group.name }}</h3>
                         </div>
                         <bk-table v-show="group.unfold" :outer-border="false" :data="group.fields">
-                            <bk-table-column :label="$t('变量名称')" property="name" :width="200" show-overflow-tooltip></bk-table-column>
+                            <bk-table-column :label="$t('table_变量名称')" property="name" :width="200" show-overflow-tooltip></bk-table-column>
                             <bk-table-column :label="$t('类型')" property="type" :width="140">
                                 <template slot-scope="{ row }">
                                     <span class="var-type">{{ row.type }}</span>

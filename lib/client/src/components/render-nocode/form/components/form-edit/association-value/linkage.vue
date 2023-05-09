@@ -13,7 +13,7 @@
         @confirm="handleConfirm"
         @cancel="close">
         <bk-form class="linkage-config-wrapper" form-type="vertical">
-            <bk-form-item :label="$t('联动内容')">
+            <bk-form-item :label="$t('form_联动内容')">
                 <bk-radio-group :value="configData.type" @change="handleRuleTypeChange">
                     <bk-radio value="currentTable" :disabled="disabled">{{ $t('本表字段') }}</bk-radio>
                     <bk-radio value="otherTable" :disabled="disabled">{{ $t('他表字段') }}</bk-radio>
@@ -25,7 +25,7 @@
                     </bk-radio>
                 </bk-radio-group>
             </bk-form-item>
-            <bk-form-item v-if="configData.type === 'otherTable'" :label="$t('联动数据表')">
+            <bk-form-item v-if="configData.type === 'otherTable'" :label="$t('form_联动数据表')">
                 <bk-select
                     style="width: 50%;"
                     size="small"
@@ -41,7 +41,7 @@
                 </bk-select>
             </bk-form-item>
             <bk-form-item
-                :label="$t('关联规则')"
+                :label="$t('form_关联规则')"
                 desc-type="icon"
                 :desc="associationRuleTips">
                 <relation-rules
@@ -84,9 +84,9 @@
                 associationRuleTips: {
                     placement: 'right-end',
                     content: `
-                        <p>1.本表字段联动，若存在多条满足条件的关联规则，排序在后的规则优先级更高</p>
-                        <p>2.他表字段联动，若设置的条件无法检索到单条数据，则关联值将无法正常带出</p>
-                        <p>3.若没有满足关联规则时，字段将会保持当前值
+                        <p>1.${window.i18n.t('本表字段联动，若存在多条满足条件的关联规则，排序在后的规则优先级更高')}</p>
+                        <p>2.${window.i18n.t('他表字段联动，若设置的条件无法检索到单条数据，则关联值将无法正常带出')}</p>
+                        <p>3.${window.i18n.t('若没有满足关联规则时，字段将会保持当前值')}
                     `
                 }
             }

@@ -1,11 +1,11 @@
 <template>
     <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType">
         <bk-form-item
-            :label="$t('函数名称')"
+            :label="$t('form_函数名称')"
             property="funcName"
             error-display-type="normal"
             :required="true"
-            :rules="[requireRule($t('函数名称')), nameRepeatRule, groupNameRule]">
+            :rules="[requireRule($t('form_函数名称')), nameRepeatRule, groupNameRule]">
             <bk-input
                 :placeholder="$t('由大小写英文字母、数字组成，开头和结尾还可以是下划线，且必须符合驼峰命名规范')"
                 :disabled="disabled"

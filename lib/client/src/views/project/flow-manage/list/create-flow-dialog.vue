@@ -13,10 +13,10 @@
             form-type="vertical"
             :model="flowData"
             :rules="rules">
-            <bk-form-item :label="$t('流程名称')" property="flowName" :required="true">
+            <bk-form-item :label="$t('form_流程名称')" property="flowName" :required="true">
                 <bk-input v-model="flowData.flowName" />
             </bk-form-item>
-            <bk-form-item :label="$t('流程描述')" property="desc">
+            <bk-form-item :label="$t('form_流程描述')" property="desc">
                 <bk-input v-model="flowData.summary" type="textarea" :row="4" />
             </bk-form-item>
         </bk-form>

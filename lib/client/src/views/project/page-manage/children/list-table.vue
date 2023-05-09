@@ -89,7 +89,7 @@
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :data="pageList">
-            <bk-table-column :label="$t('页面名称')" prop="pageName" min-width="210" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_页面名称')" prop="pageName" min-width="210" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div class="pagename-content">
                         <span class="page-type">
@@ -103,7 +103,7 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('页面类型')" prop="nocodeType" min-width="120">
+            <bk-table-column :label="$t('table_页面类型')" prop="nocodeType" min-width="120">
                 <template v-slot="{ row }">
                     <span
                         class="nocode-type-tag"
@@ -148,12 +148,12 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{row.updateUser || row.createUser}}
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{getRelativeTime(row.updateTime)}}
                 </template>

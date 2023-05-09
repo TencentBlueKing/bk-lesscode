@@ -79,11 +79,11 @@
                 },
                 orderBy: undefined,
                 columns: [
-                    { id: 'projectName', name: window.i18n.t('应用名'), tooltip: true },
+                    { id: 'projectName', name: window.i18n.t('table_应用名'), tooltip: true },
                     { id: 'createUser', name: window.i18n.t('创建者'), tooltip: true },
                     { id: 'projectCode', name: window.i18n.t('应用ID'), tooltip: true },
-                    { id: 'pageCount', name: window.i18n.t('应用页面数'), sortable: 'custom', dynamic: true, type: 'number' },
-                    { id: 'createTime', name: window.i18n.t('创建时间'), sortable: 'custom', type: 'datetime' }
+                    { id: 'pageCount', name: window.i18n.t('table_应用页面数'), sortable: 'custom', dynamic: true, type: 'number' },
+                    { id: 'createTime', name: window.i18n.t('table_创建时间'), sortable: 'custom', type: 'datetime' }
                 ],
                 filters: {
                     keyword: '',

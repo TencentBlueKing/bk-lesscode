@@ -7,8 +7,8 @@
         :transfer="true"
         :title="isAdd ? $t('新增变量') : $t('编辑变量')">
         <section slot="content" class="variable-form-main">
-            <bk-form :label-width="84" :model="copyForm" ref="variableForm">
-                <bk-form-item :label="$t('变量名称')" :required="true" :rules="[requireRule($t('变量名称')), nameRule]" property="variableName" error-display-type="normal">
+            <bk-form :label-width="$store.state.Language === 'en' ? 120 : 84" :model="copyForm" ref="variableForm">
+                <bk-form-item :label="$t('form_变量名称')" :required="true" :rules="[requireRule($t('form_变量名称')), nameRule]" property="variableName" error-display-type="normal">
                     <bk-input
                         :placeholder="$t('由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符')"
                         v-model="copyForm.variableName"
@@ -21,7 +21,7 @@
                         v-model="copyForm.variableCode"
                     ></bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('初始类型')" :required="true" property="valueType" error-display-type="normal">
+                <bk-form-item :label="$t('form_初始类型')" :required="true" property="valueType" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.valueType" @change="resetValue">
                         <template v-for="renderJsType in renderJsTypes">
                             <bk-radio-button
@@ -55,13 +55,13 @@
                         :value-type="copyForm.valueType"
                     />
                 </bk-form-item>
-                <bk-form-item :label="$t('生效范围')" :required="true" property="effectiveRange" error-display-type="normal">
+                <bk-form-item :label="$t('form_生效范围')" :required="true" property="effectiveRange" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.effectiveRange">
                         <bk-radio :value="0" class="range-radio" :disabled="copyForm.valueType === 6">{{$t('本应用')}}</bk-radio>
                         <bk-radio :value="1" v-if="pageId">{{$t('本页面')}}</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item :label="$t('变量说明')" property="description" error-display-type="normal">
+                <bk-form-item :label="$t('form_变量说明')" property="description" error-display-type="normal">
                     <bk-input v-model="copyForm.description" type="textarea"></bk-input>
                 </bk-form-item>
             </bk-form>

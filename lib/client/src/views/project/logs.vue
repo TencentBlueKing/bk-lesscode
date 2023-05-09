@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div :class="[$style['filter-item'], $style['type']]">
-                <div :class="$style['label']">{{ $t('操作类型') }}</div>
+                <div :class="$style['label']">{{ $t('form_操作类型') }}</div>
                 <div :class="$style['form-control']">
                     <bk-select :class="$style['select']" v-model="filter.code">
                         <bk-option v-for="option in options.actions[filter.obj]"
@@ -72,12 +72,12 @@
                         <span>{{ row.operateTime | time }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('操作类型')" prop="operateCodeText" min-width="120" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_操作类型')" prop="operateCodeText" min-width="120" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{row.operateCodeText}}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('对象及类型')" prop="operateObj" min-width="220" class-name="table-cell-operate-obj" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_对象及类型')" prop="operateObj" min-width="220" class-name="table-cell-operate-obj" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div :class="$style['operate-obj']"><span :class="$style['label']">{{ $t('类型：') }}</span>{{operateObjNameMap[row.operateObj]}}</div>
                         <div :class="$style['operate-target']"><span :class="$style['label']">{{ $t('对象：') }}</span>{{row.operateTarget}}</div>

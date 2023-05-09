@@ -13,7 +13,7 @@
     <div :class="[$style['container'], 'preview-exception']">
         <bk-exception :class="$style['exception-wrap']" type="403">
             <div>{{renderMsg}}</div>
-            <div :class="$style['text-subtitle']">{{ $t('系统将在 {n}s 后返回应用列表页', [countdown]) }}</div>
+            <div :class="$style['text-subtitle']">{{ $t('系统将在 {0}s 后返回应用列表页', [countdown]) }}</div>
         </bk-exception>
     </div>
 </template>

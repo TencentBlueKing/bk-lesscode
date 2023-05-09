@@ -99,12 +99,8 @@
     import sortSelect from '@/components/project/sort-select'
     import listCard from './children/list-card.vue'
     import listTable from './children/list-table.vue'
-    import dayjs from 'dayjs'
     import { NOCODE_TYPE_MAP } from '@/common/constant'
-    import relativeTime from 'dayjs/plugin/relativeTime'
-    import 'dayjs/locale/zh-cn'
-    dayjs.extend(relativeTime)
-    dayjs.locale('zh-cn')
+    import dayjs from '@/common/dayjs'
 
     export default {
         components: {

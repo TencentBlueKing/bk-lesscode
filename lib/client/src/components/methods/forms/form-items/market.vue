@@ -1,7 +1,7 @@
 <template>
     <section>
         <bk-form :label-width="240" ref="funcForm" :form-type="formType" class="func-market-home">
-            <bk-form-item :label="$t('从函数市场导入')">
+            <bk-form-item :label="$t('form_从函数市场导入')">
                 <bk-select
                     @toggle="getMarketFuncs"
                     @selected="changeMarketFunc"

@@ -221,7 +221,7 @@
                     settingFields: [
                         {
                             id: 'pageName',
-                            name: window.i18n.t('页面名称'),
+                            name: window.i18n.t('form_页面名称'),
                             type: 'input',
                             editable: true,
                             props: {
@@ -281,7 +281,7 @@
                     settingFields: [
                         {
                             id: 'layoutId',
-                            name: window.i18n.t('导航布局'),
+                            name: window.i18n.t('form_导航布局'),
                             type: 'select',
                             props: {
                                 clearable: false
@@ -300,7 +300,7 @@
                         },
                         {
                             id: 'pageRoute',
-                            name: window.i18n.t('页面路由'),
+                            name: window.i18n.t('form_页面路由'),
                             type: 'select',
                             editable: true,
                             placeholder: window.i18n.t('未设置'),
@@ -337,7 +337,7 @@
                         },
                         {
                             id: 'backgroundColor',
-                            name: window.i18n.t('背景色'),
+                            name: window.i18n.t('form_背景色'),
                             from: 'style',
                             type: 'background',
                             editable: true

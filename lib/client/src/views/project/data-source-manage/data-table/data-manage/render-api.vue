@@ -9,7 +9,7 @@
         >
             <bk-table-column
                 show-overflow-tooltip
-                :label="$t('请求地址')"
+                :label="$t('table_请求地址')"
                 prop="url"
             >
                 <template slot-scope="props">
@@ -18,14 +18,14 @@
                 </template>
             </bk-table-column>
             <bk-table-column
-                :label="$t('请求方法')"
+                :label="$t('table_请求方法')"
             >
                 <template slot-scope="props">
                     <span :class="[props.row.type, 'api-type']">{{ firstUpperCase(props.row.type) }}</span>
                 </template>
             </bk-table-column>
             <bk-table-column
-                :label="$t('请求参数')"
+                :label="$t('table_请求参数')"
                 prop="params"
             >
                 <template slot-scope="props">
@@ -33,7 +33,7 @@
                 </template>
             </bk-table-column>
             <bk-table-column
-                :label="$t('返回数据')"
+                :label="$t('table_返回数据')"
                 prop="result"
             >
                 <template slot-scope="props">

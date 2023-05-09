@@ -4,11 +4,11 @@
             <div class="form-section">
                 <h4>{{ $t('基础设置') }}</h4>
                 <bk-form ref="advancedForm" class="section-content" form-type="vertical" :model="advancedData" :rules="rules">
-                    <bk-form-item :label="$t('流程名称')" :required="true">
+                    <bk-form-item :label="$t('form_流程名称')" :required="true">
                         <bk-input v-model="advancedData.name"></bk-input>
                     </bk-form-item>
                     <div class="multiple-form-wrapper">
-                        <bk-form-item :label="$t('撤回方式')" :class="{ 'half-row-form': advancedData.revoke_config.type === 3 }">
+                        <bk-form-item :label="$t('form_撤回方式')" :class="{ 'half-row-form': advancedData.revoke_config.type === 3 }">
                             <bk-select
                                 v-model="advancedData.revoke_config.type"
                                 :clearable="false"
@@ -29,7 +29,7 @@
                             </bk-select>
                         </bk-form-item>
                     </div>
-                    <bk-form-item :label="$t('通知方式')" style="margin-top: 15px;">
+                    <bk-form-item :label="$t('form_通知方式')" style="margin-top: 15px;">
                         <bk-checkbox-group
                             :value="advancedData.notify.map(item => item.type)"
                             @change="onSelectNotifyType">
@@ -45,7 +45,7 @@
                     <div class="multiple-form-wrapper">
                         <bk-form-item
                             v-if="advancedData.notify.length > 0"
-                            :label="$t('通知频率')"
+                            :label="$t('form_通知频率')"
                             :class="{ 'half-row-form': advancedData.notify_rule === 'RETRY' }">
                             <bk-select v-model="advancedData.notify_rule" :clearable="false">
                                 <bk-option v-for="item in notifyFrequencies" :key="item.id" :id="item.id" :name="item.name"></bk-option>

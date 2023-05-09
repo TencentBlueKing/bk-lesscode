@@ -2,10 +2,10 @@
     <section class="ticket-list-wrapper">
         <div class="filter-area">
             <bk-form form-type="vertical" class="filter-form">
-                <bk-form-item :label="$t('创建人')">
+                <bk-form-item :label="$t('form_创建人')">
                     <bk-input v-model="filterData.creator" :placeholder="$t('请输入创建人')"></bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('创建时间')">
+                <bk-form-item :label="$t('form_创建时间')">
                     <bk-date-picker
                         :value="filterData.create_at"
                         :placeholder="$t('请选择创建时间')"
@@ -15,7 +15,7 @@
                         @change="handleDateTimeChange">
                     </bk-date-picker>
                 </bk-form-item>
-                <bk-form-item :label="$t('单号')">
+                <bk-form-item :label="$t('form_单号')">
                     <bk-input v-model="filterData.sns" :placeholder="$t('请输入单号')"></bk-input>
                 </bk-form-item>
                 <bk-form-item :label="$t('状态')">
@@ -39,9 +39,9 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
-            <bk-table-column :label="$t('单号')" property="sn"></bk-table-column>
-            <bk-table-column :label="$t('创建人')" property="creator"></bk-table-column>
-            <bk-table-column :label="$t('创建时间')" property="create_at"></bk-table-column>
+            <bk-table-column :label="$t('table_单号')" property="sn"></bk-table-column>
+            <bk-table-column :label="$t('table_创建人')" property="creator"></bk-table-column>
+            <bk-table-column :label="$t('table_创建时间')" property="create_at"></bk-table-column>
             <bk-table-column :label="$t('状态')" property="status_name">
                 <template slot-scope="{ row }">
                     <span :style="{ padding: '4px 10px', borderRadius: '2px', color: row.color, backgroundColor: row.backgroundColor }">

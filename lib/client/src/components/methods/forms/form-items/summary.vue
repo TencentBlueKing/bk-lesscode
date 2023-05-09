@@ -1,7 +1,7 @@
 <template>
     <bk-form :label-width="$store.state.Language === 'en' ? 195 : 180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
         <bk-form-item
-            :label="$t('函数简介')"
+            :label="$t('form_函数简介')"
             property="funcSummary"
             error-display-type="normal"
             :rules="[summaryRule]"

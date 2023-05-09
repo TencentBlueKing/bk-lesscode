@@ -1,11 +1,11 @@
 <template>
     <bk-form ref="infoForm" :label-width="type === 'newProject' ? 97 : 126" :rules="formRules" :model="formData" :form-type="formType">
-        <bk-form-item v-if="type === 'templateProject'" :label="$t('当前已选模板')" :label-width="200">
+        <bk-form-item v-if="type === 'templateProject'" :label="$t('form_当前已选模板')" :label-width="200">
             <bk-input readonly v-model.trim="templateName"
                 :placeholder="$t('请先选择模板')">
             </bk-input>
         </bk-form-item>
-        <bk-form-item v-if="type === 'importProject'" :label="$t('应用JSON文件')" required error-display-type="normal">
+        <bk-form-item v-if="type === 'importProject'" :label="$t('form_应用JSON文件')" required error-display-type="normal">
             <bk-upload
                 with-credentials
                 :multiple="false"
@@ -18,7 +18,7 @@
                 @on-delete="handleUploadReset"
             ></bk-upload>
         </bk-form-item>
-        <bk-form-item :label="$t('应用名称')" required property="projectName" error-display-type="normal">
+        <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
             <bk-input maxlength="60" v-model.trim="formData.projectName"
                 :placeholder="$t('由汉字，英文字母，数字组成，20个字符以内')">
             </bk-input>
@@ -28,7 +28,7 @@
                 :placeholder="$t('由小写字母组成，长度小于16个字符，该ID将作为自定义组件前缀，创建后不可更改')">
             </bk-input>
         </bk-form-item>
-        <bk-form-item :label="$t('应用简介')" required property="projectDesc" error-display-type="normal">
+        <bk-form-item :label="$t('form_应用简介')" required property="projectDesc" error-display-type="normal">
             <bk-input
                 v-model.trim="formData.projectDesc"
                 :type="'textarea'"
@@ -36,7 +36,7 @@
                 :maxlength="100">
             </bk-input>
         </bk-form-item>
-        <bk-form-item :label="$t('导航布局')" style="margin-top: 10px" v-if="type === 'newProject'" error-display-type="normal">
+        <bk-form-item :label="$t('form_导航布局')" style="margin-top: 10px" v-if="type === 'newProject'" error-display-type="normal">
             <span class="layout-desc">{{ $t('可多选，作为创建应用页面时可供选择的导航布局，便于在应用中统一配置导航') }}</span>
             <layout-thumb-list :list="formLayoutList" @change-checked="handleLayoutChecked" @set-default="handleLayoutDefault" />
         </bk-form-item>

@@ -27,7 +27,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'name')"
                     :label="$t('名称')"
-                    :render-header="renderHeader"
+                    :render-header="renderHeaderAddTitle"
                     prop="name"
                     show-overflow-tooltip
                     sortable
@@ -50,7 +50,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'categoryName')"
                     :label="$t('所属分类')"
-                    :render-header="renderHeader"
+                    :render-header="renderHeaderAddTitle"
                     min-width="100px"
                     show-overflow-tooltip
                     sortable
@@ -60,7 +60,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'method')"
                     :label="$t('方法')"
-                    :render-header="renderHeader"
+                    :render-header="renderHeaderAddTitle"
                     prop="method"
                     show-overflow-tooltip
                     sortable
@@ -82,8 +82,8 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'query')"
-                    :label="$t('默认请求参数')"
-                    :render-header="renderHeader"
+                    :label="$t('table_默认请求参数')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="110px"
                     show-overflow-tooltip
                 >
@@ -94,8 +94,8 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'response')"
-                    :label="$t('请求响应示例')"
-                    :render-header="renderHeader"
+                    :label="$t('table_请求响应示例')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="110px"
                     show-overflow-tooltip
                 >
@@ -124,7 +124,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'funcSummary')"
                     :label="$t('备注')"
-                    :render-header="renderHeader"
+                    :render-header="renderHeaderAddTitle"
                     prop="funcSummary"
                     show-overflow-tooltip
                     sortable
@@ -136,7 +136,7 @@
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateUser')"
                     :label="$t('更新人')"
-                    :render-header="renderHeader"
+                    :render-header="renderHeaderAddTitle"
                     min-width="90px"
                     prop="updateUser"
                     sortable
@@ -144,8 +144,8 @@
                 ></bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateTime')"
-                    :label="$t('更新时间')"
-                    :render-header="renderHeader"
+                    :label="$t('table_更新时间')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="100px"
                     prop="updateTime"
                     :formatter="timeFormatter"
@@ -249,6 +249,7 @@
         FUNCTION_TYPE,
         FUNCTION_TIPS
     } from 'shared/function'
+    import { renderHeaderAddTitle } from '@/common/util'
 
     const tableFields = [
         { id: 'name', label: window.i18n.t('名称'), disabled: true },
@@ -501,17 +502,7 @@
                 this.searchApiStr = searchEmpty
             },
 
-            renderHeader (h, data) {
-                return h(
-                    'span',
-                    {
-                        attrs: {
-                            title: data.column.label
-                        }
-                    },
-                    data.column.label
-                )
-            }
+            renderHeaderAddTitle
         }
     }
 </script>

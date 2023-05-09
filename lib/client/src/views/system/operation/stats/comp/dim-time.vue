@@ -100,8 +100,8 @@
                     { id: 'count', name: window.i18n.t('数量') }
                 ],
                 totalColumns: [
-                    { id: 'comp', name: window.i18n.t('自定义组件总数') },
-                    { id: 'projectUsed', name: window.i18n.t('被应用使用的组件总数') }
+                    { id: 'comp', name: window.i18n.t('table_自定义组件总数') },
+                    { id: 'projectUsed', name: window.i18n.t('table_被应用使用的组件总数') }
                 ]
             }
         },

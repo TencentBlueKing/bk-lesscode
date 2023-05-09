@@ -29,7 +29,7 @@
                     <span :title="props.row.description">{{ props.row.description || '--' }}</span>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('参数值')" width="250">
+            <bk-table-column :label="$t('table_参数值')" width="250">
                 <template slot-scope="props">
                     <div class="params-value">
                         <slot v-bind:row="props.row"></slot>

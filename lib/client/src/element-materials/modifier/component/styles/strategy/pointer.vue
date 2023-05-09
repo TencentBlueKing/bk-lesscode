@@ -11,7 +11,7 @@
 
 <template>
     <style-layout :title="$t('鼠标')">
-        <style-item :name="'cursor'">
+        <style-item :name="'Cursor'">
             <bk-select
                 :value="cursorValue"
                 font-size="medium"

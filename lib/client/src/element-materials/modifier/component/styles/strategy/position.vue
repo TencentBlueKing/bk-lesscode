@@ -11,7 +11,7 @@
 
 <template>
     <style-layout :title="$t('定位')">
-        <style-item name="position">
+        <style-item name="Position">
             <bk-select
                 :value="positionValue"
                 font-size="medium"
