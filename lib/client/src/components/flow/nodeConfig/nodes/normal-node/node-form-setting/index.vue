@@ -218,6 +218,7 @@
                     theme: 'danger',
                     confirmFn: () => {
                         this.$store.commit('nocode/flow/setDeletedPageId', this.createTicketPage.id)
+                        this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', {})
                     }
                 })
             },
@@ -270,6 +271,7 @@
                         this.isUnset = true
                         this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
                         this.$store.commit('nocode/flow/setDeletedPageId', this.createTicketPage.id)
+                        this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', {})
                     }
                 })
             },
