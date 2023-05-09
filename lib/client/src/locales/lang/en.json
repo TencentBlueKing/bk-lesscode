@@ -2833,7 +2833,7 @@
   "是否可新增选项卡": "Is it possible to add tabs",
   "是否显示选项卡头部": "Whether to display the tab header",
   "是否校验ActiveName，true：如果active匹配不到，默认激活第一个Tab，触发tab-change；false：active匹配不到不显示": "Whether to check the ActiveName, true: if the active is not matched, the first Tab will be activated by default, and tab-change will be triggered; false: the active will not be displayed if the match is not found",
-  "选型卡(简化版)": "Selection card (simplified version)",
+  "选项卡(简化版)": "Selection card (simplified version)",
   "选项卡位置": "Tab Position",
   "选项卡切换时调用该事件函数，事件回调参数 (name: String)": "The event function is called when the tab is switched, the event callback parameter (name: String)",
   "从数据中获取值的字段key，不填取 name 字段": "Get the field key of the value from the data, do not fill in the name field",
