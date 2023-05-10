@@ -23,8 +23,8 @@
         data () {
             return {
                 panels: [
-                    { name: 'comp', label: '按自定义组件' },
-                    { name: 'time', label: '按时间' }
+                    { name: 'comp', label: window.i18n.t('按自定义组件') },
+                    { name: 'time', label: window.i18n.t('按时间') }
                 ],
                 active: ''
             }

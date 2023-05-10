@@ -5,7 +5,7 @@
             :value="formData.code"
             @change="handleChange"
             clearable
-            placeholder="请输入表达式，如：curTab === 'Tab-1'"
+            :placeholder="`${$t('请输入表达式，如')}：curTab === 'Tab-1'`"
             v-bind="$attrs"
             v-on="$listeners" />
     </div>

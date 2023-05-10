@@ -10,7 +10,7 @@
                 :label="field.name"
                 :prop="field.key">
             </bk-table-column>
-            <bk-table-column label="操作" :min-width="150">
+            <bk-table-column :label="$t('操作')" :min-width="150">
                 <div class="table-cell-actions-btns">
                     <table-col-actions-edit></table-col-actions-edit>
                 </div>
@@ -19,10 +19,10 @@
                 <bk-table-setting-content ref="settingCol" v-show="false">
                 </bk-table-setting-content>
                 <div class="table-setting-wrapper">
-                    <h2 class="title">表格设置</h2>
+                    <h2 class="title">{{ $t('表格设置') }}</h2>
                     <div class="field-content-wrapper">
                         <template v-if="systemFields.length > 0">
-                            <p class="field-title">系统字段</p>
+                            <p class="field-title">{{ $t('系统字段') }}</p>
                             <bk-checkbox-group :value="selectedFieldKeys">
                                 <bk-checkbox
                                     v-for="item in systemFields"
@@ -33,7 +33,7 @@
                                 </bk-checkbox>
                             </bk-checkbox-group>
                         </template>
-                        <p class="field-title" style="margin-top: 6px;">自定义字段</p>
+                        <p class="field-title" style="margin-top: 6px;">{{ $t('自定义字段') }}</p>
                         <bk-checkbox-group v-if="fields.length > 0" :value="selectedFieldKeys">
                             <bk-checkbox
                                 v-for="item in fields"
@@ -43,11 +43,11 @@
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
-                        <bk-exception v-else type="empty" scene="part">暂无可展示字段，请在节点表单中配置</bk-exception>
+                        <bk-exception v-else type="empty" scene="part">{{ $t('暂无可展示字段，请在节点表单中配置') }}</bk-exception>
                     </div>
                     <div class="btn-area">
-                        <bk-button :theme="'primary'" @click="handleSelectConfirm">确定</bk-button>
-                        <bk-button :theme="'default'" @click="handleSelectCancel">取消</bk-button>
+                        <bk-button :theme="'primary'" @click="handleSelectConfirm">{{ $t('确定') }}</bk-button>
+                        <bk-button :theme="'default'" @click="handleSelectCancel">{{ $t('取消') }}</bk-button>
                     </div>
                 </div>
 

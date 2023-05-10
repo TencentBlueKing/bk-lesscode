@@ -16,6 +16,7 @@
                 :active="tabPanelActive"
                 type="unborder-card"
                 class="king-tab"
+                v-enClass="'en-king-tab'"
                 @tab-change="handleModifier">
                 <bk-tab-panel
                     v-for="(tabPanel, panelIndex) in tabPanels"
@@ -28,8 +29,7 @@
                 <div
                     v-if="tabPanelActive === 'styles'"
                     class="style-setting-tips">
-                    样式面板中设置的样式将覆盖组件自带的默认样式，请谨慎调整
-                </div>
+                    {{ $t('样式面板中设置的样式将覆盖组件自带的默认样式，请谨慎调整') }} </div>
                 <template v-for="(com, index) in modifierComList">
                     <component
                         :is="com"
@@ -38,14 +38,13 @@
                 <div
                     v-if="isModifierEmpty"
                     class="empty">
-                    配置项为空
-                </div>
+                    {{ $t('配置项为空') }} </div>
             </div>
         </template>
         <div
             v-else
             class="empty">
-            <span>请选择组件</span>
+            <span>{{ $t('请选择组件') }}</span>
         </div>
     </div>
 </template>
@@ -69,10 +68,10 @@
         data () {
             return {
                 tabPanels: [
-                    { name: 'styles', label: '样式', count: 40 },
-                    { name: 'props', label: '属性', count: 30 },
-                    { name: 'events', label: '事件', count: 20 },
-                    { name: 'directives', label: '指令', count: 10 }
+                    { name: 'styles', label: this.$t('样式-styles'), count: 40 },
+                    { name: 'props', label: this.$t('属性-props'), count: 30 },
+                    { name: 'events', label: this.$t('事件-events'), count: 20 },
+                    { name: 'directives', label: this.$t('指令-directives'), count: 10 }
                 ],
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
@@ -105,21 +104,21 @@
 
                 // 目前只有 button 按钮有权限面板
                 if (target.type === 'bk-button') {
-                    this.tabLabelItemWidth = '20%'
+                    this.tabLabelItemWidth = this.$store.state.Language === 'en' ? '21%' : '20%'
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: '样式', count: 40 },
-                        { name: 'props', label: '属性', count: 30 },
-                        { name: 'events', label: '事件', count: 20 },
-                        { name: 'directives', label: '指令', count: 10 },
-                        { name: 'perms', label: '权限', count: 10 }
+                        { name: 'styles', label: this.$t('样式-styles'), count: 40 },
+                        { name: 'props', label: this.$t('属性-props'), count: 30 },
+                        { name: 'events', label: this.$t('事件-events'), count: 20 },
+                        { name: 'directives', label: this.$t('指令-directives'), count: 10 },
+                        { name: 'perms', label: this.$t('权限-perms'), count: 10 }
                     ])
                 } else {
                     this.tabLabelItemWidth = '25%'
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: '样式', count: 40 },
-                        { name: 'props', label: '属性', count: 30 },
-                        { name: 'events', label: '事件', count: 20 },
-                        { name: 'directives', label: '指令', count: 10 }
+                        { name: 'styles', label: this.$t('样式-styles'), count: 40 },
+                        { name: 'props', label: this.$t('属性-props'), count: 30 },
+                        { name: 'events', label: this.$t('事件-events'), count: 20 },
+                        { name: 'directives', label: this.$t('指令-directives'), count: 10 }
                     ])
                 }
             }
@@ -192,6 +191,17 @@
             }
             .bk-tab-section {
                 padding: 0;
+            }
+
+        }
+        .bk-tab.en-king-tab {
+            .bk-tab-header {
+                .bk-tab-label-wrapper {
+                    .bk-tab-label-list {
+                        padding-left: 2px;
+                        padding-right: 12px;
+                    }
+                }
             }
 
         }

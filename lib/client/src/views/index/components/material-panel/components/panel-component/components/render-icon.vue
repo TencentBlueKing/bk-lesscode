@@ -7,7 +7,7 @@
             v-for="(componentList, groupName) in renderGroupIconMap"
             :key="groupName"
             :list="componentList"
-            :group-name="groupName">
+            :group-name="$t(groupName)">
             <render-icon
                 v-for="component in componentList"
                 :key="component.name"

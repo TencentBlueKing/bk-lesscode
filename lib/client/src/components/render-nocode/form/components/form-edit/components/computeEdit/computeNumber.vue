@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="row-box">
-            <span>计算公式</span>
+            <span>{{ $t('计算公式') }}</span>
             <bk-select v-model="computConfigInfo.numberComput.formula" :disabled="disabled" @change="update" searchable>
                 <bk-option v-for="option in formulaList"
                     :key="option.id"
@@ -11,7 +11,7 @@
             </bk-select>
         </div>
         <div class="row-box" v-if="computConfigInfo.numberComput.formula !== 'customize'">
-            <span>计算字段</span>
+            <span>{{ $t('计算字段') }}</span>
             <bk-select v-model="computConfigInfo.numberComput.computeFields" :disabled="disabled" @change="update" searchable multiple>
                 <bk-option v-for="option in intFieldsList"
                     :key="option.key"
@@ -22,11 +22,10 @@
         </div>
         <div class="row-box" v-else>
             <bk-button :text="true" title="primary" @click="showFormulaConfigDialog = true">
-                配置公式
-            </bk-button>
+                {{ $t('配置公式') }} </bk-button>
         </div>
         <div class="row-box">
-            <span>单位</span>
+            <span>{{ $t('单位') }}</span>
             <bk-input v-model="computConfigInfo.numberComput.unit.value"
                 :disabled="disabled"
                 @show="isDropdownShow = true"
@@ -35,23 +34,23 @@
                 :clearable="true">
                 <bk-dropdown-menu class="group-text " slot="prepend" ext-cls="ext-line-height" :disabled="disabled">
                     <bk-button type="primary" slot="dropdown-trigger">
-                        <span v-if="computConfigInfo.numberComput.unit.position === 'prefix'">前缀</span>
-                        <span v-else>后缀</span>
+                        <span v-if="computConfigInfo.numberComput.unit.position === 'prefix'">{{ $t('前缀') }}</span>
+                        <span v-else>{{ $t('后缀') }}</span>
                         <i :class="['bk-icon icon-angle-down',{ 'icon-flip': isDropdownShow }]"></i>
                     </bk-button>
                     <ul class="bk-dropdown-list" slot="dropdown-content">
-                        <li><a href="javascript:;" @click="handlerSelect('prefix')">前缀</a></li>
-                        <li><a href="javascript:;" @click="handlerSelect('suffix')">后缀</a></li>
+                        <li><a href="javascript:;" @click="handlerSelect('prefix')">{{ $t('前缀') }}</a></li>
+                        <li><a href="javascript:;" @click="handlerSelect('suffix')">{{ $t('后缀') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
             </bk-input>
         </div>
         <div class="row-box">
-            <span>保留小数位数</span>
+            <span>{{ $t('保留小数位数') }}</span>
             <bk-input v-model="computConfigInfo.numberComput.decimal" :disabled="disabled" @change="decimalChange" type="number" :max="10" :min="0" />
         </div>
         <!-- 配置公式 -->
-        <bk-dialog v-model="showFormulaConfigDialog" title="配置公式" header-position="left" :esc-close="false"
+        <bk-dialog v-model="showFormulaConfigDialog" :title="$t('配置公式')" header-position="left" :esc-close="false"
             :auto-close="false"
             width="600px"
             @confirm="handlerConfirm"
@@ -63,7 +62,7 @@
                         <bk-input
                             v-model="searchField"
                             :disabled="disabled"
-                            :placeholder="'输入引用字段名'"
+                            :placeholder="$t('输入引用字段名')"
                             :right-icon="'bk-icon icon-search'">
                         </bk-input>
                     </div>
@@ -79,10 +78,10 @@
                             @click="handlerSymbolClick(item)">{{ item.name }}</div>
                         <div class="delete-btn">
                             <bk-button class="mr10" @click="handlerDelete" :text="true" :disabled="disabled" title="primary">
-                                删除
+                                {{ $t('删除') }}
                             </bk-button>
                             <bk-button @click="handlerReset" :text="true" :disabled="disabled">
-                                重置
+                                {{ $t('重置') }}
                             </bk-button>
                         </div>
                     </div>
@@ -118,27 +117,27 @@
                 formulaList: [
                     {
                         id: 'sum',
-                        label: '求和'
+                        label: this.$t('求和')
                     },
                     {
                         id: 'averageValue',
-                        label: '平均值'
+                        label: this.$t('平均值')
                     },
                     {
                         id: 'median',
-                        label: '中位数'
+                        label: this.$t('中位数')
                     },
                     {
                         id: 'product',
-                        label: '乘积'
+                        label: this.$t('乘积')
                     },
                     {
                         id: 'maxVlaue',
-                        label: '最大值'
+                        label: this.$t('最大值')
                     },
                     {
                         id: 'minVlaue',
-                        label: '最小值'
+                        label: this.$t('最小值')
                     },
                     // {
                     //     id: 'count',
@@ -146,7 +145,7 @@
                     // },
                     {
                         id: 'customize',
-                        label: '自定义'
+                        label: this.$t('自定义')
                     }
                 ],
                 showFormulaConfigDialog: false,

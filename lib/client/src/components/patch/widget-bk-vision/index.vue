@@ -1,7 +1,7 @@
 <template>
     <div class="lesscode-bk-vision-container" :id="renderId">
         <bk-exception v-if="!uid" class="exception-wrap-item exception-part exception-gray" type="404" scene="part">
-            <span>请先配置uid</span>
+            <span>{{$t('请先配置uid')}}</span>
         </bk-exception>
         <div v-else :id="`dashboard-${renderId}`" />
     </div>

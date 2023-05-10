@@ -10,8 +10,8 @@
 -->
 
 <template>
-    <style-layout title="透明度">
-        <style-item name="opacity">
+    <style-layout :title="$t('透明度')">
+        <style-item name="Opacity">
             <div class="bk-form-control" style="width: 100%;">
                 <div class="bk-input-number">
                     <input type="text"

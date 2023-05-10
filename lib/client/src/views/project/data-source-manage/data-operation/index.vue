@@ -2,20 +2,18 @@
     <article
         v-bkloading="{
             isLoading,
-            title: dataSourceType === 'preview' ? '正在加载 Mysql 数据表' : '正在加载 BkBase 结果表'
+            title: dataSourceType === 'preview' ? $t('正在加载 Mysql 数据表') : $t('正在加载 BkBase 结果表')
         }"
     >
         <header>
             <render-header>
                 <span class="operation-title">
-                    数据操作
-                    <bk-divider
+                    {{ $t('数据操作') }} <bk-divider
                         direction="vertical"
                         color="#C4C6CC"
                     ></bk-divider>
                     <span class="operation-source">
-                        数据源 :
-                        <bk-popover
+                        {{ $t('数据源 :') }} <bk-popover
                             ref="dataSourceTypeRef"
                             placement="bottom"
                             trigger="click"
@@ -26,11 +24,11 @@
                             <span
                                 class="operation-source-value"
                                 v-bk-tooltips="{
-                                    content: '目前只支持查询 mysql 或 tspider 的结果表',
+                                    content: $t('目前只支持查询 mysql 或 tspider 的结果表'),
                                     disabled: dataSourceType === 'preview'
                                 }"
                             >
-                                {{ dataSourceType === 'preview' ? 'Mysql 数据表' : 'BkBase 结果表' }}
+                                {{ dataSourceType === 'preview' ? $t('Mysql 数据表') : $t('BkBase 结果表') }}
                                 <i class="bk-icon icon-angle-down"></i>
                             </span>
                             <ul
@@ -44,8 +42,7 @@
                                     }"
                                     @click="chooseDataSource('preview')"
                                 >
-                                    Mysql 数据表
-                                </li>
+                                    {{ $t('Mysql 数据表') }} </li>
                                 <li
                                     :class="{
                                         active: dataSourceType === 'bk-base',
@@ -53,8 +50,7 @@
                                     }"
                                     @click="chooseDataSource('bk-base')"
                                 >
-                                    BkBase 结果表
-                                </li>
+                                    {{ $t('BkBase 结果表') }} </li>
                             </ul>
                         </bk-popover>
                     </span>
@@ -65,7 +61,7 @@
                     class="tab-item"
                     :class="{ active: queryType === 'json-query' }"
                     @click="toggleQueryType('json-query')"
-                >查询描述</div>
+                >{{ $t('查询描述') }}</div>
                 <div
                     class="tab-item"
                     :class="{ active: queryType === 'sql-query' }"
@@ -84,11 +80,10 @@
                         slot="title"
                         class="data-base-tips"
                     >
-                        请先
-                        <bk-link
+                        {{ $t('请先') }} <bk-link
                             :href="`/project/${projectInfo.id}/basic`"
                             target="href"
-                        >绑定蓝鲸应用模块</bk-link>
+                        >{{ $t('绑定蓝鲸应用模块') }}</bk-link>
                     </span>
                 </bk-alert>
                 <bk-alert
@@ -101,12 +96,11 @@
                         slot="title"
                         class="data-base-tips"
                     >
-                        应用需
-                        <bk-link
+                        {{ $t('应用需') }} <bk-link
                             :href="`${v3DeveloperCenterUrl}/apps/${projectInfo.appCode}/cloudapi?apiName=bk-data&api=v3_meta_result_tables_mine_get,v3_queryengine_user_query_sync,v3_meta_bizs`"
                             target="href"
-                        >申请权限</bk-link>
-                        【接口：v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】，用于应用调用数据平台接口，如已申请可忽略
+                        >{{ $t('申请权限') }}</bk-link>
+                        【{{ $t('接口') }}：v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get')} & v3_meta_bizs】，{{$t('用于应用调用数据平台接口，如已申请可忽略') }}
                     </span>
                 </bk-alert>
             </template>
@@ -135,7 +129,7 @@
                 <span
                     v-bk-tooltips="{
                         disabled: !isEmptySql,
-                        content: '填写 SQL 后，可执行查询'
+                        content: $t('填写 SQL 后，可执行查询')
                     }"
                 >
                     <bk-button
@@ -145,14 +139,13 @@
                         :loading="isQueryLoading"
                         @click="handleQuery"
                     >
-                        查询
-                    </bk-button>
+                        {{ $t('查询') }} </bk-button>
                 </span>
                 <span
                     v-if="queryType === 'json-query'"
                     v-bk-tooltips="{
                         disabled: isSuccessfulQuery,
-                        content: '成功查询后，可查看 SQL'
+                        content: $t('成功查询后，可查看 SQL')
                     }"
                 >
                     <bk-button
@@ -160,13 +153,12 @@
                         :disabled="!isSuccessfulQuery"
                         @click="handleShowSql"
                     >
-                        查看 SQL
-                    </bk-button>
+                        {{ $t('查看 SQL') }} </bk-button>
                 </span>
                 <span
                     v-bk-tooltips="{
                         disabled: isSuccessfulQuery,
-                        content: '成功查询后，可生成 API'
+                        content: $t('成功查询后，可生成 API')
                     }"
                 >
                     <bk-button
@@ -174,21 +166,19 @@
                         :disabled="!isSuccessfulQuery"
                         @click="handleGenApi"
                     >
-                        生成 API
-                    </bk-button>
+                        {{ $t('生成 API') }} </bk-button>
                 </span>
                 <span
                     v-bk-tooltips="{
                         disabled: isSuccessfulQuery,
-                        content: '成功查询后，可生成函数'
+                        content: $t('成功查询后，可生成函数')
                     }"
                 >
                     <bk-button
                         :disabled="!isSuccessfulQuery"
                         @click="handleGenFunction"
                     >
-                        生成函数
-                    </bk-button>
+                        {{ $t('生成函数') }} </bk-button>
                 </span>
             </section>
 
@@ -199,11 +189,11 @@
                     :active.sync="queryTab"
                 >
                     <bk-tab-panel
-                        label="查询结果"
+                        :label="$t('查询结果')"
                         name="query-result"
                     />
                     <bk-tab-panel
-                        label="查询历史"
+                        :label="$t('查询历史')"
                         name="query-history"
                     />
                 </bk-tab>
@@ -226,13 +216,13 @@
             </section>
         </main>
         <edit-func-sideslider
-            title="新增函数"
+            :title="$t('新增函数')"
             :is-show.sync="funcData.isShow"
             :func-data="funcData.form"
             :is-edit="false"
         />
         <create-api-sideslider
-            title="新增 API"
+            :title="$t('新增 API')"
             :form="apiData.form"
             :is-show.sync="apiData.isShow"
             :is-edit="false"

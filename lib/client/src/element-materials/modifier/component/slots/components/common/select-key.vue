@@ -5,11 +5,11 @@
                 class="g-prop-sub-title g-mb6 g-mt8 subline"
                 :key="key.id + 'label'"
                 v-bk-tooltips="{
-                    content: key.tips,
+                    content: $t(key.tips),
                     placements: ['left-start'],
                     boundary: 'window'
                 }"
-            >{{ key.label }}</div>
+            >{{ $t(key.label) }}</div>
             <bk-select
                 class="g-mb8 h32"
                 :key="key.id"

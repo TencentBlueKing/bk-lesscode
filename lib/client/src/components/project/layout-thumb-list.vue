@@ -3,8 +3,8 @@
         <li v-for="layout in list" :key="layout.id"
             :class="['list-item', { 'is-empty': layout.type === 'empty', checked: layout.checked, disabled: layout.disabled }]"
             @click="handleClickItem(layout)">
-            <span v-if="layout.isDefault" class="default-tag checked">默认</span>
-            <span v-else-if="toolkit.includes('setdefault')" class="default-tag setting" @click.stop="handleSetDefault(layout)">设为默认</span>
+            <span v-if="layout.isDefault" class="default-tag checked">{{ $t('默认') }}</span>
+            <span v-else-if="toolkit.includes('setdefault')" class="default-tag setting" @click.stop="handleSetDefault(layout)">{{ $t('设为默认') }}</span>
             <div class="checkbox">
                 <i class="bk-icon icon-check-1 checked-icon"></i>
             </div>
@@ -16,8 +16,7 @@
                     {{ layout.defaultName }}
                 </div>
                 <div class="layout-preview" @click.prevent.stop="handlePreview(layout)">
-                    预览
-                </div>
+                    {{ $t('预览') }} </div>
             </div>
             <div v-else class="layout-empty-name" :title="layout.defaultName">
                 {{ layout.defaultName }}

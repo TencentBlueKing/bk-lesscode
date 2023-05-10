@@ -16,12 +16,11 @@
                 <div class="item-bd">
                     <template v-if="pageMap[project.id] && pageMap[project.id].length > 0">
                         <div class="preview">
-                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" :img-src="project.templateImg" />
+                            <page-preview-thumb :alt="$t('应用缩略预览')" :project-id="project.id" :img-src="project.templateImg" />
                         </div>
                     </template>
                     <div class="empty" v-else>
-                        暂无页面
-                    </div>
+                        {{ $t('暂无页面') }} </div>
                     <div class="operate-btns">
                         <!-- <bk-button class="edit-btn" theme="primary" @click="handleGotoPage(project.id)">开发应用</bk-button>
                         <bk-button class="preview-btn" @click="handlePreview(project.id)">预览</bk-button> -->
@@ -32,24 +31,21 @@
                             class="edit-btn"
                             theme="primary"
                             @click="handleGotoPage(project.id)">
-                            开发应用
-                        </auth-button>
+                            {{ $t('开发') }} </auth-button>
                         <auth-button
                             :permission="project.canDevelop"
                             auth="develop_app"
                             :resource-id="project.id"
                             class="preview-btn"
                             @click.stop="handlePreview(project.id)">
-                            预览
-                        </auth-button>
+                            {{ $t('预览') }} </auth-button>
                         <auth-button
                             :permission="project.canDeploy"
                             auth="deploy_app"
                             :resource-id="project.id"
                             class="preview-btn"
                             @click.stop="handleRelease(project.id)">
-                            部署
-                        </auth-button>
+                            {{ $t('部署') }} </auth-button>
                     </div>
                 </div>
                 <div class="item-ft">
@@ -74,36 +70,36 @@
                                 <!-- <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li> -->
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">下载源码</a>
-                                        <a href="javascript:;" slot="allow" @click="handleDownloadSource(project)">下载源码</a>
+                                        <a href="javascript:;" slot="forbid">{{ $t('下载源码') }}</a>
+                                        <a href="javascript:;" slot="allow" @click="handleDownloadSource(project)">{{ $t('下载源码') }}</a>
                                     </auth-component>
                                 </li>
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">页面管理</a>
-                                        <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">页面管理</a>
+                                        <a href="javascript:;" slot="forbid">{{ $t('页面管理') }}</a>
+                                        <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">{{ $t('页面管理') }}</a>
                                     </auth-component>
                                 </li>
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">重命名</a>
-                                        <a href="javascript:;" slot="allow" @click="handleRename(project)">重命名</a>
+                                        <a href="javascript:;" slot="forbid">{{ $t('重命名') }}</a>
+                                        <a href="javascript:;" slot="allow" @click="handleRename(project)">{{ $t('重命名') }}</a>
                                     </auth-component>
                                 </li>
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">复制</a>
-                                        <a href="javascript:;" slot="allow" @click="handleCopy(project)">复制</a>
+                                        <a href="javascript:;" slot="forbid">{{ $t('复制') }}</a>
+                                        <a href="javascript:;" slot="allow" @click="handleCopy(project)">{{ $t('复制') }}</a>
                                     </auth-component>
                                 </li>
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">导出</a>
-                                        <a href="javascript:;" slot="allow" @click="handleExport(project)">导出</a>
+                                        <a href="javascript:;" slot="forbid">{{ $t('导出') }}</a>
+                                        <a href="javascript:;" slot="allow" @click="handleExport(project)">{{ $t('导出') }}</a>
                                     </auth-component>
                                 </li>
                                 <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
-                                    <a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a>
+                                    <a href="javascript:;" @click="handleSetTemplate(project)">{{ $t('设为模板') }}</a>
                                 </li>
                             </ul>
                         </bk-dropdown-menu>
@@ -117,15 +113,15 @@
                     ></i> -->
                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
                         <i slot="forbid" custom-forbid-container-cls="forbid-container-cls" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                            v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
+                            v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"
                         ></i>
                         <i slot="allow" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                            v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
+                            v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"
                             @click.stop="handleClickFavorite(project)"
                         ></i>
                     </auth-component>
                 </span>
-                <span v-if="project.isOffcial" class="default-tag">应用模板</span>
+                <span v-if="project.isOffcial" class="default-tag">{{ $t('应用模板') }}</span>
             </div>
         </template>
         <div class="empty" v-else>

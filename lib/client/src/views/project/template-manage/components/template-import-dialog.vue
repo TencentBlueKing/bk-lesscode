@@ -4,14 +4,14 @@
             render-directive="if"
             theme="primary"
             :title="dialogTitle"
-            width="600"
+            :width="$store.state.Language === 'en' ? 750 : 600"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
             ext-cls="template-import-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="import-dialog-form" :label-width="120" :rules="dialog.formRules" :model="dialog.formData">
-                <bk-form-item label="导入模板json" required property="templateName" error-display-type="normal">
+            <bk-form ref="pageTemplateFrom" class="import-dialog-form" :label-width="$store.state.Language === 'en' ? 170 : 120" :rules="dialog.formRules" :model="dialog.formData">
+                <bk-form-item :label="$t('form_导入模板json')" required property="templateName" error-display-type="normal">
                     <bk-upload
                         with-credentials
                         :multiple="false"
@@ -23,14 +23,14 @@
                         @on-delete="handleUploadReset"
                     ></bk-upload>
                 </bk-form-item>
-                <bk-form-item label="模板名称" required property="templateName" error-display-type="normal">
+                <bk-form-item :label="$t('form_模板名称')" required property="templateName" error-display-type="normal">
                     <bk-input ref="nameInput"
                         maxlength="60"
                         v-model.trim="dialog.formData.templateName"
-                        placeholder="请输入模板名称，50个字符以内">
+                        :placeholder="$t('请输入模板名称，50个字符以内')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="模板分类" required property="categoryId" error-display-type="normal">
+                <bk-form-item :label="$t('form_模板分类')" required property="categoryId" error-display-type="normal">
                     <bk-select
                         :clearable="false"
                         v-model="dialog.formData.categoryId"
@@ -45,8 +45,8 @@
                 <bk-button
                     theme="primary"
                     :loading="dialog.loading"
-                    @click="handleDialogConfirm">确定</bk-button>
-                <bk-button :disabled="dialog.loading" @click="() => isShow = false">取消</bk-button>
+                    @click="handleDialogConfirm">{{ $t('确定') }}</bk-button>
+                <bk-button :disabled="dialog.loading" @click="() => isShow = false">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -84,19 +84,19 @@
                         templateName: [
                             {
                                 required: true,
-                                message: '必填项',
+                                message: window.i18n.t('必填项'),
                                 trigger: 'blur'
                             },
                             {
                                 max: 50,
-                                message: '名称不能超过40个字符',
+                                message: window.i18n.t('名称不能超过40个字符'),
                                 trigger: 'blur'
                             }
                         ],
                         categoryId: [
                             {
                                 required: true,
-                                message: '必选项',
+                                message: window.i18n.t('必选项'),
                                 trigger: 'blur'
                             }
                         ]
@@ -110,7 +110,7 @@
                 return this.$route.params.projectId
             },
             dialogTitle () {
-                return '导入模板'
+                return window.i18n.t('导入模板')
             },
             uploadUrl () {
                 return `${process.env.BK_AJAX_URL_PREFIX}/page/importJson`
@@ -133,7 +133,7 @@
                 if (typeof this.templateJson.template !== 'object' || typeof this.templateJson.vars !== 'object' || typeof this.templateJson.functions !== 'object') {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '请上传符合规范的模板json'
+                        message: window.i18n.t('请上传符合规范的模板json')
                     })
                     return
                 }
@@ -167,7 +167,7 @@
                     if (res) {
                         this.$bkMessage({
                             theme: 'success',
-                            message: '导入成功'
+                            message: window.i18n.t('导入成功')
                         })
                         this.refreshList()
                         this.isShow = false

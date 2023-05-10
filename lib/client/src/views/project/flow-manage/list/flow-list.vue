@@ -3,15 +3,15 @@
         <bk-alert
             style="margin-bottom: 16px;"
             type="warning"
-            title="流程设计完成后需要手动部署，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。"
+            :title="$t('流程设计完成后需要手动部署，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。')"
             :closable="true">
         </bk-alert>
         <div class="operation-area">
-            <bk-button theme="primary" @click="isCreateDialogShow = true">新建</bk-button>
+            <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button>
             <div class="search-wrapper">
                 <bk-input
                     v-model="keyword"
-                    placeholder="请输入流程名称"
+                    :placeholder="$t('请输入流程名称')"
                     style="width: 360px;"
                     right-icon="bk-icon icon-search"
                     :clearable="true"
@@ -20,7 +20,7 @@
                     @enter="handleSearch">
                 </bk-input>
                 <div class="archived-icon" @click="$router.push({ name: 'flowArchivedList' })">
-                    <i class="bk-drag-icon bk-drag-countdown" v-bk-tooltips="'已归档流程'"></i>
+                    <i class="bk-drag-icon bk-drag-countdown" v-bk-tooltips="$t('已归档流程')"></i>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
-            <bk-table-column label="流程名称" property="flowName" show-overflow-tooltip :min-width="120">
+            <bk-table-column :label="$t('table_流程名称')" property="flowName" show-overflow-tooltip :min-width="120">
                 <template slot-scope="{ row }">
                     <router-link
                         class="link-btn"
@@ -43,42 +43,41 @@
                     </router-link>
                 </template>
             </bk-table-column>
-            <bk-table-column label="流程描述" property="summary" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_流程描述')" :render-header="renderHeaderAddTitle" property="summary" show-overflow-tooltip>
                 <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
             </bk-table-column>
-            <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_流程表单页')" :render-header="renderHeaderAddTitle" property="pageName" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.pageId" class="link-btn" @click="handlePreviewPage(row.pageId, row.pageCode)">{{ row.pageName }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="流程数据管理页" min-width="100px" property="managePageNames" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_流程数据管理页')" :render-header="renderHeaderAddTitle" min-width="100px" property="managePageNames" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
                     <span v-else style="color: #3a84ff">--</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="预览环境部署状态" min-width="100px">
+            <bk-table-column :label="$t('table_预览环境部署状态')" :render-header="renderHeaderAddTitle" min-width="100px">
                 <template slot-scope="{ row }">
                     <div class="deploy-status">
                         <span :class="['deploy-status-icon', { 'deployed': row.deployed }]"></span>
-                        {{ row.deployed ? '已部署' : '未部署' }}
+                        {{ row.deployed ? $t('已部署') : $t('未部署') }}
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="创建人" property="createUser"></bk-table-column>
-            <bk-table-column label="创建时间" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_创建人')" property="createUser"></bk-table-column>
+            <bk-table-column :label="$t('table_创建时间')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     {{ row.createTime | timeFormatter }}
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作" width="140">
+            <bk-table-column :label="$t('操作')" width="140">
                 <template slot-scope="{ row }">
                     <router-link
                         class="link-btn"
                         :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
-                        编辑
-                    </router-link>
+                        {{ $t('编辑') }} </router-link>
                     <bk-popconfirm
                         trigger="click"
                         width="350"
@@ -88,12 +87,11 @@
                             theme="primary"
                             :text="true"
                             @click="archiveId = row.id">
-                            归档
-                        </bk-button>
+                            {{ $t('归档') }} </bk-button>
                         <div slot="content" class="archive-tips-content">
-                            <h4>确认归档该流程？</h4>
-                            <p>1. 流程归档后，将不能使用，流程的提单页面将会被删除，请谨慎操作！</p>
-                            <p>2. 后续可通过归档列表恢复使用。</p>
+                            <h4>{{ $t('确认归档该流程') }}</h4>
+                            <p>1. {{ $t('流程归档后，将不能使用，流程的提单页面将会被删除，请谨慎操作') }}</p>
+                            <p>2. {{ $t('后续可通过归档列表恢复使用') }}</p>
                         </div>
                     </bk-popconfirm>
                 </template>
@@ -108,6 +106,7 @@
     import { mapGetters } from 'vuex'
     import { getRouteFullPath } from 'shared/route'
     import CreateFlowDialog from './create-flow-dialog.vue'
+    import { renderHeaderAddTitle } from '@/common/util'
 
     export default {
         name: 'flowList',
@@ -226,7 +225,8 @@
             handlerClearSearch (searchName) {
                 this.keyword = searchName
                 this.getFlowList()
-            }
+            },
+            renderHeaderAddTitle
         }
     }
 </script>

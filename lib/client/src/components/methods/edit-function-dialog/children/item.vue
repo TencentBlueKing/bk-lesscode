@@ -47,21 +47,21 @@
                 if (this.functionData.useInfo?.funcCodes?.length > 0) {
                     return {
                         hasPermission: false,
-                        message: `该函数被函数【函数标识：${this.functionData.useInfo?.funcCodes.join('，')}】引用，无法删除`
+                        message: this.$t('该函数被函数【函数标识：{0}】引用，无法删除', [this.functionData.useInfo?.funcCodes.join('，')])
                     }
                 }
 
                 if (this.functionData.useInfo?.pageNames?.length > 0) {
                     return {
                         hasPermission: false,
-                        message: `该函数被页面【页面名称：${this.functionData.useInfo?.pageNames.join('，')}】引用，无法删除`
+                        message: this.$t('该函数被页面【页面名称：{0}】引用，无法删除', [this.functionData.useInfo?.pageNames.join('，')])
                     }
                 }
 
                 if (this.functionData.useInfo?.variableCodes?.length > 0) {
                     return {
                         hasPermission: false,
-                        message: `该函数被变量【变量标识：${this.functionData.useInfo?.variableCodes.join('，')}】引用，无法删除`
+                        message: this.$t('该函数被变量【变量标识：{0}】引用，无法删除', [this.functionData.useInfo?.variableCodes.join('，')])
                     }
                 }
 
@@ -88,13 +88,13 @@
                 if (!this.computedPermissionInfo.hasPermission) return
 
                 this.$bkInfo({
-                    title: `确认要删除函数【${this.functionData.funcName}】？`,
+                    title: this.$t('确认要删除函数【{0}】', [this.functionData.funcName]),
                     confirmLoading: true,
                     theme: 'danger',
                     confirmFn: () => {
                         return this.deleteFunction(this.functionData.id).then(() => {
                             this.$emit('refresh')
-                            this.messageSuccess('删除成功')
+                            this.messageSuccess(this.$t('删除成功'))
                             // 更新画布数据
                             this.getAllGroupAndFunction({
                                 projectId: this.projectId,

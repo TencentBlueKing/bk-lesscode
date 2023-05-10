@@ -58,7 +58,7 @@
         setup (props, { emit }) {
             const tabs = [
                 { name: 'edit', label: 'body' },
-                { name: 'preview', label: '预览' }
+                { name: 'preview', label: window.i18n.t('预览') }
             ]
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')

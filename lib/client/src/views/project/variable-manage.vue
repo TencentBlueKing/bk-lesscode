@@ -1,16 +1,15 @@
 <template>
     <article class="variable-manage-home">
         <header class="variable-manage-header">
-            <bk-button theme="primary" @click="showVariableForm">新建</bk-button>
-            <bk-input class="header-input" placeholder="请输入变量名称或者标识进行搜索" clearable right-icon="bk-icon icon-search" v-model="searchTxt"></bk-input>
+            <bk-button theme="primary" @click="showVariableForm">{{ $t('新建') }}</bk-button>
+            <bk-input class="header-input" :placeholder="$t('请输入变量名称或者标识进行搜索')" clearable right-icon="bk-icon icon-search" v-model="searchTxt"></bk-input>
         </header>
         <variable-table v-bkloading="{ isLoading }" :search-txt="searchTxt" @clearSearch="handlerClearSearch">
             <span class="variable-tip">
-                提示：
-                <br>1. 可以在组件属性和指令的配置面板中使用该变量
-                <br>2. 在函数插槽中可以使用【lesscode.变量标识】唤醒编辑器自动补全功能选择对应变量，来获取或者修改该变量的值
-                <br>3. 在远程函数中，参数 Api Url 的值可用 <span v-pre>{{变量标识}}</span> 来获取变量值，请求参数中可以通过选择变量的形式获取变量值
-                <br>4. 这里为应用级公共变量，各页面私有变量请前往页面编辑-》页面变量查看
+                {{ $t('提示：') }} <br>1. {{ $t('可以在组件属性和指令的配置面板中使用该变量') }}
+                <br>2. {{ $t('在函数插槽中可以使用【lesscode.变量标识】唤醒编辑器自动补全功能选择对应变量，来获取或者修改该变量的值') }}
+                <br>3. {{ $t('在远程函数中，参数 Api Url 的值可用') }} <span v-text="$store.state.Language === 'en' ? '{{ variable identification }}' : '{{变量标识}}'"></span> {{ $t('来获取变量值，请求参数中可以通过选择变量的形式获取变量值') }}
+                <br>4. {{ $t('这里为应用级公共变量，各页面私有变量请前往页面编辑-》页面变量查看') }}
             </span>
         </variable-table>
         <variable-form

@@ -13,14 +13,14 @@
                     style="width: 99px; margin-right: 4px"
                     :clearable="false"
                     @change="handleValueChange('', slotProps.row.paramPath)">
-                    <bk-option id="CUSTOM" name="自定义"></bk-option>
-                    <bk-option id="FIELD" name="引用变量"></bk-option>
+                    <bk-option id="CUSTOM" :name="$t('自定义')"></bk-option>
+                    <bk-option id="FIELD" :name="$t('引用变量')"></bk-option>
                 </bk-select>
                 <bk-select
                     v-if="slotProps.row.source === 'FIELD'"
                     v-model="slotProps.row.value"
                     behavior="simplicity"
-                    placeholder="请选择变量"
+                    :placeholder="$t('请选择变量')"
                     style="width: 110px"
                     :searchable="true"
                     @change="handleValueChange($event, slotProps.row.paramPath)">
@@ -31,7 +31,7 @@
                         v-if="['string', 'number'].includes(slotProps.row.type)"
                         v-model="slotProps.row.value"
                         behavior="simplicity"
-                        placeholder="请输入参数值"
+                        :placeholder="$t('请输入参数值')"
                         style="width: 110px"
                         :type="slotProps.row.type === 'number' ? 'number' : 'text'"
                         @change="handleValueChange($event, slotProps.row.paramPath)">

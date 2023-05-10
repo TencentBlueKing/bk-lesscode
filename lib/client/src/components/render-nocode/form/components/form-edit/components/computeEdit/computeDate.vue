@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="row-box">
-            <span>开始日期</span>
+            <span>{{ $t('开始日期') }}</span>
             <bk-select
                 v-model="computConfigInfo.dateTime.startDate.key"
                 :disabled="disabled"
@@ -26,12 +26,12 @@
                     disabledDate: filterStartDate
                 }"
                 v-model="computConfigInfo.dateTime.startDate.value"
-                :placeholder="'选择开始日期时间'"
+                :placeholder="$t('选择开始日期时间')"
                 :type="'datetime'">
             </bk-date-picker>
         </div>
         <div class="row-box">
-            <span>结束日期</span>
+            <span>{{ $t('结束日期') }}</span>
             <bk-select
                 v-model="computConfigInfo.dateTime.endDate.key"
                 :disabled="disabled"
@@ -56,12 +56,12 @@
                     disabledDate: filterEndDate
                 }"
                 v-model="computConfigInfo.dateTime.endDate.value"
-                :placeholder="'选择结束日期时间'"
+                :placeholder="$t('选择结束日期时间')"
                 :type="'datetime'">
             </bk-date-picker>
         </div>
         <div class="row-box">
-            <span>结果精度</span>
+            <span>{{ $t('结果精度') }}</span>
             <bk-select
                 v-model="computConfigInfo.dateTime.accuracyResult"
                 :disabled="disabled"
@@ -75,7 +75,7 @@
         </div>
         <!-- 日期精度不是day且开始和结束日期精度都未到时分秒时显示该配置项 -->
         <div class="row-box" v-show="checkAccuracy && computConfigInfo.dateTime.accuracyResult !== 'day'">
-            <span>日期字段为选择精确到时间时，默认为</span>
+            <span>{{ $t('日期字段为选择精确到时间时，默认为') }}</span>
             <bk-time-picker v-model="computConfigInfo.dateTime.defaultTime" :disabled="disabled" :placeholder="'选择时间'" @change="computDateDiff"></bk-time-picker>
         </div>
     </div>
@@ -104,27 +104,27 @@
                 dateList: [
                     {
                         key: 'creation_date',
-                        label: '创建日期',
+                        label: this.$t('创建日期'),
                         value: ''
                     }, {
                         key: 'update_date',
-                        label: '最近更新日期',
+                        label: this.$t('最近更新日期'),
                         value: ''
                     }, {
                         key: 'specify_date',
-                        label: '指定日期',
+                        label: this.$t('指定日期'),
                         value: ''
                     }
                 ],
                 accuracyResultList: [
                     {
-                        label: '天数',
+                        label: this.$t('天数'),
                         value: 'day'
                     }, {
-                        label: '小时',
+                        label: this.$t('小时'),
                         value: 'hour'
                     }, {
-                        label: '分钟',
+                        label: this.$t('分钟'),
                         value: 'minutes'
                     }
                 ],
@@ -150,7 +150,7 @@
                 }).map((item) => {
                     return {
                         key: item.key,
-                        label: `${item.name}（表单字段）`,
+                        label: this.$t('{n}（表单字段）', { n: item.name }),
                         value: item.default
                     }
                 })

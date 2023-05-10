@@ -66,8 +66,7 @@
         </vue-draggable>
         <span class="content-add" @click="handleAdd">
             <i class="bk-icon icon-plus-circle"></i>
-            添加
-        </span>
+            {{ $t('添加') }} </span>
     </section>
 </template>
 
@@ -97,13 +96,13 @@
                     key: 'icon',
                     type: 'icon'
                 }, {
-                    name: '步骤描述',
+                    name: window.i18n.t('步骤描述'),
                     key: 'description',
                     type: 'input'
                 }
             ],
             generateFunc: index => ({
-                title: `步骤${index}`,
+                title: window.i18n.t('步骤{0}', [index]),
                 icon: index,
                 description: ''
             }),

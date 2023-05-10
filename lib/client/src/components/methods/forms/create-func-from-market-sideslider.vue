@@ -1,6 +1,6 @@
 <template>
     <bk-sideslider
-        title="添加至应用"
+        :title="$t('添加至应用')"
         :is-show.sync="isShow"
         :quick-close="true"
         :width="1200"
@@ -46,8 +46,8 @@
             ></form-monaco>
         </section>
         <section slot="footer" class="add-footer">
-            <bk-button theme="primary" @click="submitAddFuncFromMarket" :loading="isSubmitting">提交</bk-button>
-            <bk-button @click="handleClose">取消</bk-button>
+            <bk-button theme="primary" @click="submitAddFuncFromMarket" :loading="isSubmitting">{{ $t('提交') }}</bk-button>
+            <bk-button @click="handleClose">{{ $t('取消') }}</bk-button>
         </section>
     </bk-sideslider>
 </template>
@@ -127,7 +127,7 @@
                     }
                     this.createFunctionFromMarket(postData).then(() => {
                         this.formChanged = false
-                        this.messageSuccess('添加成功')
+                        this.messageSuccess(this.$t('添加成功'))
                         this.handleClose()
                     }).catch((err) => {
                         if (err?.code === 499) {
@@ -153,8 +153,8 @@
             confirmClose () {
                 if (this.formChanged) {
                     this.$bkInfo({
-                        title: '请确认是否关闭',
-                        subTitle: '存在未保存的函数，关闭后不会保存更改',
+                        title: this.$t('请确认是否关闭'),
+                        subTitle: this.$t('存在未保存的函数，关闭后不会保存更改'),
                         confirmFn: this.handleClose
                     })
                 } else {

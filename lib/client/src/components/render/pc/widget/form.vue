@@ -15,6 +15,7 @@
             [$style['form']]: true,
             [$style['empty']]: formItemList.length < 1
         }">
+        <div :class="$style['tip-set']" v-if="formItemList.length < 1">{{ $t('请在右侧配置表单项') }}</div>
         <bk-form
             v-if="formItemList.length > 0"
             v-bind="componentData.prop">
@@ -52,13 +53,12 @@
     .form{
         border: 1px dashed #ccc;
         &.empty{
-            position: relative;
-            height: 80px;
-            line-height: 80px;
-            font-size: 18px;
-            background: #FAFBFD;
-            &::before{
-                content: "请在右侧配置表单项";
+        position: relative;
+        height: 80px;
+        line-height: 80px;
+        font-size: 18px;
+        background: #FAFBFD;
+            .tip-set{
                 position: absolute;
                 top: 0;
                 right: 0;

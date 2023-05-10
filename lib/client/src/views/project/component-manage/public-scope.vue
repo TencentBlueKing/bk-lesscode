@@ -2,17 +2,17 @@
     <bk-dialog
         :render-directive="'if'"
         :class="$style['public-scope-dialog']"
-        title="公开范围设置"
+        :title="$t('公开范围设置')"
         :value="isShow"
         @cancel="handleCancel"
         :mask-close="false"
         :width="700"
         header-position="left">
         <div :class="{ 'scope-specify': scope === ScopeValue.Specify }">
-            <bk-radio-group v-model="scope" class="scope-radio-group">
-                <bk-radio :value="ScopeValue.Self">仅本应用</bk-radio>
-                <bk-radio :value="ScopeValue.Specify">特定应用</bk-radio>
-                <bk-radio :value="ScopeValue.All">所有应用，包含后续新增</bk-radio>
+            <bk-radio-group v-model="scope" class="scope-radio-group" v-enClass="'en-scope-radio-group'">
+                <bk-radio :value="ScopeValue.Self">{{ $t('仅本应用') }}</bk-radio>
+                <bk-radio :value="ScopeValue.Specify">{{ $t('特定应用') }}</bk-radio>
+                <bk-radio :value="ScopeValue.All">{{ $t('所有应用，包含后续新增') }}</bk-radio>
             </bk-radio-group>
             <div class="scope-transfer-wrapper" v-if="scope === ScopeValue.Specify">
                 <bk-transfer
@@ -29,8 +29,8 @@
                 theme="primary"
                 :disabled="dialog.disabled"
                 :loading="dialog.loading"
-                @click="handleConfirm">确定</bk-button>
-            <bk-button @click="handleCancel" :disabled="dialog.loading" style="margin-left: 8px">取消</bk-button>
+                @click="handleConfirm">{{ $t('确定') }}</bk-button>
+            <bk-button @click="handleCancel" :disabled="dialog.loading" style="margin-left: 8px">{{ $t('取消') }}</bk-button>
         </div>
     </bk-dialog>
 </template>
@@ -66,8 +66,8 @@
                     loading: false
                 },
                 transfer: {
-                    title: ['应用列表', '公开应用'],
-                    emptyContent: ['无应用', '未选择应用'],
+                    title: [window.i18n.t('应用列表'), window.i18n.t('公开应用')],
+                    emptyContent: [window.i18n.t('无应用'), window.i18n.t('未选择应用')],
                     displayKey: 'projectName',
                     settingKey: 'id'
                 }
@@ -132,7 +132,7 @@
 
                     await this.$store.dispatch('components/scope', { data })
 
-                    this.messageSuccess('设置成功')
+                    this.messageSuccess(window.i18n.t('设置成功'))
                     this.$emit('update:isShow', false)
                     this.$emit('on-update')
                 } catch (e) {
@@ -184,5 +184,14 @@
             }
         }
     }
+    :global {
+        .en-scope-radio-group{
+            .bk-form-radio {
 
+                &:last-child {
+                    width: 315px;
+                }
+            }
+        }
+    }
 </style>

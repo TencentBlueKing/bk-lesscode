@@ -2,10 +2,10 @@
     <div class="condition-group">
         <!-- <i v-if="showDeleteIcon" class="bk-icon icon-close close-btn" @click="handleDeleteCondition"></i> -->
         <div class="connector-rule">
-            <label>字段间关系</label>
+            <label>{{$t('字段间关系')}}</label>
             <bk-radio-group v-model="localVal.type" @change="change">
-                <bk-radio value="and" :disabled="disabled">且</bk-radio>
-                <bk-radio value="or" :disabled="disabled">或</bk-radio>
+                <bk-radio value="and" :disabled="disabled">{{$t('且')}}</bk-radio>
+                <bk-radio value="or" :disabled="disabled">{{ $t('或')}}</bk-radio>
             </bk-radio-group>
         </div>
         <div class="condition-list">
@@ -186,19 +186,19 @@
                     ].includes(type)
                 ) {
                     return [
-                        { id: '==', name: '等于' },
+                        { id: '==', name: window.i18n.t('等于') },
                         // { id: '!=', name: '不等于' },
                         { id: 'in', name: '包含' }
                         // { id: 'not_in', name: '不包含' },
                     ]
                 }
                 return [
-                    { id: '==', name: '等于' },
+                    { id: '==', name: window.i18n.t('等于') },
                     // { id: '!=', name: '不等于' },
-                    { id: '>', name: '大于' },
-                    { id: '<', name: '小于' },
-                    { id: '>=', name: '大于等于' },
-                    { id: '<=', name: '小于等于' }
+                    { id: '>', name: window.i18n.t('大于') },
+                    { id: '<', name: window.i18n.t('小于') },
+                    { id: '>=', name: window.i18n.t('大于等于') },
+                    { id: '<=', name: window.i18n.t('小于等于') }
                 ]
             },
             handleDeleteCondition () {

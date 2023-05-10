@@ -3,7 +3,7 @@
         <bk-sideslider
             :is-show.sync="isShow"
             :quick-close="false"
-            title="部署日志"
+            :title="$t('部署日志')"
             :width="920"
             :before-close="handleClose"
         >
@@ -25,7 +25,7 @@
                         </deploy-timeline>
                     </div>
                     <div class="deploy-container" v-if="content">
-                        <bk-alert style="margin: 0px; border-radius: 0;" type="warning" title="仅展示准备阶段、构建阶段日志"></bk-alert>
+                        <bk-alert style="margin: 0px; border-radius: 0;" type="warning" :title="$t('仅展示准备阶段、构建阶段日志')"></bk-alert>
                         <pre class="log-detail" v-html="content"></pre>
                     </div>
                     <!-- <pre v-if="content" class="log-detail" v-html="content"></pre> -->
@@ -82,8 +82,8 @@
                 return this.$route.params.projectId
             },
             logTitle () {
-                const envName = this.env === 'stag' ? '预发布' : '生产环境'
-                return this.status === 'successful' ? envName + '环境部署成功' : (this.status === 'failed' ? envName + '环境部署失败' : '部署日志')
+                const envName = this.env === 'stag' ? window.i18n.t('预发布') : window.i18n.t('生产环境')
+                return this.status === 'successful' ? envName + window.i18n.t('环境部署成功') : (this.status === 'failed' ? envName + window.i18n.t('环境部署失败') : window.i18n.t('部署日志'))
             }
         },
         watch: {
@@ -167,9 +167,9 @@
                         projectId: this.projectId,
                         deployId: this.deployId
                     })
-                    this.content = res.logs || 'v3部署日志为空'
+                    this.content = res.logs || window.i18n.t('v3部署日志为空')
                 } catch (err) {
-                    this.content = '日志加载异常\n'
+                    this.content = window.i18n.t('日志加载异常\n')
                     this.content += err.message || err
                 } finally {
                     this.isLoading = false
@@ -189,7 +189,7 @@
                 const interval = Math.ceil(end - start)
 
                 if (!interval) {
-                    return '< 1秒'
+                    return '<' + window.i18n.t('1秒')
                 }
 
                 return this.getDisplayTime(interval)
@@ -198,7 +198,7 @@
             getDisplayTime (payload) {
                 let theTime = payload
                 if (theTime < 1) {
-                    return '< 1秒'
+                    return '<' + window.i18n.t('1秒')
                 }
                 let middle = 0
                 let hour = 0
@@ -215,13 +215,13 @@
                 let result = ''
 
                 if (theTime > 0) {
-                    result = `${theTime}秒`
+                    result = window.i18n.t('{0}秒', [theTime])
                 }
                 if (middle > 0) {
-                    result = `${middle}分${result}`
+                    result = window.i18n.t('{0}分{1}', [middle, result])
                 }
                 if (hour > 0) {
-                    result = `${hour}时${result}`
+                    result = window.i18n.t('{0}时{1}', [hour, result])
                 }
 
                 return result

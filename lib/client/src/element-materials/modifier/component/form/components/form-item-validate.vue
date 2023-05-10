@@ -11,7 +11,7 @@
 
 <template>
     <div>
-        <div class="form-item-title">校验规则</div>
+        <div class="form-item-title">{{ $t('校验规则') }}</div>
         <div class="slot-card-wrapper">
             <div
                 v-for="(item, index) in dataList"
@@ -22,7 +22,7 @@
                 </div>
                 <section style="margin-top: 20px;padding: 10px 20px 15px;">
                     <bk-form :label-width="120">
-                        <bk-form-item label="校验方式" error-display-type="normal">
+                        <bk-form-item :label="$t('form_校验方式')" error-display-type="normal">
                             <bk-select
                                 :value="item.type"
                                 :clearable="false"
@@ -53,7 +53,7 @@
                                 :type="item.type === 'min' || item.type === 'max' ? 'number' : 'text'"
                                 @change="val => handleChange(val, item.type, index)" />
                         </bk-form-item>
-                        <bk-form-item label="报错提示信息">
+                        <bk-form-item :label="$t('报错提示信息')">
                             <bk-input
                                 :value="item.message"
                                 @change="val => handleChange(val, 'message', index)" />
@@ -62,7 +62,7 @@
                 </section>
             </div>
             <div class="rule-add" @click="handleAdd">
-                <i class="bk-drag-icon bk-drag-add-line"></i>添加规则
+                <i class="bk-drag-icon bk-drag-add-line"></i>{{ $t('添加规则') }}
             </div>
         </div>
     </div>
@@ -74,31 +74,31 @@
         {
             type: 'required',
             required: true,
-            message: '字段不能为空',
+            message: window.i18n.t('字段不能为空'),
             trigger: 'blur'
         },
         {
             type: 'min',
             min: '',
-            message: '字段最小长度不符合设置值',
+            message: window.i18n.t('字段最小长度不符合设置值'),
             trigger: 'blur'
         },
         {
             type: 'max',
             max: '',
-            message: '字段最大长度不符合设置值',
+            message: window.i18n.t('字段最大长度不符合设置值'),
             trigger: 'blur'
         },
         {
             type: 'regex',
             regex: '',
-            message: '字段值不符合正则表达式',
+            message: window.i18n.t('字段值不符合正则表达式'),
             trigger: 'blur'
         },
         {
             type: 'validator',
             validator: '',
-            message: '字段值未通过函数校验',
+            message: window.i18n.t('字段值未通过函数校验'),
             trigger: 'blur'
         }
     ]
@@ -128,29 +128,29 @@
                 typeList: [
                     {
                         id: 'required',
-                        name: '字段必填'
+                        name: window.i18n.t('字段必填')
                     },
                     {
                         id: 'min',
-                        name: '字段最小长度',
-                        label: '最小长度'
+                        name: window.i18n.t('字段最小长度'),
+                        label: window.i18n.t('最小长度')
                     },
                     {
                         id: 'max',
-                        name: '字段最大长度',
-                        label: '最大长度'
+                        name: window.i18n.t('字段最大长度'),
+                        label: window.i18n.t('最大长度')
                     },
                     {
                         id: 'regex',
-                        name: '正则表达式检验',
-                        label: '正则表达式',
-                        desc: { content: '表达式格式如“/a-zA-Z/”' }
+                        name: window.i18n.t('正则表达式检验'),
+                        label: window.i18n.t('正则表达式'),
+                        desc: { content: window.i18n.t('表达式格式如“/a-zA-Z/”') }
                     },
                     {
                         id: 'validator',
-                        name: '函数校验',
-                        label: '选择函数',
-                        desc: { width: 350, content: '绑定的函数需要设置一个参数，参数值即为当前表单项的值，如果需要异步函数校验，请使用Promise的方式' }
+                        name: window.i18n.t('函数校验'),
+                        label: window.i18n.t('选择函数'),
+                        desc: { width: 350, content: window.i18n.t('绑定的函数需要设置一个参数，参数值即为当前表单项的值，如果需要异步函数校验，请使用Promise的方式') }
                     }
                 ],
                 dataList: []

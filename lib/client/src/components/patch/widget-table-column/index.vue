@@ -57,7 +57,7 @@
                                             slot: 'content',
                                             props: {
                                                 value: vm.filterText,
-                                                placeholder: '请输入并按回车键进行搜索'
+                                                placeholder: vm.$t('请输入并按回车键进行搜索')
                                             },
                                             on: {
                                                 enter () {

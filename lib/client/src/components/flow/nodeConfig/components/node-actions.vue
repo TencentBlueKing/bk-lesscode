@@ -6,15 +6,13 @@
             :loading="createPagePending"
             :disabled="loading || savePending"
             @click="handleSaveClick(true)">
-            保存并生成提单页
-        </bk-button>
+            {{ $t('保存并生成提单页') }} </bk-button>
         <bk-button
             :theme="showCreatePageBtn ? 'default' : 'primary'"
             :loading="savePending"
             :disabled="loading || createPagePending"
             @click="handleSaveClick(false)">
-            保存
-        </bk-button>
+            {{ $t('保存') }} </bk-button>
         <create-page-dialog
             ref="createPageDialog"
             platform="PC"
@@ -67,7 +65,7 @@
                     formId,
                     flowId,
                     pageCode: `flowpage${this.flowConfig.id}${dayjs().format('HHmmss')}`,
-                    pageName: `${this.flowConfig.flowName}_提单页面`
+                    pageName: this.$t('{0}_提单页面', [this.flowConfig.flowName])
                 }
             }
         },
@@ -133,7 +131,7 @@
                     this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
 
                     this.$bkMessage({
-                        message: '节点保存成功',
+                        message: this.$t('节点保存成功'),
                         theme: 'success'
                     })
                 } catch (e) {
@@ -156,7 +154,7 @@
 
                         this.$refs.createPageDialog.isShow = false
                         this.$bkMessage({
-                            message: '节点保存并创建提单页成功',
+                            message: this.$t('节点保存并创建提单页成功'),
                             theme: 'success'
                         })
                     }

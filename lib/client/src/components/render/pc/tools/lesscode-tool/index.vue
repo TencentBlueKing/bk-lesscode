@@ -25,24 +25,24 @@
             <div
                 :class="$style['button']"
                 @click="handleSaveTemplate">
-                <i class="bk-drag-icon bk-drag-templateline" v-bk-tooltips.top-start="'存为模板'" />
+                <i class="bk-drag-icon bk-drag-templateline" v-bk-tooltips.top-start="$t('存为模板')" />
             </div>
             <div
                 v-if="activeComponentData.parentNode && !activeComponentData.parentNode.root"
                 :class="$style['button']"
                 @click="handleSelectParent">
-                <i class="bk-drag-icon bk-drag-xuanzhongfuji" v-bk-tooltips.top-start="'选中父级'" />
+                <i class="bk-drag-icon bk-drag-xuanzhongfuji" v-bk-tooltips.top-start="$t('选中父级')" />
             </div>
             <div
                 v-if="activeComponentData.componentId && !activeComponentData.isInteractiveComponent"
                 :class="$style['button']"
                 @click="handleCopyPaste">
-                <i class="bk-drag-icon  bk-drag-copy" v-bk-tooltips.top-start="'复制并粘贴到当前元素后面'" />
+                <i class="bk-drag-icon  bk-drag-copy" v-bk-tooltips.top-start="$t('复制并粘贴到当前元素后面')" />
             </div>
             <div
                 :class="$style['button']"
                 @click="handleRemove">
-                <i class="bk-drag-icon bk-drag-delet" v-bk-tooltips.top-start="'删除'" />
+                <i class="bk-drag-icon bk-drag-delet" v-bk-tooltips.top-start="$t('删除')" />
             </div>
         </div>
     </div>

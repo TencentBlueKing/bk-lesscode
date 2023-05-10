@@ -12,7 +12,7 @@
             <slot></slot>
             <el-table-column
                 v-if="tableName"
-                label="操作"
+                :label="$t('操作')"
                 width="120"
             >
                 <template slot-scope="{ row }">
@@ -22,21 +22,19 @@
                         :text="true"
                         @click="handleEdit(row)"
                     >
-                        编辑
-                    </bk-button>
+                        {{ $t('编辑') }} </bk-button>
                     <bk-button
                         title="primary"
                         :text="true"
                         @click="handleDelete(row)"
                     >
-                        删除
-                    </bk-button>
+                        {{ $t('删除') }} </bk-button>
                 </template>
             </el-table-column>
         </el-table>
 
         <bk-sideslider
-            title="编辑数据"
+            :title="$t('编辑数据')"
             :is-show.sync="editData.show"
             :width="740"
             :transfer="true"
@@ -72,13 +70,13 @@
                             v-model="editData.form[column.propertyName]"
                             :precision="+column.scale"
                             type="number"
-                            placeholder="请输入数字"
+                            :placeholder="$t('请输入数字')"
                         ></bk-input>
                         <bk-input
                             v-else-if="column.type === 'int'"
                             v-model="editData.form[column.propertyName]"
                             type="number"
-                            placeholder="请输入数字"
+                            :placeholder="$t('请输入数字')"
                         ></bk-input>
                         <bk-date-picker
                             v-else-if="column.type === 'date'"
@@ -95,7 +93,7 @@
                         <bk-input
                             v-else
                             v-model="editData.form[column.propertyName]"
-                            placeholder="请输入字符串"
+                            :placeholder="$t('请输入字符串')"
                         ></bk-input>
                     </bk-form-item>
                     <bk-form-item>
@@ -104,30 +102,29 @@
                             class="mr5"
                             :loading="editData.isSaving"
                             @click="handleSubmitData"
-                        >提交</bk-button>
+                        >{{ $t('提交') }}</bk-button>
                         <bk-button
                             :disabled="editData.isSaving"
                             @click="handleCloseForm"
-                        >取消</bk-button>
+                        >{{ $t('取消') }}</bk-button>
                     </bk-form-item>
                 </bk-form>
             </div>
         </bk-sideslider>
 
         <bk-dialog
-            title="确定删除"
+            :title="$t('确定删除')"
             ext-cls=""
             :loading="deleteData.isloading"
             :mask-close="false"
             v-model="deleteData.show"
         >
-            确定删除【id：{{ deleteData.form.id }}】？
-            <div class="dialog-footer" slot="footer">
+            {{ $t('确定删除【id：{0}】', [deleteData.form.id]) }} <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"
                     :loading="deleteData.isloading"
-                    @click="handleConfirmDelete">确定</bk-button>
-                <bk-button @click="handleCloseDialog" :disabled="deleteData.isloading">取消</bk-button>
+                    @click="handleConfirmDelete">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleCloseDialog" :disabled="deleteData.isloading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -392,7 +389,7 @@
                 if (!column.isNullable) {
                     return [{
                         required: true,
-                        message: `${column.propertyName} 是必填项`,
+                        message: this.$t('{0} 是必填项', [column.propertyName]),
                         trigger: 'blur'
                     }]
                 }

@@ -11,28 +11,28 @@
             ext-cls="layout-operate-dialog"
         >
             <bk-form ref="dialogForm" class="dialog-form" :label-width="90" :rules="dialog.formRules" :model="dialog.formData">
-                <bk-form-item label="名称" required property="showName" error-display-type="normal">
+                <bk-form-item :label="$t('名称')" required property="showName" error-display-type="normal">
                     <bk-input ref="showNameInput"
                         maxlength="60"
                         v-model.trim="dialog.formData.showName"
-                        placeholder="请输入名称，60个字符以内">
+                        :placeholder="$t('请输入名称，60个字符以内')">
                     </bk-input>
                 </bk-form-item>
                 <bk-form-item label="ID" required property="layoutCode" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.formData.layoutCode"
-                        placeholder="以小写字母开头，由字母与数字组成">
+                        :placeholder="$t('以小写字母开头，由字母与数字组成')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="路由" required property="routePath" error-display-type="normal">
+                <bk-form-item :label="$t('路由')" required property="routePath" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.formData.routePath"
-                        placeholder="请输入，由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成">
+                        :placeholder="$t('请输入，由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')">
                         <template slot="prepend" v-if="currentLayout.layoutType === 'MOBILE'">
                             <div class="group-text">/mobile</div>
                         </template>
                     </bk-input>
-                    <p class="mt5 mb0 f12" slot="tip">导航布局路由将会作为本应用一级路由，请谨慎命名</p>
+                    <p class="mt5 mb0 f12" slot="tip">{{ $t('导航布局路由将会作为本应用一级路由，请谨慎命名') }}</p>
                 </bk-form-item>
-                <bk-form-item label="布局实例" v-if="action === 'create'" error-display-type="normal">
+                <bk-form-item :label="$t('form_布局实例')" v-if="action === 'create'" error-display-type="normal">
                     <layout-thumb-list :toolkit="['select']" :list="defaultLayoutList" @change-checked="handleLayoutChecked" />
                 </bk-form-item>
             </bk-form>
@@ -41,8 +41,8 @@
                     theme="primary"
                     :disabled="disabled"
                     :loading="dialog.loading"
-                    @click="handleDialogConfirm">确定</bk-button>
-                <bk-button @click="handleDialogCancel" :disabled="dialog.loading">取消</bk-button>
+                    @click="handleDialogConfirm">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleDialogCancel" :disabled="dialog.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -90,26 +90,26 @@
                         showName: [
                             {
                                 required: true,
-                                message: '必填项',
+                                message: window.i18n.t('必填项'),
                                 trigger: 'blur'
                             }
                         ],
                         layoutCode: [
                             {
                                 required: true,
-                                message: '必填项',
+                                message: window.i18n.t('必填项'),
                                 trigger: 'blur'
                             },
                             {
                                 regex: /^[a-z][a-zA-Z0-9]{0,60}$/,
-                                message: '以小写字母开头，由字母与数字组成',
+                                message: window.i18n.t('以小写字母开头，由字母与数字组成'),
                                 trigger: 'blur'
                             }
                         ],
                         routePath: [
                             {
                                 required: true,
-                                message: '必填项',
+                                message: window.i18n.t('必填项'),
                                 trigger: 'blur'
                             },
                             {
@@ -117,14 +117,14 @@
                                     try {
                                         compile(value)
                                         if (!/^[\w-_:\/?]+$/.test(value)) {
-                                            this.message = '由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成'
+                                            this.message = window.i18n.t('由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')
                                             return false
                                         } else if (/\/{2,}/.test(value)) {
-                                            this.message = '请检查路径正确性'
+                                            this.message = window.i18n.t('请检查路径正确性')
                                             return false
                                         }
                                     } catch (e) {
-                                        this.message = '请检查路径正确性'
+                                        this.message = window.i18n.t('请检查路径正确性')
                                         return false
                                     }
                                     return true
@@ -177,9 +177,9 @@
             },
             action: {
                 handler: function (val) {
-                    this.title = val === 'create' ? '新建导航布局' : '编辑导航布局'
+                    this.title = val === 'create' ? window.i18n.t('新建导航布局') : window.i18n.t('编辑导航布局')
                     this.requestMethod = val === 'create' ? 'layout/create' : 'layout/update'
-                    this.actionName = val === 'create' ? '新建' : '编辑'
+                    this.actionName = val === 'create' ? window.i18n.t('新建') : window.i18n.t('编辑')
                 },
                 immediate: true
             }
@@ -252,7 +252,7 @@
                     if (res) {
                         this.$bkMessage({
                             theme: 'success',
-                            message: `${this.actionName}成功`
+                            message: window.i18n.t('{0}成功', [this.actionName])
                         })
                         this.dialog.visible = false
                         this.refreshList()

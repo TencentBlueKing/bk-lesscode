@@ -5,10 +5,10 @@
             <i class="bk-icon icon-close item-remove" @click="$emit('remove')"></i>
         </div>
         <bk-form :label-width="270" form-type="vertical">
-            <bk-form-item label="列表头名称">
+            <bk-form-item :label="$t('form_列表头名称')">
                 <bk-input v-model="localValue.name" @change="change"></bk-input>
             </bk-form-item>
-            <bk-form-item label="列字段类型">
+            <bk-form-item :label="$t('form_列字段类型')">
                 <bk-select
                     v-model="localValue.display"
                     style="background: #fff"
@@ -16,16 +16,16 @@
                     <bk-option v-for="option in typeList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                 </bk-select>
             </bk-form-item>
-            <bk-form-item label="数据源配置" v-if="['select','multiselect'].includes(localValue.display)">
+            <bk-form-item :label="$t('form_数据源配置')" v-if="['select','multiselect'].includes(localValue.display)">
                 <div class="option-setting" v-for="(option,index) in localValue.options" :key="option.id">
                     <bk-input
-                        placeholder="选项名"
+                        :placeholder="$t('选项名')"
                         class="option-item"
                         v-model="option.name"
                         @change="handleChangeOption"></bk-input>
                     <bk-input
                         class="option-item"
-                        placeholder="选项ID"
+                        :placeholder="$t('选项ID')"
                         v-model="option.id"
                         @change="change">
                     </bk-input>
@@ -37,7 +37,7 @@
                     </div>
                 </div>
             </bk-form-item>
-            <bk-checkbox v-model="localValue.required" @change="change">必填</bk-checkbox>
+            <bk-checkbox v-model="localValue.required" @change="change">{{ $t('必填') }}</bk-checkbox>
         </bk-form>
     </div>
 </template>
@@ -64,11 +64,11 @@
             return {
                 localValue: cloneDeep(this.value),
                 typeList: [
-                    { id: 'input', name: '输入框' },
-                    { id: 'select', name: '单选框' },
-                    { id: 'multiselect', name: '多选框' },
-                    { id: 'datetime', name: '时间' },
-                    { id: 'date', name: '日期' }
+                    { id: 'input', name: this.$t('输入框') },
+                    { id: 'select', name: this.$t('单选框') },
+                    { id: 'multiselect', name: this.$t('多选框') },
+                    { id: 'datetime', name: this.$t('时间') },
+                    { id: 'date', name: this.$t('日期') }
                 ]
             }
         },
@@ -80,7 +80,7 @@
                 }).join('')
                 this.localValue.key = key
                 if (['select', 'multiselect'].includes(this.localValue.display)) {
-                    this.$set(this.localValue, 'options', [{ name: '选项1', id: 'XUAN_XIANG_1' }, { name: '选项2', id: 'XUAN_XIANG_2' }])
+                    this.$set(this.localValue, 'options', [{ name: this.$t('选项1'), id: 'XUAN_XIANG_1' }, { name: this.$t('选项2'), id: 'XUAN_XIANG_2' }])
                 }
                 this.$emit('change', this.localValue)
             },

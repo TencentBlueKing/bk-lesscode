@@ -55,19 +55,19 @@
                     PC: [
                         {
                             key: 'bk',
-                            name: '蓝鲸基础组件 (Vue)',
-                            tooltip: '当前组件库版本为“2.4.15，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                            name: window.i18n.t('蓝鲸基础组件 (Vue)'),
+                            tooltip: window.i18n.t('当前组件库版本为') + '“2.4.15”，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">' + window.i18n.t('查看更新日志') + '</a>'
                         },
                         {
                             key: 'element',
                             name: 'Element UI (Vue)',
-                            tooltip: '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                            tooltip: window.i18n.t('当前组件库版本为') + '“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases" style="cursor: pointer;color: #3a84ff">' + window.i18n.t('查看更新日志') + '</a>'
                         }
                     ],
                     MOBILE: [{
                         key: 'vant',
                         name: 'Vant UI (Vue)',
-                        tooltip: '当前组件库版本为“2.12.39”，<a target="_blank" href="https://vant-ui.github.io/vant/v2/#/zh-CN/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                        tooltip: window.i18n.t('当前组件库版本为') + '“2.12.39”，<a target="_blank" href="https://vant-ui.github.io/vant/v2/#/zh-CN/changelog" style="cursor: pointer;color: #3a84ff">' + window.i18n.t('查看更新日志') + '</a>'
                     }]
                 }
             }

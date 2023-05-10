@@ -13,7 +13,7 @@
         >
             <section>
                 <div style="margin-bottom: 16px;font-size:14px;">
-                    即将下载<span style="font-weight: bold;">【{{projectName}}】</span>完整源码包，解压后，您可以按照以下操作进行二次开发：
+                    {{ $t('即将下载') }}<span style="font-weight: bold;">【{{projectName}}】</span>{{ $t('完整源码包，解压后，您可以按照以下操作进行二次开发：') }}
                 </div>
                 <section class="intro-container">
                     <intro style="font-size: 12px;" />
@@ -22,8 +22,8 @@
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="primary"
-                    @click="handleDownloadSource">下载</bk-button>
-                <bk-button @click="handleDialogCancel">取消</bk-button>
+                    @click="handleDownloadSource">{{ $t('下载') }}</bk-button>
+                <bk-button @click="handleDialogCancel">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -43,7 +43,7 @@
                 projectCode: '',
                 version: '',
                 projectName: '',
-                title: '下载源码包'
+                title: window.i18n.t('下载源码包')
             }
         },
         methods: {

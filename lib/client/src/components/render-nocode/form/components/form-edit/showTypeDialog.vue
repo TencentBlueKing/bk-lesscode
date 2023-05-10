@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        :title="`【${[title]}】字段隐藏条件设置`"
+        :title="`【${title}】${$t('字段隐藏条件设置')}`"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"
@@ -72,7 +72,7 @@
                 if (!('expressions' in this.localValue) || this.localValue.expressions.some(item => item.key === '' || item.condition === '' || item.value === '')) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '条件配置项不能为空'
+                        message: this.$t('条件配置项不能为空')
                     })
                     return false
                 }

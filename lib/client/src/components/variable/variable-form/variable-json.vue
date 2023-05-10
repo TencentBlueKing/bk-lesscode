@@ -4,7 +4,7 @@
             <span :key="index" class="variable-txt">{{item.txt}}：</span>
             <main :key="item.key" class="variable-code">
                 <bk-input class="json-input"
-                    placeholder="请输入默认值"
+                    :placeholder="$t('请输入默认值')"
                     type="textarea"
                     v-model="copyValue[item.key]"
                     @input="getDisplayJson(item.key, ...arguments)"
@@ -76,7 +76,7 @@
                     this.copyValue[key] = formatterVal
                     this.change(key, formatterVal)
                 } catch (e) {
-                    this.displayJSON[key] = this.getErrMessage() || e.message || '请输入正确格式的数据'
+                    this.displayJSON[key] = this.getErrMessage() || e.message || this.$t('请输入正确格式的数据')
                 }
             },
 
@@ -89,14 +89,14 @@
                     this.displayJSON[key] = displayJson
                     this.change(key, val)
                 } catch (e) {
-                    this.displayJSON[key] = this.getErrMessage() || e.message || '请输入正确格式的数据'
+                    this.displayJSON[key] = this.getErrMessage() || e.message || this.$t('请输入正确格式的数据')
                 }
             },
 
             getErrMessage () {
                 const messageMap = {
-                    3: '请输入 Array 格式数据',
-                    4: '请输入 JSON 格式数据'
+                    3: this.$t('请输入 Array 格式数据'),
+                    4: this.$t('请输入 JSON 格式数据')
                 }
                 return messageMap[this.valueType]
             }

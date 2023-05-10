@@ -19,12 +19,12 @@
                 width: 290
             }">
             <span :class="{ 'under-line': tips }">
-                {{ title === undefined ? ((name === 'remoteOptions' ? '动态配置' : '函数')) : title }}
+                {{ title === undefined ? ((name === 'remoteOptions' ? $t('动态配置') : $t('函数'))) : title }}
             </span>
             <span
                 class="remote-example"
                 @click="handleShowExample">
-                数据示例
+                {{$t('数据示例')}}
             </span>
         </div>
         <div class="remote-content">
@@ -39,7 +39,7 @@
                 theme="primary"
                 class="mt12"
                 size="small">
-                获取数据
+                {{$t('获取数据')}}
             </bk-button>
         </div>
         <remote-example
@@ -143,7 +143,7 @@
                 if (!this.remoteData.methodCode) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '请先选择函数',
+                        message: this.$t('请先选择函数'),
                         limit: 1
                     })
                     return
@@ -165,14 +165,14 @@
                     let message = this.remoteValidate(result)
                     if (message) {
                         // 选择函数已经成功设置 payload，rendervalue 因为数据校验问题没有同步过去。所以该函数选择成功，但是有异常提示
-                        message = '数据源设置成功，以下问题可能会导致组件表现异常，请检查：' + message
+                        message = this.$t('数据源设置成功，以下问题可能会导致组件表现异常，请检查：') + message
                         this.messageWarn(message)
                     } else {
                         this.change(this.name, result, this.type, JSON.parse(JSON.stringify(this.remoteData)))
                         if (this.name === 'options' && this.componentType === 'bk-charts') {
                             this.$bkMessage({
                                 theme: 'success',
-                                message: `图表配置已更新，${Object.keys(result).join('、')}选项已被远程数据覆盖`
+                                message: this.$t('图表配置已更新，{0}选项已被远程数据覆盖', [Object.keys(result).join('、')])
                             })
                             return
                         }
@@ -183,7 +183,7 @@
                 } catch (error) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: error.message || error || '获取数据失败，请检查函数是否正确',
+                        message: error.message || error || this.$t('获取数据失败，请检查函数是否正确'),
                         limit: 1
                     })
                 } finally {

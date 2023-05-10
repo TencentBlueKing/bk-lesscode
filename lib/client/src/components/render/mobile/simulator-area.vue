@@ -1,7 +1,7 @@
 <template>
     <div :class="$style['area-wrapper']">
         <div :class="$style['title']">
-            <span :class="$style['title-text']">效果预览</span>
+            <span :class="$style['title-text']">{{ $t('效果预览') }}</span>
         </div>
         <simulatorMobile :page-size="pageSize" :source="source" />
     </div>

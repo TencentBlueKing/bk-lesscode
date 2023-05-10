@@ -24,20 +24,20 @@
             :class="$style['width-actions']"
             :style="fullWidthStyles">
             <div
-                v-bk-tooltips.right="'宽度随内容自适应'"
+                v-bk-tooltips.right="$t('宽度随内容自适应')"
                 :class="[$style['btn'], $style['auto-width']]"
                 @click="handleAutoWidth">
                 <i class="bk-drag-icon bk-drag-xiangxiazishiying" />
             </div>
             <div
-                v-bk-tooltips.right="'宽度撑满'"
+                v-bk-tooltips.right="$t('宽度撑满')"
                 :class="$style['btn']"
                 @click="handleFullWidth">
                 <i class="bk-drag-icon bk-drag-zuoyouchengkai" />
             </div>
         </div>
         <div
-            v-bk-tooltips.bottom="'高度随内容自适应'"
+            v-bk-tooltips.bottom="$t('高度随内容自适应')"
             :class="$style['btn']"
             :style="autoHeightStyles"
             @click="handleAutoHeight">

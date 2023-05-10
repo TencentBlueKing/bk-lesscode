@@ -1,9 +1,9 @@
 <template>
     <section class="select-table">
-        <span class="select-title">数据表</span>
+        <span class="select-title">{{ $t('数据表') }}</span>
         <bk-select
             searchable
-            search-placeholder="输入业务下的表名进行搜索（需要先展开业务）"
+            :search-placeholder="$t('输入业务下的表名进行搜索（需要先展开业务）')"
             :class="{
                 'select-main': true,
                 'is-error': isError
@@ -57,14 +57,13 @@
                         type="empty"
                         scene="part"
                     >
-                        暂无数据
-                    </bk-exception>
+                        {{ $t('暂无数据') }} </bk-exception>
                 </template>
             </bk-option-group>
         </bk-select>
         <i
             v-if="isError"
-            v-bk-tooltips="{ content: '数据表是必填项' }"
+            v-bk-tooltips="{ content: $t('数据表是必填项') }"
             class="bk-icon icon-exclamation-circle-shape tooltips-icon"
         ></i>
     </section>
@@ -148,7 +147,7 @@
             const validate = () => {
                 if (isEmpty(props.tableName)) {
                     isError.value = true
-                    return Promise.reject(new Error('数据表不能为空'))
+                    return Promise.reject(new Error(window.i18n.t('数据表不能为空')))
                 } else {
                     isError.value = false
                     return Promise.resolve()

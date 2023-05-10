@@ -61,8 +61,7 @@
         </vue-draggable>
         <span class="content-add" @click="handleAdd">
             <i class="bk-icon icon-plus-circle"></i>
-            添加
-        </span>
+            {{ $t('添加') }} </span>
     </section>
 </template>
 

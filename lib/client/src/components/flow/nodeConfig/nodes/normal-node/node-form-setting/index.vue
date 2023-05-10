@@ -10,8 +10,7 @@
             </div>
             <div class="related-info">
                 <template v-if="nodeData.is_first_state && nodeData.type === 'NORMAL'">
-                    流程提单页：
-                    <span
+                    {{ $t('流程提单页：') }} <span
                         :class="['related-item-name', { 'not-empty': hasCreatedTicketPage }]"
                         @click="handlePageClick">
                         {{ hasCreatedTicketPage ? createTicketPage.pageName : '--' }}
@@ -22,8 +21,7 @@
                         @click="handleDelCreatePage">
                     </i>
                 </template>
-                关联数据表：
-                <span
+                {{ $t('关联数据表：') }} <span
                     :class="['related-item-name', { 'not-empty': formConfig.id }]"
                     @click="handleTableClick">
                     {{ typeof formConfig.id === 'number' ? formConfig.code : '--' }}
@@ -36,7 +34,7 @@
                     @click="handleEditClick">
                 </i>
                 <i
-                    v-bk-tooltips.top="'预览表单内容'"
+                    v-bk-tooltips.top="$t('预览表单内容')"
                     class="bk-drag-icon bk-drag-visible-eye"
                     style="font-size: 16px; margin-right: 14px;"
                     @click="handlePreviewClick(formConfig.content)">
@@ -58,7 +56,7 @@
                 {{ item.name }}
             </div>
         </div>
-        <p v-if="isUnset" class="error-tips">请选择配置表单</p>
+        <p v-if="isUnset" class="error-tips">{{ $t('请选择配置表单') }}</p>
         <edit-form-panel
             v-if="editFormPanelShow"
             class="node-config-fields-panel"
@@ -103,14 +101,14 @@
         data () {
             return {
                 createFormMethods: [
-                    { id: 'NEW_FORM', name: '新建空白表单' },
-                    { id: 'COPY_FORM', name: '引用已有表单' },
-                    { id: 'USE_FORM', name: '复用已有表单' }
+                    { id: 'NEW_FORM', name: this.$t('新建空白表单') },
+                    { id: 'COPY_FORM', name: this.$t('引用已有表单') },
+                    { id: 'USE_FORM', name: this.$t('复用已有表单') }
                 ],
                 typeNameMap: {
-                    NEW_FORM: '新建表单',
-                    COPY_FORM: '引用表单',
-                    USE_FORM: '复用表单'
+                    NEW_FORM: this.$t('新建表单'),
+                    COPY_FORM: this.$t('引用表单'),
+                    USE_FORM: this.$t('复用表单')
                 },
                 selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
                 pageDetailLoading: false,
@@ -165,7 +163,7 @@
                     heteronym: false
                 }).join('_')
 
-                const formName = `${this.nodeData.name}_表单`
+                const formName = this.$t('{0}_表单', [this.nodeData.name])
                 const code = `${cnName}_${this.nodeData.id}_${uuid(4)}`
                 return {
                     id: '',
@@ -190,7 +188,7 @@
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
-                    title: '确认删除？',
+                    title: this.$t('确认删除？'),
                     subHeader: h('div', {
                         style: {
                             'text-align': 'center',
@@ -202,7 +200,7 @@
                                 'color': '#979BA5',
                                 'font-size': '12px'
                             }
-                        }, `页面：${this.createTicketPage.pageName}`),
+                        }, this.$t('页面：{0}', [this.createTicketPage.pageName])),
                         h('div', {
                             style: {
                                 'color': '#63656E',
@@ -211,8 +209,8 @@
                                 'font-size': '14px'
                             }
                         }, [
-                            h('p', {}, '1.删除该流程提单页面，对应的流程数据不会删除'),
-                            h('p', { style: { 'margin-top': '8px' } }, '2.确认该信息后，需“保存”该节点配置方可生效')
+                            h('p', {}, '1.' + this.$t('删除该流程提单页面，对应的流程数据不会删除')),
+                            h('p', { style: { 'margin-top': '8px' } }, '2.' + this.$t('确认该信息后，需“保存”该节点配置方可生效'))
                         ])
                     ]),
                     theme: 'danger',
@@ -252,7 +250,7 @@
                                 'color': '#313238',
                                 'font-size': '20px'
                             }
-                        }, '该删除操作将有以下影响：'),
+                        }, this.$t('该删除操作将有以下影响：')),
                         h('div', {
                             style: {
                                 'color': '#63656E',
@@ -261,9 +259,9 @@
                                 'font-size': '14px'
                             }
                         }, [
-                            h('p', { style: { 'margin': '14px 0 0 10px' } }, '1.已生成的流程提单页将同步被删除'),
-                            h('p', { style: { 'margin': '8px 0 0 10px' } }, '2.已生成的关联数据表及表数据将继续保留'),
-                            h('p', { style: { 'margin': '14px 0 0 0' } }, '确认删除吗？')
+                            h('p', { style: { 'margin': '14px 0 0 10px' } }, '1.' + this.$t('已生成的流程提单页将同步被删除')),
+                            h('p', { style: { 'margin': '8px 0 0 10px' } }, '2.' + this.$t('已生成的关联数据表及表数据将继续保留')),
+                            h('p', { style: { 'margin': '14px 0 0 0' } }, this.$t('确认删除吗'))
                         ])
                     ]),
                     theme: 'danger',

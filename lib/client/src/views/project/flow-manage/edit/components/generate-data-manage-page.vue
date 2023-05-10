@@ -1,8 +1,7 @@
 <template>
     <div class="generate-data-manage-page-btn">
         <div v-if="flowConfig.managePageIds" class="manage-page-edit">
-            关联的数据管理页面:
-            <span class="page-name" @click="handlePreviewPage">
+            {{ $t('关联的数据管理页面:') }} <span class="page-name" @click="handlePreviewPage">
                 {{ flowConfig.managePageNames }}
             </span>
             <bk-popover
@@ -13,8 +12,8 @@
                 theme="light">
                 <i class="bk-drag-icon bk-drag-more-dot operate-icon"></i>
                 <div slot="content" class="manage-page-actions">
-                    <div class="action-item" @click="handleEditPage">编辑</div>
-                    <div class="action-item" @click="handleDeletePage">删除</div>
+                    <div class="action-item" @click="handleEditPage">{{ $t('编辑') }}</div>
+                    <div class="action-item" @click="handleDeletePage">{{ $t('删除') }}</div>
                 </div>
             </bk-popover>
         </div>
@@ -24,8 +23,7 @@
             :text="true"
             :disabled="!!flowConfig.deleteFlag"
             @click="handleCreateClick">
-            生成数据管理页
-        </bk-button>
+            {{ $t('生成数据管理页') }} </bk-button>
         <create-page-dialog
             ref="createPageDialog"
             platform="PC"
@@ -56,7 +54,7 @@
                 return {
                     flowId: id,
                     pageCode: `flowdatamanage${id}${dayjs().format('HHmmss')}`,
-                    pageName: `${flowName}_流程数据管理页面`
+                    pageName: window.i18n.t('{0}_流程数据管理页面', [flowName])
                 }
             },
             projectId () {
@@ -97,7 +95,7 @@
                         ])
                         this.$bkMessage({
                             theme: 'success',
-                            message: '新建页面成功'
+                            message: window.i18n.t('新建页面成功')
                         })
                         this.$router.push({
                             name: 'editNocode',
@@ -134,7 +132,7 @@
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
-                    title: '确认删除该流程数据管理页？',
+                    title: window.i18n.t('确认删除该流程数据管理页？'),
                     theme: 'danger',
                     confirmFn: async () => {
                         await this.$store.dispatch('page/delete', {
@@ -144,7 +142,7 @@
                         this.$store.commit('nocode/flow/setFlowConfig', { managePageIds: null })
                         this.$bkMessage({
                             theme: 'success',
-                            message: '删除数据管理页成功'
+                            message: window.i18n.t('删除数据管理页成功')
                         })
                     }
                 })

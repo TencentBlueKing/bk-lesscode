@@ -1,7 +1,6 @@
 <template functional>
     <div class="lesscode-deploy-log-skip-wrapper">
-        未对蓝盾授权，无法执行，已跳过
-    </div>
+        {{ $t('未对蓝盾授权，无法执行，已跳过') }} </div>
 </template>
 <style lang="postcss" scoped>
     .lesscode-deploy-log-skip-wrapper {

@@ -1,8 +1,8 @@
 <template>
     <article class="member-manage-main">
         <section class="member-manage-head">
-            <bk-button theme="primary" @click="handleCreate">添加</bk-button>
-            <bk-input class="member-manage-head-input" placeholder="请输入" :clearable="true" right-icon="bk-icon icon-search" v-model="name"></bk-input>
+            <bk-button theme="primary" @click="handleCreate">{{ $t('添加') }}</bk-button>
+            <bk-input class="member-manage-head-input" :placeholder="$t('请输入')" :clearable="true" right-icon="bk-icon icon-search" v-model="name"></bk-input>
         </section>
 
         <bk-table :data="memberList"
@@ -12,41 +12,39 @@
             v-bkloading="{ isLoading }"
             class="member-table"
         >
-            <bk-table-column label="姓名" prop="username" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="角色" prop="roleId" show-overflow-tooltip :formatter="roleFormatter"></bk-table-column>
-            <bk-table-column label="添加人" prop="createUser" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="添加时间" prop="updateTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
-            <bk-table-column label="操作" width="180">
+            <bk-table-column :label="$t('姓名')" prop="username" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('角色')" prop="roleId" show-overflow-tooltip :formatter="roleFormatter"></bk-table-column>
+            <bk-table-column :label="$t('table_添加人')" prop="createUser" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_添加时间')" prop="updateTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
+            <bk-table-column :label="$t('操作')" width="180">
                 <template slot-scope="props">
-                    <bk-button class="table-bth" text @click="editMember(props.row)" :disabled="!!operateTip(props.row)" :title="operateTip(props.row)">编辑</bk-button>
-                    <bk-button class="table-bth" text @click="deleteMember(props.row)" :disabled="!!operateTip(props.row)" :title="operateTip(props.row)">删除</bk-button>
+                    <bk-button class="table-bth" text @click="editMember(props.row)" :disabled="!!operateTip(props.row)" :title="operateTip(props.row)">{{ $t('编辑') }}</bk-button>
+                    <bk-button class="table-bth" text @click="deleteMember(props.row)" :disabled="!!operateTip(props.row)" :title="operateTip(props.row)">{{ $t('删除') }}</bk-button>
                 </template>
             </bk-table-column>
         </bk-table>
 
         <bk-sideslider :is-show.sync="sideObj.isShow" :title="sideObj.title" quick-close :width="796" @hidden="clearForm">
             <bk-form :label-width="80" :model="sideObj.form" class="member-form" slot="content">
-                <bk-form-item label="成员" :required="true" property="users">
+                <bk-form-item :label="$t('成员')" :required="true" property="users">
                     <bk-input :value="sideObj.form.users.join('')" disabled v-if="sideObj.isEdit" class="member-form-input"></bk-input>
                     <member-selector v-model="sideObj.form.users" :user-list.sync="filterUserList" v-else></member-selector>
                 </bk-form-item>
-                <bk-form-item label="角色" :required="true" property="roleId">
+                <bk-form-item :label="$t('角色')" :required="true" property="roleId">
                     <bk-radio-group v-model="sideObj.form.roleId">
                         <bk-radio-button :value="2">
                             <span :class="['check-radio', { choose: sideObj.form.roleId === 2 }]"></span>
-                            <span class="check-radio-title">开发者</span><br>
-                            拥有应用的页面、函数、组件开发权限及部署权限
-                        </bk-radio-button>
+                            <span class="check-radio-title">{{ $t('开发者') }}</span><br>
+                            {{ $t('拥有应用的页面、函数、组件开发权限及部署权限') }} </bk-radio-button>
                         <bk-radio-button :value="1">
                             <span :class="['check-radio', { choose: sideObj.form.roleId === 1 }]"></span>
-                            <span class="check-radio-title">管理员</span><br>
-                            拥有应用的所有权限
-                        </bk-radio-button>
+                            <span class="check-radio-title">{{ $t('管理员') }}</span><br>
+                            {{ $t('拥有应用的所有权限') }} </bk-radio-button>
                     </bk-radio-group>
                 </bk-form-item>
                 <bk-form-item>
-                    <bk-button ext-cls="mr5" theme="primary" title="提交" @click="submitMember" :loading="sideObj.isLoading">提交</bk-button>
-                    <bk-button ext-cls="mr5" theme="default" title="取消" @click="cancleMember" :disabled="sideObj.isLoading ">取消</bk-button>
+                    <bk-button ext-cls="mr5" theme="primary" :title="$t('提交')" @click="submitMember" :loading="sideObj.isLoading">{{ $t('提交') }}</bk-button>
+                    <bk-button ext-cls="mr5" theme="default" :title="$t('取消')" @click="cancleMember" :disabled="sideObj.isLoading ">{{ $t('取消') }}</bk-button>
                 </bk-form-item>
             </bk-form>
         </bk-sideslider>
@@ -55,20 +53,20 @@
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
-            title="删除成员"
+            :title="$t('删除成员')"
             width="400"
             footer-position="center"
             :mask-close="false"
             :auto-close="false"
-        >
-            确定删除成员{{ deleteObj.name }}？删除后该成员将失去应用【{{ deleteObj.roleId === 1 ? '管理员' : '开发者' }}】角色权限
+        >)
+            {{`${$t('确定删除成员')}${deleteObj.name }？${$t('删除后该成员将失去应用')}【${ deleteObj.roleId === 1 ? $t('管理员') : $t('开发者') }】${$t('角色权限')}`}}
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"
                     :loading="deleteObj.loading"
                     @click="requestDeleteMember(deleteObj.id)"
-                >删除</bk-button>
-                <bk-button @click="handleDeleteCancel" :disabled="deleteObj.loading">取消</bk-button>
+                >{{ $t('删除') }}</bk-button>
+                <bk-button @click="handleDeleteCancel" :disabled="deleteObj.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </article>
@@ -140,12 +138,12 @@
                 const manageMemberList = this.memberList.filter(member => member.roleId === 1)
                 const isManage = row.roleId === 1
                 let tip = ''
-                if (manageMemberList.length <= 1 && isManage) tip = '不允许对最后一个管理员进行操作'
+                if (manageMemberList.length <= 1 && isManage) tip = window.i18n.t('不允许对最后一个管理员进行操作')
                 return tip
             },
 
             roleFormatter (row, column, cellValue, index) {
-                return cellValue === 1 ? '管理员' : '开发者'
+                return cellValue === 1 ? window.i18n.t('管理员') : window.i18n.t('开发者')
             },
 
             timeFormatter (obj, con, val) {
@@ -175,7 +173,7 @@
                 }
                 this.sideObj.isLoading = true
                 this.$store.dispatch('member/addMembers', payload).then(() => {
-                    this.$bkMessage({ message: '操作成功', theme: 'success' })
+                    this.$bkMessage({ message: window.i18n.t('操作成功'), theme: 'success' })
                     this.sideObj.isShow = false
                     this.getMember()
                 }).catch((err) => {
@@ -197,12 +195,12 @@
 
             handleCreate () {
                 this.sideObj.isShow = true
-                this.sideObj.title = '添加成员'
+                this.sideObj.title = window.i18n.t('添加成员')
             },
 
             editMember (row) {
                 this.sideObj.isShow = true
-                this.sideObj.title = '编辑成员'
+                this.sideObj.title = window.i18n.t('编辑成员')
                 this.sideObj.isEdit = true
                 this.sideObj.form.users = [row.username]
                 this.sideObj.form.roleId = row.roleId
@@ -211,7 +209,7 @@
             requestDeleteMember () {
                 this.deleteObj.loading = true
                 this.$store.dispatch('member/deleteMember', this.deleteObj.id).then(() => {
-                    this.$bkMessage({ message: '删除成员成功', theme: 'success' })
+                    this.$bkMessage({ message: window.i18n.t('删除成员成功'), theme: 'success' })
                     this.deleteObj.visible = false
                     this.getMember()
                 }).catch((err) => {

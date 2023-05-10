@@ -4,14 +4,14 @@
             <bk-date-picker class="filter-item"
                 v-model="filters.dateRange"
                 type="daterange"
-                placeholder="创建时间"
+                :placeholder="$t('创建时间')"
                 @change="handleTimeChange"
                 :shortcuts="dateShortcuts[0]">
             </bk-date-picker>
             <bk-input
                 class="filter-item search-input"
                 clearable
-                placeholder="按函数名搜索"
+                :placeholder="$t('按函数名搜索')"
                 right-icon="bk-icon icon-search"
                 @clear="handleKeywordClear"
                 @enter="handleKeywordEnter"
@@ -74,9 +74,9 @@
                     limit: 10
                 },
                 columns: [
-                    { id: 'funcName', name: '函数名', width: '360', tooltip: true },
-                    { id: 'projectName', name: '所属应用', width: '360', tooltip: true },
-                    { id: 'pageUsedCount', name: '使用页面数', dynamic: true, type: 'number' }
+                    { id: 'funcName', name: window.i18n.t('table_函数名'), width: '360', tooltip: true },
+                    { id: 'projectName', name: window.i18n.t('table_所属应用'), width: '360', tooltip: true },
+                    { id: 'pageUsedCount', name: window.i18n.t('table_使用页面数'), dynamic: true, type: 'number' }
                 ],
                 filters: {
                     keyword: '',

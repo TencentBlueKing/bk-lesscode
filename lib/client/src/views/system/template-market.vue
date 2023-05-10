@@ -4,7 +4,7 @@
             <div v-show="!pageLoading">
                 <div class="project-template">
                     <div class="page-head" style="align-items: center">
-                        <span style="font-size: 14px;font-weight: 700">应用模板</span>
+                        <span style="font-size: 14px;font-weight: 700">{{ $t('应用模板') }}</span>
                         <ul class="filter-links">
                             <li
                                 v-for="(link, index) in template.project.links"
@@ -17,7 +17,7 @@
                         <div class="extra">
                             <bk-input
                                 style="width: 400px"
-                                placeholder="请输入关键词"
+                                :placeholder="$t('请输入关键词')"
                                 :clearable="true"
                                 :right-icon="'bk-icon icon-search'"
                                 v-model="template.project.keyword"
@@ -32,7 +32,7 @@
                                 <div class="item-bd">
                                     <template>
                                         <div class="preview">
-                                            <page-preview-thumb alt="应用缩略预览" :project-id="project.id" :img-src="project.templateImg" />
+                                            <page-preview-thumb :alt="$t('应用缩略预览')" :project-id="project.id" :img-src="project.templateImg" />
                                         </div>
                                     </template>
                                     <div class="operate-btns">
@@ -45,28 +45,25 @@
                                             @click="handleApply(project)"
                                             style="margin-left: 7px;width: 106px"
                                             :permission="iamNoResourcesPerm[$IAM_ACTION.create_app_with_template[0]]">
-                                            创建为新应用
-                                        </auth-button>
+                                            {{ $t('创建为新应用') }} </auth-button>
                                         <auth-button
                                             auth="preview_app_template"
                                             @click="handlePreviewProject(project.id)"
                                             style="margin-left: 10px;width: 76px"
                                             :permission="iamNoResourcesPerm[$IAM_ACTION.preview_app_template[0]]">
-                                            预览
-                                        </auth-button>
+                                            {{ $t('预览') }} </auth-button>
                                         <auth-button
                                             auth="download_app_template_source"
                                             @click="handleDownloadProject(project)"
                                             style="margin-left: 10px;width: 76px"
                                             :permission="iamNoResourcesPerm[$IAM_ACTION.download_app_template_source[0]]">
-                                            下载源码
-                                        </auth-button>
+                                            {{ $t('下载源码') }} </auth-button>
                                     </div>
                                 </div>
                                 <div class="item-ft">
                                     <div class="col">
                                         <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
-                                        <div class="stat">{{`由 ${project.createUser || 'admin'} 上传`}}</div>
+                                        <div class="stat">{{$t('由') + (project.createUser || 'admin') + $t('上传')}}</div>
                                     </div>
                                 </div>
                                 <span class="favorite-btn">
@@ -79,7 +76,7 @@
                 </div>
                 <div class="page-template">
                     <div class="page-head" style="align-items: center">
-                        <span style="font-size: 14px;font-weight: 700">页面模板</span>
+                        <span style="font-size: 14px;font-weight: 700">{{ $t('页面模板') }}</span>
                         <ul class="filter-links">
                             <li
                                 v-for="(link, index) in template.page.links"
@@ -92,7 +89,7 @@
                         <div class="extra">
                             <bk-input
                                 style="width: 400px"
-                                placeholder="请输入关键词"
+                                :placeholder="$t('请输入关键词')"
                                 :clearable="true"
                                 :right-icon="'bk-icon icon-search'"
                                 v-model="template.page.keyword"
@@ -107,14 +104,14 @@
                                 <div class="item-bd">
                                     <template>
                                         <div class="preview">
-                                            <img v-if="page.previewImg" :src="getPreviewImg(page.previewImg)" alt="应用缩略预览">
-                                            <div class="empty-preview-img" v-else>页面为空</div>
+                                            <img v-if="page.previewImg" :src="getPreviewImg(page.previewImg)" :alt="$t('应用缩略预览')">
+                                            <div class="empty-preview-img" v-else>{{ $t('页面为空') }}</div>
                                         </div>
                                     </template>
                                     <div class="operate-btns">
-                                        <bk-button style="margin-left: 17px;width: 86px" theme="primary" @click="handleAddToProject(page)">添加至应用</bk-button>
-                                        <bk-button style="margin-left: 10px;width: 76px" @click="handlePreviewTemplate(page)">预览</bk-button>
-                                        <bk-button style="margin-left: 10px;width: 76px" @click="handleDownloadTemplate(page)">下载源码</bk-button>
+                                        <bk-button style="margin-left: 17px;width: 86px" theme="primary" @click="handleAddToProject(page)">{{ $t('添加至应用') }}</bk-button>
+                                        <bk-button style="margin-left: 10px;width: 76px" @click="handlePreviewTemplate(page)">{{ $t('预览') }}</bk-button>
+                                        <bk-button style="margin-left: 10px;width: 76px" v-enClass="'en-btn-title'" :title="$t('下载源码')" @click="handleDownloadTemplate(page)">{{ $t('下载源码') }}</bk-button>
                                     </div>
                                 </div>
                                 <div class="item-ft">
@@ -126,7 +123,7 @@
                                             </span>
                                             <div class="name" :title="page.templateName">{{page.templateName}}</div>
                                         </div>
-                                        <div class="stat">{{`由 ${page.createUser || 'admin'} 上传`}}</div>
+                                        <div class="stat">{{$t('由') + (page.createUser || 'admin') + $t('上传')}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +139,7 @@
         <bk-dialog v-model="dialog.project.visible"
             render-directive="if"
             theme="primary"
-            :title="'应用模板'"
+            :title="$t('应用模板')"
             width="750"
             :position="{ top: 100 }"
             :mask-close="false"
@@ -150,19 +147,19 @@
             header-position="left"
             ext-cls="project-create-dialog"
             @value-change="handleProjectDialogToggle">
-            <div class="selected-project">已选模板：{{dialog.project.templateName}}</div>
+            <div class="selected-project">{{ $t('已选模板：{0}', [dialog.project.templateName]) }}</div>
             <bk-form ref="createForm" :label-width="86" :rules="dialog.project.formRules" :model="dialog.project.formData">
-                <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
+                <bk-form-item :label="$t('应用名称')" required property="projectName" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.project.formData.projectName"
-                        placeholder="请输入应用名称，60个字符以内">
+                        :placeholder="$t('请输入应用名称，60个字符以内')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="应用ID" required property="projectCode" error-display-type="normal">
+                <bk-form-item :label="$t('应用ID')" required property="projectCode" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.project.formData.projectCode"
-                        placeholder="只能由小写字母组成，该ID将作为自定义组件前缀，创建后不可更改">
+                        :placeholder="$t('只能由小写字母组成，该ID将作为自定义组件前缀，创建后不可更改')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="应用简介" required property="projectDesc" error-display-type="normal">
+                <bk-form-item :label="$t('应用简介')" required property="projectDesc" error-display-type="normal">
                     <bk-input
                         v-model.trim="dialog.project.formData.projectDesc"
                         :type="'textarea'"
@@ -175,15 +172,15 @@
                 <bk-button
                     theme="primary"
                     :loading="dialog.project.loading"
-                    @click="handleCreateConfirm">确定</bk-button>
-                <bk-button @click="handleCreateCancel" :disabled="dialog.project.loading">取消</bk-button>
+                    @click="handleCreateConfirm">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleCreateCancel" :disabled="dialog.project.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
 
         <bk-dialog v-model="dialog.page.visible"
             render-directive="if"
             theme="primary"
-            :title="'应用模板'"
+            :title="$t('应用模板')"
             width="750"
             :position="{ top: 100 }"
             :mask-close="false"
@@ -191,13 +188,13 @@
             header-position="left"
             ext-cls="page-create-dialog"
             @value-change="handlePageDialogToggle">
-            <div class="selected-project">已选模板：{{dialog.page.curPage.templateName}}，添加至应用后，可以在画布中拖拽使用</div>
+            <div class="selected-project">{{ $t('已选模板：{0}，添加至应用后，可以在画布中拖拽使用', [dialog.page.curPage.templateName]) }}</div>
             <bk-form :label-width="86">
-                <bk-form-item label="应用" required :ext-cls="'selected-template-project'">
+                <bk-form-item :label="$t('应用')" required :ext-cls="'selected-template-project'">
                     <bk-select searchable
                         multiple
                         display-tag
-                        :placeholder="'请选择应用，可多选'"
+                        :placeholder="$t('请选择应用，可多选')"
                         v-model="dialog.page.formData.project"
                         :loading="dialog.page.selectLoading"
                         @change="handleSelectChange"
@@ -212,7 +209,7 @@
                 </bk-form-item>
             </bk-form>
             <template v-if="dialog.page.selectedList.length">
-                <div style="margin: 20px 0">请指定添加至对应应用的模板分类：</div>
+                <div style="margin: 20px 0">{{ $t('请指定添加至对应应用的模板分类：') }}</div>
                 <div style="min-height: 140px">
                     <bk-form ref="pageForm" :label-width="180">
                         <bk-form-item v-for="item in dialog.page.selectedList"
@@ -235,8 +232,8 @@
                 <bk-button
                     theme="primary"
                     @click="handlePageConfirm"
-                    :loading="dialog.page.loading">确定</bk-button>
-                <bk-button @click="handlePageCancel" :disabled="dialog.page.loading">取消</bk-button>
+                    :loading="dialog.page.loading">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handlePageCancel" :disabled="dialog.page.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </main>
@@ -252,8 +249,8 @@
     import { parseFuncAndVar } from '@/common/parse-function-var'
     import LC from '@/element-materials/core'
 
-    const PROJECT_TYPE_LIST = [{ id: '', name: '全部' }].concat(PROJECT_TEMPLATE_TYPE)
-    const PAGE_TYPE_LIST = [{ id: '', name: '全部' }].concat(PAGE_TEMPLATE_TYPE)
+    const PROJECT_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
+    const PAGE_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PAGE_TEMPLATE_TYPE)
     const defaultCreateFormData = {
         projectName: '',
         projectCode: '',
@@ -295,26 +292,26 @@
                             projectName: [
                                 {
                                     required: true,
-                                    message: '必填项',
+                                    message: window.i18n.t('必填项'),
                                     trigger: 'blur'
                                 }
                             ],
                             projectCode: [
                                 {
                                     required: true,
-                                    message: '必填项',
+                                    message: window.i18n.t('必填项'),
                                     trigger: 'blur'
                                 },
                                 {
                                     regex: /^[a-z]+$/,
-                                    message: '只能由小写字母组成',
+                                    message: window.i18n.t('只能由小写字母组成'),
                                     trigger: 'blur'
                                 }
                             ],
                             projectDesc: [
                                 {
                                     required: true,
-                                    message: '必填项',
+                                    message: window.i18n.t('必填项'),
                                     trigger: 'blur'
                                 }
                             ]
@@ -334,7 +331,7 @@
                             project: [
                                 {
                                     required: true,
-                                    message: '必填项',
+                                    message: window.i18n.t('必填项'),
                                     trigger: 'click'
                                 }
                             ]
@@ -393,7 +390,7 @@
                     this.dialog.project.loading = true
                     const projectId = await this.$store.dispatch('project/create', { data })
 
-                    this.messageSuccess('应用创建成功')
+                    this.messageSuccess(window.i18n.t('应用创建成功'))
                     this.dialog.project.visible = false
 
                     setTimeout(() => {
@@ -524,7 +521,7 @@
                 if (!this.dialog.page.selectedList.length) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '未选择应用'
+                        message: window.i18n.t('未选择应用')
                     })
                     return
                 }
@@ -578,7 +575,7 @@
                         this.dialog.page.formData.project.pop()
                         this.$bkMessage({
                             theme: 'warning',
-                            message: '模板已被该应用应用,无需重复添加'
+                            message: window.i18n.t('模板已被该应用应用,无需重复添加')
                         })
                     } else {
                         await this.getTemplateCategory(selected)
@@ -730,6 +727,17 @@
                     top: 0;
                     left: 0;
                     height: 100%;
+                    .en-btn-title {
+                        /deep/ span {
+                                display: block;
+                                width: 100%;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                text-align: center;
+                                padding: 0 2px;
+                            }
+                    }
                 }
                 .empty {
                     &::before {
