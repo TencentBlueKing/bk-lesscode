@@ -177,7 +177,6 @@
                             theme: 'error',
                             message: window.i18n.t('字段【{0}】未设置默认时间精度', [field.name])
                         })
-                        isKeyValid = false
                         return true
                     }
                 })
