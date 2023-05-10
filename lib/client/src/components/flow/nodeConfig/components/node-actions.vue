@@ -100,7 +100,6 @@
                     if (!result) {
                         return
                     }
-                    debugger
                     if (createPage) {
                         this.createPagePending = true
                         this.$refs.createPageDialog.isShow = true
@@ -131,8 +130,8 @@
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId: pageData.id })
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, pageId: pageData.id })
                         this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', pageData)
-
                         this.$refs.createPageDialog.isShow = false
+                        await this.updateItsmNode()
                         this.$bkMessage({
                             message: this.$t('节点保存并创建提单页成功'),
                             theme: 'success'

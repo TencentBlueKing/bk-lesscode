@@ -78,6 +78,11 @@
                 }
             }
         },
+        watch: {
+            content (val) {
+                this.fieldsList = cloneDeep(val)
+            }
+        },
         created () {
             if (this.content) {
                 this.fieldsList = cloneDeep(this.content)

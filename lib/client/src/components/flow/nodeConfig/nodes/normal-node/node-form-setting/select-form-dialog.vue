@@ -190,6 +190,7 @@
                     const res = await this.saveFormConfig(formConfig)
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { ...formConfig, id: res.formId })
                     this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
+                    this.$store.commit('nocode/nodeConfig/setInitialFieldIds', fields)
                     const fieldIds = fields.map(field => field.id)
                     await this.updateItsmNode(res.formId, fieldIds)
 
@@ -230,27 +231,6 @@
             close () {
                 this.selected = ''
                 this.$emit('update:show', false)
-            },
-            // 检查表单字段是否包含流程表单不支持的字段
-            validate (fields) {
-                if (typeof this.selected !== 'number') {
-                    this.$bkMessage({
-                        message: '请选择表单',
-                        theme: 'error'
-                    })
-                    return
-                }
-                const hasNotAvailable = fields.some(item => {
-                    return ['DESC', 'DIVIDER'].includes(item.type)
-                })
-                if (hasNotAvailable) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: this.$t('已选表单包含流程不支持的字段控件【描述文本】或【分割线】类型')
-                    })
-                    return false
-                }
-                return true
             }
         }
     }

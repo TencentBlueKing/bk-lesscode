@@ -175,6 +175,7 @@
                     try {
                         this.$store.commit('nocode/flow/delFlowNodeFormId', this.nodeData.id)
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, formIds: this.flowConfig.formIds })
+                        await this.$store.dispatch('nocode/flow/patchNodeData', { id: this.nodeData.id, data: { is_draft: true } })
                         this.isUnset = true
                         this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
                         resolve()
@@ -214,7 +215,7 @@
             handleDelCreateTicketPageClick () {
                 const h = this.$createElement
                 this.$bkInfo({
-                    width: 422,
+                    width: 500,
                     extCls: 'delete-page-dialog',
                     title: this.$t('确认删除流程提单页面？'),
                     subTitle: this.$t('删除该流程提单页面，对应的流程数据不会删除'),
@@ -245,30 +246,16 @@
             },
             // 删除节点的表单配置，删除节点和表单的绑定关系，如果是提单节点并且有生成提单页则需要同时删除提单
             handleDelFormConfigClick () {
+                let tips = this.$t('已生成的关联数据表及表数据将继续保留')
+                if (this.hasCreatedTicketPage) {
+                    tips = this.$t('流程提单页将同步被删除，') + tips
+                }
                 const h = this.$createElement
                 this.$bkInfo({
-                    width: 422,
+                    width: 600,
                     extCls: 'delete-page-dialog',
-                    subHeader: h('div', {}, [
-                        h('span', {
-                            style: {
-                                'color': '#313238',
-                                'font-size': '20px'
-                            }
-                        }, this.$t('该删除操作将有以下影响：')),
-                        h('div', {
-                            style: {
-                                'color': '#63656E',
-                                'margin-top': '10px',
-                                'text-align': 'left',
-                                'font-size': '14px'
-                            }
-                        }, [
-                            h('p', { style: { 'margin': '14px 0 0 10px' } }, '1.' + this.$t('已生成的流程提单页将同步被删除')),
-                            h('p', { style: { 'margin': '8px 0 0 10px' } }, '2.' + this.$t('已生成的关联数据表及表数据将继续保留')),
-                            h('p', { style: { 'margin': '14px 0 0 0' } }, this.$t('确认删除吗'))
-                        ])
-                    ]),
+                    title: this.$t('确认删除表单配置？'),
+                    subTitle: tips,
                     theme: 'danger',
                     confirmLoading: true,
                     confirmFn: async() => {
