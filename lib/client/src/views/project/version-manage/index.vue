@@ -2,10 +2,10 @@
     <div class="page-content">
         <div class="page-head version-head">
             <div class="buttons">
-                <bk-button theme="primary" @click="handleCreate">新建</bk-button>
+                <bk-button theme="primary" @click="handleCreate">{{ $t('新建') }}</bk-button>
             </div>
             <div class="search-bar">
-                <bk-input placeholder="应用版本"
+                <bk-input :placeholder="$t('form_应用版本')"
                     style="width: 400px"
                     :clearable="true"
                     right-icon="bk-icon icon-search"
@@ -23,7 +23,7 @@
                 :header-cell-style="{ background: '#f0f1f5' }"
                 :data="displayList"
                 v-show="!loading.list">
-                <bk-table-column label="应用版本" prop="version" min-width="120" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_应用版本')" prop="version" min-width="120" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-version" @click="handleVersionDetail(row)">
                             <span>{{ row.version }}</span>
@@ -31,39 +31,39 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="更新人" prop="updateUser" min-width="120" show-overflow-tooltip></bk-table-column>
-                <bk-table-column label="更新日期" prop="updateTime" min-width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="120" show-overflow-tooltip></bk-table-column>
+                <bk-table-column :label="$t('table_更新日期')" prop="updateTime" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{ row.updateTime | time }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="创建人" prop="createUser" min-width="120" show-overflow-tooltip />
-                <bk-table-column label="创建日期 " prop="operateDesc" min-width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_创建人')" prop="createUser" min-width="120" show-overflow-tooltip />
+                <bk-table-column :label="$t('table_创建日期') " prop="operateDesc" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{ row.createTime | time }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="是否归档 " prop="archiveFlag" min-width="110" :render-header="renderArchiveHeader" sortable>
+                <bk-table-column :label="$t('table_是否归档') " prop="archiveFlag" min-width="180" :render-header="renderArchiveHeader" sortable>
                     <template slot-scope="{ row }">
-                        <span>{{ row.archiveFlag ? '是' : '否' }}</span>
+                        <span>{{ row.archiveFlag ? $t('是') : $t('否') }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="操作" prop="statusText" align="left" min-width="200">
+                <bk-table-column :label="$t('操作')" prop="statusText" align="left" min-width="200">
                     <template slot-scope="{ row }">
-                        <bk-button v-if="row.archiveFlag === 1" text @click="handleRecover(row)">恢复</bk-button>
+                        <bk-button v-if="row.archiveFlag === 1" text @click="handleRecover(row)">{{ $t('恢复') }}</bk-button>
                         <bk-popconfirm trigger="click" width="340"
-                            confirm-text="归档"
+                            :confirm-text="$t('归档')"
                             @confirm="handleArchive(row)">
                             <div slot="content">
                                 <div class="archive-tips">
                                     <i class="bk-icon icon-info-circle-shape pr5 content-icon"></i>
-                                    <div class="content-text">归档后版本不会在"页面列表"和"发布部署"页面中展示</div>
+                                    <div class="content-text">{{ $t('归档后版本不会在"页面列表"和"发布部署"页面中展示') }}</div>
                                 </div>
                             </div>
-                            <bk-button v-if="row.archiveFlag === 0" text>归档</bk-button>
+                            <bk-button v-if="row.archiveFlag === 0" text>{{ $t('归档') }}</bk-button>
                         </bk-popconfirm>
-                        <bk-button class="ml10" text @click="handleEdit(row)">编辑</bk-button>
-                        <bk-button v-if="row.archiveFlag === 0" text @click="handleGoPageList(row)">进入页面管理</bk-button>
+                        <bk-button class="ml10" text @click="handleEdit(row)">{{ $t('编辑') }}</bk-button>
+                        <bk-button v-if="row.archiveFlag === 0" text @click="handleGoPageList(row)">{{ $t('进入页面管理') }}</bk-button>
                     </template>
                 </bk-table-column>
                 <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
@@ -176,7 +176,7 @@
             handleVersionDetail (row) {
                 this.versionDialog.show = true
                 this.versionDialog.data = row
-                this.versionDialog.title = `${row.version} 版本日志`
+                this.versionDialog.title = window.i18n.t('{0} 版本日志', [row.version])
             },
             async handleRecover (version) {
                 await this.$store.dispatch('projectVersion/recover', {
@@ -184,7 +184,7 @@
                     projectId: this.projectId
                 })
                 this.getList()
-                this.messageSuccess('操作成功')
+                this.messageSuccess(window.i18n.t('操作成功'))
             },
             async handleArchive (version) {
                 await this.$store.dispatch('projectVersion/archive', {
@@ -192,12 +192,12 @@
                     projectId: this.projectId
                 })
                 this.getList()
-                this.messageSuccess('操作成功')
+                this.messageSuccess(window.i18n.t('操作成功'))
             },
             renderArchiveHeader (h, data) {
                 const directive = {
                     name: 'bkTooltips',
-                    content: '已归档的版本不会在"页面列表"和"发布部署"页面中展示',
+                    content: window.i18n.t('已归档的版本不会在"页面列表"和"发布部署"页面中展示'),
                     placement: 'right'
                 }
                 return <span class="header-cell-with-tips" v-bk-tooltips={ directive }>{ data.column.label }</span>

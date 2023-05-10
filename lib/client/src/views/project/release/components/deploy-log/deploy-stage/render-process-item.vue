@@ -20,7 +20,7 @@
                 <div
                     class="log-empty"
                     v-if="!instanceLogLoading && logs.length < 1">
-                    暂无日志
+                    {{$t('暂无日志')}}
                 </div>
             </section>
         </section>

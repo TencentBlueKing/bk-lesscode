@@ -4,7 +4,7 @@
             v-for="(group, index) in formData.expressions"
             class="condition-group-wrapper"
             :key="index">
-            <p class="group-title">或-条件组{{ index + 1 }}</p>
+            <p class="group-title">{{ $t('或-条件组')}}{{ index + 1 }}</p>
             <div class="condition-content">
                 <div v-for="(expression, i) in group.expressions" class="expression-item" :key="i">
                     <bk-select
@@ -56,7 +56,7 @@
         </div>
         <div class="create-group-btn">
             <span @click="handleAddGroup">
-                <i class="bk-icon icon-plus-circle" style="margin-right: 4px"></i>添加“或”条件组
+                <i class="bk-icon icon-plus-circle" style="margin-right: 4px"></i>{{$t('添加“或”条件组')}}
             </span>
         </div>
     </div>
@@ -130,15 +130,15 @@
                 let tips = ''
                 // 未选择条件
                 if (!exp.key) {
-                    tips = '请选择处理人'
+                    tips = this.$t('请选择处理人')
                 }
                 // 条件为个人，但是处理人类型不是个人
                 if (!['PASS_RATE', 'REJECT_RATE'].includes(exp.meta.code) && type !== 'PERSON') {
-                    tips = '请选择个人类型处理人'
+                    tips = this.$t('请选择个人类型处理人')
                 }
                 // 条件为个人，处理人类型为个人，但是没有填值
                 if (!['PASS_RATE', 'REJECT_RATE'].includes(exp.meta.code) && type === 'PERSON' && this.processorLength === 0) {
-                    tips = '请选择处理人'
+                    tips = this.$t('请选择处理人')
                 }
                 return tips
             },
@@ -149,8 +149,8 @@
                 if (this.formData.expressions.length === 1) {
                     this.$bkInfo({
                         type: 'warning',
-                        title: '确定删除唯一的条件组？',
-                        subTitle: '若删除，则必须所有人处理完成才结束',
+                        title: this.$t('确定删除唯一的条件组？'),
+                        subTitle: this.$t('若删除，则必须所有人处理完成才结束'),
                         confirmFn: () => {
                             this.formData.expressions.splice(index, 1)
                         }

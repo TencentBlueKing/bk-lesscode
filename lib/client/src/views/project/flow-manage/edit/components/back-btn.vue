@@ -2,7 +2,7 @@
     <div class="go-back-icon-wrapper">
         <i class="bk-drag-icon bk-drag-arrow-back" @click="handleBackClick"></i>
         <bk-dialog
-            title="流程未部署，确认离开？"
+            :title="$t('流程未部署，确认离开？')"
             ext-cls="deploy-confirm-popover"
             :value="isShow"
             :width="420"
@@ -11,21 +11,18 @@
             :show-footer="false"
             @cancel="isShow = false">
             <div class="deploy-tips-content">
-                当前流程未部署，需部署后，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。
-                <div class="action-btns">
+                {{ $t('当前流程未部署，需部署后，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。') }} <div class="action-btns">
                     <bk-button
                         style="margin-right: 4px"
                         theme="primary"
                         :loading="deployPending"
                         @click="handleDeployClick">
-                        部署流程
-                    </bk-button>
+                        {{ $t('部署流程') }} </bk-button>
                     <bk-button
                         style="margin-right: 4px"
                         @click="$router.push({ name: 'release', params: { projectId } })">
-                        部署应用
-                    </bk-button>
-                    <bk-button @click="jumpPage">离开</bk-button>
+                        {{ $t('部署应用') }} </bk-button>
+                    <bk-button @click="jumpPage">{{ $t('离开') }}</bk-button>
                 </div>
             </div>
         </bk-dialog>

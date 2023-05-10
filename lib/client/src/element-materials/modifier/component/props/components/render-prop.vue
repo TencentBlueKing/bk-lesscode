@@ -35,7 +35,7 @@
             </template>
 
             <template v-if="showInnerVariable">
-                <span class="g-prop-sub-title g-mb6">变量类型</span>
+                <span class="g-prop-sub-title g-mb6">{{ $t('变量类型') }}</span>
                 <choose-build-in-variable
                     class="g-mb4"
                     :build-in-variable="buildInVariable"
@@ -50,7 +50,7 @@
             </template>
 
             <template v-if="renderComponentList.length > 1">
-                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性初始值来源</span>
+                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">{{ $t('属性初始值来源') }}</span>
                 <bk-radio-group
                     class="g-prop-radio-group mb12"
                     :value="selectValueType"
@@ -90,7 +90,7 @@
             <template v-if="describe.operation">
                 <div
                     v-bk-tooltips="{
-                        content: describe.operation.tips,
+                        content: $t(describe.operation.tips),
                         placement: 'left-start',
                         boundary: 'window'
                     }"
@@ -101,14 +101,14 @@
                         }
                     ]"
                 >
-                    {{ describe.operation.title }}
+                    {{ $t(describe.operation.title) }}
                 </div>
                 <bk-button
                     class="prop-operation"
                     size="small"
                     @click="describe.operation.click(formData, syncSlot)"
                 >
-                    {{ describe.operation.name }}
+                    {{ $t(describe.operation.name) }}
                 </bk-button>
             </template>
         </variable-select>
@@ -199,15 +199,15 @@
         filters: {
             valueTypeTextFormat (valueType) {
                 const textMap = {
-                    'areatext': '文本',
-                    'number': '数字',
-                    'object': '对象',
-                    'string': '字符串',
-                    'array': '数组',
-                    'remote': '函数',
-                    'data-source': '数据表',
-                    'table-data-source': '数据表',
-                    'srcset': '图片列表'
+                    'areatext': window.i18n.t('文本'),
+                    'number': window.i18n.t('数字'),
+                    'object': window.i18n.t('对象'),
+                    'string': window.i18n.t('字符串'),
+                    'array': window.i18n.t('数组'),
+                    'remote': window.i18n.t('函数'),
+                    'data-source': window.i18n.t('数据表'),
+                    'table-data-source': window.i18n.t('数据表'),
+                    'srcset': window.i18n.t('图片列表')
                 }
                 return textMap[valueType] || toPascal(valueType)
             }
@@ -369,7 +369,7 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(this.describe.tips)
+                const tip = transformTipsWidth(window.i18n.t(this.describe.tips))
                 const commonOptions = {
                     disabled: !tip,
                     interactive: false,
@@ -594,7 +594,7 @@
                         && ['remote', 'table-data-source', 'data-source', 'select-data-source'].includes(this.formData.valueType)
                     ) {
                         val = val.slice(0, 100)
-                        this.messageInfo(`属性【${name}】的值大于 100 条，画布区限制渲染 100 条。实际数据请在预览或者部署后查看`)
+                        this.messageInfo(window.i18n.t('属性【{0}】的值大于 100 条，画布区限制渲染 100 条。实际数据请在预览或者部署后查看', [name]))
                     }
 
                     if (this.formData.valueType === 'remote') {
@@ -621,7 +621,7 @@
                 } catch {
                     this.$bkMessage({
                         theme: 'error',
-                        message: `属性【${name}】的值设置不正确`
+                        message: window.i18n.t('属性【{0}】的值设置不正确', [name])
                     })
                 }
             },

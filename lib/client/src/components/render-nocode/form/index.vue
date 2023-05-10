@@ -73,7 +73,7 @@
                 return {
                     formId,
                     pageCode: pageCode + 'manage',
-                    pageName: pageName + '_表单数据管理页',
+                    pageName: pageName + '_' + this.$t('表单数据管理页'),
                     content: JSON.stringify({ filters: [], tableConfig: ['createUser', 'createTime'] })
                 }
             }

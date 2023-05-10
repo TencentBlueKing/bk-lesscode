@@ -45,8 +45,7 @@
                         type="empty"
                         scene="part"
                     >
-                        请点击上方刷新按钮获取 Mysql 数据表
-                    </bk-exception>
+                        {{ $t('请点击上方刷新按钮获取 Mysql 数据表') }} </bk-exception>
                 </section>
             </bk-option-group>
             <bk-option-group
@@ -54,7 +53,7 @@
                 :name="tableGroups[1].name"
             >
                 <span slot="group-name">
-                    <span v-bk-tooltips="{ content: '目前只支持查询 mysql 或 tspider 的结果表' }">{{ tableGroups[1].name }}</span>
+                    <span v-bk-tooltips="{ content: $t('目前只支持查询 mysql 或 tspider 的结果表') }">{{ tableGroups[1].name }}</span>
                     <i
                         class="bk-icon icon-refresh tool-icon"
                         @click="getBkBaseBizs"
@@ -98,8 +97,7 @@
                                 type="empty"
                                 scene="part"
                             >
-                                暂无数据
-                            </bk-exception>
+                                {{ $t('暂无数据') }} </bk-exception>
                         </template>
                     </bk-option-group>
                     <bk-exception
@@ -111,11 +109,10 @@
                         <span
                             class="data-base-tips"
                         >
-                            请先
-                            <bk-link
+                            {{ $t('请先') }} <bk-link
                                 :href="`/project/${projectInfo.id}/basic`"
                                 target="href"
-                            >绑定蓝鲸应用模块</bk-link>
+                            >{{ $t('绑定蓝鲸应用模块') }}</bk-link>
                         </span>
                     </bk-exception>
                     <bk-exception
@@ -127,18 +124,16 @@
                         <span
                             class="data-base-tips"
                         >
-                            请
-                            <bk-link
+                            {{ $t('请') }} <bk-link
                                 :href="`${v3DeveloperCenterUrl}/apps/${projectInfo.appCode}/cloudapi?apiName=bk-data&api=v3_meta_result_tables_mine_get,v3_queryengine_user_query_sync,v3_meta_bizs`"
                                 target="href"
                                 v-bk-tooltips="{
                                     boundary: 'window',
                                     width: 350,
-                                    content: '应用需要接口【v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】的权限，用于应用调用数据平台接口'
+                                    content: $t('应用需要接口') + '【v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】' + $t('的权限，用于应用调用数据平台接口')
                                 }"
-                            >申请权限</bk-link>
-                            。如已申请，可点击上方刷新按钮获取 BkBase 结果表
-                        </span>
+                            >{{ $t('申请权限') }}</bk-link>
+                            。{{ $t('如已申请，可点击上方刷新按钮获取 BkBase 结果表') }} </span>
                     </bk-exception>
                 </section>
             </bk-option-group>
@@ -151,7 +146,7 @@
             :disabled="!value"
             :loading="isLoadingData"
             @click="handleGetTableDatas(value, dataSourceType)"
-        >获取数据</bk-button>
+        >{{ $t('获取数据') }}</bk-button>
     </section>
 </template>
 
@@ -198,13 +193,13 @@
             })
             const tableGroups = ref([
                 {
-                    name: 'Mysql 数据表',
+                    name: window.i18n.t('Mysql 数据表'),
                     dataSourceType: DATA_SOURCE_TYPE.PREVIEW,
                     children: [],
                     isLoading: false
                 },
                 {
-                    name: 'BkBase 结果表',
+                    name: window.i18n.t('BkBase 结果表'),
                     dataSourceType: DATA_SOURCE_TYPE.BK_BASE,
                     children: [],
                     isLoading: false

@@ -3,31 +3,31 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                编辑表【{{originTableStatus.basicInfo.tableName}}】信息
-            </span>
+                {{ $t('编辑表【{0}】信息', [originTableStatus.basicInfo.tableName]) }} </span>
         </render-header>
 
         <main class="table-main">
             <section class="table-section">
-                <h5 class="section-title">基础信息</h5>
+                <h5 class="section-title">{{ $t('基础信息') }}</h5>
                 <info-table ref="basicFormRef" :basic-info="originTableStatus.basicInfo" @change="changeEdit(true)"></info-table>
             </section>
 
             <section class="table-section">
                 <h5 class="section-title">
-                    字段配置
-                    <i
+                    {{ $t('字段配置') }} <i
                         class="bk-icon icon-info"
                         v-bk-tooltips="{
-                            content: `数据行 id，createTime，createUser，updateTime，updateUser 是系统内置字段，系统会自动进行赋值。
-                            数据列中，小数点只会在字段类型为 decimal 的时候生效，长度只会在字段类型为 varchar 的时候生效`,
+                            content: $t('数据行 id，createTime，createUser，updateTime，updateUser 是系统内置字段，系统会自动进行赋值。数据列中，小数点只会在字段类型为 decimal 的时候生效，长度只会在字段类型为 varchar 的时候生效'),
                             width: '400'
                         }"
                     ></i>
                     <import-table
                         class="import-table"
-                        title="导入表结构"
-                        tips="1. 如果导入 sql 文件，仅支持解析创建表的语法<br>2. 仅支持系统可创建的字段类型<br>3. 系统内置字段会默认添加且不可修改<br>4. 导入文件后会解析并更新表字段配置"
+                        :title="$t('导入表结构')"
+                        :tips="`1. ${$t('如果导入 sql 文件，仅支持解析创建表的语法')}<br>
+                                2. ${$t('仅支持系统可创建的字段类型')}<br>
+                                3. ${$t('系统内置字段会默认添加且不可修改')}<br>
+                                4. ${$t('导入文件后会解析并更新表字段配置')}`"
                         :parse-import="parseImport"
                         :handle-import="handleImport"
                         @downloadTemplate="downloadStructTemplate"
@@ -37,7 +37,7 @@
             </section>
             <span
                 v-bk-tooltips="{
-                    content: '表单页面自动生成的数据表不可以编辑',
+                    content: $t('表单页面自动生成的数据表不可以编辑'),
                     disabled: !originTableStatus.disableEdit
                 }">
                 <bk-button
@@ -46,9 +46,9 @@
                     :loading="isSaving"
                     :disabled="!hasEdit || originTableStatus.disableEdit"
                     @click="submit"
-                >提交</bk-button>
+                >{{ $t('提交') }}</bk-button>
             </span>
-            <bk-button @click="goBack" :disabled="isSaving">取消</bk-button>
+            <bk-button @click="goBack" :disabled="isSaving">{{ $t('取消') }}</bk-button>
         </main>
 
         <confirm-dialog
@@ -108,8 +108,8 @@
             const cancelFn = () => next(false)
             if (this.hasEdit) {
                 bkInfoBox({
-                    title: '确认离开当前页面？',
-                    subTitle: '当前页面内容未保存，离开修改的内容将会丢失',
+                    title: window.i18n.t('确认离开当前页面？'),
+                    subTitle: window.i18n.t('当前页面内容未保存，离开修改的内容将会丢失'),
                     confirmFn,
                     cancelFn
                 })
@@ -194,7 +194,7 @@
                 isSaving.value = true
                 return store.dispatch('dataSource/modifyOnlineDb', record).then(() => {
                     return store.dispatch('dataSource/edit', postData).then(() => {
-                        messageSuccess('编辑表成功')
+                        messageSuccess(window.i18n.t('编辑表成功'))
                         changeEdit(false)
                         goBack()
                     })
@@ -225,13 +225,13 @@
                     try {
                         const [tableInfo] = handleImportStruct([data], type)
                         const columns = [
-                            ...BASE_COLUMNS,
-                            ...tableInfo.columns.filter(column => !BASE_COLUMNS.find(baseColumn => baseColumn.name === column.name))
+                            ...BASE_COLUMNS(),
+                            ...tableInfo.columns.filter(column => !BASE_COLUMNS().find(baseColumn => baseColumn.name === column.name))
                         ]
                         // 过滤掉基础字段设置，使用系统内置
                         resolve({
                             data: columns,
-                            message: `解析到【${columns.length}】个字段，请点击导入后修改字段配置`
+                            message: window.i18n.t('解析到【{0}】个字段，请点击导入后修改字段配置', [columns.length])
                         })
                     } catch (error) {
                         reject(error)

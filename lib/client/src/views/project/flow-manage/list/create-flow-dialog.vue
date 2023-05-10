@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        title="新建流程"
+        :title="$t('新建流程')"
         header-position="left"
         ext-cls="create-flow-dialog"
         :value="show"
@@ -13,16 +13,16 @@
             form-type="vertical"
             :model="flowData"
             :rules="rules">
-            <bk-form-item label="流程名称" property="flowName" :required="true">
+            <bk-form-item :label="$t('form_流程名称')" property="flowName" :required="true">
                 <bk-input v-model="flowData.flowName" />
             </bk-form-item>
-            <bk-form-item label="流程描述" property="desc">
+            <bk-form-item :label="$t('form_流程描述')" property="desc">
                 <bk-input v-model="flowData.summary" type="textarea" :row="4" />
             </bk-form-item>
         </bk-form>
         <div class="dialog-footer" slot="footer">
-            <bk-button theme="primary" :loading="createPending" @click="handleConfirm">确认</bk-button>
-            <bk-button :disabled="createPending" @click="handleClose">取消</bk-button>
+            <bk-button theme="primary" :loading="createPending" @click="handleConfirm">{{ $t('确认') }}</bk-button>
+            <bk-button :disabled="createPending" @click="handleClose">{{ $t('取消') }}</bk-button>
         </div>
     </bk-dialog>
 </template>
@@ -44,7 +44,7 @@
                     name: [{
                         required: true,
                         trigger: 'blur',
-                        message: '必填项'
+                        message: window.i18n.t('必填项')
                     }]
                 },
                 createPending: false
@@ -65,7 +65,7 @@
                             flowName,
                             summary,
                             projectId: this.projectId,
-                            meta: Object.assign({}, INIT_FLOW_STRUCTURE, { name: flowName })
+                            meta: Object.assign({}, INIT_FLOW_STRUCTURE(), { name: flowName })
                         }
                         const res = await this.$store.dispatch('nocode/flow/createFlow', params)
                         this.handleClose()

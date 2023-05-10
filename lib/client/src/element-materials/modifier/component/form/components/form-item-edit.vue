@@ -18,20 +18,20 @@
         :quick-clos="true"
         ext-cls="form-item-edit">
         <section slot="content" class="item-container">
-            <div class="form-item-title">基本信息</div>
+            <div class="form-item-title">{{ $t('基本信息') }}</div>
             <bk-form
                 ref="operation"
                 :model="formItemData"
                 :rules="rules"
                 :label-width="100">
                 <bk-form-item
-                    label="字段名称"
+                    :label="$t('form_字段名称')"
                     required
                     property="property"
                     error-display-type="normal">
                     <bk-input
                         v-model="formItemData.property"
-                        placeholder="以英文字符、下划线开头；只允许英文字符、数字、下划线、和 -" />
+                        :placeholder="$t('以英文字符、下划线开头；只允许英文字符、数字、下划线、和 -')" />
                 </bk-form-item>
                 <bk-form-item
                     label="Label"
@@ -41,7 +41,7 @@
                     <bk-input v-model="formItemData.label" />
                 </bk-form-item>
                 <bk-form-item
-                    label="表单项类型"
+                    :label="$t('form_表单项类型')"
                     error-display-type="normal">
                     <bk-select v-model="formItemData.type">
                         <bk-option
@@ -61,17 +61,15 @@
                     <bk-button
                         class="mr5"
                         theme="primary"
-                        title="提交"
+                        :title="$t('提交')"
                         @click="handleSave">
-                        提交
-                    </bk-button>
+                        {{ $t('提交') }} </bk-button>
                     <bk-button
                         class="mr5"
                         theme="default"
-                        title="取消"
+                        :title="$t('取消')"
                         @click="beforeClose">
-                        取消
-                    </bk-button>
+                        {{ $t('取消') }} </bk-button>
                 </div>
             </bk-form>
         </section>
@@ -105,34 +103,34 @@
             return {
                 changeCount: 0,
                 formItemData: {},
-                title: '表单项配置',
+                title: window.i18n.t('表单项配置'),
                 formItemTypeList: [
-                    { id: 'input', name: '输入框' },
-                    { id: 'select', name: '下拉选框' },
-                    { id: 'date-picker', name: '日期选择' },
-                    { id: 'time-picker', name: '时间选择' },
-                    { id: 'switcher', name: '开关' },
-                    { id: 'radio-group', name: '单选框' },
-                    { id: 'checkbox-group', name: '多选框' },
-                    { id: 'checkbox', name: '复选框' }
+                    { id: 'input', name: window.i18n.t('输入框') },
+                    { id: 'select', name: window.i18n.t('下拉选框') },
+                    { id: 'date-picker', name: window.i18n.t('日期选择') },
+                    { id: 'time-picker', name: window.i18n.t('时间选择') },
+                    { id: 'switcher', name: window.i18n.t('开关') },
+                    { id: 'radio-group', name: window.i18n.t('单选框') },
+                    { id: 'checkbox-group', name: window.i18n.t('多选框') },
+                    { id: 'checkbox', name: window.i18n.t('复选框') }
                 ],
                 rules: {
                     label: [
                         {
                             required: true,
-                            message: 'Label必填',
+                            message: window.i18n.t('Label必填'),
                             trigger: 'blur'
                         }
                     ],
                     property: [
                         {
                             required: true,
-                            message: '字段名称名称必填',
+                            message: window.i18n.t('字段名称名称必填'),
                             trigger: 'blur'
                         },
                         {
                             validator: value => /^[a-zA-Z_][0-9a-zA-Z_]{0,29}$/.test(value),
-                            message: '字段名称：以英文字符、下划线开头；只允许英文字符、数字、下划线',
+                            message: window.i18n.t('字段名称：以英文字符、下划线开头；只允许英文字符、数字、下划线'),
                             trigger: 'blur'
                         }
                     ]
@@ -168,7 +166,7 @@
                     .then(() => {
                         this.$bkMessage({
                             theme: 'success',
-                            message: '修改成功'
+                            message: this.$t('修改成功')
                         })
                         this.submit(this.formItemData)
                     })
@@ -181,9 +179,9 @@
             beforeClose () {
                 if (this.changeAlert) {
                     this.$bkInfo({
-                        subTitle: '弹窗关闭后未保存的数据将会丢失，请确认关闭',
-                        okText: '确认',
-                        cancelText: '取消',
+                        subTitle: this.$t('弹窗关闭后未保存的数据将会丢失，请确认关闭'),
+                        okText: this.$t('确认'),
+                        cancelText: this.$t('取消'),
                         closeIcon: false,
                         confirmFn: this.close
                     })

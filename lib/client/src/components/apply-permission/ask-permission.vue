@@ -88,10 +88,10 @@
             }
         },
         created () {
-            this.titleText = '该操作需要以下权限'
-            this.actionText = '需申请的权限'
-            this.resourceText = '关联的资源实例'
-            this.errorTips = '你已拥有权限，请刷新页面'
+            this.titleText = this.$t('该操作需要以下权限')
+            this.actionText = this.$t('table_需申请的权限')
+            this.resourceText = this.$t('table_关联的资源实例')
+            this.errorTips = this.$t('你已拥有权限，请刷新页面')
         }
     }
 </script>

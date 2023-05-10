@@ -68,7 +68,7 @@
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :data="files">
-            <bk-table-column label="文件名称" prop="name" min-width="210" sortable show-overflow-tooltip>
+            <bk-table-column :label="$t('table_文件名称')" prop="name" min-width="210" sortable show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['filename-content', row.status]">
                         <file-icon :is-card="false" :file="row" />
@@ -81,45 +81,44 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="大小" prop="size" min-width="90" sortable show-overflow-tooltip>
+            <bk-table-column :label="$t('大小')" prop="size" min-width="90" sortable show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <span>{{formatSize(row.size)}}</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="状态" prop="status" min-width="150" show-overflow-tooltip>
+            <bk-table-column :label="$t('状态')" prop="status" min-width="150" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['upload-status', row.status]">
                         <bk-progress v-if="row.status === UPLOAD_STATUS.UPLOADING" :percent="row.percentage / 100" size="small"></bk-progress>
-                        <div class="status-content" v-if="row.status === UPLOAD_STATUS.SUCCESS">上传成功</div>
+                        <div class="status-content" v-if="row.status === UPLOAD_STATUS.SUCCESS">{{ $t('上传成功') }}</div>
                         <div class="status-content" v-if="row.status === UPLOAD_STATUS.FAIL">
-                            <span class="fail-title">上传失败</span>
+                            <span class="fail-title">{{ $t('上传失败') }}</span>
                             <span class="fail-message" v-if="row.statusText">（{{row.statusText}}）</span>
                         </div>
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="创建人" prop="createUser" min-width="90" sortable show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="创建时间" prop="createTime" min-width="200" sortable show-overflow-tooltip>
+            <bk-table-column :label="$t('table_创建人')" prop="createUser" min-width="110" sortable show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_创建时间')" prop="createTime" min-width="200" sortable show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <span>{{row.createTime | time}}</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作" min-width="150">
+            <bk-table-column :label="$t('操作')" min-width="150">
                 <template v-slot="{ row }">
-                    <span v-bk-tooltips="{ content: '文件上传中，暂无链接', placements: ['top'], disabled: row.status !== UPLOAD_STATUS.UPLOADING }">
+                    <span v-bk-tooltips="{ content: $t('文件上传中，暂无链接'), placements: ['top'], disabled: row.status !== UPLOAD_STATUS.UPLOADING }">
                         <bk-button
                             text
                             :disabled="row.status !== 'success'"
                             @click="handleCopyLink(row)">
-                            复制链接
-                        </bk-button>
+                            {{ $t('复制链接') }} </bk-button>
                     </span>
                     <bk-popconfirm
                         trigger="click"
-                        title="确认要删除该图片？"
-                        content="删除后不可恢复，已引用的组件将显示异常"
+                        :title="$t('确认要删除该图片？')"
+                        :content="$t('删除后不可恢复，已引用的组件将显示异常')"
                         @confirm="handleRemove(row)">
-                        <bk-button text class="ml10">删除</bk-button>
+                        <bk-button text class="ml10">{{ $t('删除') }}</bk-button>
                     </bk-popconfirm>
                 </template>
             </bk-table-column>

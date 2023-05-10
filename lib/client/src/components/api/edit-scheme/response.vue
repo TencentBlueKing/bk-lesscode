@@ -54,8 +54,8 @@
 
         setup (props, { emit }) {
             const tabs = [
-                { name: 'response', label: '响应示例' },
-                { name: 'edit', label: '响应结果字段提取' }
+                { name: 'response', label: window.i18n.t('响应示例') },
+                { name: 'edit', label: window.i18n.t('响应结果字段提取') }
             ]
             const currentInstance = getCurrentInstance()
             const activeTab = ref('response')
@@ -84,7 +84,7 @@
                     const responseParam = parseValue2Scheme(responseValue)
                     handleUpdate(responseParam)
                 } catch (error) {
-                    console.error(`输入有误，请重新输入：${error.message}`)
+                    console.error(window.i18n.t('输入有误，请重新输入：{0}', [error.message]))
                 }
             }
 

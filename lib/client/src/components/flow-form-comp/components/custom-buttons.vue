@@ -14,8 +14,7 @@
             @show="isDropdownShow = true"
             @hide="isDropdownShow = false">
             <div class="more-buttons-trigger" slot="dropdown-trigger">
-                更多
-                <i :class="['bk-icon icon-angle-down angle-icon', { 'active': isDropdownShow }]"></i>
+                {{ $t('更多') }} <i :class="['bk-icon icon-angle-down angle-icon', { 'active': isDropdownShow }]"></i>
             </div>
             <ul class="more-btns-list" slot="dropdown-content">
                 <li v-for="button in buttons.slice(4)" :key="button.id" class="button-item" @click="handleClick(button)">{{ button.name }}</li>

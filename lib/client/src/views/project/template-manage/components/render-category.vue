@@ -2,7 +2,7 @@
     <div class="class-list" v-bkloading="{ isLoading }">
         <div class="header">
             <bk-input :value="searchValue" @change="handleSearch" />
-            <div class="create-btn" v-bk-tooltips.top="'添加分类'" role="operation" @click.stop="handleShowCreate">
+            <div class="create-btn" v-bk-tooltips.top="$t('添加分类')" role="operation" @click.stop="handleShowCreate">
                 <i class="bk-icon icon-plus-line" />
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <bk-input
                     v-model="newCategory"
                     :native-attributes="{ autofocus: 'autofocus' }"
-                    placeholder="请输入模板分类，多个分类“/”分隔，回车结束"
+                    :placeholder="$t('请输入模板分类，多个分类“/”分隔，回车结束')"
                     @keyup="handleSubmitCategory" />
             </div>
         </div>
@@ -199,7 +199,7 @@
                 }
                 const isDupName = this.list.some(_ => _.category === value)
                 if (isDupName) {
-                    this.messageError('分类重名')
+                    this.messageError(window.i18n.t('分类重名'))
                 }
                 try {
                     if (this.editCategory.id) {
@@ -208,14 +208,14 @@
                             name: this.newCategory,
                             belongProjectId: parseInt(this.$route.params.projectId)
                         })
-                        this.messageSuccess('编辑模板分类成功')
+                        this.messageSuccess(window.i18n.t('编辑模板分类成功'))
                     } else {
                         await this.$store.dispatch('pageTemplate/categoryCreate', {
                             name: this.newCategory,
                             belongProjectId: parseInt(this.$route.params.projectId)
                         })
                         this.searchValue = ''
-                        this.messageSuccess('添加模板分类成功')
+                        this.messageSuccess(window.i18n.t('添加模板分类成功'))
                     }
 
                     this.handleHideCreate()
@@ -229,7 +229,7 @@
             },
             async handleDelete (category) {
                 if (this.list.length === 1) {
-                    this.messageError('模板分类不能为空')
+                    this.messageError(window.i18n.t('模板分类不能为空'))
                     return
                 }
                 try {
@@ -238,7 +238,7 @@
                         belongProjectId: parseInt(this.$route.params.projectId),
                         id: category.id
                     })
-                    this.messageSuccess('删除模板分类成功')
+                    this.messageSuccess(window.i18n.t('删除模板分类成功'))
                     this.fetchData()
                 } catch {}
             },

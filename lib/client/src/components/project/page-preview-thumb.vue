@@ -1,7 +1,7 @@
 <template>
     <div class="preview-thumb">
         <img ref="img" loading="lazy" v-bind="$attrs" v-if="!isEmpty">
-        <slot v-else><div class="empty-preview-img">页面为空</div></slot>
+        <slot v-else><div class="empty-preview-img">{{ $t('页面为空') }}</div></slot>
     </div>
 </template>
 

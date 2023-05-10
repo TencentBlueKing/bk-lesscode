@@ -6,13 +6,13 @@
                 v-bkloading="{ isLoading }"
                 :border="false"
                 :collapsible="true"
-                :initial-divide="270"
+                :initial-divide="$store.state.Language === 'en' ? 310 : 270"
                 :min="270"
             >
                 <section slot="aside" class="func-left">
                     <h3 class="left-title">
                         <div class="title-name">
-                            <span class="function-lib">函数管理</span>
+                            <span class="function-lib">{{ $t('函数管理') }}</span>
                             <version-tag :version-name="versionName" />
                         </div>
                         <bk-popconfirm
@@ -29,7 +29,7 @@
                                     right-icon="loading"
                                     class="add-function-group"
                                     ref="addGroupRef"
-                                    placeholder="请输入函数分类，多个分类 / 分隔，回车保存"
+                                    :placeholder="$t('请输入函数分类，多个分类 / 分隔，回车保存')"
                                     v-model="newGroupName"
                                     v-bkloading="{ isLoading: isCreatingGroup }"
                                     @enter="handleCreateGroup"
@@ -37,7 +37,7 @@
                             </div>
                             <i
                                 class="bk-icon icon-plus"
-                                v-bk-tooltips="{ content: '添加分类', placements: ['top'] }"
+                                v-bk-tooltips="{ content: $t('添加分类'), placements: ['top'] }"
                                 @click="newGroupName = ''"
                             ></i>
                         </bk-popconfirm>
@@ -45,7 +45,7 @@
 
                     <bk-input
                         class="left-input"
-                        placeholder="函数名称"
+                        :placeholder="$t('函数名称')"
                         right-icon="bk-icon icon-search"
                         clearable
                         v-model="searchString"
@@ -264,10 +264,10 @@
                 // 函数未保存或者函数经过了修改，需要给出切换提示
                 if (this.$refs.functionForm.formChanged) {
                     this.$bkInfo({
-                        title: '确认切换',
-                        subTitle: '不保存则会丢失当前数据',
-                        okText: '保存并切换',
-                        cancelText: '不保存',
+                        title: this.$t('确认切换'),
+                        subTitle: this.$t('不保存则会丢失当前数据'),
+                        okText: this.$t('保存并切换'),
+                        cancelText: this.$t('不保存'),
                         confirmLoading: true,
                         closeIcon: false,
                         confirmFn: saveChooseFunction,
@@ -310,7 +310,7 @@
                     this.createFunctionGroup(postData).then(() => {
                         this.newGroupName = ''
                         this.clickEmptyArea()
-                        this.messageSuccess('添加成功')
+                        this.messageSuccess(this.$t('添加成功'))
                         this.resetList()
                     }).finally(() => {
                         this.isCreatingGroup = false
@@ -330,11 +330,11 @@
                         else nameNum[name] = 1
                     })
                     if (hasRepeatName) {
-                        reject(new Error('不能创建相同名字的分类'))
+                        reject(new Error(this.$t('不能创建相同名字的分类')))
                     } else if (nameList.some(x => x === '')) {
-                        reject(new Error('分类名不能为空'))
+                        reject(new Error(this.$t('分类名不能为空')))
                     } else if (this.groupList.find(group => nameList.includes(group.groupName))) {
-                        reject(new Error('分类名重复，请修改后重试'))
+                        reject(new Error(this.$t('分类名重复，请修改后重试')))
                     } else {
                         resolve()
                     }

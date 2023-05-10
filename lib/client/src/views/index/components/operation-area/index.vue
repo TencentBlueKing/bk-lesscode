@@ -1,7 +1,7 @@
 <template>
     <div :class="$style['top-wrapper']">
         <bk-alert v-if="(isTips && operation === 'edit')" type="info"
-            title="本页面包含交互式组件，可在页面组件树中查找并选中编辑"
+            :title="$t('本页面包含交互式组件，可在页面组件树中查找并选中编辑')"
             @close="handlerClose"
             closable></bk-alert>
         <div

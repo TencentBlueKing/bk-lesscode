@@ -97,7 +97,7 @@ export default defineComponent({
                             close: !this.showContent
                         }}
                     ></i>
-                    <span>导航菜单</span>
+                    <span>{ this.$t('导航菜单') }</span>
                 </div>
                 {this.showContent && <div>
                     <div class="menu-wrapper">
@@ -123,7 +123,7 @@ export default defineComponent({
                         </vue-draggable>
                     </div>
                     <div class="footer">
-                        <bk-button size="small" text onClick={this.handleAdd}>继续添加</bk-button>
+                        <bk-button size="small" text onClick={this.handleAdd}>{ this.$t('继续添加') }</bk-button>
                     </div>
                 </div>}
             </div>

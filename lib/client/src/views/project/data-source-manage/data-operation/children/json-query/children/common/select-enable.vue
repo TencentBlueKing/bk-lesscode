@@ -18,7 +18,7 @@
             theme="primary"
             icon="bk-drag-icon bk-drag-plus-circle"
             @click="changeEnable"
-        >添加</bk-link>
+        >{{ $t('添加') }}</bk-link>
     </section>
 </template>
 

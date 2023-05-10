@@ -1,7 +1,7 @@
 <template>
     <div class="template-menu-edit">
         <div class="menu-name">
-            <bk-input placeholder="请输入导航名称" :value="baseInfo.name" @change="handleNameChange">
+            <bk-input :placeholder="$t('请输入导航名称')" :value="baseInfo.name" @change="handleNameChange">
                 <div
                     v-if="showIcon"
                     slot="prepend"
@@ -16,13 +16,13 @@
             <div v-if="isPageCode">
                 <bk-select
                     class="menu-page"
-                    placeholder="请选中路由"
+                    :placeholder="$t('请选中路由')"
                     clearable
                     :value="baseInfo.pageCode"
                     @change="handlePageCodeChange">
                     <bk-option
                         v-for="page in pageRouteList"
-                        v-bk-tooltips="{ disabled: !page.disabled, content: '未设置路由' }"
+                        v-bk-tooltips="{ disabled: !page.disabled, content: $t('未设置路由') }"
                         :key="page.pageCode"
                         :id="page.pageCode"
                         :disabled="page.disabled"
@@ -40,12 +40,11 @@
                         text
                         style="font-size: 12px;"
                         @click="handleShowEditPageQuery">
-                        添加路由参数
-                    </bk-button>
+                        {{ $t('添加路由参数') }} </bk-button>
                     <div
                         v-if="isShowPageQuery"
                         class="query-remove"
-                        v-bk-tooltips.top-start="'删除路由参数'"
+                        v-bk-tooltips.top-start="$t('删除路由参数')"
                         @click="handleRemovePageQuery">
                         <i class="bk-icon icon-minus-circle" />
                     </div>
@@ -54,15 +53,15 @@
             <bk-input
                 v-else
                 class="menu-link"
-                placeholder="请输入链接"
+                :placeholder="$t('请输入链接')"
                 :value="baseInfo.link"
                 clearable
                 @change="handleLinkChange" />
             <div
                 class="menu-type"
-                v-bk-tooltips.top-start="isPageCode ? '点击切换链接模式' : '点击切换路由模式'"
+                v-bk-tooltips.top-start="isPageCode ? $t('点击切换链接模式') : $t('点击切换路由模式')"
                 @click="handleTogglePageCode">
-                <div class="text">{{ isPageCode ? '路由' : '链接' }}</div>
+                <div class="text">{{ isPageCode ? $t('路由') : $t('链接') }}</div>
             </div>
         </div>
         <div style="display: none">
@@ -72,7 +71,7 @@
                         <input
                             ref="search"
                             spellcheck="false"
-                            placeholder="输入 icon 的名字"
+                            :placeholder="$t('输入 icon 的名字')"
                             @input="handleInputChange">
                         <i class="bk-icon icon-search icon-search-flag" />
                     </div>
@@ -86,7 +85,7 @@
                                 <i :class="searchItem.icon" />
                                 <span class="item-name">{{ searchItem.name }}</span>
                             </div>
-                            <div v-if="searchList.length < 1" key="searchEmpty" class="search-empty">暂无数据</div>
+                            <div v-if="searchList.length < 1" key="searchEmpty" class="search-empty">{{ $t('暂无数据') }}</div>
                         </template>
                         <template v-else>
                             <template v-for="buildIconGroupName in Object.keys(buildInIconGroup)">

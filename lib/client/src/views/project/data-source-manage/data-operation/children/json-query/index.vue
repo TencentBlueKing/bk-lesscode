@@ -9,16 +9,14 @@
                     }"
                     @click="toggleShowCondition"
                 ></i>
-                查询条件
-            </span>
+                {{ $t('查询条件') }} </span>
             <bk-button
                 title="primary"
                 size="small"
                 :text="true"
                 @click="handleClear"
             >
-                清空
-            </bk-button>
+                {{ $t('清空') }} </bk-button>
         </h3>
 
         <template

@@ -3,7 +3,7 @@
         :is-show="isShow"
         :quick-close="true"
         :width="1200"
-        :title="form.id ? '编辑函数' : '新建函数'"
+        :title="form.id ? $t('编辑函数') : $t('新建函数')"
         :before-close="confirmClose"
         @hidden="handleClose">
         <section class="func-form-home" slot="content">
@@ -13,8 +13,8 @@
             <form-monaco :form.sync="form" :function-list="[]" class="monaco" ref="monaco"></form-monaco>
         </section>
         <section slot="footer" class="add-footer">
-            <bk-button theme="primary" @click="submitAddMarketFunc" :loading="isLoading">提交</bk-button>
-            <bk-button @click="handleClose">取消</bk-button>
+            <bk-button theme="primary" @click="submitAddMarketFunc" :loading="isLoading">{{ $t('提交') }}</bk-button>
+            <bk-button @click="handleClose">{{ $t('取消') }}</bk-button>
         </section>
     </bk-sideslider>
 </template>
@@ -78,8 +78,8 @@
             confirmClose () {
                 if (this.formChanged) {
                     this.$bkInfo({
-                        title: '请确认是否关闭',
-                        subTitle: '存在未保存的函数，关闭后不会保存更改',
+                        title: this.$t('请确认是否关闭'),
+                        subTitle: this.$t('存在未保存的函数，关闭后不会保存更改'),
                         confirmFn: this.handleClose
                     })
                 } else {

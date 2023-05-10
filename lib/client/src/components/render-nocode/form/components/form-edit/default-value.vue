@@ -29,8 +29,7 @@
             theme="primary"
             :text="true"
             @click="richTextVisible = true">
-            前往设置
-        </bk-button>
+            {{ $t('前往设置') }} </bk-button>
         <field-item
             v-else
             :field="field"
@@ -43,7 +42,7 @@
         <bk-dialog
             v-model="richTextVisible"
             theme="primary"
-            title="内容配置"
+            :title="$t('内容配置')"
             header-position="left"
             :width="960"
             :mask-close="false"

@@ -2,14 +2,14 @@
     <div :class="$style['component-manage-useing-page']">
         <div :class="$style['search']">
             <div :class="$style['version-selector']">
-                应用版本：<project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" />
+                {{ $t('应用版本：') }}：<project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" />
             </div>
             <div :class="$style['comp-type-select']">
                 <type-select @select-change="handleSelectChange"></type-select>
                 <bk-input
                     :class="$style['search-input']"
                     right-icon="bk-icon icon-search"
-                    placeholder="请输入组件名称"
+                    :placeholder="$t('请输入组件名称')"
                     v-model.trim="keyword"
                     @clear="handleSearch"
                     @enter="handleSearch"
@@ -24,7 +24,7 @@
                 :header-cell-style="{ background: '#f0f1f5' }"
                 :data="list"
                 v-show="!isLoading">
-                <bk-table-column label="组件名称" prop="compName" min-width="180" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_组件名称')" prop="compName" min-width="180" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span :class="$style['comp-type']">
                             <i v-if="row.compType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
@@ -33,15 +33,15 @@
                         <span :class="$style['component-name']">{{ row.displayName }}({{ row.name }})</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="来源应用" prop="compSource" min-width="120" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_来源应用')" prop="compSource" min-width="140" show-overflow-tooltip>
                     <template slot-scope="{ row }">
-                        <span>{{row.belongProjectId !== row.sourceProject.id ? row.sourceProject.projectName : '本应用'}}</span>
+                        <span>{{row.belongProjectId !== row.sourceProject.id ? row.sourceProject.projectName : $t('本应用')}}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="所属分类" prop="category" min-width="120" sortable show-overflow-tooltip />
+                <bk-table-column :label="$t('所属分类')" prop="category" min-width="120" sortable show-overflow-tooltip />
                 <!-- <bk-table-column label="是否公开" prop="isPublic" show-overflow-tooltip>
                 </bk-table-column> -->
-                <bk-table-column label="使用版本" prop="currentVersion" width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('使用版本')" prop="currentVersion" width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div :class="[$style['component-version'], { [$style['outdate']]: row.useingVersion.versionId !== row.versionId }]"
                             @click="handleVersionDetail(row, 1)">
@@ -50,7 +50,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="最新版本" prop="latestVersion" width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_最新版本')" prop="latestVersion" width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div :class="$style['component-version']" @click="handleVersionDetail(row)">
                             <span>{{ row.version }}</span>
@@ -58,22 +58,21 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="使用页面" prop="usingPage" min-width="280" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_使用页面')" prop="usingPage" min-width="280" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span :class="$style['component-pages']">
                             <span>{{ (row.pageList || []).map(_ => _.pageName).join('、') }}</span>
                         </span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="操作" width="120">
+                <bk-table-column :label="$t('操作')" width="120">
                     <template slot-scope="{ row }">
-                        <span v-bk-tooltips="{ content: '已升级到最新版本', placements: ['top'], disabled: row.useingVersion.versionId !== row.versionId }">
+                        <span v-bk-tooltips="{ content: $t('已升级到最新版本'), placements: ['top'], disabled: row.useingVersion.versionId !== row.versionId }">
                             <bk-button
                                 text
                                 :disabled="row.useingVersion.versionId === row.versionId"
                                 @click="handleUpdate(row)">
-                                升级
-                            </bk-button>
+                                {{ $t('升级') }} </bk-button>
                         </span>
                     </template>
                 </bk-table-column>
@@ -85,20 +84,19 @@
             render-directive="if"
             theme="primary"
             ext-cls="confirm-dialog-wrapper"
-            title="确认升级组件？"
+            :title="$t('确认升级组件')"
             width="400"
             footer-position="center"
             :mask-close="false"
             :auto-close="false">
             <p class="tips-content">
-                将会把该应用“{{selectedProjectVersionName}}”版本里所有页面中使用到的【{{updateDialog.data.displayName}}】组件统一升级到【{{updateDialog.data.version}}】版本，请谨慎操作
-            </p>
+                {{ $t('将会把该应用“{0}”版本里所有页面中使用到的【{1}】组件统一升级到【{2}】版本，请谨慎操作', [selectedProjectVersionName, updateDialog.data.displayName, updateDialog.data.version]) }} </p>
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="primary"
                     :loading="updateDialog.loading"
-                    @click="handleUpdateConfirm">升级</bk-button>
-                <bk-button @click="updateDialog.visible = false" :disabled="updateDialog.loading">取消</bk-button>
+                    @click="handleUpdateConfirm">{{ $t('升级') }}</bk-button>
+                <bk-button @click="updateDialog.visible = false" :disabled="updateDialog.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
 
@@ -183,7 +181,7 @@
                     })
                     this.updateDialog.visible = false
                     this.fetchData()
-                    this.messageSuccess('升级成功')
+                    this.messageSuccess(window.i18n.t('升级成功'))
                 } catch (e) {
                     console.error(e)
                 } finally {

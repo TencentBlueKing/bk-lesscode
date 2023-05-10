@@ -11,13 +11,13 @@
                 class="tab-item"
                 :class="{ active: tab === 'customComponent' }"
                 @click="handleChangeTab('customComponent')">
-                <span class="tab-item-label">自定义组件</span>
+                <span class="tab-item-label" :title="$store.state.Language === 'en' ? $t('自定义组件') : ''">{{ $t('自定义组件') }}</span>
             </div>
             <div
                 class="tab-item"
                 :class="{ active: tab === 'icon' }"
                 @click="handleChangeTab('icon')">
-                <span class="tab-item-label">图标</span>
+                <span class="tab-item-label">{{ $t('图标') }}</span>
             </div>
         </div>
         <div class="drag-component-list">

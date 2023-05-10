@@ -89,7 +89,7 @@
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :data="pageList">
-            <bk-table-column label="页面名称" prop="pageName" min-width="210" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_页面名称')" prop="pageName" min-width="210" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div class="pagename-content">
                         <span class="page-type">
@@ -103,7 +103,7 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="页面类型" prop="nocodeType" min-width="120">
+            <bk-table-column :label="$t('table_页面类型')" prop="nocodeType" min-width="120">
                 <template v-slot="{ row }">
                     <span
                         class="nocode-type-tag"
@@ -123,45 +123,45 @@
                                 <span>{{getFormManagePages(row.formId).length}}</span>
                             </section>
                             <div slot="content" class="form-manage-list">
-                                <div class="list-title"><span>关联的表单数据管理页</span></div>
+                                <div class="list-title"><span>{{ $t('关联的表单数据管理页') }}</span></div>
                                 <ul class="list-ul">
                                     <li v-for="item in getFormManagePages(row.formId)" :key="item.id">
                                         <i class="bk-drag-icon bk-drag-page"></i>
                                         <span class="name">{{item.pageName}}</span>
-                                        <i title="预览" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
-                                        <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
+                                        <i :title="$t('预览')" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
+                                        <i :title="$t('编辑')" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
                                     </li>
                                 </ul>
                             </div>
                         </bk-popover>
-                        <section style="cursor: default;" v-else>{{nocodeTypeMap.title[row.nocodeType] || '自定义页'}}</section>
+                        <section style="cursor: default;" v-else>{{nocodeTypeMap.title[row.nocodeType] || $t('自定义页')}}</section>
                     </span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="路由" min-width="150" show-overflow-tooltip>
+            <bk-table-column :label="$t('路由')" min-width="150" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div class="route-content">
                         <span class="fullpath" :title="routeMap[row.id].fullPath" v-if="routeMap[row.id].id">
                             {{routeMap[row.id].fullPath}}
                         </span>
-                        <span class="unset" v-else>未配置</span>
+                        <span class="unset" v-else>{{ $t('未配置') }}</span>
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="更新人" prop="updateUser" min-width="90" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{row.updateUser || row.createUser}}
                 </template>
             </bk-table-column>
-            <bk-table-column label="更新时间" prop="updateTime" min-width="200" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{getRelativeTime(row.updateTime)}}
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作" min-width="150">
+            <bk-table-column :label="$t('操作')" min-width="150">
                 <template v-slot="{ row }">
-                    <bk-button class="edit-btn" text theme="primary" @click="handleEditPage(row)">编辑</bk-button>
-                    <bk-button class="preview-btn" text @click.stop="handlePreview(row)">预览</bk-button>
+                    <bk-button class="edit-btn" text theme="primary" @click="handleEditPage(row)">{{ $t('编辑') }}</bk-button>
+                    <bk-button class="preview-btn" text @click.stop="handlePreview(row)">{{ $t('预览') }}</bk-button>
                     <bk-popover class="more-dot-menu"
                         placement="bottom-start"
                         theme="page-manage-more-dot-menu light"
@@ -172,12 +172,12 @@
                             <i class="bk-drag-icon bk-drag-more-dot"></i>
                         </span>
                         <ul class="menu-list" slot="content">
-                            <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleDownloadSource(row)">下载源码</a></li>
-                            <li><a href="javascript:;" @click="handleRename(row)">重命名</a></li>
-                            <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleCopy(row)">复制</a></li>
-                            <li><a href="javascript:;" @click="handleEditRoute(row)">修改路由</a></li>
-                            <li v-if="row.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(row)">生成数据管理页</a></li>
-                            <li><a href="javascript:;" @click="handleDelete(row)">删除</a></li>
+                            <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleDownloadSource(row)">{{ $t('下载源码') }}</a></li>
+                            <li><a href="javascript:;" @click="handleRename(row)">{{ $t('重命名') }}</a></li>
+                            <li v-if="!row.nocodeType"><a href="javascript:;" @click="handleCopy(row)">{{ $t('复制') }}</a></li>
+                            <li><a href="javascript:;" @click="handleEditRoute(row)">{{ $t('修改路由') }}</a></li>
+                            <li v-if="row.nocodeType === 'FORM'"><a href="javascript:;" @click="handleCreateFormManage(row)">{{ $t('生成数据管理页') }}</a></li>
+                            <li><a href="javascript:;" @click="handleDelete(row)">{{ $t('删除') }}</a></li>
                         </ul>
                     </bk-popover>
                 </template>

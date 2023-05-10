@@ -1,6 +1,6 @@
 <template>
     <section>
-        <bk-alert style="margin: 16px 24px 0 16px;" type="info" title="模板来源：在页面画布中可将局部内容或将整个页面存为模板" closable></bk-alert>
+        <bk-alert style="margin: 16px 24px 0 16px;" type="info" :title="$t('模板来源：在页面画布中可将局部内容或将整个页面存为模板')" closable></bk-alert>
         <layout class="template-manage" :init-width="320">
             <render-category ref="category" slot="left" @on-change="handleCategoryChange" />
             <render-template v-if="categoryId" :category-id="categoryId" :refresh-category="updateCategory" />

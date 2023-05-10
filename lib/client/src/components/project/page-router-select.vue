@@ -31,17 +31,17 @@
                 <template v-if="field.id === 'pageRoute'">
                     <div class="bk-option-content-default" :title="childSlot.props.name">
                         <div class="bk-option-name">
-                            {{childSlot.props.name}}<span class="bound" v-if="childSlot.props.disabled">（已绑定）</span>
+                            {{childSlot.props.name}}<span class="bound" v-if="childSlot.props.disabled">（{{ $t('已绑定') }}）</span>
                         </div>
                     </div>
                 </template>
             </slot-component-child>
         </slot-component>
         <div slot="extension" style="cursor: pointer;" @click="$emit('goPage', 'layout')" v-if="field.id === 'layoutId'">
-            <i class="bk-drag-icon bk-drag-jump-link"></i> 新建模板实例
+            <i class="bk-drag-icon bk-drag-jump-link"></i> {{ $t('新建模板实例') }}
         </div>
         <div slot="extension" style="cursor: pointer;" @click="$emit('goPage', 'routes')" v-if="field.id === 'pageRoute'">
-            <i class="bk-drag-icon bk-drag-jump-link"></i> 新建路由
+            <i class="bk-drag-icon bk-drag-jump-link"></i> {{ $t('新建路由') }}
         </div>
     </component>
 </template>

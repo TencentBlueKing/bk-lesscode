@@ -4,7 +4,7 @@
         <div class="search-container" v-bk-clickoutside="handleHideDropList">
             <bk-input
                 clearable
-                :placeholder="'组件名称'"
+                :placeholder="$t('组件名称')"
                 :right-icon="'bk-icon icon-search'"
                 v-model.trim="searchValue"
                 @change="handleSearch"
@@ -43,7 +43,7 @@
                     }"
                     class="outside-ul">
                     <li class="search-dropdown-list-item">
-                        <span class="text">没有找到</span>
+                        <span class="text">{{ $t('没有找到') }}</span>
                     </li>
                 </ul>
             </div>
@@ -81,7 +81,7 @@
                             v-for="field in group.items"
                             v-bk-tooltips="{
                                 disabled: !isFieldDisable(field.type),
-                                content: '流程表单暂不支持该类型控件'
+                                content: $t('流程表单暂不支持布局类型控件')
                             }"
                             :class="['field-item drag-entry', { 'not-available': isFieldDisable(field.type) }]"
                             :data-type="field.type"
@@ -124,17 +124,17 @@
             getGroupedFields (fieldsArr) {
                 const group = [
                     {
-                        name: '布局控件',
+                        name: this.$t('布局控件'),
                         items: [],
                         isFolded: false
                     },
                     {
-                        name: '基础控件',
+                        name: this.$t('基础控件'),
                         items: [],
                         isFolded: false
                     },
                     {
-                        name: '高级控件',
+                        name: this.$t('高级控件'),
                         items: [],
                         isFolded: false
                     }
@@ -243,12 +243,12 @@
                 this.searchValue = data.name
                 const group = [
                     {
-                        name: '布局控件',
+                        name: this.$t('布局控件'),
                         items: [],
                         isFolded: false
                     },
                     {
-                        name: '基础控件',
+                        name: this.$t('基础控件'),
                         items: [],
                         isFolded: false
                     }

@@ -15,13 +15,13 @@
             :name="option.version">
         </bk-option>
         <div slot="extension" @click="handleCreate" style="cursor: pointer;">
-            <i class="bk-icon icon-plus-circle"></i> 新建版本
+            <i class="bk-icon icon-plus-circle"></i> {{ $t('新建版本') }}
         </div>
     </bk-select>
 </template>
 
 <script>
-    const defaultOptions = () => ([{ id: 0, version: '默认' }])
+    const defaultOptions = () => ([{ id: 0, version: window.i18n.t('默认') }])
 
     export default {
         props: {

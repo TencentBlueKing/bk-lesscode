@@ -22,14 +22,14 @@
                         }"
                         v-bk-tooltips="computedSlotTip"
                     >
-                        {{ describe.displayName }}
+                        {{ $t(describe.displayName) }}
                         <span v-if="describe.type && describe.type.length <= 1">
                             ({{ formData.valueType | capFirstLetter }})
                         </span>
                     </span>
                 </span>
                 <template v-if="describe.name && describe.name.length > 1">
-                    <span class="slot-label">组件标签</span>
+                    <span class="slot-label">{{ $t('组件标签') }}</span>
                     <bk-radio-group
                         :value="formData.component"
                         @change="handleSlotComponentChange"
@@ -47,7 +47,7 @@
         </template>
 
         <template v-if="showInnerVariable">
-            <span class="g-prop-sub-title g-mb6">变量类型</span>
+            <span class="g-prop-sub-title g-mb6">{{ $t('变量类型') }}</span>
             <choose-build-in-variable
                 class="g-mb4"
                 :build-in-variable="buildInVariable"
@@ -61,7 +61,7 @@
         </template>
 
         <template v-if="describe.type && describe.type.length > 1">
-            <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性初始值来源</span>
+            <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">{{ $t('属性初始值来源') }}</span>
             <bk-radio-group
                 class="g-prop-radio-group"
                 :value="formData.valueType"
@@ -138,16 +138,16 @@
     }
 
     const typeTextMap = {
-        'object': '对象',
-        'number': '数字',
-        'string': '字符串',
-        'array': '数组',
-        'remote': '函数',
-        'data-source': '数据表',
-        'list': '数据列表',
-        'table-list': '数据列表',
-        'select-data-source': '数据表',
-        'select-remote': '函数'
+        'object': window.i18n.t('对象'),
+        'number': window.i18n.t('数字'),
+        'string': window.i18n.t('字符串'),
+        'array': window.i18n.t('数组'),
+        'remote': window.i18n.t('函数'),
+        'data-source': window.i18n.t('数据表'),
+        'list': window.i18n.t('数据列表'),
+        'table-list': window.i18n.t('数据列表'),
+        'select-data-source': window.i18n.t('数据表'),
+        'select-remote': window.i18n.t('函数')
     }
 
     // slot 类型转为可接受的值类型
@@ -218,7 +218,7 @@
              * @returns { Object }
              */
             computedSlotTip () {
-                const transformTips = transformTipsWidth(this.describe.tips)
+                const transformTips = transformTipsWidth(window.i18n.t(this.describe.tips))
                 const tips = typeof transformTips === 'string' ? { content: transformTips } : transformTips
                 const disabled = !this.describe.tips
                 return {

@@ -10,8 +10,8 @@
 -->
 
 <template>
-    <style-layout title="最小宽度">
-        <style-item name="最小宽度">
+    <style-layout :title="$t('最小宽度')">
+        <style-item :name="$t('最小宽度')">
             <size-input v-model="minWidthValue" @change="handleInputChange('minWidth', $event)">
                 <append-select v-model="minWidthUnit" @change="handleSelectChange('minWidth', $event)"></append-select>
             </size-input>

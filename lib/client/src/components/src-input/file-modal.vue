@@ -63,9 +63,9 @@
 
                     try {
                         await store.dispatch('file/del', { ...paramsData.value, fileId: file.id })
-                        messageSuccess('删除成功')
+                        messageSuccess(window.i18n.t('删除成功'))
                     } catch (err) {
-                        messageError('删除失败')
+                        messageError(window.i18n.t('删除失败'))
                         console.error(err)
                         return false
                     }
@@ -81,7 +81,7 @@
                     try {
                         await store.dispatch('file/create', data)
                     } catch (err) {
-                        messageError('保存上传文件失败')
+                        messageError(window.i18n.t('保存上传文件失败'))
                         console.error(err)
                     }
                 }
@@ -170,15 +170,15 @@
         :esc-close="false"
         :mask-close="false"
         header-position="left"
-        title="文件管理">
+        :title="$t('文件管理')">
         <div :class="$style['modal-container']">
             <div :class="$style['modal-head']">
                 <div :class="$style['buttons']">
                     <upload ref="uploadRef" v-bind="uploadProps" />
                 </div>
                 <div :class="$style['search-bar']">
-                    <span :class="$style['total']" v-show="displayList.length">共<em :class="$style['count']">{{displayList.length}}</em>个文件</span>
-                    <bk-input placeholder="请输入文件名"
+                    <span :class="$style['total']" v-show="displayList.length">{{ $t('共') }}<em :class="$style['count']">{{displayList.length}}</em>{{ $t('个文件') }}</span>
+                    <bk-input :placeholder="$t('请输入文件名')"
                         style="width: 360px"
                         :clearable="true"
                         right-icon="bk-icon icon-search"
@@ -187,8 +187,7 @@
                     </bk-input>
                 </div>
                 <div :class="$style['tip']">
-                    支持上传图片大小 {{FILE_MAX_LIMIT.IMAGE_SIZE}}M 以内，文件大小 {{FILE_MAX_LIMIT.FILE_SIZE}}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等
-                </div>
+                    {{ $t('支持上传图片大小 {0}M 以内，文件大小 {1}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等', [FILE_MAX_LIMIT.IMAGE_SIZE, FILE_MAX_LIMIT.FILE_SIZE]) }} </div>
             </div>
             <div :class="$style['modal-body']">
                 <list-card
@@ -206,13 +205,11 @@
                                 :class="$style['action-button']"
                                 theme="primary"
                                 @click="handleSelect(file)">
-                                使用
-                            </bk-button>
+                                {{ $t('使用') }} </bk-button>
                             <bk-button
                                 :class="$style['action-button']"
                                 @click="handleView(file)">
-                                查看
-                            </bk-button>
+                                {{ $t('查看') }} </bk-button>
                         </div>
                     </template>
                 </list-card>
@@ -221,7 +218,7 @@
         </div>
         <template #footer>
             <div :class="$style['modal-foot']">
-                <bk-button @click="handleCancel">取消</bk-button>
+                <bk-button @click="handleCancel">{{ $t('取消') }}</bk-button>
             </div>
         </template>
     </bk-dialog>

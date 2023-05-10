@@ -13,14 +13,13 @@
             @value-change="handleDialogToggle">
             <div slot="header">
                 <span slot="header">
-                    从模板新建应用
-                    <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块' }"></i>
+                    {{ $t('从模板新建应用') }} <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: $t('创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块') }"></i>
                 </span>
             </div>
             <div class="layout-left">
                 <bk-input
                     clearable
-                    :placeholder="'请输入模板名称'"
+                    :placeholder="$t('请输入模板名称')"
                     :right-icon="'bk-icon icon-search'"
                     :ext-cls="'search-input'"
                     v-model="searchFilter"
@@ -46,11 +45,11 @@
                                     <i class="bk-icon icon-check-1 checked-icon"></i>
                                 </div>
                                 <div class="layout-img">
-                                    <page-preview-thumb alt="模板缩略预览" :project-id="template.id" :img-src="template.templateImg" />
+                                    <page-preview-thumb :alt="$t('模板缩略预览')" :project-id="template.id" :img-src="template.templateImg" />
                                 </div>
                                 <div class="layout-name">
                                     <span class="template-name" :title="template.projectName">{{ template.projectName }}</span>
-                                    <span class="template-preview" @click.stop.prevent="handlePreview(template.id)">预览</span>
+                                    <span class="template-preview" @click.stop.prevent="handlePreview(template.id)">{{ $t('预览') }}</span>
                                 </div>
                             </li>
                         </div>
@@ -68,8 +67,8 @@
                     theme="primary"
                     :loading="loading"
                     :disabled="!formData.copyFrom"
-                    @click="handleCreateConfirm">确定</bk-button>
-                <bk-button @click="handleDialogCancel" :disabled="loading">取消</bk-button>
+                    @click="handleCreateConfirm">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleDialogCancel" :disabled="loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -84,7 +83,7 @@
         templateName: '',
         copyFrom: null
     }
-    const projectTemplateType = [{ id: '', name: '全部' }].concat(PROJECT_TEMPLATE_TYPE)
+    const projectTemplateType = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
 
     export default {
         name: 'template-dialog',
@@ -147,7 +146,7 @@
                         this.loading = true
                         const projectId = await this.$store.dispatch('project/create', { data })
 
-                        this.messageSuccess('应用创建成功')
+                        this.messageSuccess(window.i18n.t('应用创建成功'))
                         this.isShow = false
 
                         setTimeout(() => {

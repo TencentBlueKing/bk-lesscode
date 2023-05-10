@@ -4,7 +4,7 @@
             <bk-date-picker class="filter-item"
                 v-model="filters.dateRange"
                 type="daterange"
-                placeholder="选择时间范围"
+                :placeholder="$t('选择时间范围')"
                 :clearable="false"
                 :use-shortcut-text="true"
                 :shortcut-selected-index="dateShortcutSelectedIndex"
@@ -13,9 +13,9 @@
                 @shortcut-change="handleDateShortcutChange">
             </bk-date-picker>
             <bk-radio-group class="filter-item" v-model="filters.dateType" @change="handleTimeTypeChange">
-                <bk-radio-button value="YEAR">按年</bk-radio-button>
-                <bk-radio-button value="MONTH">按月</bk-radio-button>
-                <bk-radio-button value="DAY">按天</bk-radio-button>
+                <bk-radio-button value="YEAR">{{ $t('按年') }}</bk-radio-button>
+                <bk-radio-button value="MONTH">{{ $t('按月') }}</bk-radio-button>
+                <bk-radio-button value="DAY">{{ $t('按天') }}</bk-radio-button>
             </bk-radio-group>
             <export-button name="user" dim="time" :list="exportList" :fields="exportFields" />
         </div>
@@ -49,7 +49,7 @@
             return {
                 chart: {
                     base: {
-                        title: '按时间新增用户量',
+                        title: window.i18n.t('按时间新增用户量'),
                         inst: null,
                         data: []
                     }
@@ -64,8 +64,8 @@
                     base: false
                 },
                 exportFields: [
-                    { id: 'time', name: '时间' },
-                    { id: 'count', name: '数量' }
+                    { id: 'time', name: window.i18n.t('时间') },
+                    { id: 'count', name: window.i18n.t('数量') }
                 ]
             }
         },

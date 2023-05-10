@@ -16,7 +16,7 @@
             :class="isError && 'king-input-modifier-style-error'"
             :value="defaultValue"
             @change="handleChange" />
-        <p class="modifier-input-error-text" v-if="isError">{{describe.regErrorText || '格式错误，请重新输入'}}</p>
+        <p class="modifier-input-error-text" v-if="isError">{{$t(describe.regErrorText) || $t('格式错误，请重新输入')}}</p>
     </div>
 </template>
 

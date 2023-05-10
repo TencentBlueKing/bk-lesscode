@@ -29,7 +29,7 @@
                 show-help-box
                 :help-click="handleStartGuide"
                 :help-tooltips="{
-                    content: '画布操作指引',
+                    content: $t('画布操作指引'),
                     placements: ['bottom']
                 }" />
         </div>
@@ -150,13 +150,13 @@
 
             this.guideStep = [
                 {
-                    title: '组件库和图标',
-                    content: '从基础组件、自定义业务组件、图标库中拖拽组件或图标到画布区域进行页面编排组装',
+                    title: window.i18n.t('组件库和图标'),
+                    content: window.i18n.t('从基础组件、自定义业务组件、图标库中拖拽组件或图标到画布区域进行页面编排组装'),
                     target: '#editPageLeftSideBar'
                 },
                 {
-                    title: '组件树',
-                    content: '以全局组件树的形式，快速切换查看页面的所有组件',
+                    title: window.i18n.t('组件树'),
+                    content: window.i18n.t('以全局组件树的形式，快速切换查看页面的所有组件'),
                     target: '#editPageLeftSideBar',
                     entry: () => {
                         // 切换组件树 tab
@@ -168,13 +168,13 @@
                     }
                 },
                 {
-                    title: '画布编辑区',
-                    content: '可在画布自由拖动组件、图标等进行页面布局，选中组件或布局后可右键对选中项进行复制粘贴等快捷操作',
+                    title: window.i18n.t('画布编辑区'),
+                    content: window.i18n.t('可在画布自由拖动组件、图标等进行页面布局，选中组件或布局后可右键对选中项进行复制粘贴等快捷操作'),
                     target: '#lesscodeDrawContent'
                 },
                 {
-                    title: '组件配置',
-                    content: '在画布中选中对应组件，可在这里进行组件样式、属性、事件及指令的配置',
+                    title: window.i18n.t('组件配置'),
+                    content: window.i18n.t('在画布中选中对应组件，可在这里进行组件样式、属性、事件及指令的配置'),
                     target: '#modifierPanel',
                     entry: () => {
                         const $componentEl = document.body.querySelector('[role="component-root"]')
@@ -184,13 +184,13 @@
                     }
                 },
                 {
-                    title: '页面操作',
-                    content: '可以查看并下载完整源码，对页面生命周期、路由、函数等进行配置，以及对内容进行保存、预览、清空等操作',
+                    title: window.i18n.t('页面操作'),
+                    content: window.i18n.t('可以查看并下载完整源码，对页面生命周期、路由、函数等进行配置，以及对内容进行保存、预览、清空等操作'),
                     target: '#toolActionBox'
                 },
                 {
-                    title: '切换页面',
-                    content: '点击页面名称可以快速切换页面，新建页面，以及复制已有的页面',
+                    title: window.i18n.t('切换页面'),
+                    content: window.i18n.t('点击页面名称可以快速切换页面，新建页面，以及复制已有的页面'),
                     target: '#editPageSwitchPage'
                 }
             ]
@@ -209,8 +209,8 @@
         },
         beforeRouteLeave (to, from, next) {
             this.$bkInfo({
-                title: '确认离开?',
-                subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                title: window.i18n.t('确认离开'),
+                subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
                 confirmFn: async () => {
                     next()
                 }
@@ -243,7 +243,7 @@
                     }
                     script.onerror = () => {
                         this.isCustomComponentLoading = false
-                        reject(new Error('自定义组件注册失败'))
+                        reject(new Error(window.i18n.t('自定义组件注册失败')))
                     }
                     document.body.appendChild(script)
                     this.$once('hook:beforeDestroy', () => {

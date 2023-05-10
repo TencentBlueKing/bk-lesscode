@@ -2,7 +2,7 @@
     <!--    <div>form-setting</div>-->
     <div :class="['config-panel',{ 'config-empty': !Object.keys(configData).length }]">
         <div v-if="Object.keys(configData).length" class="field-setting">
-            <div class="panel-title">{{ fieldType[configData.type] || '组件名称'}}</div>
+            <div class="panel-title">{{ fieldType[configData.type] || $t('组件名称')}}</div>
             <div class="config-wrapper">
                 <field-edit
                     v-if="field.type"
@@ -14,8 +14,7 @@
             </div>
         </div>
         <div class="empty-field" v-else>
-            请从左侧拖入组件或者选中组件
-        </div>
+            {{ $t('请从左侧拖入组件或者选中组件') }} </div>
     </div>
 </template>
 

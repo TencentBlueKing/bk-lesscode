@@ -34,7 +34,7 @@ export default defineComponent({
                 show-icon={true}
                 has-child={false}
                 platform="MOBILE"
-                headerTitle="移动端导航配置"
+                headerTitle={window.i18n.t('移动端导航配置')}
                 onChange={this.changeHandler}></menuLayout>
         )
     }

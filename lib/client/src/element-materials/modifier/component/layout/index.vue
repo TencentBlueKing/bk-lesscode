@@ -1,10 +1,10 @@
 <template>
     <div :class="$style['layout']">
-        <div :class="$style['title']">布局</div>
+        <div :class="$style['title']">{{ $t('布局') }}</div>
         <div :class="$style['content']">
-            <div :class="$style['item']" @click="handleClick('left')">居左</div>
-            <div :class="$style['item']" @click="handleClick('center')">居中</div>
-            <div :class="$style['item']" @click="handleClick('right')">居右</div>
+            <div :class="$style['item']" @click="handleClick('left')">{{ $t('居左') }}</div>
+            <div :class="$style['item']" @click="handleClick('center')">{{ $t('居中') }}</div>
+            <div :class="$style['item']" @click="handleClick('right')">{{ $t('居右') }}</div>
         </div>
     </div>
 </template>

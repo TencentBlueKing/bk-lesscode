@@ -11,8 +11,8 @@
         @confirm="handleConfirm"
         @cancel="close">
         <header slot="header" class="dialog-header">
-            <h4>请选择已有表单</h4>
-            <span>（{{ type === 'COPY_FORM' ? '引用' : '复用' }}已有表单）</span>
+            <h4>{{$t('请选择已有表单')}}</h4>
+            <span>（{{ type === 'COPY_FORM' ? $t('引用') : $t('复用') }}{{$t('已有表单')}}）</span>
         </header>
         <div class="dialog-content" v-bkloading="{ isLoading: listLoading }">
             <div style="margin-bottom: 16px; padding: 0 24px;">
@@ -25,7 +25,7 @@
                     :class="['form-card-item', { 'selected': selected === item.id }]"
                     @click="selected = item.id">
                     <div class="selected-label"></div>
-                    <span class="preview-btn" @click.stop="$emit('preview', JSON.parse(item.content))">预览</span>
+                    <span class="preview-btn" @click.stop="$emit('preview', JSON.parse(item.content))">{{ $t('预览') }}</span>
                     <p class="form-name">{{ item.formName }}</p>
                 </div>
                 <bk-exception
@@ -66,8 +66,8 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             tips () {
                 return this.type === 'COPY_FORM'
-                    ? '引用已有表单：引用已有表单快速建表，运行时节点数据不会存入被引用的表中，字段属性可自定义'
-                    : '复用已有表单：运行时节点数据会存入被复用的表中，不支持增加和修改字段属性'
+                    ? this.$t('引用已有表单：引用已有表单快速建表，运行时节点数据不会存入被引用的表中，字段属性可自定义')
+                    : this.$t('复用已有表单：运行时节点数据会存入被复用的表中，不支持增加和修改字段属性')
             },
             projectId () {
                 return this.$route.params.projectId
@@ -209,7 +209,7 @@
                 const form = this.formList.find(item => item.id === this.selected)
                 if (typeof this.selected !== 'number') {
                     this.$bkMessage({
-                        message: '请选择表单',
+                        message: this.$t('请选择表单'),
                         theme: 'error'
                     })
                     return
@@ -246,7 +246,7 @@
                 if (hasNotAvailable) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '已选表单包含流程不支持的字段控件【描述文本】或【分割线】类型'
+                        message: this.$t('已选表单包含流程不支持的字段控件【描述文本】或【分割线】类型')
                     })
                     return false
                 }

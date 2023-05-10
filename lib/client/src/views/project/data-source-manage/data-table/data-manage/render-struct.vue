@@ -1,20 +1,19 @@
 <template>
     <article>
         <section class="table-section">
-            <h5 class="section-title">基础信息</h5>
+            <h5 class="section-title">{{ $t('基础信息') }}</h5>
             <info-table :basic-info="activeTable" :is-edit="false"></info-table>
         </section>
 
         <section class="table-section">
             <h5 class="section-title">
-                字段配置
-                <bk-link
+                {{ $t('字段配置') }} <bk-link
                     v-if="environment.key === 'preview'"
                     :href="`/project/${projectId}/data-source-manage/edit-table?tableName=${activeTable.tableName}`"
                     target="_blank"
                     theme="primary"
                     class="title-link"
-                >设计表结构</bk-link>
+                >{{ $t('设计表结构') }}</bk-link>
             </h5>
             <show-column-table :columns="activeTable.columns"></show-column-table>
         </section>

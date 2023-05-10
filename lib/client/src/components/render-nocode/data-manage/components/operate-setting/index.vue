@@ -3,7 +3,7 @@
         <template v-if="selectedComp.data.id">
             <div class="comp-header">
                 <span class="id">{{ selectedComp.data.id }}</span>
-                <i class="bk-icon icon-delete" v-bk-tooltips="'删除'" @click="handleDelete"></i>
+                <i class="bk-icon icon-delete" v-bk-tooltips="$t('删除')" @click="handleDelete"></i>
             </div>
             <div class="tabs-wrapper">
                 <bk-tab :active.sync="activePanel" :label-height="24">
@@ -15,7 +15,7 @@
                 <component :is="settingComp"></component>
             </div>
         </template>
-        <div v-else class="empty-tips">请选择组件</div>
+        <div v-else class="empty-tips">{{ $t('请选择组件') }}</div>
     </div>
 </template>
 <script>
@@ -30,9 +30,9 @@
         data () {
             return {
                 panels: [
-                    { name: 'properties', label: '属性' },
-                    { name: 'events', label: '事件' },
-                    { name: 'perms', label: '权限' }
+                    { name: 'properties', label: this.$t('属性') },
+                    { name: 'events', label: this.$t('事件') },
+                    { name: 'perms', label: this.$t('权限') }
                 ],
                 compMap: {
                     events: Events,

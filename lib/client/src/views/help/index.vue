@@ -60,92 +60,85 @@
             return {
                 navList: [
                     {
-                        title: '产品使用文档',
+                        title: window.i18n.t('产品使用文档'),
                         name: 'doc',
                         childs: [{
-                            title: '产品简介',
+                            title: window.i18n.t('产品简介'),
                             name: 'intro'
                         }, {
-                            title: '快速上手',
+                            title: window.i18n.t('快速上手'),
                             name: 'start'
                         }]
                     },
                     {
-                        title: '应用开发',
+                        title: window.i18n.t('abbr_应用开发'),
                         name: 'app',
                         tree: true,
                         childs: [{
-                            name: '页面布局',
+                            name: window.i18n.t('页面布局'),
                             level: 0,
                             id: 'layout',
                             children: [{
-                                name: '栅格布局',
+                                name: window.i18n.t('栅格布局'),
                                 level: 1,
                                 id: 'grid'
                             }, {
-                                name: '自由布局',
+                                name: window.i18n.t('自由布局'),
                                 level: 1,
                                 id: 'freeLayout'
                             }, {
-                                name: '导航布局',
+                                name: window.i18n.t('导航布局'),
                                 level: 1,
                                 id: 'layout-guide'
                             }]
                         }, {
-                            name: '页面画布',
+                            name: window.i18n.t('页面画布'),
                             level: 0,
                             id: 'canvas',
                             children: [{
-                                name: '变量使用指引',
+                                name: window.i18n.t('变量使用指引'),
                                 level: 1,
                                 id: 'variable'
                             }, {
-                                name: '交互式组件使用指引',
+                                name: window.i18n.t('交互式组件使用指引'),
                                 level: 1,
                                 id: 'interactive'
                             }]
                         }, {
-                            name: '交互函数',
+                            name: window.i18n.t('交互函数'),
                             level: 0,
                             id: 'function',
                             children: [{
-                                name: '函数使用指引',
+                                name: window.i18n.t('函数使用指引'),
                                 level: 1,
                                 id: 'method'
                             }]
                         }, {
-                            name: '二次开发指引',
+                            name: window.i18n.t('二次开发指引'),
                             level: 0,
                             id: 'develop'
                         }, {
-                            name: '自定义组件开发指引',
+                            name: window.i18n.t('自定义组件开发指引'),
                             level: 0,
                             id: 'custom'
                         }]
                     },
                     {
-                        title: '模板市场',
+                        title: window.i18n.t('模板市场'),
                         name: 'template',
                         childs: [{
-                            title: '应用模板使用指引',
+                            title: window.i18n.t('应用模板使用指引'),
                             name: 'template-project'
                         }, {
-                            title: '页面模板使用指引',
+                            title: window.i18n.t('页面模板使用指引'),
                             name: 'template-page'
                         }]
                     }, {
-                        title: '实战案例',
+                        title: window.i18n.t('实战案例'),
                         name: 'case',
                         childs: [{
-                            title: '课程实战文档和视频',
+                            title: window.i18n.t('课程实战文档和视频'),
                             name: 'courses'
-                        }]
-                    }, {
-                        title: '日志',
-                        name: 'log',
-                        childs: [{
-                            title: '更新日志',
-                            name: 'changelog'
                         }]
                     }
                 ]

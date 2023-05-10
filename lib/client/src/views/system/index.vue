@@ -13,10 +13,10 @@
                 <nav class="nav-list">
                     <template v-if="isRouteContains('marketplace')">
                         <router-link tag="div" class="nav-item" to="/marketplace/template">
-                            <i class="bk-drag-icon bk-drag-template-fill"></i>模板市场<i></i>
+                            <i class="bk-drag-icon bk-drag-template-fill"></i>{{ $t('模板市场') }}<i></i>
                         </router-link>
                         <router-link tag="div" class="nav-item" to="/marketplace/function">
-                            <i class="bk-drag-icon bk-drag-function-fill"></i>函数市场
+                            <i class="bk-drag-icon bk-drag-function-fill"></i>{{ $t('函数市场') }}
                         </router-link>
                     </template>
 
@@ -43,16 +43,16 @@
                             <i class="bk-drag-icon bk-drag-compoment-count"></i>自定义组件数据
                         </auth-router-link> -->
                         <router-link tag="div" class="nav-item" to="/op/stats/user">
-                            <i class="bk-drag-icon bk-drag-user-count"></i>用户数据
+                            <i class="bk-drag-icon bk-drag-user-count"></i>{{ $t('用户数据') }}
                         </router-link>
                         <router-link tag="div" class="nav-item" to="/op/stats/project">
-                            <i class="bk-drag-icon bk-drag-project-count"></i>应用数据
+                            <i class="bk-drag-icon bk-drag-project-count"></i>{{ $t('应用数据') }}
                         </router-link>
                         <router-link tag="div" class="nav-item" to="/op/stats/func">
-                            <i class="bk-drag-icon bk-drag-fc-count"></i>函数数据
+                            <i class="bk-drag-icon bk-drag-fc-count"></i>{{ $t('函数数据') }}
                         </router-link>
                         <router-link tag="div" class="nav-item" to="/op/stats/comp">
-                            <i class="bk-drag-icon bk-drag-compoment-count"></i>自定义组件数据
+                            <i class="bk-drag-icon bk-drag-compoment-count"></i>{{ $t('自定义组件数据') }}
                         </router-link>
                     </template>
                 </nav>
@@ -64,7 +64,7 @@
             </div>
         </aside>
         <div class="breadcrumbs" v-if="!hideCrumb">
-            <h3 class="current">{{$route.meta.title}}</h3>
+            <h3 class="current">{{$t($route.meta.title)}}</h3>
             <extra-links></extra-links>
         </div>
         <div class="main-container">
@@ -74,15 +74,15 @@
             <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=1&key=XzgwMDgwMjAwMV80NDMwOTZfODAwODAyMDAxXzJf"
                 target="_blank"
                 class="magic-feedback"
-                title="QQ交谈">
+                :title="$t('QQ交谈')">
                 <img src="../../images/qq.png" />
-                <span>QQ交谈</span>
+                <span>{{ $t('QQ交谈') }}</span>
             </a>
             <!-- <a href="wxwork://message/?username=BK-MagicBox" class="magic-feedback" title="蓝鲸MagicBox助手">
                 <img src="../../images/wx-work.png" />
                 <span>蓝鲸MagicBox助手</span>
             </a> -->
-            Copyright &copy; 2012-{{currentYear}} Tencent BlueKing. All Rights Reserved. 腾讯蓝鲸 版权所有
+            Copyright &copy; 2012-{{currentYear}} Tencent BlueKing. All Rights Reserved. {{$t('腾讯蓝鲸 版权所有')}}
         </footer>
     </main>
 </template>

@@ -2,14 +2,14 @@
     <section>
         <div class="package-container" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
             <div class="package-content">
-                <bk-table :data="list" type="small" ext-cls="package-table" empty-text="暂无部署版本包">
-                    <bk-table-column label="版本号" prop="version" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column label="创建时间" prop="createTime" :formatter="timeFormatter" show-overflow-tooltip>
+                <bk-table :data="list" type="small" ext-cls="package-table" :empty-text="$t('暂无部署版本包')">
+                    <bk-table-column :label="$t('table_版本号')" prop="version" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('table_创建时间')" prop="createTime" :formatter="timeFormatter" show-overflow-tooltip>
                     </bk-table-column>
-                    <bk-table-column label="创建人" prop="createUser" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column label="操作">
+                    <bk-table-column :label="$t('table_创建人')" prop="createUser" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('操作')">
                         <template slot-scope="{ row }">
-                            <a class="download-link" :href="row.codeUrl">下载</a>
+                            <a class="download-link" :href="row.codeUrl">{{ $t('下载') }}</a>
                         </template>
                     </bk-table-column>
                 </bk-table>

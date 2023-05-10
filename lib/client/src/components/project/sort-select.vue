@@ -29,9 +29,9 @@
         },
         setup (props, { emit }) {
             const allSortOptions = [
-                { id: 'default', name: '默认' },
-                { id: 'createTime', name: '按创建时间' },
-                { id: 'updateTime', name: '按更新时间' }
+                { id: 'default', name: window.i18n.t('默认') },
+                { id: 'createTime', name: window.i18n.t('按创建时间') },
+                { id: 'updateTime', name: window.i18n.t('按更新时间') }
             ]
 
             const selected = computed({
@@ -65,6 +65,7 @@
 <template>
     <bk-select
         class="sort-selector"
+        v-enStyle="'width:140px'"
         prefix-icon="bk-icon icon-sort"
         :clearable="false"
         v-model="selected">
@@ -92,4 +93,5 @@
             }
         }
     }
+
 </style>

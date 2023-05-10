@@ -11,35 +11,35 @@
                 <div class="step-content">{{ currentStep.content }}</div>
                 <div class="step-action">
                     <template v-if="!isLast">
-                        <div class="action-text" @click="handleStop">跳过</div>
-                        <div class="action-btn" @click="handleNext">下一步</div>
+                        <div class="action-text" @click="handleStop">{{ $t('跳过') }}</div>
+                        <div class="action-btn" @click="handleNext">{{ $t('下一步') }}</div>
                     </template>
-                    <div v-else class="action-btn" @click="handleFinish">完成</div>
+                    <div v-else class="action-btn" @click="handleFinish">{{ $t('完成') }}</div>
                 </div>
                 <div class="target-arrow"></div>
             </div>
             <div v-if="isShowFinisheDialog" class="guide-finished-box">
-                <div class="wraper">
+                <div class="wraper" v-enStyle="'width:540px'">
                     <div class="flag">
                         <i class="bk-icon icon-check-1" />
                     </div>
-                    <div style="font-size: 24px; line-height: 31px; color: #313238">恭喜完成学习!</div>
-                    <div style="margin-top: 8px; font-size: 14px; line-height: 19px; color: #979BA5">{{ doneCountTime }} 秒后弹窗自动消失</div>
+                    <div style="font-size: 24px; line-height: 31px; color: #313238">{{ $t('恭喜完成学习') }}</div>
+                    <div style="margin-top: 8px; font-size: 14px; line-height: 19px; color: #979BA5">{{ doneCountTime }} {{$t('秒后弹窗自动消失')}}</div>
                     <div style="margin-top: 20px">
-                        <span style="font-size: 14px; line-height: 19px; color: #3480FF; cursor: pointer" @click="handleDone">立即体验</span>
+                        <span style="font-size: 14px; line-height: 19px; color: #3480FF; cursor: pointer" @click="handleDone">{{ $t('立即体验') }}</span>
                     </div>
                 </div>
             </div>
             <div v-if="isShowStopDialog" class="guide-stop-box">
-                <div class="wraper">
-                    <div style="font-size: 24px; line-height: 31px; color: #313238">确认跳过学习？</div>
-                    <div style="margin-top: 27px; font-size: 14px; line-height: 19px; color: #63656E">跳过此次学习，你可点击页面右上角的帮助指引，再次发起学习。</div>
+                <div class="wraper" v-enStyle="'width:760px'">
+                    <div style="font-size: 24px; line-height: 31px; color: #313238">{{ $t('确认跳过学习') }}</div>
+                    <div style="margin-top: 27px; font-size: 14px; line-height: 19px; color: #63656E">{{ $t('跳过此次学习，你可点击页面右上角的帮助指引，再次发起学习') }}</div>
                     <div style="margin-top: 22px;">
                         <img :src="helpImg" style="width: 157px; height: 157px" />
                     </div>
                     <div style="margin-top: 27px">
-                        <bk-button theme="primary" class="mr10" @click="handleDone">确定</bk-button>
-                        <bk-button @click="handleCancelStop">取消</bk-button>
+                        <bk-button theme="primary" class="mr10" @click="handleDone">{{ $t('确定') }}</bk-button>
+                        <bk-button @click="handleCancelStop">{{ $t('取消') }}</bk-button>
                     </div>
                     <!-- <div class="cancal-btn" @click="handleCancelStop">
                         <i class="bk-icon icon-close" />

@@ -16,7 +16,7 @@
             <span
                 class="style-icon"
                 v-if="iconShow"
-                v-bk-tooltips.top="'重置属性值'"
+                v-bk-tooltips.top="$t('重置属性值')"
                 @click="handleClick">
                 <i class="bk-drag-icon bk-drag-undo" />
             </span>
