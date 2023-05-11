@@ -174,10 +174,11 @@
                 return new Promise(async (resolve, reject) => {
                     try {
                         this.$store.commit('nocode/flow/delFlowNodeFormId', this.nodeData.id)
-                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, formIds: this.flowConfig.formIds })
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, formIds: this.flowConfig.formIds, deployed: 0 })
                         await this.$store.dispatch('nocode/flow/patchNodeData', { id: this.nodeData.id, data: { is_draft: true } })
-                        this.isUnset = true
+                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0, deployed: 0 })
                         this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
+                        this.isUnset = true
                         resolve()
                     } catch (e) {
                         reject(e)
