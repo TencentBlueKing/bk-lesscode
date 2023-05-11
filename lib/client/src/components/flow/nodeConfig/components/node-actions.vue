@@ -128,7 +128,9 @@
                     const pageData = await this.$refs.createPageDialog.save()
                     if (pageData) {
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId: pageData.id })
-                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, pageId: pageData.id })
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, pageId: pageData.id, deployed: 0 })
+                        this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                        this.$store.commit('nocode/nodeConfig/setNodeDataChangeStatus', false)
                         this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', pageData)
                         this.$refs.createPageDialog.isShow = false
                         await this.updateItsmNode()
