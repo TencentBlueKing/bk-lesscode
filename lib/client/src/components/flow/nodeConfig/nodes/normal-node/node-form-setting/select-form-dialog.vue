@@ -43,7 +43,9 @@
     import cloneDeep from 'lodash.clonedeep'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
-    import { FIELDS_NO_AVAILABLE_IN_PROCESS } from '@/components/flow-form-comp/form/constants/forms'
+
+    // 流程表单不支持的字段类型
+    const FIELDS_NO_AVAILABLE_IN_PROCESS = ['DESC', 'DIVIDER', 'FORMULA', 'SERIAL', 'RATE']
 
     export default {
         name: 'SelectFormDialog',

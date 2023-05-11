@@ -97,10 +97,12 @@
 
 <script>
     import draggable from 'vuedraggable'
-    import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
+    import { FIELDS_TYPES } from 'shared/no-code/constant'
     import _ from 'lodash'
     const LAYOUT_GROUP = ['DESC', 'DIVIDER']
     const ADVANCED_GROUP = ['COMPUTE', 'SERIAL']
+    const ALL_FIELDS = FIELDS_TYPES()
+
     export default {
         components: {
             draggable
@@ -111,7 +113,7 @@
         },
         data () {
             return {
-                list: this.getGroupedFields(FIELDS_TYPES),
+                list: this.getGroupedFields(ALL_FIELDS),
                 searchValue: '',
                 isShowList: '',
                 selectedIndex: 0,
@@ -170,11 +172,11 @@
                 this.filterRenderList()
             }, 300),
             filterRenderList () {
-                this.renderList = FIELDS_TYPES.filter(item => item.name.includes(this.searchValue))
+                this.renderList = ALL_FIELDS.filter(item => item.name.includes(this.searchValue))
                 this.isShowList = true
             },
             handleResetField () {
-                this.list = this.getGroupedFields(FIELDS_TYPES)
+                this.list = this.getGroupedFields(ALL_FIELDS)
                 this.isShowList = true
                 this.handleHideDropList()
             },
