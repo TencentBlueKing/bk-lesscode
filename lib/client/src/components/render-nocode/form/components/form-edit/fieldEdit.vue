@@ -360,9 +360,9 @@
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
-        DATA_SOURCE_FIELD,
         FIELDS_SOURCE_TYPE
-    } from '@/components/flow-form-comp/form/constants/forms'
+    } from '../../../common/form'
+    import { DATA_SOURCE_FIELD } from '@/components/flow-form-comp/form/constants/forms'
 
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
     import { mapGetters } from 'vuex'
