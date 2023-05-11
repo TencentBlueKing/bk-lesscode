@@ -283,6 +283,9 @@
         margin-left: 106px;
         &.bk-form {
             width: 680px;
+            >>> .bk-label {
+                width: auto !important;
+            }
         }
     }
     .bk-form-item {

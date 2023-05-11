@@ -179,7 +179,7 @@
 .custom-selection{
   position: absolute;
   top: 2px;
-  left: 164px;
+  right: 20px;
 }
 </style>
 <style lang="postcss">

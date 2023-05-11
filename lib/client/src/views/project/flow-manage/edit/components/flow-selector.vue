@@ -1,7 +1,7 @@
 <template>
     <div class="flow-selector-wrapper">
         <bk-select
-            style="width: 340px;"
+            style="width: 360px;"
             ext-cls="flow-selector"
             ext-popover-cls="select-flow-dropdown"
             :value="flowConfig.id"

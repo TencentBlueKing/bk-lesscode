@@ -7,7 +7,7 @@
             <span>{{ $t('当表单中') }}</span>
             <bk-select
                 v-model="relation.field"
-                style="width: 350px;"
+                style="width: 300px;"
                 size="small"
                 :placeholder="$t('表单字段')"
                 :loading="!isCurrentTable && formListLoading"

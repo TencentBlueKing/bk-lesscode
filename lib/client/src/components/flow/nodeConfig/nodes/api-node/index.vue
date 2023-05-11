@@ -336,8 +336,13 @@
         padding: 0;
     }
 }
-.bk-form >>> .bk-form-item + .bk-form-item {
-    margin-top: 15px;
+>>> .bk-form {
+    .bk-form-item + .bk-form-item {
+        margin-top: 15px;
+    }
+    .bk-label {
+        width: auto !important;
+    }
 }
 .bk-form-radio {
     margin-right: 20px;
