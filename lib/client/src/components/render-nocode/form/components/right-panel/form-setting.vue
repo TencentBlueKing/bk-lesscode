@@ -20,7 +20,7 @@
 
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import { FIELDS_TYPES_MAPS } from '@/components/flow-form-comp/form/constants/forms'
+    import { FIELDS_TYPES_MAPS } from '../../../common/form'
     import fieldEdit from '../form-edit/fieldEdit.vue'
     export default {
         name: 'FormSetting',

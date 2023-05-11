@@ -43,7 +43,9 @@
     import cloneDeep from 'lodash.clonedeep'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
-    import { FIELDS_NO_AVAILABLE_IN_PROCESS } from '@/components/flow-form-comp/form/constants/forms'
+
+    // 流程表单不支持的字段类型
+    const FIELDS_NO_AVAILABLE_IN_PROCESS = ['DESC', 'DIVIDER', 'FORMULA', 'SERIAL', 'RATE']
 
     export default {
         name: 'SelectFormDialog',
@@ -99,9 +101,7 @@
             saveItsmFields (content) {
                 const fields = content.map(item => {
                     const field = cloneDeep(item)
-                    if (typeof item.id !== 'number') {
-                        field.id = null // itsm新建的字段需要传null
-                    }
+                    field.id = null // itsm新建的字段需要传null
                     if (field.source_type === 'WORKSHEET') {
                         field.source_type = 'CUSTOM_API'
                         field.meta.data_config.source_type = 'WORKSHEET'
@@ -193,6 +193,9 @@
                     this.$store.commit('nocode/nodeConfig/setInitialFieldIds', fields)
                     const fieldIds = fields.map(field => field.id)
                     await this.updateItsmNode(res.formId, fieldIds)
+                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
+                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
+                    this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0, deployed: 0 })
 
                     this.$bkMessage({
                         message: '表单配置关联数据表成功',

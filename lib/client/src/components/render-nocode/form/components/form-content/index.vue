@@ -29,7 +29,7 @@
     import { mapMutations, mapGetters } from 'vuex'
     import draggable from 'vuedraggable'
     import cloneDeep from 'lodash.clonedeep'
-    import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
+    import { FIELDS_TYPES } from 'shared/no-code/constant'
     import FieldElement from '../form-edit/fieldElement.vue'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
@@ -93,7 +93,7 @@
             add (e) {
                 const { type } = e.item.dataset
                 const columnId = uuid(8)
-                const field = FIELDS_TYPES.find(item => item.type === type)
+                const field = FIELDS_TYPES().find(item => item.type === type)
                 const key = this.generateKey(field.name, columnId)
                 const config = {
                     columnId, // lesscode特定字段
