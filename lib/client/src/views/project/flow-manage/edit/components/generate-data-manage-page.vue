@@ -130,7 +130,7 @@
             },
             handleDeletePage () {
                 this.$bkInfo({
-                    width: 422,
+                    width: 500,
                     extCls: 'delete-page-dialog',
                     title: window.i18n.t('确认删除该流程数据管理页？'),
                     theme: 'danger',

@@ -30,7 +30,7 @@
         props: {
             placeholder: {
                 type: String,
-                default: '请选择'
+                default: window.i18n.t('请选择')
             },
             disabled: {
                 type: Boolean,

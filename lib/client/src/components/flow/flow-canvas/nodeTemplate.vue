@@ -54,12 +54,7 @@
                         </span>
                     </template>
                 </p>
-                <i class="bk-drag-icon bk-drag-edit node-edit-icon" @click.stop="handleNodeClick"></i>
-            </div>
-            <div class="action-desc-area" v-if="!single && !hideNodeGuide && node.nodeInfo && node.nodeInfo.is_builtin">
-                <p><span>{{ $t('单击：') }}</span>{{ $t('快速配置节点') }}</p>
-                <p><span>{{ $t('右键：') }}</span>{{ $t('调出快速添加节点菜单') }}</p>
-                <i class="bk-icon icon-close" @click.stop="closeNodeGuide"></i>
+                <i v-if="!single" class="bk-drag-icon bk-drag-edit node-edit-icon" @click.stop="handleNodeClick"></i>
             </div>
         </div>
         <i
@@ -269,44 +264,6 @@
     font-size: 18px;
     color: #fff;
     background-color: #c4c6cc;
-  }
-  .action-desc-area {
-    position: absolute;
-    top: -70px;
-    left: -28px;
-    padding: 10px;
-    border: 1px solid #dcdee5;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.09);
-    line-height: 20px;
-    background-color: #fff;
-    width: 210px;
-    text-align: left;
-    &::before {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      right: 100px;
-      transform: rotate(-45deg);
-      width: 10px;
-      height: 10px;
-      border-left: 1px solid #dcdee5;
-      border-bottom: 1px solid #dcdee5;
-      background-color: #fff;
-    }
-    span {
-      font-weight: bold;
-    }
-    .icon-close {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      font-size: 18px;
-      border-radius: 50%;
-      &:hover {
-        background-color: #dcdee5;
-        color: #fff;
-      }
-    }
   }
 }
 .node-name-area {
