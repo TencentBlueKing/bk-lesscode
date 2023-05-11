@@ -30,6 +30,7 @@
                     style="width: 50%;"
                     size="small"
                     v-model="configData.tableName"
+                    :placeholder="$t('请选择')"
                     :loading="formListLoading"
                     :disabled="disabled">
                     <bk-option
@@ -82,7 +83,8 @@
                 formListLoading: false,
                 fieldList: [],
                 associationRuleTips: {
-                    placement: 'right-end',
+                    placement: 'right',
+                    width: 550,
                     content: `
                         <p>1.${window.i18n.t('本表字段联动，若存在多条满足条件的关联规则，排序在后的规则优先级更高')}</p>
                         <p>2.${window.i18n.t('他表字段联动，若设置的条件无法检索到单条数据，则关联值将无法正常带出')}</p>
@@ -283,6 +285,9 @@
 
         >>> .bk-form .bk-form-item + .bk-form-item {
             margin-top: 15px;
+        }
+        >>> .bk-label {
+            width: auto !important;
         }
         >>> .bk-form-content {
             font-size: 12px;

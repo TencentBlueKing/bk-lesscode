@@ -5,11 +5,11 @@
         <save
             :custom="customSave"
             :custom-loading="customLoading"
-            :disabled="saveDisabled"
-            :save-tips="saveTips"
+            :disabled="disabled"
+            :tips="disabledTips"
             @save="$emit('save', $event)" />
-        <preview v-if="!hidePreview" />
-        <clear v-if="!hideClear" />
+        <preview v-if="!hidePreview" :disabled="disabled" :tips="disabledTips" />
+        <clear :disabled="disabled" :tips="disabledTips" />
     </div>
 </template>
 <script>
@@ -28,11 +28,10 @@
         props: {
             customSave: Boolean,
             customLoading: Boolean,
-            saveDisabled: Boolean,
-            saveTips: String,
+            disabled: Boolean,
+            disabledTips: String,
             hidePreview: Boolean,
             hideFunc: Boolean,
-            hideClear: Boolean
         }
     }
 </script>

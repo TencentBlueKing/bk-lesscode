@@ -773,6 +773,9 @@
     }
     & > .bk-form-item {
         margin-top: 15px;
+        >>> .bk-label {
+            width: auto !important;
+        }
     }
     .sync-btn {
         position: absolute;

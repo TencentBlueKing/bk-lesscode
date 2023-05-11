@@ -68,6 +68,7 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import MemberSelect from '@/components/flow-form-comp/form/components/memberSelect.vue'
+    import { PROCESSORS } from '../../constants/processor.js'
     // import memberSelector from '@/components/member-selector'
 
     export default {
@@ -175,9 +176,13 @@
             async getRoleGroupList () {
                 try {
                     this.roleGroupListLoading = true
-                    this.roleGroupList = await this.$store.dispatch('nocode/flow/getRoleGroups', {
+                    const res = await this.$store.dispatch('nocode/flow/getRoleGroups', {
                         is_processor: true,
                         project_key: 'lesscode'
+                    })
+                    this.roleGroupList = res.map(item => {
+                        item.name = PROCESSORS[item.type] || item.name
+                        return item
                     })
                 } catch (e) {
                     console.error(e)

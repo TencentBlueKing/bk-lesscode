@@ -1,6 +1,6 @@
 <template>
     <div class="field-edit">
-        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">自动编号控件在表单填写时不可见，表单值由配置规则确定</div>
+        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">{{ $t('自动编号控件在表单填写时不可见，表单值由配置规则确定') }}</div>
         <!-- 表单右边设置区域  -->
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
