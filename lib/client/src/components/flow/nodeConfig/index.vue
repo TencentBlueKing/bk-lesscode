@@ -72,7 +72,6 @@
         },
         beforeDestroy () {
             this.$store.commit('nocode/nodeConfig/clearNodeConfigData')
-            this.$store.commit('nocode/flow/setDeletedPageId', null)
         },
         methods: {
             async getNodeDetail () {
