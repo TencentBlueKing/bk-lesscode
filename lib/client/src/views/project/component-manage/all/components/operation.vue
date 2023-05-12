@@ -34,12 +34,18 @@
                 </bk-form-item>
                 <bk-form-item label="VUE 版本" required error-display-type="normal">
                     <bk-radio-group v-model="formData.framework">
-                        <bk-radio-button value="vue2" class="middle-text">
-                            VUE 2
-                        </bk-radio-button>
-                        <bk-radio-button value="vue3" class="middle-text">
-                            VUE 3
-                        </bk-radio-button>
+                        <div class="bk-button-group">
+                            <bk-button
+                                @click="formData.framework = 'vue2'"
+                                :class="formData.framework === 'vue2' ? 'is-selected' : ''"
+                                :disabled="!!data.id"
+                            >VUE 2</bk-button>
+                            <bk-button
+                                @click="formData.framework = 'vue3'"
+                                :class="formData.framework === 'vue3' ? 'is-selected' : ''"
+                                :disabled="!!data.id"
+                            >VUE 3</bk-button>
+                        </div>
                     </bk-radio-group>
                 </bk-form-item>
                 <bk-form-item label="组件包" required error-display-type="normal">
@@ -53,7 +59,7 @@
                         accept=".zip"
                         @on-success="handleUploadSuccess" />
                 </bk-form-item>
-                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">下载demo示例包</bk-link>
+                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">下载开发框架</bk-link>
                 <bk-form-item label="组件名称" required property="name" error-display-type="normal">
                     <bk-input
                         :value="formData.displayName && formData.name ? `${formData.displayName}(${formData.name})` : ''"
@@ -191,7 +197,7 @@
             this.belongProjectId = parseInt(this.$route.params.projectId)
             this.uploadTips = `只允许上传ZIP包；
             组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID(${this.currentProject.projectCode})前缀，即：${this.currentProject.projectCode}-xxx；
-            组件源码须使用平台提供的打包工具打包生成min.js文件后再上传。
+            必须使用系统提供的框架构建后上传。
             `
             this.versionLogPlaceholder = 'eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n'
 
@@ -284,7 +290,7 @@
                 this.$emit('update:isShow', false)
             },
             handleDownloadDemo () {
-                window.open('/static/bk-lesscode-component-demo.zip', '_self')
+                window.open(`/static/bk-lesscode-component-${ this.formData.framework }.zip`, '_self')
             }
         }
     }
@@ -380,6 +386,15 @@
 
         .bk-form-radio-button .bk-radio-button-input:checked+.bk-radio-button-text i{
             color: #3a84ff;
+        }
+
+        .bk-button-group {
+            width: 630px;
+            display: flex;
+            .bk-button {
+                flex: 1;
+                height: 56px;
+            }
         }
     }
 </style>

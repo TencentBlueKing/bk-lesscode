@@ -11,6 +11,7 @@ module.exports = {
     publicPath: process.env.BK_STATIC_URL,
     typescript: true,
     bundleAnalysis: false,
+    parseNodeModules: false,
     replaceStatic: true,
     parallel: 8,
     copy: {
