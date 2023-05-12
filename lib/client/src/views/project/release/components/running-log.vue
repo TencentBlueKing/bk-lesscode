@@ -10,7 +10,7 @@
                 <svg v-if="status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
                     <use xlink:href="#bk-drag-loading-2"></use>
                 </svg>
-                {{ title }}
+                {{ isTitle }}
             </div>
             <div class="log-content" slot="content" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
                 <div class="deploy-view" :style="{ 'margin-top': `${isScrollFixed ? '104px' : '0'}` }">
@@ -103,7 +103,7 @@
             },
             title: {
                 type: String,
-                default: window.i18n.t('部署中日志')
+                default: ''
             },
             currentAppInfo: {
                 type: Object,
@@ -151,7 +151,8 @@
                 ansiUp: null,
                 serverProcessEvent: null,
                 link: '',
-                processLoadingLocal: false
+                processLoadingLocal: false,
+                isTitle: this.title || window.i18n.t('部署中日志')
             }
         },
         computed: {

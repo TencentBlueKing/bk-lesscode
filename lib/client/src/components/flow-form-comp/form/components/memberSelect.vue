@@ -8,7 +8,7 @@
             :api="api"
             :disabled="disabled || hostLoading"
             :multiple="multiple"
-            :placeholder="placeholder"
+            :placeholder="isPlaceholder"
             @blur="onBlur"
             @change="onChange">
         </bk-user-selector>
@@ -30,7 +30,7 @@
         props: {
             placeholder: {
                 type: String,
-                default: '请选择'
+                default: ''
             },
             disabled: {
                 type: Boolean,
@@ -57,7 +57,8 @@
             return {
                 host: '',
                 hostLoading: false,
-                users: []
+                users: [],
+                isPlaceholder: this.placeholder || window.i18n.t('请选择')
             }
         },
         computed: {
