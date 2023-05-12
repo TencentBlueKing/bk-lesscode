@@ -3759,5 +3759,6 @@
   "月/日": "Month/Day",
   "年": "Year",
   "流水号": "Serial Number",
-  "自定义字符": "Custom character"
+  "自定义字符": "Custom character",
+  "请输入应用名称，20个字符以内": "Please enter the application name, within 20 characters"
 }
