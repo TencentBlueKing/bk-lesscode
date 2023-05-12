@@ -86,11 +86,11 @@
             },
             async handleCreatePageConfirm () {
                 try {
-                    const pageId = await this.$refs.createPageDialog.save()
-                    if (typeof pageId === 'number') {
-                        this.$store.commit('nocode/flow/setFlowConfig', { managePageIds: pageId })
+                    const pageData = await this.$refs.createPageDialog.save()
+                    if (pageData.id) {
+                        this.$store.commit('nocode/flow/setFlowConfig', { managePageIds: pageData.id })
                         await Promise.all([
-                            this.updateDataManageId(pageId),
+                            this.updateDataManageId(pageData.id),
                             this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
                         ])
                         this.$bkMessage({
@@ -101,7 +101,7 @@
                             name: 'editNocode',
                             params: {
                                 projectId: this.projectId,
-                                pageId
+                                pageId: pageData.id
                             }
                         })
                     }
@@ -130,7 +130,7 @@
             },
             handleDeletePage () {
                 this.$bkInfo({
-                    width: 422,
+                    width: 500,
                     extCls: 'delete-page-dialog',
                     title: window.i18n.t('确认删除该流程数据管理页？'),
                     theme: 'danger',

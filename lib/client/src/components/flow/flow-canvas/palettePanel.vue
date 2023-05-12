@@ -53,7 +53,7 @@
       display: block;
       font-size: 12px;
       color: #979ba5;
-      transform: scale(0.6);
+      transform: scale(0.5);
       white-space: nowrap;
     }
   }

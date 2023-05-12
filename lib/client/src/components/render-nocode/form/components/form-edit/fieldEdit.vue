@@ -1,6 +1,6 @@
 <template>
     <div class="field-edit">
-        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">自动编号控件在表单填写时不可见，表单值由配置规则确定</div>
+        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">{{ $t('自动编号控件在表单填写时不可见，表单值由配置规则确定') }}</div>
         <!-- 表单右边设置区域  -->
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
@@ -360,9 +360,9 @@
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
-        DATA_SOURCE_FIELD,
         FIELDS_SOURCE_TYPE
-    } from '@/components/flow-form-comp/form/constants/forms'
+    } from '../../../common/form'
+    import { DATA_SOURCE_FIELD } from '@/components/flow-form-comp/form/constants/forms'
 
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
     import { mapGetters } from 'vuex'

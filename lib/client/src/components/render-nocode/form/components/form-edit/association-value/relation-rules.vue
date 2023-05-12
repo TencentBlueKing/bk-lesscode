@@ -48,6 +48,7 @@
                                 style="width: 80px;"
                                 size="small"
                                 :clearable="false"
+                                :placeholder="$t('请选择')"
                                 :disabled="disabled"
                                 :value="relation.type"
                                 @change="handleRelValTypeChange(relation, $event)">
@@ -59,6 +60,7 @@
                                     v-if="relation.type === 'VAR'"
                                     v-model="relation.value"
                                     size="small"
+                                    :placeholder="$t('请选择')"
                                     :disabled="disabled"
                                     @change="change">
                                     <bk-option
@@ -88,13 +90,14 @@
                             :value="rule.target.type"
                             style="margin-left: 8px; width: 80px;"
                             size="small"
+                            :placeholder="$t('请选择')"
                             :clearable="false"
                             :disabled="disabled"
                             @change="handleTargetVarValTypeChange(rule.target, $event)">
                             <bk-option id="CONST" :name="$t('常量')"></bk-option>
                             <bk-option id="VAR" :name="$t('变量')"></bk-option>
                         </bk-select>
-                        <div style="margin-left: 8px; width: 160px;">
+                        <div style="margin-left: 8px; width: 170px;">
                             <bk-select
                                 v-if="rule.target.type === 'VAR'"
                                 v-model="rule.target.value"

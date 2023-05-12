@@ -8,7 +8,7 @@
             :api="api"
             :disabled="disabled || hostLoading"
             :multiple="multiple"
-            :placeholder="isPlaceholder"
+            :placeholder="placeholderStr"
             @blur="onBlur"
             @change="onChange">
         </bk-user-selector>
@@ -57,13 +57,15 @@
             return {
                 host: '',
                 hostLoading: false,
-                users: [],
-                isPlaceholder: this.placeholder || window.i18n.t('请选择')
+                users: []
             }
         },
         computed: {
             api () {
                 return `${this.host}/api/c/compapi/v2/usermanage/fs_list_users/`
+            },
+            placeholderStr () {
+                return this.placeholder || window.i18n.t('请选择')
             }
         },
         created () {
