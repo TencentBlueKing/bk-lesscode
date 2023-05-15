@@ -34,7 +34,7 @@ const SingleSchemeComponent = defineComponent({
             validator (val) {
                 return val.length >= 1 || props.minusDisable
             },
-            message: '参数名是必填项，请修改后重试',
+            message: window.i18n.t('参数名是必填项，请修改后重试'),
             trigger: 'blur'
         }
         // 切换是否展示子节点
@@ -267,7 +267,7 @@ const SingleSchemeComponent = defineComponent({
                                             text
                                             onClick={this.handlePlusBrotherProperty}
                                         >
-                                            添加同级参数
+                                            { this.$t('添加同级参数') }
                                         </bk-button>
                                         : ''
                                 }
@@ -281,7 +281,7 @@ const SingleSchemeComponent = defineComponent({
                                             text
                                             onClick={this.plusChildProperty}
                                         >
-                                            添加子参数
+                                            { this.$t('添加子参数') }
                                         </bk-button>
                                         : ''
                                 }

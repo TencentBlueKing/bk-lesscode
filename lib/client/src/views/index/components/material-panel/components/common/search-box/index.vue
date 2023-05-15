@@ -41,7 +41,7 @@
                 }"
                 class="outside-ul">
                 <li class="search-dropdown-list-item">
-                    <span class="text">没有找到</span>
+                    <span class="text">{{ $t('没有找到') }}</span>
                 </li>
             </ul>
         </div>

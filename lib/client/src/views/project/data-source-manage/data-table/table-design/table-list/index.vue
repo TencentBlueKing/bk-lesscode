@@ -1,13 +1,13 @@
 <template>
     <article>
         <header>
-            <render-header>数据源管理</render-header>
+            <render-header>{{ $t('数据源管理') }}</render-header>
             <div class="g-page-tab">
                 <div
                     class="tab-item"
                     :class="{ active: activePage === 'data-source' }"
                     @click="togglePage('data-source')"
-                >数据表管理</div>
+                >{{ $t('数据表管理') }}</div>
             </div>
         </header>
 

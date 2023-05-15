@@ -164,13 +164,12 @@
 <template>
     <div class="upload">
         <div class="upload-trigger" @click="handleClickUpload">
-            <bk-button theme="primary">点击上传</bk-button>
+            <bk-button theme="primary">{{ $t('点击上传') }}</bk-button>
             <input ref="inputFileEl" type="file" multiple :accept="accept" @change="handleChangeFiles">
         </div>
         <slot name="tip" v-bind="{ maxImageSize, maxFileSize }">
             <div class="tip" v-if="showTips">
-                支持上传图片大小 {{maxImageSize}}M 以内，文件大小 {{maxFileSize}}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等
-            </div>
+                {{ $t('支持上传图片大小 {0}M 以内，文件大小 {1}M 以内的素材，格式支持 jpg，png，gif，svg，zip，doc，pdf，excel 等', [maxImageSize, maxFileSize]) }} </div>
         </slot>
     </div>
 </template>

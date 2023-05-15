@@ -1,17 +1,17 @@
 <template>
     <article>
-        <bk-alert type="warning" :title="`数据的增删改会直接影响到${environment.name}，请谨慎操作`"></bk-alert>
+        <bk-alert type="warning" :title="$t('数据的增删改会直接影响到{0}，请谨慎操作',[environment.name])"></bk-alert>
 
         <section class="render-data-header">
-            <bk-button theme="primary" class="mr10" @click="addData">新增</bk-button>
+            <bk-button theme="primary" class="mr10" @click="addData">{{ $t('新增') }}</bk-button>
             <bk-button
                 class="mr10"
                 :disabled="dataStatus.selectRows.length <= 0"
                 @click="bulkDelete"
-            >批量删除</bk-button>
+            >{{ $t('批量删除') }}</bk-button>
             <export-data
                 class="mr10"
-                :title="downloadType === 'all' ? '导出所有数据' : '导出选中数据'"
+                :title="downloadType === 'all' ? $t('导出所有数据') : $t('导出选中数据')"
                 :disable-partial-selection="dataStatus.selectRows.length <= 0"
                 :disabled="dataStatus.pagination.count <= 0"
                 @download="exportDatas"
@@ -19,7 +19,8 @@
             />
             <import-data
                 class="import-data"
-                title="导入数据"
+                :title="$t('导入数据')"
+                :tips="$t('如果导入 sql 文件，仅支持解析插入数据的语法')"
                 :uploadKey="dataImportOperationType"
                 :parse-import="parseImport"
                 :handle-import="handleImport"
@@ -86,10 +87,10 @@
                     show-overflow-tooltip
                 ></bk-table-column>
             </template>
-            <bk-table-column label="操作" width="180">
+            <bk-table-column :label="$t('操作')" width="180">
                 <template slot-scope="props">
-                    <bk-button text @click="editData(props.row)" class="mr10">编辑</bk-button>
-                    <bk-button text @click="deleteData([props.row])">删除</bk-button>
+                    <bk-button text @click="editData(props.row)" class="mr10">{{ $t('编辑') }}</bk-button>
+                    <bk-button text @click="deleteData([props.row])">{{ $t('删除') }}</bk-button>
                 </template>
             </bk-table-column>
             <bk-table-column
@@ -143,13 +144,13 @@
                             v-model="formStatus.editForm[column.name]"
                             :precision="column.scale"
                             type="number"
-                            placeholder="请输入数字"
+                            :placeholder="$t('请输入数字')"
                         ></bk-input>
                         <bk-input
                             v-else-if="column.type === 'int'"
                             v-model="formStatus.editForm[column.name]"
                             type="number"
-                            placeholder="请输入数字"
+                            :placeholder="$t('请输入数字')"
                         ></bk-input>
                         <bk-date-picker
                             v-else-if="column.type === 'date'"
@@ -166,7 +167,7 @@
                         <bk-input
                             v-else
                             v-model="formStatus.editForm[column.name]"
-                            placeholder="请输入字符串"
+                            :placeholder="$t('请输入字符串')"
                         ></bk-input>
                     </bk-form-item>
                     <bk-form-item>
@@ -175,11 +176,11 @@
                             class="mr5"
                             :loading="formStatus.isSaving"
                             @click="confirmSubmitData"
-                        >提交</bk-button>
+                        >{{ $t('提交') }}</bk-button>
                         <bk-button
                             :disabled="formStatus.isSaving"
                             @click="closeForm"
-                        >取消</bk-button>
+                        >{{ $t('取消') }}</bk-button>
                     </bk-form-item>
                 </bk-form>
             </div>
@@ -257,7 +258,7 @@
         if (!column.nullable) {
             return [{
                 required: true,
-                message: `${column.name} 是必填项`,
+                message: window.i18n.t('{0} 是必填项', [column.name]),
                 trigger: 'blur'
             }]
         }
@@ -417,7 +418,7 @@
 
             const addData = () => {
                 formStatus.showEditData = true
-                formStatus.editTitle = '新增数据'
+                formStatus.editTitle = window.i18n.t('新增数据')
                 formStatus.dataParse = new DataParse()
                 const columns = activeTable.value.columns
                 columns.forEach((column) => {
@@ -431,7 +432,7 @@
             const editData = (row) => {
                 const data = [{ tableName: activeTable.value.tableName, list: [row] }]
                 formStatus.showEditData = true
-                formStatus.editTitle = '编辑数据'
+                formStatus.editTitle = window.i18n.t('编辑数据')
                 formStatus.dataParse = new DataParse(data)
                 Object.keys(row).forEach((key) => {
                     let value = row[key]
@@ -471,11 +472,11 @@
                             return
                         }
                         if (!dayjs(form[dateTimeColumn.name]).isValid()) {
-                            throw new Error(`数据是【datetime】类型，但是值【${form[dateTimeColumn.name]}】不符合【datetime】格式`)
+                            throw new Error(window.i18n.t('数据是【datetime】类型，但是值【{0}】不符合【datetime】格式', [form[dateTimeColumn.name]]))
                         } else {
                             form[dateTimeColumn.name] = dayjs(form[dateTimeColumn.name])
                                 .utcOffset(0)
-                                .format('YYYY-MM-DD HH:mm:ss')
+                                .format(window.i18n.t('YYYY-MM-DD HH:mm:ss'))
                         }
                     })
                 })
@@ -503,8 +504,8 @@
                 const dataSqlParser = new DataSqlParser()
                 const sql = dataParse.set(dataJsonParser).export(dataSqlParser)
                 bkInfoBox({
-                    title: '确认要删除？',
-                    subTitle: `将会直接删除${environment.value.name} id 为【${list.map(x => x.id).join(',')}】的数据`,
+                    title: window.i18n.t('确认要删除？'),
+                    subTitle: window.i18n.t('将会直接删除{0} id 为【{1}】的数据', [environment.value.name, list.map(x => x.id).join(',')]),
                     theme: 'danger',
                     confirmLoading: true,
                     confirmFn () {
@@ -573,7 +574,7 @@
                         )
                         resolve({
                             data: list,
-                            message: type === DATA_FILE_TYPE.XLSX ? `解析到【${list.length}】条数据，点击导入后根据所选的操作类型导入数据库` : ''
+                            message: type === DATA_FILE_TYPE.XLSX ? window.i18n.t('解析到【{0}】条数据，点击导入后插入到数据库', [list.length]) : ''
                         })
                     } catch (error) {
                         reject(error)

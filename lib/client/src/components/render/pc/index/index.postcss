@@ -4,21 +4,20 @@
     position: relative;
     z-index: 99999999 !important;
     min-height: calc(100% - 20px) !important;
-    &.empty{
-        &::before{
-            content: "请拖入组件";
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            color: #C4C6CC;
-            pointer-events: all;
-        }
+    .empty{
+        min-height: 34px !important;
+        background: #FAFBFD;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: #C4C6CC;
+        pointer-events: all;
     }
 }
 .drag-area{

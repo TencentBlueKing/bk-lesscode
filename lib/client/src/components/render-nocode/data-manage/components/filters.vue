@@ -6,17 +6,17 @@
                     <bk-select
                         v-if="isSelectComp(item.type)"
                         style="pointer-events: none; background: #ffffff"
-                        :placeholder="`请选择${item.name}`">
+                        :placeholder="$t('请选择{0}', [item.name])">
                     </bk-select>
                     <bk-date-picker
                         v-else-if="['DATE', 'DATETIME'].includes(item.type)"
                         style="pointer-events: none; width: 100%;"
-                        :placeholder="`请输入${item.name}`">
+                        :placeholder="$t('请输入{0}', [item.name])">
                     </bk-date-picker>
                     <bk-input
                         v-else
                         style="pointer-events: none;"
-                        :placeholder="`请输入${item.name}`"
+                        :placeholder="$t('请输入{0}', [item.name])"
                         :type="item.type === 'INT' ? 'number' : 'text'"
                     />
                 </bk-form-item>
@@ -33,7 +33,7 @@
                     arrow: false,
                     distance: 0
                 }">
-                <div class="add-filter-trigger" v-bk-tooltips="'添加筛选条件'">
+                <div class="add-filter-trigger" v-bk-tooltips="$t('添加筛选条件')">
                     <i class="bk-drag-icon bk-drag-add-line"></i>
                 </div>
                 <ul class="field-list-wrapper" slot="content">
@@ -45,8 +45,7 @@
             <p
                 v-if="filterFields.length === 0 && canSelectFields.length === 0 "
                 style="font-size: 12px;">
-                请先在表格中添加需要展示的字段
-            </p>
+                {{ $t('请先在表格中添加需要展示的字段') }} </p>
         </bk-form>
     </div>
 </template>

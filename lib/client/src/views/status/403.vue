@@ -13,8 +13,8 @@
     <div :class="$style['container']">
         <bk-exception :class="$style['exception-wrap']" type="403">
             <!-- <div>Forbidden</div> -->
-            <div>没有权限，请去权限中心申请权限</div>
-            <bk-link theme="primary" @click="$router.replace({ path: '/' })">返回首页</bk-link>
+            <div>{{ $t('没有权限，请去权限中心申请权限') }}</div>
+            <bk-link theme="primary" @click="$router.replace({ path: '/' })">{{ $t('返回首页') }}</bk-link>
         </bk-exception>
     </div>
 </template>

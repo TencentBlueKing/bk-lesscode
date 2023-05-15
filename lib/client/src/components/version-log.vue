@@ -9,7 +9,7 @@
         header-position="left">
         <mavon-editor :value="localValue" :external-link="false" :editable="false" :subfield="false" :toolbars-flag="false" default-open="preview" />
         <div slot="footer">
-            <bk-button @click="handleCancel">关闭</bk-button>
+            <bk-button @click="handleCancel">{{ $t('关闭') }}</bk-button>
         </div>
     </bk-dialog>
 </template>
@@ -37,7 +37,7 @@
                 if (this.title) {
                     return this.title
                 }
-                return `${this.data.name}  ${this.data.version}版本日志`
+                return this.$t('{0}  {1}版本日志', [this.data.name, this.data.version])
             }
         },
         methods: {

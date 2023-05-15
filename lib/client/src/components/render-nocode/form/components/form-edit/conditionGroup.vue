@@ -1,11 +1,11 @@
 <template>
     <div class="condition-group">
-        <i v-if="showDeleteIcon" class="bk-icon icon-close close-btn" @click="handleDeleteCondition"></i>
+        <!-- <i v-if="showDeleteIcon" class="bk-icon icon-close close-btn" @click="handleDeleteCondition"></i> -->
         <div class="connector-rule">
-            <label>字段间关系</label>
+            <label>{{$t('字段间关系')}}</label>
             <bk-radio-group v-model="localVal.type" @change="change">
-                <bk-radio value="and">且</bk-radio>
-                <bk-radio value="or">或</bk-radio>
+                <bk-radio value="and" :disabled="disabled">{{$t('且')}}</bk-radio>
+                <bk-radio value="or" :disabled="disabled">{{ $t('或')}}</bk-radio>
             </bk-radio-group>
         </div>
         <div class="condition-list">
@@ -17,6 +17,7 @@
                         style="width: 30%; margin-right: 8px"
                         :clearable="false"
                         :loading="fieldsLoading"
+                        :disabled="disabled"
                         @selected="handleSelectField(conditionItem, $event)">
                         <bk-option v-for="field in fields" :key="field.key" :id="field.key" :name="field.name"></bk-option>
                     </bk-select>
@@ -25,6 +26,7 @@
                         v-model="conditionItem.condition"
                         style="width: 30%; margin-right: 8px"
                         :clearable="false"
+                        :disabled="disabled"
                         @selected="change">
                         <bk-option
                             v-for="field in getConditionOptions(conditionItem.key)"
@@ -37,6 +39,7 @@
                     <field-value
                         style="width: 40%"
                         :field="getField(conditionItem.key)"
+                        :editable="!disabled"
                         :value="conditionItem.value"
                         @change="handleValChange(conditionItem, $event)">
                     </field-value>
@@ -90,7 +93,8 @@
 
                     }
                 }
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {
@@ -153,6 +157,9 @@
                 this.change()
             },
             handleAddExpression (index) {
+                if (this.disabled) {
+                    return
+                }
                 this.localVal.expressions.splice(index + 1, 0, {
                     key: '',
                     condition: '',
@@ -161,6 +168,9 @@
                 this.change()
             },
             handleDeleteExpression (index) {
+                if (this.disabled) {
+                    return
+                }
                 if (this.localVal.expressions.length > 1) {
                     this.localVal.expressions.splice(index, 1)
                     this.change()
@@ -176,19 +186,19 @@
                     ].includes(type)
                 ) {
                     return [
-                        { id: '==', name: '等于' },
+                        { id: '==', name: window.i18n.t('等于') },
                         // { id: '!=', name: '不等于' },
                         { id: 'in', name: '包含' }
                         // { id: 'not_in', name: '不包含' },
                     ]
                 }
                 return [
-                    { id: '==', name: '等于' },
+                    { id: '==', name: window.i18n.t('等于') },
                     // { id: '!=', name: '不等于' },
-                    { id: '>', name: '大于' },
-                    { id: '<', name: '小于' },
-                    { id: '>=', name: '大于等于' },
-                    { id: '<=', name: '小于等于' }
+                    { id: '>', name: window.i18n.t('大于') },
+                    { id: '<', name: window.i18n.t('小于') },
+                    { id: '>=', name: window.i18n.t('大于等于') },
+                    { id: '<=', name: window.i18n.t('小于等于') }
                 ]
             },
             handleDeleteCondition () {
@@ -247,6 +257,7 @@
   transform: translateY(-50%);
   width: 38px;
   i {
+    margin-right: 4px;
     color: #c4c6cc;
     cursor: pointer;
     &:hover {

@@ -16,8 +16,7 @@
             size="small"
             :text="true"
             @click="handleCreateManagePage">
-            生成表单数据管理页
-        </bk-button>
+            {{ $t('生成表单数据管理页') }} </bk-button>
         <bk-popover
             v-else
             ext-cls="form-data-manage-pages-popover"
@@ -25,17 +24,14 @@
             theme="light"
             width="300">
             <span style="color: #3a84ff; cursor: pointer;">
-                关联的数据管理页面（{{ dataManagePages.length }}）
-            </span>
+                {{ $t('关联的数据管理页面（{0}）', [dataManagePages.length]) }} </span>
             <div slot="content" class="manage-page-list">
                 <div class="list-title">
                     <span>
-                        已生成
-                        <span style="font-weight: bold">{{ dataManagePages.length }}</span>
-                        个数据管理页
-                    </span>
+                        {{ $t('已生成') }} <span style="font-weight: bold">{{ dataManagePages.length }}</span>
+                        {{ $t('个数据管理页') }} </span>
                     <i
-                        v-bk-tooltips="'继续添加'"
+                        v-bk-tooltips="$t('继续添加')"
                         class="bk-drag-icon bk-drag-add-line create-page-icon"
                         @click="handleCreateManagePage">
                     </i>
@@ -44,8 +40,8 @@
                     <li v-for="item in dataManagePages" :key="item.id">
                         <i class="bk-drag-icon bk-drag-page"></i>
                         <span class="name">{{item.pageName}}</span>
-                        <i title="预览" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
-                        <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 20px;" @click="handleEditPage(item)"></i>
+                        <i :title="$t('预览')" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
+                        <i :title="$t('编辑')" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 20px;" @click="handleEditPage(item)"></i>
                     </li>
                 </ul>
             </div>
@@ -79,7 +75,7 @@
                 return {
                     formId,
                     pageCode: pageCode + 'manage',
-                    pageName: pageName + '_表单数据管理页',
+                    pageName: pageName + window.i18n.t('表单数据管理页'),
                     content: JSON.stringify({ filters: [], tableConfig: ['createUser', 'createTime'] })
                 }
             }
@@ -100,7 +96,7 @@
                 } else {
                     this.$bkMessage({
                         theme: 'warning',
-                        message: '请先保存表单页面再生成数据管理页'
+                        message: window.i18n.t('请先保存表单页面再生成数据管理页')
                     })
                 }
             },

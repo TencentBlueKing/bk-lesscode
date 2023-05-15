@@ -3,12 +3,12 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                <span :title="tableStatus.basicInfo.tableName" class="header-title">表【{{tableStatus.basicInfo.tableName}}】信息</span>
+                <span :title="tableStatus.basicInfo.tableName" class="header-title">{{ $t('表【{0}】信息', [tableStatus.basicInfo.tableName]) }}</span>
                 <bk-divider direction="vertical"></bk-divider>
                 
                 <span
                     v-bk-tooltips="{
-                        content: '表单页面自动生成的数据表不可以编辑',
+                        content: $t('表单页面自动生成的数据表不可以编辑'),
                         disabled: !tableStatus.disableEdit
                     }"
                 >
@@ -17,26 +17,26 @@
                         class="mr10 ml5"
                         :disabled="tableStatus.disableEdit"
                         @click="goEdit"
-                    >编辑</bk-button>
+                    >{{ $t('编辑') }}</bk-button>
                 </span>
                 <export-table
                     class="mr10"
-                    :title="`导出表【${tableStatus.basicInfo.tableName}】结构`"
+                    :title="$t('导出表【{0}】结构',[tableStatus.basicInfo.tableName])"
                     :only-export-all="true"
                     @download="exportTables"
                 ></export-table>
-                <bk-button size="small" @click="goRecord">变更记录</bk-button>
+                <bk-button size="small" @click="goRecord">{{ $t('变更记录') }}</bk-button>
             </span>
         </render-header>
 
         <main class="table-main">
             <section class="table-section">
-                <h5 class="section-title">基础信息</h5>
+                <h5 class="section-title">{{ $t('基础信息') }}</h5>
                 <info-table :basic-info="tableStatus.basicInfo" :is-edit="false"></info-table>
             </section>
 
             <section class="table-section">
-                <h5 class="section-title">字段配置</h5>
+                <h5 class="section-title">{{ $t('字段配置') }}</h5>
                 <show-column-table :columns="tableStatus.data"></show-column-table>
             </section>
         </main>

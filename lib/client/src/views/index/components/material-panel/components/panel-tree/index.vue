@@ -34,7 +34,7 @@
                                 'bk-drag-invisible-eye': !nodeData.payload.componentData.interactiveShow
                             }"
                             v-bk-tooltips="{
-                                content: nodeData.payload.componentData.interactiveShow ? '隐藏' : '显示',
+                                content: nodeData.payload.componentData.interactiveShow ? $t('隐藏') : $t('显示'),
                                 placement: 'top',
                                 interactive: false
                             }"
@@ -46,8 +46,7 @@
                 v-if="isEmpty"
                 type="empty"
                 scene="part">
-                页面为空
-            </bk-exception>
+                {{ $t('页面为空') }} </bk-exception>
         </div>
     </div>
 </template>
@@ -83,7 +82,7 @@
                 return this.allExpanded ? 'bk-drag-unfold' : 'bk-drag-fold'
             },
             tooltip () {
-                return this.allExpanded ? '收起所有' : '展开所有'
+                return this.allExpanded ? window.i18n.t('收起所有') : window.i18n.t('展开所有')
             }
         },
         

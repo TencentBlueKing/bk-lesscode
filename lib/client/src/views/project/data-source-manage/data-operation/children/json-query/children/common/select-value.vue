@@ -9,11 +9,11 @@
         </bk-input>
         <bk-input
             v-bk-tooltips="{
-                content: '在生成函数的时候会自动生成同名参数，调用函数的时候传入具体值',
+                content: $t('在生成函数的时候会自动生成同名参数，调用函数的时候传入具体值'),
                 width: '300px'
             }"
             class="input-param"
-            placeholder="参数名"
+            :placeholder="$t('参数名')"
             :value="param"
             @change="(val) => handleChange('param', val)"
         >
@@ -30,7 +30,7 @@
         props: {
             placeholder: {
                 type: String,
-                default: '请输入值'
+                default: window.i18n.t('请输入值')
             },
             value: {
                 type: [String, Number],

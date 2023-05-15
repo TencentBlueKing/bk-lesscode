@@ -1,7 +1,7 @@
 <template>
     <bk-dialog
         class="preview-form-dialog"
-        title="表单预览"
+        :title="$t('表单预览')"
         header-position="left"
         width="912"
         render-directive="if"
@@ -14,7 +14,7 @@
             <nocode-form :fields="fields"></nocode-form>
         </div>
         <div class="dialog-footer" slot="footer">
-            <bk-button @click="$emit('close')">关闭</bk-button>
+            <bk-button @click="$emit('close')">{{ $t('关闭') }}</bk-button>
         </div>
     </bk-dialog>
 </template>

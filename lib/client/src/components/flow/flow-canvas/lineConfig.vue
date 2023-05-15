@@ -9,24 +9,24 @@
                 <node-template class="small" :node="line.tNode" :single="true" :editable="false"></node-template>
             </div>
             <bk-form ref="lineForm" form-type="vertical" :label-width="200" :model="formData" :rules="rules">
-                <bk-form-item label="关系名称" error-display-type="normal" :property="'name'" :required="true">
-                    <bk-input v-model.trim="formData.name" maxlength="120" placeholder="请输入关系名称"> </bk-input>
+                <bk-form-item :label="$t('form_关系名称')" error-display-type="normal" :property="'name'" :required="true">
+                    <bk-input v-model.trim="formData.name" maxlength="120" :placeholder="$t('请输入关系名称')"> </bk-input>
                 </bk-form-item>
                 <template v-if="line.canSetCondition">
-                    <bk-form-item label="流转条件" :required="true">
+                    <bk-form-item :label="$t('form_流转条件')" :required="true">
                         <bk-select
                             v-model="formData.condition_type"
                             :clearable="false"
                             :searchable="false"
                             @selected="handleSelectConditionType">
-                            <bk-option id="default" name="默认"> </bk-option>
-                            <bk-option id="by_field" name="字段判断"> </bk-option>
+                            <bk-option id="default" :name="$t('默认')"> </bk-option>
+                            <bk-option id="by_field" :name="$t('字段判断')"> </bk-option>
                         </bk-select>
                     </bk-form-item>
                     <bk-form-item
                         v-if="formData.condition_type === 'by_field'"
-                        label="条件组件关系"
-                        desc="当所有条件组都满足且/或的条件时，节点才会流转"
+                        :label="$t('form_条件组件关系')"
+                        :desc="$t('当所有条件组都满足且/或的条件时，节点才会流转')"
                         desc-type="icon">
                         <line-condition ref="lineCondition" :condition="formData.condition" :line-id="line.id"></line-condition>
                     </bk-form-item>
@@ -34,9 +34,9 @@
             </bk-form>
         </div>
         <div class="btns-wrapper">
-            <bk-button theme="primary" :loading="savePending" :disabled="savePending" @click="onSaveClick">确认</bk-button>
-            <bk-button :loading="deletePending" :disabled="savePending" @click="$emit('delete')">删除</bk-button>
-            <bk-button :disabled="savePending || deletePending" @click="$emit('close')">取消</bk-button>
+            <bk-button theme="primary" :loading="savePending" :disabled="savePending" @click="onSaveClick">{{ $t('确认') }}</bk-button>
+            <bk-button :loading="deletePending" :disabled="savePending" @click="$emit('delete')">{{ $t('删除') }}</bk-button>
+            <bk-button :disabled="savePending || deletePending" @click="$emit('close')">{{ $t('取消') }}</bk-button>
         </div>
     </div>
 </template>
@@ -79,7 +79,7 @@
                     name: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         }
                     ]

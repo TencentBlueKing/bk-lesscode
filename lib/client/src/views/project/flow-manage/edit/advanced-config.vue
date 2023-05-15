@@ -2,13 +2,13 @@
     <section class="advanced-config">
         <div class="form-config-area">
             <div class="form-section">
-                <h4>基础设置</h4>
+                <h4>{{ $t('基础设置') }}</h4>
                 <bk-form ref="advancedForm" class="section-content" form-type="vertical" :model="advancedData" :rules="rules">
-                    <bk-form-item label="流程名称" :required="true">
+                    <bk-form-item :label="$t('form_流程名称')" :required="true">
                         <bk-input v-model="advancedData.name"></bk-input>
                     </bk-form-item>
                     <div class="multiple-form-wrapper">
-                        <bk-form-item label="撤回方式" :class="{ 'half-row-form': advancedData.revoke_config.type === 3 }">
+                        <bk-form-item :label="$t('form_撤回方式')" :class="{ 'half-row-form': advancedData.revoke_config.type === 3 }">
                             <bk-select
                                 v-model="advancedData.revoke_config.type"
                                 :clearable="false"
@@ -24,12 +24,12 @@
                                 :clearable="false"
                                 :disabled="flowNodesLoading"
                                 :loading="flowNodesLoading">
-                                <bk-option v-for="item in flowNodes" :key="item.id" :id="item.id" :name="item.name || '新增节点'">
+                                <bk-option v-for="item in flowNodes" :key="item.id" :id="item.id" :name="item.name || $t('新增节点')">
                                 </bk-option>
                             </bk-select>
                         </bk-form-item>
                     </div>
-                    <bk-form-item label="通知方式" style="margin-top: 15px;">
+                    <bk-form-item :label="$t('form_通知方式')" style="margin-top: 15px;">
                         <bk-checkbox-group
                             :value="advancedData.notify.map(item => item.type)"
                             @change="onSelectNotifyType">
@@ -45,7 +45,7 @@
                     <div class="multiple-form-wrapper">
                         <bk-form-item
                             v-if="advancedData.notify.length > 0"
-                            label="通知频率"
+                            :label="$t('form_通知频率')"
                             :class="{ 'half-row-form': advancedData.notify_rule === 'RETRY' }">
                             <bk-select v-model="advancedData.notify_rule" :clearable="false">
                                 <bk-option v-for="item in notifyFrequencies" :key="item.id" :id="item.id" :name="item.name"></bk-option>
@@ -95,9 +95,8 @@
                 :loading="advancedPending"
                 @click="handleSave"
                 :disabled="serviceData.is_builtin">
-                提交
-            </bk-button>
-            <bk-button @click="$router.push({ name: 'flowList' })">取消</bk-button>
+                {{ $t('提交') }} </bk-button>
+            <bk-button @click="$router.push({ name: 'flowList' })">{{ $t('取消') }}</bk-button>
         </div>
     </section>
 </template>
@@ -126,26 +125,26 @@
                 flowNodes: [],
                 extendSettingOpen: false,
                 revokeTypeList: [
-                    { id: 0, name: '不支持撤回' },
-                    { id: 1, name: '任何节点，提单人都可撤回单据' },
-                    { id: 2, name: '提单后，单据未被处理流转前，提单人可以撤回' },
-                    { id: 3, name: '指定节点前可以撤回' }
+                    { id: 0, name: window.i18n.t('不支持撤回') },
+                    { id: 1, name: window.i18n.t('任何节点，提单人都可撤回单据') },
+                    { id: 2, name: window.i18n.t('提单后，单据未被处理流转前，提单人可以撤回') },
+                    { id: 3, name: window.i18n.t('指定节点前可以撤回') }
                 ],
                 notifyTypeList: [
-                    { type: 'WEIXIN', name: '企业微信' },
-                    { type: 'EMAIL', name: '邮件' },
-                    { type: 'SMS', name: 'SMS短信' }
+                    { type: 'WEIXIN', name: window.i18n.t('企业微信') },
+                    { type: 'EMAIL', name: window.i18n.t('邮件') },
+                    { type: 'SMS', name: window.i18n.t('SMS短信') }
                 ],
                 notifyFrequencies: [
-                    { id: 'ONCE', name: '首次通知，以后不再通知' },
-                    { id: 'RETRY', name: '首次通知后，次日起每天定时通知' }
+                    { id: 'ONCE', name: window.i18n.t('首次通知，以后不再通知') },
+                    { id: 'RETRY', name: window.i18n.t('首次通知后，次日起每天定时通知') }
                 ],
                 frequencyList: this.getFrequencyList(),
                 rules: {
                     name: [
                         {
                             required: true,
-                            message: '流程名称为必填项',
+                            message: window.i18n.t('流程名称为必填项'),
                             trigger: 'blur'
                         }
                     ]
@@ -198,42 +197,57 @@
                 this.advancedData.notify = notify
                 this.advancedData.notify_rule = val.length > 0 ? 'ONCE' : 'NONE'
             },
+            // 保存流程配置数据
+            async updateItsmServiceData () {
+                const {
+                    id,
+                    notify,
+                    notify_freq,
+                    notify_rule,
+                    revoke_config,
+                    show_all_workflow,
+                    show_my_create_workflow
+                } = this.advancedData
+                const serviceConfig = {
+                    workflow_config: {
+                        notify,
+                        notify_freq,
+                        notify_rule,
+                        revoke_config,
+                        is_revocable: revoke_config.type !== 0,
+                        show_all_workflow,
+                        show_my_create_workflow,
+                        // 以下为流程服务必需字段
+                        is_supervise_needed: false,
+                        supervise_type: 'EMPTY',
+                        supervisor: '',
+                        is_auto_approve: false
+                    },
+                    // 以下为流程服务必需字段
+                    can_ticket_agency: false,
+                    display_type: 'INVISIBLE'
+                }
+                return new Promise((resolve, reject) => {
+                    this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
+                        .then(() => {
+                            resolve()
+                        }).catch((error) => {
+                            const h = this.$createElement
+                            this.$bkMessage({
+                                theme: 'error',
+                                ellipsisLine: 3,
+                                message: error.message
+                            })
+                            reject(error.message)
+                        })
+                })
+            },
             handleSave () {
                 this.$refs.advancedForm.validate().then(async () => {
-                    try {
+                    try{
                         this.advancedPending = true
-                        const {
-                            id,
-                            name,
-                            notify,
-                            notify_freq,
-                            notify_rule,
-                            revoke_config,
-                            show_all_workflow,
-                            show_my_create_workflow
-                        } = this.advancedData
-                        const isRevocable = revoke_config.type !== 0
-                        const serviceConfig = {
-                            workflow_config: {
-                                notify,
-                                notify_freq,
-                                notify_rule,
-                                revoke_config,
-                                is_revocable: isRevocable,
-                                show_all_workflow,
-                                show_my_create_workflow,
-                                // 以下为流程服务必需字段
-                                is_supervise_needed: false,
-                                supervise_type: 'EMPTY',
-                                supervisor: '',
-                                is_auto_approve: false
-                            },
-                            // 以下为流程服务必需字段
-                            can_ticket_agency: false,
-                            display_type: 'INVISIBLE'
-                        }
-                        await this.$store.dispatch('nocode/flow/updateServiceData', { id, data: serviceConfig })
-                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: name })
+                        await this.updateItsmServiceData()
+                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, flowName: this.advancedData.name })
                         this.$router.push({ name: 'flowList' })
                     } catch (e) {
                         console.error(e.message || e)
@@ -269,6 +283,9 @@
         margin-left: 106px;
         &.bk-form {
             width: 680px;
+            >>> .bk-label {
+                width: auto !important;
+            }
         }
     }
     .bk-form-item {

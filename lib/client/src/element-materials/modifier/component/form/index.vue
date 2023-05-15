@@ -16,8 +16,7 @@
     >
         <init-form :component-node="componentNode" :handle-submit-form-item="handleSubmitFormItem" />
         <div class="form-title">
-            表单内容配置
-        </div>
+            {{ $t('表单内容配置') }} </div>
         <div
             class="form-item-list">
             <vue-draggable
@@ -63,8 +62,7 @@
         <div
             class="table-column-add"
             @click="handleShowOperation(null)">
-            继续添加表单项
-        </div>
+            {{ $t('继续添加表单项') }} </div>
 
         <form-button-setting :button-setting="componentNode.prop.btnSetting || {}" :handle-update-btn-item="handleUpdateBtn">
         </form-button-setting>
@@ -219,9 +217,9 @@
                 submitBtnNode.setRenderSlots({
                     format: 'value',
                     component: 'text',
-                    code: '提交',
+                    code: this.$t('提交'),
                     valueType: 'text',
-                    renderValue: '提交'
+                    renderValue: this.$t('提交')
                 })
                 
                 submitBtnNode.setProp('theme', LC.utils.genPropFormatValue({
@@ -244,7 +242,7 @@
                                     '{ref}': this.componentNode.prop.ref,
                                     '{formmodel}': this.formModelKey,
                                     '{posturl}': payload.initType === 'table-data-source' ? `/data-source/user/tableName/${payload.tableData.tableName}` : '/api/data/postMockData',
-                                    '{urlTips}': payload.initType === 'table-data-source' ? `此地址会将数据提交到lesscode创建的数据表，${payload.tableData.tableName}为选择的表名称，若需提交到其它接口请作相应修改` : '示例链接/api/data/postMockData需要更换为具体的接口API地址'
+                                    '{urlTips}': payload.initType === 'table-data-source' ? window.i18n.t('此地址会将数据提交到lesscode创建的数据表，{0}为选择的表名称，若需提交到其它接口请作相应修改', [payload.tableData.tableName]) : this.$t('示例链接/api/data/postMockData需要更换为具体的接口API地址')
                                 })
                             }
                         ]
@@ -260,9 +258,9 @@
                 cancelBtnNode.setRenderSlots({
                     format: 'value',
                     component: 'text',
-                    code: '取消',
+                    code: this.$t('取消'),
                     valueType: 'text',
-                    renderValue: '取消'
+                    renderValue: this.$t('取消')
                 })
                 cancelBtnNode.setStyle({
                     'marginLeft': '8px'

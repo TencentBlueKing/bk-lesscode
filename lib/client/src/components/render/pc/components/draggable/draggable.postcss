@@ -46,3 +46,39 @@
         display: none !important;
     }
 }
+.en-ghost{
+    margin-bottom: 5px;
+    &:after {
+        content: "Set it here";
+        display: block;
+        height: 24px;
+        padding: 0 5px;
+        font-size: 12px;
+        color: #fff;
+        text-align: center;
+        line-height: 24px;
+        background-color: #C2D7F9;
+    }
+    &:global(.inline),
+    &:global(.inline-block) {
+        display: inline-block;
+        vertical-align: sub;
+        &:after {
+            width: 60px;
+            display: inline-block;
+            position: relative;
+        }
+    }
+    &:global(.block) {
+        display: block;
+        &:after {
+            top: 0;
+            display: inline-block;
+            width: 100%;
+            position: relative;
+        }
+    }
+    & > * {
+        display: none !important;
+    }
+}

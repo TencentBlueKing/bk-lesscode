@@ -38,7 +38,7 @@
         data () {
             return {
                 code: '',
-                dialogTitle: 'json数据将会覆盖当前已有页面内容'
+                dialogTitle: window.i18n.t('json数据将会覆盖当前已有页面内容')
             }
         },
         computed: {

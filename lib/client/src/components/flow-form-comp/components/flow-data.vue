@@ -1,10 +1,10 @@
 <template>
     <div class="flow-data">
         <bk-tab type="unborder-card" :active="active" @tab-change="handleTabChange">
-            <bk-tab-panel label="流程总览" name="flow">
+            <bk-tab-panel :label="$t('流程总览')" name="flow">
                 <ticket-list :service-id="serviceId" :view-type="viewType"></ticket-list>
             </bk-tab-panel>
-            <bk-tab-panel label="节点数据" name="node" render-directive="if">
+            <bk-tab-panel :label="$t('节点数据')" name="node" render-directive="if">
                 <node-data-manage
                     :form-ids="formIds"
                     :service-id="serviceId"

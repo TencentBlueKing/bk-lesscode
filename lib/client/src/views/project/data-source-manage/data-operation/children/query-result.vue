@@ -46,7 +46,7 @@
             class="exception-part"
             type="empty"
             scene="part">
-            <span>暂无数据</span>
+            <span>{{ $t('暂无数据') }}</span>
         </bk-exception>
     </section>
     <bk-exception
@@ -54,7 +54,7 @@
         class="exception-part"
         type="empty"
         scene="part">
-        <span>请先点击查询按钮</span>
+        <span>{{ $t('请先点击查询按钮') }}</span>
     </bk-exception>
 </template>
 

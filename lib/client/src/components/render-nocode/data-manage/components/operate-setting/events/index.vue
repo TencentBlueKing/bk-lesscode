@@ -2,10 +2,10 @@
     <div class="events-setting">
         <section class="choose-function">
             <div class="event-title">
-                <span class="event-name" v-bk-tooltips="'点击组件时调用该事件函数'">click</span>
+                <span class="event-name" v-bk-tooltips="$t('点击组件时调用该事件函数')">click</span>
                 <bk-switcher :value="eventConfig.enable" size="small" @change="handleEventConfigChange($event, 'enable')"></bk-switcher>
             </div>
-            <bk-select :value="eventConfig.name" placeholder="请选择函数" @selected="handleEventConfigChange($event, 'name')">
+            <bk-select :value="eventConfig.name" :placeholder="$t('请选择函数')" @selected="handleEventConfigChange($event, 'name')">
                 <bk-option
                     v-for="item in functionList"
                     :key="item.id"
@@ -29,12 +29,12 @@
             functionList () {
                 if (this.selectedComp.type === 'buttons') {
                     return [
-                        { id: 'export', name: '导出' }
+                        { id: 'export', name: this.$t('导出') }
                     ]
                 }
                 return [
-                    { id: 'rowDetail', name: '详情' },
-                    { id: 'rowDelete', name: '删除' }
+                    { id: 'rowDetail', name: this.$t('详情') },
+                    { id: 'rowDelete', name: this.$t('删除') }
                 ]
             }
         },

@@ -13,36 +13,37 @@
         @page-limit-change="handlePageLimitChange"
     >
         <bk-table-column
-            label="查询时间"
+            :label="$t('table_查询时间')"
             prop="createTime"
             width="170"
             :formatter="timeFormatter"
         />
         <bk-table-column
-            label="状态"
+            :label="$t('状态')"
             prop="status"
             width="100"
         >
             <template slot-scope="props">
-                <span v-if="+props.row.status === 0" class="query-status success">成功</span>
-                <span v-else class="query-status failed">失败</span>
+                <span v-if="+props.row.status === 0" class="query-status success">{{ $t('成功') }}</span>
+                <span v-else class="query-status failed">{{ $t('失败') }}</span>
             </template>
         </bk-table-column>
         <bk-table-column
-            label="耗时"
+            :label="$t('table_耗时')"
             prop="spendTime"
-            width="100"
+            :width="$store.state.Language ? 130 : 100"
             :formatter="spendTimeFormatter"
         />
         <bk-table-column
-            label="数据源"
+            :label="$t('table_数据源')"
             prop="dataSourceType"
             width="150"
             :formatter="dataSourceTypeFormatter"
         />
         <bk-table-column
-            label="查询描述"
+            :label="$t('table_查询描述')"
             prop="condition"
+            width="140"
             show-overflow-tooltip
             :formatter="conditionFormatter"
         />
@@ -53,7 +54,8 @@
         />
         <bk-table-column
             show-overflow-tooltip
-            label="异常信息"
+            :label="$t('table_异常信息')"
+            min-width="160"
         >
             <template slot-scope="props">
                 <span>{{ props.row.message || '--' }}</span>
@@ -66,8 +68,7 @@
                     theme="primary"
                     @click="handleLoad(props.row)"
                 >
-                    重新加载
-                </bk-button>
+                    {{ $t('重新加载') }} </bk-button>
             </template>
         </bk-table-column>
         <empty-status slot="empty"></empty-status>
@@ -160,7 +161,7 @@
             }
 
             const dataSourceTypeFormatter = (row, column, cellValue, index) => {
-                return cellValue === 'bk-base' ? 'BkBase 结果表' : 'Mysql 数据表'
+                return cellValue === 'bk-base' ? window.i18n.t('BkBase 结果表') : window.i18n.t('Mysql 数据表')
             }
 
             onBeforeMount(getHistory)

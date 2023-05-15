@@ -4,21 +4,21 @@
             render-directive="if"
             theme="primary"
             :title="dialogTitle"
-            width="600"
+            :width="$store.state.Language === 'en' ? 750 : 600"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
             ext-cls="template-edit-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="120" :rules="dialog.formRules" :model="dialog.formData">
-                <bk-form-item label="模板名称" required property="templateName" error-display-type="normal">
+            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="$store.state.Language === 'en' ? 168 : 120" :rules="dialog.formRules" :model="dialog.formData">
+                <bk-form-item :label="$t('form_模板名称')" required property="templateName" error-display-type="normal">
                     <bk-input ref="nameInput"
                         maxlength="40"
                         v-model.trim="dialog.formData.templateName"
-                        placeholder="请输入模板名称，40个字符以内">
+                        :placeholder="$t('请输入模板名称，40个字符以内')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item label="模板分类" required property="categoryId" error-display-type="normal">
+                <bk-form-item :label="$t('form_模板分类')" required property="categoryId" error-display-type="normal">
                     <bk-select
                         :clearable="false"
                         v-model="dialog.formData.categoryId"
@@ -29,18 +29,18 @@
                     </bk-select>
                 </bk-form-item>
                 <section v-if="actionType === 'update'" style="margin-top: 20px;">
-                    <bk-form-item label="模板封面" property="previewImg" error-display-type="normal">
+                    <bk-form-item :label="$t('form_模板封面')" property="previewImg" error-display-type="normal">
                         <src-input v-model="dialog.formData.previewImg" file-type="img" @change="handleImgChange" />
                     </bk-form-item>
                 </section>
                 <section v-if="iamNoResourcesPerm[$IAM_ACTION.manage_platform[0]] && actionType === 'update'" style="margin-top: 20px;">
-                    <bk-form-item label="设为公开模板" required property="isOffcial" error-display-type="normal">
+                    <bk-form-item :label="$t('form_设为公开模板')" required property="isOffcial" error-display-type="normal">
                         <bk-radio-group v-model="dialog.formData.isOffcial">
-                            <bk-radio :value="1" style="margin-right: 20px;">是</bk-radio>
-                            <bk-radio :value="0">否</bk-radio>
+                            <bk-radio :value="1" style="margin-right: 20px;">{{ $t('是') }}</bk-radio>
+                            <bk-radio :value="0">{{ $t('否') }}</bk-radio>
                         </bk-radio-group>
                     </bk-form-item>
-                    <bk-form-item label="公开模板分类" required property="offcialType" error-display-type="normal">
+                    <bk-form-item :label="$t('form_公开模板分类')" required property="offcialType" error-display-type="normal">
                         <bk-select
                             :clearable="false"
                             v-model="dialog.formData.offcialType"
@@ -55,8 +55,8 @@
                 <bk-button
                     theme="primary"
                     :loading="dialog.loading"
-                    @click="handleDialogConfirm">确定</bk-button>
-                <bk-button :disabled="dialog.loading" @click="() => isShow = false">取消</bk-button>
+                    @click="handleDialogConfirm">{{ $t('确定') }}</bk-button>
+                <bk-button :disabled="dialog.loading" @click="() => isShow = false">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -103,19 +103,19 @@
                         templateName: [
                             {
                                 required: true,
-                                message: '必填项',
+                                message: window.i18n.t('必填项'),
                                 trigger: 'blur'
                             },
                             {
                                 max: 50,
-                                message: '名称不能超过40个字符',
+                                message: window.i18n.t('名称不能超过40个字符'),
                                 trigger: 'blur'
                             }
                         ],
                         categoryId: [
                             {
                                 required: true,
-                                message: '必选项',
+                                message: window.i18n.t('必选项'),
                                 trigger: 'blur'
                             }
                         ]
@@ -130,10 +130,10 @@
                 return this.$route.params.projectId
             },
             dialogTitle () {
-                return this.actionType === 'apply' ? `添加模板【${this.fromTemplate.templateName}】到本应用，请重命名模板` : '编辑模板'
+                return this.actionType === 'apply' ? window.i18n.t('添加模板【{0}】到本应用，请重命名模板', [this.fromTemplate.templateName]) : window.i18n.t('编辑模板')
             },
             actionName () {
-                return this.actionType === 'apply' ? '添加模板' : '编辑模板'
+                return this.actionType === 'apply' ? window.i18n.t('添加模板') : window.i18n.t('编辑模板')
             }
         },
         watch: {
@@ -183,7 +183,7 @@
                         if (formData.isOffcial && !formData.offcialType) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: '公开模板分类不能为空'
+                                message: window.i18n.t('公开模板分类不能为空')
                             })
                             return
                         } else {
@@ -204,7 +204,7 @@
                     if (res) {
                         this.$bkMessage({
                             theme: 'success',
-                            message: `${this.actionName}成功`
+                            message: window.i18n.t('{0}成功', [this.actionName])
                         })
                         this.refreshList(params)
                         this.isShow = false

@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        :title="`【${[title]}】字段只读条件设置`"
+        :title="`【${title}】${$t('字段只读条件设置')}`"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"
@@ -10,7 +10,7 @@
         :value="show"
         @confirm="onConfirm"
         @cancel="$emit('update:show', false)">
-        <condition-group :value="value" @change="handleChangeValue" :fields="fieldList">
+        <condition-group :value="value" @change="handleChangeValue" :fields="fieldList" :disabled="disabled">
         </condition-group>
     </bk-dialog>
 </template>
@@ -50,7 +50,8 @@
             fieldList: {
                 type: Array,
                 default: () => []
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {
@@ -59,6 +60,10 @@
         },
         methods: {
             onConfirm () {
+                if (this.disabled) {
+                    this.$emit('update:show', false)
+                    return
+                }
                 this.$emit('confirm', this.localValue)
             },
             handleChangeValue (val) {

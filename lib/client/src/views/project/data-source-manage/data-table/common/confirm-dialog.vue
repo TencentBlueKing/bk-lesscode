@@ -40,11 +40,11 @@
             },
             title: {
                 type: String,
-                default: '确认提交'
+                default: window.i18n.t('确认提交')
             },
             tips: {
                 type: String,
-                default: '执行的 SQL 内容：（提交后将会在下次部署的时候执行该 SQL，且不可更改。请确认后再提交）'
+                default: window.i18n.t('执行的 SQL 内容：（提交后将会在下次部署的时候执行该 SQL，且不可更改。请确认后再提交）')
             }
         },
 

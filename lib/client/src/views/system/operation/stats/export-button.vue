@@ -1,5 +1,5 @@
 <template>
-    <bk-button :disabled="!list.length" :loading="loading" @click="handleExport">导出</bk-button>
+    <bk-button :disabled="!list.length" :loading="loading" @click="handleExport">{{ $t('导出') }}</bk-button>
 </template>
 
 <script>
@@ -40,10 +40,10 @@
         computed: {
             tableSheetName () {
                 const nameMap = {
-                    user: '按用户',
-                    project: '按应用',
-                    func: '按函数',
-                    comp: '按自定义组件'
+                    user: window.i18n.t('按用户'),
+                    project: window.i18n.t('按应用'),
+                    func: window.i18n.t('按函数'),
+                    comp: window.i18n.t('按自定义组件')
                 }
                 return this.sheetName || nameMap[this.name] || 'Sheet1'
             }
@@ -114,7 +114,7 @@
                         blocks.push([])
                     }
                 })
-                this.generateXlsx(`lesscode-stats-${this.name}-${this.dim}.xlsx`, blocks, '按时间')
+                this.generateXlsx(`lesscode-stats-${this.name}-${this.dim}.xlsx`, blocks, window.i18n.t('按时间'))
             },
             generateXlsx (fileName, data, sheetName) {
                 const wb = XLSX.utils.book_new()

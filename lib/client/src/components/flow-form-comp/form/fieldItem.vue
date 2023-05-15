@@ -21,13 +21,13 @@
                     @change="$emit('change', $event)">
                 </component>
             </template>
-            <span v-else style="font-size: 12px; color: #c3cdd7;">找不到该类型控件，请删除字段</span>
+            <span v-else style="font-size: 12px; color: #c3cdd7;">{{ $t('找不到该类型控件，请删除字段') }}</span>
         </div>
     </div>
 </template>
 <script>
     import { deepClone, getComBaseDefault } from './util/index.js'
-    import { FIELDS_TYPES } from './constants/forms.js'
+    import { FIELDS_TYPES } from 'shared/no-code/index.js'
     import AutoNumber from './fields/autoNumber.vue'
     import Checkbox from './fields/checkbox.vue'
     import CustomForm from './fields/customForm.vue'
@@ -107,7 +107,7 @@
             value: {
                 type: [String, Number, Boolean, Array],
                 default () {
-                    return deepClone(getComBaseDefault(FIELDS_TYPES, this.field.type))
+                    return deepClone(getComBaseDefault(FIELDS_TYPES(), this.field.type))
                 }
             },
             showLabel: {
@@ -125,11 +125,11 @@
         },
         computed: {
             fieldComp () {
-                return FIELDS_TYPES.find(item => item.type === this.field.type)?.comp || ''
+                return FIELDS_TYPES().find(item => item.type === this.field.type)?.comp || ''
             },
             // 默认规则设置为禁止填写 和 字段设置为禁止编辑的时候禁止编辑
             isDisabled () {
-                return this.field.is_readonly
+                return this.field.is_readonly || this.disabled
             },
             needPagination () {
                 return this.$route.name !== 'editNocode'
@@ -138,12 +138,6 @@
                 return (this.field.type === 'RATE' && this.value) ? JSON.parse(this.value).value : this.value
             }
         }
-        // beforeCreate() {
-        //   const fields = registerField();
-        //   Object.keys(fields).forEach((item) => {
-        //     this.$options.components[item] = fields[item];
-        //   });
-        // },
     }
 </script>
 <style lang="postcss" scoped>

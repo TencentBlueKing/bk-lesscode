@@ -3,7 +3,7 @@
         <div class="page-name">
             <i
                 class="bk-drag-icon bk-drag-arrow-back"
-                title="返回页面列表"
+                :title="$t('返回页面列表')"
                 @click="handleBackPageList" />
             <span class="seperate-line">|</span>
             <div
@@ -50,26 +50,26 @@
                                 class="bk-drag-icon bk-drag-copy"
                                 style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)"
                                 @click.stop="handleCopyPage(option)"
-                                title="复制页面"></i>
+                                :title="$t('复制页面')"></i>
                         </bk-option>
-                        <li style="padding: 0 28px" v-show="!group.children.length && !group.collapse">暂无页面</li>
+                        <li style="padding: 0 28px" v-show="!group.children.length && !group.collapse">{{ $t('暂无页面') }}</li>
                     </bk-option-group>
                     <div slot="extension" class="extension">
                         <div
                             class="page-row"
                             @click="handleCreate('PC', '')">
-                            <i class="bk-icon icon-plus-circle" /> 新建PC自定义页面
+                            <i class="bk-icon icon-plus-circle" /> {{ $t('新建PC自定义页面') }}
                         </div>
                         <div
                             v-if="!isVue3"
                             class="page-row"
                             @click="handleCreate('PC', 'FORM')">
-                            <i class="bk-icon icon-plus-circle" /> 新建PC表单页面
+                            <i class="bk-icon icon-plus-circle" /> {{ $t('新建PC表单页面') }}
                         </div>
                         <div
                             class="page-row"
                             @click="handleCreate('MOBILE', '')">
-                            <i class="bk-icon icon-plus-circle" /> 新建Mobile自定义页面
+                            <i class="bk-icon icon-plus-circle" /> {{ $t('新建Mobile自定义页面') }}
                         </div>
                     </div>
                 </bk-select>
@@ -104,14 +104,14 @@
                 classPageList: [
                     {
                         id: 'PC',
-                        name: 'PC 页面',
+                        name: window.i18n.t('PC 页面'),
                         collapse: false,
                         icon: 'bk-drag-pc',
                         children: []
                     },
                     {
                         id: 'MOBILE',
-                        name: 'Mobile 页面',
+                        name: window.i18n.t('Mobile 页面'),
                         collapse: false,
                         icon: 'bk-drag-mobilephone',
                         children: []
@@ -183,8 +183,8 @@
                 const toRouteName = NOCODE_TYPE_MAP?.toRouteName[page.nocodeType] || 'new'
                 if (currentRouteName === toRouteName) {
                     this.$bkInfo({
-                        title: '确认离开?',
-                        subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                        title: window.i18n.t('确认离开'),
+                        subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
                         confirmFn: async () => {
                             this.toNewPage(page, toRouteName)
                         }

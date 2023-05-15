@@ -16,15 +16,15 @@
     const typeSelectList = [
         {
             id: 'ALL',
-            name: '全部'
+            name: window.i18n.t('全部')
         },
         {
             id: 'PC',
-            name: 'PC端'
+            name: window.i18n.t('PC端')
         },
         {
             id: 'MOBILE',
-            name: '移动端'
+            name: window.i18n.t('移动端')
         }
     ]
 
@@ -49,5 +49,6 @@
         width: 90px;
         background: #fff;
         display: inline-block;
+        margin-right: 8px;
     }
 </style>

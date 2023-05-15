@@ -3,14 +3,13 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                表结构变更记录
-            </span>
+                {{ $t('表结构变更记录') }} </span>
         </render-header>
 
         <main class="table-main">
             <bk-date-picker
                 class="mr10 filter-item"
-                placeholder="选择日期范围"
+                :placeholder="$t('选择日期范围')"
                 type="datetimerange"
                 v-model="recordStatus.timeRange"
                 @change="getRecordList"
@@ -18,7 +17,7 @@
             <bk-input
                 clearable
                 class="filter-item"
-                placeholder="输入执行人员"
+                :placeholder="$t('输入执行人员')"
                 right-icon="bk-icon icon-search"
                 v-model="recordStatus.createUser"
                 @change="getRecordList"
@@ -32,11 +31,11 @@
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
             >
-                <bk-table-column label="变更时间" prop="createTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
-                <bk-table-column label="执行人员" prop="createUser"></bk-table-column>
-                <bk-table-column label="变更内容" prop="sql" show-overflow-tooltip>
+                <bk-table-column :label="$t('变更时间')" prop="createTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
+                <bk-table-column :label="$t('执行人员')" prop="createUser"></bk-table-column>
+                <bk-table-column :label="$t('变更内容')" prop="sql" show-overflow-tooltip>
                     <template slot-scope="props">
-                        <bk-button :text="true" title="primary" @click="showSql(props.row.sql)">查看</bk-button>
+                        <bk-button :text="true" title="primary" @click="showSql(props.row.sql)">{{ $t('查看') }}</bk-button>
                     </template>
                 </bk-table-column>
             </bk-table>
@@ -45,7 +44,7 @@
         <confirm-dialog
             :is-show.sync="recordStatus.showConfirmDialog"
             :sql="recordStatus.sql"
-            title="变更详情"
+            :title="$t('变更详情')"
             tips=""
         ></confirm-dialog>
     </article>

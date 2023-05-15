@@ -11,7 +11,7 @@
 
 <template>
     <div>
-        <div class="radio-title">radio可选项配置：</div>
+        <div class="radio-title">{{ $t('radio可选项配置：') }}</div>
         <div class="radio-item">
             <div class="radio-option" v-for="(item, index) in radioOption" :key="index">
                 <i class="bk-icon icon-close radio-del" @click="handleDelete(index)"></i>
@@ -24,19 +24,19 @@
                     <bk-input :value="item.value" @change="val => handleChange(val, 'value', index)" />
                 </div>
                 <div class="option-item">
-                    <div class="label">默认选中</div>
+                    <div class="label">{{ $t('默认选中') }}</div>
                     <bk-radio :checked="item.checked" @change="val => handleCheckChange(val, 'checked', index)" />
                 </div>
                 <!-- <div class="radio-del" @click="handleDelete(index)">删除该项</div> -->
             </div>
         </div>
-        <div class="radio-add" @click="handleAdd"><i class="bk-icon icon-plus-circle"></i>添加一项</div>
+        <div class="radio-add" @click="handleAdd"><i class="bk-icon icon-plus-circle"></i>{{ $t('添加一项') }}</div>
     </div>
 </template>
 <script>
     const generateColumn = (index) => ({
-        label: `单选项${index}`,
-        value: `单选项${index}`,
+        label: window.i18n.t('单选项{0}', [index]),
+        value: window.i18n.t('单选项{0}', [index]),
         checked: false
     })
     export default {

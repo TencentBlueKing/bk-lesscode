@@ -1,6 +1,6 @@
 <template>
     <section>
-        <span class="g-prop-sub-title g-mb8">数据表</span>
+        <span class="g-prop-sub-title g-mb8">{{ $t('数据表') }}</span>
         <choose-data-table
             :value="renderChooseTableName"
             :data-source-type="renderDataSourceType"
@@ -9,7 +9,7 @@
             @clear="clearTable"
         ></choose-data-table>
         <template v-if="renderDataSourceType === 'preview'">
-            <span class="g-prop-sub-title g-mb8 g-mt12">是否展示操作列</span>
+            <span class="g-prop-sub-title g-mb8 g-mt12">{{ $t('是否展示操作列') }}</span>
             <bk-switcher
                 class="display-block"
                 size="small"

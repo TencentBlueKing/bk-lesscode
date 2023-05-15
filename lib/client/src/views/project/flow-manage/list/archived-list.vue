@@ -3,15 +3,14 @@
         <header class="breadcrumbs">
             <div class="header-content">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="$router.push({ name: 'flowList' })"></i>
-                流程归档列表
-            </div>
+                {{ $t('流程归档列表') }} </div>
         </header>
         <main class="archived-list-content">
             <div class="search-wrapper">
                 <bk-input
                     v-model="keyword"
                     style="width: 360px;"
-                    placeholder="请输入流程名称"
+                    :placeholder="$t('请输入流程名称')"
                     right-icon="icon-search"
                     :clearable="true"
                     @change="handleKeywordChange"
@@ -29,7 +28,7 @@
                 :header-cell-style="{ background: '#f0f1f5' }"
                 @page-change="handlePageChange"
                 @page-limit-change="handlePageLimitChange">
-                <bk-table-column label="流程名称" property="flowName" show-overflow-tooltip :min-width="120">
+                <bk-table-column :label="$t('table_流程名称')" property="flowName" show-overflow-tooltip :min-width="120">
                     <template slot-scope="{ row }">
                         <!-- <router-link
                             class="link-btn"
@@ -39,31 +38,30 @@
                         <span>{{ row.flowName }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="流程描述" property="summary" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_流程描述')" property="summary" show-overflow-tooltip :min-width="100">
                     <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
                 </bk-table-column>
-                <bk-table-column label="流程表单页" property="pageName" show-overflow-tooltip></bk-table-column>
-                <bk-table-column label="流程数据管理页" property="managePageNames" show-overflow-tooltip></bk-table-column>
-                <bk-table-column label="创建人" property="createUser"></bk-table-column>
-                <bk-table-column label="创建时间" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_流程表单页')" property="pageName" show-overflow-tooltip :min-width="100"></bk-table-column>
+                <bk-table-column :label="$t('table_流程数据管理页')" property="managePageNames" show-overflow-tooltip :render-header="renderHeaderAddTitle"></bk-table-column>
+                <bk-table-column :label="$t('table_创建人')" property="createUser"></bk-table-column>
+                <bk-table-column :label="$t('table_创建时间')" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         {{ row.createTime | timeFormatter }}
                     </template>
                 </bk-table-column>
-                <bk-table-column label="操作" width="140">
+                <bk-table-column :label="$t('操作')" width="140">
                     <template slot-scope="{ row }">
                         <bk-popconfirm
                             trigger="click"
                             width="350"
-                            title="确认恢复改流程？"
-                            content="恢复后，关联的流程提单页，流程数据管理页也一并恢复"
+                            :title="$t('确认恢复改流程')"
+                            :content="$t('恢复后，关联的流程提单页，流程数据管理页也一并恢复')"
                             @confirm="handleRestoreConfirm">
                             <bk-button
                                 theme="primary"
                                 :text="true"
                                 @click="restoreId = row.id">
-                                恢复
-                            </bk-button>
+                                {{ $t('恢复') }} </bk-button>
                         </bk-popconfirm>
                     </template>
                 </bk-table-column>
@@ -75,6 +73,7 @@
 <script>
     import dayjs from 'dayjs'
     import { messageError } from '@/common/bkmagic'
+    import { renderHeaderAddTitle } from '@/common/util'
 
     export default {
         name: 'ArchivedList',
@@ -169,7 +168,8 @@
             handlerClearSearch () {
                 this.keyword = ''
                 this.handleSearch()
-            }
+            },
+            renderHeaderAddTitle
         }
     }
 </script>

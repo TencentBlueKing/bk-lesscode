@@ -2,9 +2,14 @@
     <div class="action-tool-list">
         <show-function v-if="!hideFunc" />
         <div class="func-split-line" />
-        <save v-if="!hideSave" :custom="customSave" @save="$emit('save', $event)" />
-        <preview v-if="!hidePreview" />
-        <clear v-if="!hideClear" />
+        <save
+            :custom="customSave"
+            :custom-loading="customLoading"
+            :disabled="disabled"
+            :tips="disabledTips"
+            @save="$emit('save', $event)" />
+        <preview v-if="!hidePreview" :disabled="disabled" :tips="disabledTips" />
+        <clear :disabled="disabled" :tips="disabledTips" />
     </div>
 </template>
 <script>
@@ -22,10 +27,11 @@
         },
         props: {
             customSave: Boolean,
-            hideSave: Boolean,
+            customLoading: Boolean,
+            disabled: Boolean,
+            disabledTips: String,
             hidePreview: Boolean,
             hideFunc: Boolean,
-            hideClear: Boolean
         }
     }
 </script>

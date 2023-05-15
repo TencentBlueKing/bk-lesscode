@@ -35,7 +35,7 @@
             </template>
 
             <template v-if="showInnerVariable">
-                <span class="g-prop-sub-title g-mb6">变量类型</span>
+                <span class="g-prop-sub-title g-mb6">{{ $t('变量类型') }}</span>
                 <choose-build-in-variable
                     class="g-mb4"
                     :build-in-variable="buildInVariable"
@@ -50,7 +50,7 @@
             </template>
 
             <template v-if="renderComponentList.length > 1">
-                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性初始值来源</span>
+                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">{{ $t('属性初始值来源') }}</span>
                 <bk-radio-group
                     class="g-prop-radio-group mb12"
                     :value="selectValueType"
@@ -89,13 +89,13 @@
             <template v-if="showUpdateColumn">
                 <div
                     v-bk-tooltips="{
-                        content: '使用值覆盖表头的默认列，请确认后再操作',
+                        content: $t('使用值覆盖表头的默认列，请确认后再操作'),
                         placement: 'left-start',
                         boundary: 'window'
                     }"
                     class="g-prop-sub-title g-mb6 g-mt12 g-config-subline"
                 >
-                    操作
+                    {{ $t('操作') }}
                 </div>
                 <bk-button
                     class="prop-operation"
@@ -103,7 +103,7 @@
                     :loading="isSyncing"
                     @click="updateColumn"
                 >
-                    更新表头
+                    {{ $t('更新表头') }}
                 </bk-button>
             </template>
         </variable-select>
@@ -194,15 +194,15 @@
         filters: {
             valueTypeTextFormat (valueType) {
                 const textMap = {
-                    'areatext': '文本',
-                    'number': '数字',
-                    'object': '对象',
-                    'string': '字符串',
-                    'array': '数组',
-                    'remote': '函数',
-                    'data-source': '数据表',
-                    'table-data-source': '数据表',
-                    'srcset': '图片列表'
+                    'areatext': window.i18n.t('文本'),
+                    'number': window.i18n.t('数字'),
+                    'object': window.i18n.t('对象'),
+                    'string': window.i18n.t('字符串'),
+                    'array': window.i18n.t('数组'),
+                    'remote': window.i18n.t('函数'),
+                    'data-source': window.i18n.t('数据表'),
+                    'table-data-source': window.i18n.t('数据表'),
+                    'srcset': window.i18n.t('图片列表')
                 }
                 return textMap[valueType] || toPascal(valueType)
             }
@@ -365,7 +365,7 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(this.describe.tips)
+                const tip = transformTipsWidth(window.i18n.t(this.describe.tips))
                 const commonOptions = {
                     disabled: !tip,
                     interactive: false,
@@ -618,7 +618,7 @@
                 } catch {
                     this.$bkMessage({
                         theme: 'error',
-                        message: `属性【${name}】的值设置不正确`
+                        message: window.i18n.t('属性【{0}】的值设置不正确', [name])
                     })
                 }
             },

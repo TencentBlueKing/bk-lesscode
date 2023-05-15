@@ -1,7 +1,7 @@
 <template>
     <div class="properties-setting">
         <render-prop
-            :config="{ propertyDisplayName: '文本', type: 'Text', val: selectedComp.data.name }"
+            :config="{ propertyDisplayName: $t('文本'), type: 'Text', val: selectedComp.data.name }"
             @change="handleUpdateName">
         </render-prop>
         <render-prop

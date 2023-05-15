@@ -7,51 +7,50 @@
             class="variable-table"
             size="medium"
         >
-            <bk-table-column label="变量名称" prop="variableName" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="变量标识" prop="variableCode" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="初始类型" prop="valueType" :formatter="valueTypeFormatter" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="默认值" width="300" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_变量名称')" prop="variableName" :render-header="renderHeaderAddTitle" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('变量标识')" prop="variableCode" :render-header="renderHeaderAddTitle" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_初始类型')" prop="valueType" :render-header="renderHeaderAddTitle" :formatter="valueTypeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('默认值')" width="240" show-overflow-tooltip>
                 <template slot-scope="props">
                     <span v-for="(val, key) in getDisplayDefaultValue(props.row)" :key="key" class="default-value" v-bk-overflow-tips>{{ `【${nameMap[key]}】${val}` }}</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="引用" width="100" show-overflow-tooltip>
+            <bk-table-column :label="$t('引用')" width="100" show-overflow-tooltip>
                 <template slot-scope="props">
                     <span v-bk-tooltips.light="{ content: getUseInfoTips(props.row.useInfo).join('<br>'), disabled: !getUseInfoTips(props.row.useInfo).length }" class="use-info">
                         {{ getUseInfoTips(props.row.useInfo).length }}
                     </span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="生效范围" prop="effectiveRange" :formatter="effectiveRangeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_生效范围')" prop="effectiveRange" :render-header="renderHeaderAddTitle" :formatter="effectiveRangeFormatter" show-overflow-tooltip></bk-table-column>
             <template v-if="!simpleDisplay">
-                <bk-table-column label="变量说明" prop="description" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_变量说明')" prop="description" :render-header="renderHeaderAddTitle" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.description || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="更新人" prop="updateUser" show-overflow-tooltip width="150"></bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser" show-overflow-tooltip min-width="100"></bk-table-column>
+                <bk-table-column :label="$t('table_更新时间')" prop="updateTime" :render-header="renderHeaderAddTitle" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
             </template>
-            <bk-table-column label="操作" width="120">
+            <bk-table-column :label="$t('操作')" width="120">
                 <template slot-scope="props">
                     <span @click="showVariableForm(props.row)"
                         v-bk-tooltips="{ content: getEditStatus(props.row), disabled: !getEditStatus(props.row) }"
                         :class="{ 'table-btn': true, disable: getEditStatus(props.row) }"
-                    >编辑</span>
+                    >{{ $t('编辑') }}</span>
                     <span @click="showDeleteVariable(props.row)"
                         v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
                         :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
-                    >删除</span>
+                    >{{ $t('删除') }}</span>
                 </template>
             </bk-table-column>
             <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </bk-table>
         <slot>
             <span class="variable-tip">
-                提示：
-                <br>1. 可以在组件属性和指令的配置面板中使用该变量
-                <br>2. 在函数插槽中可以使用【lesscode.变量标识】唤醒编辑器自动补全功能选择对应变量，来获取或者修改该变量的值
-                <br>3. 在远程函数中，参数 Api Url 的值可用 <span v-pre>{{变量标识}}</span> 来获取变量值，请求参数中可以通过选择变量的形式获取变量值
+                {{ $t('提示：') }} <br>1. {{ $t('可以在组件属性和指令的配置面板中使用该变量') }}
+                <br>2. {{ $t('在函数插槽中可以使用【lesscode.变量标识】唤醒编辑器自动补全功能选择对应变量，来获取或者修改该变量的值') }}
+                <br>3. {{ $t('在远程函数中，参数 Api Url 的值可用') }} <span v-text="$store.state.Language === 'en' ? '{{ variable identification }}' : '{{变量标识}}'"></span> {{ $t('来获取变量值，请求参数中可以通过选择变量的形式获取变量值') }}
             </span>
         </slot>
 
@@ -59,20 +58,18 @@
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
-            title="删除变量"
+            :title="$t('删除变量')"
             width="400"
             footer-position="center"
             :mask-close="false"
-            :auto-close="false"
-        >
-            确定删除变量【{{ deleteObj.code }}】？
-            <div class="dialog-footer" slot="footer">
+            :auto-close="false">
+            {{ $t('确定删除变量【{0}】', [deleteObj.code]) }}<div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"
                     :loading="deleteObj.loading"
                     @click="requestDeleteVariable(deleteObj.id)"
-                >删除</bk-button>
-                <bk-button @click="handleDeleteCancel" :disabled="deleteObj.loading">取消</bk-button>
+                >{{ $t('删除') }}</bk-button>
+                <bk-button @click="handleDeleteCancel" :disabled="deleteObj.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
 
@@ -87,6 +84,7 @@
     import dayjs from 'dayjs'
     import { mapGetters, mapActions, mapState } from 'vuex'
     import VariableForm from '@/components/variable/variable-form/index.vue'
+    import { renderHeaderAddTitle } from '@/common/util'
 
     export default {
         components: {
@@ -107,9 +105,9 @@
         data () {
             return {
                 nameMap: {
-                    all: '所有环境',
-                    stag: '预发布环境',
-                    prod: '生产环境'
+                    all: this.$t('所有环境'),
+                    stag: this.$t('预发布环境'),
+                    prod: this.$t('生产环境')
                 },
                 deleteObj: {
                     visible: false,
@@ -164,14 +162,14 @@
 
             getEditStatus (row) {
                 let tip = ''
-                if (this.simpleDisplay && row.effectiveRange === 0) tip = '应用级变量，请到变量管理进行修改'
+                if (this.simpleDisplay && row.effectiveRange === 0) tip = this.$t('应用级变量，请到变量管理进行修改')
                 return tip
             },
 
             getDeleteStatus (row) {
                 let tip = ''
-                if (this.getUseInfoTips(row.useInfo).length > 0) tip = '该变量被引用，无法删除'
-                if (this.simpleDisplay && row.effectiveRange === 0) tip = '应用级变量，请到变量管理进行删除'
+                if (this.getUseInfoTips(row.useInfo).length > 0) tip = this.$t('该变量被引用，无法删除')
+                if (this.simpleDisplay && row.effectiveRange === 0) tip = this.$t('应用级变量，请到变量管理进行删除')
                 return tip
             },
 
@@ -235,8 +233,8 @@
 
             effectiveRangeFormatter (obj, con, val) {
                 const rangeMap = {
-                    0: '本应用',
-                    1: `页面【${obj.pageCode}】`
+                    0: this.$t('本应用'),
+                    1: this.$t('页面【{0}】', [obj.pageCode])
                 }
                 return rangeMap[val]
             },
@@ -248,8 +246,8 @@
                     2: 'Boolean',
                     3: 'Array',
                     4: 'Object',
-                    5: '图片地址',
-                    6: '计算变量'
+                    5: this.$t('图片地址'),
+                    6: this.$t('计算变量')
                 }
                 return valueTypeMap[obj.valueType]
             },
@@ -260,30 +258,30 @@
                     const { pageCode, funcCode, type, useInfo, parentVariableId } = item
                     switch (type) {
                         case 'func':
-                            tips.push(`函数【${funcCode}】`)
+                            tips.push(this.$t('函数【{0}】', [funcCode]))
                             break
                         case 'var':
                             const variable = this.projectVariableList.find((variable) => (variable.id === parentVariableId)) || {}
-                            tips.push(`变量【${variable.variableCode}】`)
+                            tips.push(this.$t('变量【{0}】', [variable.variableCode]))
                             break
                         default:
                             (useInfo || []).forEach((detail) => {
                                 if (detail.type === 'v-bind') {
                                     const modifiers = (detail.modifiers || []).join('.')
-                                    const modifierStr = modifiers ? `，修饰符为${modifiers}` : ''
-                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.prop}】属性${modifierStr}`)
+                                    const modifierStr = modifiers ? '，' + this.$t('修饰符为{0}', [modifiers]) : ''
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】属性{3}', [pageCode, detail.componentId, detail.prop, modifierStr]))
                                 } else if (detail.source === 'prop') {
-                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.key}】属性`)
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】属性', [pageCode, detail.componentId, detail.key]))
                                 } else if (detail.source === 'slot') {
-                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.key}】插槽`)
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】插槽', [pageCode, detail.componentId, detail.key]))
                                 } else if (detail.type === 'slots') {
-                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.slot}】插槽`)
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】插槽', [pageCode, detail.componentId, detail.slot]))
                                 } else if (detail.source === 'lifecycle') {
-                                    tips.push(`页面【${pageCode}】的【${detail.key}】的生命周期`)
+                                    tips.push(this.$t('页面【{0}】的【{1}】的生命周期', [pageCode, detail.key]))
                                 } else if (detail.source === 'event') {
-                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.key}】事件`)
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】事件', [pageCode, detail.componentId, detail.key]))
                                 } else {
-                                    tips.push(`页面【${pageCode}】内组件【${detail.componentId}】的【${detail.type || detail.source}】指令`)
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】指令', [pageCode, detail.componentId, (detail.type || detail.source)]))
                                 }
                             })
                             break
@@ -294,7 +292,8 @@
 
             handlerClearSearch (searchName) {
                 this.$emit('clearSearch', searchName)
-            }
+            },
+            renderHeaderAddTitle
         }
     }
 </script>

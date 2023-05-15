@@ -94,8 +94,8 @@
         },
         beforeRouteLeave (to, from, next) {
             this.$bkInfo({
-                title: '确认离开?',
-                subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                title: window.i18n.t('确认离开'),
+                subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
                 confirmFn: async () => {
                     next()
                 }

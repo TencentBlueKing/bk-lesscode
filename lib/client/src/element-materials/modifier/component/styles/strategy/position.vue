@@ -10,18 +10,18 @@
 -->
 
 <template>
-    <style-layout title="定位">
-        <style-item name="position">
+    <style-layout :title="$t('定位')">
+        <style-item name="Position">
             <bk-select
                 :value="positionValue"
                 font-size="medium"
-                placeholder="请选择"
+                :placeholder="$t('请选择')"
                 @change="handlePositionChange"
                 style="width: 100%;">
-                <bk-option id="absolute" name="absolute" v-bk-tooltips="getTooltipsConfig('元素会被移出正常文档流，并不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的偏移，来确定元素位置')" />
-                <bk-option id="fixed" name="fixed" v-bk-tooltips="getTooltipsConfig('元素会被移出正常文档流，并不为元素预留空间，而是通过指定元素相对于屏幕视口（viewport）的位置来指定元素位置')" />
-                <bk-option id="static" name="static" v-bk-tooltips="getTooltipsConfig('使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效')" />
-                <bk-option id="unset" name="unset" v-bk-tooltips="getTooltipsConfig('未设置')" />
+                <bk-option id="absolute" name="absolute" v-bk-tooltips="getTooltipsConfig($t('元素会被移出正常文档流，并不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的偏移，来确定元素位置'))" />
+                <bk-option id="fixed" name="fixed" v-bk-tooltips="getTooltipsConfig($t('元素会被移出正常文档流，并不为元素预留空间，而是通过指定元素相对于屏幕视口（viewport）的位置来指定元素位置'))" />
+                <bk-option id="static" name="static" v-bk-tooltips="getTooltipsConfig($t('使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效'))" />
+                <bk-option id="unset" name="unset" v-bk-tooltips="getTooltipsConfig($t('未设置'))" />
             </bk-select>
         </style-item>
         <template v-if="positionValue && positionValue !== 'static' && positionValue !== 'unset'">

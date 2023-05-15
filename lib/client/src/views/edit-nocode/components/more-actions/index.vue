@@ -35,9 +35,9 @@
             },
             linkName () {
                 if (this.type === 'FORM_MANAGE') {
-                    return `编辑表单【${this.pageDetail.formName}】`
+                    return window.i18n.t('编辑表单【{0}】', [this.pageDetail.formName])
                 } else if (this.type === 'FLOW_MANAGE') {
-                    return `编辑流程【${this.pageDetail.flowName}】`
+                    return window.i18n.t('编辑流程【{0}】', [this.pageDetail.flowName])
                 }
                 return ''
             },

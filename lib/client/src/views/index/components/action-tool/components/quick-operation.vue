@@ -14,7 +14,7 @@
         <div style="display: none">
             <div id="quickOperationIntro">
                 <div class="operation-title">
-                    <span class="title-main">快捷键说明</span>
+                    <span class="title-main">{{ $t('快捷键说明') }}</span>
                 </div>
                 <ul class="operation-list">
                     <li
@@ -52,18 +52,18 @@
         data () {
             return {
                 item: {
-                    icon: 'bk-drag-icon bk-drag-keyboard',
-                    text: '快捷键',
+                    icon: window.i18n.t('bk-drag-icon bk-drag-keyboard'),
+                    text: window.i18n.t('快捷键'),
                     func: () => {}
                 },
                 quickOperationList: [
-                    { keys: ['Ctrl / Cmd', 'C'], name: '复制' },
-                    { keys: ['Ctrl / Cmd', 'V'], name: '粘贴' },
-                    { keys: ['Ctrl / Cmd', 'X'], name: '剪切' },
+                    { keys: ['Ctrl / Cmd', 'C'], name: window.i18n.t('复制') },
+                    { keys: ['Ctrl / Cmd', 'V'], name: window.i18n.t('粘贴') },
+                    { keys: ['Ctrl / Cmd', 'X'], name: window.i18n.t('剪切') },
                     // { keys: ['Ctrl / Cmd', 'Z'], name: '撤销' },
                     // { keys: ['Ctrl / Cmd', 'Y'], name: '恢复' },
                     // { keys: ['Ctrl / Cmd', 'S'], name: '保存' },
-                    { keys: ['Delete / Backspace'], name: '删除' }
+                    { keys: ['Delete / Backspace'], name: window.i18n.t('删除') }
                 ],
                 isFocused: false
             }

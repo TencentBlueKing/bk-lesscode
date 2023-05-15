@@ -14,7 +14,7 @@
             return {
                 item: {
                     icon: 'bk-drag-icon bk-drag-delete',
-                    text: '清空',
+                    text: window.i18n.t('清空'),
                     func: this.handleClearAll
                 }
             }

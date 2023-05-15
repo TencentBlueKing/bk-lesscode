@@ -90,7 +90,7 @@
 
                     page.disabled = disabled
                     if (disabled) {
-                        page.disabledReason = '已绑定路由'
+                        page.disabledReason = window.i18n.t('已绑定路由')
                     }
                 })
                 this.usePageList.sort((p1, p2) => p1.disabled - p2.disabled)
@@ -100,7 +100,7 @@
                     const disabled = route.pageId === -1 && !route.redirect
                     route.disabled = disabled
                     if (disabled) {
-                        route.disabledReason = '未绑定页面或跳转路由'
+                        route.disabledReason = window.i18n.t('未绑定页面或跳转路由')
                     }
 
                     const getRedirectPath = function (route, list) {
@@ -123,7 +123,7 @@
                         const disabled = route.redirectPath.includes(this.active.id)
                         route.disabled = disabled
                         if (disabled) {
-                            route.disabledReason = '禁止循环跳转'
+                            route.disabledReason = window.i18n.t('禁止循环跳转')
                         }
                     }
                 })
@@ -132,12 +132,12 @@
                 return [
                     {
                         id: 'page',
-                        name: '页面',
+                        name: window.i18n.t('页面'),
                         children: this.usePageList
                     },
                     {
                         id: 'route',
-                        name: '路由',
+                        name: window.i18n.t('路由'),
                         children: this.useRouteList
                     }
                 ]
@@ -147,9 +147,9 @@
             },
             placeholder () {
                 if (!this.bindValue && this.isRootPath) {
-                    return '未绑定根路由'
+                    return window.i18n.t('未绑定根路由')
                 }
-                return '未绑定'
+                return window.i18n.t('未绑定')
             }
         },
         watch: {
