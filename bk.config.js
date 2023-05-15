@@ -41,7 +41,8 @@ module.exports = {
             resolve: {
                 alias: {
                     '@': path.resolve(__dirname, './lib/client/src'),
-                    'shared': path.resolve(__dirname, './lib/shared')
+                    'shared': path.resolve(__dirname, './lib/shared'),
+                    VueI18n: path.resolve(__dirname, './node_modules/vue-i18n'),
                 },
                 fallback: {
                     buffer: require.resolve('buffer')
