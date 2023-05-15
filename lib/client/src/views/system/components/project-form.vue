@@ -18,15 +18,19 @@
                 @on-delete="handleUploadReset"
             ></bk-upload>
         </bk-form-item>
-        <bk-form-item v-if="type !== 'importProject'" label="VUE 版本" required property="framework" error-display-type="normal">
-            <bk-radio-group v-model="formData.framework" class="g-division-radio">
-                <bk-radio-button value="vue2">
-                    VUE 2
-                </bk-radio-button>
-                <bk-radio-button value="vue3">
-                    VUE 3
-                </bk-radio-button>
-            </bk-radio-group>
+        <bk-form-item label="VUE 版本" required property="framework" error-display-type="normal">
+            <div class="bk-button-group">
+                <bk-button
+                    @click="formData.framework = 'vue2'"
+                    :class="formData.framework === 'vue2' ? 'is-selected' : ''"
+                    :disabled="formData.projectType !== 'newProject'"
+                >VUE 2</bk-button>
+                <bk-button
+                    @click="formData.framework = 'vue3'"
+                    :class="formData.framework === 'vue3' ? 'is-selected' : ''"
+                    :disabled="formData.projectType !== 'newProject'"
+                >VUE 3</bk-button>
+            </div>
         </bk-form-item>
         <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
             <bk-input maxlength="60" v-model.trim="formData.projectName"
@@ -115,6 +119,14 @@
                 importProjectData: {}
             }
         },
+        watch: {
+            'propsFormData.framework': {
+                handler (val) {
+                    this.formData.framework = val || 'vue2'
+                },
+                immediate: true
+            }
+        },
         computed: {
             formType () {
                 return this.type === 'templateProject' ? 'vertical' : 'horizontal'
@@ -163,3 +175,14 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+.bk-button-group {
+    width: 100%;
+    display: flex;
+    .bk-button {
+        flex: 1;
+        height: 32px;
+    }
+}
+</style>
