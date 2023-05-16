@@ -2,21 +2,13 @@
     <div>
         <van-cell :title="label" :value="syncValue" @click="show = true" />
         <van-popup v-model="show" round position="bottom">
-            <van-datetime-picker
-                :value="syncValue"
-                :type="type"
-                :title="dateTitle"
-                :min-date="minDate"
-                :max-date="maxDate"
-                :show-toolbar="showToolbar"
-                :readonly="readonly"
-                :item-height="itemHeight"
-                :columns-order="columnsOrder"
-                :visible-item-count="visibleItemCount"
-                :swipe-duration="swipeDuration"
+            <component
+                v-bind="allProps"
+                :is="componentType"
+                @input="pickerModelHandle"
                 @cancel="cancelHandle"
                 @confirm="confirmHandle"
-                @change="changeHandle"
+                @change="changeHandle"></component>
             />
         </van-popup>
     </div>
@@ -25,8 +17,9 @@
 <script>
     import moment from 'moment'
     export default {
-        name: 'widget-van-date-time-picker',
+        name: 'widget-van-picker',
         props: {
+            componentType: String,
             label: String,
             type: String,
             dateTitle: String,
@@ -40,34 +33,47 @@
             swipeDuration: [Number, String],
             minDate: Date,
             maxDate: Date,
+            format: String,
             value: String
         },
         data () {
             return {
-                date: moment(new Date()).format('yyyy-MM-DD hh:mm:ss'),
                 show: false
             }
         },
         computed: {
+            displayValue () {
+                return this.componentType === 'van-datetime-picker'
+                    ? moment(this.syncValue).format(this.format)
+                    : this.syncValue
+            },
             syncValue: {
                 get () {
                     return this.value
                 },
                 set (value) {
-                    this.$emit('update:value', value)
+                    this.$emit('input', value)
                 }
+            },
+            allProps () {
+                return Object.assign({}, this.$props, this.$attrs, { value: new Date(this.syncValue) })
             }
         },
         methods: {
+            pickerModelHandle (val) {
+                this.syncValue = val
+            },
             closeDatePicker () {
                 this.show = false
             },
-            changeHandle (pickerInstance) {
-                this.$emit('change', pickerInstance)
+            changeHandle (value) {
+                this.$emit('change', value)
             },
-            confirmHandle (time) {
+            confirmHandle (value) {
                 this.closeDatePicker()
-                this.syncValue = moment(time).format('yyyy-MM-DD hh:mm:ss')
+                this.syncValue = this.componentType === 'van-datetime-picker'
+                    ? moment(value).format(this.format)
+                    : value
                 this.$emit('confirm')
             },
             cancelHandle () {
