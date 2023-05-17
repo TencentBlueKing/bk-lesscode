@@ -6,7 +6,7 @@
                 :class="{
                     floded: isFolded
                 }" />
-            <span>{{ groupName }}</span>
+            <span>{{ $t(groupName) }}</span>
             <div
                 v-if="$slots.tag"
                 class="tag">
