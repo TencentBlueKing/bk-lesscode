@@ -65,6 +65,7 @@
                                         <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
                                         <div class="stat">{{$t('由') + (project.createUser || 'admin') + $t('上传')}}</div>
                                     </div>
+                                    <framework-tag class="framework-op" :framework="project.framework"></framework-tag>
                                 </div>
                                 <span class="favorite-btn">
                                     <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false }"></i>
@@ -126,11 +127,10 @@
                                                     <div class="name" :title="page.templateName">{{page.templateName}}</div>
                                             
                                                 </div>
-                                                <div class="stat">{{`由 ${page.createUser || 'admin'} 上传`}}</div>
+                                                <div class="stat">{{$t('由') + (page.createUser || 'admin') + $t('上传')}}</div>
                                             </div>
-                                            <frameworkTag class="framewor-op" :framework="page.framework"></frameworkTag>
+                                            <framework-tag class="framework-op" :framework="page.framework"></framework-tag>
                                         </div>
-                                        <div class="stat">{{$t('由') + (page.createUser || 'admin') + $t('上传')}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -379,7 +379,7 @@
                     const params = { filter: 'official', officialType: this.template.project.filter }
                     const [{ projectList }, pageTemplateList] = await Promise.all([
                         this.$store.dispatch('project/query', { config: { params } }),
-                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL' })
+                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL', framework: 'all' })
                     ])
                     this.projectList = projectList
                     this.pageList = pageTemplateList
@@ -611,7 +611,8 @@
                 window.open(`/preview/project/${id}/`, '_blank')
             },
             handlePreviewTemplate (template) {
-                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}`, '_blank')
+                console.log(template, '====================')
+                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}?framework=${template.framework}`, '_blank')
             },
             handleDownloadProject (project) {
                 this.$refs.downloadDialog.isShow = true
@@ -709,7 +710,7 @@
                 justify-content: space-between;
                 align-items: center;
                 position: relative;
-                .framewor-op{
+                .framework-op{
                     position: absolute;
                     right: -30px;
                 }

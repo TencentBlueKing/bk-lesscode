@@ -220,6 +220,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('project', ['projectDetail']),
             projectId () {
                 return Number(this.$route.params.projectId)
             },
@@ -631,7 +632,7 @@
                 })
             },
             handlePreview (group) {
-                window.open(`/preview-template/project/${this.projectId}/${group.layoutId}?type=nav-template`, '_blank')
+                window.open(`/preview-template/project/${this.projectId}/${group.layoutId}?type=nav-template&framework=${this.projectDetail.framework}`, '_blank')
             }
         }
     }

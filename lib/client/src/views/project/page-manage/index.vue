@@ -237,8 +237,8 @@
             },
             handlePreviewMobileProject () {
                 // 跳转到预览入口页面
-                const versionQuery = `${this.versionId ? `?version=${this.versionId}` : ''}`
-                window.open(`/preview-mobile/project/${this.projectId}${versionQuery}`, '_blank')
+                const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
+                window.open(`/preview-mobile/project/${this.projectId}?framework=${this.currentProject.framework}${versionQuery}`, '_blank')
             },
             async handleCopy (page) {
                 this.action = 'copy'
@@ -391,7 +391,7 @@
                 // 跳转到预览入口页面
                 if (page.pageType === 'MOBILE') {
                     const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
-                    window.open(`/preview-mobile/project/${this.projectId}?pagePath=${route.fullPath}&pageCode=${page.pageCode}${versionQuery}`, '_blank')
+                    window.open(`/preview-mobile/project/${this.projectId}?framework=${this.currentProject.framework}&pagePath=${route.fullPath}&pageCode=${page.pageCode}${versionQuery}`, '_blank')
                 } else {
                     const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
                     const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${page.pageCode}`

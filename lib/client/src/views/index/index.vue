@@ -288,7 +288,7 @@
 
                     // 初始化项目框架信息
                     LC.setFramework(projectDetail.framework === 'vue3' ? 'vue3' : 'vue2')
-                    init(LC.getFramework() === 'vue3' ? 3 : 2)
+                    init(projectDetail.framework)
 
                     await this.registerCustomComponent()
 

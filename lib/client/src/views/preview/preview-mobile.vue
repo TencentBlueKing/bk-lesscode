@@ -1,6 +1,6 @@
 <template>
     <div class="area-wrapper">
-        <simulatorMobile :page-size="pageSize" :source="source" />
+        <div id="preview-mobile"></div>
     </div>
 </template>
 
@@ -8,6 +8,11 @@
     import { useRoute } from '@/router'
     import simulatorMobile from '@/components/render/mobile/common/simulator-mobile/simulator-mobile'
     import getHeaderHeight from '@/components/render/mobile/common/mobile-header-height'
+    import {
+        init,
+        render,
+    } from 'bk-lesscode-render'
+    import { i18nConfig } from '@/locales/i18n.js'
 
     export default {
         components: {
@@ -15,6 +20,8 @@
         },
         setup () {
             const route = useRoute()
+            // 初始化单例
+            init(route.query.framework)
             const width = 375
             const height = 812
             const { height: headerHeight } = getHeaderHeight()
@@ -35,6 +42,18 @@
                 pageSize,
                 source: `${location.origin}/preview/project/${projectId}${pathStr}${pagePath}`
             }
+        },
+
+        mounted () {
+            render({
+                component: simulatorMobile,
+                props: {
+                    pageSize: this.pageSize,
+                    source: this.source
+                },
+                selector: '#preview-mobile',
+                i18nConfig
+            })
         }
     }
 </script>
