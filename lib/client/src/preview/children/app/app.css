@@ -57,7 +57,7 @@ td,th {
 .empty-padding.lesscode-bk-popover.lesscode-bk-pop2-content {
     padding: 0 !important;
 }
-.lesscode-bk-color-picker-icon .icon-angle-down, .lesscode-bk-cascader-node .icon-angle-right{
+.lesscode-bk-color-picker-icon .icon-angle-down, .lesscode-bk-cascader-node .icon-angle-right, .lesscode-bk-transfer .icon-move, .lesscode-bk-transfer .icon-delete{
     &::before {
         content: '' !important;
     }
