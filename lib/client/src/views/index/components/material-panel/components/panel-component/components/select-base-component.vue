@@ -6,8 +6,8 @@
         @show="handleToggleSelectPanel(true)"
         @hide="handleToggleSelectPanel(false)">
         <div slot="dropdown-trigger">
-            <span class="tab-item-label" v-bk-tooltips="{ content: componentNameText ,distance: 8 }">
-                {{ componentNameText }}
+            <span class="tab-item-label" v-bk-tooltips="{ content: $t(componentNameText) ,distance: 8 }">
+                {{ $t(componentNameText) }}
             </span>
             <i
                 class="bk-drag-icon toggle-icon"
@@ -58,7 +58,7 @@
                         PC: [
                             {
                                 key: 'bk',
-                                name: '蓝鲸基础组件 (Vue)',
+                                name: this.$t('蓝鲸基础组件 (Vue)'),
                                 tooltip: '当前组件库版本为“2.4.15，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                             },
                             {
@@ -76,7 +76,7 @@
                     vue3: {
                         PC: [{
                             key: 'bk',
-                            name: '蓝鲸基础组件 (Vue)',
+                            name: this.$t('蓝鲸基础组件 (Vue)'),
                             tooltip: '当前组件库版本为“0.0.1-beta.404，<a target="_blank" href="https://magicbox.bk.tencent.com/magicbox/3.0/start" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         }],
                         MOBILE: [{
