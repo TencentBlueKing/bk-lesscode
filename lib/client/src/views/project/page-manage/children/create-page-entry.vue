@@ -85,6 +85,9 @@
             i {
                 font-size: 24px !important;
             }
+            &:hover {
+                background: #5594FA;
+            }
         }
         .select-page-type {
             font-size: 12px;

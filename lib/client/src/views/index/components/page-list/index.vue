@@ -112,14 +112,10 @@
             ]),
             ...mapGetters('projectVersion', { versionName: 'currentVersionName' }),
             showIcon () {
-                if (this.pageDetail.nocodeType) {
-                    return NOCODE_TYPE_MAP['icon'][this.pageDetail.nocodeType]
+                if (this.platform === 'MOBILE') {
+                    return 'bk-drag-icon bk-drag-mobilephone'
                 } else {
-                    if (this.platform === 'MOBILE') {
-                        return 'bk-drag-icon bk-drag-mobilephone'
-                    } else {
-                        return 'bk-drag-icon bk-drag-pc'
-                    }
+                    return 'bk-drag-icon bk-drag-pc'
                 }
             }
         },

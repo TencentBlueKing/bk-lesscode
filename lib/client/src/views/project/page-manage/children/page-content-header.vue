@@ -70,7 +70,7 @@
         .page-operate {
             button {
                 width: 88px;
-                margin-right: 8px;
+                margin-left: 8px;
             }
         }
     }
