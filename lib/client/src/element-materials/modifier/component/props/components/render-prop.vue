@@ -505,10 +505,19 @@
                     val: formData.renderValue
                 }
 
-                this.$emit('on-change', this.name, {
-                    ...formData,
-                    modifiers: this.describe.modifiers || []
-                })
+                const props = {
+                    ...formData
+                }
+
+                if (this.describe?.modifiers?.length > 0) {
+                    props.modifiers = this.describe.modifiers
+                }
+
+                if (this.describe.directive) {
+                    props.directive = this.describe.directive
+                }
+
+                this.$emit('on-change', this.name, props)
             },
             /**
              * @desc 右上角类型切换，format: value | variable | expression

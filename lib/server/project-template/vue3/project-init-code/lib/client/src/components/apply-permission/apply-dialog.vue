@@ -40,13 +40,15 @@
         components: {
             AskPermission
         },
+        props: {
+            authParams: Array,
+            authResult: Object
+        },
         data () {
             return {
                 isLoading: false,
                 isShowDialog: false,
-                isAppleFlag: true,
-                authParams: null,
-                authResult: {}
+                isAppleFlag: true
             }
         },
         computed: {

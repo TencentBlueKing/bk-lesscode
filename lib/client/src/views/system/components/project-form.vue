@@ -23,12 +23,12 @@
                 <bk-button
                     @click="formData.framework = 'vue2'"
                     :class="formData.framework === 'vue2' ? 'is-selected' : ''"
-                    :disabled="formData.projectType !== 'newProject'"
+                    :disabled="type !== 'newProject'"
                 >VUE 2</bk-button>
                 <bk-button
                     @click="formData.framework = 'vue3'"
                     :class="formData.framework === 'vue3' ? 'is-selected' : ''"
-                    :disabled="formData.projectType !== 'newProject'"
+                    :disabled="type !== 'newProject'"
                 >VUE 3</bk-button>
             </div>
         </bk-form-item>

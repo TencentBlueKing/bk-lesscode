@@ -11,12 +11,20 @@
         @click.stop="handleRequestPermission">
         <slot />
     </bk-button>
+    <apply-permission-dialog
+        ref="ApplyPermissionDialog"
+        :auth-params="auth.split(',')"
+        :auth-result="authResult"
+    />
 </template>
 <script>
-    import { permissionDialog } from '@/common/bkmagic'
+    import ApplyPermissionDialog from '../apply-permission/apply-dialog.vue'
 
     export default {
         name: 'AuthButton',
+        components: {
+            ApplyPermissionDialog
+        },
         inheritAttrs: false,
         props: {
             // true: 有权限
@@ -36,7 +44,8 @@
         data () {
             return {
                 isLoading: false,
-                hasPermission: false
+                hasPermission: false,
+                authResult: {}
             }
         },
         computed: {
@@ -57,7 +66,6 @@
         },
         created () {
             this.checkPermission()
-            this.authResult = {}
         },
         methods: {
             /**
@@ -95,9 +103,7 @@
                 if (this.isLoading) {
                     return
                 }
-                permissionDialog({
-                    actions: this.auth.split(',')
-                }, this.authResult)
+                this.$refs.ApplyPermissionDialog.show()
             }
         }
     }

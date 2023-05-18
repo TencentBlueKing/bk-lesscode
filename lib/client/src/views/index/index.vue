@@ -287,7 +287,7 @@
                     ])
 
                     // 初始化项目框架信息
-                    LC.setFramework(projectDetail.framework === 'vue3' ? 'vue3' : 'vue2')
+                    LC.setFramework(projectDetail.framework)
                     init(projectDetail.framework)
 
                     await this.registerCustomComponent()

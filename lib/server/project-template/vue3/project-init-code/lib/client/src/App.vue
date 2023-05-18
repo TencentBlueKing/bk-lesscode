@@ -12,6 +12,10 @@
     import ApplyPage from '@/components/apply-permission/apply-page.vue'
     import auth from '@/common/auth'
 
+    bus.$on('redirect-login', data => {
+        auth.redirectToLogin()
+    })
+
     export default {
         name: 'app',
         components: {
@@ -42,11 +46,6 @@
             }
 
             bus.$on('permission-page', this.permissionHold)
-        },
-        mounted () {
-            bus.$on('redirect-login', data => {
-                auth.redirectToLogin()
-            })
         },
         beforeDestroy () {
             bus.$off('permission-page', this.permissionHold)
