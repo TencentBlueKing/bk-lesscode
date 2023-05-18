@@ -2,7 +2,7 @@
     <section>
         <page-dialog ref="pageDialog" :action="action" :current-name="currentName" :refresh-list="getPageList" @closeDialog="handleClose"></page-dialog>
         <edit-route-dialog ref="editRouteDialog" :route-group="editRouteGroup" :current-route="currentRoute" @success="getPageList" @closeDialog="handleClose" />
-        <create-page-dialog ref="createPageDialog" platform="PC" nocode-type="FORM_MANAGE" :init-page-data="createInitData" />
+        <create-page-dialog ref="createPageDialog" platform="PC" nocode-type="FORM_MANAGE" :init-page-data="createInitData" @closeDialog="handleClose" />
     </section>
 </template>
 

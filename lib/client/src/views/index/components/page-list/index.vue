@@ -128,6 +128,7 @@
             this.projectId = parseInt(this.$route.params.projectId)
             this.pageId = parseInt(this.$route.params.pageId)
             this.selectPageId = parseInt(this.$route.params.pageId)
+            this.initClassPageList()
         },
         methods: {
             initClassPageList () {

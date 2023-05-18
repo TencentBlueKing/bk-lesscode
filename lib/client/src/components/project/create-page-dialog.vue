@@ -355,6 +355,7 @@
             },
             handleDialogCancel () {
                 this.isShow = false
+                this.$emit('closeDialog')
             },
             handleDialogToggle () {
                 if (this.isShow) {
