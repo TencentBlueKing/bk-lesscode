@@ -1,11 +1,11 @@
 <template>
-    <bk-form
+    <lc-form
         ref="formRef"
         form-type="vertical"
         :label-width="100"
         :model="formData"
     >
-        <bk-form-item
+        <lc-form-item
             :label="$t('名称')"
             property="name"
             error-display-type="normal"
@@ -21,8 +21,8 @@
                 :value="formData.name"
                 @change="update('name', ...arguments)"
             ></bk-input>
-        </bk-form-item>
-        <bk-form-item
+        </lc-form-item>
+        <lc-form-item
             :label="$t('标识')"
             property="code"
             error-display-type="normal"
@@ -40,8 +40,8 @@
                 :disabled="!!formData.id"
                 @change="update('code', ...arguments)"
             ></bk-input>
-        </bk-form-item>
-        <bk-form-item
+        </lc-form-item>
+        <lc-form-item
             :label="$t('分类')"
             :label-width="$store.state.Language === 'en' ? 110 : 100"
             property="categoryId"
@@ -65,8 +65,8 @@
                     :name="category.name"
                 ></bk-option>
             </bk-select>
-        </bk-form-item>
-        <bk-form-item
+        </lc-form-item>
+        <lc-form-item
             :label="$t('form_接口路径')"
             :label-width="$store.state.Language === 'en' ? 120 : 100"
             property="url"
@@ -97,8 +97,8 @@
                     @change="update('url', ...arguments)"
                 ></bk-input>
             </bk-compose-form-item>
-        </bk-form-item>
-        <bk-form-item
+        </lc-form-item>
+        <lc-form-item
             property="withToken"
         >
             <bk-checkbox
@@ -110,8 +110,8 @@
                 }"
                 @change="update('withToken', ...arguments)"
             >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
-        </bk-form-item>
-        <bk-form-item
+        </lc-form-item>
+        <lc-form-item
             :label="$t('备注')"
             property="summary"
         >
@@ -121,8 +121,8 @@
                 :value="formData.summary"
                 @change="update('summary', ...arguments)"
             ></bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>

@@ -108,21 +108,22 @@
             <empty-status slot="empty"></empty-status>
         </bk-table>
 
-        <bk-sideslider
-            :is-show.sync="formStatus.showEditData"
+        <lc-sideslider
+            :is-show="formStatus.showEditData"
             :width="740"
             :title="formStatus.editTitle"
             :transfer="true"
+            @update:isShow="close"
         >
             <div slot="content">
-                <bk-form
+                <lc-form
                     class="edit-data-form"
                     ref="formRef"
                     form-type="vertical"
                     :model="formStatus.editForm"
                     :label-width="120"
                 >
-                    <bk-form-item
+                    <lc-form-item
                         v-for="column in activeTable.columns.filter(column => column.name !== 'id')"
                         :key="column.name"
                         :label="column.name"
@@ -169,8 +170,8 @@
                             v-model="formStatus.editForm[column.name]"
                             :placeholder="$t('请输入字符串')"
                         ></bk-input>
-                    </bk-form-item>
-                    <bk-form-item>
+                    </lc-form-item>
+                    <lc-form-item>
                         <bk-button
                             theme="primary"
                             class="mr5"
@@ -181,10 +182,10 @@
                             :disabled="formStatus.isSaving"
                             @click="closeForm"
                         >{{ $t('取消') }}</bk-button>
-                    </bk-form-item>
-                </bk-form>
+                    </lc-form-item>
+                </lc-form>
             </div>
-        </bk-sideslider>
+        </lc-sideslider>
     </article>
 </template>
 
@@ -226,6 +227,7 @@
     import {
         isEmpty
     } from 'shared/util'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     import DayJSUtcPlugin from 'dayjs/plugin/utc'
     dayjs.extend(DayJSUtcPlugin)
@@ -409,11 +411,17 @@
             const changeDate = (propName, date) => {
                 formStatus.editForm[propName] = dateFormatter(date)
             }
-
-            const closeForm = () => {
+            const close = () => {
                 formStatus.showEditData = false
                 formStatus.editForm = {}
                 formStatus.dataParse = {}
+            }
+
+            const closeForm = () => {
+                leaveConfirm()
+                    .then(() => {
+                        close()
+                    })
             }
 
             const addData = () => {
@@ -487,7 +495,7 @@
                 const sql = dataParse.set(dataJsonParser).export(dataSqlParser)
 
                 return modifyOnlineDb(sql).then((res) => {
-                    closeForm()
+                    close()
                     getDataList()
                     return res
                 })
@@ -510,7 +518,7 @@
                     confirmLoading: true,
                     confirmFn () {
                         return modifyOnlineDb(sql).then(() => {
-                            closeForm()
+                            close()
                             getDataList()
                         }).catch((error) => {
                             messageError(error.message || error)
@@ -595,7 +603,7 @@
                 // sql 导入则直接执行 sql 语法
                 if (fileType === DATA_FILE_TYPE.SQL) {
                     return modifyOnlineDb(data.content).then((results) => {
-                        closeForm()
+                        close()
                         getDataList()
                         handleImportSuccessMessage(results)
                     })
@@ -717,6 +725,7 @@
                 selectionChange,
                 handlePageChange,
                 handlePageLimitChange,
+                close,
                 closeForm,
                 addData,
                 editData,

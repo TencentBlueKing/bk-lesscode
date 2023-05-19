@@ -1,12 +1,11 @@
 <template>
-    <bk-sideslider
+    <lc-sideslider
         transfer
         :title="title"
-        :is-show.sync="isShow"
+        :is-show="isShow"
         :quick-close="true"
         :width="1200"
-        :before-close="confirmClose"
-        @hidden="handleClose">
+        @update:isShow="close">
         <section
             class="api-form-home"
             slot="content"
@@ -54,10 +53,10 @@
                 @click="submitApi"
             >{{ $t('提交') }}</bk-button>
             <bk-button
-                @click="confirmClose"
+                @click="handleClose"
             >{{ $t('取消') }}</bk-button>
         </section>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
@@ -68,8 +67,7 @@
         defineComponent,
         ref,
         watch,
-        computed,
-        getCurrentInstance
+        computed
     } from '@vue/composition-api'
     import {
         parseScheme2Value,
@@ -81,6 +79,9 @@
     import {
         messageError
     } from '@/common/bkmagic'
+    import {
+        leaveConfirm
+    } from '@/common/leave-confirm'
 
     export default defineComponent({
         components: {
@@ -109,10 +110,8 @@
             // 状态
             const isSubmitting = ref(false)
             const isLoadingResponse = ref(false)
-            const formChanged = ref(false)
             const formData = ref({})
             const response = ref()
-            const instance = getCurrentInstance()
             const basicRef = ref(null)
             const paramRef = ref(null)
             const responseRef = ref(null)
@@ -128,23 +127,16 @@
                 }
             })
 
-            // 方法
-            const confirmClose = () => {
-                if (formChanged.value) {
-                    instance.proxy.$bkInfo({
-                        title: window.i18n.t('请确认是否关闭'),
-                        subTitle: window.i18n.t('存在未保存的 API，关闭后不会保存更改'),
-                        confirmFn: handleClose
-                    })
-                } else {
-                    handleClose()
-                }
+            const close = () => {
+                emit('update:isShow', false)
+                emit('update:form', {})
             }
 
             const handleClose = () => {
-                formChanged.value = false
-                emit('update:isShow', false)
-                emit('update:form', {})
+                leaveConfirm(window.i18n.t('存在未保存的 API，关闭后不会保存更改'))
+                    .then(() => {
+                        close()
+                    })
             }
 
             const validate = () => {
@@ -182,7 +174,7 @@
                         const submitMethod = formData.value.id ? editApi : createApi
                         return submitMethod(form).then(() => {
                             emit('success-submit')
-                            handleClose()
+                            close()
                         })
                     })
                     .finally(() => {
@@ -199,7 +191,7 @@
             }
 
             const handleUpdate = (formItem) => {
-                formChanged.value = true
+                window.leaveConfirm = true
                 Object.assign(formData.value, formItem)
             }
 
@@ -272,7 +264,7 @@
                 paramRef,
                 responseRef,
                 paramKey,
-                confirmClose,
+                close,
                 handleClose,
                 submitApi,
                 handleUpdate,

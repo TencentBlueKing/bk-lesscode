@@ -1286,7 +1286,7 @@
   "暂无可添加事件": "There are no events to add",
   "添加事件": "Add Event",
   "渲染多个组件时，如果需要基于 v-for 指令的值给每个组件单独赋值。可以使用如下规则给该组件或子组件的指令或属性的表达式赋值（当前组件的 v-if 和 v-show 指令除外）：": "When rendering multiple components, if you need to assign values ​​to each component individually based on the value of the v-for directive. \nThe following rules can be used to assign values ​​to expressions of directives or properties of this component or subcomponent (except for v-if and v-show directives of the current component):",
-  "编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值": "When editing a function, you can use the lesscode. instruction value, and you must select the corresponding attribute instruction value through the editor's auto-completion function to obtain or modify the component attribute value configured with the instruction in the current page",
+  "编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值": "When editing a function,  you can use the \"lesscode.\" instruction value, and you must select the corresponding attribute instruction value through the editor's auto-completion function to obtain or modify the component attribute value configured with the instruction in the current page.",
   "表单操作项配置": "Form Action Item Configuration",
   "通过传入 boolean 数据，来控制是否展示 loading 效果": "By passing in Boolean data, to control whether to display the loading effect",
   "Label必填": "Label required",
@@ -1727,7 +1727,7 @@
   "PC 页面": "PC Page",
   "json数据将会覆盖当前已有页面内容": "The JSON data will overwrite the current existing page content",
   "{0}（路由：{1}）": "{0} (route: {1})",
-  "关联流程": "Associated Process",
+  "form_关联流程": "Associated process",
   "基本配置": "Basic Configuration",
   "已配置": "Configured",
   "应用级变量的修改，请跳转至": "To modify application-level variables, please jump to",
@@ -3762,5 +3762,8 @@
   "年": "Year",
   "流水号": "Serial Number",
   "自定义字符": "Custom character",
-  "请输入应用名称，20个字符以内": "Please enter the application name, within 20 characters"
+  "请输入应用名称，20个字符以内": "Please enter the application name, within 20 characters",
+  "存在未保存的变量，关闭后不会保存更改": "There are unsaved variables, changes will not be saved after closing",
+  "存在未保存的版本，关闭后不会保存更改": "There is an unsaved version, changes will not be saved after closing",
+  "存在未保存的自定义组件，关闭后不会保存更改": "There are unsaved custom components, changes will not be saved after closing"
 }
