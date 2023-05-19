@@ -541,6 +541,9 @@
                 height: calc(100% - 43px);
                 overflow-y: auto;
             }
+            /deep/ .bk-table-fixed-right {
+                border-bottom: none
+            }
             th.is-leaf {
                 border: none;
             }

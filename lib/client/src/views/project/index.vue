@@ -4,8 +4,8 @@
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
                 <i class="back-icon bk-drag-icon bk-drag-arrow-back" :title="$t('返回应用列表')" @click="toProjects"></i>
-                <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
-                    <bk-option v-for="option in projectList"
+                <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject" :allow-enter="filterProjectList.length > 0" :remote-method="remoteHandler">
+                    <bk-option v-for="option in filterProjectList"
                         :key="option.id"
                         :id="option.id"
                         :name="option.projectName">
@@ -338,6 +338,7 @@
                     }
                 ],
                 projectList: [],
+                filterProjectList: [],
                 countdown: 3,
                 timer: null,
                 defaultThemeColorProps: {
@@ -445,6 +446,7 @@
         },
         async mounted () {
             this.defaultOpen = false
+            this.filterProjectList = this.projectList
             this.setDefaultActive()
         },
         methods: {
@@ -485,6 +487,7 @@
                 const url = IAM_ENABLE ? 'iam/myProject' : 'project/my'
                 const projectList = await this.$store.dispatch(url, { config: {} })
                 this.projectList = projectList
+                this.filterProjectList = projectList
             },
             changeProject (id) {
                 this.$router.replace({
@@ -505,6 +508,11 @@
             handleSelect (routeName) {
                 this.$router.push({
                     name: routeName
+                })
+            },
+            remoteHandler (keyword) {
+                this.filterProjectList = this.projectList.filter((project) => {
+                    return (project.projectName || '').includes(keyword)
                 })
             }
         }
