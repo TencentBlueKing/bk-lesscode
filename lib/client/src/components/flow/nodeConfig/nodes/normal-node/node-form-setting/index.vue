@@ -157,34 +157,25 @@
             },
             // 删除流程提单页
             async delCreateTicketPage () {
-                return new Promise(async (resolve, reject) => {
-                    try {
-                        await this.$store.dispatch('page/delete', { pageId: this.createTicketPage.id })
-                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, pageId: 0 })
-                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
-                        this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', {})
-                        resolve()
-                    } catch (e) {
-                        reject(e)
-                    }
+                return Promise.all([
+                    this.$store.dispatch('page/delete', { pageId: this.createTicketPage.id }),
+                    this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, pageId: 0 })
+                ]).then(() => {
+                    this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
+                    this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', {})
                 })
             },
             // 删除节点的表单配置
-            async delFormConfig () {
-                return new Promise(async (resolve, reject) => {
-                    try {
-                        this.$store.commit('nocode/flow/delFlowNodeFormId', this.nodeData.id)
-                        await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, formIds: this.flowConfig.formIds, deployed: 0 })
-                        await this.$store.dispatch('nocode/flow/patchNodeData', { id: this.nodeData.id, data: { is_draft: true } })
-                        // 将节点绑定的字段在itsm端删除
-                        await this.$store.dispatch('nocode/flow/batchSaveFields', { fields: [], delete_ids: this.nodeData.fields, state_id: this.nodeData.id, })
-                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0, deployed: 0 })
-                        this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
-                        this.isUnset = true
-                        resolve()
-                    } catch (e) {
-                        reject(e)
-                    }
+            delFormConfig () {
+                this.$store.commit('nocode/flow/delFlowNodeFormId', this.nodeData.id)
+                return Promise.all([
+                    this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, formIds: this.flowConfig.formIds, deployed: 0 }),
+                    this.$store.dispatch('nocode/flow/patchNodeData', { id: this.nodeData.id, data: { is_draft: true } }),
+                    this.$store.dispatch('nocode/flow/batchSaveFields', { fields: [], delete_ids: this.nodeData.fields, state_id: this.nodeData.id, })
+                ]).then(() => {
+                    this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0, deployed: 0 })
+                    this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
+                    this.isUnset = true
                 })
             },
             // 新建空白或者引用表单时的初始化配置

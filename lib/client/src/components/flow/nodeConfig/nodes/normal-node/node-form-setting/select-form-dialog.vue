@@ -256,7 +256,8 @@
                     this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
                     this.$store.commit('nocode/nodeConfig/setInitialFieldIds', fields)
                     const fieldIds = fields.map(field => field.id)
-                    await this.updateItsmNode(res.formId, fieldIds)
+                    const nodeConfig = await this.updateItsmNode(res.formId, fieldIds)
+                    this.$store.commit('nocode/nodeConfig/setNodeData', nodeConfig)
                     await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
 
