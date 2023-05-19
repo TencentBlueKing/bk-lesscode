@@ -1,58 +1,57 @@
 <template>
     <div>
-        <bk-sideslider
+        <lc-sideslider
             class="create-sideslider"
             :is-show.sync="isVisible"
-            :quick-close="false"
             :title="isEdit ? $t('编辑操作') : $t('新建操作')"
             :width="696"
-            @hidden="hide">
+            @update:isShow="close">
             <div class="wrapper" slot="content" v-bkloading="{ isLoading: isLoading }">
-                <bk-form :label-width="120" :model="formData" :rules="rules" ref="validateForm">
-                    <bk-form-item :label="$t('操作 ID')" required property="actionId">
+                <lc-form :label-width="$store.state.Language === 'en' ? 150 : 120" :model="formData" :rules="rules" ref="validateForm">
+                    <lc-form-item :label="$t('操作 ID')" required property="actionId">
                         <bk-input v-model="formData.actionId" :disabled="isEdit || isDefaultAction" :placeholder="$t('请输入操作 ID：如 {0}',[IAM_APP_PERM_BUILDIN_ACTION])"></bk-input>
-                    </bk-form-item>
-                    <bk-form-item :label="$t('form_操作名称')" required property="actionName">
+                    </lc-form-item>
+                    <lc-form-item :label="$t('form_操作名称')" required property="actionName">
                         <bk-input v-model="formData.actionName" :placeholder="$t('请输入操作名称：如页面访问')" :show-word-limit="true" maxlength="32"></bk-input>
-                    </bk-form-item>
-                    <bk-form-item :label="$t('form_操作名称英文')" required property="actionNameEn">
+                    </lc-form-item>
+                    <lc-form-item :label="$t('form_操作名称英文')" required property="actionNameEn">
                         <bk-input v-model="formData.actionNameEn" :placeholder="$t('请输入操作名称英文：如 View Page')"></bk-input>
-                    </bk-form-item>
-                    <bk-form-item :label="$t('form_操作类型')" property="actionType">
+                    </lc-form-item>
+                    <lc-form-item :label="$t('form_操作类型')" property="actionType">
                         <bk-select v-model="formData.actionType">
                             <bk-option v-for="item in actionTypeList" :key="item.id"
                                 :id="item.id" :name="item.name">
                             </bk-option>
                         </bk-select>
-                    </bk-form-item>
+                    </lc-form-item>
                     <template v-if="isDefaultAction">
-                        <bk-form-item :label="$t('form_是否关联资源')" property="hasRelated">
+                        <lc-form-item :label="$t('form_是否关联资源')" property="hasRelated">
                             <bk-radio-group v-model="formData.hasRelated">
                                 <bk-radio :value="true" class="mr15" :disabled="!isEdit">{{ $t('是') }}</bk-radio>
                                 <bk-radio :value="false" :disabled="!isEdit">{{ $t('否') }}</bk-radio>
                             </bk-radio-group>
-                        </bk-form-item>
-                        <bk-form-item :label="$t('form_关联资源')" property="actionRelatedResourceId" v-if="formData.hasRelated">
+                        </lc-form-item>
+                        <lc-form-item :label="$t('form_关联资源')" property="actionRelatedResourceId" v-if="formData.hasRelated">
                             <bk-select v-model="formData.actionRelatedResourceId" :placeholder="$t('请选择资源')" multiple>
                                 <bk-option v-for="item in relatedResourceList" :key="item.id"
                                     :id="item.id" :name="item.name">
                                 </bk-option>
                             </bk-select>
-                        </bk-form-item>
+                        </lc-form-item>
                     </template>
-                    <bk-form-item :label="$t('form_操作描述')" property="actionDesc">
+                    <lc-form-item :label="$t('form_操作描述')" property="actionDesc">
                         <bk-input v-model="formData.actionDesc" :type="'textarea'" :rows="3" maxlength="255" :placeholder="$t('请输入操作描述')"></bk-input>
-                    </bk-form-item>
-                    <bk-form-item :label="$t('form_操作描述英文')" property="actionDescEn">
+                    </lc-form-item>
+                    <lc-form-item :label="$t('form_操作描述英文')" property="actionDescEn">
                         <bk-input v-model="formData.actionDescEn" :type="'textarea'" :rows="3" maxlength="255" :placeholder="$t('form_操作描述英文')"></bk-input>
-                    </bk-form-item>
-                    <bk-form-item>
+                    </lc-form-item>
+                    <lc-form-item>
                         <bk-button ext-cls="mr5" theme="primary" :title="$t('提交')" @click.stop.prevent="validate" :loading="isChecking">{{ $t('提交') }}</bk-button>
                         <bk-button ext-cls="mr5" theme="default" :title="$t('取消')" @click="hide">{{ $t('取消') }}</bk-button>
-                    </bk-form-item>
-                </bk-form>
+                    </lc-form-item>
+                </lc-form>
             </div>
-        </bk-sideslider>
+        </lc-sideslider>
     </div>
 </template>
 
@@ -60,6 +59,7 @@
     import { mapGetters } from 'vuex'
 
     import { IAM_ACTION_TYPE, IAM_APP_PERM_BUILDIN_ACTION } from 'shared/constant'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     export default {
         props: {
@@ -252,6 +252,8 @@
                         this.$emit('success')
                     } catch (e) {
                         console.error(e)
+                    } finally {
+                        this.isChecking = false
                     }
                 }, () => {
                     this.isChecking = false
@@ -261,12 +263,18 @@
             /**
              * 隐藏创建 sideslider
              */
-            hide () {
+            close () {
                 this.$emit('hide-sideslider', false)
                 this.resetFormData()
                 this.isChecking = false
                 const form = this.$refs.validateForm
                 form && form.clearError()
+            },
+            hide () {
+                leaveConfirm()
+                    .then(() => {
+                        this.close()
+                    })
             },
             showUpdate (row) {
                 this.isShowSideslider = true
