@@ -8,6 +8,7 @@
 }
 .bk-navigation {
     min-width: 1360px;
+    height: 100vh;
 }
 .bk-navigation-wrapper .navigation-container {
     max-width: 100% !important;
