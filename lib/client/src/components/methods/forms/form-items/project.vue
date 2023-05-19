@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-bottom">
-        <bk-form-item
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-bottom">
+        <lc-form-item
             :rules="[requireRule($t('应用'))]"
             :label="$t('应用')"
             property="projectId"
@@ -18,8 +18,8 @@
                     :name="option.projectName">
                 </bk-option>
             </bk-select>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>

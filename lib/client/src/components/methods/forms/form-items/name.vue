@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType">
-        <bk-form-item
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType">
+        <lc-form-item
             :label="$t('form_函数名称')"
             property="funcName"
             error-display-type="normal"
@@ -13,8 +13,8 @@
                 @input="(funcName) => updateValue({ funcName })"
             >
             </bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>

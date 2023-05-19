@@ -1,27 +1,27 @@
 <template>
-    <bk-sideslider
+    <lc-sideslider
         :is-show="isShow"
-        :before-close="hidden"
+        @update:isShow="close"
         :quick-close="true"
         :width="796"
         :transfer="true"
         :title="isAdd ? $t('新增变量') : $t('编辑变量')">
         <section slot="content" class="variable-form-main">
-            <bk-form :label-width="$store.state.Language === 'en' ? 120 : 84" :model="copyForm" ref="variableForm">
-                <bk-form-item :label="$t('form_变量名称')" :required="true" :rules="[requireRule($t('form_变量名称')), nameRule]" property="variableName" error-display-type="normal">
+            <lc-form :label-width="$store.state.Language === 'en' ? 120 : 84" :model="copyForm" ref="variableForm">
+                <lc-form-item :label="$t('form_变量名称')" :required="true" :rules="[requireRule($t('form_变量名称')), nameRule]" property="variableName" error-display-type="normal">
                     <bk-input
                         :placeholder="$t('由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符')"
                         v-model="copyForm.variableName"
                     ></bk-input>
-                </bk-form-item>
-                <bk-form-item :label="$t('变量标识')" :required="true" :rules="[requireRule($t('变量标识')), codeRule, repeatRule, projectOnlyRule, keyWordRule]" property="variableCode" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('变量标识')" :required="true" :rules="[requireRule($t('变量标识')), codeRule, repeatRule, projectOnlyRule, keyWordRule]" property="variableCode" error-display-type="normal">
                     <bk-input
                         :placeholder="$t('由大小写英文字母组成，长度小于20个字符。不能是 JavaScript 保留字，且应用内唯一')"
                         :disabled="!isAdd"
                         v-model="copyForm.variableCode"
                     ></bk-input>
-                </bk-form-item>
-                <bk-form-item :label="$t('form_初始类型')" :required="true" property="valueType" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('form_初始类型')" :required="true" property="valueType" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.valueType" @change="resetValue">
                         <template v-for="renderJsType in renderJsTypes">
                             <bk-radio-button
@@ -41,8 +41,8 @@
                             </bk-radio-button>
                         </template>
                     </bk-radio-group>
-                </bk-form-item>
-                <bk-form-item :label="$t('默认值')" :required="true" property="defaultValue" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('默认值')" :required="true" property="defaultValue" error-display-type="normal">
                     <!-- <bk-radio-group v-model="copyForm.defaultValueType">
                         <bk-radio :value="0" class="type-radio">环境统一配置</bk-radio>
                         <bk-radio :value="1" :disabled="copyForm.valueType === 6">分环境配置</bk-radio>
@@ -54,17 +54,17 @@
                         :type="copyForm.defaultValueType"
                         :value-type="copyForm.valueType"
                     />
-                </bk-form-item>
-                <bk-form-item :label="$t('form_生效范围')" :required="true" property="effectiveRange" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('form_生效范围')" :required="true" property="effectiveRange" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.effectiveRange">
                         <bk-radio :value="0" class="range-radio" :disabled="copyForm.valueType === 6">{{$t('本应用')}}</bk-radio>
                         <bk-radio :value="1" v-if="pageId">{{$t('本页面')}}</bk-radio>
                     </bk-radio-group>
-                </bk-form-item>
-                <bk-form-item :label="$t('form_变量说明')" property="description" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('form_变量说明')" property="description" error-display-type="normal">
                     <bk-input v-model="copyForm.description" type="textarea"></bk-input>
-                </bk-form-item>
-            </bk-form>
+                </lc-form-item>
+            </lc-form>
             <bk-button
                 class="confirm-button variable-button"
                 theme="primary"
@@ -88,7 +88,7 @@
                 >{{$t('保存并使用')}}</bk-button>
             </section>
         </section>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
@@ -99,6 +99,7 @@
     import variableInput from './variable-input'
     import variableJson from './variable-json'
     import variableUpload from './variable-upload'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     const typeEnum = {
         'string': [0, 5],
@@ -338,11 +339,11 @@
                     this.copyForm.pageCode = this.copyForm.effectiveRange === 0 ? '' : this.pageDetail.pageCode
                     this.isSaving = true
                     this.$refs.variableForm
-                        .validate(() => {
+                        .validate().then(() => {
                             return confirmMethod(this.copyForm)
                                 .then(() => {
                                     this.$bkMessage({ theme: 'success', message: this.isAdd ? this.$t('新增变量成功') : this.$t('编辑变量成功') })
-                                    this.hidden()
+                                    this.close()
                                     const params = { projectId: this.projectId, versionId: this.versionId, effectiveRange: 0 }
                                     if (this.pageId) {
                                         params.pageCode = this.pageDetail.pageCode
@@ -385,9 +386,15 @@
                     this.isUseSaving = false
                 })
             },
+            close () {
+                this.$emit('update:isShow', false)
+            },
 
             hidden () {
-                this.$emit('update:isShow', false)
+                leaveConfirm(window.i18n.t('存在未保存的变量，关闭后不会保存更改'))
+                    .then(() => {
+                        this.close()
+                    })
             }
         }
     }
