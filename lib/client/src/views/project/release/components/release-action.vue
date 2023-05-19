@@ -87,7 +87,7 @@
             },
             title: {
                 type: String,
-                default: window.i18n.t('部署中日志')
+                default: ''
             },
             currentAppInfo: {
                 type: Object,
@@ -134,7 +134,8 @@
                 isLogError: false,
                 ansiUp: null,
                 serverProcessEvent: null,
-                link: ''
+                link: '',
+                isTitle: this.title || window.i18n.t('部署中日志')
             }
         },
         computed: {

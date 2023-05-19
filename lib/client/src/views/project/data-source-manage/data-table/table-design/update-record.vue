@@ -31,13 +31,14 @@
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
             >
-                <bk-table-column :label="$t('变更时间')" prop="createTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
-                <bk-table-column :label="$t('执行人员')" prop="createUser"></bk-table-column>
-                <bk-table-column :label="$t('变更内容')" prop="sql" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_变更时间')" prop="createTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
+                <bk-table-column :label="$t('table_执行人员')" prop="createUser"></bk-table-column>
+                <bk-table-column :label="$t('table_变更内容')" prop="sql" show-overflow-tooltip>
                     <template slot-scope="props">
                         <bk-button :text="true" title="primary" @click="showSql(props.row.sql)">{{ $t('查看') }}</bk-button>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </main>
 
@@ -54,7 +55,8 @@
     import {
         defineComponent,
         onBeforeMount,
-        reactive
+        reactive,
+        ref
     } from '@vue/composition-api'
     import {
         messageError
@@ -80,6 +82,7 @@
                 showConfirmDialog: false,
                 sql: ''
             })
+            const emptyType = ref('noData')
             const id = router?.currentRoute?.query?.id
 
             const goBack = () => {
@@ -97,6 +100,7 @@
 
             const getRecordList = () => {
                 recordStatus.isLoading = true
+                emptyType.value = (recordStatus.timeRange.length > 0 || recordStatus.createUser) ? 'search' : 'noData'
                 const filterData = {
                     id,
                     timeRange: recordStatus.timeRange.map(x => timeFormatter(null, null, x)),
@@ -110,15 +114,22 @@
                     recordStatus.isLoading = false
                 })
             }
+            const handlerClearSearch = () => {
+                recordStatus.createUser = ''
+                recordStatus.timeRange = []
+                emptyType.value = 'noData'
+            }
 
             onBeforeMount(getRecordList)
 
             return {
                 recordStatus,
+                emptyType,
                 goBack,
                 timeFormatter,
                 showSql,
-                getRecordList
+                getRecordList,
+                handlerClearSearch
             }
         }
     })
