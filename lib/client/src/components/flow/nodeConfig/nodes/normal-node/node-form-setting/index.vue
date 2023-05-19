@@ -176,6 +176,8 @@
                         this.$store.commit('nocode/flow/delFlowNodeFormId', this.nodeData.id)
                         await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, formIds: this.flowConfig.formIds, deployed: 0 })
                         await this.$store.dispatch('nocode/flow/patchNodeData', { id: this.nodeData.id, data: { is_draft: true } })
+                        // 将节点绑定的字段在itsm端删除
+                        await this.$store.dispatch('nocode/flow/batchSaveFields', { fields: [], delete_ids: this.nodeData.fields, state_id: this.nodeData.id, })
                         this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0, deployed: 0 })
                         this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
                         this.isUnset = true
