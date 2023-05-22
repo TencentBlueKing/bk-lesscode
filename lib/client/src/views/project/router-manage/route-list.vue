@@ -23,7 +23,7 @@
                                 $style['path'],
                                 { [$style['editing']]: layoutEditState.group === group.layoutId }
                             ]">
-                                <div :class="$style['path-name']" v-if="layoutEditState.group !== group.layoutId">{{getDisplayLayoutPath(group.layoutPath)}}</div>
+                                <div :class="$style['path-name']" v-if="layoutEditState.group !== group.layoutId" :title="getDisplayLayoutPath(group.layoutPath)">{{getDisplayLayoutPath(group.layoutPath)}}</div>
                                 <div v-else
                                     :class="[
                                         $style['edit-form'],

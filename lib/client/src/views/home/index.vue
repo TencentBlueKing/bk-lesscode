@@ -13,6 +13,7 @@
                         <bk-button
                             class="mt10 banner-btn help-btn"
                             @click="handlerRouter('intro')"
+                            v-enStyle="'width:220px'"
                         >{{ $t('帮助文档') }}</bk-button>
                     </div>
                 </div>

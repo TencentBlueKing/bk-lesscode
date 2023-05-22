@@ -2,6 +2,7 @@
     <div class="panel-tree">
         <div class="tree-search-area">
             <bk-input
+                ref="search"
                 class="tree-search"
                 :right-icon="'bk-icon icon-search'"
                 :clearable="true"
@@ -42,11 +43,7 @@
                     </div>
                 </div>
             </bk-big-tree>
-            <bk-exception
-                v-if="isEmpty"
-                type="empty"
-                scene="part">
-                {{ $t('页面为空') }} </bk-exception>
+            <empty-status v-if="isEmpty" :type="emptyEmpty" :part="false" @clearSearch="handlerClearSearch"></empty-status>
         </div>
     </div>
 </template>
@@ -74,7 +71,8 @@
         data () {
             return {
                 allExpanded: false,
-                isEmpty: false
+                isEmpty: false,
+                emptyEmpty: 'noData'
             }
         },
         computed: {
@@ -162,11 +160,15 @@
             handleSearch: _.debounce(function (text) {
                 const data = this.$refs.tree.filter(text.trim())
                 if (data.length > 0) {
+                    this.isEmpty = false
                     this.$nextTick(() => {
                         this.$refs.tree.setSelected(data[0].id, {
                             emitEvent: true
                         })
                     })
+                } else {
+                    this.isEmpty = true
+                    this.emptyEmpty = text ? 'search' : 'noData'
                 }
             }, 300),
             /**
@@ -264,6 +266,10 @@
              */
             checkIsAllExpanded () {
                 this.allExpanded = this.$refs.tree.nodes.every(node => node.isLeaf || node.expanded)
+            },
+
+            handlerClearSearch () {
+                this.$refs.search.handlerClear()
             }
         }
     }

@@ -31,8 +31,8 @@
     import cloneDeep from 'lodash.clonedeep'
     import { FIELDS_TYPES } from 'shared/no-code/constant'
     import FieldElement from '../form-edit/fieldElement.vue'
-    import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
+    import { generateFieldKey } from '../../../common/form'
     import { getTypeDefaultVal } from 'shared/no-code'
 
     export default {
@@ -94,7 +94,7 @@
                 const { type } = e.item.dataset
                 const columnId = uuid(8)
                 const field = FIELDS_TYPES().find(item => item.type === type)
-                const key = this.generateKey(field.name, columnId)
+                const key = generateFieldKey(field.name, columnId)
                 const config = {
                     columnId, // lesscode特定字段
                     type, // 类型
@@ -145,7 +145,8 @@
                     this.selectedIndex = index
                 } else if (type === 'copy') {
                     const columnId = uuid(8)
-                    const key = this.generateKey(field.name, columnId)
+                    const key = generateFieldKey(field.name, columnId)
+
                     field.columnId = columnId
                     field.key = key
                     field.id = null
@@ -187,15 +188,6 @@
                     isMax: false,
                     maxNum: 2
                 } : ''
-            },
-            generateKey (name, columnId) {
-                return pinyin(name, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                })
-                    .join('_')
-                    .toUpperCase()
-                    .concat(`_${columnId}`)
             },
             showFormPanel () {
                 this.curTemplateData.layoutType !== 'empty' && this.setCurTemplateData({

@@ -245,7 +245,7 @@
                 if (this.page.nocodeType === 'FLOW_MANAGE') {
                     baseSettings.settingFields.push({
                         id: 'relatedFlow',
-                        name: window.i18n.t('关联流程'),
+                        name: window.i18n.t('form_关联流程'),
                         type: 'link',
                         editable: false,
                         value: this.page.flowName,

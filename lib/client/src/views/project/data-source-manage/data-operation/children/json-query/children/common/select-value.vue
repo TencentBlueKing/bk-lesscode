@@ -2,7 +2,7 @@
     <section class="select-value">
         <bk-input
             class="input-value"
-            :placeholder="placeholder"
+            :placeholder="isPlaceholder"
             :value="value"
             @change="(val) => handleChange('value', val)"
         >
@@ -23,14 +23,15 @@
 
 <script lang="ts">
     import {
-        defineComponent
+        defineComponent,
+        ref
     } from '@vue/composition-api'
 
     export default defineComponent({
         props: {
             placeholder: {
                 type: String,
-                default: window.i18n.t('请输入值')
+                default: ''
             },
             value: {
                 type: [String, Number],
@@ -43,6 +44,7 @@
         },
 
         setup (props, { emit }) {
+            const isPlaceholder = props.placeholder || ref(window.i18n.t('请输入值'))
             const handleChange = (key, val) => {
                 emit('change', {
                     value: props.value,
@@ -52,6 +54,7 @@
             }
 
             return {
+                isPlaceholder,
                 handleChange
             }
         }

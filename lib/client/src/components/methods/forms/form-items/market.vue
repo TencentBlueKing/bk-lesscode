@@ -1,7 +1,7 @@
 <template>
     <section>
-        <bk-form :label-width="240" ref="funcForm" :form-type="formType" class="func-market-home">
-            <bk-form-item :label="$t('form_从函数市场导入')">
+        <lc-form :label-width="240" ref="funcForm" :form-type="formType" class="func-market-home">
+            <lc-form-item :label="$t('form_从函数市场导入')">
                 <bk-select
                     @toggle="getMarketFuncs"
                     @selected="changeMarketFunc"
@@ -21,8 +21,8 @@
                     </bk-option>
                 </bk-select>
                 <i class="bk-icon icon-info mt10">{{ $t('可使用函数市场模板快速创建，注意：选择后会覆盖当前函数的数据') }}</i>
-            </bk-form-item>
-        </bk-form>
+            </lc-form-item>
+        </lc-form>
         <h5 class="func-title">{{ $t('函数信息') }}</h5>
     </section>
 </template>
@@ -75,6 +75,7 @@
             },
 
             changeMarketFunc (funcId) {
+                window.leaveConfirm = true
                 const { id, ...rest } = this.marketFuncs.find((func) => (func.id === funcId)) || {}
                 this.updateValue(rest)
             }

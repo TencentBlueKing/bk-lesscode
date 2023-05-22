@@ -1,11 +1,10 @@
 <template>
-    <bk-sideslider
+    <lc-sideslider
         :is-show="isShow"
         :quick-close="true"
         :width="1200"
         :title="form.id ? $t('编辑函数') : $t('新建函数')"
-        :before-close="confirmClose"
-        @hidden="handleClose">
+        @update:isShow="close">
         <section class="func-form-home" slot="content">
             <form-name :form.sync="form" ref="name" :function-list="functionList"></form-name>
             <form-detail :form.sync="form" ref="detail"></form-detail>
@@ -16,12 +15,13 @@
             <bk-button theme="primary" @click="submitAddMarketFunc" :loading="isLoading">{{ $t('提交') }}</bk-button>
             <bk-button @click="handleClose">{{ $t('取消') }}</bk-button>
         </section>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
     import mixins from './form-mixins'
     import { mapActions } from 'vuex'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     export default {
         mixins: [mixins],
@@ -43,6 +43,10 @@
                 'createFunction',
                 'updateFunction'
             ]),
+            close () {
+                this.$emit('update:isShow', false)
+                this.$emit('update:funcData', {})
+            },
 
             submitAddMarketFunc () {
                 this.validate().then((postData) => {
@@ -51,9 +55,9 @@
                         ? this.updateFunction
                         : this.createFunction
                     curMethod(postData).then(() => {
-                        this.formChanged = false
+                        window.leaveConfirm = false
                         this.$emit('refresh')
-                        this.handleClose()
+                        this.close()
                     }).catch((err) => {
                         if (err?.code === 499) {
                             this
@@ -71,25 +75,18 @@
                         this.isLoading = false
                     })
                 }).catch((validator) => {
-                    this.$bkMessage({ message: validator.content || validator, theme: 'error' })
+                    this.$bkMessage({
+                        message: validator.content || validator,
+                        theme: 'error'
+                    })
                 })
             },
 
-            confirmClose () {
-                if (this.formChanged) {
-                    this.$bkInfo({
-                        title: this.$t('请确认是否关闭'),
-                        subTitle: this.$t('存在未保存的函数，关闭后不会保存更改'),
-                        confirmFn: this.handleClose
-                    })
-                } else {
-                    this.handleClose()
-                }
-            },
-
             handleClose () {
-                this.$emit('update:isShow', false)
-                this.$emit('update:funcData', {})
+                leaveConfirm('存在未保存的函数，关闭后不会保存更改')
+                    .then(() => {
+                        this.close()
+                    })
             }
         }
     }

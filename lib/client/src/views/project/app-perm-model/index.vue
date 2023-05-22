@@ -17,7 +17,7 @@
             </bk-alert>
         </section>
         <div class="system-manager-wrapper">
-            <div class="label">{{ $t('系统管理员:') }} </div>
+            <div class="label" v-enClass="'en-label'">{{ $t('系统管理员:') }} </div>
             <div class="inner">
                 <div style="display: flex; align-items: center;" v-if="String(iamAppPerm.deployed) === '0'">
                     <span>{{iamAppPerm.createUser}}</span>
@@ -304,6 +304,10 @@
             flex-basis: 16%;
             flex-grow: 0;
             flex-shrink: 0;
+        }
+        .en-label {
+            flex-basis: 30%;
+            margin-left: 70px;
         }
         .inner {
             flex-basis: 84%;

@@ -7,8 +7,8 @@
                 <i :class="['bk-icon icon-angle-down']"></i>
             </div>
             <ul class="bk-dropdown-list" slot="dropdown-content">
-                <li><a href="javascript:;" :class="{ disabled: disablePartialSelection || disabled }" @click="showExport('select')">{{ exportSelectionText }}</a></li>
-                <li><a href="javascript:;" :class="{ disabled: disabled }" @click="showExport('all')">{{ exportAllText }}</a></li>
+                <li><a href="javascript:;" :class="{ disabled: disablePartialSelection || disabled }" @click="showExport('select')">{{ isExportSelectionText }}</a></li>
+                <li><a href="javascript:;" :class="{ disabled: disabled }" @click="showExport('all')">{{ isExportAllText }}</a></li>
             </ul>
         </bk-dropdown-menu>
 
@@ -56,11 +56,11 @@
             },
             exportSelectionText: {
                 type: String,
-                default: window.i18n.t('导出选中数据')
+                default: ''
             },
             exportAllText: {
                 type: String,
-                default: window.i18n.t('导出所有数据')
+                default: ''
             }
         },
 
@@ -69,6 +69,8 @@
             const isDropdownShow = ref<boolean>(false)
             const downLoadType = ref('all')
             const dropdownRef = ref(null)
+            const isExportSelectionText = props.exportSelectionText || ref(window.i18n.t('导出选中数据'))
+            const isExportAllText = props.exportAllText || ref(window.i18n.t('导出所有数据'))
 
             const dropdownHide = () => {
                 dropdownRef.value?.hide()
@@ -91,6 +93,8 @@
                 isShowExport,
                 isDropdownShow,
                 dropdownRef,
+                isExportSelectionText,
+                isExportAllText,
                 showExport,
                 downLoad
             }

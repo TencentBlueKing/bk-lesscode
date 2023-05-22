@@ -1,6 +1,6 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
-        <bk-form-item :label="$t('form_函数类型')" property="funcType" class="func-form-item">
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
+        <lc-form-item :label="$t('form_函数类型')" property="funcType" class="func-form-item">
             <bk-radio-group
                 :value="form.funcType"
                 @change="(funcType) => updateValue({ funcType })"
@@ -20,8 +20,8 @@
                     ></i>
                 </bk-radio-button>
             </bk-radio-group>
-        </bk-form-item>
-        <bk-form-item
+        </lc-form-item>
+        <lc-form-item
             :label="$t('form_函数调用参数')"
             ref="funcParams"
             property="funcParams"
@@ -34,9 +34,9 @@
                 v-model="form.funcParams"
                 @change="(val) => tagChange('funcParams', val)">
             </dynamic-tag>
-        </bk-form-item>
+        </lc-form-item>
         <template v-if="form.funcType === 1">
-            <bk-form-item
+            <lc-form-item
                 label="API"
                 property="apiChoosePath"
                 error-display-type="normal"
@@ -48,8 +48,8 @@
                     :disabled="disabled"
                     @change="handleSelectApi"
                 ></choose-api>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 ref="funcApiUrl"
                 :label="$t('form_请求地址')"
                 property="funcApiUrl"
@@ -67,8 +67,8 @@
                     :disabled="disableEditUrl"
                     @change="(funcApiUrl) => updateValue({ funcApiUrl })"
                 ></bk-input>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 :label="$t('form_请求类型')"
                 property="funcMethod"
                 error-display-type="normal"
@@ -89,8 +89,8 @@
                         :name="apiMethodName">
                     </bk-option>
                 </bk-select>
-            </bk-form-item>
-            <bk-form-item property="withToken" class="func-form-item" v-if="showToken">
+            </lc-form-item>
+            <lc-form-item property="withToken" class="func-form-item" v-if="showToken">
                 <bk-checkbox
                     :true-value="1"
                     :false-value="0"
@@ -101,7 +101,7 @@
                     }"
                     @change="(withToken) => updateValue({ withToken })"
                 >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
-            </bk-form-item>
+            </lc-form-item>
             <bk-button
                 class="get-remote-response bk-form-item func-form-item"
                 size="small"
@@ -109,7 +109,7 @@
                 @click="getRemoteResponse"
                 v-enStyle="'left: 140px'"
             >{{ $t('获取接口返回数据') }}</bk-button>
-            <bk-form-item
+            <lc-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
                 :label="$t('form_请求参数')"
                 property="remoteParams"
@@ -122,8 +122,8 @@
                     :variable-list="variableList"
                     @change="(apiQuery) => updateValue({ apiQuery })"
                 ></query-params>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 v-else
                 :label="$t('form_请求参数')"
                 property="remoteParams"
@@ -137,8 +137,8 @@
                     @change="(apiBody) => updateValue({ apiBody })"
                 >
                 </body-params>
-            </bk-form-item>
-            <bk-form-item
+            </lc-form-item>
+            <lc-form-item
                 :label="$t('form_接口返回数据参数名')"
                 :label-width="$store.state.Language === 'en' ? 315 : 180"
                 ref="remoteParams"
@@ -152,7 +152,7 @@
                     v-model="form.remoteParams"
                     @change="(val) => tagChange('remoteParams', val)">
                 </dynamic-tag>
-            </bk-form-item>
+            </lc-form-item>
         </template>
         <bk-dialog
             width="1000"
@@ -165,7 +165,7 @@
                 :value="showFuncResponse.code"
             />
         </bk-dialog>
-    </bk-form>
+    </lc-form>
 </template>
 
 <script>

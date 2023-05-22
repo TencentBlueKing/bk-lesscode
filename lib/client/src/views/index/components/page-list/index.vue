@@ -45,7 +45,7 @@
                             :key="option.id"
                             :id="option.id"
                             :name="option.pageName">
-                            <span>{{option.pageName}}</span>
+                            <span class="page-collapse g-mr8 overflowhidden-oh" :title="option.pageName">{{option.pageName}}</span>
                             <i v-if="!option.nocodeType"
                                 class="bk-drag-icon bk-drag-copy"
                                 style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)"
@@ -315,4 +315,7 @@
             }
         }
     }
+    .page-collapse {
+            display: block;
+        }
 </style>

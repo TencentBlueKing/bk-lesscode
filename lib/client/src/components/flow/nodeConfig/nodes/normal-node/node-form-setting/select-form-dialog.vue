@@ -15,24 +15,42 @@
             <span>（{{ type === 'COPY_FORM' ? $t('引用') : $t('复用') }}{{$t('已有表单')}}）</span>
         </header>
         <div class="dialog-content" v-bkloading="{ isLoading: listLoading }">
+            <div class="search-area">
+                <bk-input
+                    v-model="searchStr"
+                    class="search-input"
+                    right-icon="icon-search"
+                    :clearable="true"
+                    :placeholder="$t('请输入表单名称')"
+                    @clear="handleSearch"
+                    @enter="handleSearch"
+                    @input="handleSearchInput">
+                </bk-input>
+            </div>
             <div style="margin-bottom: 16px; padding: 0 24px;">
                 <bk-alert type="warning" :closable="true" :title="tips"></bk-alert>
             </div>
             <div class="form-list-wrapper">
                 <div
-                    v-for="item in formList"
+                    v-for="item in listData"
+                    v-bk-tooltips="{
+                        disabled: !item.disabled,
+                        placement: 'top',
+                        content: $t('当前流程节点中已绑定表单不可复用')
+                    }"
                     :key="item.id"
-                    :class="['form-card-item', { 'selected': selected === item.id }]"
-                    @click="selected = item.id">
+                    :class="['form-card-item', { 'selected': selected === item.id, disabled: item.disabled }]"
+                    @click="handleSelect(item)">
                     <div class="selected-label"></div>
                     <span class="preview-btn" @click.stop="$emit('preview', JSON.parse(item.content))">{{ $t('预览') }}</span>
                     <p class="form-name">{{ item.formName }}</p>
                 </div>
                 <bk-exception
-                    v-if="formList.length === 0"
+                    v-if="listData.length === 0"
                     type="empty"
                     scene="part"
                     style="margin: 40px 0 80px;">
+                    {{ searchStr ? '暂无搜索结果' : '暂无数据' }}
                 </bk-exception>
             </div>
         </div>
@@ -43,6 +61,7 @@
     import cloneDeep from 'lodash.clonedeep'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
+    import { generateFieldKey } from '@/components/render-nocode/common/form'
 
     // 流程表单不支持的字段类型
     const FIELDS_NO_AVAILABLE_IN_PROCESS = ['DESC', 'DIVIDER', 'FORMULA', 'SERIAL', 'RATE']
@@ -57,8 +76,10 @@
         data () {
             return {
                 formList: [],
+                listData: [],
                 listLoading: true,
                 selected: '',
+                searchStr: '',
                 pending: false
             }
         },
@@ -90,16 +111,58 @@
                     versionId: this.versionId
                 }
                 const res = await this.$store.dispatch('nocode/form/getFormList', params)
-                // 过滤掉当前绑定到当前流程的表单，itsm对于同一个流程中，字段的key有唯一性校验
-                this.formList = res.filter(item => {
-                    const content = JSON.parse(item.content)
-                    return content[0]?.workflow_id !== this.workflowId
-                })
+                // 复用表单时，本流程已经绑定的表单不可以复用
+                if (this.type === 'USE_FORM') {
+                    const formIds = Object.values(JSON.parse(this.flowConfig.formIds || '{}'))
+                    res.forEach(item => {
+                        if(formIds.includes(item.id)) {
+                            item.disabled = true
+                        }
+                    })
+                }
+                this.formList = res
+                this.listData = [...res]
                 this.listLoading = false
             },
+            handleSelect (form) {
+                if (form.disabled) {
+                    return
+                }
+                this.selected = form.id
+            },
+            handleSearchInput () {
+                if (!this.searchStr) {
+                    this.handleSearch()
+                }
+            },
+            handleSearch () {
+                if (this.searchStr) {
+                    this.listData = this.formList.filter(item => item.formName.toLowerCase().includes(this.searchStr.toLowerCase()))
+                } else {
+                    this.listData = this.formList.slice(0)
+                }
+            },
+            // 引用表单替换字段Key以及columnId
+            getCopiedFields (content) {
+                const fields = JSON.parse(content)
+                const keysMap = {}
+                fields.forEach(field => {
+                    const columnId = uuid(8)
+                    const newKey = generateFieldKey(field.name, columnId)
+                    keysMap[field.key] = newKey
+                    field.key = newKey
+                    field.columnId = columnId
+                })
+                let fieldsStr = JSON.stringify(fields)
+                Object.keys(keysMap).forEach(key => {
+                    const reg = new RegExp(`"${key}"`, 'g')
+                    fieldsStr = fieldsStr.replace(reg, `"${keysMap[key]}"`)
+                })
+                return JSON.parse(fieldsStr)
+            },
             // 表单字段保存到itsm
-            saveItsmFields (content) {
-                const fields = content.map(item => {
+            saveItsmFields (fields) {
+                const transformedFields = fields.map(item => {
                     const field = cloneDeep(item)
                     field.id = null // itsm新建的字段需要传null
                     if (field.source_type === 'WORKSHEET') {
@@ -114,7 +177,7 @@
                     return field
                 })
                 const params = {
-                    fields,
+                    fields: transformedFields,
                     state_id: this.nodeData.id,
                     delete_ids: []
                 }
@@ -159,7 +222,8 @@
                 this.pending = true
                 try {
                     const { id, formName, tableName: code, content } = form
-                    const itsmFields = await this.saveItsmFields(JSON.parse(content))
+                    const fieldsToBeSubmitted = this.type === 'COPY_FORM' ? this.getCopiedFields(content) : JSON.parse(content)
+                    const itsmFields = await this.saveItsmFields(fieldsToBeSubmitted)
                     const fields = []
                     itsmFields.forEach(field => {
                         if (this.nodeData.is_first_state && field.id === this.nodeData.fields[0]) {
@@ -192,10 +256,10 @@
                     this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
                     this.$store.commit('nocode/nodeConfig/setInitialFieldIds', fields)
                     const fieldIds = fields.map(field => field.id)
-                    await this.updateItsmNode(res.formId, fieldIds)
+                    const nodeConfig = await this.updateItsmNode(res.formId, fieldIds)
+                    this.$store.commit('nocode/nodeConfig/setNodeData', nodeConfig)
                     await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 0 })
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 0 })
-                    this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0, deployed: 0 })
 
                     this.$bkMessage({
                         message: '表单配置关联数据表成功',
@@ -265,6 +329,13 @@
             padding-left: 0;
             padding-right: 0;
         }
+        .search-area {
+            padding: 0 24px 10px;
+            text-align: right;
+            .search-input {
+                width: 240px;
+            }
+        }
         .form-list-wrapper {
             padding: 0 24px;
             display: flex;
@@ -298,6 +369,12 @@
                 .selected-label {
                     display: block;
                 }
+            }
+            &.disabled {
+                cursor: not-allowed;
+                color: #cccccc;
+                background-color: #fafbfd;
+                border-color: #dcdee5;
             }
             .selected-label {
                 display: none;
