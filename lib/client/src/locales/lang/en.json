@@ -3765,5 +3765,7 @@
   "请输入应用名称，20个字符以内": "Please enter the application name, within 20 characters",
   "存在未保存的变量，关闭后不会保存更改": "There are unsaved variables, changes will not be saved after closing",
   "存在未保存的版本，关闭后不会保存更改": "There is an unsaved version, changes will not be saved after closing",
-  "存在未保存的自定义组件，关闭后不会保存更改": "There are unsaved custom components, changes will not be saved after closing"
+  "存在未保存的自定义组件，关闭后不会保存更改": "There are unsaved custom components, changes will not be saved after closing",
+  "确认离开当前页？": "Confirm to leave current page?",
+  "离开将会导致未保存信息丢失": "Leaving will result in loss of unsaved information"
 }
