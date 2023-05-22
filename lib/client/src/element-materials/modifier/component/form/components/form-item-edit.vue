@@ -10,21 +10,21 @@
 -->
 
 <template>
-    <bk-sideslider
+    <lc-sideslider
         :is-show="isShow"
         :title="title"
         :width="696"
-        :before-close="beforeClose"
         :quick-clos="true"
+        @update:isShow="close()"
         ext-cls="form-item-edit">
         <section slot="content" class="item-container">
             <div class="form-item-title">{{ $t('基本信息') }}</div>
-            <bk-form
+            <lc-form
                 ref="operation"
                 :model="formItemData"
                 :rules="rules"
                 :label-width="100">
-                <bk-form-item
+                <lc-form-item
                     :label="$t('form_字段名称')"
                     required
                     property="property"
@@ -32,15 +32,15 @@
                     <bk-input
                         v-model="formItemData.property"
                         :placeholder="$t('以英文字符、下划线开头；只允许英文字符、数字、下划线、和 -')" />
-                </bk-form-item>
-                <bk-form-item
+                </lc-form-item>
+                <lc-form-item
                     label="Label"
                     required
                     property="label"
                     error-display-type="normal">
                     <bk-input v-model="formItemData.label" />
-                </bk-form-item>
-                <bk-form-item
+                </lc-form-item>
+                <lc-form-item
                     :label="$t('form_表单项类型')"
                     error-display-type="normal">
                     <bk-select v-model="formItemData.type">
@@ -50,7 +50,7 @@
                             :name="`${item.id}(${item.name})`"
                             :key="item.id" />
                     </bk-select>
-                </bk-form-item>
+                </lc-form-item>
                 <div v-if="isShow" style="margin: 30px 0">
                     <form-item-validate
                         :default-value="formItemData.validate"
@@ -71,13 +71,14 @@
                         @click="beforeClose">
                         {{ $t('取消') }} </bk-button>
                 </div>
-            </bk-form>
+            </lc-form>
         </section>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
     import formItemValidate from './form-item-validate'
+    import { leaveConfirm } from '@/common/leave-confirm'
     export default {
         components: {
             formItemValidate
@@ -143,22 +144,9 @@
                     this.formItemData = {
                         ...this.defaultValue
                     }
-                    // 重置编辑状态
-                    setTimeout(() => {
-                        this.changeAlert = false
-                    })
                 },
                 immdite: true
-            },
-            formItemData: {
-                handler () {
-                    this.changeAlert = true
-                },
-                deep: true
             }
-        },
-        created () {
-            this.changeAlert = false
         },
         methods: {
             handleSave () {
@@ -177,17 +165,10 @@
                 })
             },
             beforeClose () {
-                if (this.changeAlert) {
-                    this.$bkInfo({
-                        subTitle: this.$t('弹窗关闭后未保存的数据将会丢失，请确认关闭'),
-                        okText: this.$t('确认'),
-                        cancelText: this.$t('取消'),
-                        closeIcon: false,
-                        confirmFn: this.close
+                leaveConfirm(this.$t('弹窗关闭后未保存的数据将会丢失，请确认关闭'))
+                    .then(() => {
+                        this.close()
                     })
-                    return
-                }
-                this.close()
             }
         }
     }

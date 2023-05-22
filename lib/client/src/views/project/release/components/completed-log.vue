@@ -2,7 +2,7 @@
     <section>
         <bk-sideslider
             :is-show.sync="isShow"
-            :quick-close="false"
+            :quick-close="true"
             :title="$t('部署日志')"
             :width="920"
             :before-close="handleClose"
