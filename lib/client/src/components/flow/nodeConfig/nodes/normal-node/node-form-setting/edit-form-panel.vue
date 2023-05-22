@@ -192,7 +192,8 @@
                     const res = await this.saveFormConfig()
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
                     this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
-                    await this.updateItsmNode(this.formConfig.id)
+                    const nodeConfig = await this.updateItsmNode(this.formConfig.id)
+                    this.$store.commit('nocode/nodeConfig/setNodeData', nodeConfig)
                     await this.updateFormName()
                     this.$bkMessage({
                         message: '表单保存成功，表单配置关联数据表变更成功',

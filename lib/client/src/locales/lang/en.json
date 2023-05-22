@@ -592,6 +592,8 @@
   "引用已有表单：引用已有表单快速建表，运行时节点数据不会存入被引用的表中，字段属性可自定义": "Reference the existing form: refer to the existing form to quickly create a table, the node data will not be stored in the referenced table at runtime, and the field attributes can be customized",
   "表单配置": "Form Configuration",
   "表单预览": "Form Preview",
+  "当前流程节点中已绑定表单不可复用": "The bound form in the current process node cannot be reused",
+  "请输入表单名称": "Enter the form name",
   "请选择已有表单": "Select an existing form",
   "请选择表单": "Select a form",
   "任一处理人完成审批即可": "Any processor can complete the approval",
