@@ -41,7 +41,7 @@
         defineComponent,
         PropType,
         watch,
-        getCurrentInstance
+        nextTick
     } from '@vue/composition-api'
 
     interface IKey {
@@ -74,8 +74,6 @@
         },
 
         setup (props, { emit }) {
-            const instance = getCurrentInstance()
-
             const changeParams = (key, value) => {
                 triggerUpdata({
                     ...props.value,
@@ -89,18 +87,25 @@
 
             watch(
                 () => props.options,
-                () => {
-                    let value = props.keys.reduce((acc, cur) => {
-                        acc[cur.id] = props.options.includes(props.value[cur.id]) && props.value[cur.id]
-                            ? props.value[cur.id]
-                            : props.options?.[0]
-                        return acc
-                    }, {})
-                    // 未展示状态下，不需要设置key
-                    if ((instance.proxy?.$el as HTMLElement)?.style?.display === 'none') {
-                        value = {}
-                    }
-                    triggerUpdata(value)
+                (options) => {
+                    nextTick(() => {
+                        let valueChanged = false
+                        const value = Object.keys(props.value).reduce((acc, cur) => {
+                            const val = props.value[cur]
+                            if (options.includes(val)) {
+                                acc[cur] = val
+                            } else {
+                                // 因数据变化导致值置空的情况，需要update
+                                if (val) {
+                                    valueChanged = true
+                                }
+                            }
+                            return acc
+                        }, {})
+                        if (valueChanged) {
+                            triggerUpdata(value)
+                        }
+                    })
                 }
             )
 
