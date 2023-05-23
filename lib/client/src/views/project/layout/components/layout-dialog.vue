@@ -152,7 +152,7 @@
                 return this.$route.params.projectId
             },
             routePrepend () {
-                return this.selectedLayout.layoutType === 'MOBILE' ? '/mobile/' : '/'
+                return this.selectedLayout?.layoutType === 'MOBILE' ? '/mobile/' : '/'
             },
             realRoutePath () {
                 return this.routePrepend + this.dialog.formData.routePath.replace(/^\/+|\/+$/g, '')
