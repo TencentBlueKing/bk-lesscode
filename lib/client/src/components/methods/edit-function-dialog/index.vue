@@ -53,6 +53,7 @@
                     ></bk-input>
 
                     <vue-draggable
+                        v-if="isSearchResult"
                         tag="ul"
                         class="scroll-main group-list"
                         handle=".bk-drag-grag-fill"
@@ -78,6 +79,7 @@
                             />
                         </render-group>
                     </vue-draggable>
+                    <empty-status v-else :type="emptyType" :part="false" @clearSearch="handlerClearType"></empty-status>
                 </section>
                 <edit-func-form
                     ref="functionForm"
@@ -133,7 +135,8 @@
                 isLoading: false,
                 groupList: [],
                 renderGroupList: [],
-                chosenFunction: {}
+                chosenFunction: {},
+                emptyType: 'noData'
             }
         },
 
@@ -142,6 +145,10 @@
 
             projectId () {
                 return parseInt(this.$route.params.projectId)
+            },
+            isSearchResult () {
+                const results = this.renderGroupList.filter(groupList => groupList.children.length > 0)
+                return results.length > 0
             }
         },
 
@@ -193,6 +200,7 @@
             },
 
             handleFilterFunction () {
+                this.emptyType = this.searchString?.trim() ? 'search' : 'noData'
                 const searchReg = new RegExp(this.searchString?.trim(), 'i')
                 this.renderGroupList = this.groupList.reduce((groupList, group) => {
                     const children = group.children.filter((functionData) => searchReg.test(functionData.funcName))
@@ -356,6 +364,11 @@
                 setTimeout(() => {
                     this.$refs[refName]?.$refs?.input?.focus()
                 }, 0)
+            },
+
+            handlerClearType () {
+                this.searchString = ''
+                this.handleFilterFunction()
             }
         }
     }
