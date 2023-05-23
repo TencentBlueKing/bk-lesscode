@@ -24,7 +24,7 @@
             </div>
             <div :class="$style['buttons']">
                 <span v-if="codeType === 'code'" :class="$style['with-nav']">
-                    <bk-switcher :value="withNav" size="small" @change="switchWithNav" style="margin-right: 10px;" />
+                    <bk-switcher :value="withNav" theme="primary" size="small" @change="switchWithNav" style="margin-right: 10px;" />
                     {{ withNav ? '不包含导航源码' : '包含导航源码' }}
                 </span>
                 <i v-bk-tooltips="{ boundary: 'window', content: `复制${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>

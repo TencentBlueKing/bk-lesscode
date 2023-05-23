@@ -1,12 +1,14 @@
 <template>
     <div class="drag-group-box" :class="{ 'fold-box': isFolded }">
-        <div class="group-name" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
-            <i
-                class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
-                :class="{
-                    floded: isFolded
-                }" />
-            <span>{{ groupName }}</span>
+        <div class="group-name" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
+            <section style="display: flex" @click="handleToggle">
+                <i
+                    class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                    :class="{
+                        floded: isFolded
+                    }" />
+                <span>{{ groupName }}</span>
+            </section>
             <div v-if="$slots.tag">
                 <slot name="tag" />
             </div>

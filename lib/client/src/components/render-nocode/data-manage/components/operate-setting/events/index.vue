@@ -3,7 +3,7 @@
         <section class="choose-function">
             <div class="event-title">
                 <span class="event-name" v-bk-tooltips="'点击组件时调用该事件函数'">click</span>
-                <bk-switcher :value="eventConfig.enable" size="small" @change="handleEventConfigChange($event, 'enable')"></bk-switcher>
+                <bk-switcher :value="eventConfig.enable" theme="primary" size="small" @change="handleEventConfigChange($event, 'enable')"></bk-switcher>
             </div>
             <bk-select :value="eventConfig.name" placeholder="请选择函数" @selected="handleEventConfigChange($event, 'name')">
                 <bk-option

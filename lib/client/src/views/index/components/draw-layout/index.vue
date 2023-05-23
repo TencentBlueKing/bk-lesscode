@@ -168,7 +168,7 @@
             }
         }
         .collapsed-left-btn{
-            left: 340px;
+            left: 342px;
             border-radius: 0 8px 8px 0;
             :global(.bk-drag-angle-left) {
                 transform: rotate(0deg);

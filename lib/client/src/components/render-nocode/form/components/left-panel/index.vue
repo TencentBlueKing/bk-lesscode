@@ -366,7 +366,7 @@
       line-height: 32px;
       padding: 0 10px;
       color: #63656E;
-      font-size: 14px;
+      font-size: 12px;
       .text {
         @mixin ellipsis 100%;
         em {

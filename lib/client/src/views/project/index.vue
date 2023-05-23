@@ -178,6 +178,7 @@
                 this.updateCurrentVersion(this.getInitialVersion())
                 bus.$on('update-project-version', this.updateCurrentVersion)
                 bus.$on('update-project-info', this.updateProjectInfo)
+                bus.$on('set-menu-active', this.setDefaultActive)
                 bus.$on('is-fold-aside', ({ isFold = false, showMenuFooter = true }) => {
                     this.asideFolded = isFold
                     this.showMenuFooter = showMenuFooter
@@ -247,6 +248,8 @@
                 await this.setCurrentProject()
             },
             setDefaultActive () {
+                this.defaultActive = ''
+                // console.log('enter setactive', this.defaultActive)
                 let name = this.$route.name
                 
                 // 数据源管理子页面，左侧数据源管理依然高亮选中

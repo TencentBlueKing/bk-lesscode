@@ -12,15 +12,15 @@
 <template>
     <div class="modifier-style" :class="{ 'no-padding': isFolded }">
         <div class="style-group-box">
-            <div class="ui-group-name" @click="handleToggle">
-                <template>
+            <div class="ui-group-name">
+                <section @click="handleToggle">
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                         :class="{
                             floded: isFolded
                         }" />
                     <span>{{ title }}</span>
-                </template>
+                </section>
                 <div class="operate-icon">
                     <slot name="header" />
                 </div>

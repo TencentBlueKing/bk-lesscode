@@ -19,18 +19,20 @@
             :describe="describe"
             @change="handleVariableFormatChange">
             <template v-slot:title>
-                <div class="prop-name" @click="toggleShowProp">
-                    <i
-                        :class="{
-                            'bk-icon icon-angle-down': true,
-                            close: !isShowProp
-                        }"
-                    ></i>
-                    <span
-                        :class="{ label: describe.tips }"
-                        v-bk-tooltips="introTips">
-                        {{ displayName }}
-                    </span>
+                <div class="prop-name">
+                    <section class="icon-and-name" @click="toggleShowProp">
+                        <i
+                            :class="{
+                                'bk-icon icon-angle-down': true,
+                                close: !isShowProp
+                            }"
+                        ></i>
+                        <span
+                            :class="{ label: describe.tips }"
+                            v-bk-tooltips="introTips">
+                            {{ displayName }}
+                        </span>
+                    </section>
                 </div>
             </template>
 
@@ -721,10 +723,13 @@
             align-items: center;
             border-top: 1px solid #EAEBF0;
             cursor: pointer;
+            .icon-and-name {
+                display: flex;
+                max-width: calc(100% - 65px);
+            }
             .label {
                 border-bottom: 1px dashed #313238;
                 cursor: pointer;
-                max-width: calc(100% - 65px);
                 line-height: 19px;
                 display: inline-block;
             }

@@ -12,6 +12,7 @@
                     :class="[`form-component ${field.type}`, 'style-setting']"
                     v-model.trim="renderValue[field.id]"
                     @valueChange="handleConfirm"
+                    @refreshData="refreshData"
                 >
                 </page-router-select>
             </style-item>
@@ -111,7 +112,6 @@
         },
         methods: {
             async handleConfirm (key, value) {
-                console.log(key, value, 'routeupdate')
                 if (key === 'layoutId') {
                     this.$bkInfo({
                         title: '确认修改？',
@@ -125,6 +125,10 @@
                 }
 
                 this.handleConfirmSave(key, value)
+            },
+
+            async refreshData () {
+                await this.fetchData()
             },
 
             async handleConfirmSave (key, value) {
@@ -153,26 +157,28 @@
                     }
                     await this.$store.dispatch('route/updatePageRoute', { data })
                 
-                    await Promise.all([
-                        // this.fetchData(),
-                        this.$store.dispatch('page/getPageSetting', {
-                            pageId: this.page.id,
-                            projectId: this.projectId,
-                            versionId: this.versionId
-                        }),
-                        // 导航模板切换后需要获取当前模板的导航数据，并更新更新本地curTemplateData
-                        this.$store.dispatch('layout/getPageLayout', { pageId: this.page.id }),
-                        this.$store.dispatch('route/getProjectPageRoute', {
-                            projectId: this.projectId,
-                            versionId: this.versionId
-                        })
-                    ])
+                    await this.fetchData()
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',
                         message: err.message || err
                     })
                 }
+            },
+            fetchData () {
+                return Promise.all([
+                    this.$store.dispatch('page/getPageSetting', {
+                        pageId: this.page.id,
+                        projectId: this.projectId,
+                        versionId: this.versionId
+                    }),
+                    // 导航模板切换后需要获取当前模板的导航数据，并更新更新本地curTemplateData
+                    this.$store.dispatch('layout/getPageLayout', { pageId: this.page.id }),
+                    this.$store.dispatch('route/getProjectPageRoute', {
+                        projectId: this.projectId,
+                        versionId: this.versionId
+                    })
+                ])
             }
         }
     }

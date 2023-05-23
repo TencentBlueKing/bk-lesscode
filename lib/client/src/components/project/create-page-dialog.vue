@@ -355,7 +355,6 @@
             },
             handleDialogCancel () {
                 this.isShow = false
-                this.$emit('closeDialog')
             },
             handleDialogToggle () {
                 if (this.isShow) {
@@ -371,6 +370,8 @@
                         Object.assign(this.formData, this.initPageData)
                     }
                     this.initData()
+                } else {
+                    this.$emit('closeDialog')
                 }
             },
             handleLayoutChecked (layout) {

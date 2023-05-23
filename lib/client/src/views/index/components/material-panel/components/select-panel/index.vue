@@ -34,7 +34,7 @@
                     },
                     {
                         key: 'icon',
-                        tips: 'Icon',
+                        tips: '图标',
                         icon: 'bk-icon icon-smile-shape'
                     },
                     {

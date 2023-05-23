@@ -101,26 +101,32 @@
 
                 // 解析styles配置，是否支持width、height配置
                 const styleConfig = componentData.material.styles || []
+                const isChartType = componentData?.type === 'chart' || componentData?.type === 'bk-charts'
                 let resizeWidthEnabel = false
                 let resizeHeightEnable = false
-                styleConfig.forEach(styleItem => {
-                    if (styleItem === 'size') {
-                        resizeWidthEnabel = true
-                        resizeHeightEnable = true
-                        return
-                    }
-                    if (styleItem.name === 'size') {
-                        if (styleItem.include) {
-                            resizeWidthEnabel = styleItem.include.includes('width')
-                            resizeHeightEnable = styleItem.include.includes('height')
+                if (isChartType) {
+                    resizeWidthEnabel = true
+                    resizeHeightEnable = true
+                } else {
+                    styleConfig.forEach(styleItem => {
+                        if (styleItem === 'size') {
+                            resizeWidthEnabel = true
+                            resizeHeightEnable = true
+                            return
                         }
-                        if (styleItem.exclude) {
-                            resizeWidthEnabel = !styleItem.exclude.includes('width')
-                            resizeHeightEnable = !styleItem.exclude.includes('height')
+                        if (styleItem.name === 'size') {
+                            if (styleItem.include) {
+                                resizeWidthEnabel = styleItem.include.includes('width')
+                                resizeHeightEnable = styleItem.include.includes('height')
+                            }
+                            if (styleItem.exclude) {
+                                resizeWidthEnabel = !styleItem.exclude.includes('width')
+                                resizeHeightEnable = !styleItem.exclude.includes('height')
+                            }
                         }
-                    }
-                })
-
+                    })
+                }
+                
                 const {
                     top: containerTop,
                     left: containerLeft,
@@ -142,15 +148,17 @@
                         left: `${right - halfDotSize - containerLeft}px`,
                         cursor: 'col-resize'
                     })
-                    // 100% 宽度按钮的位置
-                    let fullWidthBtnLeft = right - containerLeft + actionBtnOffset
-                    if (right + 20 >= containerRight) {
-                        fullWidthBtnLeft = right - containerLeft - (actionBtnSize + actionBtnOffset)
+                    if (!isChartType) {
+                        // 100% 宽度按钮的位置
+                        let fullWidthBtnLeft = right - containerLeft + actionBtnOffset
+                        if (right + 20 >= containerRight) {
+                            fullWidthBtnLeft = right - containerLeft - (actionBtnSize + actionBtnOffset)
+                        }
+                        state.fullWidthStyles = Object.assign({}, dotBaseStyle, {
+                            top: `${top - containerTop + height / 2 - actionBtnSize / 2}px`,
+                            left: `${fullWidthBtnLeft}px`
+                        })
                     }
-                    state.fullWidthStyles = Object.assign({}, dotBaseStyle, {
-                        top: `${top - containerTop + height / 2 - actionBtnSize / 2}px`,
-                        left: `${fullWidthBtnLeft}px`
-                    })
                 }
                 if (resizeHeightEnable) {
                     state.dotHeightStyles = Object.assign({}, dotBaseStyle, {
@@ -160,11 +168,13 @@
                     })
                     // 高度自适应的按钮
                     // free-layout 不支持该功能，必须给定 height
-                    if (!isFreeLayoutProperty(componentData.type)) {
-                        state.autoHeightStyles = Object.assign({}, dotBaseStyle, {
-                            top: `${top + height - containerTop + actionBtnOffset}px`,
-                            left: `${left - containerLeft + width / 2 - actionBtnSize / 2}px`
-                        })
+                    if (!isChartType) {
+                        if (!isFreeLayoutProperty(componentData.type)) {
+                            state.autoHeightStyles = Object.assign({}, dotBaseStyle, {
+                                top: `${top + height - containerTop + actionBtnOffset}px`,
+                                left: `${left - containerLeft + width / 2 - actionBtnSize / 2}px`
+                            })
+                        }
                     }
                 }
 

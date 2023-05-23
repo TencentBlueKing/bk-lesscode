@@ -15,6 +15,7 @@
         :placeholder="placeholder"
         v-model.trim="syncValue"
         v-bind="field.props"
+        @toggle="toggleSelect"
         @change="(value) => $emit('valueChange', field.id, value)"
     >
         <slot-component
@@ -81,6 +82,11 @@
                     }
                 })
                 window.open(route.href, '_blank')
+            },
+            toggleSelect (isShow) {
+                if (isShow) {
+                    this.$emit('refreshData')
+                }
             }
         }
     }

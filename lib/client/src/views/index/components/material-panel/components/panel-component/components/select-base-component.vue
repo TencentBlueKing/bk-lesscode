@@ -60,13 +60,13 @@
                             key: 'bk',
                             name: 'BKUI-VUE2',
                             type: 'Vue',
-                            tooltip: '当前组件库版本为“2.4.15，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                            tooltip: '当前组件库版本为“2.4.14，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog?anchor=2.4.14" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         },
                         {
                             key: 'element',
                             name: 'Element UI',
                             type: 'Vue',
-                            tooltip: '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                            tooltip: '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases/tag/v2.15.1" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
                         }
                     ],
                     MOBILE: [{

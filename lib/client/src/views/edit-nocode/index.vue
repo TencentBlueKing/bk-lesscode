@@ -40,12 +40,12 @@
 </template>
 <script>
     import LC from '@/element-materials/core'
+    import { bus } from '@/common/bus'
     import { mapGetters } from 'vuex'
     import PageList from '../index/components/page-list'
     import PageOperate from './components/header-operate'
     import ActionTool from './components/action-tool'
     import OperationArea from './components/operation-area'
-    import MoreActions from './components/more-actions/index'
     import PreviewMixin from './preview-mixin'
 
     export default {
@@ -54,8 +54,7 @@
             PageList,
             PageOperate,
             ActionTool,
-            OperationArea,
-            MoreActions
+            OperationArea
         },
         mixins: [PreviewMixin],
         data () {
@@ -99,6 +98,9 @@
                 subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
                 confirmFn: async () => {
                     next()
+                },
+                cancelFn: () => {
+                    bus.$emit('set-munu-active')
                 }
             })
         },
@@ -139,7 +141,6 @@
                         versionId: this.versionId,
                         effectiveRange: 0
                     })
-                    // console.log(pageDetail)
                     this.$store.commit('page/setPageDetail', pageDetail || {})
                     this.$store.commit('page/setPageList', pageList || [])
                     this.$store.commit('project/setCurrentProject', projectDetail || {})
