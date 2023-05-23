@@ -68,9 +68,10 @@
                 @change="handleValueTypeChange"
             >
                 <bk-radio-button
-                    :value="type"
                     v-for="type in describe.type"
-                    :key="type">
+                    :value="type"
+                    :key="type"
+                >
                     {{ type | renderTypeText }}
                 </bk-radio-button>
             </bk-radio-group>
@@ -84,7 +85,8 @@
             :slot-config="describe"
             :type="formData.valueType"
             :change="handleCodeChange"
-            @option-change="(val) => handleSlotChange('keyOptions', val)" />
+            @option-change="(val) => handleSlotChange('keyOptions', val)"
+        />
         <select-key
             v-show="describe.keys && describe.keys.length && formData.valueType !== describe.type[0]"
             :keys="describe.keys"
