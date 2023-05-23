@@ -750,6 +750,7 @@
   "不保存则会丢失当前数据": "If you do not save, the current data will be lost",
   "不能创建相同名字的分类": "Cannot create a category with the same name",
   "保存并切换": "Save and toggle",
+  "函数名称": "Function name",
   "table_函数名称": "Function name",
   "form_函数名称": "Function name",
   "函数管理": "Function Manage",
