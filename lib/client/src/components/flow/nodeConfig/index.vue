@@ -2,7 +2,7 @@
     <div class="node-config-panel" v-bkloading="{ isLoading: nodeDetailLoading }">
         <div class="header-wrapper">
             <bk-button size="small" @click="handleClose">{{ $t('返回') }}</bk-button>
-            <h3 class="config-title">{{ typeName }}{{ $t('配置')}}</h3>
+            <h3 class="config-title">{{ $t('{n}配置',{ n: typeName })}}</h3>
         </div>
         <div class="config-content-wrapper">
             <component

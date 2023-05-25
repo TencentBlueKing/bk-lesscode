@@ -534,7 +534,7 @@
                 const loadingIcon = info.status === 'running' ? ` <svg aria-hidden="true" width="12" height="12" class="${this.$style['loading-rotate']}"><use xlink:href="#bk-drag-loading-2"></use></svg>` : ''
 
                 if (type === 'last') {
-                    return window.i18n.t('{0}，版本{1}，由 {2} 于 {3}', [env, info.version, createUser, time]) + `<span style="color: ${statusColor}">${status}${loadingIcon}</span>'`
+                    return window.i18n.t('{0}，版本{1}，由 {2} 于 {3}', [env, info.version, createUser, time]) + `<span style="color: ${statusColor}"> ${status}${loadingIcon}</span>`
                 } else {
                     return window.i18n.t('由 {0} 于 {1} {2}', [createUser, time, status])
                 }
