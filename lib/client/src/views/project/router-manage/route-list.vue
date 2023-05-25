@@ -586,7 +586,7 @@
                 }
             },
             getDisplayLayoutPath (path) {
-                return this.type === 'MOBILE' && path.startsWith('/mobile') ? path.replace('/mobile', '') : path
+                return this.type === 'MOBILE' && path.includes('/mobile/') ? path.replace('/mobile', '') : path
             },
             getBindDisplayValue (route) {
                 const { pageId, pageName, redirect, path } = route
@@ -678,10 +678,6 @@
         position: relative;
         height: 36px;
         line-height: 36px;
-
-        & + .route-group {
-            margin-left: 66px;
-          }
 
         &:hover {
              background: #E1ECFF;
