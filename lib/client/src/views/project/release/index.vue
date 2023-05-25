@@ -7,8 +7,8 @@
         </section>
         <section v-else>
             <div class="release-page-tab">
-                <div class="tab-item" :class="{ active: page === 'publish' }" @click="handlePage('publish')">{{ $t('发布部署') }}</div>
-                <div class="tab-item" :class="{ active: page === 'history' }" @click="handlePage('history')">{{ $t('部署历史') }}</div>
+                <div class="tab-item" :class="{ active: page === 'publish' }" @click="handlePage('publish')">{{ $t('abbr_发布部署') }}</div>
+                <div class="tab-item" :class="{ active: page === 'history' }" @click="handlePage('history')">{{ $t('abbr_部署历史') }}</div>
                 <!-- <div class="tab-item" :class="{ active: page === 'package' }" @click="handlePage('package')">版本包管理</div> -->
             </div>
             <section class="release-page-content">

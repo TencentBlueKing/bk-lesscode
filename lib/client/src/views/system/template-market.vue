@@ -44,6 +44,8 @@
                                             auth="create_app_with_template"
                                             @click="handleApply(project)"
                                             style="margin-left: 7px;width: 106px"
+                                            v-enClass="'en-btn-title'"
+                                            :title="$t('创建为新应用')"
                                             :permission="iamNoResourcesPerm[$IAM_ACTION.create_app_with_template[0]]">
                                             {{ $t('创建为新应用') }} </auth-button>
                                         <auth-button
@@ -56,6 +58,8 @@
                                             auth="download_app_template_source"
                                             @click="handleDownloadProject(project)"
                                             style="margin-left: 10px;width: 76px"
+                                            v-enClass="'en-btn-title'"
+                                            :title="$t('下载源码')"
                                             :permission="iamNoResourcesPerm[$IAM_ACTION.download_app_template_source[0]]">
                                             {{ $t('下载源码') }} </auth-button>
                                     </div>
@@ -63,7 +67,8 @@
                                 <div class="item-ft">
                                     <div class="col">
                                         <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
-                                        <div class="stat">{{$t('由') + (project.createUser || 'admin') + $t('上传')}}</div>
+                                        <div class="stat"> {{$t('由 {0} 上传',[project.createUser || 'admin'])}}</div>
+                                       
                                     </div>
                                 </div>
                                 <span class="favorite-btn">
@@ -123,7 +128,7 @@
                                             </span>
                                             <div class="name" :title="page.templateName">{{page.templateName}}</div>
                                         </div>
-                                        <div class="stat">{{$t('由') + (page.createUser || 'admin') + $t('上传')}}</div>
+                                        <div class="stat">{{$t('由 {0} 上传',[page.createUser || 'admin'])}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -148,8 +153,8 @@
             ext-cls="project-create-dialog"
             @value-change="handleProjectDialogToggle">
             <div class="selected-project">{{ $t('已选模板：{0}', [dialog.project.templateName]) }}</div>
-            <bk-form ref="createForm" :label-width="86" :rules="dialog.project.formRules" :model="dialog.project.formData">
-                <bk-form-item :label="$t('应用名称')" required property="projectName" error-display-type="normal">
+            <bk-form ref="createForm" :label-width="$store.state.Language === 'en' ? 100 : 86" :rules="dialog.project.formRules" :model="dialog.project.formData">
+                <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.project.formData.projectName"
                         :placeholder="$t('请输入应用名称，60个字符以内')">
                     </bk-input>
@@ -159,7 +164,7 @@
                         :placeholder="$t('只能由小写字母组成，该ID将作为自定义组件前缀，创建后不可更改')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('应用简介')" required property="projectDesc" error-display-type="normal">
+                <bk-form-item :label="$t('form_应用简介')" required property="projectDesc" error-display-type="normal">
                     <bk-input
                         v-model.trim="dialog.project.formData.projectDesc"
                         :type="'textarea'"
