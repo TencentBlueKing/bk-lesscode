@@ -129,6 +129,7 @@
                         })
                         this.messageSuccess(window.i18n.t('版本创建成功'))
                     }
+                    window.leaveConfirm = false
                     this.$emit('updated')
                     this.$emit('update:isShow', false)
                 } catch (error) {

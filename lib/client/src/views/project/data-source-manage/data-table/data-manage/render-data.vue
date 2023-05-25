@@ -495,6 +495,7 @@
                 const sql = dataParse.set(dataJsonParser).export(dataSqlParser)
 
                 return modifyOnlineDb(sql).then((res) => {
+                    window.leaveConfirm = false
                     close()
                     getDataList()
                     return res
@@ -603,6 +604,7 @@
                 // sql 导入则直接执行 sql 语法
                 if (fileType === DATA_FILE_TYPE.SQL) {
                     return modifyOnlineDb(data.content).then((results) => {
+                        window.leaveConfirm = false
                         close()
                         getDataList()
                         handleImportSuccessMessage(results)

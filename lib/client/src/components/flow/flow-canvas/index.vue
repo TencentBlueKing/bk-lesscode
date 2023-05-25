@@ -594,6 +594,7 @@
                     const index = this.canvasData.lines.findIndex(item => item.lineInfo.id === this.lineConfig.id)
                     this.canvasData.lines.splice(index, 1)
                     this.hanldeLineConfigPanelClose()
+                    window.leaveConfirm = false
                 } catch (e) {
                     console.error(e)
                 } finally {
