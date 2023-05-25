@@ -96,6 +96,7 @@
             if (this.hasEdit) {
                 bkInfoBox({
                     title: window.i18n.t('确认离开当前页面？'),
+                    toText: window.i18n.t('离开'),
                     subTitle: window.i18n.t('当前页面内容未保存，离开修改的内容将会丢失'),
                     confirmFn,
                     cancelFn

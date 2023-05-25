@@ -750,6 +750,7 @@
   "不保存则会丢失当前数据": "If you do not save, the current data will be lost",
   "不能创建相同名字的分类": "Cannot create a category with the same name",
   "保存并切换": "Save and toggle",
+  "函数名称": "Function name",
   "table_函数名称": "Function name",
   "form_函数名称": "Function name",
   "函数管理": "Functions",
@@ -3776,5 +3777,7 @@
   "abbr_部署历史": "Historys",
   "请输入组件名称搜索": "Please enter component name to search",
   "请输入关键词搜索": "Please enter keywords to search",
-  "人员选择": "Personnel selection"
+  "人员选择": "Personnel Selection",
+  "表单保存成功，表单配置关联数据表变更成功": "The form is saved successfully, and the associated data table of the form configuration is changed successfully",
+  "导航类型": "Navigation Type"
 }

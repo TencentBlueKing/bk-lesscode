@@ -348,6 +348,7 @@
                                     if (this.pageId) {
                                         params.pageCode = this.pageDetail.pageCode
                                     }
+                                    window.leaveConfirm = false
                                     this.$emit('success-save')
                                     resolve()
                                 })

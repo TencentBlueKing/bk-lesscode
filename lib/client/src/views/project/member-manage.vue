@@ -175,6 +175,7 @@
                 this.sideObj.isLoading = true
                 this.$store.dispatch('member/addMembers', payload).then(() => {
                     this.$bkMessage({ message: window.i18n.t('操作成功'), theme: 'success' })
+                    window.leaveConfirm = false
                     this.sideObj.isShow = false
                     this.getMember()
                 }).catch((err) => {

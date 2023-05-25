@@ -95,7 +95,7 @@ export default defineComponent({
                 name: window.i18n.t('table_字段名称'),
                 type: 'input',
                 prop: 'name',
-                width: '110px',
+                width: '210px',
                 isRequire: true,
                 rules: [
                     {
@@ -122,7 +122,7 @@ export default defineComponent({
                 name: window.i18n.t('table_字段类型'),
                 type: 'select',
                 prop: 'type',
-              
+                width: '140px',
                 isRequire: true,
                 optionsList: FIELDS_TYPES
             },
@@ -133,6 +133,7 @@ export default defineComponent({
                     type: 'number'
                 },
                 prop: 'length',
+                width: '115px',
                 isReadonly (item, props) {
                     return !['varchar', 'decimal'].includes(props?.row?.type)
                 },

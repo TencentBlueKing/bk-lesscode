@@ -23,7 +23,7 @@
                                 $style['path'],
                                 { [$style['editing']]: layoutEditState.group === group.layoutId }
                             ]">
-                                <div :class="$style['path-name']" v-if="layoutEditState.group !== group.layoutId" :title="getDisplayLayoutPath(group.layoutPath)">{{getDisplayLayoutPath(group.layoutPath)}}</div>
+                                <div :class="$style['path-name']" v-if="layoutEditState.group !== group.layoutId" v-tooltips="getDisplayLayoutPath(group.layoutPath)">{{getDisplayLayoutPath(group.layoutPath)}}</div>
                                 <div v-else
                                     :class="[
                                         $style['edit-form'],
@@ -82,7 +82,7 @@
                                     { [$style['editing']]: editState.route === route }
                                 ]">
                                     <div :class="$style['path-name']">
-                                        <span v-if="editState.route !== route" :title="route.path">{{route.path | routeShow}}</span>
+                                        <span v-if="editState.route !== route" v-bk-tooltips="{ content: route.path , disabled: !( route.path && route.path.length > 26) }">{{route.path | routeShow}}</span>
                                         <div
                                             :class="[
                                                 $style['edit-form'],
@@ -586,7 +586,7 @@
                 }
             },
             getDisplayLayoutPath (path) {
-                return this.type === 'MOBILE' && path.startsWith('/mobile') ? path.replace('/mobile', '') : path
+                return this.type === 'MOBILE' && path.includes('/mobile/') ? path.replace('/mobile', '') : path
             },
             getBindDisplayValue (route) {
                 const { pageId, pageName, redirect, path } = route
@@ -678,10 +678,6 @@
         position: relative;
         height: 36px;
         line-height: 36px;
-
-        & + .route-group {
-            margin-left: 66px;
-          }
 
         &:hover {
              background: #E1ECFF;

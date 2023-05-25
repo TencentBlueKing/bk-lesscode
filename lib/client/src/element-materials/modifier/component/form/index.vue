@@ -452,6 +452,7 @@
                         renderValue: newPropRules
                     })
                 })
+                window.leaveConfirm = false
                 this.isShowOperation = false
             },
             updateFormModel () {
