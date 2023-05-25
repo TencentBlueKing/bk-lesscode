@@ -137,6 +137,7 @@
                             id,
                             data: { workflow, from_state, to_state, name, condition_type, condition }
                         }
+                        window.leaveConfirm = false
                         this.$emit('save', params)
                     }
                 })

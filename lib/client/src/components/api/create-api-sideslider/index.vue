@@ -173,6 +173,7 @@
                         }
                         const submitMethod = formData.value.id ? editApi : createApi
                         return submitMethod(form).then(() => {
+                            window.leaveConfirm = false
                             emit('success-submit')
                             close()
                         })

@@ -263,6 +263,7 @@
                         })
                         this.messageSuccess(window.i18n.t('添加组件成功'))
                     }
+                    window.leaveConfirm = false
                     this.$emit('on-add')
                     this.$emit('on-update')
                     this.close()

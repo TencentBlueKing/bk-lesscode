@@ -249,6 +249,7 @@
                                 }
                             })
                         }
+                        window.leaveConfirm = false
                         this.$emit('success')
                     } catch (e) {
                         console.error(e)
