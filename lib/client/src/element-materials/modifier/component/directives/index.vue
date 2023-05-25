@@ -14,7 +14,7 @@
         v-if="directiveList.length"
         class="directive-home">
         <h3 class="directive-tip">
-            编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值
+            <bk-alert type="info" title="编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值"></bk-alert>
         </h3>
         <ul>
             <li

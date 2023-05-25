@@ -13,13 +13,24 @@
     <div class="modifier-style" :class="{ 'no-padding': isFolded }">
         <div class="style-group-box">
             <div class="ui-group-name">
-                <section @click="handleToggle">
+                <section @click="handleToggle" style="display: flex;align-items: center;">
                     <i
                         class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                         :class="{
                             floded: isFolded
                         }" />
-                    <span>{{ title }}</span>
+                    <span
+                        class="label"
+                        :class="{ 'tips-content': tips }"
+                        v-bk-tooltips="{
+                            width: 300,
+                            interactive: false,
+                            allowHtml: true,
+                            disabled: !tips,
+                            content: tips
+                        }">
+                        {{ title }}
+                    </span>
                 </section>
                 <div class="operate-icon">
                     <slot name="header" />
@@ -44,6 +55,10 @@
             iconShow: {
                 type: Boolean,
                 default: false
+            },
+            tips: {
+                type: String,
+                default: ''
             }
         },
         data () {
@@ -120,9 +135,12 @@
             span {
                 display: block;
                 position: absolute;
-                top: 0;
                 left: 28px;
                 line-height: 40px;
+            }
+            .tips-content {
+                border-bottom: 1px dashed #313238;
+                line-height: 19px;
             }
             .operate-icon {
                 position: absolute;

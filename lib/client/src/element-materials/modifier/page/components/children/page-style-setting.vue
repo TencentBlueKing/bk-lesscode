@@ -16,6 +16,20 @@
                 </style-item>
             </template>
         </style-layout>
+        <style-layout
+            title="字体预设"
+            tips="可以设置字体的显示偏好设置，如不设置，则默认使用系统默认字体"
+        >
+            <template>
+                <style-item name="font-family" type="vertical">
+                    <bk-input
+                        type="textarea"
+                        :value="fontFamily"
+                        :rows="3"
+                        @change="updateStyleSetting('fontFamily', $event)" />
+                </style-item>
+            </template>
+        </style-layout>
         <margin-padding :value="styleSetting" :change="updateStyleSetting">
         </margin-padding>
     </section>
@@ -46,17 +60,9 @@
                 minWidth: {
                     value: '',
                     unit: ''
-                }
-                // styleFields: [
-                //     {
-                //         id: 'minWidth',
-                //         name: '最小宽度'
-                //     },
-                //     {
-                //         id: 'backgroundColor',
-                //         name: '背景色'
-                //     }
-                // ]
+                },
+                defaultFontFamily: '-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,Helvetica Neue,Arial,sans-serif',
+                fontFamily: ''
             }
         },
         computed: {
@@ -65,13 +71,17 @@
                 page: 'pageDetail'
             }),
             styleSetting () {
-                console.log(this.page.styleSetting, 'page style')
                 return this.page.styleSetting || {}
             }
         },
         created () {
             this.minWidth.value = splitValueAndUnit('value', this.page.styleSetting?.minWidth)
             this.minWidth.unit = splitValueAndUnit('unit', this.page.styleSetting?.minWidth) || this.defaultUnit
+            if (this.page.styleSetting?.fontFamily) {
+                this.fontFamily = this.page.styleSetting?.fontFamily
+            } else {
+                this.fontFamily = this.defaultFontFamily
+            }
         },
         methods: {
             updateStyleSetting (key, value) {

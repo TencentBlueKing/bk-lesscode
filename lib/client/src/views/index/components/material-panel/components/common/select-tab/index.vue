@@ -74,7 +74,6 @@
             user-select: none;
             &:hover {
                 color: #3A84FF;
-                /* background: #FFF; */
             }
             &:first-child{
                 margin-right: auto;
@@ -82,6 +81,7 @@
             &.active {
                 color: #3A84FF;
                 background: #FFF;
+                border-bottom: none;
             }
             .tab-item-label {
                 font-size: 12px;

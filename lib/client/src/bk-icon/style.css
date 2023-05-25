@@ -50,6 +50,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-setting-fill:before {
 	content: "\e1f4";
 }
+.bk-drag-exclamation-fill:before {
+	content: "\e288";
+}
 .bk-drag-play:before {
 	content: "\e103";
 }
@@ -884,6 +887,15 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-zuoyouchengman:before {
 	content: "\e218";
 }
+.bk-drag-delete-fill:before {
+	content: "\e28a";
+}
+.bk-drag-more:before {
+	content: "\e28b";
+}
+.bk-drag-attention-fill:before {
+	content: "\e289";
+}
 .bk-drag-rengongjiedian:before {
 	content: "\e221";
 }
@@ -1138,4 +1150,22 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-pointer:before {
 	content: "\e27e";
+}
+.bk-drag-ai:before {
+	content: "\e27f";
+}
+.bk-drag-fasong:before {
+	content: "\e281";
+}
+.bk-drag-qingsao:before {
+	content: "\e282";
+}
+.bk-drag-shangxialashen-2:before {
+	content: "\e283";
+}
+.bk-drag-shangxiajuhe:before {
+	content: "\e284";
+}
+.bk-drag-shanchu-2:before {
+	content: "\e286";
 }

@@ -120,10 +120,10 @@
                     'item-default-bg-color': '#0E1525',
                     'item-active-color': '#FFF',
                     'item-active-bg-color': '#3A84FF',
-                    'item-hover-bg-color': '#3A4561',
+                    'item-hover-bg-color': '#262C3B',
                     'item-hover-color': '#FFF',
 
-                    'sub-menu-open-bg-color': '#000',
+                    'sub-menu-open-bg-color': '#0C1221',
                     
                     'item-default-icon-color': '#96A2B9',
                     'item-active-icon-color': '#FFF',
@@ -565,9 +565,7 @@
             .menu-child{
                 .navigation-menu-item{
                     &:hover {
-                        background: #242838;
-                        /* background: #fff;
-                        opacity: 0.1; */
+                        background: #262C3B;
                     }
                 }
             }

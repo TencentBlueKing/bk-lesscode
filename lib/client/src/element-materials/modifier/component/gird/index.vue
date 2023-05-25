@@ -1,61 +1,53 @@
 <template>
     <div v-if="isShow" class="modifier-grid">
-        <div class="column-title">
-            <span
-                class="label"
-                v-bk-tooltips="{
-                    interactive: false,
-                    allowHtml: true,
-                    content: '#column-title-tips'
-                }">
-                列宽度配置:
-            </span>
-            <div id="column-title-tips">
-                <p>每一列栅格宽度占比为</p>
-                <p>该列配置值占总列配置值的百分比</p>
-                <p>如总共有3列，值分别为1，2，1</p>
-                <p>则这三列的宽度分别为整行宽度的1/4，1/2，1/4</p>
-            </div>
-        </div>
-        <div class="column-list">
-            <div
-                v-for="(columnNode, index) in columnList"
-                class="column-item"
-                :key="columnNode.componentId">
-                <span class="column-item-text">第 {{index + 1}} 列：</span>
-                <div class="bk-form-control" style="width: 100%;">
-                    <div class="bk-input-number">
-                        <input type="text"
-                            maxlength="10"
-                            style="width: 100%"
-                            class="bk-form-input"
-                            @keydown="inputKeydownHandler($event)"
-                            :value="columnNode.prop.span"
-                            @input="e => handleSpanChange(e, columnNode)" />
-                        <span class="input-number-option">
-                            <span class="number-option-item bk-icon icon-angle-up" @click="() => add(columnNode.prop.span, columnNode)"></span>
-                            <span class="number-option-item bk-icon icon-angle-down" @click="() => sub(columnNode.prop.span, columnNode)"></span>
-                        </span>
+        <style-layout title="列宽度配置" tips="<p>每一列栅格宽度占比为</p>
+            <p>该列配置值占总列配置值的百分比</p>
+            <p>如总共有3列，值分别为1，2，1</p>
+            <p>则这三列的宽度分别为整行宽度的1/4，1/2，1/4</p>">
+            <div class="column-list">
+                <div
+                    v-for="(columnNode, index) in columnList"
+                    class="column-item"
+                    :key="columnNode.componentId">
+                    <span class="column-item-text">第 {{index + 1}} 列</span>
+                    <div class="bk-form-control" style="width: 100%;">
+                        <div class="bk-input-number">
+                            <input type="text"
+                                maxlength="10"
+                                style="width: 100%"
+                                class="bk-form-input"
+                                @keydown="inputKeydownHandler($event)"
+                                :value="columnNode.prop.span"
+                                @input="e => handleSpanChange(e, columnNode)" />
+                            <span class="input-number-option">
+                                <span class="number-option-item bk-icon icon-angle-up" @click="() => add(columnNode.prop.span, columnNode)"></span>
+                                <span class="number-option-item bk-icon icon-angle-down" @click="() => sub(columnNode.prop.span, columnNode)"></span>
+                            </span>
+                        </div>
                     </div>
+                    <i class="bk-icon icon-minus-circle" @click="handleDelete(columnNode)" />
                 </div>
-                <i class="bk-icon icon-minus-circle" @click="handleDelete(columnNode)" />
             </div>
-        </div>
-        <div
-            v-show="columnList.length <= 11"
-            class="column-add"
-            @click="handleAdd">
-            <span>添加 1 列</span>
-            <i class="bk-icon icon-plus-circle" />
-        </div>
+            <div
+                v-show="columnList.length <= 11"
+                class="column-add"
+                @click="handleAdd">
+                <span>添加</span>
+                <i class="bk-icon icon-plus-circle" />
+            </div>
+        </style-layout>
     </div>
 </template>
 <script>
     import LC from '@/element-materials/core'
+    import StyleLayout from '@/element-materials/modifier/component/styles/layout/index'
     import { accAdd, accSub } from '@/common/util'
 
     export default {
         name: '',
+        components: {
+            StyleLayout
+        },
         data () {
             return {
                 isShow: false,
@@ -68,7 +60,9 @@
                     // 190, // .
                     38, 40, 37, 39, // up down left right
                     46, // del
-                    9 // tab
+                    9, // tab
+                    96, 97, 98, 99, 100, 101, 102, 103, 104, 105, // 小键盘0-9
+                    109, 110 // 小键盘 - .
                 ]
             }
         },

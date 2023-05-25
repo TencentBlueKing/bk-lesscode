@@ -10,7 +10,7 @@
                 <span class="tag-span">{{NOCODE_TYPE_MAP['title'][page.nocodeType || '']}}</span>
                 <bk-dropdown-menu :ref="`moreActionDropdown${page.id}`">
                     <span slot="dropdown-trigger" class="more-menu-trigger">
-                        <i class="bk-drag-icon bk-drag-more-dot"></i>
+                        <i class="bk-drag-icon bk-drag-more"></i>
                     </span>
                     <ul class="bk-dropdown-list page-item-ul" slot="dropdown-content" @click.stop="hideDropdownMenu(page.id)">
                         <li><a href="javascript:;" @click="handleEditPage(page)">编辑</a></li>

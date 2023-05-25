@@ -54,14 +54,14 @@
             icon: 'bk-drag-zuixiaokuandu'
         },
         {
-            name: '最大宽度',
-            key: 'maxWidth',
-            icon: 'bk-drag-zuidakuandu'
-        },
-        {
             name: '最小高度',
             key: 'minHeight',
             icon: 'bk-drag-zuixiaogaodu'
+        },
+        {
+            name: '最大宽度',
+            key: 'maxWidth',
+            icon: 'bk-drag-zuidakuandu'
         },
         {
             name: '最大高度',

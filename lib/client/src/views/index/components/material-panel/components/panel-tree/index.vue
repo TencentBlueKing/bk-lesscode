@@ -283,9 +283,8 @@
         display: flex;
         align-items: center;
         .tree-search {
-            width: 242px;
             flex: 1;
-            margin-right: 12px;
+            margin-right: 8px;
         }
         .tree-toggle-span {
             display: flex;
