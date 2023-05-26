@@ -2,7 +2,7 @@
     <main :class="['project-layout', { 'no-breadcrumb': !hasBreadcrumb, 'aside-folded': asideFolded, 'aside-hover': asideHover }]">
         <aside class="aside" v-if="!hideSideNav" @mouseenter="asideHover = true" @mouseleave="asideHover = false">
             <div class="side-hd">
-                <div class="open-select-menu-div" v-show="!asideFolded || asideHover">
+                <div class="open-select-menu-div" :class="{ 'show-select-project': !asideFolded || asideHover }">
                     <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
                     <select-project :project-list="projectList" />
                 </div>
@@ -404,9 +404,17 @@
                     cursor: pointer;
                 }
                 .open-select-menu-div {
+                    transition: width 0.2s ease-out, opacity 0.2s ease-in;
+                    visibility: hidden;
+                    opacity: 0;
+                    width: 0px;
+                }
+                .show-select-project {
                     display: flex;
                     align-items: center;
-                    transition: all .2s;
+                    visibility: visible;
+                    opacity: 1;
+                    width: 200px;
                 }
                 .fold-logo {
                     width: 32px;

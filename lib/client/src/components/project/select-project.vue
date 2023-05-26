@@ -35,7 +35,6 @@
 <script>
     import CreateDialog from '@/views/system/components/create-empty-project-dialog'
     import TemplateDialog from '@/views/system/components/template-dialog'
-    import { bus } from '@/common/bus'
 
     export default {
         components: {
@@ -56,7 +55,6 @@
         watch: {
             '$route.params.projectId' (val) {
                 this.projectId = val
-                // bus.$emit('update-project-info', val)
             }
         },
         created () {
