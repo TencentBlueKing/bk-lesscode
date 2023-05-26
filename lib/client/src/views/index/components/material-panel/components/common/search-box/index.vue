@@ -7,6 +7,7 @@
             right-icon="bk-icon icon-search"
             :value="keyword"
             :clearable="true"
+            :placeholder="$t('请输入关键词搜索')"
             @change="handleSearch"
             @keydown="handleKeydown"
             @focus="handleShowDropList"

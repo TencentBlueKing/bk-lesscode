@@ -4,7 +4,7 @@
         <div class="search-container" v-bk-clickoutside="handleHideDropList">
             <bk-input
                 clearable
-                :placeholder="$t('组件名称')"
+                :placeholder="$t('请输入组件名称搜索')"
                 :right-icon="'bk-icon icon-search'"
                 v-model.trim="searchValue"
                 @change="handleSearch"

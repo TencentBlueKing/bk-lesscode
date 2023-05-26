@@ -134,7 +134,7 @@
                 // navList: [],
                 navList: [
                     {
-                        title: window.i18n.t('页面管理'),
+                        title: window.i18n.t('abbr_页面管理'),
                         icon: 'page',
                         url: 'pageList',
                         iamAction: 'develop_app',
