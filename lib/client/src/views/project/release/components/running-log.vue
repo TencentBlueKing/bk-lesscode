@@ -2,7 +2,7 @@
     <section>
         <bk-sideslider
             :is-show.sync="isShow"
-            :quick-close="false"
+            :quick-close="true"
             :width="896"
             :before-close="handleClose"
         >
@@ -10,7 +10,7 @@
                 <svg v-if="status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
                     <use xlink:href="#bk-drag-loading-2"></use>
                 </svg>
-                {{ title }}
+                {{ isTitle }}
             </div>
             <div class="log-content" slot="content" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
                 <div class="deploy-view" :style="{ 'margin-top': `${isScrollFixed ? '104px' : '0'}` }">
@@ -42,7 +42,7 @@
                                 {{metadata.name}}
                                 <router-link
                                     class="card-edit"
-                                    v-bk-tooltips="metadata.name === '访问地址' ? '查看' : '配置'"
+                                    v-bk-tooltips="metadata.name === $t('访问地址') ? $t('查看') : $t('配置')"
                                     v-if="metadata.routerName "
                                     :to="{ name: metadata.routerName, params: { id: appCode, moduleId: curModuleId } }">
                                 </router-link>
@@ -59,11 +59,11 @@
                                                     </router-link>
                                                 </span>
                                             </div>
-                                            <div class="card-value" v-else>无</div>
+                                            <div class="card-value" v-else>{{ $t('无') }}</div>
                                         </template>
                                         <template v-else>
                                             <div class="card-value">
-                                                {{item.value || '无'}}
+                                                {{item.value || $t('无')}}
                                                 <span v-if="item.value && item.href"><a target="_blank" :href="item.href" style="color: #3a84ff">{{item.hrefText}}</a></span>
                                                 <a class="ml5" href="javascript: void(0);" v-if="item.downloadBtn" @click="item.downloadBtn">{{item.downloadBtnText}}</a>
                                             </div>
@@ -103,7 +103,7 @@
             },
             title: {
                 type: String,
-                default: '部署中日志'
+                default: ''
             },
             currentAppInfo: {
                 type: Object,
@@ -151,7 +151,8 @@
                 ansiUp: null,
                 serverProcessEvent: null,
                 link: '',
-                processLoadingLocal: false
+                processLoadingLocal: false,
+                isTitle: this.title || window.i18n.t('部署中日志')
             }
         },
         computed: {
@@ -203,7 +204,7 @@
                 this.getLogs()
                 this.loopLogs()
             } else {
-                this.content = '暂无部署日志'
+                this.content = window.i18n.t('暂无部署日志')
             }
         },
         beforeDestroy () {
@@ -291,7 +292,7 @@
                         if (logItem.event === 'step') {
                             const data = JSON.parse(logItem.data)
                             let content = ''
-                            if (data.name === '检测部署结果' && data.status === 'pending') {
+                            if (data.name === window.i18n.t('检测部署结果') && data.status === 'pending') {
                                 this.appearDeployState.push('release')
                                 this.releaseId = data.release_id
                                 this.getProcessList(data.release_id, !this.processLoadingLocal)
@@ -311,7 +312,7 @@
                         this.timer && clearInterval(this.timer)
                     }
                 } catch (err) {
-                    this.content = '日志加载异常,请刷新重试\n'
+                    this.content = window.i18n.t('日志加载异常,请刷新重试\n')
                     this.content += err.message || err
                 } finally {
                     this.isLoading = false
@@ -524,31 +525,31 @@
                 for (const key of keys) {
                     const sourceInfo = [
                         {
-                            text: '类型',
+                            text: window.i18n.t('类型'),
                             value: displays[key].display_name
                         },
                         {
-                            text: '地址',
+                            text: window.i18n.t('地址'),
                             value: displays[key].repo_url
                         }
                     ]
                     if (displays[key].source_dir) {
                         sourceInfo.push({
-                            text: '部署目录',
+                            text: window.i18n.t('部署目录'),
                             value: displays[key].source_dir
                         })
                     }
                     
                     sourceInfo.push({
-                        text: '源码管理',
-                        value: '蓝鲸可视化开发平台提供源码包'
+                        text: window.i18n.t('源码管理'),
+                        value: window.i18n.t('蓝鲸可视化开发平台提供源码包')
                     })
 
                     switch (key) {
                         // 源码信息
                         case 'source_info':
                             displayBlocks.push({
-                                name: '源码信息',
+                                name: window.i18n.t('源码信息'),
                                 type: 'key-value',
                                 routerName: 'moduleManage',
                                 key: key,
@@ -559,16 +560,16 @@
                         // 增强服务
                         case 'services_info':
                             displayBlocks.push({
-                                name: '增强服务',
+                                name: window.i18n.t('增强服务'),
                                 type: 'key-value',
                                 key: key,
                                 infos: [
                                     {
-                                        text: '启用未创建',
+                                        text: window.i18n.t('启用未创建'),
                                         value: displays[key].filter(item => !item.is_provisioned).map(item => item.display_name).join(', ')
                                     },
                                     {
-                                        text: '已创建实例',
+                                        text: window.i18n.t('已创建实例'),
                                         value: displays[key].filter(item => item.is_provisioned).map(item => {
                                             return {
                                                 name: item.display_name,
@@ -590,17 +591,17 @@
                         // 运行时的信息
                         case 'runtime_info':
                             displayBlocks.push({
-                                name: '运行时信息',
+                                name: window.i18n.t('运行时信息'),
                                 type: 'key-value',
                                 routerName: 'appEnvVariables',
                                 key: key,
                                 infos: [
                                     {
-                                        text: '基础镜像',
+                                        text: window.i18n.t('基础镜像'),
                                         value: displays[key].image
                                     },
                                     {
-                                        text: '构建工具',
+                                        text: window.i18n.t('构建工具'),
                                         value: displays[key].buildpacks.map(item => item.display_name).join(', ')
                                     }
                                 ]
@@ -610,17 +611,17 @@
                         // 访问地址
                         case 'access_info':
                             displayBlocks.push({
-                                name: '访问地址',
+                                name: window.i18n.t('访问地址'),
                                 type: 'key-value',
                                 routerName: 'appEntryConfig',
                                 key: key,
                                 infos: [
                                     {
-                                        text: '当前类型',
-                                        value: '子路径'
+                                        text: window.i18n.t('当前类型'),
+                                        value: window.i18n.t('子路径')
                                     },
                                     {
-                                        text: '访问地址',
+                                        text: window.i18n.t('访问地址'),
                                         value: displays[key].address
                                     }
                                 ]
@@ -632,7 +633,7 @@
                         case 'build_help_docs':
                         case 'release_help_docs':
                             displayBlocks.push({
-                                name: '帮助文档',
+                                name: window.i18n.t('帮助文档'),
                                 type: 'link',
                                 key: key,
                                 infos: displays[key].map(doc => {
@@ -645,16 +646,16 @@
                             this.link = (displays['prepare_help_docs'] && displays['prepare_help_docs'][0].link) || this.link
                             this.curTimeline.displayBlocks = [
                                 {
-                                    name: '帮助文档',
+                                    name: window.i18n.t('帮助文档'),
                                     type: 'link',
                                     key: 'default',
                                     infos: [
                                         {
-                                            text: '应用进程概念介绍以及如何使用',
+                                            text: window.i18n.t('应用进程概念介绍以及如何使用'),
                                             value: this.link
                                         },
                                         {
-                                            text: '应用内部进程通信指南',
+                                            text: window.i18n.t('应用内部进程通信指南'),
                                             value: this.link
                                         }
                                     ]
@@ -674,7 +675,7 @@
                 const interval = (end - start) / 1000
 
                 if (!interval) {
-                    return '< 1秒'
+                    return window.i18n.t('< 1秒')
                 }
 
                 return this.getDisplayTime(interval)
@@ -683,7 +684,7 @@
             getDisplayTime (payload) {
                 let theTime = payload
                 if (theTime < 1) {
-                    return '< 1秒'
+                    return window.i18n.t('< 1秒')
                 }
                 let middle = 0
                 let hour = 0
@@ -700,13 +701,13 @@
                 let result = ''
 
                 if (theTime > 0) {
-                    result = `${theTime}秒`
+                    result = window.i18n.t('{0}秒', [theTime])
                 }
                 if (middle > 0) {
-                    result = `${middle}分${result}`
+                    result = window.i18n.t('{0}分{1}', [middle, result])
                 }
                 if (hour > 0) {
-                    result = `${hour}时${result}`
+                    result = window.i18n.t('{0}时{1}', [hour, result])
                 }
 
                 return result

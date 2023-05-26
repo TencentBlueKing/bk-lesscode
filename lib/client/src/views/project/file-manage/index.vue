@@ -69,9 +69,9 @@
 
                     try {
                         await store.dispatch('file/del', { ...paramsData.value, fileId: file.id })
-                        messageSuccess('删除成功')
+                        messageSuccess(window.i18n.t('删除成功'))
                     } catch (err) {
-                        messageError('删除失败')
+                        messageError(window.i18n.t('删除失败'))
                         console.error(err)
                         return false
                     }
@@ -87,7 +87,7 @@
                     try {
                         await store.dispatch('file/create', data)
                     } catch (err) {
-                        messageError('保存上传文件失败')
+                        messageError(window.i18n.t('保存上传文件失败'))
                         console.error(err)
                     }
                 }
@@ -192,8 +192,8 @@
             }
 
             (this as any).$bkInfo({
-                title: '确认离开?',
-                subTitle: '文件正在上传中，离开可能导致文件上传失败',
+                title: window.i18n.t('确认离开'),
+                subTitle: window.i18n.t('文件正在上传中，离开可能导致文件上传失败'),
                 confirmFn: async () => {
                     next()
                 }
@@ -209,8 +209,8 @@
                 <upload ref="uploadRef" v-bind="uploadProps" />
             </div>
             <div class="search-bar">
-                <span class="total" v-show="displayList.length">共<em class="count">{{displayList.length}}</em>个文件</span>
-                <bk-input placeholder="请输入文件名"
+                <span class="total" v-show="displayList.length">{{ $t('共') }}<em class="count">{{displayList.length}}</em>{{ $t('个文件') }}</span>
+                <bk-input :placeholder="$t('请输入文件名')"
                     style="width: 400px"
                     :clearable="true"
                     right-icon="bk-icon icon-search"
@@ -225,7 +225,7 @@
                         <i class="bk-drag-icon bk-drag-display-list"></i>
                     </div>
                 </div>
-                <bk-button :disabled="!uploadFiles.length" @click="handleExport" style="margin-left: 10px">导出文件</bk-button>
+                <bk-button :disabled="!uploadFiles.length" @click="handleExport" style="margin-left: 10px">{{ $t('导出文件') }}</bk-button>
             </div>
         </div>
         <div :class="['page-body', 'file-manage-body', { 'is-empty': !uploadFiles.length }]" v-bkloading="{ isLoading: listLoading }">

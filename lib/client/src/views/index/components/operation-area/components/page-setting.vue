@@ -29,7 +29,7 @@
                     v-for="(field, index) in setting.settingFields"
                     class="setting-item"
                     :key="index">
-                    <div class="field-label">
+                    <div class="field-label" v-enStyle="'width: 126px'">
                         <span
                             v-bk-tooltips="{
                                 content: field.desc,
@@ -69,7 +69,7 @@
                             </template>
                             <template v-else-if="field.type === 'custom'">
                                 <div class="style-custom">
-                                    <span class="custom-status">{{styleValue.hasCustomStyle ? '已配置' : '--'}}</span>
+                                    <span class="custom-status">{{styleValue.hasCustomStyle ? $t('已配置') : '--'}}</span>
                                     <component
                                         class="style-setting"
                                         :is="field.id"
@@ -88,7 +88,7 @@
                                     class="route"
                                     v-if="field.id === 'pageRoute'">
                                     <div v-if="pageRoute.id">{{layoutPath}}<span>{{pageRoute.path}}</span></div>
-                                    <div v-else class="unset">未设置</div>
+                                    <div v-else class="unset">{{ $t('未设置') }}</div>
                                 </div>
                                 <span
                                     v-else
@@ -125,9 +125,9 @@
                                 <div class="buttons">
                                     <bk-button text size="small" theme="primary"
                                         :disabled="disabled"
-                                        @click="handleConfirm">确定</bk-button>
+                                        @click="handleConfirm">{{ $t('确定') }}</bk-button>
                                     <span class="divider">|</span>
-                                    <bk-button text size="small" theme="primary" @click="handleCancel">取消</bk-button>
+                                    <bk-button text size="small" theme="primary" @click="handleCancel">{{ $t('取消') }}</bk-button>
                                 </div>
                             </div>
                             <span
@@ -217,11 +217,11 @@
             },
             settingGroup () {
                 const baseSettings = {
-                    title: '基本配置',
+                    title: window.i18n.t('基本配置'),
                     settingFields: [
                         {
                             id: 'pageName',
-                            name: '页面名称',
+                            name: window.i18n.t('form_页面名称'),
                             type: 'input',
                             editable: true,
                             props: {
@@ -230,13 +230,13 @@
                             rules: [
                                 {
                                     required: true,
-                                    message: '必填项'
+                                    message: window.i18n.t('必填项')
                                 }
                             ]
                         },
                         {
                             id: 'pageCode',
-                            name: '页面ID',
+                            name: window.i18n.t('页面ID'),
                             type: 'input',
                             editable: false
                         }
@@ -245,7 +245,7 @@
                 if (this.page.nocodeType === 'FLOW_MANAGE') {
                     baseSettings.settingFields.push({
                         id: 'relatedFlow',
-                        name: '关联流程',
+                        name: window.i18n.t('form_关联流程'),
                         type: 'link',
                         editable: false,
                         value: this.page.flowName,
@@ -277,11 +277,11 @@
                     }
                 })
                 const pageSettings = {
-                    title: '路由配置',
+                    title: window.i18n.t('路由配置'),
                     settingFields: [
                         {
                             id: 'layoutId',
-                            name: '导航布局',
+                            name: window.i18n.t('form_导航布局'),
                             type: 'select',
                             props: {
                                 clearable: false
@@ -293,17 +293,17 @@
                                     type: 'option',
                                     props: {
                                         id: layout.id,
-                                        name: `${layout.defaultName}（路由：${layout.routePath}）`
+                                        name: window.i18n.t('{0}（路由：{1}）', [layout.defaultName, layout.routePath])
                                     }
                                 }
                             })
                         },
                         {
                             id: 'pageRoute',
-                            name: '页面路由',
+                            name: window.i18n.t('form_页面路由'),
                             type: 'select',
                             editable: true,
-                            placeholder: '未设置',
+                            placeholder: window.i18n.t('未设置'),
                             props: {
                                 clearable: false
                             },
@@ -312,32 +312,32 @@
                     ]
                 }
                 const styleSettings = {
-                    title: '页面样式设置',
+                    title: window.i18n.t('页面样式设置'),
                     settingFields: [
                         {
                             id: 'minWidth',
-                            name: '最小宽度',
+                            name: window.i18n.t('最小宽度'),
                             type: 'size',
                             from: 'style',
                             editable: true
                         },
                         {
                             id: 'margin',
-                            name: '外边距',
+                            name: window.i18n.t('外边距'),
                             type: 'distance',
                             from: 'style',
                             editable: true
                         },
                         {
                             id: 'padding',
-                            name: '内边距',
+                            name: window.i18n.t('内边距'),
                             type: 'distance',
                             from: 'style',
                             editable: true
                         },
                         {
                             id: 'backgroundColor',
-                            name: '背景色',
+                            name: window.i18n.t('form_背景色'),
                             from: 'style',
                             type: 'background',
                             editable: true
@@ -417,8 +417,8 @@
                 const { field } = this.editField
                 if (field.id === 'layoutId') {
                     this.$bkInfo({
-                        title: '确认修改？',
-                        subTitle: '当前使用的导航布局未保存的配置会丢失',
+                        title: window.i18n.t('确认修改？'),
+                        subTitle: window.i18n.t('当前使用的导航布局未保存的配置会丢失'),
                         theme: 'primary',
                         confirmFn: async () => {
                             await this.handleConfirmSave()
@@ -550,7 +550,7 @@
                     const layout = this.layoutList.find(item => item.id === layoutId) || {}
                     const layoutName = layout.defaultName || ''
                     const layoutRoutePath = layout.routePath || ''
-                    return `${layoutName}（路由：${layoutRoutePath}）`
+                    return window.i18n.t('{0}（路由：{1}）', [layoutName, layoutRoutePath])
                 }
                 if (field.id in this.styleValue) {
                     return this.styleValue[field.id]
@@ -571,7 +571,7 @@
                 if (field.placeholder) {
                     return field.placeholder
                 }
-                return ['input'].includes(field.type) ? '请输入' : '请选择'
+                return ['input'].includes(field.type) ? window.i18n.t('请输入') : window.i18n.t('请选择')
             },
             getEvents (field) {
                 const events = {

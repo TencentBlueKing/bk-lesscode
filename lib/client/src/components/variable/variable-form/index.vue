@@ -1,28 +1,27 @@
 <template>
-    <bk-sideslider
+    <lc-sideslider
         :is-show="isShow"
-        :before-close="hidden"
+        @update:isShow="close"
         :quick-close="true"
         :width="796"
         :transfer="true"
-        :title="isAdd ? '新增变量' : '编辑变量'"
-    >
+        :title="isAdd ? $t('新增变量') : $t('编辑变量')">
         <section slot="content" class="variable-form-main">
-            <bk-form :label-width="84" :model="copyForm" ref="variableForm">
-                <bk-form-item label="变量名称" :required="true" :rules="[requireRule('变量名称'), nameRule]" property="variableName" error-display-type="normal">
+            <lc-form :label-width="$store.state.Language === 'en' ? 120 : 84" :model="copyForm" ref="variableForm">
+                <lc-form-item :label="$t('form_变量名称')" :required="true" :rules="[requireRule($t('form_变量名称')), nameRule]" property="variableName" error-display-type="normal">
                     <bk-input
-                        placeholder="由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符"
+                        :placeholder="$t('由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符')"
                         v-model="copyForm.variableName"
                     ></bk-input>
-                </bk-form-item>
-                <bk-form-item label="变量标识" :required="true" :rules="[requireRule('变量标识'), codeRule, repeatRule, projectOnlyRule, keyWordRule]" property="variableCode" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('变量标识')" :required="true" :rules="[requireRule($t('变量标识')), codeRule, repeatRule, projectOnlyRule, keyWordRule]" property="variableCode" error-display-type="normal">
                     <bk-input
-                        placeholder="由大小写英文字母组成，长度小于20个字符。不能是 JavaScript 保留字，且应用内唯一"
+                        :placeholder="$t('由大小写英文字母组成，长度小于20个字符。不能是 JavaScript 保留字，且应用内唯一')"
                         :disabled="!isAdd"
                         v-model="copyForm.variableCode"
                     ></bk-input>
-                </bk-form-item>
-                <bk-form-item label="初始类型" :required="true" property="valueType" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('form_初始类型')" :required="true" property="valueType" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.valueType" @change="resetValue">
                         <template v-for="renderJsType in renderJsTypes">
                             <bk-radio-button
@@ -42,8 +41,8 @@
                             </bk-radio-button>
                         </template>
                     </bk-radio-group>
-                </bk-form-item>
-                <bk-form-item label="默认值" :required="true" property="defaultValue" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('默认值')" :required="true" property="defaultValue" error-display-type="normal">
                     <!-- <bk-radio-group v-model="copyForm.defaultValueType">
                         <bk-radio :value="0" class="type-radio">环境统一配置</bk-radio>
                         <bk-radio :value="1" :disabled="copyForm.valueType === 6">分环境配置</bk-radio>
@@ -55,28 +54,28 @@
                         :type="copyForm.defaultValueType"
                         :value-type="copyForm.valueType"
                     />
-                </bk-form-item>
-                <bk-form-item label="生效范围" :required="true" property="effectiveRange" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('form_生效范围')" :required="true" property="effectiveRange" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.effectiveRange">
-                        <bk-radio :value="0" class="range-radio" :disabled="copyForm.valueType === 6">本应用</bk-radio>
-                        <bk-radio :value="1" v-if="pageId">本页面</bk-radio>
+                        <bk-radio :value="0" class="range-radio" :disabled="copyForm.valueType === 6">{{$t('本应用')}}</bk-radio>
+                        <bk-radio :value="1" v-if="pageId">{{$t('本页面')}}</bk-radio>
                     </bk-radio-group>
-                </bk-form-item>
-                <bk-form-item label="变量说明" property="description" error-display-type="normal">
+                </lc-form-item>
+                <lc-form-item :label="$t('form_变量说明')" property="description" error-display-type="normal">
                     <bk-input v-model="copyForm.description" type="textarea"></bk-input>
-                </bk-form-item>
-            </bk-form>
+                </lc-form-item>
+            </lc-form>
             <bk-button
                 class="confirm-button variable-button"
                 theme="primary"
                 :loading="isSaving"
                 @click="handleSave"
-            >保存</bk-button>
+            >{{$t('保存')}}</bk-button>
             <bk-button
                 class="variable-button"
                 :disabled="isSaving"
                 @click="hidden"
-            >取消</bk-button>
+            >{{$t('取消')}}</bk-button>
             <section
                 class="variable-button"
                 v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled }"
@@ -86,10 +85,10 @@
                     :disabled="useSaveStatus.disabled"
                     v-if="showSaveUse"
                     @click="handleSaveUse"
-                >保存并使用</bk-button>
+                >{{$t('保存并使用')}}</bk-button>
             </section>
         </section>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
@@ -100,6 +99,7 @@
     import variableInput from './variable-input'
     import variableJson from './variable-json'
     import variableUpload from './variable-upload'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     const typeEnum = {
         'string': [0, 5],
@@ -145,17 +145,17 @@
                 allProjectVariableList: [],
                 repeatRule: {
                     validator: (variableCode) => (!this.variableList.find(variable => variable.variableCode === variableCode && this.copyForm.id !== variable.id)),
-                    message: '标识不能与其他变量重复',
+                    message: this.$t('标识不能与其他变量重复'),
                     trigger: 'blur'
                 },
                 codeRule: {
                     validator: (val) => (/^[A-Za-z]{0,19}$/.test(val)),
-                    message: '由大小写英文字母组成，长度小于20个字符',
+                    message: this.$t('由大小写英文字母组成，长度小于20个字符'),
                     trigger: 'blur'
                 },
                 nameRule: {
                     validator: (val) => (/^[\u4e00-\u9fa5a-zA-Z0-9-]{0,20}$/.test(val)),
-                    message: '由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符',
+                    message: this.$t('由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符'),
                     trigger: 'blur'
                 },
                 projectOnlyRule: {
@@ -163,12 +163,12 @@
                         const repeatVailable = this.allProjectVariableList.find(variable => variable.variableCode === variableCode && this.copyForm.id !== variable.id)
                         return this.copyForm.effectiveRange === 1 || (this.copyForm.effectiveRange === 0 && !repeatVailable)
                     },
-                    message: '应用级变量，变量标识全局唯一',
+                    message: this.$t('应用级变量，变量标识全局唯一'),
                     trigger: 'blur'
                 },
                 keyWordRule: {
                     validator: (val) => !isJsKeyWord(val),
-                    message: '变量标识不能是 JavaScript 保留字',
+                    message: this.$t('变量标识不能是 JavaScript 保留字'),
                     trigger: 'blur'
                 }
             }
@@ -228,7 +228,7 @@
                     { label: 'Object', id: 4 },
                     // { label: '图片地址', id: 5 },
                     {
-                        label: '计算变量',
+                        label: this.$t('计算变量'),
                         id: 6,
                         hidden: this.copyForm.effectiveRange === 0
                     }
@@ -248,7 +248,7 @@
                 const disabled = this.copyForm.valueType !== 6
                     && this.valueTypeInclude?.every((limitType) => !typeEnum[limitType]?.includes(this.copyForm.valueType))
                 return {
-                    content: `只允许使用【${this.valueTypeInclude.join('，')}，计算变量】类型的变量`,
+                    content: this.$t('只允许使用【{n}，计算变量】类型的变量', { n: this.valueTypeInclude.join('，') }),
                     disabled
                 }
             }
@@ -328,7 +328,7 @@
             requireRule (name) {
                 return {
                     required: true,
-                    message: `${name}是必填项，请修改后重试`,
+                    message: this.$t('{0}是必填项，请修改后重试', [name]),
                     trigger: 'blur'
                 }
             },
@@ -339,15 +339,16 @@
                     this.copyForm.pageCode = this.copyForm.effectiveRange === 0 ? '' : this.pageDetail.pageCode
                     this.isSaving = true
                     this.$refs.variableForm
-                        .validate(() => {
+                        .validate().then(() => {
                             return confirmMethod(this.copyForm)
                                 .then(() => {
-                                    this.$bkMessage({ theme: 'success', message: this.isAdd ? '新增变量成功' : '编辑变量成功' })
-                                    this.hidden()
+                                    this.$bkMessage({ theme: 'success', message: this.isAdd ? this.$t('新增变量成功') : this.$t('编辑变量成功') })
+                                    this.close()
                                     const params = { projectId: this.projectId, versionId: this.versionId, effectiveRange: 0 }
                                     if (this.pageId) {
                                         params.pageCode = this.pageDetail.pageCode
                                     }
+                                    window.leaveConfirm = false
                                     this.$emit('success-save')
                                     resolve()
                                 })
@@ -372,7 +373,7 @@
                         })
                         .catch((validator) => {
                             this.isSaving = false
-                            this.$bkMessage({ theme: 'error', message: validator.content || '数据校验不通过，请修改后重试' })
+                            this.$bkMessage({ theme: 'error', message: validator.content || this.$t('数据校验不通过，请修改后重试') })
                             reject(validator)
                         })
                 })
@@ -386,9 +387,15 @@
                     this.isUseSaving = false
                 })
             },
+            close () {
+                this.$emit('update:isShow', false)
+            },
 
             hidden () {
-                this.$emit('update:isShow', false)
+                leaveConfirm(window.i18n.t('存在未保存的变量，关闭后不会保存更改'))
+                    .then(() => {
+                        this.close()
+                    })
             }
         }
     }

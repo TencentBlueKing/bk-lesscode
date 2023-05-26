@@ -8,13 +8,13 @@
                     allowHtml: true,
                     content: '#column-title-tips'
                 }">
-                列宽度配置:
+                {{$t('列宽度配置:')}}
             </span>
             <div id="column-title-tips">
-                <p>每一列栅格宽度占比为</p>
-                <p>该列配置值占总列配置值的百分比</p>
-                <p>如总共有3列，值分别为1，2，1</p>
-                <p>则这三列的宽度分别为整行宽度的1/4，1/2，1/4</p>
+                <p>{{$t('每一列栅格宽度占比为')}}</p>
+                <p>{{$t('该列配置值占总列配置值的百分比')}}</p>
+                <p>{{$t('如总共有3列，值分别为1，2，1')}}</p>
+                <p>{{$t('则这三列的宽度分别为整行宽度的1/4，1/2，1/4')}}</p>
             </div>
         </div>
         <div class="column-list">
@@ -22,7 +22,7 @@
                 v-for="(columnNode, index) in columnList"
                 class="column-item"
                 :key="columnNode.componentId">
-                <span class="column-item-text">第 {{index + 1}} 列：</span>
+                <span class="column-item-text">{{$t('第 {0} 列：',[index + 1])}}</span>
                 <div class="bk-form-control" style="width: 100%;">
                     <div class="bk-input-number">
                         <input type="text"
@@ -45,7 +45,7 @@
             v-show="columnList.length <= 11"
             class="column-add"
             @click="handleAdd">
-            <span>添加 1 列</span>
+            <span>{{$t('添加 1 列')}}</span>
             <i class="bk-icon icon-plus-circle" />
         </div>
     </div>

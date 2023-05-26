@@ -7,7 +7,7 @@
                     close: !showContent
                 }"
             ></i>
-            <span>导航菜单</span>
+            <span>{{ $t('导航菜单') }}</span>
         </div>
         <template v-if="showContent">
             <div class="menu-wraper">
@@ -31,7 +31,7 @@
                 </vue-draggable>
             </div>
             <div class="footer">
-                <bk-button size="small" text @click="handleAdd">继续添加</bk-button>
+                <bk-button size="small" text @click="handleAdd">{{ $t('继续添加') }}</bk-button>
             </div>
         </template>
     </div>

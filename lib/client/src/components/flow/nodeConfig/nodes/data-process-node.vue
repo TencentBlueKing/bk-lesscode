@@ -1,16 +1,16 @@
 <template>
     <div class="data-process-node">
-        <form-section title="基础配置">
+        <form-section :title="$t('基础配置')">
             <bk-form
                 ref="dataForm"
                 form-type="vertical"
                 class="data-process-node-form"
                 :rules="rules"
                 :model="dataProcessConfig">
-                <bk-form-item label="节点名称" property="name" :required="true">
+                <bk-form-item :label="$t('form_节点名称')" property="name" :required="true">
                     <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="处理人" :required="true">
+                <bk-form-item :label="$t('处理人')" :required="true">
                     <processors
                         ref="processorsForm"
                         :value="processorData"
@@ -21,12 +21,12 @@
                     </processors>
                 </bk-form-item>
                 <div class="action-select-area">
-                    <bk-form-item label="节点动作" property="action" :required="true">
+                    <bk-form-item :label="$t('form_节点动作')" property="action" :required="true">
                         <bk-select :value="dataProcessConfig.action" :clearable="false" :disabled="!editable" @selected="handleSelectAction">
                             <bk-option v-for="item in actions" :key="item.id" :id="item.id" :name="item.name"></bk-option>
                         </bk-select>
                     </bk-form-item>
-                    <bk-form-item label="目标表单" property="tableName" class="target-form" :required="true">
+                    <bk-form-item :label="$t('form_目标表单')" property="tableName" class="target-form" :required="true">
                         <bk-select
                             :value="dataProcessConfig.tableName"
                             :clearable="false"
@@ -43,28 +43,28 @@
                         <!-- 如果数据处理节点由人工节点生成，则提供同步按钮 -->
                         <i
                             v-if="normalNodeData.id"
-                            v-bk-tooltips="`将设置【${normalNodeData.name}（${normalNodeData.id}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则`"
+                            v-bk-tooltips="$t('将设置【{0}（{1}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则', [normalNodeData.name, normalNodeData.id])"
                             class="bk-drag-icon bk-drag-refill sync-btn"
                             @click="handleSyncNormalNodeFields">
                         </i>
                     </bk-form-item>
                 </div>
-                <bk-form-item label="字段映射规则">
+                <bk-form-item :label="$t('form_字段映射规则')">
                     <template v-if="dataProcessConfig.action && dataProcessConfig.tableName !== ''">
                         <!-- 满足条件，删除、更新动作存在 -->
                         <div v-if="['DELETE', 'EDIT'].includes(dataProcessConfig.action)" class="rules-section">
                             <div class="logic-radio">
-                                <label>{{ dataProcessConfig.action === 'DELETE' ? '删除条件' : '满足条件' }}</label>
+                                <label>{{ dataProcessConfig.action === 'DELETE' ? $t('删除条件') : $t('满足条件') }}</label>
                                 <bk-radio-group :value="dataProcessConfig.conditions.connector">
-                                    <bk-radio value="and" :disabled="!editable">且</bk-radio>
-                                    <bk-radio value="or" :disabled="!editable">或</bk-radio>
+                                    <bk-radio value="and" :disabled="!editable">{{ $t('且') }}</bk-radio>
+                                    <bk-radio value="or" :disabled="!editable">{{ $t('或') }}</bk-radio>
                                 </bk-radio-group>
                             </div>
                             <div v-if="dataProcessConfig.conditions.expressions.length > 0" class="condition-list">
                                 <div class="condition-item" v-for="(expression, index) in dataProcessConfig.conditions.expressions" :key="index">
                                     <bk-select
                                         v-model="expression.key"
-                                        placeholder="目标表字段"
+                                        :placeholder="$t('目标表字段')"
                                         style="width: 150px; margin-right: 8px"
                                         :clearable="false"
                                         :searchable="true"
@@ -80,7 +80,7 @@
                                     </bk-select>
                                     <bk-select
                                         v-model="expression.condition"
-                                        placeholder="逻辑"
+                                        :placeholder="$t('逻辑')"
                                         style="width: 100px; margin-right: 8px"
                                         :clearable="false"
                                         :disabled="!editable">
@@ -93,21 +93,21 @@
                                     </bk-select>
                                     <bk-select
                                         v-model="expression.type"
-                                        placeholder="值类型"
+                                        :placeholder="$t('值类型')"
                                         style="width: 100px; margin-right: 8px"
                                         :clearable="false"
                                         :disabled="!editable"
                                         @selected="expression.value = ''">
-                                        <bk-option id="const" name="值"></bk-option>
-                                        <bk-option id="field" name="引用变量"></bk-option>
+                                        <bk-option id="const" :name="$t('值')"></bk-option>
+                                        <bk-option id="field" :name="$t('引用变量')"></bk-option>
                                         <!-- <bk-option id="department" name="组织架构"></bk-option> -->
                                         <template v-if="
                                             fieldList.length > 0 &&
                                                 expression.key &&
                                                 fieldList.find(i => i.key === expression.key).type === 'INT'
                                         ">
-                                            <bk-option id="increment" name="增加"></bk-option>
-                                            <bk-option id="reduction" name="减少"></bk-option>
+                                            <bk-option id="increment" :name="$t('增加')"></bk-option>
+                                            <bk-option id="reduction" :name="$t('减少')"></bk-option>
                                         </template>
                                         <template v-if="
                                             fieldList.length > 0 &&
@@ -116,15 +116,15 @@
                                                     fieldList.find(i => i.key === expression.key).type
                                                 )
                                         ">
-                                            <bk-option id="system" name="系统变量"></bk-option>
-                                            <bk-option id="approver" name="审批人"></bk-option>
-                                            <bk-option id="leader" name="指定上级"></bk-option>
+                                            <bk-option id="system" :name="$t('系统变量')"></bk-option>
+                                            <bk-option id="approver" :name="$t('审批人')"></bk-option>
+                                            <bk-option id="leader" :name="$t('指定上级')"></bk-option>
                                         </template>
                                     </bk-select>
                                     <bk-select
                                         v-if="expression.type === 'field'"
                                         v-model="expression.value"
-                                        placeholder="选择变量"
+                                        :placeholder="$t('选择变量')"
                                         style="width: 190px"
                                         :clearable="false"
                                         :searchable="true"
@@ -150,16 +150,16 @@
                                         style="width: 190px"
                                         :clearable="false"
                                         :disabled="!editable">
-                                        <bk-option id="date" name="当前日期"></bk-option>
-                                        <bk-option id="start_time" name="单据创建时间"></bk-option>
-                                        <bk-option id="creator" name="提单人"></bk-option>
-                                        <bk-option id="leader" name="提单人上级"></bk-option>
-                                        <bk-option id="sn" name="单号"></bk-option>
+                                        <bk-option id="date" :name="$t('当前日期')"></bk-option>
+                                        <bk-option id="start_time" :name="$t('单据创建时间')"></bk-option>
+                                        <bk-option id="creator" :name="$t('提单人')"></bk-option>
+                                        <bk-option id="leader" :name="$t('提单人上级')"></bk-option>
+                                        <bk-option id="sn" :name="$t('单号')"></bk-option>
                                     </bk-select>
                                     <bk-select
                                         v-else-if="expression.type === 'approver'"
                                         v-model="expression.value"
-                                        placeholder="选择审批节点"
+                                        :placeholder="$t('选择审批节点')"
                                         style="width: 190px"
                                         :clearable="false"
                                         :loading="approvalNodeListLoading"
@@ -169,7 +169,7 @@
                                     <bk-select
                                         v-else-if="expression.type === 'leader'"
                                         v-model="expression.value"
-                                        placeholder="选择人员类型变量"
+                                        :placeholder="$t('选择人员类型变量')"
                                         style="width: 190px"
                                         :clearable="false"
                                         :loading="relationListLoading"
@@ -195,16 +195,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else :class="['data-empty', { disabled: !editable }]" @click="handleAddExpression(-1)">点击添加</div>
+                            <div v-else :class="['data-empty', { disabled: !editable }]" @click="handleAddExpression(-1)">{{ $t('点击添加') }}</div>
                         </div>
                         <!-- 映射规则，增加、更新动作存在 -->
                         <div v-if="['ADD', 'EDIT'].includes(dataProcessConfig.action)" class="rules-section">
-                            <label>{{ dataProcessConfig.action === 'ADD' ? '插入规则' : '则更新' }}</label>
+                            <label>{{ dataProcessConfig.action === 'ADD' ? $t('插入规则') : $t('则更新') }}</label>
                             <div v-if="dataProcessConfig.mapping.length > 0" class="mapping-list">
                                 <div class="condition-item" v-for="(mapping, index) in dataProcessConfig.mapping" :key="index">
                                     <bk-select
                                         v-model="mapping.key"
-                                        placeholder="目标表字段"
+                                        :placeholder="$t('目标表字段')"
                                         style="width: 180px; margin-right: 8px"
                                         :clearable="false"
                                         :searchable="true"
@@ -220,23 +220,23 @@
                                     </bk-select>
                                     <bk-select
                                         v-model="mapping.type"
-                                        placeholder="值类型"
+                                        :placeholder="$t('值类型')"
                                         style="width: 100px; margin-right: 8px"
                                         :clearable="false"
                                         :disabled="!editable"
                                         @selected="(val) => handleSelectMapValue(mapping,val)">
-                                        <bk-option id="const" name="值"></bk-option>
-                                        <bk-option id="field" name="引用变量"></bk-option>
+                                        <bk-option id="const" :name="$t('值')"></bk-option>
+                                        <bk-option id="field" :name="$t('引用变量')"></bk-option>
                                         <!-- <bk-option id="department" name="组织架构"></bk-option> -->
                                         <template v-if="
                                             targetFields.length > 0 &&
                                                 mapping.key &&
                                                 targetFields.find(i => i.key === mapping.key).type === 'INT'
                                         ">
-                                            <bk-option id="increment" name="增加"></bk-option>
-                                            <bk-option id="reduction" name="减少"></bk-option>
-                                            <bk-option v-if="dataProcessConfig.action === 'EDIT'" id="field_increment" name="加指定变量"></bk-option>
-                                            <bk-option v-if="dataProcessConfig.action === 'EDIT'" id="field_reduction" name="减指定变量"></bk-option>
+                                            <bk-option id="increment" :name="$t('增加')"></bk-option>
+                                            <bk-option id="reduction" :name="$t('减少')"></bk-option>
+                                            <bk-option v-if="dataProcessConfig.action === 'EDIT'" id="field_increment" name="$t('加指定变量')"></bk-option>
+                                            <bk-option v-if="dataProcessConfig.action === 'EDIT'" id="field_reduction" name="$t('减指定变量')"></bk-option>
                                         </template>
                                         <template v-if="
                                             targetFields.length > 0 &&
@@ -245,15 +245,15 @@
                                                     fieldList.find(i => i.key === mapping.key).type
                                                 )
                                         ">
-                                            <bk-option id="system" name="系统变量"></bk-option>
-                                            <bk-option id="approver" name="审批人"></bk-option>
-                                            <bk-option id="leader" name="指定上级"></bk-option>
+                                            <bk-option id="system" :name="$t('系统变量')"></bk-option>
+                                            <bk-option id="approver" :name="$t('审批人')"></bk-option>
+                                            <bk-option id="leader" :name="$t('指定上级')"></bk-option>
                                         </template>
                                     </bk-select>
                                     <bk-select
                                         v-if="['field', 'field_increment', 'field_reduction'].includes(mapping.type)"
                                         v-model="mapping.value"
-                                        placeholder="选择变量"
+                                        :placeholder="$t('选择变量')"
                                         style="width: 268px"
                                         :clearable="false"
                                         :searchable="true"
@@ -279,16 +279,16 @@
                                         style="width: 268px"
                                         :clearable="false"
                                         :disabled="!editable">
-                                        <bk-option id="date" name="当前日期"></bk-option>
-                                        <bk-option id="start_time" name="单据创建时间"></bk-option>
-                                        <bk-option id="creator" name="提单人"></bk-option>
-                                        <bk-option id="leader" name="提单人上级"></bk-option>
-                                        <bk-option id="sn" name="单号"></bk-option>
+                                        <bk-option id="date" :name="$t('当前日期')"></bk-option>
+                                        <bk-option id="start_time" :name="$t('单据创建时间')"></bk-option>
+                                        <bk-option id="creator" :name="$t('提单人')"></bk-option>
+                                        <bk-option id="leader" :name="$t('提单人上级')"></bk-option>
+                                        <bk-option id="sn" :name="$t('单号')"></bk-option>
                                     </bk-select>
                                     <bk-select
                                         v-else-if="mapping.type === 'approver'"
                                         v-model="mapping.value"
-                                        placeholder="选择审批节点"
+                                        :placeholder="$t('选择审批节点')"
                                         style="width: 268px"
                                         :clearable="false"
                                         :loading="approvalNodeListLoading"
@@ -298,7 +298,7 @@
                                     <bk-select
                                         v-else-if="mapping.type === 'leader'"
                                         v-model="mapping.value"
-                                        placeholder="选择人员类型变量"
+                                        :placeholder="$t('选择人员类型变量')"
                                         style="width: 268px"
                                         :clearable="false"
                                         :loading="relationListLoading"
@@ -324,11 +324,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else :class="['data-empty', { disabled: !editable }]" @click="handleAddMapping(-1)">点击添加</div>
+                            <div v-else :class="['data-empty', { disabled: !editable }]" @click="handleAddMapping(-1)">{{ $t('点击添加') }}</div>
                         </div>
                     </template>
-                    <bk-exception v-else class="no-data" type="empty" scene="part">请选择节点动作和目标表单</bk-exception>
-                    <p v-if="errorTips" class="error-tips">请检查字段映射规则</p>
+                    <bk-exception v-else class="no-data" type="empty" scene="part">{{ $t('请选择节点动作和目标表单') }}</bk-exception>
+                    <p v-if="errorTips" class="error-tips">{{ $t('请检查字段映射规则') }}</p>
                 </bk-form-item>
             </bk-form>
         </form-section>
@@ -339,7 +339,7 @@
     import { mapState, mapGetters } from 'vuex'
     import FormSection from '../components/form-section.vue'
     import Processors from '../components/processors.vue'
-    import { CONDITION_RELATIONS } from '@/components/flow-form-comp/form/constants/forms.js'
+    import { CONDITION_RELATIONS } from '../../constants/nodes.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
     import FieldValue from '@/components/render-nocode/form/components/form-edit/fieldValue.vue'
 
@@ -363,9 +363,9 @@
         data () {
             return {
                 actions: [
-                    { id: 'ADD', name: '插入' },
-                    { id: 'EDIT', name: '更新' },
-                    { id: 'DELETE', name: '删除' }
+                    { id: 'ADD', name: this.$t('插入') },
+                    { id: 'EDIT', name: this.$t('更新') },
+                    { id: 'DELETE', name: this.$t('删除') }
                 ],
                 dataProcessConfig: {},
                 normalNodeData: { // 自动生成的数据处理节点关联的人工节点相关数据
@@ -390,21 +390,21 @@
                     name: [
                         {
                             required: true,
-                            message: '节点名称为必填项',
+                            message: this.$t('节点名称为必填项'),
                             trigger: 'blur'
                         }
                     ],
                     action: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         }
                     ],
                     tableName: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         }
                     ]
@@ -605,7 +605,7 @@
                 if (!tableName || fieldList.length === 0) {
                     this.$bkMessage({
                         theme: 'warning',
-                        message: `【${name}（${id}）】节点表单字段为空，请先配置表单`
+                        message: `【${name}（${id}）】${window.i18n.t('节点表单字段为空，请先配置表单')}`
                     })
                     return
                 }
@@ -773,6 +773,9 @@
     }
     & > .bk-form-item {
         margin-top: 15px;
+        >>> .bk-label {
+            width: auto !important;
+        }
     }
     .sync-btn {
         position: absolute;

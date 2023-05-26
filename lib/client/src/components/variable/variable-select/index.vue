@@ -32,7 +32,7 @@
                     @click="() => {
                         $refs.example.isShow = true
                     }">
-                    数据示例</div>
+                    {{ $t('数据示例') }}</div>
                 <slot v-if="formData.format === 'value'" />
                 <render-variable
                     v-if="formData.format === 'variable'"
@@ -55,7 +55,7 @@
                 />
                 <bk-input
                     v-if="formData.format === 'event'"
-                    value="参数值由组件事件提供"
+                    :value="$t('参数值由组件事件提供')"
                     disabled
                 ></bk-input>
             </div>
@@ -93,11 +93,11 @@
     })
 
     const formatTypeMap = {
-        value: '值',
-        variable: '变量',
-        dataSource: '数据表',
-        expression: '表达式',
-        event: '事件'
+        value: window.i18n.t('值'),
+        variable: window.i18n.t('变量'),
+        dataSource: window.i18n.t('数据表'),
+        expression: window.i18n.t('表达式'),
+        event: window.i18n.t('事件')
     }
 
     export default {

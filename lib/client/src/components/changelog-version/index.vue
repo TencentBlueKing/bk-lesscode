@@ -11,7 +11,7 @@
         :get-version-list="handleGetVersionList">
         <template v-slot:default="content">
             <div v-if="content.detail">
-                <h2>【{{content.detail}}】版本更新明细</h2>
+                <h2>{{ `【${content.detail}】${$t('版本更新明细')}`}}</h2>
                 <div v-for="(currentDetail, index) in versionMassage.currentDetailList" :key="index">
                     <h1 class="change-log-header">{{currentDetail.reviseTitle}}</h1>
                     <ul>

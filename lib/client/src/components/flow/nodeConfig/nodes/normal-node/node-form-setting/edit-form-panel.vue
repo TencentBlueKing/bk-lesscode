@@ -21,7 +21,8 @@
                         :custom-save="true"
                         :hide-preview="!isCreateTicketPage"
                         :hide-func="!isCreateTicketPage"
-                        :hide-clear="isUseForm"
+                        :disabled="isUseForm"
+                        :disabled-tips="isUseForm ? '复用表单模式下表单不可编辑' : ''"
                         :custom-loading="savePending"
                         @save="handleSave">
                     </action-tool>
@@ -80,7 +81,7 @@
         },
         computed: {
             ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig', 'initialFieldIds']),
-            ...mapState('nocode/flow', ['flowConfig', 'delCreateTicketPageId']),
+            ...mapState('nocode/flow', ['flowConfig']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             projectId () {
                 return this.$route.params.projectId
@@ -191,16 +192,11 @@
                     const res = await this.saveFormConfig()
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { id: res.formId })
                     this.$store.commit('nocode/flow/setFlowNodeFormId', { nodeId: this.nodeData.id, formId: res.formId })
-                    await this.updateItsmNode(this.formConfig.id)
+                    const nodeConfig = await this.updateItsmNode(this.formConfig.id)
+                    this.$store.commit('nocode/nodeConfig/setNodeData', nodeConfig)
                     await this.updateFormName()
-                    if (this.delCreateTicketPageId) { // 流程提单页被删除
-                        await this.$store.dispatch('page/delete', { pageId: this.delCreateTicketPageId })
-                        await this.$store.dispatch('nocode/flow/editFlow', { pageId: 0, id: this.flowConfig.id })
-                        this.$store.commit('nocode/flow/setDeletedPageId', null)
-                        this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
-                    }
                     this.$bkMessage({
-                        message: '表单保存成功，表单配置关联数据表变更成功',
+                        message: window.i18n.t('表单保存成功，表单配置关联数据表变更成功'),
                         theme: 'success'
                     })
                     this.$emit('save')
@@ -212,8 +208,9 @@
             },
             handleBack (type) {
                 this.$bkInfo({
-                    title: '确认离开?',
-                    subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                    title: this.$t('确认离开'),
+                    okText: window.i18n.t('离开'),
+                    subTitle: this.$t('您将离开画布编辑页面，请确认相应修改已保存'),
                     confirmFn: async () => {
                         this.$emit(type)
                     }

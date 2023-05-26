@@ -23,8 +23,8 @@
         data () {
             return {
                 panels: [
-                    { name: 'project', label: '按应用' },
-                    { name: 'time', label: '按时间' }
+                    { name: 'project', label: window.i18n.t('按应用') },
+                    { name: 'time', label: window.i18n.t('按时间') }
                 ],
                 active: ''
             }

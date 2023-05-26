@@ -2,10 +2,10 @@
     <ul class="palette-panel">
         <li v-for="node in nodeTypeList" v-bk-tooltips.right="node.name" :key="node.type">
             <div v-if="node.type === 'START'" class="start-node" data-type="START">
-                <span>开始</span>
+                <span>{{ $t('开始') }}</span>
             </div>
             <div v-else-if="node.type === 'END'" class="end-node" data-type="END">
-                <span>结束</span>
+                <span>{{ $t('结束') }}</span>
             </div>
             <div
                 v-else
@@ -53,7 +53,7 @@
       display: block;
       font-size: 12px;
       color: #979ba5;
-      transform: scale(0.6);
+      transform: scale(0.5);
       white-space: nowrap;
     }
   }

@@ -8,7 +8,7 @@
             @delete="handleDelete"
         >
             <section class="limit-wrapper">
-                <span class="limit-title">开始</span>
+                <span class="limit-title">{{ $t('开始') }}</span>
                 <select-value
                     class="limit-number"
                     :value="renderLimit && renderLimit.index"
@@ -17,7 +17,7 @@
                 />
             </section>
             <section class="limit-wrapper">
-                <span class="limit-title">长度</span>
+                <span class="limit-title">{{ $t('长度') }}</span>
                 <select-value
                     class="limit-number"
                     :value="renderLimit && renderLimit.length"

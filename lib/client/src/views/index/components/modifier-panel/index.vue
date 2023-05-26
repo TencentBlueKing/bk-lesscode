@@ -17,12 +17,12 @@
                         class="bk-drag-icon bk-drag-delet mr5"
                         id="del-component-right-sidebar"
                         @click="handleRemoveElement"
-                        v-bk-tooltips="'删除'" />
+                        v-bk-tooltips="$t('删除')" />
                     <i class="bk-drag-icon"
                         v-show="componentData.isInteractiveComponent"
                         :class="componentData.interactiveShow ? 'bk-drag-visible-eye' : 'bk-drag-invisible-eye'"
                         @click="handleToggleInteractiveShow"
-                        v-bk-tooltips="componentData.interactiveShow ? '隐藏' : '显示'" />
+                        v-bk-tooltips="componentData.interactiveShow ? $t('隐藏') : $t('显示')" />
                 </div>
             </div>
             <material-modifier />
@@ -32,7 +32,7 @@
                 :href="componentDocument"
                 target="_blank">
                 <i class="bk-drag-icon bk-drag-jump-link"></i>
-                <span>查看详细属性文档</span>
+                <span>{{ $t('查看详细属性文档') }}</span>
             </a>
         </div>
     </div>

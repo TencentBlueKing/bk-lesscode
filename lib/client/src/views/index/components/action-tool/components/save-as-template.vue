@@ -14,8 +14,8 @@
             return {
                 item: {
                     icon: 'bk-drag-icon bk-drag-templateline',
-                    text: '存为模板',
-                    tips: '将画布内容区域（不包含导航部分）存为模板',
+                    text: window.i18n.t('存为模板'),
+                    tips: window.i18n.t('将画布内容区域（不包含导航部分）存为模板'),
                     func: this.toggleShowTemplateDialog
                 }
             }
@@ -31,7 +31,7 @@
                     return result
                 }, [])
                 if (excludeInteractiveChildrenJSON.length < 1) {
-                    this.messageError('页面模板不能为空')
+                    this.messageError(window.i18n.t('页面模板不能为空'))
                     return
                 }
                 // 需要新建一个gird包裹整个页面

@@ -10,7 +10,7 @@
 -->
 
 <script>
-    import { computed, defineComponent, reactive, toRefs } from '@vue/composition-api'
+    import { computed, defineComponent, reactive, toRefs, ref } from '@vue/composition-api'
     import { getFileUrl, isImageFile } from '@/components/filelib/helper'
     import FileModal from './file-modal.vue'
 
@@ -22,11 +22,11 @@
             value: String,
             placeholder: {
                 type: String,
-                default: '可选择或粘贴链接'
+                default: ''
             },
             triggerText: {
                 type: String,
-                default: '选择图片'
+                default: ''
             },
             fileType: {
                 type: String,
@@ -46,6 +46,8 @@
                 isShowPreviewViewer: false,
                 previewFileList: []
             })
+            const isPlaceholder = props.placeholder || ref(window.i18n.t('可选择或粘贴链接'))
+            const isTriggerText = props.trigger || ref(window.i18n.t('选择图片'))
 
             const url = computed({
                 get () {
@@ -58,7 +60,7 @@
             })
 
             const inputPrpos = {
-                placeholder: props.placeholder
+                placeholder: isPlaceholder
             }
 
             const modalProps = {
@@ -102,6 +104,8 @@
                 url,
                 inputPrpos,
                 modalProps,
+                isPlaceholder,
+                isTriggerText,
                 handleOpenFileModal,
                 handleSelectFile,
                 handleViewFile,
@@ -117,7 +121,7 @@
             <template #append>
                 <div :class="$style['trigger']" @click="handleOpenFileModal">
                     <slot name="trigger">
-                        <div :class="$style['trigger-text']">{{triggerText}}</div>
+                        <div :class="$style['trigger-text']">{{isTriggerText}}</div>
                     </slot>
                 </div>
             </template>

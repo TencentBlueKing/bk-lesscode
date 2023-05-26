@@ -93,7 +93,7 @@
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :data="projectList">
-            <bk-table-column label="应用名称" prop="projectName" min-width="210" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_应用名称')" prop="projectName" min-width="210" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <div :class="['name-content', { favorite: row.favorite }]">
                         <auth-button
@@ -108,24 +108,24 @@
                         </auth-button>
                         <span class="favorite-btn" v-if="row.canDevelop">
                             <i :class="['bk-drag-icon', `bk-drag-favorite${row.favorite ? '' : '-o' }`]"
-                                v-bk-tooltips.top="{ content: row.favorite ? '取消收藏' : '添加收藏' }"
+                                v-bk-tooltips.top="{ content: row.favorite ? $t('取消收藏') : $t('添加收藏') }"
                                 @click.stop="handleClickFavorite(row)"
                             ></i>
                         </span>
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="更新人" prop="updateUser" min-width="90" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{getUpdateInfo(row).updateUser}}
                 </template>
             </bk-table-column>
-            <bk-table-column label="更新时间" prop="updateTime" min-width="200" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{getUpdateInfo(row).updateTimeFromNow}}
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作" min-width="150">
+            <bk-table-column :label="$t('操作')" min-width="150">
                 <template v-slot="{ row }">
                     <!-- <bk-button class="edit-btn" text theme="primary" @click="handleGotoPage(row.id)">开发应用</bk-button>
                     <bk-button class="preview-btn" text @click.stop="handlePreview(row.id)">预览</bk-button> -->
@@ -137,8 +137,7 @@
                         :disabled="row.isExecuteDisable"
                         class="edit-btn"
                         @click="handleGotoPage(row.id)">
-                        开发应用
-                    </auth-button>
+                        {{ $t('开发应用') }} </auth-button>
                     <auth-button
                         text
                         :permission="row.canDevelop"
@@ -147,16 +146,14 @@
                         :disabled="row.isExecuteDisable"
                         class="preview-btn"
                         @click.stop="handlePreview(row.id)">
-                        预览
-                    </auth-button>
+                        {{ $t('预览') }} </auth-button>
                     <auth-button
                         text
                         :permission="row.canDeploy"
                         auth="deploy_app"
                         :resource-id="row.id"
                         @click.stop="handleRelease(row.id)">
-                        部署
-                    </auth-button>
+                        {{ $t('部署') }} </auth-button>
                     <bk-popover class="more-dot-menu"
                         placement="bottom-start"
                         theme="project-manage-more-dot-menu light"
@@ -175,20 +172,20 @@
                             <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]"><a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a></li> -->
                             <li>
                                 <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
-                                    <a href="javascript:;" slot="forbid">下载源码</a>
-                                    <a href="javascript:;" slot="allow" @click="handleDownloadSource(row)">下载源码</a>
+                                    <a href="javascript:;" slot="forbid">{{ $t('下载源码') }}</a>
+                                    <a href="javascript:;" slot="allow" @click="handleDownloadSource(row)">{{ $t('下载源码') }}</a>
                                 </auth-component>
                             </li>
                             <li>
                                 <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
-                                    <a href="javascript:;" slot="forbid">页面管理</a>
-                                    <a href="javascript:;" slot="allow" @click="handleGotoPage(row.id)">页面管理</a>
+                                    <a href="javascript:;" slot="forbid">{{ $t('页面管理') }}</a>
+                                    <a href="javascript:;" slot="allow" @click="handleGotoPage(row.id)">{{ $t('页面管理') }}</a>
                                 </auth-component>
                             </li>
                             <li>
                                 <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
-                                    <a href="javascript:;" slot="forbid">重命名</a>
-                                    <a href="javascript:;" slot="allow" @click="handleRename(row)">重命名</a>
+                                    <a href="javascript:;" slot="forbid">{{ $t('重命名') }}</a>
+                                    <a href="javascript:;" slot="allow" @click="handleRename(row)">{{ $t('重命名') }}</a>
                                 </auth-component>
                             </li>
                             <!-- <li>
@@ -199,8 +196,8 @@
                             </li> -->
                             <li>
                                 <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
-                                    <a href="javascript:;" slot="forbid">复制</a>
-                                    <a href="javascript:;" slot="allow" @click="handleCopy(row)">复制</a>
+                                    <a href="javascript:;" slot="forbid">{{ $t('复制') }}</a>
+                                    <a href="javascript:;" slot="allow" @click="handleCopy(row)">{{ $t('复制') }}</a>
                                 </auth-component>
                             </li>
                             <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
@@ -208,7 +205,7 @@
                                     <a href="javascript:;" slot="forbid">设为模板</a>
                                     <a href="javascript:;" slot="allow" @click="handleSetTemplate(row)">设为模板</a>
                                 </auth-component> -->
-                                <a href="javascript:;" @click="handleSetTemplate(row)">设为模板</a>
+                                <a href="javascript:;" @click="handleSetTemplate(row)">{{ $t('设为模板') }}</a>
                             </li>
                         </ul>
                     </bk-popover>

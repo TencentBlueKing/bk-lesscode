@@ -12,7 +12,7 @@
                         </i>
                     </div>
                 </template>
-                <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ `规则${groupIndex + 1}` }}</p>
+                <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ ($t('规则{0}'), [(groupIndex + 1)]) }}</p>
                 <!-- 判断是不是评分组件 -->
                 <template v-if="field.type === 'RATE' && isCurrentTable">
                     <RateValueRule
@@ -29,12 +29,11 @@
                             class="relation-item"
                             v-for="(relation, index) in rule.relations"
                             :key="`${relation.field}_${relation.type}_${index}`">
-                            当
-                            <bk-select
+                            {{ $t('当') }} <bk-select
                                 v-model="relation.field"
                                 style="width: 130px;"
                                 size="small"
-                                placeholder="表单字段"
+                                :placeholder="$t('表单字段')"
                                 :loading="!isCurrentTable && formListLoading"
                                 :disabled="disabled"
                                 @change="change">
@@ -45,22 +44,23 @@
                                     :name="item.name">
                                 </bk-option>
                             </bk-select>
-                            等于
-                            <bk-select
+                            {{ $t('等于') }} <bk-select
                                 style="width: 80px;"
                                 size="small"
                                 :clearable="false"
+                                :placeholder="$t('请选择')"
                                 :disabled="disabled"
                                 :value="relation.type"
                                 @change="handleRelValTypeChange(relation, $event)">
-                                <bk-option id="CONST" name="常量"></bk-option>
-                                <bk-option id="VAR" name="变量"></bk-option>
+                                <bk-option id="CONST" :name="$t('常量')"></bk-option>
+                                <bk-option id="VAR" :name="$t('变量')"></bk-option>
                             </bk-select>
                             <div class="field-value" style="width: 160px; line-height: initial">
                                 <bk-select
                                     v-if="relation.type === 'VAR'"
                                     v-model="relation.value"
                                     size="small"
+                                    :placeholder="$t('请选择')"
                                     :disabled="disabled"
                                     @change="change">
                                     <bk-option
@@ -84,24 +84,25 @@
                         </div>
                     </div>
                     <div class="target-value" :key="`${rule.target.type}_${rule.target_value}_${groupIndex}`">
-                        <span style="white-space: nowrap;">值为</span>
+                        <span style="white-space: nowrap;">{{ $t('值为') }}</span>
                         <bk-select
                             v-if="isCurrentTable"
                             :value="rule.target.type"
                             style="margin-left: 8px; width: 80px;"
                             size="small"
+                            :placeholder="$t('请选择')"
                             :clearable="false"
                             :disabled="disabled"
                             @change="handleTargetVarValTypeChange(rule.target, $event)">
-                            <bk-option id="CONST" name="常量"></bk-option>
-                            <bk-option id="VAR" name="变量"></bk-option>
+                            <bk-option id="CONST" :name="$t('常量')"></bk-option>
+                            <bk-option id="VAR" :name="$t('变量')"></bk-option>
                         </bk-select>
-                        <div style="margin-left: 8px; width: 160px;">
+                        <div style="margin-left: 8px; width: 170px;">
                             <bk-select
                                 v-if="rule.target.type === 'VAR'"
                                 v-model="rule.target.value"
                                 size="small"
-                                :placeholder="isCurrentTable ? '请选择本表字段' : '请选择他表字段'"
+                                :placeholder="isCurrentTable ? $t('请选择本表字段') : $t('请选择他表字段')"
                                 :loading="!isCurrentTable && formListLoading"
                                 :disabled="disabled"
                                 @change="change">
@@ -129,8 +130,7 @@
             :text="true"
             :disabled="disabled"
             @click="handleAddGroup()">
-            继续添加规则
-        </bk-button>
+            {{ $t('继续添加规则') }} </bk-button>
     </div>
 </template>
 <script>

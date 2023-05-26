@@ -3,7 +3,7 @@
         <h3 class="list-head">
             <bk-input
                 class="head-input"
-                placeholder="请输入"
+                :placeholder="$t('请输入')"
                 right-icon="bk-icon icon-search"
                 clearable
                 v-model="searchGroupString"
@@ -20,7 +20,7 @@
                 <div slot="content">
                     <bk-input
                         class="add-function-group"
-                        placeholder="请输入函数分类，多个分类 / 分隔，回车保存"
+                        :placeholder="$t('请输入函数分类，多个分类 / 分隔，回车保存')"
                         right-icon="loading"
                         ref="addGroupInput"
                         v-bkloading="{ isLoading: isLoadingCreateGroup }"
@@ -28,7 +28,7 @@
                         @enter="handleCreateGroup"
                     ></bk-input>
                 </div>
-                <i class="bk-icon icon-plus" v-bk-tooltips.top="'添加分类'"></i>
+                <i class="bk-icon icon-plus" v-bk-tooltips.top="$t('添加分类')"></i>
             </bk-popconfirm>
         </h3>
 
@@ -63,7 +63,7 @@
                 >
                     <div slot="content">
                         <bk-input
-                            placeholder="请输入函数分类"
+                            :placeholder="$t('请输入函数分类')"
                             class="add-function-group"
                             :ref="group.id"
                             v-model="group.tempName"
@@ -100,7 +100,7 @@
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
-            title="确定删除？"
+            :title="$t('确定删除？')"
             width="400"
             footer-position="center"
             :mask-close="false"
@@ -111,8 +111,8 @@
                 <bk-button
                     theme="danger"
                     :loading="delObj.loading"
-                    @click="confirmDeleteGroup">删除</bk-button>
-                <bk-button @click="delObj.show = false" :disabled="delObj.loading">取消</bk-button>
+                    @click="confirmDeleteGroup">{{ $t('删除') }}</bk-button>
+                <bk-button @click="delObj.show = false" :disabled="delObj.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -216,7 +216,7 @@
                 if (group.funcCount > 0) {
                     return {
                         hasPermission: false,
-                        message: '该分类下有函数，不能删除'
+                        message: window.i18n.t('该分类下有函数，不能删除')
                     }
                 }
 
@@ -250,7 +250,7 @@
                         }]
                     }).then(() => {
                         this.clickEmptyArea()
-                        this.messageSuccess('修改成功')
+                        this.messageSuccess(window.i18n.t('修改成功'))
                         this.initData()
                     }).finally(() => {
                         this.isLoadingCreateGroup = false
@@ -265,7 +265,7 @@
 
                 this.delObj.show = true
                 this.delObj.id = group.id
-                this.delObj.nameTips = `删除分类（${group.groupName}）`
+                this.delObj.nameTips = window.i18n.t('删除分类（{0}）', [group.groupName])
             },
 
             confirmDeleteGroup () {
@@ -273,7 +273,7 @@
                 this.deleteFunctionGroup({
                     funcGroupId: this.delObj.id
                 }).then(() => {
-                    this.messageSuccess('删除成功')
+                    this.messageSuccess(window.i18n.t('删除成功'))
                     this.initData()
                     this.delObj.show = false
                 }).finally(() => {
@@ -292,7 +292,7 @@
                     this.createFunctionGroup(postData).then((res) => {
                         this.newGroupName = ''
                         this.clickEmptyArea()
-                        this.messageSuccess('添加成功')
+                        this.messageSuccess(window.i18n.t('添加成功'))
                         this.initData()
                     }).finally(() => {
                         this.isLoadingCreateGroup = false
@@ -312,11 +312,11 @@
                         else nameNum[name] = 1
                     })
                     if (hasRepeatName) {
-                        reject(new Error('不能创建相同名字的分类'))
+                        reject(new Error(window.i18n.t('不能创建相同名字的分类')))
                     } else if (nameList.some(x => x === '')) {
-                        reject(new Error('分类名不能为空'))
+                        reject(new Error(window.i18n.t('分类名不能为空')))
                     } else if (this.groupList.find(group => nameList.includes(group.groupName))) {
-                        reject(new Error('分类名重复，请修改后重试'))
+                        reject(new Error(window.i18n.t('分类名重复，请修改后重试')))
                     } else {
                         resolve()
                     }

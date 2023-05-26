@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        :title="`【${[title]}】字段只读条件设置`"
+        :title="`【${title}】${$t('字段只读条件设置')}`"
         header-position="left"
         ext-cls="formula-config-dialog"
         :mask-close="false"

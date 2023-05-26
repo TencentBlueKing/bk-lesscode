@@ -2,7 +2,7 @@
     <div class="class-list" v-bkloading="{ isLoading }">
         <div class="header">
             <bk-input :value="searchValue" @change="handleSearch" />
-            <div class="create-btn" v-bk-tooltips.top="'添加分类'" role="operation" @click.stop="handleShowCreate">
+            <div class="create-btn" v-bk-tooltips.top="$t('添加分类')" role="operation" @click.stop="handleShowCreate">
                 <i class="bk-icon icon-plus-line" />
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <bk-input
                     v-model="newCategory"
                     :native-attributes="{ autofocus: 'autofocus' }"
-                    placeholder="请输入组件分类，多个分类“/”分隔，回车结束"
+                    :placeholder="$t('请输入组件分类，多个分类“/”分隔，回车结束')"
                     @keyup="handleSubmitCategory" />
             </div>
         </div>
@@ -200,7 +200,7 @@
                 }
                 const isDupName = this.list.some(_ => _.category === value)
                 if (isDupName) {
-                    this.messageError('分类重名')
+                    this.messageError(window.i18n.t('分类重名'))
                 }
                 try {
                     if (this.editCategory.id) {
@@ -209,14 +209,14 @@
                             name: this.newCategory,
                             belongProjectId: parseInt(this.$route.params.projectId)
                         })
-                        this.messageSuccess('编辑组件分类成功')
+                        this.messageSuccess(window.i18n.t('编辑组件分类成功'))
                     } else {
                         await this.$store.dispatch('components/categoryCreate', {
                             name: this.newCategory,
                             belongProjectId: parseInt(this.$route.params.projectId)
                         })
                         this.searchValue = ''
-                        this.messageSuccess('添加组件分类成功')
+                        this.messageSuccess(window.i18n.t('添加组件分类成功'))
                     }
 
                     this.handleHideCreate()
@@ -230,7 +230,7 @@
             },
             async handleDelete (category) {
                 if (this.list.length === 1) {
-                    this.messageError('组件分类不能为空')
+                    this.messageError(window.i18n.t('组件分类不能为空'))
                     return
                 }
                 try {
@@ -240,7 +240,7 @@
                         id: category.id
                     })
                     this.fetchData()
-                    this.messageSuccess('删除组件分类成功')
+                    this.messageSuccess(window.i18n.t('删除组件分类成功'))
                 } catch {}
             },
             handlerClearSearch (searchName) {

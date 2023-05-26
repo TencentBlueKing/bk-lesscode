@@ -10,18 +10,18 @@
 -->
 
 <template>
-    <style-layout title="外边距" :icon-show="true" @reset="handleReset">
+    <style-layout :title="$t('外边距')" :icon-show="true" @reset="handleReset">
         <div class="margin-style-container">
             <div class="margin-style-col-container">
                 <margin-style
-                    name="上"
+                    :name="$t('上')"
                     :value="marginTopValue"
                     :unit="marginTopUnit"
                     @inputChange="handleInputChange('marginTop', $event)"
                     @selectChange="handleSelectChange('marginTop', $event)"
                 ></margin-style>
                 <margin-style
-                    name="左"
+                    :name="$t('左')"
                     :value="marginLeftValue"
                     :unit="marginLeftUnit"
                     @inputChange="handleInputChange('marginLeft', $event)"
@@ -30,14 +30,14 @@
             </div>
             <div class="margin-style-col-container">
                 <margin-style
-                    name="下"
+                    :name="$t('下')"
                     :value="marginBottomValue"
                     :unit="marginBottomUnit"
                     @inputChange="handleInputChange('marginBottom', $event)"
                     @selectChange="handleSelectChange('marginBottom', $event)"
                 ></margin-style>
                 <margin-style
-                    name="右"
+                    :name="$t('右')"
                     :value="marginRightValue"
                     :unit="marginRightUnit"
                     @inputChange="handleInputChange('marginRight', $event)"

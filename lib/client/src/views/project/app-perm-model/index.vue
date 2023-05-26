@@ -3,33 +3,32 @@
         <section class="app-perm-model-head">
             <bk-alert type="info" closable style="flex: 1">
                 <template slot="title">
-                    <div>应用权限模型：即应用内部权限控制模型设计</div>
+                    <div>{{ $t('应用权限模型：即应用内部权限控制模型设计') }}</div>
                     <div class="tips">
-                        <p>注意：</p>
-                        <p>1. 应用权限模型在应用预览环境、预发布环境不生效</p>
-                        <p>2. 应用需部署至生产环境后，最新权限模型方可在生产环境生效</p>
-                        <p>3. 应用未部署至生产环境时，系统管理员默认为本应用创建者，并不可修改；应用部署至生产环境之后，系统管理员可在权限中心设置</p>
-                        <p>4. 系统管理员可以设置该应用的系统管理员，设置入口：权限中心 -> 权限管理 -> 系统管理员</p>
-                        <p>5. 系统管理员也可以设置该应用的权限审批流程，设置入口：权限中心 -> 权限管理 -> 审批流程</p>
-                        <p>6. 权限中心自定义权限默认审批流程为：【审批节点：申请人上级审批确认 -> 系统管理员审批】，系统管理员可根据自己的需求修改审批流程</p>
+                        <p>{{ $t('注意：') }}</p>
+                        <p>1. {{ $t('应用权限模型在应用预览环境、预发布环境不生效') }}</p>
+                        <p>2. {{ $t('应用需部署至生产环境后，最新权限模型方可在生产环境生效') }}</p>
+                        <p>3. {{ $t('应用未部署至生产环境时，系统管理员默认为本应用创建者，并不可修改；应用部署至生产环境之后，系统管理员可在权限中心设置') }}</p>
+                        <p>4. {{ $t('系统管理员可以设置该应用的系统管理员，设置入口：权限中心 -> 权限管理 -> 系统管理员') }}</p>
+                        <p>5. {{ $t('系统管理员也可以设置该应用的权限审批流程，设置入口：权限中心 -> 权限管理 -> 审批流程') }}</p>
+                        <p>6. {{ $t('权限中心自定义权限默认审批流程为：【审批节点：申请人上级审批确认 -> 系统管理员审批】，系统管理员可根据自己的需求修改审批流程') }}</p>
                     </div>
                 </template>
             </bk-alert>
         </section>
         <div class="system-manager-wrapper">
-            <div class="label">系统管理员: </div>
+            <div class="label" v-enClass="'en-label'">{{ $t('系统管理员:') }} </div>
             <div class="inner">
                 <div style="display: flex; align-items: center;" v-if="String(iamAppPerm.deployed) === '0'">
                     <span>{{iamAppPerm.createUser}}</span>
                 </div>
                 <div v-else>
-                    应用已部署至生产环境，请去<span class="already-deploy-msg" @click="goSystemManager">权限中心</span>查看或修改系统管理员
+                    {{ $t('应用已部署至生产环境，请去') }}<span class="already-deploy-msg" @click="goSystemManager">{{ $t('权限中心') }}</span>{{ $t('查看或修改系统管理员') }}
                 </div>
             </div>
         </div>
-        <bk-button theme="primary" title="新建" style="margin-bottom: 16px;" @click="showCreate">
-            新建
-        </bk-button>
+        <bk-button theme="primary" :title="$t('新建')" style="margin-bottom: 16px;" @click="showCreate">
+            {{ $t('新建') }} </bk-button>
 
         <bk-table :data="iamAppPermActionList"
             :outer-border="false"
@@ -38,25 +37,25 @@
             v-bkloading="{ isLoading }"
             class="app-perm-model-table">
             <!-- { actionName: '页面访问', actionId: 'IAM_APP_PERM_BUILDIN_ACTION', actionType: '查看(view)', actionDesc: '页面访问权限', relatedResource: ''} -->
-            <bk-table-column label="操作名称" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_操作名称')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
-                    {{row.actionName}}<span class="buildin" v-if="row.actionId === IAM_APP_PERM_BUILDIN_ACTION">内置</span>
+                    {{row.actionName}}<span class="buildin" v-if="row.actionId === IAM_APP_PERM_BUILDIN_ACTION">{{ $t('内置') }}</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作ID" prop="actionId" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="操作类型" show-overflow-tooltip>
+            <bk-table-column :label="$t('操作ID')" prop="actionId" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_操作类型')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div v-if="row.actionType" :title="row.actionType">{{row.actionType}}</div>
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作描述" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_操作描述')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div v-if="row.actionDesc" :title="row.actionDesc">{{row.actionDesc}}</div>
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="关联资源" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_关联资源')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="related-resource-wrapper" v-if="row.actionRelatedResourceList.length">
                         <div class="related-resource-item" v-for="(item, index) in row.actionRelatedResourceList" :key="index">
@@ -66,7 +65,7 @@
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="引用" show-overflow-tooltip>
+            <bk-table-column :label="$t('引用')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <template v-if="row.pageComponentRef && row.pageComponentRef.length">
                         <bk-popover placement="top">
@@ -83,27 +82,26 @@
                     </template>
                 </template>
             </bk-table-column>
-            <bk-table-column label="是否同步到权限中心" :render-header="renderHeader">
+            <bk-table-column :label="$t('table_是否同步到权限中心')" :render-header="renderHeader">
                 <template slot-scope="{ row }">
-                    <div v-if="row.registeredStatus === 1" style="color: #2dcb56">已同步</div>
-                    <div v-else-if="row.registeredStatus === 0" style="color: #979ba5">未同步</div>
-                    <div v-else style="color: #ff9c01">已更新未同步</div>
+                    <div v-if="row.registeredStatus === 1" style="color: #2dcb56">{{ $t('已同步') }}</div>
+                    <div v-else-if="row.registeredStatus === 0" style="color: #979ba5">{{ $t('未同步') }}</div>
+                    <div v-else style="color: #ff9c01">{{ $t('已更新未同步') }}</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作">
+            <bk-table-column :label="$t('操作')">
                 <template slot-scope="{ row }">
-                    <span class="table-btn" @click="showUpdate(row)">编辑</span>
+                    <span class="table-btn" @click="showUpdate(row)">{{ $t('编辑') }}</span>
                     <template v-if="row.pageComponentRef && row.pageComponentRef.length">
                         <span class="table-btn disable" v-bk-tooltips="{ content: '该操作已被绑定，无法删除', placements: ['right'] }">
-                            删除
-                        </span>
+                            {{ $t('删除') }} </span>
                     </template>
                     <template v-else>
                         <span class="table-btn" :class="row.actionId === IAM_APP_PERM_BUILDIN_ACTION ? 'disable' : ''" v-bk-tooltips="{
-                            content: '内置权限，无法删除',
+                            content: $t('内置权限，无法删除'),
                             placements: ['right'],
                             disabled: row.actionId !== IAM_APP_PERM_BUILDIN_ACTION
-                        }" @click="showDelete(row)">删除</span>
+                        }" @click="showDelete(row)">{{ $t('删除') }}</span>
                     </template>
                 </template>
             </bk-table-column>
@@ -123,7 +121,7 @@
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
-            title="确定删除？"
+            :title="$t('确定删除？')"
             width="400"
             footer-position="center"
             :mask-close="false"
@@ -133,8 +131,8 @@
                 <bk-button
                     theme="danger"
                     :loading="delObj.loading"
-                    @click="deleteAction">删除</bk-button>
-                <bk-button @click="delObj.show = false" :disabled="delObj.loading">取消</bk-button>
+                    @click="deleteAction">{{ $t('删除') }}</bk-button>
+                <bk-button @click="delObj.show = false" :disabled="delObj.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </article>
@@ -198,7 +196,7 @@
                     const list = await this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
                     list.forEach(item => {
                         item.pageComponentRefStrList = (item.pageComponentRef || []).map(
-                            ref => `页面【${ref.pageCode}】内的【${ref.componentId}】组件`
+                            ref => window.i18n.t('页面【{0}】内的【{1}】组件', [ref.pageCode, ref.componentId])
                         )
                     })
                     this.iamAppPermActionList.splice(0, this.iamAppPermActionList.length, ...list)
@@ -241,7 +239,7 @@
                 }
                 this.delObj.show = true
                 this.delObj.action = Object.assign({}, row)
-                this.delObj.nameTips = `删除操作【${row.actionName}】`
+                this.delObj.nameTips = window.i18n.t('删除操作【{0}】', [row.actionName])
             },
 
             async deleteAction () {
@@ -267,7 +265,7 @@
                     }
                     this.delObj.action = Object.assign({}, {})
                     this.delObj.show = false
-                    this.messageSuccess('删除成功')
+                    this.messageSuccess(window.i18n.t('删除成功'))
                     this.sidesliderSuccess()
                 } catch (e) {
                     console.error(e)
@@ -279,7 +277,7 @@
             renderHeader (h, data) {
                 const directive = {
                     name: 'bkTooltips',
-                    content: '应用部署生产环境后会自动同步至权限中心',
+                    content: window.i18n.t('应用部署生产环境后会自动同步至权限中心'),
                     placement: 'top'
                 }
                 return <a class="custom-header-cell" v-bk-tooltips={ directive }>{ data.column.label }</a>
@@ -306,6 +304,10 @@
             flex-basis: 16%;
             flex-grow: 0;
             flex-shrink: 0;
+        }
+        .en-label {
+            flex-basis: 30%;
+            margin-left: 70px;
         }
         .inner {
             flex-basis: 84%;

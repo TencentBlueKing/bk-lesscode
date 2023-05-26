@@ -9,7 +9,7 @@
             ref="tooltipsHtml">
             <bk-input
                 class="choose-variable"
-                placeholder="请选择变量"
+                :placeholder="$t('请选择变量')"
                 :value="formData.code"
                 readonly />
             <i
@@ -32,7 +32,7 @@
         </div>
         <div class="variable-list">
             <bk-input
-                placeholder="请输入变量名称或者标识进行搜索"
+                :placeholder="$t('请输入变量名称或者标识进行搜索')"
                 behavior="simplicity"
                 class="variable-input"
                 left-icon="bk-icon icon-search"
@@ -58,17 +58,17 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column
-                    label="变量名称"
+                    :label="$t('table_变量名称')"
                     prop="variableName"
                     show-overflow-tooltip
                     width="120" />
                 <bk-table-column
-                    label="变量标识"
+                    :label="$t('变量标识')"
                     prop="variableCode"
                     show-overflow-tooltip
                     width="120" />
                 <bk-table-column
-                    label="初始类型"
+                    :label="$t('table_初始类型')"
                     show-overflow-tooltip
                     width="120">
                     <template slot-scope="props">
@@ -76,7 +76,7 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column
-                    label="默认值"
+                    :label="$t('默认值')"
                     width="220">
                     <template slot-scope="props">
                         <span
@@ -88,15 +88,14 @@
                         </span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="操作" width="60">
+                <bk-table-column :label="$t('操作')" width="60">
                     <template slot-scope="props">
                         <span>
                             <bk-button
                                 text
                                 @click.native.stop="handleEditVariable(props.row)"
                             >
-                                编辑
-                            </bk-button>
+                                {{ $t('编辑') }} </bk-button>
                         </span>
                     </template>
                 </bk-table-column>
@@ -107,23 +106,20 @@
                     title="primary"
                     @click="handleEditVariable()">
                     <i class="bk-drag-icon bk-drag-add-line"></i>
-                    新建变量
-                </bk-button>
+                    {{ $t('新建变量') }} </bk-button>
                 <bk-button
                     :text="true"
                     title="primary"
                     @click="handleGoGlobalVariableManage">
                     <i class="bk-drag-icon bk-drag-jump-link"></i>
-                    管理应用级公共变量
-                </bk-button>
+                    {{ $t('管理应用级公共变量') }} </bk-button>
             </footer>
         </div>
         <div v-if="remoteConfig.show">
             <span
                 class="remote-example"
                 @click="handleShowRemoteExample">
-                数据示例
-            </span>
+                {{ $t('数据示例') }} </span>
             <remote-example
                 ref="example"
                 :data="remoteConfig" />
@@ -197,10 +193,10 @@
                         && (this.options.valueTypeInclude
                             && !this.options.valueTypeInclude.includes(variableValueTypeStr))) {
                         useInfo.disabled = true
-                        useInfo.tips = '变量初始类型不适合该属性'
+                        useInfo.tips = this.$t('变量初始类型不适合该属性')
                     } else if (customVariableInfo) {
                         useInfo.disabled = true
-                        useInfo.tips = `该变量使用在组件【ID：${customVariableInfo.componentId}】的【${customVariableInfo.key}】的自定义变量中，不可重复使用`
+                        useInfo.tips = this.$t('该变量使用在组件【ID：{0}】的【{1}】的自定义变量中，不可重复使用', [customVariableInfo.componentId, customVariableInfo.key])
                     }
                     return {
                         ...variable,
@@ -215,9 +211,9 @@
             this.renderVarialbeList = Object.freeze(this.wholeVariableList)
 
             this.envTextMap = {
-                all: '所有环境',
-                stag: '预发布环境',
-                prod: '生产环境'
+                all: this.$t('所有环境'),
+                stag: this.$t('预发布环境'),
+                prod: this.$t('生产环境')
             }
             this.htmlConfig = {
                 allowHtml: true,

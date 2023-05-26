@@ -21,8 +21,7 @@
                 </field-element>
             </template>
             <div v-else class="fields-empty">
-                请拖入组件
-            </div>
+                {{ $t('请拖入组件') }} </div>
         </draggable>
     </div>
 </template>
@@ -30,10 +29,10 @@
     import { mapMutations, mapGetters } from 'vuex'
     import draggable from 'vuedraggable'
     import cloneDeep from 'lodash.clonedeep'
-    import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
+    import { FIELDS_TYPES } from 'shared/no-code/constant'
     import FieldElement from '../form-edit/fieldElement.vue'
-    import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
+    import { generateFieldKey } from '../../../common/form'
     import { getTypeDefaultVal } from 'shared/no-code'
 
     export default {
@@ -94,8 +93,8 @@
             add (e) {
                 const { type } = e.item.dataset
                 const columnId = uuid(8)
-                const field = FIELDS_TYPES.find(item => item.type === type)
-                const key = this.generateKey(field.name, columnId)
+                const field = FIELDS_TYPES().find(item => item.type === type)
+                const key = generateFieldKey(field.name, columnId)
                 const config = {
                     columnId, // lesscode特定字段
                     type, // 类型
@@ -146,7 +145,8 @@
                     this.selectedIndex = index
                 } else if (type === 'copy') {
                     const columnId = uuid(8)
-                    const key = this.generateKey(field.name, columnId)
+                    const key = generateFieldKey(field.name, columnId)
+
                     field.columnId = columnId
                     field.key = key
                     field.id = null
@@ -154,8 +154,8 @@
                     this.selectedIndex = index + 1
                 } else if (type === 'delete') {
                     this.$bkInfo({
-                        title: '确认删除？',
-                        subTitle: '删除字段将会同时删除已存在该字段下的数据，你还要继续吗？',
+                        title: this.$t('确认删除？'),
+                        subTitle: this.$t('删除字段将会同时删除已存在该字段下的数据，你还要继续吗'),
                         theme: 'danger',
                         confirmFn: async () => {
                             this.$emit('delete', index)
@@ -169,14 +169,14 @@
             getDefaultChoice (type) {
                 if (['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(type)) {
                     return [
-                        { key: 'XUANXIANG1', name: '选项1', color: '#FF8C00', isDefaultVal: true },
-                        { key: 'XUANXIANG2', name: '选项2', color: '#3A84FF', isDefaultVal: false }
+                        { key: 'XUANXIANG1', name: this.$t('选项1'), color: '#FF8C00', isDefaultVal: true },
+                        { key: 'XUANXIANG2', name: this.$t('选项2'), color: '#3A84FF', isDefaultVal: false }
                     ]
                 }
                 if (['TABLE'].includes(type)) {
                     return [
-                        { key: 'LIE1', name: '列1', choice: [], display: '', required: false },
-                        { key: 'LIE2', name: '列2', choice: [], display: '', required: false }
+                        { key: 'LIE1', name: this.$t('列1'), choice: [], display: '', required: false },
+                        { key: 'LIE2', name: this.$t('列2'), choice: [], display: '', required: false }
                     ]
                 }
                 return []
@@ -188,15 +188,6 @@
                     isMax: false,
                     maxNum: 2
                 } : ''
-            },
-            generateKey (name, columnId) {
-                return pinyin(name, {
-                    style: pinyin.STYLE_NORMAL,
-                    heteronym: false
-                })
-                    .join('_')
-                    .toUpperCase()
-                    .concat(`_${columnId}`)
             },
             showFormPanel () {
                 this.curTemplateData.layoutType !== 'empty' && this.setCurTemplateData({

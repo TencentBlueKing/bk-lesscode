@@ -1,8 +1,8 @@
 <template>
     <div class="node-config-panel" v-bkloading="{ isLoading: nodeDetailLoading }">
         <div class="header-wrapper">
-            <bk-button size="small" @click="handleClose">返回</bk-button>
-            <h3 class="config-title">{{ typeName }}配置</h3>
+            <bk-button size="small" @click="handleClose">{{ $t('返回') }}</bk-button>
+            <h3 class="config-title">{{ $t('{n}配置',{ n: typeName })}}</h3>
         </div>
         <div class="config-content-wrapper">
             <component
@@ -72,7 +72,6 @@
         },
         beforeDestroy () {
             this.$store.commit('nocode/nodeConfig/clearNodeConfigData')
-            this.$store.commit('nocode/flow/setDeletedPageId', null)
         },
         methods: {
             async getNodeDetail () {
@@ -98,7 +97,8 @@
             },
             handleClose () {
                 this.$bkInfo({
-                    title: '此操作会导致您的编辑没有保存，确认吗？',
+                    title: this.$t('确认离开'),
+                    subTitle: this.$t('此操作会导致您的编辑没有保存，确认吗'),
                     type: 'warning',
                     width: 500,
                     confirmFn: () => {

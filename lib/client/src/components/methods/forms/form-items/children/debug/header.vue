@@ -1,5 +1,5 @@
 <template>
-    <ul class="debug-headers">
+    <ul class="debug-headers" v-enClass="'en-debug-headers'">
         <li
             v-for="panel in panels"
             v-bk-tooltips="{
@@ -71,7 +71,7 @@
                 top: 0;
                 left: 0;
                 height: 3px;
-                width: 108px;
+                width: 103px;
                 background: #3A84FF;
             }
         }
@@ -82,6 +82,16 @@
             margin-left: 8px;
             &.error {
                 background: #EA3636;
+            }
+        }
+    }
+    .en-debug-headers{
+        .debug-header {
+            width: 130px;
+        }
+        .active {
+            &::before {
+                width: 130px;
             }
         }
     }

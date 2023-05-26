@@ -15,7 +15,7 @@
             return {
                 item: {
                     icon: 'bk-drag-icon bk-drag-play',
-                    text: '预览',
+                    text: window.i18n.t('预览'),
                     func: this.handlePreview
                 }
             }
@@ -39,12 +39,12 @@
                 // await this.handleSave()
                 const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageDetail.id))
                 if (!pageRoute.id) {
-                    this.messageError('页面未配置路由，请先配置')
+                    this.messageError(window.i18n.t('页面未配置路由，请先配置'))
                     return
                 }
 
                 if (this.pageDetail.nocodeType === 'FORM' && !this.pageDetail.formId) {
-                    this.messageError('新创建的表单类型页面请先保存后再预览')
+                    this.messageError(window.i18n.t('新创建的表单类型页面请先保存后再预览'))
                     return
                 }
 

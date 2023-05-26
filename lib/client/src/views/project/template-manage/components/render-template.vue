@@ -2,12 +2,12 @@
     <section v-bkloading="{ isLoading: isLoading }" style="height: 100%">
         <main class="templates templates-content" v-show="!isLoading">
             <div class="templates-head">
-                <bk-button theme="primary" @click="handleImport">导入模板</bk-button>
+                <bk-button theme="primary" @click="handleImport">{{ $t('导入模板') }}</bk-button>
                 <div class="extra">
                     <type-select @select-change="handleSelectChange"></type-select>
                     <bk-input
                         :style="{ width: '400px' }"
-                        placeholder="请输入模板名称"
+                        :placeholder="$t('请输入模板名称')"
                         :clearable="true"
                         :right-icon="'bk-icon icon-search'"
                         v-model="keyword"
@@ -21,11 +21,11 @@
                     <div class="template-item" v-for="(template, index) in renderList" :key="index">
                         <div class="item-bd">
                             <div class="preview">
-                                <img :src="getPreviewImg(template.previewImg)" alt="页面缩略预览">
+                                <img :src="getPreviewImg(template.previewImg)" :alt="$t('页面缩略预览')">
                                 <div class="mask">
                                     <div class="operate-btns">
-                                        <bk-button class="edit-btn" theme="primary" @click.stop="handlePreview(template)">预览</bk-button>
-                                        <bk-button class="preview-btn" @click="handleDownloadSource(template)">下载源码</bk-button>
+                                        <bk-button class="edit-btn" theme="primary" @click.stop="handlePreview(template)">{{ $t('预览') }}</bk-button>
+                                        <bk-button class="preview-btn" v-enClass="'en-preview-btn'" :title="$t('下载源码')" @click="handleDownloadSource(template)">{{ $t('下载源码') }}</bk-button>
                                     </div>
                                 </div>
                             </div>
@@ -47,14 +47,14 @@
                                         <i class="bk-drag-icon bk-drag-more-dot"></i>
                                     </span>
                                     <ul class="bk-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(template.id)">
-                                        <li><a href="javascript:;" @click="handleEdit(template)">编辑</a></li>
-                                        <li><a href="javascript:;" @click="handleExport(template)">导出</a></li>
-                                        <li><a href="javascript:;" @click="handleDelete(template)">删除</a></li>
+                                        <li><a href="javascript:;" @click="handleEdit(template)">{{ $t('编辑') }}</a></li>
+                                        <li><a href="javascript:;" @click="handleExport(template)">{{ $t('导出') }}</a></li>
+                                        <li><a href="javascript:;" @click="handleDelete(template)">{{ $t('删除') }}</a></li>
                                     </ul>
                                 </bk-dropdown-menu>
                             </div>
                         </div>
-                        <span v-if="template.isOffcial" class="default-tag">公开模板</span>
+                        <span v-if="template.isOffcial" class="default-tag">{{ $t('公开模板') }}</span>
                     </div>
                 </div>
                 <empty-status class="empty" v-show="(!templateList.length || !renderList.length) && !isLoading" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
@@ -189,8 +189,8 @@
             },
             handleDelete (template) {
                 this.$bkInfo({
-                    title: '确认删除?',
-                    subTitle: `确认删除模板  “${template.templateName}”?`,
+                    title: window.i18n.t('确认删除?'),
+                    subTitle: window.i18n.t('确认删除模板  “{0}”?', [template.templateName]),
                     theme: 'danger',
                     confirmFn: async () => {
                         await this.$store.dispatch('pageTemplate/delete', {
@@ -213,7 +213,7 @@
                 if (!template.content) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '该模板内容为空'
+                        message: window.i18n.t('该模板内容为空')
                     })
                     return
                 }
@@ -433,7 +433,17 @@
                                 .preview-btn {
                                     width: 86px;
                                     margin-left: 10px;
-                                    margin-rihgt: 59px;
+                                
+                                }
+                                .en-preview-btn {
+                                    width: 100px;
+                                    /deep/ span {
+                                            display: block;
+                                            width: 80px;
+                                            overflow: hidden;
+                                            white-space: nowrap;
+                                            text-overflow: ellipsis;
+                                    }
                                 }
                             }
                         }

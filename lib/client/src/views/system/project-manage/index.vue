@@ -15,33 +15,33 @@
             <!-- 新建按钮 -->
             <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
                 <div class="dropdown-trigger-btn" slot="dropdown-trigger">
-                    <bk-button theme="primary" icon-right="icon-angle-down">新建</bk-button>
+                    <bk-button theme="primary" icon-right="icon-angle-down">{{ $t('新建') }}</bk-button>
                 </div>
                 <ul class="bk-dropdown-list" slot="dropdown-content">
                     <template v-if="iamEnable">
                         <li>
                             <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">空白应用</a>
-                                <a href="javascript:;" slot="allow" @click="handleCreate('newProject')">空白应用</a>
+                                <a href="javascript:;" slot="forbid">{{ $t('空白应用') }}</a>
+                                <a href="javascript:;" slot="allow" @click="handleCreate('newProject')">{{ $t('空白应用') }}</a>
                             </auth-component>
                         </li>
                         <li>
                             <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">从模板新建</a>
-                                <a href="javascript:;" slot="allow" @click="handleTempCreate">从模板新建</a>
+                                <a href="javascript:;" slot="forbid">{{ $t('从模板新建') }}</a>
+                                <a href="javascript:;" slot="allow" @click="handleTempCreate">{{ $t('从模板新建') }}</a>
                             </auth-component>
                         </li>
                         <li>
                             <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">导入应用</a>
-                                <a href="javascript:;" slot="allow" @click="handleCreate('importProject')">导入应用</a>
+                                <a href="javascript:;" slot="forbid">{{ $t('导入应用') }}</a>
+                                <a href="javascript:;" slot="allow" @click="handleCreate('importProject')">{{ $t('导入应用') }}</a>
                             </auth-component>
                         </li>
                     </template>
                     <template v-else>
-                        <li><a href="javascript:;" @click="handleCreate('newProject')">空白应用</a></li>
-                        <li><a href="javascript:;" @click="handleTempCreate">从模板新建</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('importProject')">导入应用</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('newProject')">{{ $t('空白应用') }}</a></li>
+                        <li><a href="javascript:;" @click="handleTempCreate">{{ $t('从模板新建') }}</a></li>
+                        <li><a href="javascript:;" @click="handleCreate('importProject')">{{ $t('导入应用') }}</a></li>
                     </template>
                 </ul>
             </bk-dropdown-menu>
@@ -55,10 +55,10 @@
                 </li>
             </ul>
             <div class="extra">
-                <span class="total" v-show="projectList.length">共<em class="count">{{projectList.length}}</em>个应用</span>
+                <span class="total" v-show="projectList.length">{{ $t('共') }}<em class="count">{{projectList.length}}</em>{{ $t('个应用') }}</span>
                 <bk-input
                     style="width: 260px"
-                    placeholder="请输入应用名称或描述"
+                    :placeholder="$t('请输入应用名称或描述')"
                     :clearable="true"
                     :right-icon="'bk-icon icon-search'"
                     v-model="keyword"
@@ -99,7 +99,7 @@
         <bk-dialog v-model="dialog.create.visible"
             render-directive="if"
             theme="primary"
-            width="750"
+            width="761"
             :position="{ top: 100 }"
             :mask-close="false"
             :auto-close="false"
@@ -107,7 +107,7 @@
             ext-cls="project-create-dialog">
             <span slot="header">
                 {{ createDialogTitle }}
-                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
+                <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: $t('创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块') }"></i>
             </span>
             <!-- 表单组件，根据projectType来判断是创建空白应用还是导入应用，还是从已有模板选择 -->
             <project-form
@@ -120,25 +120,25 @@
                 <bk-button
                     theme="primary"
                     :loading="dialog.create.loading"
-                    @click="handleCreateConfirm">确定</bk-button>
-                <bk-button @click="handleCancel('create')" :disabled="dialog.create.loading">取消</bk-button>
+                    @click="handleCreateConfirm">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleCancel('create')" :disabled="dialog.create.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
         <!-- 应用重命名弹窗 -->
         <bk-dialog v-model="dialog.rename.visible"
             theme="primary"
-            title="重命名"
+            :title="$t('重命名')"
             width="600"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
             @after-leave="handleRenameDialogAfterLeave">
             <bk-form ref="renameForm" class="rename-form" :label-width="90" :rules="dialog.rename.formRules" :model="dialog.rename.formData">
-                <bk-form-item label="应用名称" required property="projectName" error-display-type="normal">
+                <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
                     <bk-input ref="projectRenameInput"
                         maxlength="60"
                         v-model="dialog.rename.formData.projectName"
-                        placeholder="由汉字，英文字母，数字组成，20个字符以内">
+                        :placeholder="$t('由汉字，英文字母，数字组成，20个字符以内')">
                     </bk-input>
                 </bk-form-item>
             </bk-form>
@@ -147,8 +147,8 @@
                     theme="primary"
                     :disabled="activatedProject.projectName === dialog.rename.formData.projectName"
                     :loading="dialog.rename.loading"
-                    @click="handleRenameConfirm">确定</bk-button>
-                <bk-button @click="handleCancel('rename')" :disabled="dialog.rename.loading">取消</bk-button>
+                    @click="handleRenameConfirm">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleCancel('rename')" :disabled="dialog.rename.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
         <!-- 删除应用确认弹窗 -->
@@ -156,19 +156,19 @@
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
-            title="确认删除该应用？"
+            :title="$t('确认删除该应用？')"
             width="500"
             footer-position="center"
             :mask-close="false"
             :auto-close="false"
             @value-change="handleDeleteDialogToggle">
             <bk-form ref="deleteForm" class="delete-form" :label-width="0" :rules="dialog.delete.formRules" :model="dialog.delete.formData">
-                <p class="confirm-name">请输入<em title="复制名称">“{{activatedProject.projectName}}”</em>确认</p>
+                <p class="confirm-name">{{ $t('请输入') }}<em :title="$t('复制名称')">“{{activatedProject.projectName}}”</em>{{ $t('确认') }}</p>
                 <bk-form-item property="projectName" error-display-type="normal">
                     <bk-input
                         maxlength="60"
                         v-model="dialog.delete.formData.projectName"
-                        placeholder="请输入应用名称">
+                        :placeholder="$t('请输入应用名称')">
                     </bk-input>
                 </bk-form-item>
             </bk-form>
@@ -176,8 +176,8 @@
                 <bk-button
                     theme="danger"
                     :loading="dialog.delete.loading"
-                    @click="handleDeleteConfirm">删除</bk-button>
-                <bk-button @click="handleCancel('delete')" :disabled="dialog.delete.loading">取消</bk-button>
+                    @click="handleDeleteConfirm">{{ $t('删除') }}</bk-button>
+                <bk-button @click="handleCancel('delete')" :disabled="dialog.delete.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
 
@@ -193,7 +193,6 @@
 
 <script>
     import { mapGetters } from 'vuex'
-    import dayjs from 'dayjs'
     import ProjectForm from '../components/project-form'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import ExportDialog from '../components/export-dialog'
@@ -204,12 +203,8 @@
     import ListCard from './children/list-card.vue'
     import ListTable from './children/list-table.vue'
     import SetTemplateDialog from '../components/set-template-dialog.vue'
-    import relativeTime from 'dayjs/plugin/relativeTime'
-    import 'dayjs/locale/zh-cn'
-
-    dayjs.extend(relativeTime)
-    dayjs.locale('zh-cn')
-
+    import dayjs from '@/common/dayjs'
+    
     export default {
         components: {
             ProjectForm,
@@ -229,9 +224,9 @@
                 projectList: [],
                 pageMap: {},
                 filterLinks: [
-                    { name: '全部应用', value: '' },
-                    { name: '我创建的', value: 'my' },
-                    { name: '我收藏的', value: 'favorite' }
+                    { name: window.i18n.t('全部应用'), value: '' },
+                    { name: window.i18n.t('我创建的'), value: 'my' },
+                    { name: window.i18n.t('我收藏的'), value: 'favorite' }
                 ],
                 dialog: {
                     create: {
@@ -250,7 +245,7 @@
                             projectName: [
                                 {
                                     regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
-                                    message: '由汉字，英文字母，数字组成，20个字符以内',
+                                    message: window.i18n.t('由汉字，英文字母，数字组成，20个字符以内'),
                                     trigger: 'blur'
                                 }
                             ]
@@ -266,14 +261,14 @@
                             projectName: [
                                 {
                                     required: true,
-                                    message: '必填项',
+                                    message: window.i18n.t('必填项'),
                                     trigger: 'blur'
                                 },
                                 {
                                     validator: (val) => {
                                         return this.activatedProject.projectName === val
                                     },
-                                    message: '名称不一致，请重试',
+                                    message: window.i18n.t('名称不一致，请重试'),
                                     trigger: 'blur'
                                 }
                             ]
@@ -286,8 +281,8 @@
                 defaultLayoutList: [],
                 layoutFullList: [],
                 displayTypeIcons: [
-                    { name: 'card', icon: 'display-card', title: '卡片' },
-                    { name: 'list', icon: 'display-list', title: '列表' }
+                    { name: 'card', icon: 'display-card', title: window.i18n.t('卡片') },
+                    { name: 'list', icon: 'display-list', title: window.i18n.t('列表') }
                 ],
                 listComponent: ListCard.name,
                 sort: 'createTime', // 应用的默认排序为id相当于创建时间
@@ -308,7 +303,7 @@
             },
             createDialogTitle () {
                 const { projectType } = this.dialog.create
-                return projectType === 'copyProject' ? '复制应用' : (projectType === 'importProject') ? '导入应用' : '新建应用'
+                return projectType === 'copyProject' ? window.i18n.t('复制应用') : (projectType === 'importProject') ? window.i18n.t('导入应用') : window.i18n.t('新建应用')
             },
             emptyType () {
                 if (this.$route.query?.q?.length > 0) {
@@ -385,11 +380,11 @@
                 const latestPage = this.pageMap[project.id] ? this.pageMap[project.id][0] : null
                 return latestPage ? {
                     updateUser: latestPage.updateUser || 'admin',
-                    updateTimeFromNow: `${dayjs(latestPage.updateTime).fromNow()}更新`,
+                    updateTimeFromNow: window.i18n.t('{0}更新', [dayjs(latestPage.updateTime).fromNow()]),
                     updateTime: latestPage.updateTime
                 } : {
                     updateUser: project.createUser || 'admin',
-                    updateTimeFromNow: `${dayjs(project.createTime).fromNow()}创建`,
+                    updateTimeFromNow: window.i18n.t('{0}创建', [dayjs(project.createTime).fromNow()]),
                     updateTime: project.createTime
                 }
             },
@@ -421,7 +416,7 @@
                         if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: '请先上传符合规范的应用json'
+                                message: window.i18n.t('请先上传符合规范的应用json')
                             })
                             return
                         }
@@ -431,7 +426,7 @@
                     this.dialog.create.loading = true
                     const projectId = await this.$store.dispatch(actionMethod, { data })
 
-                    this.messageSuccess('应用创建成功')
+                    this.messageSuccess(window.i18n.t('应用创建成功'))
                     this.dialog.create.visible = false
 
                     setTimeout(() => {
@@ -450,7 +445,7 @@
                     if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
                         this.$bkMessage({
                             theme: 'error',
-                            message: '请先上传符合规范的应用json'
+                            message: window.i18n.t('请先上传符合规范的应用json')
                         })
                         return
                     }
@@ -459,7 +454,7 @@
                     this.dialog.create.loading = true
                     const projectId = await this.$store.dispatch('project/import', { data })
 
-                    this.messageSuccess('应用创建成功')
+                    this.messageSuccess(window.i18n.t('应用创建成功'))
                     this.dialog.create.visible = false
 
                     setTimeout(() => {
@@ -479,7 +474,7 @@
                         favorite
                     }
                     await this.$store.dispatch('project/favorite', { data })
-                    this.messageSuccess(`${favorite ? '添加' : '取消'}成功`)
+                    this.messageSuccess(`${favorite ? window.i18n.t('添加') : window.i18n.t('取消')}` + window.i18n.t('成功'))
 
                     // 更新数据状态
                     project.favorite = favorite
@@ -508,7 +503,7 @@
 
                     await this.$store.dispatch('project/update', { data })
 
-                    this.messageSuccess('重命名成功')
+                    this.messageSuccess(window.i18n.t('重命名成功'))
                     this.dialog.rename.visible = false
 
                     const activeProject = this.projectList.find(project => project.id === id)
@@ -531,7 +526,7 @@
 
                     await this.$store.dispatch('project/delete', { config: { data } })
 
-                    this.messageSuccess('删除成功')
+                    this.messageSuccess(window.i18n.t('删除成功'))
                     this.dialog.delete.visible = false
 
                     this.getProjectList()

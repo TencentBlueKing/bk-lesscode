@@ -5,24 +5,22 @@
             size="small"
             :text="true"
             @click="show = true">
-            查看变量
-        </bk-button>
+            {{ $t('查看变量') }} </bk-button>
         <bk-sideslider
-            title="变量列表"
+            :title="$t('变量列表')"
             transfer
             :is-show.sync="show"
             :quick-close="true"
             :width="900"
             @hidden="handleClose">
             <div class="header-wrapper" slot="header">
-                变量列表
-                <i class="bk-icon icon-info tips-icon" v-bk-tooltips="'可使用的流程变量是指，流程执行时该节点之前的流程节点输出到执行环境的变量，例如人工节点的字段、api节点响应数据中设置的全局变量'"></i>
+                {{ $t('变量列表') }} <i class="bk-icon icon-info tips-icon" v-bk-tooltips="$t('可使用的流程变量是指，流程执行时该节点之前的流程节点输出到执行环境的变量，例如人工节点的字段、api节点响应数据中设置的全局变量')"></i>
             </div>
             <section v-bkloading="{ isLoading: loading }" class="flow-variables-content" slot="content">
                 <div v-if="varList.length > 0" class="search-input-area">
                     <bk-input
                         style="width: 430px;"
-                        placeholder="请输入变量名称"
+                        :placeholder="$t('请输入变量名称')"
                         right-icon="icon-search"
                         :clearable="true"
                         :value="searchStr"
@@ -37,16 +35,16 @@
                             <h3>{{ group.name }}</h3>
                         </div>
                         <bk-table v-show="group.unfold" :outer-border="false" :data="group.fields">
-                            <bk-table-column label="变量名称" property="name" :width="200" show-overflow-tooltip></bk-table-column>
-                            <bk-table-column label="类型" property="type" :width="140">
+                            <bk-table-column :label="$t('table_变量名称')" property="name" :width="200" show-overflow-tooltip></bk-table-column>
+                            <bk-table-column :label="$t('类型')" property="type" :width="140">
                                 <template slot-scope="{ row }">
                                     <span class="var-type">{{ row.type }}</span>
                                 </template>
                             </bk-table-column>
                             <bk-table-column label="KEY" property="key" show-overflow-tooltip></bk-table-column>
-                            <bk-table-column label="操作" :width="160">
+                            <bk-table-column :label="$t('操作')" :width="160">
                                 <template slot-scope="{ row }">
-                                    <bk-button :text="true" @click="handleCopy(row.key)">复制</bk-button>
+                                    <bk-button :text="true" @click="handleCopy(row.key)">{{ $t('复制') }}</bk-button>
                                 </template>
                             </bk-table-column>
                         </bk-table>
@@ -56,7 +54,7 @@
                         style="margin-top: 100px;"
                         type="empty"
                         scene="part">
-                        {{ searchStr ? '暂无搜索结果' : '暂无可使用的流程变量' }}
+                        {{ searchStr ? $t('暂无搜索结果') : $t('暂无可使用的流程变量') }}
                     </bk-exception>
                 </div>
             </section>

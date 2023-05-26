@@ -12,14 +12,14 @@
                     style="width: 99px; margin-right: 4px"
                     :clearable="false"
                     @change="handleSourceChange($event, slotProps.row)">
-                    <bk-option id="CUSTOM" name="自定义"></bk-option>
-                    <bk-option id="FIELD" name="引用变量"></bk-option>
+                    <bk-option id="CUSTOM" :name="$t('自定义')"></bk-option>
+                    <bk-option id="FIELD" :name="$t('引用变量')"></bk-option>
                 </bk-select>
                 <bk-select
                     v-if="slotProps.row.source === 'FIELD'"
                     v-model="localVal[slotProps.row.name]"
                     behavior="simplicity"
-                    placeholder="请选择变量"
+                    :placeholder="$t('请选择变量')"
                     style="width: 150px"
                     :searchable="true"
                     :clearable="false"
@@ -40,7 +40,7 @@
                         v-else
                         v-model="localVal[slotProps.row.name]"
                         behavior="simplicity"
-                        placeholder="请输入参数值"
+                        :placeholder="$t('请输入参数值')"
                         :type="slotProps.row.type === 'number' ? 'number' : 'text'"
                         @change="change">
                     </bk-input>

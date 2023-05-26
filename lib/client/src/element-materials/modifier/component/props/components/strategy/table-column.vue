@@ -11,7 +11,7 @@
 
 <template>
     <div>
-        <div class="table-column-title">表头配置</div>
+        <div class="table-column-title">{{ $t('表头配置') }}</div>
         <div class="table-column-item">
             <vue-draggable
                 class="group-list"
@@ -38,10 +38,9 @@
                                         <span
                                             class="show-tip"
                                             v-bk-tooltips="{
-                                                content: '可输入html模板或vue template，<br>`props.row`作为内置变量代表表格每一行的数据，如`props.row.id`代表每一行的id字段，<br>也可以在此处调用函数管理已有的函数（若使用了函数管理中的函数，需在模板绑定函数项勾选用到的函数），<br>如默认值demo即可实现一项编辑操作列',
+                                                content: $t('可输入html模板或vue template，<br>`props.row`作为内置变量代表表格每一行的数据，如`props.row.id`代表每一行的id字段，<br>也可以在此处调用函数管理已有的函数（若使用了函数管理中的函数，需在模板绑定函数项勾选用到的函数），<br>如默认值demo即可实现一项编辑操作列'),
                                                 allowHtml: true
-                                            }"
-                                        >自定义列模板</span>
+                                            }">{{$t('自定义列模板')}}</span>
                                     </div>
                                     <bk-input type="textarea" :value="item.templateCol" @change="val => handleChange(val, 'templateCol', index)" />
                                 </div>
@@ -50,9 +49,9 @@
                                         <span
                                             class="show-tip"
                                             v-bk-tooltips="{
-                                                content: '请勾选列模板中使用到的函数，<br>未使用函数则无须勾选'
+                                                content: $t('请勾选列模板中使用到的函数，<br>未使用函数则无须勾选')
                                             }"
-                                        >模板绑定函数</span>
+                                        >{{ $t('模板绑定函数') }}</span>
                                     </div>
                                     <bk-select style="width: 100%" class="event-choose" ref="eventChooseComp" :value="item.methodCode" :multiple="true" @change="val => handleChange(val, 'methodCode', index)">
                                         <bk-option-group
@@ -65,11 +64,11 @@
                                                 :id="option.funcCode"
                                                 :name="option.funcName">
                                                 <span class="funtion-name" :title="option.funcName">{{option.funcName}}</span>
-                                                <i class="bk-icon icon-info" v-bk-tooltips="option.funcSummary || '该函数暂无描述'"></i>
+                                                <i class="bk-icon icon-info" v-bk-tooltips="option.funcSummary || $t('该函数暂无描述')"></i>
                                             </bk-option>
                                         </bk-option-group>
                                         <div slot="extension" style="cursor: pointer;" @click="showMethodDialog">
-                                            <i class="bk-drag-icon bk-drag-function-fill"></i>函数管理
+                                            <i class="bk-drag-icon bk-drag-function-fill"></i>{{ $t('函数管理') }}
                                         </div>
                                     </bk-select>
                                 </div>
@@ -82,7 +81,7 @@
                                     <bk-input :value="item.prop" @change="val => handleChange(val, 'prop', index)" />
                                 </div>
                                 <div class="option-item">
-                                    <div class="label">列类型</div>
+                                    <div class="label">{{ $t('列类型') }}</div>
                                     <bk-select style="width: 100%; background-color: #fff"
                                         v-model="item.type" @change="val => handleChange(val, 'type', index)">
                                         <bk-option v-for="option in typeList"
@@ -95,7 +94,7 @@
                             </template>
                             <div class="option-item">
                                 <div class="label">
-                                    <span class="show-tip" v-bk-tooltips="{ content: '列宽度，请填写正整数，单位为px' }">width</span>
+                                    <span class="show-tip" v-bk-tooltips="{ content: $t('列宽度，请填写正整数，单位为px') }">width</span>
                                 </div>
                                 <bk-input :value="item.width" type="number" @change="val => handleChange(val, 'width', index)">
                                     <template slot="append">
@@ -105,11 +104,9 @@
                             </div>
                             <div v-if="item.type !== 'customCol'" class="option-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                                 <bk-checkbox :checked="item.sortable" @change="val => handleChange(val, 'sortable', index)" style="font-size: 12px;">
-                                    支持排序
-                                </bk-checkbox>
+                                    {{ $t('支持排序') }} </bk-checkbox>
                                 <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
-                                    支持过滤
-                                </bk-checkbox>
+                                    {{ $t('支持过滤') }} </bk-checkbox>
                             </div>
                         </section>
                     </div>
@@ -117,8 +114,8 @@
             </vue-draggable>
         </div>
         <div>
-            <span class="table-column-add" @click="handleAdd">添加默认列</span> |
-            <span class="table-column-add" @click="handleAdd('customCol')"> 添加自定义内容列</span>
+            <span class="table-column-add" @click="handleAdd">{{ $t('添加默认列') }}</span> |
+            <span class="table-column-add" @click="handleAdd('customCol')"> {{ $t('添加自定义内容列') }}</span>
         </div>
         <edit-function-dialog :show.sync="showMethod"></edit-function-dialog>
     </div>
@@ -128,7 +125,7 @@
     import EditFunctionDialog from '@/components/methods/edit-function-dialog/index.vue'
 
     const generateColumn = (index) => ({
-        label: `选项${index}`,
+        label: window.i18n.t('选项{0}', [index]),
         prop: `prop${index}`,
         sortable: false,
         filterable: false,
@@ -163,10 +160,10 @@
                 column: [],
                 showMethod: false,
                 typeList: [
-                    { id: '', name: '普通数据列' },
-                    { id: 'selection', name: '多选框列' },
+                    { id: '', name: this.$t('普通数据列') },
+                    { id: 'selection', name: this.$t('多选框列') },
                     // { id: 'expand', name: '展开按钮' },
-                    { id: 'index', name: '索引序号列（从 1 开始）' }
+                    { id: 'index', name: this.$t('索引序号列（从 1 开始）') }
                 ]
             }
         },

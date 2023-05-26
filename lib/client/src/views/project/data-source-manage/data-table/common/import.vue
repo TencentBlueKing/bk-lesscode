@@ -1,6 +1,6 @@
 <template>
     <section>
-        <bk-button class="import-button" @click="toggleShowDialog(true)">导入</bk-button>
+        <bk-button class="import-button" @click="toggleShowDialog(true)">{{ $t('导入') }}</bk-button>
 
         <bk-dialog
             theme="primary"
@@ -16,7 +16,7 @@
                 ></i>
             </span>
 
-            <h5 class="import-title">文件类型</h5>
+            <h5 class="import-title">{{$t('文件类型')}}</h5>
             <bk-radio-group
                 v-model="fileType"
                 class="import-content"
@@ -43,9 +43,9 @@
             ></bk-upload>
 
             <span class="import-tip">
-                支持 {{ fileType }} 文件格式，<slot name="tips" :file-type="fileType"></slot>
+                {{ $t('支持 {0} 文件格式，', [fileType]) }}<slot name="tips" :file-type="fileType"></slot>
                 <bk-link theme="primary" @click="downloadTemplate(fileType)">
-                    <i class="bk-drag-icon bk-drag-download"></i>{{ fileType }} 模板
+                    <i class="bk-drag-icon bk-drag-download"></i>{{ $t('{0} 模板', [fileType]) }}
                 </bk-link>
             </span>
 
@@ -61,11 +61,11 @@
                 <bk-button
                     theme="primary"
                     :loading="isLoadingData"
-                    @click="confirmImport">导入</bk-button>
+                    @click="confirmImport">{{ $t('导入') }}</bk-button>
                 <bk-button
                     :disabled="isLoadingData"
                     @click="toggleShowDialog(false)"
-                >取消</bk-button>
+                >{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -155,7 +155,7 @@
                 }
                 // 发生错误
                 reader.onerror = () => {
-                    fileObj.errorMsg = '上传文件失败'
+                    fileObj.errorMsg = window.i18n.t('上传文件失败')
                 }
                 // 执行完成
                 reader.onloadend = () => {

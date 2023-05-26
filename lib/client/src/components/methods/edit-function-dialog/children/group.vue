@@ -34,7 +34,7 @@
                         <li
                             class="list-item"
                             @click="toggleShowChangeName"
-                        >重命名</li>
+                        >{{ $t('重命名') }}</li>
                         <li
                             :class="['list-item', { disable: !computedPermissionInfo.hasPermission }]"
                             v-bk-tooltips="{
@@ -43,14 +43,14 @@
                                 placements: ['bottom']
                             }"
                             @click.stop="handleDeleteGroup"
-                        >删除</li>
+                        >{{ $t('删除') }}</li>
                     </ul>
                 </div>
                 <i class="bk-drag-icon bk-drag-more-dot item-tool hover-show"></i>
             </bk-popconfirm>
             <i
                 class="bk-drag-icon bk-drag-add-line item-tool hover-show"
-                v-bk-tooltips="{ content: '添加函数', placements: ['top'] }"
+                v-bk-tooltips="{ content: $t('添加函数'), placements: ['top'] }"
                 @click.stop="handleCreateFunction"
             ></i>
             <span class="item-num">{{ (group.children || []).length }}</span>
@@ -88,7 +88,7 @@
                 if (this.group?.children?.length > 0) {
                     return {
                         hasPermission: false,
-                        message: '该分类下有函数，不能删除'
+                        message: this.$t('该分类下有函数，不能删除')
                     }
                 }
 
@@ -146,7 +146,7 @@
                     }]
                 }).then(() => {
                     this.clickEmptyArea()
-                    this.messageSuccess('修改成功')
+                    this.messageSuccess(this.$t('修改成功'))
                     this.$emit('refresh')
                 }).finally(() => {
                     this.isLoadingEditGroup = false
@@ -158,14 +158,14 @@
 
                 this.clickEmptyArea()
                 this.$bkInfo({
-                    title: `确认要删除函数分组【${this.group.groupName}】？`,
+                    title: this.$t('确认要删除函数分组【{0}】', [this.group.groupName]),
                     confirmLoading: true,
                     theme: 'danger',
                     confirmFn: () => {
                         return this.deleteFunctionGroup({
                             funcGroupId: this.group.id
                         }).then(() => {
-                            this.messageSuccess('删除成功')
+                            this.messageSuccess(this.$t('删除成功'))
                             this.$emit('refresh')
                         })
                     }

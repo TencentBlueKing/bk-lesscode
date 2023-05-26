@@ -1,9 +1,9 @@
 <template>
     <div class="worksheet-data-wrapper">
         <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="localVal" :rules="sourceRules">
-            <bk-form-item label="数据表" property="tableName" :required="true" error-display-type="normal">
+            <bk-form-item :label="$t('数据表')" property="tableName" :required="true" error-display-type="normal">
                 <bk-select
-                    placeholder="请选择数据表"
+                    :placeholder="$t('请选择数据表')"
                     :value="localVal.tableName"
                     :clearable="false"
                     :searchable="true"
@@ -18,10 +18,10 @@
                     </bk-option>
                 </bk-select>
             </bk-form-item>
-            <bk-form-item label="字段" property="field" :required="true" error-display-type="normal">
+            <bk-form-item :label="$t('字段')" property="field" :required="true" error-display-type="normal">
                 <bk-select
                     v-model="localVal.field"
-                    placeholder="请选择字段"
+                    :placeholder="$t('请选择字段')"
                     :clearable="false"
                     :searchable="true"
                     :disabled="fieldListLoading"
@@ -38,17 +38,17 @@
         </bk-form>
         <div class="filter-rules-wrapper">
             <div class="connector-rule">
-                <label>筛选条件</label>
+                <label>{{ $t('筛选条件') }}</label>
                 <bk-radio-group v-model="localVal.conditions.connector" @change="update">
-                    <bk-radio value="and">且</bk-radio>
-                    <bk-radio value="or">或</bk-radio>
+                    <bk-radio value="and">{{ $t('且') }}</bk-radio>
+                    <bk-radio value="or">{{ $t('或') }}</bk-radio>
                 </bk-radio-group>
             </div>
             <div v-if="localVal.conditions.expressions && localVal.conditions.expressions.length > 0" class="condition-list">
                 <div class="condition-item" v-for="(expression, index) in localVal.conditions.expressions" :key="index">
                     <bk-select
                         v-model="expression.key"
-                        placeholder="字段"
+                        :placeholder="$t('字段')"
                         style="width: 250px; margin-right: 8px"
                         :clearable="false"
                         @selected="handleSelectField(expression)">
@@ -61,7 +61,7 @@
                     </bk-select>
                     <bk-select
                         v-model="expression.condition"
-                        placeholder="逻辑"
+                        :placeholder="$t('逻辑')"
                         style="width: 100px; margin-right: 8px"
                         :clearable="false"
                         @selected="update">
@@ -75,17 +75,17 @@
                     <bk-select
                         v-if="useVariable"
                         v-model="expression.type"
-                        placeholder="值类型"
+                        :placeholder="$t('值类型')"
                         style="width: 100px; margin-right: 8px"
                         :clearable="false"
                         @selected="handleSelectType(expression)">
-                        <bk-option id="const" name="值"></bk-option>
-                        <bk-option id="field" name="引用变量"></bk-option>
+                        <bk-option id="const" :name="$t('值')"></bk-option>
+                        <bk-option id="field" :name="$t('引用变量')"></bk-option>
                     </bk-select>
                     <bk-select
                         v-if="expression.type === 'field'"
                         v-model="expression.value"
-                        placeholder="选择变量"
+                        :placeholder="$t('选择变量')"
                         style="width: 140px"
                         :clearable="false"
                         :loading="relationListLoading"
@@ -113,7 +113,7 @@
                 </div>
                 <!--        <p v-if="errorTips" class="common-error-tips">请检查筛选条件</p>-->
             </div>
-            <div v-else class="data-empty" @click="handleAddExpression(0)">点击添加</div>
+            <div v-else class="data-empty" @click="handleAddExpression(0)">{{ $t('点击添加') }}</div>
         </div>
     </div>
 </template>
@@ -156,7 +156,7 @@
                     tableName: [
                         {
                             required: true,
-                            message: '数据表为必填项',
+                            message: this.$t('数据表为必填项'),
                             trigger: 'blur'
                         }
                     ],
@@ -164,7 +164,7 @@
                         {
                             required: true,
                             trigger: 'blur',
-                            message: '字段为必填项'
+                            message: this.$t('字段为必填项')
                         }
                     ]
                 }

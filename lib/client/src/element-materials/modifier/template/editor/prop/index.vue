@@ -36,7 +36,7 @@
                 </template>
                 <template v-else>
                     <template v-if="isTopNav || isComplexNav">
-                        <div class="prop-subTitle">顶部导航背景色</div>
+                        <div class="prop-subTitle">{{ $t('顶部导航背景色') }}</div>
                         <bk-select
                             style="margin-bottom:12px;"
                             :clearable="false"
@@ -52,7 +52,7 @@
                         </bk-select>
                     </template>
                     <template v-if="isTopNav || isComplexNav">
-                        <div class="prop-subTitle">顶部导航主色调</div>
+                        <div class="prop-subTitle">{{ $t('顶部导航主色调') }}</div>
                         <bk-select
                             style="margin-bottom:12px;"
                             :clearable="false"
@@ -68,7 +68,7 @@
                         </bk-select>
                     </template>
                     <template v-if="isSideNav || isComplexNav">
-                        <div class="prop-subTitle">侧边导航背景</div>
+                        <div class="prop-subTitle">{{ $t('侧边导航背景') }}</div>
                         <bk-select
                             style="margin-bottom:12px;"
                             :clearable="false"
@@ -84,7 +84,7 @@
                         </bk-select>
                     </template>
                     <template v-if="isSideNav || isComplexNav">
-                        <div class="prop-subTitle">侧边导航主色调</div>
+                        <div class="prop-subTitle">{{ $t('侧边导航主色调') }}</div>
                         <bk-select
                             :clearable="false"
                             :value="calcValue(prop, 'sideMenuTheme')"
@@ -133,7 +133,7 @@
                 propList: [
                     {
                         id: 'theme',
-                        name: '主题配置',
+                        name: this.$t('主题配置'),
                         type: '',
                         defaultValue: {
                             topMenuBackground: '#182132',
@@ -147,7 +147,7 @@
                         id: 'headHeight',
                         name: 'head-height',
                         type: 'Number',
-                        tips: this.layoutType === 'left-right' ? 'logo栏的高度' : '顶部导航的高度',
+                        tips: this.layoutType === 'left-right' ? this.$t('logo栏的高度') : this.$t('顶部导航的高度'),
                         defaultValue: 52,
                         isShow: true
                     }
@@ -173,7 +173,7 @@
                     id: 'defaultOpen',
                     name: 'default-open',
                     type: 'Boolean',
-                    tips: '是否默认展开左侧栏',
+                    tips: this.$t('是否默认展开左侧栏'),
                     defaultValue: false,
                     isShow: true
                 })
@@ -185,7 +185,7 @@
                     name,
                     defaultValue
                 } = prop
-                if (name === '主题配置') {
+                if (name === this.$t('主题配置')) {
                     return this.themeConfig[option] || defaultValue[option]
                 }
                 if (this.renderProps.hasOwnProperty(name)) {
@@ -195,7 +195,7 @@
             },
             handleValueChange (name, value, defaultValue, prop) {
                 console.log(name, value, defaultValue, prop, 12)
-                if (name === '主题配置') {
+                if (name === this.$t('主题配置')) {
                     const themeConfig = Object.assign({}, this.themeConfig)
                     themeConfig[prop] = value
                     this.$emit('on-change', 'themeConfig', themeConfig)

@@ -35,7 +35,7 @@
                 class="debug-button"
                 :loading="isDebuging"
                 @click="handleDebug"
-            >{{ showDebugPanel ? '执行调试' : '打开调试控制台' }}</bk-button>
+            >{{ showDebugPanel ? $t('执行调试') : $t('打开调试控制台') }}</bk-button>
             <i class="bk-drag-icon bk-drag-close-line" @click="handleCloseDebug"></i>
         </section>
         <monaco
@@ -50,7 +50,7 @@
             <span
                 slot="title"
                 class="monaco-title"
-            >JS 编辑器</span>
+            >{{ $t('JS 编辑器') }}</span>
             <template v-slot:tools>
                 <i class="bk-drag-icon bk-drag-info-tips icon-style" v-bk-tooltips="functionTips"></i>
                 <i class="bk-drag-icon bk-drag-fix icon-style" @click="handleFixMethod" v-bk-tooltips="fixMethodTips"></i>
@@ -131,14 +131,14 @@
         data () {
             return {
                 fixMethodTips: {
-                    content: '自动修复 ESLint 格式问题',
+                    content: this.$t('自动修复 ESLint 格式问题'),
                     appendTo: 'parent',
                     boundary: 'window',
                     theme: 'light',
                     placements: ['bottom-end']
                 },
                 multVal: {
-                    ...FUNCTION_TIPS
+                    ...FUNCTION_TIPS()
                 },
                 proposals: [],
                 renderCode: '',
@@ -154,7 +154,7 @@
         computed: {
             functionTips () {
                 return {
-                    content: `<pre class="function-tips">${this.tips || FUNCTION_TIPS[this.form.funcType]}</pre>`,
+                    content: `<pre class="function-tips">${this.tips || FUNCTION_TIPS()[this.form.funcType]}</pre>`,
                     appendTo: 'parent',
                     boundary: 'window',
                     width: this.tipWidth || 750,
@@ -165,9 +165,9 @@
             },
             computedPanels () {
                 return [
-                    { name: 'DebugOutput', label: '调试结果' },
-                    { name: 'DebugParam', label: '参数设置', count: this.params.length, tips: '参数设置后需重新执行方可生效' },
-                    { name: 'DebugProblem', label: '问题', count: this.problems.length, isError: true, tips: '点击右上角 <i class="bk-drag-icon bk-drag-fix" /> 图标自动修复 ESLint 问题' }
+                    { name: 'DebugOutput', label: this.$t('调试结果') },
+                    { name: 'DebugParam', label: this.$t('参数设置'), count: this.params.length, tips: this.$t('参数设置后需重新执行方可生效') },
+                    { name: 'DebugProblem', label: this.$t('问题'), count: this.problems.length, isError: true, tips: this.$t('点击右上角') + '<i class="bk-drag-icon bk-drag-fix" />' + this.$t('图标自动修复 ESLint 问题') }
                 ]
             }
         },
@@ -194,7 +194,6 @@
             'form.funcParams': {
                 handler (val, oldVal) {
                     if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
-                        
                         this.params = val.map((key) => {
                             const param = this.params.find(param => param.key === key)
                             return {
@@ -224,7 +223,7 @@
 
             initMultVal (func = this.form) {
                 this.multVal = {
-                    ...FUNCTION_TIPS,
+                    ...FUNCTION_TIPS(),
                     [func.funcType]: func.funcBody
                 }
                 this.renderCode = this.multVal[this.form.funcType]
@@ -283,14 +282,14 @@
                                 this.proposals.push({
                                     label: `lesscode.${node.componentId}.${propKey}`,
                                     kind: window.monaco.languages.CompletionItemKind.Property,
-                                    documentation: `组件【${node.componentId}】的【${propKey}】属性的内置变量`,
+                                    documentation: this.$t('组件【{0}】的【{1}】属性的内置变量', [node.componentId, propKey]),
                                     insertText: `this.${perVariableName}`
                                 })
                             } else {
                                 this.proposals.push({
                                     label: `lesscode.${node.componentId}.${propKey}`,
                                     kind: window.monaco.languages.CompletionItemKind.Property,
-                                    documentation: `组件【${node.componentId}】的【${propKey}】属性的内置变量`,
+                                    documentation: this.$t('组件【{0}】的【{1}】属性的内置变量', [node.componentId, propKey]),
                                     insertText: `this.${perVariableName}${camelCase(propKey, { transform: camelCaseTransformMerge })}`
                                 })
                             }
@@ -302,7 +301,7 @@
                             this.proposals.push({
                                 label: `lesscode.${node.componentId}.${propKey}.count`,
                                 kind: window.monaco.languages.CompletionItemKind.Property,
-                                documentation: `组件【${node.componentId}】的【${propKey}.count】属性的内置变量`,
+                                documentation: this.$t('组件【{0}】的【{1}.count】属性的内置变量', [node.componentId, propKey]),
                                 insertText: `this.${perVariableName}paginationCount`
                             })
                         }
@@ -317,7 +316,7 @@
                             this.proposals.push({
                                 label: `lesscode.${node.componentId}.${config.displayName}`,
                                 kind: window.monaco.languages.CompletionItemKind.Property,
-                                documentation: `组件【${node.componentId}】的【${config.displayName}】的内置变量`,
+                                documentation: this.$t('组件【{0}】的【{1}】的内置变量', [node.componentId, config.displayName]),
                                 insertText: `this.${perVariableName}Slot${slotKey}`
                             })
                         }
@@ -327,22 +326,22 @@
                 recTree(LC.getRoot())
                 // 组装提示数据
                 const sourceNameMap = {
-                    prop: '属性',
-                    event: '事件',
-                    slot: '内容配置'
+                    prop: this.$t('属性'),
+                    event: this.$t('事件'),
+                    slot: this.$t('内容配置')
                 }
                 this.functionList.forEach((functionData) => {
                     const usageArray = relatedMethodCodeMap[functionData.funcCode] || []
                     let documentation = ''
                     // 函数简介
                     if (functionData.funcSummary) {
-                        documentation = '函数简介：\n' + functionData.funcSummary + '\n'
+                        documentation = this.$t('函数简介：') + '\n' + functionData.funcSummary + '\n'
                     }
                     // 函数使用情况
                     if (usageArray.length) {
-                        documentation = '函数使用情况：\n' + documentation
+                        documentation = this.$t('函数使用情况：') + '\n' + documentation
                         usageArray.forEach((usage) => {
-                            documentation += `组件ID【${usage.componentId}】的【${usage.key}】【${sourceNameMap[usage.source] || usage.source}】\n`
+                            documentation += `${ this.$t('组件ID【{0}】的【{1}】', [usage.componentId, usage.key]) }【${sourceNameMap[usage.source] || usage.source}】\n`
                         })
                     }
                     this.proposals.push({
@@ -357,13 +356,13 @@
                     let documentation = ''
                     // 变量简介
                     if (variableData.description) {
-                        documentation = '变量简介：\n' + variableData.description + '\n'
+                        documentation = this.$t('变量简介：') + '\n' + variableData.description + '\n'
                     }
                     // 变量使用情况
                     if (usageArray.length) {
-                        documentation = '变量使用情况：\n' + documentation
+                        documentation = this.$t('变量使用情况：') + '\n' + documentation
                         usageArray.forEach((usage) => {
-                            documentation += `组件ID【${usage.componentId}】的【${usage.key}】【${sourceNameMap[usage.source] || usage.source}】\n`
+                            documentation += `${this.$t('组件ID【{0}】的【{1}】', [usage.componentId, usage.key])}【${sourceNameMap[usage.source] || usage.source}】\n`
                         })
                     }
                     this.proposals.push({
@@ -379,7 +378,7 @@
                 this
                     .fixMethod()
                     .then(() => {
-                        this.messageSuccess('函数修复成功')
+                        this.messageSuccess(this.$t('函数修复成功'))
                     })
                     .catch((err) => {
                         if (err?.code === 499) {
@@ -400,7 +399,7 @@
                             this.change(code)
                             resolve()
                         } else {
-                            reject(new CustomError(501, '暂无可修复内容'))
+                            reject(new CustomError(501, this.$t('暂无可修复内容')))
                         }
                     }).catch((err) => {
                         reject(err)
@@ -452,7 +451,7 @@
                     return
                 }
                 if (isEmpty(this.form.funcName)) {
-                    this.messageError('函数名称不能为空')
+                    this.messageError(this.$t('函数名称不能为空'))
                     return
                 }
                 this.renderDebug = 'DebugOutput'

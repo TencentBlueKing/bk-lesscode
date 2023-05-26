@@ -14,13 +14,11 @@
         <div
             id="drawTarget"
             ref="root"
-            :class="{
-                [$style['canvas']]: true,
-                [$style['empty']]: componentData.children.length < 1
-            }"
+            :class="$style['canvas']"
             @click="handleCanvaseClick"
             @mouseleave="handleMouseleave"
             @contextmenu.stop="handleShowContextmenu">
+            <div :class="$style['empty']" v-if="componentData.children.length < 1">{{$t('请拖入组件')}}</div>
             <draggable
                 ref="dragArea"
                 class="target-drag-area"
@@ -57,8 +55,8 @@
             v-if="showNotVisibleMask"
             :class="$style['not-visible-mask']"
             @dblclick="maskDbCLickHandler">
-            <p>{{`该组件(${invisibleComponent})处于隐藏状态，请先打开`}}</p>
-            <p class="mt20">双击继续操作页面其他组件</p>
+            <p>{{$t('该组件({0})处于隐藏状态，请先打开',[invisibleComponent])}}</p>
+            <p class="mt20">{{$t('双击继续操作页面其他组件')}}</p>
         </div>
     </layout>
 </template>
@@ -291,9 +289,7 @@
         position: relative;
         z-index: 99999999 !important;
         min-height: calc(100% - 20px) !important;
-        &.empty{
-            &::before{
-                content: "请拖入组件";
+        .empty{
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -306,7 +302,6 @@
                 color: #C4C6CC;
                 pointer-events: all;
             }
-        }
     }
     .drag-area{
         padding-bottom: 300px;

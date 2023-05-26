@@ -1,8 +1,7 @@
 <template>
     <div class="lesscode-deploy-log-deploy-stage-wrapper">
         <label class="title">
-            部署阶段
-            <status-item status="abnormal" :abnormal-count="abnormalCount" v-if="abnormalCount > 0" />
+            {{ $t('部署阶段') }} <status-item status="abnormal" :abnormal-count="abnormalCount" v-if="abnormalCount > 0" />
         </label>
         <section class="content" v-bkloading="{ isLoading: loading, color: '#2a2b2f' }">
             <div class="process-content">
@@ -20,8 +19,7 @@
                 </template>
                 <template v-else>
                     <div class="empty-process">
-                        无执行中的进程
-                    </div>
+                        {{ $t('无执行中的进程') }} </div>
                 </template>
             </div>
         </section>

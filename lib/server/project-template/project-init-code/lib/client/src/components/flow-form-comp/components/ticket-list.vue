@@ -2,31 +2,31 @@
     <section class="ticket-list-wrapper">
         <div class="filter-area">
             <bk-form form-type="vertical" class="filter-form">
-                <bk-form-item label="创建人">
-                    <bk-input v-model="filterData.creator" placeholder="请输入创建人"></bk-input>
+                <bk-form-item :label="$t('form_创建人')">
+                    <bk-input v-model="filterData.creator" :placeholder="$t('请输入创建人')"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="创建时间">
+                <bk-form-item :label="$t('创建时间')">
                     <bk-date-picker
                         :value="filterData.create_at"
-                        placeholder="请选择创建时间"
+                        :placeholder="$t('请选择创建时间')"
                         type="datetimerange"
                         format="yyyy-MM-dd HH:mm:ss"
                         size="small"
                         @change="handleDateTimeChange">
                     </bk-date-picker>
                 </bk-form-item>
-                <bk-form-item label="单号">
-                    <bk-input v-model="filterData.sns" placeholder="请输入单号"></bk-input>
+                <bk-form-item :label="$t('单号')">
+                    <bk-input v-model="filterData.sns" :placeholder="$t('请输入单号')"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="状态">
-                    <bk-select v-model="filterData.status" placeholder="请选择状态">
+                <bk-form-item :label="$t('状态')">
+                    <bk-select v-model="filterData.status" :placeholder="$t('请选择状态')">
                         <bk-option v-for="item in ticketStatus" :key="item.key" :id="item.key" :name="item.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
             </bk-form>
             <div class="search-btns-wrapper">
-                <bk-button style="margin-right: 4px;" theme="primary" @click="handleSearch">查询</bk-button>
-                <bk-button @click="handleReset">重置</bk-button>
+                <bk-button style="margin-right: 4px;" theme="primary" @click="handleSearch">{{ $t('查询') }}</bk-button>
+                <bk-button @click="handleReset">{{ $t('重置') }}</bk-button>
             </div>
         </div>
         <bk-table
@@ -39,17 +39,17 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
-            <bk-table-column label="单号" property="sn"></bk-table-column>
-            <bk-table-column label="创建人" property="creator"></bk-table-column>
-            <bk-table-column label="创建时间" property="create_at"></bk-table-column>
-            <bk-table-column label="状态" property="status_name">
+            <bk-table-column :label="$t('table_单号')" property="sn"></bk-table-column>
+            <bk-table-column :label="$t('table_创建人')" property="creator"></bk-table-column>
+            <bk-table-column :label="$t('table_创建时间')" property="create_at"></bk-table-column>
+            <bk-table-column :label="$t('状态')" property="status_name">
                 <template slot-scope="{ row }">
                     <span :style="{ padding: '4px 10px', borderRadius: '2px', color: row.color, backgroundColor: row.backgroundColor }">
                         {{ row.status_name }}
                     </span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="操作">
+            <bk-table-column :label="$t('操作')">
                 <template slot-scope="{ row }">
                     <bk-button
                         style="padding: 0;"
@@ -57,8 +57,7 @@
                         size="small"
                         :text="true"
                         @click="goToTicketPage(row)">
-                        详情
-                    </bk-button>
+                        {{ $t('详情') }} </bk-button>
                 </template>
             </bk-table-column>
         </bk-table>

@@ -56,11 +56,11 @@
             validate () {
                 const name = this.name.trim()
                 if (name.length === 0) {
-                    this.errorTips = '表单名称不能为空'
+                    this.errorTips = this.$t('表单名称不能为空')
                     return false
                 }
                 if (name.length > 50) {
-                    this.errorTips = '表单名称不能超过50个字符'
+                    this.errorTips = this.$t('表单名称不能超过50个字符')
                     return false
                 }
                 this.errorTips = ''

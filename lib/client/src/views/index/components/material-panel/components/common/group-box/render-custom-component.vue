@@ -38,23 +38,23 @@
                 v-bkloading="{ isLoading: isDiscriptionLoading }">
                 <table>
                     <tr>
-                        <td class="label">来源应用：</td>
+                        <td class="label">{{ $t('table_来源应用：') }}</td>
                         <td>{{ componentIntroduction.projectName }}</td>
                     </tr>
                     <tr>
-                        <td class="label">最新版本：</td>
+                        <td class="label">{{ $t('table_最新版本：') }}</td>
                         <td>{{ componentIntroduction.lastVersion }}</td>
                     </tr>
                     <tr>
-                        <td class="label">当前版本：</td>
+                        <td class="label">{{ $t('table_当前版本：') }}</td>
                         <td>{{ componentIntroduction.version }}</td>
                     </tr>
                     <tr>
-                        <td class="label">上传人：</td>
+                        <td class="label">{{ $t('table_上传人：') }}</td>
                         <td>{{ componentIntroduction.updateUser }}</td>
                     </tr>
                     <tr>
-                        <td class="label">组件简介：</td>
+                        <td class="label">{{ $t('table_组件简介：') }}</td>
                         <td>{{ componentIntroduction.description }}</td>
                     </tr>
                 </table>
@@ -91,7 +91,7 @@
                 this.displayClass = this.data.renderStyles.display
             }
             this.favoriteTips = {
-                content: (this.data.meta && this.data.meta.favorite) ? '取消收藏' : '添加收藏',
+                content: (this.data.meta && this.data.meta.favorite) ? window.i18n.t('取消收藏') : window.i18n.t('添加收藏'),
                 onShow: () => {
                     const inst = this.$refs.root.tippyInstance
                     inst && inst.hide()
@@ -159,10 +159,10 @@
                     }
                     if (component.meta.favorite) {
                         await this.$store.dispatch('components/favoriteDelete', { data })
-                        this.messageSuccess('取消成功')
+                        this.messageSuccess(window.i18n.t('取消成功'))
                     } else {
                         await this.$store.dispatch('components/favoriteAdd', { data })
-                        this.messageSuccess('收藏成功')
+                        this.messageSuccess(window.i18n.t('收藏成功'))
                     }
 
                     this.$emit('on-favorite')

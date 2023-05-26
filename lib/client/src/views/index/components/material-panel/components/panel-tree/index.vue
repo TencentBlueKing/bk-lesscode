@@ -2,6 +2,7 @@
     <div class="panel-tree">
         <div class="tree-search-area">
             <bk-input
+                ref="search"
                 class="tree-search"
                 :right-icon="'bk-icon icon-search'"
                 :clearable="true"
@@ -34,7 +35,7 @@
                                 'bk-drag-invisible-eye': !nodeData.payload.componentData.interactiveShow
                             }"
                             v-bk-tooltips="{
-                                content: nodeData.payload.componentData.interactiveShow ? '隐藏' : '显示',
+                                content: nodeData.payload.componentData.interactiveShow ? $t('隐藏') : $t('显示'),
                                 placement: 'top',
                                 interactive: false
                             }"
@@ -42,12 +43,7 @@
                     </div>
                 </div>
             </bk-big-tree>
-            <bk-exception
-                v-if="isEmpty"
-                type="empty"
-                scene="part">
-                页面为空
-            </bk-exception>
+            <empty-status v-if="isEmpty" :type="emptyEmpty" :part="false" @clearSearch="handlerClearSearch"></empty-status>
         </div>
     </div>
 </template>
@@ -75,7 +71,8 @@
         data () {
             return {
                 allExpanded: false,
-                isEmpty: false
+                isEmpty: false,
+                emptyEmpty: 'noData'
             }
         },
         computed: {
@@ -83,7 +80,7 @@
                 return this.allExpanded ? 'bk-drag-unfold' : 'bk-drag-fold'
             },
             tooltip () {
-                return this.allExpanded ? '收起所有' : '展开所有'
+                return this.allExpanded ? window.i18n.t('收起所有') : window.i18n.t('展开所有')
             }
         },
         
@@ -163,11 +160,15 @@
             handleSearch: _.debounce(function (text) {
                 const data = this.$refs.tree.filter(text.trim())
                 if (data.length > 0) {
+                    this.isEmpty = false
                     this.$nextTick(() => {
                         this.$refs.tree.setSelected(data[0].id, {
                             emitEvent: true
                         })
                     })
+                } else {
+                    this.isEmpty = true
+                    this.emptyEmpty = text ? 'search' : 'noData'
                 }
             }, 300),
             /**
@@ -265,6 +266,10 @@
              */
             checkIsAllExpanded () {
                 this.allExpanded = this.$refs.tree.nodes.every(node => node.isLeaf || node.expanded)
+            },
+
+            handlerClearSearch () {
+                this.$refs.search.handlerClear()
             }
         }
     }

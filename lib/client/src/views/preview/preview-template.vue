@@ -127,7 +127,7 @@
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: 'targetData格式错误'
+                        message: window.i18n.t('targetData格式错误')
                     })
                 }
 
@@ -205,11 +205,13 @@
         .simulator-preview {
             z-index: 0;
             position: absolute;
+            pointer-events: none;
             .mobile-content-wrapper {
                 height: 100%;
                 width: 100%;
                 overflow: hidden;
                 display: flex;
+                transform: translateX(0);
                 flex-direction: column;
             }
         }

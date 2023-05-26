@@ -18,7 +18,7 @@
                         :false-value="false"
                         :disabled="disabled"
                         v-model="localValIsDisplayTag">
-                        <span v-bk-tooltips="showTagToolTips">显示为标签</span>
+                        <span v-bk-tooltips="showTagToolTips">{{ $t('显示为标签') }}</span>
                     </bk-checkbox>
                 </div>
             </div>
@@ -39,11 +39,11 @@
         <div id="showTagToolTips" class="show-tag-tooltips" v-if="sourceType === 'CUSTOM'">
             <bk-table :data="toolTipData" ref="table" size="small" :outer-border="false">
                 <bk-table-column
-                    label="选项"
+                    :label="$t('选项')"
                     prop="status"
                     :render-header="renderHeader">
-                    <bk-tag ext-cls="choice-one">选项一</bk-tag>
-                    <bk-tag ext-cls="choice-two">选项二</bk-tag>
+                    <bk-tag ext-cls="choice-one">{{ $t('选项一') }}</bk-tag>
+                    <bk-tag ext-cls="choice-two">{{ $t('选项二') }}</bk-tag>
                 </bk-table-column>
             </bk-table>
         </div>
@@ -116,11 +116,11 @@
             },
             getTitle () {
                 if (this.sourceType === 'CUSTOM') {
-                    return '配置自定义数据'
+                    return this.$t('配置自定义数据')
                 } else if (this.sourceType === 'API') {
-                    return '配置接口数据源'
+                    return this.$t('配置接口数据源')
                 } else {
-                    return '配置表单数据'
+                    return this.$t('配置表单数据')
                 }
             },
             renderHeader (h, data) {
@@ -179,7 +179,7 @@
 .custom-selection{
   position: absolute;
   top: 2px;
-  left: 164px;
+  right: 20px;
 }
 </style>
 <style lang="postcss">

@@ -7,7 +7,7 @@
             :value="value[input.key]"
             clearable
         >
-            <template slot="prepend"><span class="input-txt">{{input.txt}}</span></template>
+            <template slot="prepend"><span class="input-txt" v-enStyle="'width:110px'">{{input.txt}}</span></template>
         </bk-input>
     </section>
 </template>

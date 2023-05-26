@@ -5,7 +5,7 @@
         :list="list"
         :group="dragGroup"
         :chosen-class="$style['chosen']"
-        :ghost-class="ghostClass || $style['ghost']"
+        :ghost-class="ghostClass || ($store.state.Language === 'en' ? $style['en-ghost'] : $style['ghost'])"
         :style="styles"
         filter="[data-render-drag='disabled']"
         @choose="handleChoose"
@@ -198,8 +198,8 @@
                         root.appendChild(triggerEvent.child)
                     }
                     clearCanvas(
-                        'H5容器应在根节点上',
-                        'H5容器默认占满全屏，与其他容器不兼容，是否自动清空其他容器，仅保留H5容器',
+                        this.$t('H5容器应在根节点上'),
+                        this.$t('H5容器默认占满全屏，与其他容器不兼容，是否自动清空其他容器，仅保留H5容器'),
                         updateH5Layout)
                 }
             }
@@ -223,6 +223,42 @@
         margin-bottom: 5px;
         &:after {
             content: "放在这里";
+            display: block;
+            height: 24px;
+            padding: 0 5px;
+            font-size: 12px;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            background-color: #C2D7F9;
+        }
+        &:global(.inline),
+        &:global(.inline-block) {
+            display: inline-block;
+            vertical-align: sub;
+            &:after {
+                width: 60px;
+                display: inline-block;
+                position: relative;
+            }
+        }
+        &:global(.block) {
+            display: block;
+            &:after {
+                top: 0;
+                display: inline-block;
+                width: 100%;
+                position: relative;
+            }
+        }
+        & > * {
+            display: none !important;
+        }
+    }
+    .en-ghost{
+        margin-bottom: 5px;
+        &:after {
+            content: "Set it here";
             display: block;
             height: 24px;
             padding: 0 5px;

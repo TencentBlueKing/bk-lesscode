@@ -11,7 +11,7 @@
 
 <template>
     <section>
-        <h3 class="collapse-title">数据源配置</h3>
+        <h3 class="collapse-title">{{ $t('数据源配置') }}</h3>
         <ul>
             <li v-for="(collapse, index) in collapseList" :key="index" class="collapse-item">
                 <bk-input :value="collapse.name" @change="val => handleChange(val, 'name', index)" />
@@ -19,7 +19,7 @@
                 <!-- <i class="bk-icon icon-plus" @click="changeNum(true, index)"></i> -->
             </li>
         </ul>
-        <div class="collapse-add" @click="changeNum(true, collapseList.length - 1)"><i class="bk-icon icon-plus-circle"></i>添加一项</div>
+        <div class="collapse-add" @click="changeNum(true, collapseList.length - 1)"><i class="bk-icon icon-plus-circle"></i>{{ $t('添加一项') }}</div>
     </section>
 </template>
 

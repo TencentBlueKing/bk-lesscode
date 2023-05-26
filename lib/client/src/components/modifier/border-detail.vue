@@ -12,7 +12,7 @@
 <template>
     <div class="modifier-border-detail-container">
         <div class="style-container details-box">
-            <div class="detail-name">样式</div>
+            <div class="detail-name">{{ $t('样式') }}</div>
             <div class="detail-content">
                 <bk-select :value="borderStyle" style="width: 100%;" @change="changeBorderStyle">
                     <bk-option v-for="option in borderStyleList" :key="option" :id="option" :name="option">
@@ -25,13 +25,13 @@
             </div>
         </div>
         <div class="width-container details-box">
-            <div class="detail-name">宽度</div>
+            <div class="detail-name">{{ $t('宽度') }}</div>
             <div class="detail-content">
                 <append-number-input :value="borderWidth" style="width: 100%;" controls @change="$emit('borderWidthChange', $event)"></append-number-input>
             </div>
         </div>
         <div class="color-container details-box">
-            <div class="detail-name">颜色</div>
+            <div class="detail-name">{{ $t('颜色') }}</div>
             <div class="detail-content">
                 <bk-color-picker style="width: 100%;" :value="borderColor" @change="$emit('borderColorChange', $event)"></bk-color-picker>
             </div>
