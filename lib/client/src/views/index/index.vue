@@ -41,7 +41,6 @@
     import { mapActions, mapGetters, mapState } from 'vuex'
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
-    import { bus } from '@/common/bus'
     import SaveTemplateDialog from '@/components/template/save-template-dialog'
     import DrawLayout from './components/draw-layout'
     import PageList from './components/page-list'
@@ -154,9 +153,6 @@
                 subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
                 confirmFn: async () => {
                     next()
-                },
-                cancelFn: () => {
-                    bus.$emit('set-menu-active')
                 }
             })
         },
