@@ -10,33 +10,31 @@
 -->
 
 <template>
-    <div>
+    <draggable
+        ref="draggable"
+        :class="{
+            [$style['column']]: true,
+            [$style['render-grid-empty']]: renderGrid.isColumnEmpty
+        }"
+        :sort="true"
+        :list="componentData.slot.default"
+        :component-data="componentData"
+        :group="{
+            name: 'component',
+            pull: true,
+            put: [
+                'layout',
+                'component'
+            ]
+        }">
         <div :class="$style['empty']" v-if="componentData.children.length < 1">{{$t('请拖入组件')}}</div>
-        <draggable
-            ref="draggable"
-            :class="{
-                [$style['column']]: true,
-                [$style['render-grid-empty']]: renderGrid.isColumnEmpty
-            }"
-            :sort="true"
-            :list="componentData.slot.default"
-            :component-data="componentData"
-            :group="{
-                name: 'component',
-                pull: true,
-                put: [
-                    'layout',
-                    'component'
-                ]
-            }">
-            <resolve-component
-                v-for="slotComponentData in componentData.slot.default"
-                ref="component"
-                :key="slotComponentData.renderKey"
-                :component-data="slotComponentData" />
-        </draggable>
-    </div>
-    
+        <resolve-component
+            v-else
+            v-for="slotComponentData in componentData.slot.default"
+            ref="component"
+            :key="slotComponentData.renderKey"
+            :component-data="slotComponentData" />
+    </draggable>
 </template>
 <script>
     import LC from '@/element-materials/core'
