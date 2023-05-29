@@ -90,7 +90,7 @@
             @option-change="(val) => handleSlotChange('keyOptions', val)"
         />
         <select-key
-            v-show="describe.keys && describe.keys.length && formData.valueType !== describe.type[0]"
+            v-show="isShowSelectKeys"
             :keys="describe.keys"
             :value="formData.valueKeys"
             :value-type="formData.valueType"
@@ -284,6 +284,12 @@
             buildInVariable () {
                 const perVariableName = camelCase(this.componentId, { transform: camelCaseTransformMerge })
                 return `${perVariableName}Slot${this.name}`
+            },
+            /**
+             * 是否展示 SelectKey
+             */
+            isShowSelectKeys () {
+                return this.describe?.keys?.length && this.formData.valueType !== this.describe.type[0] && (this.slotVal?.payload?.methodData?.methodCode || this.slotVal?.payload?.sourceData?.tableName)
             }
         },
         watch: {
