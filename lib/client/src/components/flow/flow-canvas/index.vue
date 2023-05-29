@@ -34,12 +34,10 @@
                 </node-template>
             </template>
         </bk-flow>
-        <bk-sideslider
+        <lc-sideslider
             :title="$t('线条配置')"
             :width="700"
-            :quick-close="false"
-            :is-show="showLineConfigPanel"
-            :before-close="hanldeLineConfigPanelClose">
+            :is-show.sync="showLineConfigPanel">
             <line-config
                 slot="content"
                 :line="lineConfig"
@@ -48,9 +46,9 @@
                 :delete-pending="lineDeletePending"
                 @save="handleLineSave"
                 @delete="handleLineDelete"
-                @close="hanldeLineConfigPanelClose">
+                @close="handlerClose">
             </line-config>
-        </bk-sideslider>
+        </lc-sideslider>
     </div>
 </template>
 <script>
@@ -63,6 +61,7 @@
     import NodeTemplate from './nodeTemplate.vue'
     import ToolPanel from './toolPanel.vue'
     import LineConfig from './lineConfig.vue'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     const endpointOptions = {
         endpoint: 'Dot',
@@ -595,6 +594,7 @@
                     const index = this.canvasData.lines.findIndex(item => item.lineInfo.id === this.lineConfig.id)
                     this.canvasData.lines.splice(index, 1)
                     this.hanldeLineConfigPanelClose()
+                    window.leaveConfirm = false
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -607,6 +607,12 @@
             },
             hanldeLineConfigPanelClose () {
                 this.showLineConfigPanel = false
+            },
+            handlerClose () {
+                leaveConfirm()
+                    .then(() => {
+                        this.hanldeLineConfigPanelClose()
+                    })
             },
             updateStoreNodes () {
                 const nodes = this.canvasData.nodes.map(item => item.nodeInfo)

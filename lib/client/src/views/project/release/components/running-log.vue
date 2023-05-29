@@ -2,7 +2,7 @@
     <section>
         <bk-sideslider
             :is-show.sync="isShow"
-            :quick-close="false"
+            :quick-close="true"
             :width="896"
             :before-close="handleClose"
         >

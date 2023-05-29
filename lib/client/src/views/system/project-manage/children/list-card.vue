@@ -76,8 +76,8 @@
                                 </li>
                                 <li>
                                     <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">{{ $t('页面管理') }}</a>
-                                        <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">{{ $t('页面管理') }}</a>
+                                        <a href="javascript:;" slot="forbid">{{ $t('abbr_页面管理') }}</a>
+                                        <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">{{ $t('abbr_页面管理') }}</a>
                                     </auth-component>
                                 </li>
                                 <li>

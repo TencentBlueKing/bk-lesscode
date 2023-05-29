@@ -196,7 +196,7 @@
                     this.$store.commit('nocode/nodeConfig/setNodeData', nodeConfig)
                     await this.updateFormName()
                     this.$bkMessage({
-                        message: '表单保存成功，表单配置关联数据表变更成功',
+                        message: window.i18n.t('表单保存成功，表单配置关联数据表变更成功'),
                         theme: 'success'
                     })
                     this.$emit('save')
@@ -209,6 +209,7 @@
             handleBack (type) {
                 this.$bkInfo({
                     title: this.$t('确认离开'),
+                    okText: window.i18n.t('离开'),
                     subTitle: this.$t('您将离开画布编辑页面，请确认相应修改已保存'),
                     confirmFn: async () => {
                         this.$emit(type)
