@@ -61,7 +61,7 @@
                         @on-success="handleUploadSuccess"
                         @on-progress="handleProgress" />
                 </lc-form-item>
-                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">下载开发框架</bk-link>
+                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">{{ $t('下载开发框架') }}</bk-link>
                 <lc-form-item :label="$t('form_组件名称')" required property="name" error-display-type="normal">
                     <bk-input
                         :value="formData.displayName && formData.name ? `${formData.displayName}(${formData.name})` : ''"
@@ -198,10 +198,7 @@
         },
         created () {
             this.belongProjectId = parseInt(this.$route.params.projectId)
-            this.uploadTips = `只允许上传ZIP包；
-            组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID(${this.currentProject.projectCode})前缀，即：${this.currentProject.projectCode}-xxx；
-            必须使用系统提供的框架构建后上传。
-            `
+            this.uploadTips = window.i18n.t('只允许上传ZIP包；\n组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID({0})前缀，即：{0}-xxx；\n必须使用系统提供的框架构建后上传。', { '0': this.currentProject.projectCode })
             this.versionLogPlaceholder = window.i18n.t('eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n')
 
             this.markdownOption = {
@@ -306,7 +303,7 @@
                     })
             },
             handleDownloadDemo () {
-                window.open(`/static/bk-lesscode-component-${ this.formData.framework }.zip`, '_self')
+                window.open(`/static/bk-lesscode-component-${this.formData.framework}.zip`, '_self')
             }
         }
     }
