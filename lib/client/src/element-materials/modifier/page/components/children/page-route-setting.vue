@@ -60,6 +60,9 @@
                         id: 'layoutId',
                         name: '导航布局',
                         type: 'select',
+                        props: {
+                            clearable: false
+                        },
                         children: (this.layoutList || []).filter(item => item.layoutType === this.platform).map((layout) => {
                             return {
                                 id: layout.id,
@@ -75,6 +78,9 @@
                         id: 'pageRoute',
                         name: '页面路由',
                         type: 'select',
+                        props: {
+                            clearable: false
+                        },
                         placeholder: '未设置',
                         children: this.routeSelect
                     }
