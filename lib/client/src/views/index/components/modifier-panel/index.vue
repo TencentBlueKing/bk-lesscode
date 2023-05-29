@@ -129,7 +129,7 @@
 </script>
 <style lang="postcss">
     .draw-page-modifier-panel {
-        .bk-select-name.medium-font {
+        .bk-select.medium-font {
             font-size: 12px !important;
             --font-size: 12px !important;
         }
