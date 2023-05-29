@@ -97,7 +97,7 @@
                             trigger: 'blur'
                         },
                         {
-                            validator: this.checkName,
+                            validator: this.checkCode,
                             message: '该应用ID已存在',
                             trigger: 'blur'
                         }
@@ -132,10 +132,21 @@
                 const res = await this.$store.dispatch('project/checkname', {
                     data: {
                         name: this.formData.projectName,
-                        projectCode: this.formData.projectCode
+                        isBlurCheck: true
                     }
                 })
-                return res.code === 0
+                // 接口返回true， 代表重复
+                return res.data !== true
+            },
+            async checkCode () {
+                const res = await this.$store.dispatch('project/checkname', {
+                    data: {
+                        projectCode: this.formData.projectCode,
+                        isBlurCheck: true
+                    }
+                })
+                // 接口返回true， 代表重复
+                return res.data !== true
             },
             async validate () {
                 const res = await this.$refs.infoForm.validate()
