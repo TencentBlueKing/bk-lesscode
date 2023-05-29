@@ -6,7 +6,7 @@
                 :class="{
                     floded: isFolded
                 }" />
-            <span>{{ groupName }}</span>
+            <span>{{ $t(groupName) }}</span>
             <div
                 v-if="$slots.tag"
                 class="tag">
@@ -96,7 +96,6 @@
                 } else {
                     const materialConfig = this.list[event.oldIndex]
                     const node = LC.createNode(materialConfig.type)
-
                     Object.values(createHacker).forEach(task => task(node, materialConfig))
 
                     // 自定义组件

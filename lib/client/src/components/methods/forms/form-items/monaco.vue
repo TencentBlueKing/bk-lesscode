@@ -138,7 +138,7 @@
                     placements: ['bottom-end']
                 },
                 multVal: {
-                    ...FUNCTION_TIPS()
+                    ...(FUNCTION_TIPS())
                 },
                 proposals: [],
                 renderCode: '',

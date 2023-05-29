@@ -35,7 +35,7 @@
     import LC from '@/element-materials/core'
 
     export default {
-        name: '',
+        name: 'operation-area',
         components: {
             Render
         },
@@ -111,7 +111,7 @@
                 } = this.$refs.root.getBoundingClientRect()
                 
                 this.renderStyles = {
-                    width: `${width - 40}px`,
+                    width: `${width}px`,
                     'min-height': `calc(100vh - ${top + 25}px)`
                 }
             },

@@ -19,8 +19,10 @@
                     </div>
                     <ul class="bk-dropdown-list select-page-type" slot="dropdown-content">
                         <li><a href="javascript:;" @click="handleCreate('PC', '')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_PC自定义页面') }}</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_PC表单页面') }}</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_Markdown文档') }}</a></li>
+                        <template v-if="!isVue3">
+                            <li><a href="javascript:;" @click="handleCreate('PC', 'FORM')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_PC表单页面') }}</a></li>
+                            <li><a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')"><i class="bk-drag-icon bk-drag-pc"> </i>{{ $t('select_Markdown文档') }}</a></li>
+                        </template>
                         <li><a href="javascript:;" @click="handleCreate('MOBILE', '')"><i class="bk-drag-icon bk-drag-mobilephone"> </i>{{ $t('select_Mobile自定义页面') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
@@ -172,6 +174,9 @@
             },
             hasMobilePage () {
                 return this.pageList.find(page => page.pageType === 'MOBILE')
+            },
+            isVue3 () {
+                return this.currentProject.framework === 'vue3'
             }
         },
         watch: {
@@ -232,8 +237,8 @@
             },
             handlePreviewMobileProject () {
                 // 跳转到预览入口页面
-                const versionQuery = `${this.versionId ? `?version=${this.versionId}` : ''}`
-                window.open(`/preview-mobile/project/${this.projectId}${versionQuery}`, '_blank')
+                const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
+                window.open(`/preview-mobile/project/${this.projectId}?framework=${this.currentProject.framework}${versionQuery}`, '_blank')
             },
             async handleCopy (page) {
                 this.action = 'copy'
@@ -386,7 +391,7 @@
                 // 跳转到预览入口页面
                 if (page.pageType === 'MOBILE') {
                     const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
-                    window.open(`/preview-mobile/project/${this.projectId}?pagePath=${route.fullPath}&pageCode=${page.pageCode}${versionQuery}`, '_blank')
+                    window.open(`/preview-mobile/project/${this.projectId}?framework=${this.currentProject.framework}&pagePath=${route.fullPath}&pageCode=${page.pageCode}${versionQuery}`, '_blank')
                 } else {
                     const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
                     const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${page.pageCode}`

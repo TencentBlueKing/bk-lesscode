@@ -11,10 +11,23 @@
 
 <script>
     import Vue from 'vue'
-    import httpVueLoader from '@/common/http-vue-loader'
+    import {
+        init,
+        render,
+        registerComponent,
+        vue3Resource,
+        framework
+    } from 'bk-lesscode-render'
+    import 'bk-lesscode-render/dist/index.css'
+    import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
+    import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/reset.css'
     import * as swiperAni from '@/common/swiper.animate.min.js'
     import '@/css/animate.min.css'
-    import mobileHeader from '@/components/render/mobile/common/mobile-header.vue'
+    import mobileHeader from '@/components/render/mobile/common/mobile-header/mobile-header'
+    import { i18nConfig } from '@/locales/i18n.js'
+    import { bundless } from '@blueking/bundless'
+    import bundlessPluginVue2 from '@blueking/bundless-plugin-vue2'
+    import bundlessPluginVue3 from '@blueking/bundless-plugin-vue3'
 
     window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []
@@ -43,6 +56,17 @@
     })
     /* eslint-enable */
 
+    function generateComponent (source, id) {
+        const bundlessPluginVue = framework === 'vue3'
+            ? bundlessPluginVue3(vue3Resource)
+            : bundlessPluginVue2
+        return bundless({
+            source,
+            id,
+            plugins: [bundlessPluginVue]
+        })
+    }
+
     export default {
         name: 'preview',
         components: {
@@ -51,6 +75,7 @@
         },
         data () {
             return {
+                windowHeight: window.innerHeight,
                 height: 812,
                 headerHeight: 30,
                 mobileWidth: '375',
@@ -82,16 +107,23 @@
             },
             type () {
                 return this.$route.query.type || ''
+            },
+            framework () {
+                return this.$route.query.framework || 'vue2'
             }
         },
         async created () {
+            // init
+            init(this.framework)
             console.log('preview-template')
             const script = document.createElement('script')
             script.src = `/${parseInt(this.projectId)}/component/preview-register.js?v=${this.versionId}`
             script.onload = () => {
                 window.previewCustomCompontensPlugin.forEach(callback => {
-                    const [config, source] = callback(Vue)
-                    Vue.component(config.type, source)
+                    const [config, source] = callback(this.framework === 'vue3' ? vue3Resource : Vue)
+                    new Promise((resolve) => source(resolve)).then((component) => {
+                        registerComponent(config.type, component)
+                    })
                 })
                 this.isCustomComponentLoading = false
             }
@@ -156,14 +188,15 @@
                         })
                     }
                     this.renderType = this.detail?.templateType || this.detail?.layoutType
-
-                    code = code.replace('export default', 'module.exports =').replace('components: { chart: ECharts },', '')
-                    const res = httpVueLoader(code)
-                    setTimeout(() => {
-                        Vue.component('preview-page', res)
-                        this.comp = 'preview-page'
-                        this.isLoading = false
-                    }, 300)
+                    this.isLoading = false
+                    code = code.replace('components: { chart: ECharts },', '')
+                    const res = generateComponent(code, projectId)
+                    // render
+                    render({
+                        component: res,
+                        selector: '#preview-template',
+                        i18nConfig
+                    })
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',
@@ -175,21 +208,23 @@
                 this.minHeight = window.innerHeight
             }
         },
-        template: `<div v-if="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">
-            <div v-if="renderType === 'MOBILE'" class="area-wrapper">
-                <div class="simulator-wrapper" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px' }">
-                    <div class="device-phone-frame">
-                        <div class="device-phone"></div>
-                    </div>
-                    <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px', overflow: 'auto' }">
-                        <div class="mobile-content-wrapper">
-                            <mobileHeader />
-                            <component :is="comp" :is-loading="isLoading"/>
+        template: `<div :style="{ height: windowHeight + 'px' }" v-bkloading="{ isLoading }">
+            <div v-show="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">
+                <div v-if="renderType === 'MOBILE'" class="area-wrapper">
+                    <div class="simulator-wrapper" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px' }">
+                        <div class="device-phone-frame">
+                            <div class="device-phone"></div>
+                        </div>
+                        <div class="simulator-preview" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px', overflow: 'auto' }">
+                            <div class="mobile-content-wrapper">
+                                <mobileHeader />
+                                <div id="preview-template" />
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div v-else id="preview-template" />
             </div>
-            <component v-else :is="comp" :is-loading="isLoading"/>
         </div>`
     }
 </script>
@@ -256,4 +291,17 @@
             }
         }
     }
+</style>
+<style lang="postcss">
+.empty-padding.lesscode-bk-popover.lesscode-bk-pop2-content {
+    padding: 0 !important;
+}
+.lesscode-bk-color-picker-icon .icon-angle-down, .lesscode-bk-cascader-node .icon-angle-right{
+    &::before {
+        content: '' !important;
+    }
+}
+.lesscode-bk-menu-submenu .submenu-header-icon {
+    color: #96a2b9;
+}
 </style>

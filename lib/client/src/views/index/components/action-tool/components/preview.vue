@@ -30,6 +30,7 @@
                 'curTemplateData'
             ]),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId', currentVersion: 'currentVersion' }),
+            ...mapGetters('project', ['currentProject']),
             projectId () {
                 return this.$route.params.projectId || ''
             }
@@ -52,7 +53,7 @@
 
                 if (this.platform === 'MOBILE') {
                     const versionQuery = `${this.versionId ? `&version=${this.versionId}` : ''}`
-                    window.open(`/preview-mobile/project/${this.projectId}?pagePath=${fullPath}&pageCode=${this.pageDetail.pageCode}${versionQuery}`, '_blank')
+                    window.open(`/preview-mobile/project/${this.projectId}?framework=${this.currentProject.framework}&pagePath=${fullPath}&pageCode=${this.pageDetail.pageCode}${versionQuery}`, '_blank')
                 } else {
                     // 预览表单
                     const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`

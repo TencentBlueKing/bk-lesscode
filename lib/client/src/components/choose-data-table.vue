@@ -27,7 +27,7 @@
                     ></i>
                     <i
                         class="bk-icon icon-refresh tool-icon"
-                        @click="getMysqlTables"
+                        @click="handleGetMysqlTables"
                     ></i>
                 </span>
                 <section v-bkloading="{ isLoading: tableGroups[0].isLoading }">
@@ -56,7 +56,7 @@
                     <span v-bk-tooltips="{ content: $t('目前只支持查询 mysql 或 tspider 的结果表') }">{{ tableGroups[1].name }}</span>
                     <i
                         class="bk-icon icon-refresh tool-icon"
-                        @click="getBkBaseBizs"
+                        @click="handleGetBkBaseBizs"
                     ></i>
                 </span>
                 <section v-bkloading="{ isLoading: tableGroups[1].isLoading }">
@@ -158,6 +158,7 @@
     } from '@vue/composition-api'
     import store from '@/store'
     import router from '@/router'
+    import useDatasource from '@/hooks/use-datasource'
     import {
         DATA_SOURCE_TYPE,
         findTable
@@ -178,6 +179,13 @@
         },
 
         setup (props, { emit }) {
+            const {
+                getMysqlTables,
+                getBkBaseBizs,
+                getBkBaseTables,
+                getTableDatas
+            } = useDatasource()
+
             const selectRef = ref()
             const isLoadingData = ref(false)
             const isLoadingList = ref(false)
@@ -211,19 +219,12 @@
                 // 选完以后立即触发选中事件
                 const table = findTable(tableName, dataSourceType, tableGroups.value[0].children, tableGroups.value[1].children)
                 emit('choose-table', { tableName, table, dataSourceType })
-                // 立即更新数据
-                handleGetTableDatas(tableName, dataSourceType)
             }
 
             // 获取表数据
             const handleGetTableDatas = (tableName, bkDataSourceType) => {
                 isLoadingData.value = true
-                const queryData = {
-                    tableName,
-                    bkDataSourceType
-                }
-                store
-                    .dispatch('dataSource/getTableDatas', queryData)
+                getTableDatas(tableName, bkDataSourceType)
                     .then((data) => {
                         emit('fetch-data', data)
                     })
@@ -244,14 +245,13 @@
                 if (!bkBaseBiz.loaded) {
                     // 加载数据
                     isLoadingIds.value.push(bkBizId)
-                    store
-                        .dispatch('dataSource/getBkBaseTables', bkBizId)
-                        .then((data) => {
+                    getBkBaseTables(bkBizId)
+                        .then((list) => {
                             // 展开
                             isOpenIds.value.push(bkBizId)
                             // 更新数据
                             bkBaseBiz.loaded = true
-                            bkBaseBiz.tables = data?.list || []
+                            bkBaseBiz.tables = list || []
                         })
                         .finally(() => {
                             const index = isLoadingIds.value.findIndex(isLoadingId => isLoadingId === bkBizId)
@@ -264,11 +264,10 @@
             }
 
             // 获取 mysql 数据表
-            const getMysqlTables = () => {
+            const handleGetMysqlTables = () => {
                 tableGroups.value[0].isLoading = true
-                return store
-                    .dispatch('dataSource/list', { projectId, dataSourceType: DATA_SOURCE_TYPE.PREVIEW })
-                    .then(({ list }) => {
+                return getMysqlTables(projectId)
+                    .then((list) => {
                         tableGroups.value[0].children = list
                     })
                     .finally(() => {
@@ -277,11 +276,10 @@
             }
 
             // 获取 bk-base 结果表
-            const getBkBaseBizs = () => {
+            const handleGetBkBaseBizs = () => {
                 tableGroups.value[1].isLoading = true
-                return store
-                    .dispatch('dataSource/list', { projectId, dataSourceType: DATA_SOURCE_TYPE.BK_BASE })
-                    .then(({ list }) => {
+                return getBkBaseBizs(projectId)
+                    .then((list) => {
                         tableGroups.value[1].children = list.map((item) => ({
                             ...item,
                             tables: [],
@@ -294,7 +292,7 @@
             }
 
             // 获取项目相关信息
-            const getProjectInfo = () => {
+            const handleGetProjectInfo = () => {
                 return store
                     .dispatch('project/detail', { projectId })
                     .then((project) => {
@@ -317,15 +315,9 @@
                 isLoadingList.value = true
                 Promise
                     .all([
-                        getMysqlTables(),
-                        getProjectInfo()
+                        handleGetMysqlTables(),
+                        handleGetProjectInfo()
                     ])
-                    .then(() => {
-                        // 初始化的时候，需要同步获取最新的表数据
-                        if (props.value) {
-                            handleGetTableDatas(props.value, props.dataSourceType)
-                        }
-                    })
                     .finally(() => {
                         isLoadingList.value = false
                     })
@@ -341,8 +333,8 @@
                 projectInfo,
                 tableGroups,
                 handleSelectTable,
-                getMysqlTables,
-                getBkBaseBizs,
+                handleGetMysqlTables,
+                handleGetBkBaseBizs,
                 handleCreate,
                 handleClearTable,
                 handleGetTableDatas,

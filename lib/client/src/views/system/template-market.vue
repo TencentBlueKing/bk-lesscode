@@ -70,6 +70,7 @@
                                         <div class="stat"> {{$t('由 {0} 上传',[project.createUser || 'admin'])}}</div>
                                        
                                     </div>
+                                    <framework-tag class="framework-op" :framework="project.framework"></framework-tag>
                                 </div>
                                 <span class="favorite-btn">
                                     <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false }"></i>
@@ -121,14 +122,20 @@
                                 </div>
                                 <div class="item-ft">
                                     <div class="col">
-                                        <div class="page-name">
-                                            <span class="page-type">
-                                                <i v-if="page.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
-                                                <i v-else class="bk-drag-icon bk-drag-pc"> </i>
-                                            </span>
-                                            <div class="name" :title="page.templateName">{{page.templateName}}</div>
+                                        <div class="col-warp">
+                                            <div>
+                                                <div class="page-name">
+                                                    <span class="page-type">
+                                                        <i v-if="page.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
+                                                        <i v-else class="bk-drag-icon bk-drag-pc"> </i>
+                                                    </span>
+                                                    <div class="name" :title="page.templateName">{{page.templateName}}</div>
+                                            
+                                                </div>
+                                                <div class="stat">{{$t('由 {0} 上传',[page.createUser || 'admin'])}}</div>
+                                            </div>
+                                            <framework-tag class="framework-op" :framework="page.framework"></framework-tag>
                                         </div>
-                                        <div class="stat">{{$t('由 {0} 上传',[page.createUser || 'admin'])}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -253,6 +260,7 @@
     import { PROJECT_TEMPLATE_TYPE, PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import { parseFuncAndVar } from '@/common/parse-function-var'
     import LC from '@/element-materials/core'
+    import frameworkTag from '@/components/framework-tag.vue'
 
     const PROJECT_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
     const PAGE_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PAGE_TEMPLATE_TYPE)
@@ -267,7 +275,8 @@
         name: 'template-market',
         components: {
             DownloadDialog,
-            PagePreviewThumb
+            PagePreviewThumb,
+            frameworkTag
         },
         data () {
             return {
@@ -375,7 +384,7 @@
                     const params = { filter: 'official', officialType: this.template.project.filter }
                     const [{ projectList }, pageTemplateList] = await Promise.all([
                         this.$store.dispatch('project/query', { config: { params } }),
-                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL' })
+                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL', framework: 'all' })
                     ])
                     this.projectList = projectList
                     this.pageList = pageTemplateList
@@ -607,7 +616,8 @@
                 window.open(`/preview/project/${id}/`, '_blank')
             },
             handlePreviewTemplate (template) {
-                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}`, '_blank')
+                console.log(template, '====================')
+                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}?framework=${template.framework}`, '_blank')
             },
             handleDownloadProject (project) {
                 this.$refs.downloadDialog.isShow = true
@@ -700,6 +710,16 @@
         }
         .page-item{
              margin: 0 14px 30px 0;
+             .col-warp{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                .framework-op{
+                    position: absolute;
+                    right: -30px;
+                }
+             }
         }
         .project-item, .page-item {
             position: relative;

@@ -24,6 +24,7 @@
                             :title="`${pageDetail.pageName}【${projectDetail.projectName}】`">
                             <div class="col-name">{{ pageDetail.pageName }}<span class="project-name">【{{ projectDetail.projectName }}】</span></div>
                             <div class="col-version">{{versionName}}</div>
+                            <frameworkTag :framework="projectDetail.framework" bg-color="#dcdee5"></frameworkTag>
                         </div>
                         <i class="bk-select-angle bk-icon icon-angle-down" />
                     </div>
@@ -60,6 +61,7 @@
                             <i class="bk-icon icon-plus-circle" /> {{ $t('新建PC自定义页面') }}
                         </div>
                         <div
+                            v-if="!isVue3"
                             class="page-row"
                             @click="handleCreate('PC', 'FORM')">
                             <i class="bk-icon icon-plus-circle" /> {{ $t('新建PC表单页面') }}
@@ -85,12 +87,14 @@
     import { NOCODE_TYPE_MAP } from '@/common/constant'
     import PageDialog from '@/components/project/page-dialog'
     import createPageDialog from '@/components/project/create-page-dialog'
+    import frameworkTag from '@/components/framework-tag.vue'
 
     export default {
         name: '',
         components: {
             PageDialog,
-            createPageDialog
+            createPageDialog,
+            frameworkTag
         },
         data () {
             return {
@@ -125,7 +129,10 @@
                 'pageList',
                 'platform'
             ]),
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId', versionName: 'currentVersionName', getInitialVersion: 'initialVersion' })
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId', versionName: 'currentVersionName', getInitialVersion: 'initialVersion' }),
+            isVue3 () {
+                return this.projectDetail.framework === 'vue3'
+            }
         },
         watch: {
             pageList (val) {

@@ -18,6 +18,20 @@
                 @on-delete="handleUploadReset"
             ></bk-upload>
         </bk-form-item>
+        <bk-form-item label="VUE 版本" required property="framework" error-display-type="normal">
+            <div class="bk-button-group">
+                <bk-button
+                    @click="formData.framework = 'vue2'"
+                    :class="formData.framework === 'vue2' ? 'is-selected' : ''"
+                    :disabled="type !== 'newProject'"
+                >VUE 2</bk-button>
+                <bk-button
+                    @click="formData.framework = 'vue3'"
+                    :class="formData.framework === 'vue3' ? 'is-selected' : ''"
+                    :disabled="type !== 'newProject'"
+                >VUE 3</bk-button>
+            </div>
+        </bk-form-item>
         <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
             <bk-input maxlength="60" v-model.trim="formData.projectName"
                 :placeholder="$t('由汉字，英文字母，数字组成，20个字符以内')">
@@ -49,7 +63,8 @@
     const defaultFormData = {
         projectCode: '',
         projectName: '',
-        projectDesc: ''
+        projectDesc: '',
+        framework: 'vue2'
     }
 
     export default {
@@ -104,6 +119,14 @@
                 importProjectData: {}
             }
         },
+        watch: {
+            'propsFormData.framework': {
+                handler (val) {
+                    this.formData.framework = val || 'vue2'
+                },
+                immediate: true
+            }
+        },
         computed: {
             formType () {
                 return this.type === 'templateProject' ? 'vertical' : 'horizontal'
@@ -152,3 +175,14 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+.bk-button-group {
+    width: 100%;
+    display: flex;
+    .bk-button {
+        flex: 1;
+        height: 32px;
+    }
+}
+</style>

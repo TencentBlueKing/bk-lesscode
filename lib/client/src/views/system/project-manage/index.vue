@@ -564,7 +564,8 @@
             async handleCopy (project) {
                 this.dialog.create.projectType = 'copyProject'
                 this.dialog.create.formData.copyFrom = project.id
-                this.dialog.create.formData.projectName = `${project.projectName}copy`
+                this.dialog.create.formData.framework = project.framework
+                this.dialog.create.formData.projectName = `${project.projectName}copy` 
                 this.dialog.create.visible = true
             },
             async handleExport (project) {

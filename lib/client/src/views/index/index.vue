@@ -48,6 +48,7 @@
 </template>
 <script>
     import Vue from 'vue'
+    import { init, vue3Resource }from 'bk-lesscode-render'
     import { mapActions, mapGetters, mapState } from 'vuex'
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
@@ -234,10 +235,10 @@
                             const [
                                 config,
                                 componentSource
-                            ] = callback(Vue)
+                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue)
                             window.__innerCustomRegisterComponent__[config.type] = componentSource
                             // 注册自定义组件 material
-                            LC.registerMaterial(config.type, config)
+                            LC.registerMaterial(config.type, config, config.framework)
                         })
                         this.isCustomComponentLoading = false
                         resolve()
@@ -284,8 +285,13 @@
                         this.$store.dispatch('dataSource/list', { projectId: this.projectId }),
                         // 进入画布拉取一次权限操作，给 iam getters projectPermActionList 赋值，保存页面时，需要用到 projectPermActionList
                         this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId }),
-                        this.registerCustomComponent()
                     ])
+
+                    // 初始化项目框架信息
+                    LC.setFramework(projectDetail.framework)
+                    init(projectDetail.framework)
+
+                    await this.registerCustomComponent()
 
                     await this.$store.dispatch('page/getPageSetting', {
                         pageId: this.pageId,
@@ -307,7 +313,6 @@
                     this.$store.commit('api/setApiData', apiData)
 
                     syncVariableValue(pageDetail.content, variableList)
-
                     // 设置初始targetData
                     LC.parseData(pageDetail.content)
                     LC.pageStyle = pageDetail.styleSetting
@@ -348,6 +353,7 @@
                 const defaultSetting = {
                     isGenerateNav: false,
                     id: this.projectId + this.pageDetail.pageCode + this.versionId,
+                    framework: LC.getFramework(),
                     curTemplateData: {},
                     storageKey: 'ONLINE_PREVIEW_CONTENT',
                     types: ['reload', 'update_style']
@@ -358,6 +364,7 @@
                 const defaultSetting = {
                     isGenerateNav: true,
                     id: this.projectId + this.pageRoute.layoutPath + this.versionId,
+                    framework: LC.getFramework(),
                     curTemplateData: this.curTemplateData,
                     storageKey: 'ONLINE_PREVIEW_NAV',
                     types: ['reload']

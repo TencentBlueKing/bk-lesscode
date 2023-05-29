@@ -14,18 +14,19 @@ const ignore = [
 ]
 
 function startServer () {
-    nodemon({
-        script: path.resolve(backendDir, 'app.browser.js'),
-        watch: [
-            backendDir,
-            sharedDir
-        ],
-        nodeArgs: [
-            '--inspect'
-        ],
-        ext: 'js',
-        ignore
-    })
+    nodemon
+        ({
+            script: path.resolve(backendDir, 'app.browser.js'),
+            watch: [
+                backendDir,
+                sharedDir
+            ],
+            nodeArgs: [
+                '--inspect'
+            ],
+            ext: 'js',
+            ignore
+        })
         .once('start', () => {
             runDev()
         })

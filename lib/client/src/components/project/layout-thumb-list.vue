@@ -26,6 +26,8 @@
 </template>
 
 <script>
+    import store from '@/store'
+
     export default {
         props: {
             list: {
@@ -58,7 +60,7 @@
                 return require(`@/images/${previewImg}`)
             },
             handlePreview (layout) {
-                window.open(`/preview-template/project/${layout.projectId}/${layout.id}?type=nav-template`, '_blank')
+                window.open(`/preview-template/project/${layout.projectId}/${layout.id}?type=nav-template&framework=${store.getters['project/projectDetail'].framework}`, '_blank')
             }
         }
     }

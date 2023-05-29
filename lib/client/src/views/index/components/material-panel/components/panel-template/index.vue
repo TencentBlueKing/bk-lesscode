@@ -116,6 +116,7 @@
             ...mapGetters('projectVersion', {
                 versionId: 'currentVersionId'
             }),
+            ...mapGetters('project', ['projectDetail']),
             renderTemplateList () {
                 return this.type === 'project' ? this.projectTemplateList : this.marketTemplateList
             }
@@ -139,8 +140,8 @@
                         tmpMarketTemplateList
                     ] = await Promise.all([
                         this.$store.dispatch('pageTemplate/categoryList', { projectId: this.projectId }),
-                        this.$store.dispatch('pageTemplate/list', { projectId: this.projectId }),
-                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL' })
+                        this.$store.dispatch('pageTemplate/list', { projectId: this.projectId, framework: this.projectDetail.framework }),
+                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL', framework: this.projectDetail.framework })
                     ])
                     const projectTemplateList = tmpProjectTemplateList.map(item => ({
                         ...item,
@@ -241,7 +242,7 @@
              * @param { Number } template
              */
             handlePreview (template) {
-                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}`, '_blank')
+                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}?framework=${this.projectDetail.framework}`, '_blank')
             },
 
             handleApply (template) {

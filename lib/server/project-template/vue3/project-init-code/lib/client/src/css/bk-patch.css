@@ -1,0 +1,45 @@
+.navigation-bar {
+    width: 100%;
+    height: 100%;
+}
+.navigation-bar-container {
+    width: 100%;
+    max-width: 100%;
+}
+.bk-navigation {
+    min-width: 1360px;
+    height: 100vh;
+}
+.bk-navigation-wrapper .navigation-container {
+    max-width: 100% !important;
+}
+.navigation-header .tippy-popper .tippy-tooltip.navigation-message-theme {
+    padding: 0;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.navigation-header .header-user {
+    margin-left: auto;
+}
+.navigation-header .is-complex-item {
+    margin-right: 40px;
+    cursor: pointer;
+}
+.bk-navigation-wrapper .navigation-container .container-content {
+    padding: 0px !important;
+}
+.empty-padding.bk-popover.bk-pop2-content {
+    padding: 0 !important;
+}
+
+/* 人员选择器使用的tippy，引入了单独的css，会影响到组件库中基于tippy实现的组件样式 */
+.tippy-tooltip {
+    .tippy-content {
+        padding: 0;
+    }
+    .tippy-arrow {
+        width: 0;
+        height: 0;
+    }
+}

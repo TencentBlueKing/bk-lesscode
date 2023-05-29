@@ -114,8 +114,8 @@
 <script>
     import _ from 'lodash'
     import { mapState } from 'vuex'
-    import iconComponentList from '@/element-materials/materials/icon-list.js'
-    import iconVantList from '@/element-materials/materials/vant/icon-list'
+    import iconComponentList from '@/element-materials/materials/vue2/icon-list.js'
+    import iconVantList from '@/element-materials/materials/vue2/vant/icon-list'
 
     export default {
         name: '',

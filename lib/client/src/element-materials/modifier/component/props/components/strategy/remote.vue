@@ -80,10 +80,6 @@
                 type: Function,
                 default: () => {}
             },
-            autoGetData: {
-                type: Boolean,
-                default: true
-            },
             title: {
                 type: String
             },
@@ -123,9 +119,6 @@
         },
         created () {
             this.remoteData = Object.assign({}, this.remoteData, this.payload)
-            if (this.autoGetData && this.remoteData.methodCode) {
-                this.getApiData()
-            }
         },
         methods: {
             changeFunc (val) {
