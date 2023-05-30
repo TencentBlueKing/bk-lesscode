@@ -48,7 +48,7 @@
 </template>
 <script>
     import Vue from 'vue'
-    import { init, vue3Resource }from 'bk-lesscode-render'
+    import { init, vue3Resource } from 'bk-lesscode-render'
     import { mapActions, mapGetters, mapState } from 'vuex'
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
@@ -207,6 +207,8 @@
             this.clearPerviewData()
             window.removeEventListener('beforeunload', this.clearPerviewData)
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
+            // 离开页面清除 storage 里面的page数据
+            this.$store.commit('page/setPageDetail', {})
         },
         beforeRouteLeave (to, from, next) {
             this.$bkInfo({
@@ -284,7 +286,7 @@
                         this.$store.dispatch('components/componentNameMap'),
                         this.$store.dispatch('dataSource/list', { projectId: this.projectId }),
                         // 进入画布拉取一次权限操作，给 iam getters projectPermActionList 赋值，保存页面时，需要用到 projectPermActionList
-                        this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId }),
+                        this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
                     ])
 
                     // 初始化项目框架信息
