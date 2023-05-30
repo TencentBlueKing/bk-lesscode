@@ -207,12 +207,17 @@
             this.clearPerviewData()
             window.removeEventListener('beforeunload', this.clearPerviewData)
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
-            // 离开页面清除 store lc 里面的page数据
+
+            // 清空 store
             this.$store.commit('page/setPageDetail', {})
+            this.$store.commit('layout/setPageLayout', {})
+            // 清空 LC
             const root = LC.getRoot()
             root.children.forEach(children => {
                 root.removeChild(children)
             })
+            // 重置 platform
+            LC.platform = 'PC'
         },
         beforeRouteLeave (to, from, next) {
             this.$bkInfo({
