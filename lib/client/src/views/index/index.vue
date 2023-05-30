@@ -207,8 +207,12 @@
             this.clearPerviewData()
             window.removeEventListener('beforeunload', this.clearPerviewData)
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
-            // 离开页面清除 storage 里面的page数据
+            // 离开页面清除 store lc 里面的page数据
             this.$store.commit('page/setPageDetail', {})
+            const root = LC.getRoot()
+            root.children.forEach(children => {
+                root.removeChild(children)
+            })
         },
         beforeRouteLeave (to, from, next) {
             this.$bkInfo({
