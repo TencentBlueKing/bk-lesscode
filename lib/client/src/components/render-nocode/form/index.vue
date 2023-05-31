@@ -32,7 +32,7 @@
     import DrawLayout from '@/views/index/components/draw-layout'
     import LeftPanel from './components/left-panel'
     import RightPanel from './components/right-panel'
-    import Layout from '@/components/render/pc/widget/layout'
+    import Layout from '@/components/render-nocode/components/layout'
     import FormContent from './components/form-content'
     import { bus } from '@/common/bus'
     export default {

@@ -33,18 +33,18 @@
                         </bk-radio-button>
                     </bk-radio-group>
                 </lc-form-item>
-                <lc-form-item label="VUE 版本" required error-display-type="normal">
+                <lc-form-item :label="$t('VUE 版本')" required error-display-type="normal">
                     <bk-radio-group v-model="formData.framework">
                         <div class="bk-button-group">
                             <bk-button
                                 @click="formData.framework = 'vue2'"
                                 :class="formData.framework === 'vue2' ? 'is-selected' : ''"
-                                :disabled="!!data.id"
+                                :disabled="!!data.id || currentProject.framework === 'vue3'"
                             >VUE 2</bk-button>
                             <bk-button
                                 @click="formData.framework = 'vue3'"
                                 :class="formData.framework === 'vue3' ? 'is-selected' : ''"
-                                :disabled="!!data.id"
+                                :disabled="!!data.id || currentProject.framework !== 'vue3'"
                             >VUE 3</bk-button>
                         </div>
                     </bk-radio-group>
@@ -111,7 +111,7 @@
     import tnpmVersionValid from '@/common/tnpm-version-valid'
     import { leaveConfirm } from '@/common/leave-confirm'
 
-    const generatorData = () => ({
+    const generatorData = (data = {}) => ({
         name: '',
         displayName: '',
         type: '',
@@ -121,7 +121,8 @@
         description: '',
         log: '',
         compType: 'PC',
-        framework: 'vue2'
+        framework: 'vue2',
+        ...data
     })
     export default {
         name: '',
@@ -139,9 +140,12 @@
             }
         },
         data () {
+            const formData = generatorData({
+                framework: this.$store.getters['project/currentProject'].framework
+            })
             return {
                 isSubmiting: false,
-                formData: generatorData(),
+                formData,
                 lastVersion: '',
                 categoryList: []
             }
@@ -293,7 +297,9 @@
                 }
             },
             close () {
-                this.formData = generatorData()
+                this.formData = generatorData({
+                    framework: this.$store.getters['project/currentProject'].framework
+                })
                 this.$emit('update:isShow', false)
             },
             handleCancel () {
