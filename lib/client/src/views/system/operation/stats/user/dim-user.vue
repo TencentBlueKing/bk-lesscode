@@ -4,14 +4,14 @@
             <bk-date-picker class="filter-item"
                 v-model="filters.dateRange"
                 type="daterange"
-                placeholder="创建时间"
+                :placeholder="$t('创建时间')"
                 @change="handleTimeChange"
                 :shortcuts="dateShortcuts[0]">
             </bk-date-picker>
             <bk-input
                 class="filter-item search-input"
                 clearable
-                placeholder="按用户名搜索"
+                :placeholder="$t('按用户名搜索')"
                 right-icon="bk-icon icon-search"
                 @clear="handleKeywordClear"
                 @enter="handleKeywordEnter"
@@ -79,10 +79,10 @@
                 },
                 orderBy: undefined,
                 columns: [
-                    { id: 'username', name: '用户名', width: '360', tooltip: true },
-                    { id: 'createTime', name: '创建时间', width: '320', sortable: 'custom', type: 'datetime', tooltip: true },
-                    { id: 'projectCount', name: '应用数', sortable: 'custom', dynamic: true, type: 'number' },
-                    { id: 'pageCount', name: '页面数', sortable: 'custom', dynamic: true, type: 'number' }
+                    { id: 'username', name: window.i18n.t('用户名'), width: '360', tooltip: true },
+                    { id: 'createTime', name: window.i18n.t('table_创建时间'), width: '320', sortable: 'custom', type: 'datetime', tooltip: true },
+                    { id: 'projectCount', name: window.i18n.t('table_应用数'), sortable: 'custom', dynamic: true, type: 'number' },
+                    { id: 'pageCount', name: window.i18n.t('table_页面数'), sortable: 'custom', dynamic: true, type: 'number' }
                 ],
                 filters: {
                     keyword: '',

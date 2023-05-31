@@ -10,14 +10,14 @@
 -->
 
 <template>
-    <style-layout title="背景">
-        <style-item name="颜色" v-if="handleHasKey('backgroundColor')">
+    <style-layout :title="$t('背景')">
+        <style-item :name="$t('颜色')" v-if="handleHasKey('backgroundColor')">
             <bk-color-picker
                 :value="renderValueMap.backgroundColor"
                 @change="handleValueChange('backgroundColor', $event)"
                 style="width: 100%;" />
         </style-item>
-        <style-item name="背景图" v-if="handleHasKey('backgroundImage')">
+        <style-item :name="$t('form_背景图')" v-if="handleHasKey('backgroundImage')">
             <bk-switcher
                 :value="backgroundImageShow"
                 theme="primary"
@@ -31,7 +31,7 @@
                     @change="handleValueChange('backgroundImage', $event)"
                     style="width: 100%" />
             </style-item>
-            <style-item name="大小">
+            <style-item :name="$t('大小')">
                 <template>
                     <size-input
                         :value="backgroundSize.width"
@@ -50,7 +50,7 @@
                     @change="handleUnitChange('backgroundSize', $event)"
                     style="border: 1px solid #c4c6cc" />
             </style-item>
-            <style-item name="位置">
+            <style-item :name="$t('位置')">
                 <template>
                     <size-input
                         :value="backgroundPosition.x"

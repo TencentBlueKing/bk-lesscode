@@ -11,7 +11,7 @@
 
 <template>
     <div>
-        <div class="checkbox-title">checkbox可选项配置：</div>
+        <div class="checkbox-title">{{ $t('checkbox可选项配置：') }}</div>
         <div class="checkbox-item">
             <div class="checkbox-option" v-for="(item, index) in checkboxOption" :key="index">
                 <i class="bk-icon icon-close checkbox-del" @click="handleDelete(index)"></i>
@@ -24,18 +24,18 @@
                     <bk-input :value="item.value" @change="val => handleChange(val, 'value', index)" />
                 </div>
                 <div class="option-item">
-                    <div class="label">默认选中</div>
+                    <div class="label">{{ $t('默认选中') }}</div>
                     <bk-checkbox :checked="item.checked" @change="val => handleChange(val, 'checked', index)" />
                 </div>
             </div>
         </div>
-        <div class="checkbox-add" @click="handleAdd"><i class="bk-icon icon-plus-circle"></i>添加一项</div>
+        <div class="checkbox-add" @click="handleAdd"><i class="bk-icon icon-plus-circle"></i>{{ $t('添加一项') }}</div>
     </div>
 </template>
 <script>
     const generateColumn = (index) => ({
-        label: `选项${index}`,
-        value: `选项${index}`,
+        label: window.i18n.t('选项{0}', [index]),
+        value: window.i18n.t('选项{0}', [index]),
         checked: false
     })
     export default {

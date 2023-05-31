@@ -2,7 +2,7 @@
     <bk-dialog
         :render-directive="'if'"
         :value="isShow"
-        title="所属分类设置"
+        :title="$t('所属分类设置')"
         header-position="left"
         :mask-close="false"
         @cancel="handlerCancel"
@@ -24,8 +24,8 @@
                 :loading="dialog.loading"
                 @click="handlerConfirm"
                 class="footer-btn"
-            >确定</bk-button>
-            <bk-button @click="handlerCancel">取消</bk-button>
+            >{{ $t('确定') }}</bk-button>
+            <bk-button @click="handlerCancel">{{ $t('取消') }}</bk-button>
         </div>
     </bk-dialog>
 </template>
@@ -79,7 +79,7 @@
                         categoryId: this.categoryId
                     }
                     await this.$store.dispatch('components/updateData', data)
-                    this.messageSuccess('设置成功')
+                    this.messageSuccess(window.i18n.t('设置成功'))
                     this.$emit('update:isShow', false)
                     this.$emit('on-update')
                     this.$emit('on-add')

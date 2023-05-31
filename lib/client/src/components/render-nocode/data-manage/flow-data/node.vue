@@ -6,7 +6,7 @@
                     v-for="node in nodes"
                     :key="node.id"
                     :name="node.id"
-                    :label="`【${node.name}】节点`">
+                    :label="`【${node.name}】${$t('节点')}`">
                 </bk-tab-panel>
             </bk-tab>
             <div class="operate-btns-area">

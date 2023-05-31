@@ -1,0 +1,63 @@
+.free-layout {
+    position: relative;
+    width: 100%;
+    border: 1px dashed #ccc;
+    /* 如果基础的 slot 可以拖拽需要设置这个屏蔽掉基础组件上面的 pointer-events: none 效果 */
+    pointer-events: all;
+    &.empty{
+        background: #FAFBFD;
+        &::before{
+            content: attr(data-empty-content);
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #C4C6CC;
+            pointer-events: all;
+        }
+    }
+}
+.wrapper{
+    & > [align-horizontal-left] {
+        left: 0 !important;
+    }
+    & > [align-horizontal-center] {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    & > [align-horizontal-right] {
+        left: unset !important;
+        right: 0 !important;
+    }
+    & > [align-vertical-top] {
+        top: 0 !important;
+    }
+    & > [align-vertical-center] {
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+    }
+    & > [align-vertical-bottom] {
+        top: unset !important;
+        bottom: 0 !important;
+    }
+    & > [align-horizontal-center][align-vertical-center]{
+        transform: translate(-50%, -50%) !important;
+    }
+}
+.drag-ghost {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    background: #E9F1FD;
+    & > * {
+        display: none !important;
+    }
+}

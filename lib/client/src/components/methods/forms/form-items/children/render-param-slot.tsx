@@ -3,7 +3,6 @@ import ChooseVariable from '@/components/variable/variable-select/components/var
 import {
     API_PARAM_TYPES
 } from 'shared/api'
-
 export default (row, handleUpdate) => {
     const disabled = [
         API_PARAM_TYPES.ARRAY.VAL,
@@ -20,8 +19,8 @@ export default (row, handleUpdate) => {
                     disabled={disabled}
                     onChange={(valueType) => handleUpdate(row, { valueType })}
                 >
-                    <bk-option id="value" name="值"></bk-option>
-                    <bk-option id="variable" name="变量"></bk-option>
+                    <bk-option id="value" name={window.i18n.t('值')}></bk-option>
+                    <bk-option id="variable" name={window.i18n.t('变量')}></bk-option>
                 </bk-select>
                 {
                     row.valueType === 'variable'
@@ -42,7 +41,7 @@ export default (row, handleUpdate) => {
                             ></bk-checkbox>
                             : <bk-input
                                 class="render-param-val"
-                                placeholder="请输入参数值"
+                                placeholder={window.i18n.t('请输入参数值')}
                                 value={row.value}
                                 disabled={disabled}
                                 onChange={(val) => handleUpdate(row, { value: val })}

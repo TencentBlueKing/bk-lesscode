@@ -10,11 +10,11 @@
 -->
 
 <template>
-    <style-layout title="内边距" :icon-show="true" @reset="handleReset">
+    <style-layout :title="$t('内边距')" :icon-show="true" @reset="handleReset">
         <div class="margin-style-container">
             <div class="margin-style-col-container">
                 <margin-style
-                    name="上"
+                    :name="$t('上')"
                     disable-negative
                     :value="paddingTopValue"
                     :unit="paddingTopUnit"
@@ -22,7 +22,7 @@
                     @selectChange="handleSelectChange('paddingTop', $event)"
                 ></margin-style>
                 <margin-style
-                    name="左"
+                    :name="$t('左')"
                     disable-negative
                     :value="paddingLeftValue"
                     :unit="paddingLeftUnit"
@@ -32,7 +32,7 @@
             </div>
             <div class="margin-style-col-container">
                 <margin-style
-                    name="下"
+                    :name="$t('下')"
                     disable-negative
                     :value="paddingBottomValue"
                     :unit="paddingBottomUnit"
@@ -40,7 +40,7 @@
                     @selectChange="handleSelectChange('paddingBottom', $event)"
                 ></margin-style>
                 <margin-style
-                    name="右"
+                    :name="$t('右')"
                     disable-negative
                     :value="paddingRightValue"
                     :unit="paddingRightUnit"

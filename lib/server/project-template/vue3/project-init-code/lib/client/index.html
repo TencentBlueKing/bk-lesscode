@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" href="<%= process.env.BK_STATIC_URL %>/static/images/favicon.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="<%= process.env.BK_STATIC_URL %>/static/images/favicon.png" type="image/x-icon" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> index </title>
+        <style>
+            html,body {
+                height: 100%;;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script>
+            var SITE_URL = '<%= process.env.BK_SITE_URL %>'
+            var BK_STATIC_URL = '<%= process.env.BK_STATIC_URL %>'
+            var REMOTE_STATIC_URL = '<%= process.env.BK_REMOTE_STATIC_URL %>'
+            var BKPAAS_ENVIRONMENT = '<%= process.env.BK_PAAS_ENVIRONMENT %>'
+            var IAM_ENABLE = <%= process.env.BK_IAM_ENABLE %>
+        </script>
+    </body>
+</html>

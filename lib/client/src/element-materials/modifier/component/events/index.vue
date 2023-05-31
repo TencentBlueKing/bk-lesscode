@@ -16,7 +16,7 @@
             v-if="Object.keys(renderEvents).length <= 0"
         >
             <img src="../../../../images/empty-event.png" />
-            <span class="event-tip">可添加丰富的事件，以实现复杂的业务需求</span>
+            <span class="event-tip">{{ $t('可添加丰富的事件，以实现复杂的业务需求') }}</span>
         </h3>
         <ul>
             <render-event

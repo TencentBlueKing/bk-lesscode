@@ -22,11 +22,11 @@
         </auth-button> -->
 
         <h3 class="empty-perms" style="margin-top: 5px;">
-            <span class="perms-tip">权限设置仅在应用生产环境生效，若设置多个权限操作需同时拥有所有操作权限才可生效</span>
+            <span class="perms-tip">{{ $t('权限设置仅在应用生产环境生效，若设置多个权限操作需同时拥有所有操作权限才可生效') }}</span>
         </h3>
         <h3 class="empty-perms" v-if="isShowSelectAction">
-            <span class="perms-tip">可配置操作权限</span>
-            <bk-link theme="primary" icon="bk-icon icon-plus-circle" class="plus-perms-icon" @click="addPerms">绑定权限</bk-link>
+            <span class="perms-tip">{{ $t('可配置操作权限') }}</span>
+            <bk-link theme="primary" icon="bk-icon icon-plus-circle" class="plus-perms-icon" @click="addPerms">{{ $t('绑定权限') }}</bk-link>
         </h3>
         <select-action class="choose-event" v-else
             :selected-actions="renderPerms"
@@ -34,7 +34,7 @@
             @clear-action="clearAction">
             <template v-slot:header>
                 <h3 class="perms-title">
-                    <span class="label mr10">权限操作名称</span>
+                    <span class="label mr10">{{ $t('权限操作名称') }}</span>
                 </h3>
                 <i class="bk-icon icon-close-line panel-minus" @click="delPerms"></i>
             </template>

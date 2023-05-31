@@ -1,6 +1,6 @@
 <template>
     <div class="api-node-form">
-        <form-section title="基础配置">
+        <form-section :title="$t('基础配置')">
             <bk-form
                 ref="basicForm"
                 form-type="vertical"
@@ -8,10 +8,10 @@
                 :model="formData"
                 :rules="rules">
                 <div class="select-api">
-                    <bk-form-item label="节点名称" property="nodeName" :required="true">
+                    <bk-form-item :label="$t('form_节点名称')" property="nodeName" :required="true">
                         <bk-input v-model="formData.nodeName" @change="handleNameChange"></bk-input>
                     </bk-form-item>
-                    <bk-form-item label="处理人" :required="true">
+                    <bk-form-item :label="$t('处理人')" :required="true">
                         <processors
                             ref="processorsForm"
                             :value="processorData"
@@ -30,7 +30,7 @@
                         </choose-api>
                     </bk-form-item>
                     <bk-form-item
-                        label="请求地址"
+                        :label="$t('form_请求地址')"
                         property="url"
                         desc-type="icon"
                         :desc="apiURLTips"
@@ -39,28 +39,27 @@
                             <bk-input v-model="formData.url" :disabled="urlEditDisabled" @change="update"></bk-input>
                             <i
                                 v-if="lesscodeApiUrlToUpdate"
-                                v-bk-tooltips.top="'接口路径有变更，点击更新'"
+                                v-bk-tooltips.top="$t('接口路径有变更，点击更新')"
                                 class="bk-drag-icon bk-drag-refresh-line refresh-icon"
                                 @click="handleApiUrlUpdate">
                             </i>
                         </div>
                         <view-flow-variables :open-var-list.sync="openVarList"></view-flow-variables>
                         <div id="request-url-tips">
-                            <p>1.非蓝鲸网关API，请先接入【蓝鲸网关】</p>
-                            <p>2.确保选择的蓝鲸网关API给蓝鲸应用ID【{{BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}}】已授权并设置了用户免认证策略</p>
-                            <p><span v-pre>3.请求地址可使用{{变量名}}引用流程上下文变量，比如http://host/{{id}}</span>
+                            <p>{{`1.${$t('非蓝鲸网关API，请先接入')}【${$t('蓝鲸网关')}】`}}</p>
+                            <p>{{`2.${$t('确保选择的蓝鲸网关API给蓝鲸应用ID')}【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】${$t('已授权并设置了用户免认证策略')}`}}</p>
+                            <p><span v-pre>{{`3.${$t('请求地址可使用{{变量名}}引用流程上下文变量，比如')}http://host/${id}`}}</span>
                                 <bk-button
                                     style="padding: 0; height: initial; line-height: 14px;"
                                     size="small"
                                     :text="true"
                                     @click="openVarList = true">
-                                    查看可用变量
-                                </bk-button>
+                                    {{ $t('查看可用变量') }} </bk-button>
                             </p>
                         </div>
                     </bk-form-item>
                     <bk-form-item
-                        label="请求类型"
+                        :label="$t('form_请求类型')"
                         property="method"
                         :required="true">
                         <bk-select
@@ -80,8 +79,8 @@
             </bk-form>
         </form-section>
         <form-section
-            title="请求参数"
-            desc="（调用该API需要传递的参数信息）"
+            :title="$t('请求参数')"
+            :desc="`（${$t('调用该API需要传递的参数信息')}）`"
             class="no-content-padding"
             style="margin-top: 16px;">
             <debug-api @extractScheme="handleExtractResponseFields"></debug-api>
@@ -102,8 +101,8 @@
         </form-section>
         <!-- 返回数据 -->
         <form-section
-            title="请求响应"
-            desc="（设置该API请求响应数据中的字段为全局变量，全局变量可在该API节点之后的流程节点中使用）"
+            :title="$t('请求响应')"
+            :desc="`（${$t('设置该API请求响应数据中的字段为全局变量，全局变量可在该API节点之后的流程节点中使用')}）`"
             class="no-content-padding"
             style="margin-top: 16px;">
             <div class="response-data" style="width: 83%; margin-top: 22px;">
@@ -180,21 +179,21 @@
                     nodeName: [
                         {
                             required: true,
-                            message: '节点名称为必填项',
+                            message: this.$t('节点名称为必填项'),
                             trigger: 'blur'
                         }
                     ],
                     url: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         }
                     ],
                     method: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         }
                     ]
@@ -337,8 +336,13 @@
         padding: 0;
     }
 }
-.bk-form >>> .bk-form-item + .bk-form-item {
-    margin-top: 15px;
+>>> .bk-form {
+    .bk-form-item + .bk-form-item {
+        margin-top: 15px;
+    }
+    .bk-label {
+        width: auto !important;
+    }
 }
 .bk-form-radio {
     margin-right: 20px;

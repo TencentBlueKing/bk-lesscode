@@ -10,9 +10,9 @@
 -->
 
 <template>
-    <style-layout title="边框">
+    <style-layout :title="$t('边框')">
         <div class="radius-container">
-            <div class="radius-label">圆角</div>
+            <div class="radius-label">{{ $t('圆角') }}</div>
             <div class="radius-content">
                 <div class="all-border-container">
                     <div class="icon-container">
@@ -125,7 +125,7 @@
                 @borderColorChange="handleBorderColorChange('borderLeft', $event)"
             ></border-detail>
         </div>
-        <style-item name="边框图片">
+        <style-item :name="$t('form_边框图片')">
             <bk-switcher
                 :value="borderImage.show"
                 theme="primary"
@@ -139,7 +139,7 @@
                     @change="handleBorderSourceChange"
                     style="width: 100%" />
             </style-item>
-            <style-item name="偏移">
+            <style-item :name="$t('偏移')">
                 <size-input
                     :value="borderImageSlice.x"
                     :placeholder="' '"

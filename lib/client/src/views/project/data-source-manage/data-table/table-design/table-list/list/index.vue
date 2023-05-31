@@ -3,19 +3,19 @@
         <bk-alert
             class="table-list-tip"
             type="info"
-            title="数据表设计完成后，应用预览环境直接生效，预发布和生产环境需部署才会生效"
+            :title="$t('数据表设计完成后，应用预览环境直接生效，预发布和生产环境需部署才会生效')"
             closable
         ></bk-alert>
 
         <section class="table-list-btns">
-            <bk-button theme="primary" class="table-list-btn" @click="goToDataDesign">新建表</bk-button>
-            <bk-button class="table-list-btn" @click="bulkDelete" :disabled="listStatus.selectRows.length <= 0">批量删除</bk-button>
+            <bk-button theme="primary" class="table-list-btn" @click="goToDataDesign">{{ $t('新建表') }}</bk-button>
+            <bk-button class="table-list-btn" @click="bulkDelete" :disabled="listStatus.selectRows.length <= 0">{{ $t('批量删除') }}</bk-button>
             <!-- <import-table title="导入表" class="table-list-btn"></import-table> -->
             <export-table
                 class="table-list-btn"
-                export-selection-text="导出选中表结构信息"
-                export-all-text="导出所有表结构信息"
-                :title="downloadType === 'select' ? '导出选中表结构信息' : '导出所有表结构信息'"
+                :export-selection-text="$t('导出选中表结构信息')"
+                :export-all-text="$t('导出所有表结构信息')"
+                :title="downloadType === 'select' ? $t('导出选中表结构信息') : $t('导出所有表结构信息')"
                 :disable-partial-selection="listStatus.selectRows.length <= 0"
                 :disabled="listStatus.pagination.count <= 0"
                 @download="exportTables"
@@ -23,7 +23,7 @@
             ></export-table>
             {{ downloadType }}
             <bk-divider direction="vertical" class="table-list-divider"></bk-divider>
-            <bk-button class="table-list-btn" @click="goToDataManage" :disabled="listStatus.pagination.count <= 0">数据管理</bk-button>
+            <bk-button class="table-list-btn" @click="goToDataManage" :disabled="listStatus.pagination.count <= 0">{{ $t('数据管理') }}</bk-button>
         </section>
 
         <bk-table
@@ -38,16 +38,16 @@
             @page-limit-change="handlePageLimitChange"
             @selection-change="selectionChange">
             <bk-table-column type="selection" width="60"></bk-table-column>
-            <bk-table-column label="表名" prop="tableName" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="存储引擎" width="100">InnoDB</bk-table-column>
-            <bk-table-column label="字符集" width="100">utf8mb4</bk-table-column>
-            <bk-table-column label="备注" prop="summary" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="更新人" prop="updateUser" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="更新时间" prop="updateTime" width="160" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="操作" width="220">
+            <bk-table-column :label="$t('table_表名')" prop="tableName" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_存储引擎')" min-width="100">InnoDB</bk-table-column>
+            <bk-table-column :label="$t('table_字符集')" min-width="100">utf8mb4</bk-table-column>
+            <bk-table-column :label="$t('备注')" prop="summary" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_更新人')" prop="updateUser" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_更新时间')" prop="updateTime" width="160" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('操作')" width="220">
                 <template slot-scope="props">
-                    <bk-button class="mr10" theme="primary" text @click="goToDataDesign(props.row)">表结构设计</bk-button>
-                    <bk-button class="mr10" theme="primary" text @click="goToDataManage(props.row)">数据管理</bk-button>
+                    <bk-button class="mr10" theme="primary" text @click="goToDataDesign(props.row)">{{ $t('表结构设计') }}</bk-button>
+                    <bk-button class="mr10" theme="primary" text @click="goToDataManage(props.row)">{{ $t('数据管理') }}</bk-button>
                     <span
                         v-bk-tooltips="{
                             content: calcDisableInfo(props.row).tips,
@@ -59,7 +59,7 @@
                             text
                             :disabled="calcDisableInfo(props.row).disabled"
                             @click="deleteTable([props.row])"
-                        >删除</bk-button>
+                        >{{ $t('删除') }}</bk-button>
                     </span>
                 </template>
             </bk-table-column>
@@ -67,8 +67,8 @@
         </bk-table>
 
         <confirm-dialog
-            title="确认删除"
-            tips="确认后将会删除该表，且使用到该表的接口会受到影响。在下次部署的时候执行下面的 SQL，请确认影响后确认"
+            :title="$t('确认删除')"
+            :tips="$t('确认后将会删除该表，且使用到该表的接口会受到影响。在下次部署的时候执行下面的 SQL，请确认影响后确认')"
             :is-show.sync="listStatus.showConfirmDialog"
             :sql="listStatus.sql"
             :is-loading="listStatus.isSaving"
@@ -268,7 +268,7 @@
                 }
                 if (row.source === 'nocode') {
                     result.disabled = true
-                    result.tips = '表单页面自动生成的数据表不可以删除'
+                    result.tips = window.i18n.t('表单页面自动生成的数据表不可以删除')
                 }
                 return result
             }

@@ -8,14 +8,14 @@
                 v-for="(item, index) in BUILDIN_VARIABLE_TYPE_LIST"
                 :key="index"
                 :value="item.VAL">
-                {{ item.NAME }}
+                {{ $t(item.NAME) }}
             </bk-radio-button>
         </bk-radio-group>
         <div
             class="inner-variable"
             v-if="buildInVariableStatus.buildInVariableType === 'SYSTEM'"
         >
-            <span class="inner-variable-txt">内置变量：{{ buildInVariableStatus.buildInVariable }}</span>
+            <span class="inner-variable-txt">{{$t('内置变量：')}}{{ buildInVariableStatus.buildInVariable }}</span>
             <i
                 class="bk-icon icon-info"
                 v-bk-tooltips="{
@@ -28,7 +28,7 @@
             <i class="bk-icon icon-copy" @click="copyBuildInVariable"></i>
         </div>
         <template v-else>
-            <span class="custom-variable">自定义变量</span>
+            <span class="custom-variable">{{ $t('自定义变量') }}</span>
             <variable-select
                 :options="option"
                 :form-data="{ code: buildInVariableStatus.payload.customVariableCode }"
@@ -96,7 +96,7 @@
                     customVariableCode: props.payload?.customVariableCode
                 }
             })
-            const buildInVariableTip = `${props.name} 属性有内置变量，可以在函数中使用【lesscode.${props.componentId}.${props.name}】关键字唤起自动补全功能来使用该变量，或直接使用 this.${props.buildInVariable} 来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值`
+            const buildInVariableTip = window.i18n.t('{0} 属性有内置变量，可以在函数中使用【lesscode.{1}.{2}】关键字唤起自动补全功能来使用该变量，或直接使用 this.{3} 来使用该变量。属性面板配置的值将作为变量的初始值。通过变量可以获取或者修改本属性的值', [props.name, props.componentId, props.name, props.buildInVariable])
 
             // 方法
             const copyBuildInVariable = () => {

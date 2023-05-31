@@ -16,7 +16,7 @@
                     :from-page-list="fromPageList"
                     :flow-config="flowConfig"
                     :deploy-pending="deployPending"
-                    @deploy="deployFlow">
+                    @deploy="handleDeploy">
                 </back-btn>
                 <flow-selector
                     :list="flowList"
@@ -38,10 +38,9 @@
         </div>
         <div v-if="!serviceDataLoading" class="flow-edit-main">
             <router-view
-                :flow-config="flowConfig"
                 :service-data="serviceData"
                 :deploy-pending="deployPending"
-                @deploy="deployFlow">
+                @deploy="handleDeploy">
             </router-view>
         </div>
     </section>
@@ -65,8 +64,8 @@
         data () {
             return {
                 steps: [
-                    { id: 'flowConfig', icon: 'bk-drag-icon bk-drag-flow-fill', text: '流程设计', func: this.handleStepChange('flowConfig') },
-                    { id: 'flowAdvancedConfig', icon: 'bk-drag-icon bk-drag-set', text: '流程设置', func: this.handleStepChange('flowAdvancedConfig') }
+                    { id: 'flowConfig', icon: 'bk-drag-icon bk-drag-flow-fill', text: this.$t('流程设计'), func: this.handleStepChange('flowConfig') },
+                    { id: 'flowAdvancedConfig', icon: 'bk-drag-icon bk-drag-set', text: this.$t('流程设置'), func: this.handleStepChange('flowAdvancedConfig') }
                 ],
                 flowId: this.$route.params.flowId,
                 listLoading: true,
@@ -86,9 +85,12 @@
             }
         },
         watch: {
-            '$route.params.flowId' (val) {
-                this.flowId = val
-                this.getflowConfig()
+            '$route.params.flowId' (val, oldVal) {
+                console.log(val, oldVal)
+                if (val !== oldVal) {
+                    this.flowId = val
+                    this.getflowConfig()
+                }
             }
         },
         async created () {
@@ -150,35 +152,67 @@
                     this.$router.push({ name })
                 }.bind(this)
             },
+            // 保存流程配置数据，部署流程之前需要调用
+            async updateItsmServiceData () {
+                const {
+                    is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
+                } = this.serviceData
+                const data = {
+                    can_ticket_agency: false,
+                    display_type: 'INVISIBLE',
+                    workflow_config: {
+                        is_supervise_needed,
+                        notify,
+                        notify_freq,
+                        notify_rule,
+                        revoke_config,
+                        supervise_type,
+                        supervisor,
+                        is_revocable: this.serviceData.revoke_config.type !== 0,
+                        is_auto_approve: false
+                    }
+                }
+                return new Promise((resolve, reject) => {
+                    this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
+                        .then(() => {
+                            resolve()
+                        }).catch((error) => {
+                            const h = this.$createElement
+                            this.$bkMessage({
+                                theme: 'error',
+                                ellipsisLine: 3,
+                                message: error.message
+                            })
+                            reject(error.message)
+                        })
+                })
+            },
             // 部署流程
-            async deployFlow () {
+            async deployItsmFlow () {
+                return new Promise((resolve, reject) => {
+                    this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                        .then(() => {
+                            resolve()
+                        }).catch((error) => {
+                            const h = this.$createElement
+                            this.$bkMessage({
+                                theme: 'error',
+                                message: error.message
+                            })
+                            reject(error.message)
+                        })
+                })
+            },
+            async handleDeploy () {
                 try {
                     this.deployPending = true
-                    const {
-                        is_supervise_needed, notify, notify_freq, notify_rule, revoke_config, supervise_type, supervisor
-                    } = this.serviceData
-                    const data = {
-                        can_ticket_agency: false,
-                        display_type: 'INVISIBLE',
-                        workflow_config: {
-                            is_supervise_needed,
-                            notify,
-                            notify_freq,
-                            notify_rule,
-                            revoke_config,
-                            supervise_type,
-                            supervisor,
-                            is_revocable: this.serviceData.revoke_config.type !== 0,
-                            is_auto_approve: false
-                        }
-                    }
-                    await this.$store.dispatch('nocode/flow/updateServiceData', { id: this.flowConfig.itsmId, data })
-                    await this.$store.dispatch('nocode/flow/deployFlow', this.flowConfig.itsmId)
+                    await this.updateItsmServiceData()
+                    await this.deployItsmFlow()
                     await this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, deployed: 1 })
                     this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
                     this.$bkMessage({
                         theme: 'success',
-                        message: '流程部署成功'
+                        message: window.i18n.t('流程部署成功')
                     })
                 } catch (e) {
                     console.error(e.message || e)

@@ -6,7 +6,7 @@
                 :class="{
                     floded: isFolded
                 }" />
-            <span>{{ groupName }}</span>
+            <span>{{ $t(groupName) }}</span>
             <div
                 v-if="$slots.tag"
                 class="tag">
@@ -19,7 +19,7 @@
                 class="group-list-empty"
                 type="empty"
                 scene="part">
-                <span>暂无数据</span>
+                <span>{{ $t('暂无数据') }}</span>
             </bk-exception>
             <vue-draggable
                 v-else
@@ -96,7 +96,6 @@
                 } else {
                     const materialConfig = this.list[event.oldIndex]
                     const node = LC.createNode(materialConfig.type)
-
                     Object.values(createHacker).forEach(task => task(node, materialConfig))
 
                     // 自定义组件

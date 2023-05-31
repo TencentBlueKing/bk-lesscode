@@ -3,12 +3,12 @@
         class="confirm-dialog"
         theme="primary"
         width="1100"
-        :title="title"
+        :title="isTitle"
         :value="isShow"
         :loading="isLoading"
         @confirm="confirm"
         @after-leave="cancel">
-        <h5 class="confirm-title">{{ tips }}</h5>
+        <h5 class="confirm-title">{{ isTips }}</h5>
         <monaco
             read-only
             language="sql"
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent } from '@vue/composition-api'
+    import { ref, defineComponent } from '@vue/composition-api'
     import monaco from '@/components/monaco.vue'
 
     export default defineComponent({
@@ -40,15 +40,17 @@
             },
             title: {
                 type: String,
-                default: '确认提交'
+                default: ''
             },
             tips: {
                 type: String,
-                default: '执行的 SQL 内容：（提交后将会在下次部署的时候执行该 SQL，且不可更改。请确认后再提交）'
+                default: ''
             }
         },
 
-        setup (_, { emit }) {
+        setup (props, { emit }) {
+            const isTitle = props.title || ref(window.i18n.t('确认提交'))
+            const isTips = props.tips || ref(window.i18n.t('执行的 SQL 内容：（提交后将会在下次部署的时候执行该 SQL，且不可更改。请确认后再提交）'))
             const confirm = () => {
                 emit('confirm')
             }
@@ -58,8 +60,11 @@
             }
 
             return {
+                isTitle,
+                isTips,
                 confirm,
                 cancel
+                
             }
         }
     })

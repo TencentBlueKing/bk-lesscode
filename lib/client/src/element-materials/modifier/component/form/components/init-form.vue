@@ -1,18 +1,15 @@
 <template>
     <section>
         <div class="form-title">
-            初始化表单数据（更新将会覆盖已有数据）
-        </div>
+            {{ $t('初始化表单数据（更新将会覆盖已有数据）') }} </div>
         <bk-radio-group
             class="g-prop-radio-group"
             v-model="initData.initType"
         >
             <bk-radio-button value="remote">
-                函数
-            </bk-radio-button>
+                {{ $t('函数') }} </bk-radio-button>
             <bk-radio-button value="table-data-source">
-                数据表
-            </bk-radio-button>
+                {{ $t('数据表') }} </bk-radio-button>
         </bk-radio-group>
         <remote
             v-if="initData.initType === 'remote'"
@@ -27,7 +24,7 @@
         <section v-if="initData.initType === 'table-data-source'">
             <bk-select
                 searchable
-                placeholder="请选择数据表"
+                :placeholder="$t('请选择数据表')"
                 :clearable="false"
                 :loading="tableInfo.isLoadingList"
                 :value="initData.tableData.tableName"
@@ -42,7 +39,7 @@
             </bk-select>
             <bk-select
                 style="margin: 10px 0"
-                placeholder="请选择数据表字段"
+                :placeholder="$t('请选择数据表字段')"
                 v-model="initTableData.selectCols"
                 :clearable="false"
                 :searchable="false"
@@ -59,7 +56,7 @@
                 theme="primary"
                 size="small"
                 @click="initFromTableCol"
-            >获取数据</bk-button>
+            >{{ $t('获取数据') }}</bk-button>
         </section>
     </section>
 </template>
@@ -193,7 +190,7 @@
             validateObjectMethod (res) {
                 let msg = ''
                 if (Object.prototype.toString.call(res) !== '[object Object]') {
-                    msg = '请确保函数返回值为object类型'
+                    msg = this.$t('请确保函数返回值为object类型')
                 }
                 return msg
             },
@@ -237,7 +234,7 @@
                 const cols = colList.filter(item => selectCols.indexOf(item.name) !== -1)
                 if (selectCols.length === 0 || cols.length === 0) {
                     this.$bkMessage({
-                        message: '请先选择数据表字段',
+                        message: this.$t('请先选择数据表字段'),
                         theme: 'error'
                     })
                     return

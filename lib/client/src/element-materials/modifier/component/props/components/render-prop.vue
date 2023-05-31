@@ -35,7 +35,7 @@
             </template>
 
             <template v-if="showInnerVariable">
-                <span class="g-prop-sub-title g-mb6">变量类型</span>
+                <span class="g-prop-sub-title g-mb6">{{ $t('变量类型') }}</span>
                 <choose-build-in-variable
                     class="g-mb4"
                     :build-in-variable="buildInVariable"
@@ -50,7 +50,7 @@
             </template>
 
             <template v-if="renderComponentList.length > 1">
-                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">属性初始值来源</span>
+                <span class="g-prop-sub-title g-mb6 g-mt8" v-if="showInnerVariable">{{ $t('属性初始值来源') }}</span>
                 <bk-radio-group
                     class="g-prop-radio-group mb12"
                     :value="selectValueType"
@@ -86,29 +86,24 @@
                     </template>
                 </template>
             </div>
-
-            <template v-if="describe.operation">
+            <template v-if="showUpdateColumn">
                 <div
                     v-bk-tooltips="{
-                        content: describe.operation.tips,
+                        content: $t('使用值覆盖表头的默认列，请确认后再操作'),
                         placement: 'left-start',
                         boundary: 'window'
                     }"
-                    :class="[
-                        'g-prop-sub-title g-mb6 g-mt12',
-                        {
-                            'g-config-subline': describe.operation.tips
-                        }
-                    ]"
+                    class="g-prop-sub-title g-mb6 g-mt12 g-config-subline"
                 >
-                    {{ describe.operation.title }}
+                    {{ $t('操作') }}
                 </div>
                 <bk-button
                     class="prop-operation"
                     size="small"
-                    @click="describe.operation.click(formData, syncSlot)"
+                    :loading="isSyncing"
+                    @click="updateColumn"
                 >
-                    {{ describe.operation.name }}
+                    {{ $t('更新表头') }}
                 </bk-button>
             </template>
         </variable-select>
@@ -199,15 +194,15 @@
         filters: {
             valueTypeTextFormat (valueType) {
                 const textMap = {
-                    'areatext': '文本',
-                    'number': '数字',
-                    'object': '对象',
-                    'string': '字符串',
-                    'array': '数组',
-                    'remote': '函数',
-                    'data-source': '数据表',
-                    'table-data-source': '数据表',
-                    'srcset': '图片列表'
+                    'areatext': window.i18n.t('文本'),
+                    'number': window.i18n.t('数字'),
+                    'object': window.i18n.t('对象'),
+                    'string': window.i18n.t('字符串'),
+                    'array': window.i18n.t('数组'),
+                    'remote': window.i18n.t('函数'),
+                    'data-source': window.i18n.t('数据表'),
+                    'table-data-source': window.i18n.t('数据表'),
+                    'srcset': window.i18n.t('图片列表')
                 }
                 return textMap[valueType] || toPascal(valueType)
             }
@@ -241,7 +236,8 @@
                 selectValueType: '',
                 formData: {},
                 isRenderValueCom: false,
-                isShowProp: true
+                isShowProp: true,
+                isSyncing: false
             }
         },
         computed: {
@@ -369,7 +365,7 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(this.describe.tips)
+                const tip = transformTipsWidth(window.i18n.t(this.describe.tips))
                 const commonOptions = {
                     disabled: !tip,
                     interactive: false,
@@ -413,6 +409,16 @@
             },
             isFormModel () {
                 return this.componentType === 'widget-form' && this.name === 'model'
+            },
+            showUpdateColumn () {
+                return this.name === 'data' && [
+                    'bk-table',
+                    'el-table',
+                    'folding-table',
+                    'search-table',
+                    'widget-bk-table',
+                    'widget-el-table'
+                ].includes(this.componentType)
             }
         },
         watch: {
@@ -499,10 +505,19 @@
                     val: formData.renderValue
                 }
 
-                this.$emit('on-change', this.name, {
-                    ...formData,
-                    modifiers: this.describe.modifiers || []
-                })
+                const props = {
+                    ...formData
+                }
+
+                if (this.describe?.modifiers?.length > 0) {
+                    props.modifiers = this.describe.modifiers
+                }
+
+                if (this.describe.directive) {
+                    props.directive = this.describe.directive
+                }
+
+                this.$emit('on-change', this.name, props)
             },
             /**
              * @desc 右上角类型切换，format: value | variable | expression
@@ -588,15 +603,6 @@
 
                     let val = getRealValue(type, value)
 
-                    // 防止数据量太大，画布区卡死
-                    if (Array.isArray(val)
-                        && val.length > 100
-                        && ['remote', 'table-data-source', 'data-source', 'select-data-source'].includes(this.formData.valueType)
-                    ) {
-                        val = val.slice(0, 100)
-                        this.messageInfo(`属性【${name}】的值大于 100 条，画布区限制渲染 100 条。实际数据请在预览或者部署后查看`)
-                    }
-
                     if (this.formData.valueType === 'remote') {
                         // 配置的是远程函数、数据源
                         // code 此时无效，设置为 null
@@ -621,7 +627,7 @@
                 } catch {
                     this.$bkMessage({
                         theme: 'error',
-                        message: `属性【${name}】的值设置不正确`
+                        message: window.i18n.t('属性【{0}】的值设置不正确', [name])
                     })
                 }
             },
@@ -669,6 +675,13 @@
                             }
                         })
                     })
+                })
+            },
+
+            updateColumn () {
+                this.isSyncing = true
+                this.syncSlot(this.name).finally(() => {
+                    this.isSyncing = false
                 })
             }
         }

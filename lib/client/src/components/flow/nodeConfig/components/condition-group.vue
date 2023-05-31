@@ -2,10 +2,10 @@
     <div class="condition-group">
         <i v-if="showDeleteIcon" class="bk-icon icon-close close-btn" @click="$emit('delete')"></i>
         <div class="connector-rule">
-            <label>字段间关系</label>
+            <label>{{ $t('字段间关系') }}</label>
             <bk-radio-group v-model="localVal.type" @change="change">
-                <bk-radio value="and">且</bk-radio>
-                <bk-radio value="or">或</bk-radio>
+                <bk-radio value="and">{{ $t('且') }}</bk-radio>
+                <bk-radio value="or">{{ $t('或') }}</bk-radio>
             </bk-radio-group>
         </div>
         <div class="condition-list">

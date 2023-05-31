@@ -7,6 +7,7 @@
             right-icon="bk-icon icon-search"
             :value="keyword"
             :clearable="true"
+            :placeholder="$t('请输入关键词搜索')"
             @change="handleSearch"
             @keydown="handleKeydown"
             @focus="handleShowDropList"
@@ -41,7 +42,7 @@
                 }"
                 class="outside-ul">
                 <li class="search-dropdown-list-item">
-                    <span class="text">没有找到</span>
+                    <span class="text">{{ $t('没有找到') }}</span>
                 </li>
             </ul>
         </div>

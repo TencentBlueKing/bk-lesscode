@@ -1,6 +1,6 @@
 <template>
     <div class="field-default-value">
-        <bk-button size="small" theme="primary" @click="isLinkageDialogShow = true">配置联动规则</bk-button>
+        <bk-button size="small" theme="primary" @click="isLinkageDialogShow = true">{{ $t('配置联动规则') }}</bk-button>
         <linkage-rules
             :show.sync="isLinkageDialogShow"
             :disabled="disabled"

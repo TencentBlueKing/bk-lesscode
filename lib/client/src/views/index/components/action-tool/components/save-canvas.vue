@@ -60,7 +60,7 @@
             const handleSubmit = async () => {
                 if (isLocked.value) {
                     currentInstance.proxy.$bkMessage({
-                        message: `画布正在被 ${lockInfo.activeUser} 编辑无法保存`,
+                        message: window.i18n.t('画布正在被 {0} 编辑无法保存', [lockInfo.activeUser]),
                         theme: 'warning'
                     })
                     return
@@ -81,7 +81,7 @@
                 isLocked,
                 item: {
                     icon: 'bk-drag-icon bk-drag-save',
-                    text: '保存',
+                    text: window.i18n.t('保存'),
                     func: handleSubmit
                 }
             }

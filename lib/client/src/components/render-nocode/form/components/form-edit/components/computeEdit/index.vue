@@ -2,18 +2,21 @@
     <div>
         <div class="row-box">
             <bk-radio-group v-model="computConfigInfo.type">
-                <bk-radio :value="'numberComput'">数值计算</bk-radio>
-                <bk-radio :value="'dateTime'">时间日期</bk-radio>
+                <bk-radio :value="'numberComput'" :disabled="disabled">{{ $t('数值计算') }}</bk-radio>
+                <bk-radio :value="'dateTime'" :disabled="disabled">{{ $t('时间日期') }}</bk-radio>
             </bk-radio-group>
         </div>
         <!-- 计算日期 -->
         <ComputeDate
-            v-if="computConfigInfo.type === 'dateTime'" :field="fieldData"
+            v-if="computConfigInfo.type === 'dateTime'"
+            :field="fieldData"
+            :disabled="disabled"
             :comput-config-info="computConfigInfo"
             @change="$emit('change', $event)" />
         <!-- 计算数值 -->
         <ComputeNumber v-else
             :field="fieldData"
+            :disabled="disabled"
             :comput-config-info="computConfigInfo"
             @change="$emit('change', $event)" />
     </div>
@@ -34,7 +37,8 @@
             field: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

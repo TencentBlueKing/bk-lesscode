@@ -3,14 +3,13 @@
         <render-header>
             <span class="table-header">
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
-                表结构变更记录
-            </span>
+                {{ $t('表结构变更记录') }} </span>
         </render-header>
 
         <main class="table-main">
             <bk-date-picker
                 class="mr10 filter-item"
-                placeholder="选择日期范围"
+                :placeholder="$t('选择日期范围')"
                 type="datetimerange"
                 v-model="recordStatus.timeRange"
                 @change="getRecordList"
@@ -18,7 +17,7 @@
             <bk-input
                 clearable
                 class="filter-item"
-                placeholder="输入执行人员"
+                :placeholder="$t('输入执行人员')"
                 right-icon="bk-icon icon-search"
                 v-model="recordStatus.createUser"
                 @change="getRecordList"
@@ -32,20 +31,21 @@
                 :header-border="false"
                 :header-cell-style="{ background: '#f0f1f5' }"
             >
-                <bk-table-column label="变更时间" prop="createTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
-                <bk-table-column label="执行人员" prop="createUser"></bk-table-column>
-                <bk-table-column label="变更内容" prop="sql" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_变更时间')" prop="createTime" show-overflow-tooltip :formatter="timeFormatter"></bk-table-column>
+                <bk-table-column :label="$t('table_执行人员')" prop="createUser"></bk-table-column>
+                <bk-table-column :label="$t('table_变更内容')" prop="sql" show-overflow-tooltip>
                     <template slot-scope="props">
-                        <bk-button :text="true" title="primary" @click="showSql(props.row.sql)">查看</bk-button>
+                        <bk-button :text="true" title="primary" @click="showSql(props.row.sql)">{{ $t('查看') }}</bk-button>
                     </template>
                 </bk-table-column>
+                <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
         </main>
 
         <confirm-dialog
             :is-show.sync="recordStatus.showConfirmDialog"
             :sql="recordStatus.sql"
-            title="变更详情"
+            :title="$t('变更详情')"
             tips=""
         ></confirm-dialog>
     </article>
@@ -55,7 +55,8 @@
     import {
         defineComponent,
         onBeforeMount,
-        reactive
+        reactive,
+        ref
     } from '@vue/composition-api'
     import {
         messageError
@@ -81,6 +82,7 @@
                 showConfirmDialog: false,
                 sql: ''
             })
+            const emptyType = ref('noData')
             const id = router?.currentRoute?.query?.id
 
             const goBack = () => {
@@ -98,6 +100,7 @@
 
             const getRecordList = () => {
                 recordStatus.isLoading = true
+                emptyType.value = (recordStatus.timeRange.length > 0 || recordStatus.createUser) ? 'search' : 'noData'
                 const filterData = {
                     id,
                     timeRange: recordStatus.timeRange.map(x => timeFormatter(null, null, x)),
@@ -111,15 +114,23 @@
                     recordStatus.isLoading = false
                 })
             }
+            const handlerClearSearch = () => {
+                recordStatus.createUser = ''
+                recordStatus.timeRange = []
+                emptyType.value = 'noData'
+                getRecordList()
+            }
 
             onBeforeMount(getRecordList)
 
             return {
                 recordStatus,
+                emptyType,
                 goBack,
                 timeFormatter,
                 showSql,
-                getRecordList
+                getRecordList,
+                handlerClearSearch
             }
         }
     })

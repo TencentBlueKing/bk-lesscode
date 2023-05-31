@@ -1,6 +1,6 @@
 <template>
     <section v-if="isShow" class="modifier-tab">
-        <div class="slot-title">tab选项配置：</div>
+        <div class="slot-title">{{ $t('tab选项配置：') }}</div>
         <vue-draggable
             class="group-list"
             handle=".bk-drag-grag-fill"
@@ -48,8 +48,7 @@
         </vue-draggable>
         <span class="content-add" @click="handleAdd">
             <i class="bk-icon icon-plus-circle"></i>
-            添加
-        </span>
+            {{ $t('添加') }} </span>
     </section>
 </template>
 
@@ -125,13 +124,18 @@
                 })
                 this.panelItems = [...this.componentNode.children]
                 // 设置默认选中的tab
+                const props = {
+                    format: 'value',
+                    code: 'tab1',
+                    renderValue: 'tab1'
+                }
+                if (LC.getFramework() === 'vue3') {
+                    props.directive = 'v-model'
+                } else {
+                    props.modifiers = ['sync']
+                }
                 this.componentNode.setProp({
-                    active: LC.utils.genPropFormatValue({
-                        format: 'value',
-                        code: 'tab1',
-                        renderValue: 'tab1',
-                        modifiers: ['sync']
-                    })
+                    active: LC.utils.genPropFormatValue(props)
                 })
             },
             handleAdd () {

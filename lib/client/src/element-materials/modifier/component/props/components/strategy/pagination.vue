@@ -1,31 +1,28 @@
 <template>
     <section class="table-pagination">
         <section>
-            <span class="g-prop-sub-title pagination-title">分页类型</span>
+            <span class="g-prop-sub-title pagination-title">{{ $t('分页类型') }}</span>
             <bk-radio-group
                 class="g-prop-radio-group"
                 :value="paginationPayload.type"
                 @change="handleTypeChange(...arguments)"
             >
                 <bk-radio-button value="none">
-                    无分页
-                </bk-radio-button>
+                    {{ $t('无分页') }} </bk-radio-button>
                 <bk-radio-button value="local">
-                    本地分页
-                    <i
+                    {{ $t('本地分页') }} <i
                         class="bk-icon icon-info"
                         v-bk-tooltips="{
-                            content: '本地分页下，属性【data】需传入全部数据，系统会自动处理分页逻辑',
+                            content: $t('本地分页下，属性【data】需传入全部数据，系统会自动处理分页逻辑'),
                             width: 300
                         }"
                     ></i>
                 </bk-radio-button>
                 <bk-radio-button value="remote">
-                    远程分页
-                    <i
+                    {{ $t('远程分页') }} <i
                         class="bk-icon icon-info"
                         v-bk-tooltips="{
-                            content: '远程分页下，如果属性【data】的属性初始值来源是【数据表】，系统会通过远程接口自动处理分页逻辑。否则需要用户在【page-change和page-limit-change】事件中处理分页逻辑。注意：当属性【data】的属性初始值来源是【数组、函数】，表格会展示整个data的数据，用户需要传递正确的分页数据',
+                            content: $t('远程分页下，如果属性【data】的属性初始值来源是【数据表】，系统会通过远程接口自动处理分页逻辑。否则需要用户在【page-change和page-limit-change】事件中处理分页逻辑。注意：当属性【data】的属性初始值来源是【数组、函数】，表格会展示整个data的数据，用户需要传递正确的分页数据'),
                             width: 300
                         }"
                     ></i>
@@ -150,22 +147,22 @@
             const paginationConfig = [
                 {
                     name: 'show-total-count',
-                    tips: '是否显示总数',
+                    tips: window.i18n.t('是否显示总数'),
                     type: 'boolean'
                 },
                 {
                     name: 'count',
-                    tips: '数据总数，当属性【data】的属性初始值来源为【函数】时，该属性需要在函数中结合变量进行修改',
+                    tips: window.i18n.t('数据总数，当属性【data】的属性初始值来源为【函数】时，该属性需要在函数中结合变量进行修改'),
                     type: 'number'
                 },
                 {
                     name: 'show-limit',
-                    tips: '是否显示切换分页条数',
+                    tips: window.i18n.t('是否显示切换分页条数'),
                     type: 'boolean'
                 },
                 {
                     name: 'limit',
-                    tips: '分页每页条数',
+                    tips: window.i18n.t('分页每页条数'),
                     type: 'number',
                     options: [
                         10,
@@ -176,7 +173,7 @@
                 },
                 {
                     name: 'current',
-                    tips: '分页当前页码',
+                    tips: window.i18n.t('分页当前页码'),
                     type: 'number'
                 }
             ]

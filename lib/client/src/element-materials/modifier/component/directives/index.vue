@@ -14,8 +14,7 @@
         v-if="directiveList.length"
         class="directive-home">
         <h3 class="directive-tip">
-            编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值
-        </h3>
+            {{ $t('编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值') }} </h3>
         <ul>
             <li
                 v-for="(directive, index) in directiveList"
@@ -29,7 +28,7 @@
                     <template v-slot:title>
                         <span
                             v-bk-tooltips="{
-                                content: directive.tips && directive.tips(lastDirectiveMap[genDirectiveKey(directive)]),
+                                content: directive.tips && $t(directive.tips(lastDirectiveMap[genDirectiveKey(directive)])),
                                 disabled: !directive.tips,
                                 width: 290
                             }"
@@ -70,7 +69,7 @@
             valueTypeInclude: ['boolean'],
             renderValue: true,
             tips () {
-                return '基于数据的真假性，来控制是否【渲染】该组件（通过控制是否绘制 DOM 元素来工作）'
+                return window.i18n.t('基于数据的真假性，来控制是否【渲染】该组件（通过控制是否绘制 DOM 元素来工作）')
             }
         },
         {
@@ -82,7 +81,7 @@
             valueTypeInclude: ['boolean'],
             renderValue: true,
             tips () {
-                return '基于数据的真假性，来控制是否【显示】该组件（通过设置内联样式的 display CSS 属性来工作）'
+                return window.i18n.t('基于数据的真假性，来控制是否【显示】该组件（通过设置内联样式的 display CSS 属性来工作）')
             }
         }
     ]
@@ -146,7 +145,7 @@
                             valueTypeInclude,
                             renderValue,
                             tips () {
-                                return '双向绑定：该指令绑定变量后，通过输入改变组件的值会同步改变变量的值，该变量的值变化也会影响组件的值'
+                                return window.i18n.t('双向绑定：该指令绑定变量后，通过输入改变组件的值会同步改变变量的值，该变量的值变化也会影响组件的值')
                             }
                         })
                     }
@@ -169,7 +168,7 @@
                         valueTypeInclude: ['boolean'],
                         code: '',
                         tips () {
-                            return '通过传入 boolean 数据，来控制是否展示 loading 效果'
+                            return window.i18n.t('通过传入 boolean 数据，来控制是否展示 loading 效果')
                         }
                     })
                 }
@@ -188,11 +187,11 @@
                     renderValue: 1,
                     tips: (dir) => {
                         return dir.code
-                            ? '渲染多个组件时，如果需要基于 v-for 指令的值给每个组件单独赋值。可以使用如下规则给该组件或子组件的指令或属性的表达式赋值（当前组件的 v-if 和 v-show 指令除外）：'
-                                + `<br> 1. 当输入的值为数组、数字或者对象时，请使用【${this.id}Item】为表达式赋值`
-                                + `<br> 2. 当输入的值为数组且数组子项为对象时，请使用【${this.id}Item.对象key】为表达式赋值`
-                                + `<br> 3. 当输入的值为数据表时，请使用【${this.id}Item.表字段名】为表达式赋值`
-                            : '可以使用 v-for 指令，渲染多个组件'
+                            ? window.i18n.t('渲染多个组件时，如果需要基于 v-for 指令的值给每个组件单独赋值。可以使用如下规则给该组件或子组件的指令或属性的表达式赋值（当前组件的 v-if 和 v-show 指令除外）：')
+                                + '<br> 1. ' + window.i18n.t('当输入的值为数组、数字或者对象时，请使用【{0}Item】为表达式赋值', [this.id])
+                                + '<br> 2. ' + window.i18n.t('当输入的值为数组且数组子项为对象时，请使用【{0}Item.对象key】为表达式赋值', [this.id])
+                                + '<br> 3. ' + window.i18n.t('当输入的值为数据表时，请使用【{0}Item.表字段名】为表达式赋值', [this.id])
+                            : window.i18n.t('可以使用 v-for 指令，渲染多个组件')
                     }
                 }
             )
@@ -205,7 +204,7 @@
                     valueTypeInclude: ['string'],
                     code: '',
                     tips () {
-                        return '当鼠标指向页面元素时给出简单的提示，需传入提示的字符串'
+                        return window.i18n.t('当鼠标指向页面元素时给出简单的提示，需传入提示的字符串')
                     }
                 }
             )

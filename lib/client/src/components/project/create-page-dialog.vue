@@ -22,54 +22,52 @@
                             :ext-cls="'type-button'"
                             @click="changeCreateFrom('EMPTY')"
                             :class="pageFrom !== 'TEMPLATE' ? 'is-selected' : ''">
-                            新建空白页面
-                        </bk-button>
+                            {{ $t('新建空白页面') }} </bk-button>
                         <bk-button
                             :ext-cls="'type-button'"
                             @click="changeCreateFrom('TEMPLATE')"
                             :class="pageFrom === 'TEMPLATE' ? 'is-selected' : ''">
-                            从模板新建
-                        </bk-button>
+                            {{ $t('从模板新建') }} </bk-button>
                     </div>
                 </div>
             </div>
 
             <page-from-template :platform="platform" :create-from-template="createFromTemplate" :template-change="changeTemplate" :nocode-type="nocodeType">
                 <bk-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" form-type="vertical">
-                    <bk-form-item label="当前已选模板" property="templateName" error-display-type="normal" v-if="createFromTemplate">
+                    <bk-form-item :label="$t('form_当前已选模板')" :label-width="$store.state.Language === 'en' ? 210 : 150" property="templateName" error-display-type="normal" v-if="createFromTemplate">
                         <bk-input readonly v-model.trim="selectTemplate.templateName"
-                            placeholder="模板名称">
+                            :placeholder="$t('模板名称')">
                         </bk-input>
                     </bk-form-item>
-                    <bk-form-item label="页面名称" required property="pageName" error-display-type="normal">
+                    <bk-form-item :label="$t('form_页面名称')" required property="pageName" error-display-type="normal">
                         <bk-input
                             maxlength="60"
                             v-model.trim="formData.pageName"
-                            placeholder="请输入页面名称，60个字符以内">
+                            :placeholder="$t('请输入页面名称，60个字符以内')">
                         </bk-input>
                     </bk-form-item>
-                    <bk-form-item label="页面ID" required property="pageCode" error-display-type="normal">
+                    <bk-form-item :label="$t('页面ID')" required property="pageCode" error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.pageCode"
                             :placeholder="pageCodePlaceholder">
                         </bk-input>
                     </bk-form-item>
-                    <bk-form-item label="导航布局" error-display-type="normal">
+                    <bk-form-item :label="$t('form_导航布局')" error-display-type="normal">
                         <layout-thumb-list :toolkit="['select']" :list="showLayoutList" @change-checked="handleLayoutChecked" />
-                        <bk-link theme="primary" class="jump-link" icon="bk-drag-icon bk-drag-jump-link" @click="handleCreateLayout">跳转新建</bk-link>
+                        <bk-link theme="primary" class="jump-link" icon="bk-drag-icon bk-drag-jump-link" @click="handleCreateLayout">{{ $t('跳转新建') }}</bk-link>
                     </bk-form-item>
-                    <bk-form-item label="页面路由" required property="pageRoute"
+                    <bk-form-item :label="$t('form_页面路由')" required property="pageRoute"
                         error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.pageRoute"
-                            placeholder="由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成">
+                            :placeholder="$t('由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')">
                             <template slot="prepend">
                                 <div class="group-text">{{layoutRoutePath}}</div>
                             </template>
                         </bk-input>
                     </bk-form-item>
                     <bk-form-item
-                        label="本页面添加到导航菜单"
+                        :label="$t('form_本页面添加到导航菜单')"
                         v-if="showAddNavListSwitcher"
-                        :label-width="170"
+                        :label-width="$store.state.Language === 'en' ? 260 : 170"
                         error-display-type="normal">
                         <bk-switcher
                             theme="primary"
@@ -83,8 +81,8 @@
                 <bk-button
                     theme="primary"
                     :loading="loading"
-                    @click="handleConfirmClick">确定</bk-button>
-                <bk-button @click="handleDialogCancel" :disabled="loading">取消</bk-button>
+                    @click="handleConfirmClick">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleDialogCancel" :disabled="loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -128,26 +126,26 @@
                     pageName: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         }
                     ],
                     pageCode: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         },
                         {
                             regex: /^[a-z][a-z0-9]{0,60}$/,
-                            message: '以小写字母开头，由小写字母与数字组成,少于60个字符',
+                            message: this.$t('以小写字母开头，由小写字母与数字组成,少于60个字符'),
                             trigger: 'blur'
                         }
                     ],
                     pageRoute: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         },
                         {
@@ -155,14 +153,14 @@
                                 try {
                                     compile(value)
                                     if (!/^[\w-_:\/?]+$/.test(value)) {
-                                        this.message = '由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成'
+                                        this.message = this.$t('由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')
                                         return false
                                     } else if (/\/{2,}/.test(value)) {
-                                        this.message = '请检查路径正确性'
+                                        this.message = this.$t('请检查路径正确性')
                                         return false
                                     }
                                 } catch (e) {
-                                    this.message = '请检查路径正确性'
+                                    this.message = this.$t('请检查路径正确性')
                                     return false
                                 }
                                 return true
@@ -187,8 +185,8 @@
             },
             pageTitle () {
                 const platformType = this.platform === 'MOBILE' ? 'Mobile' : 'PC'
-                const pageType = NOCODE_TYPE_MAP.title[this.nocodeType] || '自定义页'
-                return `新建${platformType}${pageType}面`
+                const pageType = NOCODE_TYPE_MAP.title[this.nocodeType] || this.$t('自定义页')
+                return this.$t('新建{0}{1}面', [platformType, pageType])
             },
             layoutRoutePath () {
                 const { routePath } = this.selectedLayout
@@ -205,8 +203,8 @@
             },
             pageCodePlaceholder () {
                 return ['FORM', 'FLOW'].includes(this.nocodeType)
-                    ? '页面ID将作为数据表表名，以小写字母开头，由小写字母与数字组成，创建后不可更改'
-                    : '以小写字母开头，由小写字母与数字组成，创建后不可更改'
+                    ? this.$t('页面ID将作为数据表表名，以小写字母开头，由小写字母与数字组成，创建后不可更改')
+                    : this.$t('以小写字母开头，由小写字母与数字组成，创建后不可更改')
             }
         },
         methods: {
@@ -261,7 +259,7 @@
                         if (!template?.id) {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: '未选择模板'
+                                message: this.$t('未选择模板')
                             })
                             return
                         }
@@ -306,7 +304,7 @@
                         if (!['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                             this.$bkMessage({
                                 theme: 'success',
-                                message: '新建页面成功'
+                                message: this.$t('新建页面成功')
                             })
                             // 判断this.nocodeType有没有值
                             const toPageRouteName = this.nocodeType ? 'editNocode' : 'new'
@@ -319,7 +317,7 @@
                             })
                         }
                     }
-                    return res
+                    return { id: res, pageName: this.formData.pageName }
                 } catch (e) {
                     console.error(e)
                 } finally {

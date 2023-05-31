@@ -29,7 +29,7 @@
                 show-help-box
                 :help-click="handleStartGuide"
                 :help-tooltips="{
-                    content: '画布操作指引',
+                    content: $t('画布操作指引'),
                     placements: ['bottom']
                 }" />
         </div>
@@ -48,6 +48,7 @@
 </template>
 <script>
     import Vue from 'vue'
+    import { init, vue3Resource } from 'bk-lesscode-render'
     import { mapActions, mapGetters, mapState } from 'vuex'
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
@@ -150,13 +151,13 @@
 
             this.guideStep = [
                 {
-                    title: '组件库和图标',
-                    content: '从基础组件、自定义业务组件、图标库中拖拽组件或图标到画布区域进行页面编排组装',
+                    title: window.i18n.t('组件库和图标'),
+                    content: window.i18n.t('从基础组件、自定义业务组件、图标库中拖拽组件或图标到画布区域进行页面编排组装'),
                     target: '#editPageLeftSideBar'
                 },
                 {
-                    title: '组件树',
-                    content: '以全局组件树的形式，快速切换查看页面的所有组件',
+                    title: window.i18n.t('组件树'),
+                    content: window.i18n.t('以全局组件树的形式，快速切换查看页面的所有组件'),
                     target: '#editPageLeftSideBar',
                     entry: () => {
                         // 切换组件树 tab
@@ -168,13 +169,13 @@
                     }
                 },
                 {
-                    title: '画布编辑区',
-                    content: '可在画布自由拖动组件、图标等进行页面布局，选中组件或布局后可右键对选中项进行复制粘贴等快捷操作',
+                    title: window.i18n.t('画布编辑区'),
+                    content: window.i18n.t('可在画布自由拖动组件、图标等进行页面布局，选中组件或布局后可右键对选中项进行复制粘贴等快捷操作'),
                     target: '#lesscodeDrawContent'
                 },
                 {
-                    title: '组件配置',
-                    content: '在画布中选中对应组件，可在这里进行组件样式、属性、事件及指令的配置',
+                    title: window.i18n.t('组件配置'),
+                    content: window.i18n.t('在画布中选中对应组件，可在这里进行组件样式、属性、事件及指令的配置'),
                     target: '#modifierPanel',
                     entry: () => {
                         const $componentEl = document.body.querySelector('[role="component-root"]')
@@ -184,13 +185,13 @@
                     }
                 },
                 {
-                    title: '页面操作',
-                    content: '可以查看并下载完整源码，对页面生命周期、路由、函数等进行配置，以及对内容进行保存、预览、清空等操作',
+                    title: window.i18n.t('页面操作'),
+                    content: window.i18n.t('可以查看并下载完整源码，对页面生命周期、路由、函数等进行配置，以及对内容进行保存、预览、清空等操作'),
                     target: '#toolActionBox'
                 },
                 {
-                    title: '切换页面',
-                    content: '点击页面名称可以快速切换页面，新建页面，以及复制已有的页面',
+                    title: window.i18n.t('切换页面'),
+                    content: window.i18n.t('点击页面名称可以快速切换页面，新建页面，以及复制已有的页面'),
                     target: '#editPageSwitchPage'
                 }
             ]
@@ -206,11 +207,23 @@
             this.clearPerviewData()
             window.removeEventListener('beforeunload', this.clearPerviewData)
             window.removeEventListener('beforeunload', this.beforeunloadConfirm)
+
+            // 清空 store
+            this.$store.commit('page/setPageDetail', {})
+            this.$store.commit('layout/setPageLayout', {})
+            // 清空 LC
+            const root = LC.getRoot()
+            root.children.forEach(children => {
+                root.removeChild(children)
+            })
+            // 重置 platform
+            LC.platform = 'PC'
         },
         beforeRouteLeave (to, from, next) {
             this.$bkInfo({
-                title: '确认离开?',
-                subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                title: window.i18n.t('确认离开'),
+                okText: window.i18n.t('离开'),
+                subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
                 confirmFn: async () => {
                     next()
                 }
@@ -233,17 +246,17 @@
                             const [
                                 config,
                                 componentSource
-                            ] = callback(Vue)
+                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue)
                             window.__innerCustomRegisterComponent__[config.type] = componentSource
                             // 注册自定义组件 material
-                            LC.registerMaterial(config.type, config)
+                            LC.registerMaterial(config.type, config, config.framework)
                         })
                         this.isCustomComponentLoading = false
                         resolve()
                     }
                     script.onerror = () => {
                         this.isCustomComponentLoading = false
-                        reject(new Error('自定义组件注册失败'))
+                        reject(new Error(window.i18n.t('自定义组件注册失败')))
                     }
                     document.body.appendChild(script)
                     this.$once('hook:beforeDestroy', () => {
@@ -282,9 +295,14 @@
                         this.$store.dispatch('components/componentNameMap'),
                         this.$store.dispatch('dataSource/list', { projectId: this.projectId }),
                         // 进入画布拉取一次权限操作，给 iam getters projectPermActionList 赋值，保存页面时，需要用到 projectPermActionList
-                        this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId }),
-                        this.registerCustomComponent()
+                        this.$store.dispatch('iam/getIamAppPermAction', { projectId: this.projectId })
                     ])
+
+                    // 初始化项目框架信息
+                    LC.setFramework(projectDetail.framework)
+                    init(projectDetail.framework)
+
+                    await this.registerCustomComponent()
 
                     await this.$store.dispatch('page/getPageSetting', {
                         pageId: this.pageId,
@@ -306,7 +324,6 @@
                     this.$store.commit('api/setApiData', apiData)
 
                     syncVariableValue(pageDetail.content, variableList)
-
                     // 设置初始targetData
                     LC.parseData(pageDetail.content)
                     LC.pageStyle = pageDetail.styleSetting
@@ -347,6 +364,7 @@
                 const defaultSetting = {
                     isGenerateNav: false,
                     id: this.projectId + this.pageDetail.pageCode + this.versionId,
+                    framework: LC.getFramework(),
                     curTemplateData: {},
                     storageKey: 'ONLINE_PREVIEW_CONTENT',
                     types: ['reload', 'update_style']
@@ -357,6 +375,7 @@
                 const defaultSetting = {
                     isGenerateNav: true,
                     id: this.projectId + this.pageRoute.layoutPath + this.versionId,
+                    framework: LC.getFramework(),
                     curTemplateData: this.curTemplateData,
                     storageKey: 'ONLINE_PREVIEW_NAV',
                     types: ['reload']

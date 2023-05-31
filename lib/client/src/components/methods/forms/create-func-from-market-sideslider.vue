@@ -1,11 +1,10 @@
 <template>
-    <bk-sideslider
-        title="添加至应用"
-        :is-show.sync="isShow"
+    <lc-sideslider
+        :title="$t('添加至应用')"
+        :is-show="isShow"
         :quick-close="true"
         :width="1200"
-        :before-close="confirmClose"
-        @hidden="handleClose">
+        @update:isShow="close">
         <section class="func-form-home" slot="content">
             <form-project
                 ref="project"
@@ -46,15 +45,16 @@
             ></form-monaco>
         </section>
         <section slot="footer" class="add-footer">
-            <bk-button theme="primary" @click="submitAddFuncFromMarket" :loading="isSubmitting">提交</bk-button>
-            <bk-button @click="handleClose">取消</bk-button>
+            <bk-button theme="primary" @click="submitAddFuncFromMarket" :loading="isSubmitting">{{ $t('提交') }}</bk-button>
+            <bk-button @click="handleClose">{{ $t('取消') }}</bk-button>
         </section>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
     import mixins from './form-mixins'
     import { mapGetters, mapActions } from 'vuex'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     export default {
         mixins: [mixins],
@@ -126,9 +126,9 @@
                         funcMarketId
                     }
                     this.createFunctionFromMarket(postData).then(() => {
-                        this.formChanged = false
-                        this.messageSuccess('添加成功')
-                        this.handleClose()
+                        window.leaveConfirm = false
+                        this.messageSuccess(this.$t('添加成功'))
+                        this.close()
                     }).catch((err) => {
                         if (err?.code === 499) {
                             this
@@ -150,21 +150,16 @@
                 })
             },
 
-            confirmClose () {
-                if (this.formChanged) {
-                    this.$bkInfo({
-                        title: '请确认是否关闭',
-                        subTitle: '存在未保存的函数，关闭后不会保存更改',
-                        confirmFn: this.handleClose
-                    })
-                } else {
-                    this.handleClose()
-                }
+            close () {
+                this.$emit('update:isShow', false)
+                this.$emit('update:funcData', {})
             },
 
             handleClose () {
-                this.$emit('update:isShow', false)
-                this.$emit('update:funcData', {})
+                leaveConfirm(this.$t('存在未保存的函数，关闭后不会保存更改'))
+                    .then(() => {
+                        this.close()
+                    })
             }
         }
     }

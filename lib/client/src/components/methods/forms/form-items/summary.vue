@@ -1,22 +1,22 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
-        <bk-form-item
-            label="函数简介"
+    <lc-form :label-width="$store.state.Language === 'en' ? 195 : 180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
+        <lc-form-item
+            :label="$t('form_函数简介')"
             property="funcSummary"
             error-display-type="normal"
             :rules="[summaryRule]"
         >
             <bk-input
                 type="textarea"
-                placeholder="请输入函数简介"
+                :placeholder="$t('请输入函数简介')"
                 :rows="3"
                 :maxlength="100"
                 :disabled="disabled"
                 :value="form.funcSummary"
                 @input="(funcSummary) => updateValue({ funcSummary })">
             </bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>
@@ -36,7 +36,7 @@
             return {
                 summaryRule: {
                     validator: (val) => (!this.requireSummary || !['', undefined, null].includes(val)),
-                    message: '函数简介必填',
+                    message: this.$t('函数简介必填'),
                     trigger: 'blur'
                 }
             }

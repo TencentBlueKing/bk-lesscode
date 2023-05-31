@@ -2,7 +2,7 @@
     <bk-select
         ref="treeRef"
         searchable
-        search-placeholder="请输入关键字搜索。如果没搜索到，可能是懒加载还未加载相应数据，请手动展开目录来寻找 API"
+        :search-placeholder="$t('请输入关键字搜索。如果没搜索到，可能是懒加载还未加载相应数据，请手动展开目录来寻找 API')"
         :tag-fixed-height="false"
         :show-empty="false"
         :clearable="false"
@@ -91,7 +91,7 @@
                 const defaultClassify = [
                     {
                         id: 'apigateway-api',
-                        name: '蓝鲸网关 API',
+                        name: window.i18n.t('蓝鲸网关API'),
                         type: 'apigateway',
                         isLeaf: false,
                         children: []
@@ -102,13 +102,13 @@
                         ...[
                             {
                                 id: 'lesscode-api',
-                                name: '应用自建 API',
+                                name: window.i18n.t('应用自建API'),
                                 type: 'lesscode',
                                 children: []
                             },
                             {
                                 id: 'datasource-api',
-                                name: '数据表操作 API',
+                                name: window.i18n.t('数据表操作API'),
                                 type: 'datasource',
                                 children: []
                             }
@@ -118,7 +118,7 @@
                 if (props.useFlowEsbApi) {
                     defaultClassify.unshift({
                         id: 'flow-esb-api',
-                        name: '蓝鲸网关 API',
+                        name: window.i18n.t('蓝鲸网关API'),
                         type: 'flow-esb-systems',
                         children: []
                     })
@@ -142,7 +142,7 @@
                 }
                 if (isEmpty(data)) {
                     node.data = [{
-                        name: '暂无数据',
+                        name: window.i18n.t('暂无数据'),
                         disabled: true
                     }]
                 }

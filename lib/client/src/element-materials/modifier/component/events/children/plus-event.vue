@@ -14,10 +14,10 @@
             class="plus-event-icon"
             :disabled="computedDisabled"
             v-bk-tooltips="{
-                content: '暂无可添加事件',
+                content: $t('暂无可添加事件'),
                 disabled: !computedDisabled
             }"
-        >添加事件</bk-link>
+        >{{$t('添加事件')}}</bk-link>
         <div slot="content">
             <section class="plus-event">
                 <bk-input
@@ -36,7 +36,7 @@
                         <bk-popover
                             ref="tipsPopoverRef"
                             placement="left-start"
-                            :content="event.tips"
+                            :content="$t(event.tips)"
                             :disabled="!event.tips"
                             :width="200"
                             boundary="window"

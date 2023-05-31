@@ -1,8 +1,8 @@
 <template>
     <div class="router-manage-page">
         <div class="g-page-tab">
-            <div class="tab-item" :class="{ active: routeType === 'PC' }" @click="handleType('PC')">PC 页面</div>
-            <div class="tab-item" :class="{ active: routeType === 'MOBILE' }" @click="handleType('MOBILE')">Mobile 页面</div>
+            <div class="tab-item" :class="{ active: routeType === 'PC' }" @click="handleType('PC')">{{ $t('PC 页面') }}</div>
+            <div class="tab-item" :class="{ active: routeType === 'MOBILE' }" @click="handleType('MOBILE')">{{ $t('Mobile 页面') }}</div>
         </div>
         <component
             :is="routeList"

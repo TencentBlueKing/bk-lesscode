@@ -19,7 +19,7 @@
             <template v-else>
                 <group-box
                     :list="favoriteComponentList"
-                    :group-name="'我的收藏'"
+                    :group-name="$t('我的收藏')"
                     :folded="favoriteComponentList.length < 1"
                     key="favorite">
                     <render-custom-component
@@ -44,7 +44,7 @@
                 </template>
                 <group-box
                     :list="publicComponentList"
-                    :group-name="'其他应用公开的组件'"
+                    :group-name="$t('其他应用公开的组件')"
                     key="publice">
                     <render-custom-component
                         v-for="component in publicComponentList"
@@ -53,8 +53,7 @@
                         :data="component"
                         @on-favorite="handleFavorite" />
                     <div slot="tag">
-                        公共
-                    </div>
+                        {{ $t('公共') }} </div>
                 </group-box>
             </template>
         </div>
@@ -64,8 +63,7 @@
                 theme="primary"
                 icon="bk-drag-icon bk-drag-jump-link"
                 @click="handleCreate(true)">
-                新建更多自定义组件
-            </bk-link>
+                {{ $t('新建更多自定义组件') }} </bk-link>
         </div>
     </div>
 </template>

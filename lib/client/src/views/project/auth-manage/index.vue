@@ -1,7 +1,7 @@
 <template>
     <article class="auth-manage-main">
         <section class="auth-manage-head">
-            <bk-alert type="info" title="应用管理权限：即在平台中对该应用进行开发、部署、权限模型设计等的应用级管理权限" closable style="flex: 1"></bk-alert>
+            <bk-alert type="info" :title="$t('应用管理权限：即在平台中对该应用进行开发、部署、权限模型设计等的应用级管理权限')" closable style="flex: 1"></bk-alert>
         </section>
 
         <bk-table :data="renderList"
@@ -10,9 +10,9 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             v-bkloading="{ isLoading }"
             class="auth-manage-table">
-            <bk-table-column label="操作类型" prop="actionName" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="权限说明" prop="actionDesc" show-overflow-tooltip></bk-table-column>
-            <bk-table-column label="关联用户组" prop="createUser" show-overflow-tooltip>
+            <bk-table-column :label="$t('table_操作类型')" prop="actionName" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_权限说明')" prop="actionDesc" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_关联用户组')" prop="createUser" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="group-wrapper" v-if="row.groups.length">
                         <div class="group-item" v-for="(item, index) in row.groups" :key="index">
@@ -27,7 +27,7 @@
                     <div v-else>--</div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="人员" prop="updateTime" show-overflow-tooltip>
+            <bk-table-column :label="$t('人员')" prop="updateTime" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     <div class="user-wrapper" v-if="row.users.length">
                         <div class="user-item" v-for="(item, index) in row.users" :key="index">

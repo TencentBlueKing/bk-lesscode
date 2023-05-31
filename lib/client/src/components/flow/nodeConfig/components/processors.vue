@@ -38,7 +38,7 @@
                     :disabled="!editable"
                     @toggle="orgSelectOpen = !orgSelectOpen">
                     <div :class="['org-selector-trigger', { unselected: formData.processors === '' }]" slot="trigger">
-                        {{ formData.processors ? getOrganizationsPath(Number(formData.processors), organizationList) : '请选择' }}
+                        {{ formData.processors ? getOrganizationsPath(Number(formData.processors), organizationList) : $t('请选择') }}
                         <i :class="['select-angle-icon', 'bk-icon', 'icon-angle-down', { open: orgSelectOpen }]"></i>
                     </div>
                     <bk-big-tree
@@ -68,6 +68,7 @@
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import MemberSelect from '@/components/flow-form-comp/form/components/memberSelect.vue'
+    import { PROCESSORS } from '../../constants/processor.js'
     // import memberSelector from '@/components/member-selector'
 
     export default {
@@ -126,14 +127,14 @@
                     type: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: window.i18n.t('必填项'),
                             trigger: 'blur'
                         }
                     ],
                     processors: [
                         {
                             required: true,
-                            message: '必填项',
+                            message: window.i18n.t('必填项'),
                             trigger: 'blur'
                         }
                     ]
@@ -175,9 +176,13 @@
             async getRoleGroupList () {
                 try {
                     this.roleGroupListLoading = true
-                    this.roleGroupList = await this.$store.dispatch('nocode/flow/getRoleGroups', {
+                    const res = await this.$store.dispatch('nocode/flow/getRoleGroups', {
                         is_processor: true,
                         project_key: 'lesscode'
+                    })
+                    this.roleGroupList = res.map(item => {
+                        item.name = PROCESSORS[item.type] || item.name
+                        return item
                     })
                 } catch (e) {
                     console.error(e)

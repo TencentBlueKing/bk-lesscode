@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <style-layout title="尺寸">
+    <style-layout :title="$t('尺寸')">
         <template v-for="item in sizeConfigRender">
             <style-item
                 v-if="item.key === 'display' || (item.key !== 'display' && !isInline)"
@@ -52,31 +52,31 @@
 
     const sizeConfig = [
         {
-            name: 'display',
+            name: 'Display',
             key: 'display'
         },
         {
-            name: '宽度',
+            name: window.i18n.t('宽度'),
             key: 'width'
         },
         {
-            name: '高度',
+            name: window.i18n.t('高度'),
             key: 'height'
         },
         {
-            name: '最小宽度',
+            name: window.i18n.t('最小宽度'),
             key: 'minWidth'
         },
         {
-            name: '最大宽度',
+            name: window.i18n.t('最大宽度'),
             key: 'maxWidth'
         },
         {
-            name: '最小高度',
+            name: window.i18n.t('最小高度'),
             key: 'minHeight'
         },
         {
-            name: '最大高度',
+            name: window.i18n.t('最大高度'),
             key: 'maxHeight'
         }
     ]

@@ -3,7 +3,7 @@
         <div v-if="!viewMode" :class="['image-upload-wrapper', { disabled }]">
             <div class="upload-text">
                 <i class="bk-icon icon-plus"></i>
-                <div>点击上传</div>
+                <div>{{$t('点击上传')}}</div>
             </div>
             <input
                 ref="file"
@@ -56,7 +56,7 @@
                 const { isMax, maxLength } = this.field.imageRange
                 if (isMax && maxLength <= this.imgList.length) {
                     this.$bkMessage({
-                        message: '上传图片超过最大长度',
+                        message: this.$t('上传图片超过最大长度'),
                         theme: 'warning'
                     })
                     return
@@ -95,7 +95,7 @@
                 const { isMin, minLength } = this.field.imageRange
                 if (isMin && this.imgList.length <= minLength) {
                     this.$bkMessage({
-                        message: '图片小于最小长度',
+                        message: this.$t('图片小于最小长度'),
                         theme: 'warning'
                     })
                     return

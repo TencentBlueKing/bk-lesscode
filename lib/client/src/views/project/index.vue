@@ -3,9 +3,9 @@
         <!--  -->
         <aside class="aside" v-if="!hideSideNav">
             <div class="side-hd">
-                <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
-                <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject">
-                    <bk-option v-for="option in projectList"
+                <i class="back-icon bk-drag-icon bk-drag-arrow-back" :title="$t('返回应用列表')" @click="toProjects"></i>
+                <bk-select ext-cls="select-project" ext-popover-cls="select-project-dropdown" v-model="projectId" :clearable="false" :searchable="true" @selected="changeProject" :allow-enter="filterProjectList.length > 0" :remote-method="remoteHandler">
+                    <bk-option v-for="option in filterProjectList"
                         :key="option.id"
                         :id="option.id"
                         :name="option.projectName">
@@ -98,16 +98,14 @@
         </aside>
         <div class="breadcrumbs" v-if="hasBreadcrumb">
             <div class="page-top">
-                <h3 class="current">{{ currentPage }}</h3>
+                <h3 class="current">{{ $t(currentPage) }}</h3>
                 <div class="version-selector" v-if="isShowProjectVersionSelector">
-                    应用当前版本：
-                    <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
+                    {{ $t('应用当前版本：') }} <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
                 </div>
                 <div class="instructions" v-if="helpDocument">
                     <a class="download-demo" :href="helpDocument" target="_blank">
                         <bk-icon class="bk-layout-component-kkgoknfg bkIcon1f258 bk-icon-help" type="question-circle"> </bk-icon>
-                        使用指引
-                    </a>
+                        {{ $t('使用指引') }} </a>
                 </div>
             </div>
             <extra-links></extra-links>
@@ -136,7 +134,7 @@
                 // navList: [],
                 navList: [
                     {
-                        title: '页面管理',
+                        title: window.i18n.t('abbr_页面管理'),
                         icon: 'page',
                         url: 'pageList',
                         iamAction: 'develop_app',
@@ -146,7 +144,7 @@
                         }
                     },
                     {
-                        title: '路由管理',
+                        title: window.i18n.t('路由管理'),
                         icon: 'router',
                         url: 'routes',
                         iamAction: 'develop_app',
@@ -156,7 +154,7 @@
                         }
                     },
                     {
-                        title: '流程管理',
+                        title: window.i18n.t('流程管理'),
                         icon: 'flow',
                         url: 'flowList',
                         iamAction: 'develop_app',
@@ -166,7 +164,7 @@
                         }
                     },
                     {
-                        title: '数据源管理',
+                        title: window.i18n.t('数据源管理'),
                         icon: 'data-source-manage',
                         url: 'tableList',
                         toPath: {
@@ -174,7 +172,7 @@
                         },
                         children: [
                             {
-                                title: '数据表管理',
+                                title: window.i18n.t('数据表管理'),
                                 url: 'tableList',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -183,7 +181,7 @@
                                 }
                             },
                             {
-                                title: '数据操作',
+                                title: window.i18n.t('数据操作'),
                                 url: 'dataOperation',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -194,12 +192,12 @@
                         ]
                     },
                     {
-                        title: '资源管理',
+                        title: window.i18n.t('资源管理'),
                         icon: 'source',
                         url: 'componentManage',
                         children: [
                             {
-                                title: '导航布局管理',
+                                title: window.i18n.t('导航布局管理'),
                                 url: 'layout',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -208,7 +206,7 @@
                                 }
                             },
                             {
-                                title: '函数管理',
+                                title: window.i18n.t('函数管理'),
                                 url: 'functionManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -217,7 +215,7 @@
                                 }
                             },
                             {
-                                title: 'API 管理',
+                                title: window.i18n.t('API 管理'),
                                 url: 'apiManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -226,7 +224,7 @@
                                 }
                             },
                             {
-                                title: '变量管理',
+                                title: window.i18n.t('变量管理'),
                                 url: 'variableManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -235,7 +233,7 @@
                                 }
                             },
                             {
-                                title: '文件管理',
+                                title: window.i18n.t('文件管理'),
                                 url: 'fileManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -244,7 +242,7 @@
                                 }
                             },
                             {
-                                title: '自定义组件管理',
+                                title: window.i18n.t('自定义组件管理'),
                                 url: 'componentManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -253,7 +251,7 @@
                                 }
                             },
                             {
-                                title: '页面模板管理',
+                                title: window.i18n.t('页面模板管理'),
                                 url: 'templateManage',
                                 iamAction: 'develop_app',
                                 permission: false,
@@ -265,12 +263,12 @@
                         ]
                     },
                     {
-                        title: '发布管理',
+                        title: window.i18n.t('发布管理'),
                         icon: '1_deploy-fill',
                         url: 'release',
                         children: [
                             {
-                                title: '发布部署',
+                                title: window.i18n.t('发布部署'),
                                 icon: 'list-fill',
                                 url: 'release',
                                 iamAction: 'deploy_app',
@@ -280,7 +278,7 @@
                                 }
                             },
                             {
-                                title: '版本管理',
+                                title: window.i18n.t('版本管理'),
                                 icon: 'version',
                                 url: 'versions',
                                 iamAction: 'deploy_app',
@@ -292,12 +290,12 @@
                         ]
                     },
                     {
-                        title: '权限管理',
+                        title: window.i18n.t('权限管理'),
                         icon: 'auth-set',
                         url: 'authManage',
                         children: [
                             {
-                                title: '应用管理权限',
+                                title: window.i18n.t('应用管理权限'),
                                 icon: 'user-group',
                                 url: 'authManage',
                                 iamAction: 'manage_app',
@@ -307,7 +305,7 @@
                                 }
                             },
                             {
-                                title: '应用权限模型',
+                                title: window.i18n.t('应用权限模型'),
                                 icon: 'info-fill',
                                 url: 'appPermModel',
                                 iamAction: 'manage_app',
@@ -319,7 +317,7 @@
                         ]
                     },
                     {
-                        title: '基本信息',
+                        title: window.i18n.t('基本信息'),
                         icon: 'set-fill',
                         url: 'basicInfo',
                         iamAction: 'develop_app',
@@ -329,7 +327,7 @@
                         }
                     },
                     {
-                        title: '操作审计',
+                        title: window.i18n.t('操作审计'),
                         icon: 'audit',
                         url: 'logs',
                         iamAction: 'develop_app',
@@ -340,6 +338,7 @@
                     }
                 ],
                 projectList: [],
+                filterProjectList: [],
                 countdown: 3,
                 timer: null,
                 defaultThemeColorProps: {
@@ -447,6 +446,7 @@
         },
         async mounted () {
             this.defaultOpen = false
+            this.filterProjectList = this.projectList
             this.setDefaultActive()
         },
         methods: {
@@ -487,6 +487,7 @@
                 const url = IAM_ENABLE ? 'iam/myProject' : 'project/my'
                 const projectList = await this.$store.dispatch(url, { config: {} })
                 this.projectList = projectList
+                this.filterProjectList = projectList
             },
             changeProject (id) {
                 this.$router.replace({
@@ -507,6 +508,11 @@
             handleSelect (routeName) {
                 this.$router.push({
                     name: routeName
+                })
+            },
+            remoteHandler (keyword) {
+                this.filterProjectList = this.projectList.filter((project) => {
+                    return (project.projectName || '').includes(keyword)
                 })
             }
         }

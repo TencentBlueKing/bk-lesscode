@@ -1,24 +1,23 @@
 <template>
-    <bk-sideslider
+    <lc-sideslider
         transfer
         :title="title"
-        :is-show.sync="isShow"
+        :is-show="isShow"
         :quick-close="true"
         :width="1200"
-        :before-close="confirmClose"
-        @hidden="handleClose">
+        @update:isShow="close">
         <section
             class="api-form-home"
             slot="content"
         >
-            <h3 class="api-form-title">基本设置</h3>
+            <h3 class="api-form-title">{{ $t('基本设置') }}</h3>
             <render-basic
                 class="api-form"
                 ref="basicRef"
                 :form-data="formData"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">默认请求参数</h3>
+            <h3 class="api-form-title">{{ $t('默认请求参数') }}</h3>
             <render-param
                 class="api-form"
                 ref="paramRef"
@@ -26,16 +25,14 @@
                 @update="handleUpdate"
             />
             <h3 class="api-form-title">
-                默认请求响应
+                {{ $t('默认请求响应') }}
                 <bk-button
                     class="api-response-button"
                     size="small"
                     :loading="isLoadingResponse"
-                    v-bk-tooltips="{
-                        content: '立即发送请求来获取请求响应，响应示例去除了数组中重复的部分。可以在响应结果字段提取中进行二次编辑'
-                    }"
+                    v-bk-tooltips="$t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑')"
                     @click="getApiResponse"
-                >获取请求响应</bk-button>
+                >{{ $t('获取请求响应') }}</bk-button>
             </h3>
             <render-response
                 class="api-form"
@@ -54,12 +51,12 @@
                 class="mr10"
                 :loading="isSubmitting"
                 @click="submitApi"
-            >提交</bk-button>
+            >{{ $t('提交') }}</bk-button>
             <bk-button
-                @click="confirmClose"
-            >取消</bk-button>
+                @click="handleClose"
+            >{{ $t('取消') }}</bk-button>
         </section>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
@@ -70,8 +67,7 @@
         defineComponent,
         ref,
         watch,
-        computed,
-        getCurrentInstance
+        computed
     } from '@vue/composition-api'
     import {
         parseScheme2Value,
@@ -83,6 +79,9 @@
     import {
         messageError
     } from '@/common/bkmagic'
+    import {
+        leaveConfirm
+    } from '@/common/leave-confirm'
 
     export default defineComponent({
         components: {
@@ -111,10 +110,8 @@
             // 状态
             const isSubmitting = ref(false)
             const isLoadingResponse = ref(false)
-            const formChanged = ref(false)
             const formData = ref({})
             const response = ref()
-            const instance = getCurrentInstance()
             const basicRef = ref(null)
             const paramRef = ref(null)
             const responseRef = ref(null)
@@ -130,23 +127,16 @@
                 }
             })
 
-            // 方法
-            const confirmClose = () => {
-                if (formChanged.value) {
-                    instance.proxy.$bkInfo({
-                        title: '请确认是否关闭',
-                        subTitle: '存在未保存的 API，关闭后不会保存更改',
-                        confirmFn: handleClose
-                    })
-                } else {
-                    handleClose()
-                }
+            const close = () => {
+                emit('update:isShow', false)
+                emit('update:form', {})
             }
 
             const handleClose = () => {
-                formChanged.value = false
-                emit('update:isShow', false)
-                emit('update:form', {})
+                leaveConfirm(window.i18n.t('存在未保存的 API，关闭后不会保存更改'))
+                    .then(() => {
+                        close()
+                    })
             }
 
             const validate = () => {
@@ -183,8 +173,9 @@
                         }
                         const submitMethod = formData.value.id ? editApi : createApi
                         return submitMethod(form).then(() => {
+                            window.leaveConfirm = false
                             emit('success-submit')
-                            handleClose()
+                            close()
                         })
                     })
                     .finally(() => {
@@ -201,7 +192,7 @@
             }
 
             const handleUpdate = (formItem) => {
-                formChanged.value = true
+                window.leaveConfirm = true
                 Object.assign(formData.value, formItem)
             }
 
@@ -274,7 +265,7 @@
                 paramRef,
                 responseRef,
                 paramKey,
-                confirmClose,
+                close,
                 handleClose,
                 submitApi,
                 handleUpdate,

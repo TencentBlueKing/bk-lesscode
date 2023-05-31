@@ -12,7 +12,7 @@
 <template>
     <div class="bk-form-control control-prepend-group control-append-group king-input-margin-style" :class="isError ? 'king-input-modifier-style-error' : ''">
         <div class="group-box group-prepend">
-            <div class="common-input-slot-text">{{ name }}</div>
+            <div class="common-input-slot-text" v-enStyle="'width:40px'">{{ name }}</div>
         </div>
         <div class="bk-input-number">
             <input type="text"

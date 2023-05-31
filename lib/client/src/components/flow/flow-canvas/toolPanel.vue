@@ -1,12 +1,12 @@
 <template>
     <div class="tool-panel-container">
-        <div v-bk-tooltips.left="'放大'" class="tool-item" @click="onZoomIn" title="放大">
+        <div v-bk-tooltips.left="$t('放大')" class="tool-item" @click="onZoomIn" :title="$t('放大')">
             <i class="bk-drag-icon bk-drag-plus-circle"></i>
         </div>
-        <div v-bk-tooltips.left="'缩小'" class="tool-item" @click="onZoomOut" title="缩小">
+        <div v-bk-tooltips.left="$t('缩小')" class="tool-item" @click="onZoomOut" :title="$t('缩小')">
             <i class="bk-drag-icon bk-drag-minus-circle"></i>
         </div>
-        <div v-bk-tooltips.left="'复位'" class="tool-item" @click="onResetPosition" title="复位">
+        <div v-bk-tooltips.left="$t('复位')" class="tool-item" @click="onResetPosition" :title="$t('复位')">
             <i class="bk-drag-icon bk-drag-radio"></i>
         </div>
         <!-- <div v-bk-tooltips.left="'全屏'" class="tool-item" @click="onZoomOut" title="全屏">

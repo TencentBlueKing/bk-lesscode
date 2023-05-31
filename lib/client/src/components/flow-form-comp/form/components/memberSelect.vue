@@ -8,7 +8,7 @@
             :api="api"
             :disabled="disabled || hostLoading"
             :multiple="multiple"
-            :placeholder="placeholder"
+            :placeholder="placeholderStr"
             @blur="onBlur"
             @change="onChange">
         </bk-user-selector>
@@ -30,7 +30,7 @@
         props: {
             placeholder: {
                 type: String,
-                default: '请选择'
+                default: ''
             },
             disabled: {
                 type: Boolean,
@@ -63,6 +63,9 @@
         computed: {
             api () {
                 return `${this.host}/api/c/compapi/v2/usermanage/fs_list_users/`
+            },
+            placeholderStr () {
+                return this.placeholder || window.i18n.t('请选择')
             }
         },
         created () {

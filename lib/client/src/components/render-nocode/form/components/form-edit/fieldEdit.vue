@@ -1,18 +1,18 @@
 <template>
     <div class="field-edit">
-        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">自动编号控件在表单填写时不可见，表单值由配置规则确定</div>
+        <div v-if="fieldData.type === 'SERIAL'" class="serial-tips">{{ $t('自动编号控件在表单填写时不可见，表单值由配置规则确定') }}</div>
         <!-- 表单右边设置区域  -->
         <bk-form form-type="vertical">
             <div v-if="fieldData.type === 'DESC'" class="field-container">
-                <bk-form-item label="内容" ext-cls="richtext-container">
+                <bk-form-item :label="$t('内容')" ext-cls="richtext-container">
                     <rich-text @change="handleDescValueChange" is-full-screen :value="fieldData.value"></rich-text>
                 </bk-form-item>
             </div>
             <div v-else-if="fieldData.type === 'DIVIDER'" class="field-container">
-                <bk-form-item label="展示文字">
+                <bk-form-item :label="$t('form_展示文字')">
                     <bk-input v-model.trim="fieldData.default" :disabled="disabled" @change="change"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="文字位置">
+                <bk-form-item :label="$t('form_文字位置')">
                     <bk-select
                         v-model="fieldData.deviderAttr.align"
                         :disabled="disabled"
@@ -20,7 +20,7 @@
                         <bk-option v-for="option in alignList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item label="线条颜色">
+                <bk-form-item :label="$t('form_线条颜色')">
                     <bk-color-picker v-model="fieldData.deviderAttr.color" size="small" ::disabled="disabled" @change="change" transfer>
                     </bk-color-picker>
                 </bk-form-item>
@@ -33,27 +33,26 @@
                             floded: basicIsFolded
                         }"
                     />
-                    <span>基础属性</span>
+                    <span>{{ $t('基础属性') }}</span>
                 </div>
-                <bk-form-item label="字段名称" v-if="!basicIsFolded">
+                <bk-form-item :label="$t('form_字段名称')" v-if="!basicIsFolded">
                     <bk-input v-model.trim="fieldData.name" :disabled="disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="唯一标识" v-if="!basicIsFolded"
+                <bk-form-item :label="$t('form_唯一标识')" v-if="!basicIsFolded"
                     desc-type="icon"
                     :desc="uniqe"
                     desc-icon="bk-icon icon-question-circle">
                     <bk-input v-model.trim="fieldData.key" :disabled="disabled || fieldData.disabled" @change="change" @blur="onNameBlur"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="布局" v-if="!basicIsFolded && fieldData.type !== 'SERIAL'">
+                <bk-form-item :label="$t('布局')" v-if="!basicIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-radio-group v-model="fieldData.layout" @change="change">
-                        <bk-radio value="COL_6" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">半行</bk-radio>
-                        <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">整行</bk-radio>
+                        <bk-radio value="COL_6" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">{{ $t('半行') }}</bk-radio>
+                        <bk-radio value="COL_12" :disabled="disabled || fieldProps.fieldsFullLayout.includes(fieldData.type)">{{ $t('整行') }}</bk-radio>
                     </bk-radio-group>
                 </bk-form-item>
-                <bk-form-item label="上传模板附件" v-if="fieldData.type === 'FILE' && !handleIsFolded" :ext-cls="'input-position '">
-                    <bk-button :theme="'default'" title="点击上传" :disabled="disabled">
-                        点击上传
-                    </bk-button>
+                <bk-form-item :label="$t('form_上传模板附件')" v-if="fieldData.type === 'FILE' && !handleIsFolded" :ext-cls="'input-position '">
+                    <bk-button :theme="'default'" :title="$t('点击上传')" :disabled="disabled">
+                        {{ $t('点击上传') }} </bk-button>
                     <input type="file" :value="fileVal" class="input-file" :disabled="disabled" @change="handleAddFiles">
                     <ul class="file-list">
                         <li v-for="(item, index) in fieldData.fileTemplate" :key="index">
@@ -65,7 +64,7 @@
                         </li>
                     </ul>
                 </bk-form-item>
-                <bk-form-item label="数据源" v-if="fieldProps.fieldsDataSource.includes(fieldData.type)">
+                <bk-form-item :label="$t('数据源')" v-if="fieldProps.fieldsDataSource.includes(fieldData.type)">
                     <bk-select
                         :value="fieldData.source_type"
                         :clearable="false"
@@ -77,7 +76,7 @@
                         class="mt8"
                         v-if="fieldData.source_type === 'API'"
                         v-model="fieldData.api_info.remote_system_id"
-                        placeholder="请选择接口"
+                        :placeholder="$t('请选择接口')"
                         :clearable="false"
                         :disabled="disabled || systemListLoading"
                         :loading="systemListLoading"
@@ -88,11 +87,10 @@
                         style="margin-top: 8px;"
                         theme="primary"
                         size="small"
-                        :title="'配置'"
+                        :title="$t('配置')"
                         :disabled="isConfigDataSourceDisabled"
                         @click="dataSourceDialogShow = true">
-                        配置数据源
-                    </bk-button>
+                        {{ $t('配置数据源') }} </bk-button>
                 </bk-form-item>
                 <bk-divider />
                 <div class="group-name" @click="handleIsFolded = !handleIsFolded">
@@ -102,16 +100,16 @@
                             floded: handleIsFolded
                         }"
                     />
-                    <span>填写属性</span>
+                    <span>{{ $t('填写属性') }}</span>
                 </div>
-                <bk-form-item label="表头配置" v-if="fieldData.type === 'TABLE' && !handleIsFolded">
+                <bk-form-item :label="$t('form_表头配置')" v-if="fieldData.type === 'TABLE' && !handleIsFolded">
                     <table-header-setting
                         :list="fieldData.choice"
                         @move="handleChangeTableHeader"
                         @remove="handleRemoveChocie"
                         @update="handleUpdateChocie">
                     </table-header-setting>
-                    <span class="add-chocie" @click="handleAddTableChoice">添加</span>
+                    <span class="add-chocie" @click="handleAddTableChoice">{{ $t('添加') }}</span>
                 </bk-form-item>
                 <bk-form-item v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <div class="attr-value">
@@ -122,15 +120,14 @@
                                 :disabled="disabled"
                                 v-model="fieldData.is_readonly"
                                 @change="change">
-                                只读
-                            </bk-checkbox>
-                            <span v-show="fieldData.is_readonly === true" @click="readerOnlyShow = true">条件编辑</span>
+                                {{ $t('只读') }} </bk-checkbox>
+                            <span v-show="fieldData.is_readonly === true" @click="readerOnlyShow = true">{{ $t('条件编辑') }}</span>
                         </div>
                         <div class="contidion">
                             <div id="require-tips" class="demo-html1">
-                                <p>选择为必填时，请确保字段配置满足以下两种情形之一，否则表单可能无法提交：</p>
-                                <p>1、字段已设置默认值</p>
-                                <p>2、字段可编辑且非隐藏</p>
+                                <p>{{ $t('选择为必填时，请确保字段配置满足以下两种情形之一，否则表单可能无法提交：') }}</p>
+                                <p>1、{{ $t('字段已设置默认值') }}</p>
+                                <p>2、{{ $t('字段可编辑且非隐藏') }}</p>
                             </div>
                             <bk-checkbox
                                 :true-value="'REQUIRE'"
@@ -138,13 +135,12 @@
                                 :disabled="disabled"
                                 v-model="fieldData.validate_type"
                                 @change="handleChangeValidataType">
-                                必填
-                                <span v-bk-tooltips="htmlConfig"
+                                {{ $t('必填') }} <span v-bk-tooltips="htmlConfig"
                                     style="color:#313238 ">
                                     <i class="bk-icon icon-question-circle"></i>
                                 </span>
                             </bk-checkbox>
-                            <span v-show="fieldData.validate_type === 'REQUIRE'" @click="requireConfigShow = true">条件编辑</span>
+                            <span v-show="fieldData.validate_type === 'REQUIRE'" @click="requireConfigShow = true">{{ $t('条件编辑') }}</span>
                         </div>
                         <div class="contidion">
                             <bk-checkbox
@@ -153,13 +149,12 @@
                                 :disabled="disabled"
                                 :value="fieldData.show_type"
                                 @change="handleShowTypeChange">
-                                隐藏
-                            </bk-checkbox>
-                            <span v-show="fieldData.show_type === 0" @click="showTypeShow = true">条件编辑</span>
+                                {{ $t('隐藏') }} </bk-checkbox>
+                            <span v-show="fieldData.show_type === 0" @click="showTypeShow = true">{{ $t('条件编辑') }}</span>
                         </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="控制上传范围" v-if="fieldData.type === 'IMAGE' && !handleIsFolded">
+                <bk-form-item :label="$t('form_控制上传范围')" v-if="fieldData.type === 'IMAGE' && !handleIsFolded">
                     <div>
                         <div class="range-control">
                             <bk-checkbox
@@ -168,8 +163,7 @@
                                 :false-value="false"
                                 v-model="fieldData.imageRange.isMin"
                                 @change="change">
-                                至少上传
-                            </bk-checkbox>
+                                {{ $t('至少上传') }} </bk-checkbox>
                             <bk-input
                                 class="up-load-input"
                                 type="number"
@@ -179,8 +173,7 @@
                                 v-model="fieldData.imageRange.minNum"
                                 @change="change">
                             </bk-input>
-                            张图
-                        </div>
+                            {{ $t('张图') }} </div>
                         <div class="range-control">
                             <bk-checkbox
                                 :true-value="true"
@@ -188,8 +181,7 @@
                                 :disabled="disabled"
                                 v-model="fieldData.imageRange.isMax"
                                 @change="change">
-                                最多上传
-                            </bk-checkbox>
+                                {{ $t('最多上传') }} </bk-checkbox>
                             <bk-input
                                 class="up-load-input"
                                 type="number"
@@ -200,11 +192,10 @@
                                 v-model="fieldData.imageRange.maxNum"
                                 @change="change">
                             </bk-input>
-                            张图
-                        </div>
+                            {{ $t('张图') }} </div>
                     </div>
                 </bk-form-item>
-                <bk-form-item label="控制选择范围" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
+                <!-- <bk-form-item :label="$t('form_控制选择范围')" v-if="['MULTISELECT','CHECKBOX'].includes(fieldData.type) && !handleIsFolded">
                     <div>
                         <div class="range-control">
                             <bk-checkbox
@@ -213,8 +204,7 @@
                                 :false-value="false"
                                 v-model="fieldData.imageRange.isMin"
                                 @change="handleSelectMinChoice">
-                                至少选择
-                            </bk-checkbox>
+                                {{ $t('至少选择') }} </bk-checkbox>
                             <bk-input
                                 class="up-load-input"
                                 type="number"
@@ -224,8 +214,7 @@
                                 v-model="fieldData.imageRange.minNum"
                                 @change="change">
                             </bk-input>
-                            个选项
-                        </div>
+                            {{ $t('个选项') }} </div>
                         <div class="range-control">
                             <bk-checkbox
                                 :true-value="true"
@@ -233,8 +222,7 @@
                                 :disabled="disabled"
                                 v-model="fieldData.imageRange.isMax"
                                 @change="change">
-                                最多选择
-                            </bk-checkbox>
+                                {{ $t('最多选择') }} </bk-checkbox>
                             <bk-input
                                 class="up-load-input"
                                 type="number"
@@ -245,11 +233,10 @@
                                 v-model="fieldData.imageRange.maxNum"
                                 @change="change">
                             </bk-input>
-                            个选项
-                        </div>
+                            {{ $t('个选项') }} </div>
                     </div>
-                </bk-form-item>
-                <bk-form-item label="校验方式" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
+                </bk-form-item> -->
+                <bk-form-item :label="$t('form_校验方式')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-select
                         v-model="fieldData.regex"
                         :clearable="false"
@@ -264,14 +251,14 @@
                     </bk-select>
                 </bk-form-item>
                 <template v-if="fieldProps.fieldsShowDefaultValue.includes(fieldData.type) && fieldData.source_type === 'CUSTOM' && !handleIsFolded">
-                    <bk-form-item ext-cls="default-val" label="默认值">
+                    <bk-form-item ext-cls="default-val" :label="$t('默认值')">
                         <default-value
                             :field="fieldData"
                             :disabled="disabled"
                             @change="handleDefaultValChange">
                         </default-value>
                     </bk-form-item>
-                    <bk-form-item label="值联动规则">
+                    <bk-form-item :label="$t('form_值联动规则')">
                         <association-value
                             :field="fieldData"
                             :disabled="disabled"
@@ -280,23 +267,25 @@
                     </bk-form-item>
                 </template>
                 <!-- 计算组件 -->
-                <bk-form-item label="计算类型" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
+                <bk-form-item :label="$t('form_计算类型')" v-if="fieldData.type === 'COMPUTE' && !handleIsFolded">
                     <ComputeEdit
                         :field="fieldData"
+                        :disabled="disabled"
                         @change="updateFieldData" />
                 </bk-form-item>
                 <!-- 自动编号 -->
                 <bk-form-item v-if="fieldData.type === 'SERIAL' && !handleIsFolded">
                     <SerialEdit
                         :field="fieldData"
+                        :disabled="disabled"
                         @change="updateFieldData" />
                 </bk-form-item>
-                <bk-form-item label="填写说明" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
+                <bk-form-item :label="$t('form_填写说明')" v-if="!handleIsFolded && fieldData.type !== 'SERIAL'">
                     <bk-input v-model.trim="fieldData.desc" type="textarea" :disabled="disabled" :rows="4" @change="change"></bk-input>
                     <div>
                         <div class="form-tip">
-                            <span><bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleShowTipsChange">添加额外填写说明</bk-checkbox></span>
-                            <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, 'extCls': 'custom-require-tips' }">效果预览</span>
+                            <span><bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleShowTipsChange">{{ $t('添加额外填写说明') }}</bk-checkbox></span>
+                            <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, 'extCls': 'custom-require-tips' }">{{ $t('效果预览') }}</span>
                         </div>
                         <bk-input
                             v-if="checkTips"
@@ -316,6 +305,7 @@
             :title="fieldData.name"
             :show.sync="readerOnlyShow"
             :value="fieldData.read_only_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('read_only_conditions',val)">
         </read-only-dialog>
         <require-dialog
@@ -323,6 +313,7 @@
             :title="fieldData.name"
             :show.sync="requireConfigShow"
             :value="fieldData.mandatory_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('mandatory_conditions',val)">
         </require-dialog>
         <show-type-dialog
@@ -330,6 +321,7 @@
             :title="fieldData.name"
             :show.sync="showTypeShow"
             :value="fieldData.show_conditions"
+            :disabled="disabled"
             @confirm="(val) => onConfirm('show_conditions',val)">
         </show-type-dialog>
         <data-source-dialog
@@ -338,6 +330,7 @@
             :source-type="fieldData.source_type"
             :field-type="fieldData.type"
             :value="sourceData"
+            :disabled="disabled"
             :api-detail="apiDetail"
             :is-display-tag="fieldData.isDisplayTag"
             :res-array-tree-data="resArrayTreeData"
@@ -346,11 +339,11 @@
         <config-desc-comp-value-dialog
             :show.sync="descCompValueShow"
             :value="fieldData.value"
+            :disabled="disabled"
             @confirm="handleDescValueChange">
         </config-desc-comp-value-dialog>
     </div>
 </template>
-
 <script>
     import cloneDeep from 'lodash.clonedeep'
     import DefaultValue from './default-value.vue'
@@ -367,9 +360,9 @@
     import {
         FIELDS_FULL_LAYOUT,
         FIELDS_SHOW_DEFAULT_VALUE,
-        DATA_SOURCE_FIELD,
         FIELDS_SOURCE_TYPE
-    } from '@/components/flow-form-comp/form/constants/forms'
+    } from '../../../common/form'
+    import { DATA_SOURCE_FIELD } from '@/components/flow-form-comp/form/constants/forms'
 
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
     import { mapGetters } from 'vuex'
@@ -421,7 +414,7 @@
                 systemListLoading: false,
                 apiDetail: {},
                 resArrayTreeData: [],
-                alignList: [{ id: 'left', name: '居左' }, { id: 'right', name: '居右' }, { id: 'center', name: '居中' }],
+                alignList: [{ id: 'left', name: this.$t('居左') }, { id: 'right', name: this.$t('居右') }, { id: 'center', name: this.$t('居中') }],
                 dataSourceDialogShow: false,
                 readerOnlyShow: false,
                 requireConfigShow: false,
@@ -437,7 +430,7 @@
                     appendTo: () => document.body
                 },
                 uniqe: {
-                    content: '用作数据库字段名， 保存成功后不允许修改',
+                    content: this.$t('用作数据库字段名， 保存成功后不允许修改'),
                     placement: 'top',
                     extCls: 'custom-require-tips',
                     appendTo: () => document.body
@@ -498,14 +491,14 @@
         methods: {
             
             getRegexList (val) {
-                const result = REGX_CHIOCE_LIST.filter(item => item.type === val.type
+                const result = REGX_CHIOCE_LIST().filter(item => item.type === val.type
                     || (Array.isArray(val.type) && item.type.includes(val.type)) // 主要是为了区分text 和 string 类型的正则规则  同时去除DATE DATETIME 的影响
                     || !item.type)
                 return result
             },
             onNameBlur () {
                 if (this.fieldData.name === '') {
-                    this.fieldData.name = '字段名称'
+                    this.fieldData.name = this.$t('字段名称')
                     this.change()
                 }
             },
@@ -517,7 +510,7 @@
                 for (let i = 0; i < this.fileList.length; i++) {
                     if (fileName === this.fieldData.fileTemplate.name) {
                         this.$bkMessage({
-                            message: '此文件已经上传',
+                            message: this.$t('此文件已经上传'),
                             theme: 'error'
                         })
                         break
@@ -530,7 +523,7 @@
                 } else {
                     this.fileVal = ''
                     this.$bkMessage({
-                        message: '该文件大小超过100MB',
+                        message: this.$t('该文件大小超过100MB'),
                         theme: 'error'
                     })
                 }
@@ -566,8 +559,8 @@
                 this.fieldData.source_type = val
                 if (val === 'CUSTOM') {
                     this.fieldData.choice = [
-                        { key: 'XUANXIANG1', name: '选项1', color: '#3a84ff', isDefaultVal: true },
-                        { key: 'XUANXIANG2', name: '选项2', color: '#2dcb56', isDefaultVal: false }
+                        { key: 'XUANXIANG1', name: this.$t('选项1'), color: '#3a84ff', isDefaultVal: true },
+                        { key: 'XUANXIANG2', name: this.$t('选项2'), color: '#2dcb56', isDefaultVal: false }
                     ]
                     delete this.fieldData.meta.data_config
                     this.fieldData.kv_relation = {}
@@ -669,7 +662,7 @@
                 this.fieldData.choice.push({
                     choice: [],
                     display: '',
-                    name: `列${len + 1}`,
+                    name: this.$t('列{0}', [len + 1]),
                     required: false
                 })
                 this.change()
@@ -693,7 +686,7 @@
                     this.showTypeShow = false
                 }
                 this.change()
-            },
+            }
         }
     }
 </script>

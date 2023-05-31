@@ -9,7 +9,7 @@
                 <span class="param-title">{{ renderParam.key }}</span>
                 <bk-input
                     class="param-value"
-                    placeholder="请输入参数值"
+                    :placeholder="$t('请输入参数值')"
                     ref="paramInputRef"
                     :value="renderParam.value"
                     @change="(val) => changeParam(val, index)"

@@ -91,8 +91,8 @@
                                     bgColor: '#333',
                                     activeColor: '#3a84ff'
                                 }"
-                                title="上传中"
-                                :title-style="{ color: '#fff', fontSize: '12px' }"
+                                :title="$t('上传中')"
+                                :title-style="{ color: '#fff', fontSize: '12px' , width: $store.state.Language === 'en' ? '120%' : '100%' }"
                                 :num-style="{ color: '#fff', fontSize: '14px' }"
                                 :percent="file.percentage / 100"
                                 v-if="file.status === UPLOAD_STATUS.UPLOADING">
@@ -100,7 +100,7 @@
                             <div v-if="file.status === UPLOAD_STATUS.FAIL" class="fail-content">
                                 <i class="bk-drag-icon bk-drag-close-circle-fill"></i>
                                 <div class="fail-summary">
-                                    <div class="fail-title">上传失败</div>
+                                    <div class="fail-title">{{ $t('上传失败') }}</div>
                                     <div class="fail-message" v-if="file.statusText" v-bk-overflow-tips>{{file.statusText}}</div>
                                 </div>
                             </div>
@@ -113,16 +113,16 @@
                         <div class="filename" :title="file.name">{{file.name}}</div>
                         <div class="actions">
                             <i class="bk-drag-icon bk-drag-link"
-                                v-bk-tooltips.top="'复制链接'"
+                                v-bk-tooltips.top="$t('复制链接')"
                                 @click="handleCopyLink(file)"
                                 v-show="file.status === UPLOAD_STATUS.SUCCESS">
                             </i>
                             <bk-popconfirm
                                 trigger="click"
-                                title="确认要删除该图片？"
-                                content="删除后不可恢复，已引用的组件将显示异常"
+                                :title="$t('确认要删除该图片？')"
+                                :content="$t('删除后不可恢复，已引用的组件将显示异常')"
                                 @confirm="handleRemove(file)">
-                                <i class="bk-drag-icon bk-drag-delet" v-bk-tooltips.top="'删除'"></i>
+                                <i class="bk-drag-icon bk-drag-delet" v-bk-tooltips.top="$t('删除')"></i>
                             </bk-popconfirm>
                         </div>
                     </div>

@@ -7,9 +7,9 @@
         <div :class="$style['buttons']">
             <bk-button text size="small" theme="primary"
                 :disabled="confirmButtonDisabled"
-                @click="handleConfirm">确定</bk-button>
+                @click="handleConfirm">{{ $t('确定') }}</bk-button>
             <span :class="$style['divider']">|</span>
-            <bk-button text size="small" theme="primary" @click="handleCancel">取消</bk-button>
+            <bk-button text size="small" theme="primary" @click="handleCancel">{{ $t('取消') }}</bk-button>
         </div>
     </div>
 </template>

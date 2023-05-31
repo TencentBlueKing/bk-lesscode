@@ -11,7 +11,7 @@
 
 <template>
     <section>
-        <h3 class="option-title">数据源配置</h3>
+        <h3 class="option-title">{{ $t('数据源配置') }}</h3>
         <ul>
             <vue-draggable
                 class="group-list"
@@ -21,14 +21,14 @@
                 :group="{ name: 'option-item' }">
                 <transition-group type="transition" :name="'flip-list'">
                     <li v-for="(option, index) in optionList" :key="`option${index}`" class="option-item select-item">
-                        <bk-input style="margin-right: 12px;" :value="option.id" placeholder="请输入id" @change="val => handleChange(val, 'id', index)" />
-                        <bk-input :value="option.name" placeholder="请输入name" @change="val => handleChange(val, 'name', index)" />
+                        <bk-input style="margin-right: 12px;" :value="option.id" :placeholder="$t('请输入id')" @change="val => handleChange(val, 'id', index)" />
+                        <bk-input :value="option.name" :placeholder="$t('请输入name')" @change="val => handleChange(val, 'name', index)" />
                         <i class="bk-icon icon-minus-circle" @click="changeNum(false, index)"></i>
                     </li>
                 </transition-group>
             </vue-draggable>
         </ul>
-        <div class="option-add" @click="changeNum(true, optionList.length - 1)"><i class="bk-icon icon-plus-circle"></i>添加一项</div>
+        <div class="option-add" @click="changeNum(true, optionList.length - 1)"><i class="bk-icon icon-plus-circle"></i>{{ $t('添加一项') }}</div>
     </section>
 </template>
 

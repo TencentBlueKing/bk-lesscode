@@ -10,8 +10,8 @@
 -->
 
 <template>
-    <style-layout title="背景">
-        <style-item name="颜色">
+    <style-layout :title="$t('背景')">
+        <style-item :name="$t('颜色')">
             <bk-color-picker style="width: 100%;" v-model="backgroundColorValue" @change="handleBackgroundColorChange"></bk-color-picker>
             <!-- <bk-select :value="backgroundColorValue" style="width: 96px;" font-size="medium" :clearable="false" @change="handleTextAlignChange">
                 <bk-option v-for="option in textAlignList" :key="option.id" :id="option.id" :name="option.name"></bk-option>

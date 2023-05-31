@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="row-box">
-            <span>计算公式</span>
-            <bk-select v-model="computConfigInfo.numberComput.formula" @change="update" searchable>
+            <span>{{ $t('计算公式') }}</span>
+            <bk-select v-model="computConfigInfo.numberComput.formula" :disabled="disabled" @change="update" searchable>
                 <bk-option v-for="option in formulaList"
                     :key="option.id"
                     :id="option.id"
@@ -11,8 +11,8 @@
             </bk-select>
         </div>
         <div class="row-box" v-if="computConfigInfo.numberComput.formula !== 'customize'">
-            <span>计算字段</span>
-            <bk-select v-model="computConfigInfo.numberComput.computeFields" @change="update" searchable multiple>
+            <span>{{ $t('计算字段') }}</span>
+            <bk-select v-model="computConfigInfo.numberComput.computeFields" :disabled="disabled" @change="update" searchable multiple>
                 <bk-option v-for="option in intFieldsList"
                     :key="option.key"
                     :id="option.key"
@@ -22,35 +22,35 @@
         </div>
         <div class="row-box" v-else>
             <bk-button :text="true" title="primary" @click="showFormulaConfigDialog = true">
-                配置公式
-            </bk-button>
+                {{ $t('配置公式') }} </bk-button>
         </div>
         <div class="row-box">
-            <span>单位</span>
+            <span>{{ $t('单位') }}</span>
             <bk-input v-model="computConfigInfo.numberComput.unit.value"
+                :disabled="disabled"
                 @show="isDropdownShow = true"
                 @hide="isDropdownShow = false"
                 @change="update"
                 :clearable="true">
-                <bk-dropdown-menu class="group-text " slot="prepend" ext-cls="ext-line-height">
+                <bk-dropdown-menu class="group-text " slot="prepend" ext-cls="ext-line-height" :disabled="disabled">
                     <bk-button type="primary" slot="dropdown-trigger">
-                        <span v-if="computConfigInfo.numberComput.unit.position === 'prefix'">前缀</span>
-                        <span v-else>后缀</span>
+                        <span v-if="computConfigInfo.numberComput.unit.position === 'prefix'">{{ $t('前缀') }}</span>
+                        <span v-else>{{ $t('后缀') }}</span>
                         <i :class="['bk-icon icon-angle-down',{ 'icon-flip': isDropdownShow }]"></i>
                     </bk-button>
                     <ul class="bk-dropdown-list" slot="dropdown-content">
-                        <li><a href="javascript:;" @click="handlerSelect('prefix')">前缀</a></li>
-                        <li><a href="javascript:;" @click="handlerSelect('suffix')">后缀</a></li>
+                        <li><a href="javascript:;" @click="handlerSelect('prefix')">{{ $t('前缀') }}</a></li>
+                        <li><a href="javascript:;" @click="handlerSelect('suffix')">{{ $t('后缀') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
             </bk-input>
         </div>
         <div class="row-box">
-            <span>保留小数位数</span>
-            <bk-input v-model="computConfigInfo.numberComput.decimal" @change="decimalChange" type="number" :max="10" :min="0" />
+            <span>{{ $t('保留小数位数') }}</span>
+            <bk-input v-model="computConfigInfo.numberComput.decimal" :disabled="disabled" @change="decimalChange" type="number" :max="10" :min="0" />
         </div>
         <!-- 配置公式 -->
-        <bk-dialog v-model="showFormulaConfigDialog" title="配置公式" header-position="left" :esc-close="false"
+        <bk-dialog v-model="showFormulaConfigDialog" :title="$t('配置公式')" header-position="left" :esc-close="false"
             :auto-close="false"
             width="600px"
             @confirm="handlerConfirm"
@@ -61,7 +61,8 @@
                     <div class="top-box">
                         <bk-input
                             v-model="searchField"
-                            :placeholder="'输入引用字段名'"
+                            :disabled="disabled"
+                            :placeholder="$t('输入引用字段名')"
                             :right-icon="'bk-icon icon-search'">
                         </bk-input>
                     </div>
@@ -76,11 +77,11 @@
                         <div class="symbol-item" v-for="(item,index) in computeChar" :key="index"
                             @click="handlerSymbolClick(item)">{{ item.name }}</div>
                         <div class="delete-btn">
-                            <bk-button class="mr10" @click="handlerDelete" :text="true" title="primary">
-                                删除
+                            <bk-button class="mr10" @click="handlerDelete" :text="true" :disabled="disabled" title="primary">
+                                {{ $t('删除') }}
                             </bk-button>
-                            <bk-button @click="handlerReset" :text="true">
-                                重置
+                            <bk-button @click="handlerReset" :text="true" :disabled="disabled">
+                                {{ $t('重置') }}
                             </bk-button>
                         </div>
                     </div>
@@ -108,34 +109,35 @@
             computConfigInfo: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {
                 formulaList: [
                     {
                         id: 'sum',
-                        label: '求和'
+                        label: this.$t('求和')
                     },
                     {
                         id: 'averageValue',
-                        label: '平均值'
+                        label: this.$t('平均值')
                     },
                     {
                         id: 'median',
-                        label: '中位数'
+                        label: this.$t('中位数')
                     },
                     {
                         id: 'product',
-                        label: '乘积'
+                        label: this.$t('乘积')
                     },
                     {
                         id: 'maxVlaue',
-                        label: '最大值'
+                        label: this.$t('最大值')
                     },
                     {
                         id: 'minVlaue',
-                        label: '最小值'
+                        label: this.$t('最小值')
                     },
                     // {
                     //     id: 'count',
@@ -143,7 +145,7 @@
                     // },
                     {
                         id: 'customize',
-                        label: '自定义'
+                        label: this.$t('自定义')
                     }
                 ],
                 showFormulaConfigDialog: false,
@@ -233,6 +235,10 @@
             },
             // 确认公式
             handlerConfirm () {
+                if (this.disabled) {
+                    this.handlerCancel()
+                    return
+                }
                 this.checkFormula().then((res) => {
                     this.showFormulaConfigDialog = false
                     this.computConfigInfo.numberComput.customizeFormula = this.customizeFormula

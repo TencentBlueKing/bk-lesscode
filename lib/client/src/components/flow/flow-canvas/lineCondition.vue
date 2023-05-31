@@ -1,11 +1,11 @@
 <template>
     <div class="line-condition">
         <bk-radio-group v-model="conditionData.type">
-            <bk-radio value="and">且</bk-radio>
-            <bk-radio value="or">或</bk-radio>
+            <bk-radio value="and">{{ $t('且') }}</bk-radio>
+            <bk-radio value="or">{{ $t('或') }}</bk-radio>
         </bk-radio-group>
         <div v-for="(exp, index) in conditionData.expressions" class="line-condition-item" :key="index">
-            <div class="expression-label">{{ conditionData.type === 'and' ? '且' : '或' }}-条件组{{ index + 1 }}</div>
+            <div class="expression-label">{{ conditionData.type === 'and' ? $t('且') : $t('或') }}-{{$t('条件组')}}{{ index + 1 }}</div>
             <div class="condition-content-wrapper">
                 <i
                     v-if="conditionData.expressions.length > 1"
@@ -13,10 +13,10 @@
                     @click="handleDelCondition(index)">
                 </i>
                 <div class="condition-type">
-                    <label>字段间关系</label>
+                    <label>{{ $t('字段间关系') }}</label>
                     <bk-radio-group v-model="exp.type">
-                        <bk-radio value="and">且</bk-radio>
-                        <bk-radio value="or">或</bk-radio>
+                        <bk-radio value="and">{{ $t('且') }}</bk-radio>
+                        <bk-radio value="or">{{ $t('或') }}</bk-radio>
                     </bk-radio-group>
                 </div>
                 <div v-for="(expression, i) in exp.expressions" class="expression-item" :key="i">
@@ -24,7 +24,7 @@
                         v-model="expression.key"
                         style="width: 200px"
                         class="field-select"
-                        placeholder="选择字段"
+                        :placeholder="$t('选择字段')"
                         :clearable="false"
                         :searchable="true"
                         :loading="fieldListLoading"
@@ -61,19 +61,18 @@
                     </div>
                 </div>
             </div>
-            <div v-if="exp.error" class="error-tips">关系组内的数据不能为空</div>
+            <div v-if="exp.error" class="error-tips">{{ $t('关系组内的数据不能为空') }}</div>
         </div>
         <div class="add-condition">
             <span @click="handleAddCondition">
                 <i class="bk-icon icon-plus-circle add-icon"></i>
-                添加条件组
-            </span>
+                {{ $t('添加条件组') }} </span>
         </div>
     </div>
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import { CONDITION_RELATIONS } from '@/components/flow-form-comp/form/constants/forms.js'
+    import { CONDITION_RELATIONS } from '../constants/nodes.js'
     import { getFieldConditions } from '@/components/render-nocode/common/form.js'
     import FieldValue from '@/components/render-nocode/form/components/form-edit/fieldValue.vue'
 

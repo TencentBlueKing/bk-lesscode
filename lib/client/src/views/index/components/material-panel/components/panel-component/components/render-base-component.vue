@@ -8,7 +8,7 @@
                 v-for="(comList, groupName) in renderGroupComponentMap"
                 :key="groupName"
                 :list="comList"
-                :group-name="groupName">
+                :group-name="$t(groupName)">
                 <template v-for="component in comList">
                     <render-icon
                         v-if="groupName === '图标集合'"
@@ -24,11 +24,13 @@
     </div>
 </template>
 <script>
-    import MaterialConfig from '@/element-materials/materials'
+    import Vue2MaterialConfig from '@/element-materials/materials/vue2'
+    import Vue3MaterialConfig from '@/element-materials/materials/vue3'
     import SearchBox from '../../common/search-box'
     import GroupBox from '../../common/group-box'
     import RenderComponent from '../../common/group-box/render-component'
     import RenderIcon from '../../common/group-box/render-icon'
+    import store from '@/store'
 
     export default {
         components: {
@@ -52,6 +54,10 @@
             }
         },
         computed: {
+            materialConfig () {
+                const project = store.getters['project/currentProject']
+                return project.framework === 'vue3' ? Vue3MaterialConfig : Vue2MaterialConfig
+            },
             /**
              * @desc 选中组件库的分组列表
              * @returns { Array }
@@ -62,14 +68,14 @@
                     element: 'elementComponentGroupList',
                     vant: 'vantComponentGroupList'
                 }
-                return MaterialConfig[groupNameMap[this.baseComponent]]
+                return this.materialConfig[groupNameMap[this.baseComponent]]
             },
             /**
              * @desc 选中组件库的组件列表
              * @returns { Array }
              */
             componentList () {
-                return MaterialConfig[this.baseComponent]
+                return this.materialConfig[this.baseComponent]
             }
         },
         watch: {

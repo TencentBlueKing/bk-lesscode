@@ -9,17 +9,18 @@
                             class="mt10 banner-btn"
                             theme="primary"
                             @click="handlerRouter('projects')"
-                        >立即体验</bk-button>
+                        >{{ $t('立即体验') }}</bk-button>
                         <bk-button
                             class="mt10 banner-btn help-btn"
                             @click="handlerRouter('intro')"
-                        >帮助文档</bk-button>
+                            v-enStyle="'width:220px'"
+                        >{{ $t('帮助文档') }}</bk-button>
                     </div>
                 </div>
             </mg-content-loader>
         </div>
         <div class="product-info home-name">
-            <div class="title">产品特性</div>
+            <div class="title">{{ $t('产品特性') }}</div>
             <div class="info-list">
                 <div class="info-item" v-for="(item, index) in productList" :key="index">
                     <div class="info-title">{{item.name}}</div>
@@ -29,10 +30,10 @@
             </div>
         </div>
         <div class="edu-info home-name">
-            <div class="title">应用搭建更简单</div>
+            <div class="title">{{ $t('应用搭建更简单') }}</div>
             <div class="edu-container">
                 <div class="left">
-                    <div class="left-title">内置丰富的组件及模板</div>
+                    <div class="left-title">{{ $t('内置丰富的组件及模板') }}</div>
                     <div class="item" v-for="(item, index) in leftNavList" :key="index">
                         <div class="name">{{item.name}}</div>
                         <div class="desc">{{item.desc}}</div>
@@ -44,7 +45,7 @@
             </div>
         </div>
         <div class="product-info home-name">
-            <div class="title">覆盖场景更丰富</div>
+            <div class="title">{{ $t('覆盖场景更丰富') }}</div>
             <div class="info-list">
                 <div class="info-item" v-for="(item, index) in scenesList" :key="index">
                     <div class="info-title">{{item.name}}</div>
@@ -54,7 +55,7 @@
             </div>
         </div>
         <div class="example-info home-name">
-            <div class="title">用户案例</div>
+            <div class="title">{{ $t('用户案例') }}</div>
             <div class="example-container">
                 <div class="left">
                     <img :src="exampleImg" alt="">
@@ -72,17 +73,17 @@
             </div>
         </div>
         <div class="bottom-info home-name">
-            <div class="title">一站式开发管理，让开发更简单</div>
-            <div class="subtitle">简单上手</div>
+            <div class="title">{{ $t('一站式开发管理，让开发更简单') }}</div>
+            <div class="subtitle">{{ $t('简单上手') }}</div>
             <bk-button
                 class="mt10 bottom-btn"
                 theme="primary"
                 @click="handlerRouter('projects')"
-            >立即体验</bk-button>
+            >{{ $t('立即体验') }}</bk-button>
         </div>
         <div class="home-footer">
             <div class="frameList">
-                <div>常用框架</div>
+                <div>{{ $t('常用框架') }}</div>
                 <div class="item" v-for="(item, index) in frameList" :key="index">
                     <img class="frame-icon" :src="item.icon" alt="">
                     <div class="frame-name" @click="handlerToWeb(item)">{{item.name}}</div>
@@ -91,15 +92,15 @@
             <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=1&key=XzgwMDgwMjAwMV80NDMwOTZfODAwODAyMDAxXzJf"
                 target="_blank"
                 class="magic-feedback"
-                title="QQ交谈">
+                :title="$t('QQ交谈')">
                 <img src="../../images/qq.png" />
-                <span>QQ交谈</span>
+                <span>{{ $t('QQ交谈') }}</span>
             </a>
             <!-- <a href="wxwork://message/?username=BK-MagicBox" class="magic-feedback" title="蓝鲸MagicBox助手">
             <img src="../../images/wx-work.png" />
             <span>蓝鲸MagicBox助手</span>
         </a> -->
-            Copyright &copy; 2012-{{currentYear}} Tencent BlueKing. All Rights Reserved. 腾讯蓝鲸 版权所有
+            Copyright &copy; 2012-{{currentYear}} Tencent BlueKing. All Rights Reserved. {{$t('腾讯蓝鲸 版权所有')}}
         </div>
     </div>
 </template>
@@ -113,67 +114,67 @@
                 btnData: [],
                 productList: [
                     {
-                        name: '可视化编排布局',
-                        desc: '拖拽布局，所见即所得，简单易上手',
+                        name: window.i18n.t('可视化编排布局'),
+                        desc: window.i18n.t('拖拽布局，所见即所得，简单易上手'),
                         image: require('../../images/layout.png')
                     },
                     {
-                        name: '丰富的资源',
-                        desc: '模板、组件、函数、数据源等资源助力提质提效',
+                        name: window.i18n.t('丰富的资源'),
+                        desc: window.i18n.t('模板、组件、函数、数据源等资源助力提质提效'),
                         image: require('../../images/resource.png')
                     },
                     {
-                        name: '在线调试',
-                        desc: '在线编码、调试、预览效果，效率更高',
+                        name: window.i18n.t('在线调试'),
+                        desc: window.i18n.t('在线编码、调试、预览效果，效率更高'),
                         image: require('../../images/debug.png')
                     },
                     {
-                        name: '一键部署',
-                        desc: '细分环境，应用托管，免运维',
+                        name: window.i18n.t('一键部署'),
+                        desc: window.i18n.t('细分环境，应用托管，免运维'),
                         image: require('../../images/deploy.png')
                     }
                 ],
                 leftNavList: [
                     {
-                        name: '组件库',
-                        desc: 'MagicBox 组件、Element 组件、业务组件及自定义开发组件'
+                        name: window.i18n.t('组件库'),
+                        desc: window.i18n.t('MagicBox 组件、Element 组件、业务组件及自定义开发组件')
                     },
                     {
-                        name: '图标库',
-                        desc: '连接蓝鲸丰富的图标资源，直接引用'
+                        name: window.i18n.t('图标库'),
+                        desc: window.i18n.t('连接蓝鲸丰富的图标资源，直接引用')
                     },
                     {
-                        name: '模板库',
-                        desc: '应用模板、页面模板、自定义模板，快速生成应用'
+                        name: window.i18n.t('模板库'),
+                        desc: window.i18n.t('应用模板、页面模板、自定义模板，快速生成应用')
                     },
                     {
-                        name: '函数库',
-                        desc: '丰富的数据处理、事件处理函数，拿来即用'
+                        name: window.i18n.t('函数库'),
+                        desc: window.i18n.t('丰富的数据处理、事件处理函数，拿来即用')
                     },
                     {
-                        name: '图表库',
-                        desc: '集成Echarts、BKCharts，满足基础图表场景需求'
+                        name: window.i18n.t('图表库'),
+                        desc: window.i18n.t('集成Echarts、BKCharts，满足基础图表场景需求')
                     }
                 ],
                 scenesList: [
                     {
-                        name: '流程类',
-                        desc: '支持各类复杂场景流程设计',
+                        name: window.i18n.t('流程类'),
+                        desc: window.i18n.t('支持各类复杂场景流程设计'),
                         image: require('../../images/process.png')
                     },
                     {
-                        name: '表单类',
-                        desc: '支持表单页设计与数据管理',
+                        name: window.i18n.t('表单类'),
+                        desc: window.i18n.t('支持表单页设计与数据管理'),
                         image: require('../../images/form.png')
                     },
                     {
-                        name: '门户类',
-                        desc: '支持各类门户场景应用搭建',
+                        name: window.i18n.t('门户类'),
+                        desc: window.i18n.t('支持各类门户场景应用搭建'),
                         image: require('../../images/portal.png')
                     },
                     {
-                        name: '用户 DIY',
-                        desc: '支持自定义各类业务场景应用搭建',
+                        name: window.i18n.t('用户 DIY'),
+                        desc: window.i18n.t('支持自定义各类业务场景应用搭建'),
                         image: require('../../images/diy.png')
                     }
                 ],
@@ -189,18 +190,18 @@
                     //     image: require('../../images/TQOS.png')
                     // },
                     {
-                        name: '蓝鲸 MagicBox',
-                        desc: '官网类',
+                        name: window.i18n.t('蓝鲸 MagicBox'),
+                        desc: window.i18n.t('官网类'),
                         image: require('../../images/Magicbox.png')
                     },
                     {
-                        name: '游戏导播平台',
-                        desc: '门户类',
+                        name: window.i18n.t('游戏导播平台'),
+                        desc: window.i18n.t('门户类'),
                         image: require('../../images/game.png')
                     },
                     {
-                        name: 'GPU闲时复用平台',
-                        desc: '运营类',
+                        name: window.i18n.t('GPU闲时复用平台'),
+                        desc: window.i18n.t('运营类'),
                         image: require('../../images/gpu-product.png')
                     }
                 ],

@@ -3,14 +3,14 @@
         <section class="function-main">
             <h3 class="function-head">
                 <section>
-                    <bk-button theme="primary" @click="handleCreateFunction">新建</bk-button>
-                    <bk-button @click="showImport = true" class="ml5" :loading="isUploading">导入</bk-button>
-                    <bk-button @click="exportFunction" class="ml5" :disabled="selectionData.length <= 0">导出</bk-button>
+                    <bk-button theme="primary" @click="handleCreateFunction">{{ $t('新建') }}</bk-button>
+                    <bk-button @click="showImport = true" class="ml5" :loading="isUploading">{{ $t('导入') }}</bk-button>
+                    <bk-button @click="exportFunction" class="ml5" :disabled="selectionData.length <= 0">{{ $t('导出') }}</bk-button>
                 </section>
 
                 <bk-input
                     class="head-input"
-                    placeholder="请输入"
+                    :placeholder="$t('请输入')"
                     right-icon="bk-icon icon-search"
                     clearable
                     v-model="searchFunStr"
@@ -27,27 +27,27 @@
                 @selection-change="selectionChange"
             >
                 <bk-table-column type="selection" width="60"></bk-table-column>
-                <bk-table-column label="函数名称" prop="funcName" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_函数名称')" prop="funcName" :min-width="120" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.funcName || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="函数标识" prop="funcCode" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_函数标识')" prop="funcCode" :min-width="140" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.funcCode || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="所属分类" show-overflow-tooltip>
+                <bk-table-column :label="$t('所属分类')" :min-width="90" show-overflow-tooltip>
                     {{ groupName }}
                 </bk-table-column>
-                <bk-table-column label="简介" prop="funcSummary" show-overflow-tooltip>
+                <bk-table-column :label="$t('简介')" prop="funcSummary" :min-width="110" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span>{{ props.row.funcSummary || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="更新人" prop="updateUser"></bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" min-width="100px" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
-                <bk-table-column label="引用" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser"></bk-table-column>
+                <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="125px" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
+                <bk-table-column :label="$t('引用')" show-overflow-tooltip>
                     <template slot-scope="props">
                         <span
                             v-bk-tooltips.light="{
@@ -60,22 +60,21 @@
                         </span>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="操作" width="180">
+                <bk-table-column :label="$t('操作')" width="180">
                     <template slot-scope="props">
-                        <span class="table-btn" @click="handleEditFunction(props.row)">编辑</span>
-                        <span class="table-btn" @click="handleCopyFunction(props.row)">复制</span>
+                        <span class="table-btn" @click="handleEditFunction(props.row)">{{ $t('编辑') }}</span>
+                        <span class="table-btn" @click="handleCopyFunction(props.row)">{{ $t('复制') }}</span>
                         <span @click="handleDeleteFunction(props.row)"
                             v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
                             :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
-                        >删除</span>
+                        >{{ $t('删除') }}</span>
                     </template>
                 </bk-table-column>
                 <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
             </bk-table>
 
             <span class="function-tips">
-                提示：
-                <br>如果此处编辑的函数被预览页面使用，编辑函数后需要刷新预览页面让修改立即生效
+                {{ $t('提示：') }} <br>{{ $t('如果此处编辑的函数被预览页面使用，编辑函数后需要刷新预览页面让修改立即生效') }}
             </span>
         </section>
 
@@ -92,7 +91,7 @@
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
-            title="确定删除？"
+            :title="$t('确定删除？')"
             width="400"
             footer-position="center"
             :mask-close="false"
@@ -103,8 +102,8 @@
                 <bk-button
                     theme="danger"
                     :loading="delObj.loading"
-                    @click="requestDelete">删除</bk-button>
-                <bk-button @click="delObj.show = false" :disabled="delObj.loading">取消</bk-button>
+                    @click="requestDelete">{{ $t('删除') }}</bk-button>
+                <bk-button @click="delObj.show = false" :disabled="delObj.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
 
@@ -113,7 +112,7 @@
             :loading="isUploading"
             @import="handleImport"
         >
-            <bk-button @click="exportDemoFunction">示例</bk-button>
+            <bk-button @click="exportDemoFunction">{{ $t('示例') }}</bk-button>
         </import-function-dialog>
     </article>
 </template>
@@ -214,7 +213,7 @@
             handleCreateFunction () {
                 this.funcObj.show = true
                 this.funcObj.isEdit = false
-                this.funcObj.title = '新增函数'
+                this.funcObj.title = window.i18n.t('新增函数')
                 this.funcObj.form = {
                     funcGroupId: this.groupId,
                     projectId: this.projectId
@@ -224,7 +223,7 @@
             handleEditFunction (row) {
                 this.funcObj.show = true
                 this.funcObj.isEdit = true
-                this.funcObj.title = '编辑函数'
+                this.funcObj.title = window.i18n.t('编辑函数')
                 this.funcObj.form = row
             },
 
@@ -241,7 +240,7 @@
             handleCopyFunction (row) {
                 this.funcObj.show = true
                 this.funcObj.isEdit = false
-                this.funcObj.title = '复制函数'
+                this.funcObj.title = window.i18n.t('复制函数')
                 const date = new Date()
                 let funcName = row.funcName
                 const functionList = this.functionList
@@ -273,7 +272,7 @@
 
                 this.delObj.show = true
                 this.delObj.id = row.id
-                this.delObj.nameTips = `删除函数【${row.funcName}】`
+                this.delObj.nameTips = window.i18n.t('删除函数【{0}】', [row.funcName])
             },
 
             requestDelete () {
@@ -281,7 +280,7 @@
                 this.deleteFunction(this.delObj.id).then(() => {
                     this.delObj.show = false
                     this.freshList()
-                    this.messageSuccess('删除成功')
+                    this.messageSuccess(window.i18n.t('删除成功'))
                 }).finally(() => {
                     this.delObj.loading = false
                 })
@@ -294,22 +293,22 @@
             getUseInfoTips ({ funcCodes, pageNames, variableCodes }) {
                 const tips = []
                 funcCodes?.forEach((funcCode) => {
-                    tips.push(`函数标识【${funcCode}】`)
+                    tips.push(window.i18n.t('函数标识【{0}】', [funcCode]))
                 })
                 pageNames?.forEach((pageName) => {
-                    tips.push(`页面名称【${pageName}】`)
+                    tips.push(window.i18n.t('页面名称【{0}】', [pageName]))
                 })
                 variableCodes?.forEach((variableCode) => {
-                    tips.push(`变量标识【${variableCode}】`)
+                    tips.push(window.i18n.t('变量标识【{0}】', [variableCode]))
                 })
                 return tips
             },
 
             getDeleteStatus (row) {
                 let tip = ''
-                if (row.useInfo?.funcCodes?.length > 0) tip = '该函数被函数引用，无法删除'
-                if (row.useInfo?.pageNames?.length > 0) tip = '该函数被页面引用，无法删除'
-                if (row.useInfo?.variableCodes?.length > 0) tip = '该函数被变量引用，无法删除'
+                if (row.useInfo?.funcCodes?.length > 0) tip = window.i18n.t('该函数被函数引用，无法删除')
+                if (row.useInfo?.pageNames?.length > 0) tip = window.i18n.t('该函数被页面引用，无法删除')
+                if (row.useInfo?.variableCodes?.length > 0) tip = window.i18n.t('该函数被变量引用，无法删除')
                 return tip
             },
 
@@ -328,7 +327,7 @@
                     'funcCode': 'getApiData',
                     'funcParams': [],
                     'funcBody': 'const data = res.data || []\r\nreturn data\r\n',
-                    'funcSummary': '远程函数，获取数据',
+                    'funcSummary': window.i18n.t('远程函数，获取数据'),
                     'funcType': 1,
                     'funcMethod': 'get',
                     'withToken': 0,
@@ -344,7 +343,7 @@
             handleImport (funcList) {
                 try {
                     if (funcList.length <= 0) {
-                        throw new Error('JSON文件为空，暂无导入数据')
+                        throw new Error(window.i18n.t('JSON文件为空，暂无导入数据'))
                     }
                     const functionList = funcList.map((fun) => ({
                         ...fun,

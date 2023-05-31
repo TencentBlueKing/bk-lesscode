@@ -6,7 +6,7 @@
             :header-border="false"
             :header-cell-style="{ background: '#f0f1f5' }"
             :data="paramsTableData">
-            <bk-table-column label="名称" min-width="120">
+            <bk-table-column :label="$t('名称')" min-width="120">
                 <template slot-scope="props">
                     <div class="key" :style="{ marginLeft: `${props.row.level * 15}px` }">
                         <i
@@ -18,18 +18,18 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column label="类型" property="type" width="80"></bk-table-column>
-            <bk-table-column label="必须" width="60">
+            <bk-table-column :label="$t('类型')" property="type" width="80"></bk-table-column>
+            <bk-table-column :label="$t('必须')" width="60">
                 <template slot-scope="props">
-                    {{ props.row.is_necessary ? '是' : '否' }}
+                    {{ props.row.is_necessary ? $t('是') : $t('否') }}
                 </template>
             </bk-table-column>
-            <bk-table-column show-overflow-tooltip label="备注" width="100">
+            <bk-table-column show-overflow-tooltip :label="$t('备注')" width="100">
                 <template slot-scope="props">
                     <span :title="props.row.description">{{ props.row.description || '--' }}</span>
                 </template>
             </bk-table-column>
-            <bk-table-column label="参数值" width="250">
+            <bk-table-column :label="$t('table_参数值')" width="250">
                 <template slot-scope="props">
                     <div class="params-value">
                         <slot v-bind:row="props.row"></slot>

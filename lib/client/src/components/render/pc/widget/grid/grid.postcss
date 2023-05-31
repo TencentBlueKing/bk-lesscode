@@ -1,0 +1,13 @@
+.grid{
+    position: relative;
+    display: flex;
+    /* 如果基础的 slot 可以拖拽需要设置这个屏蔽掉基础组件上面的 pointer-events: none 效果 */
+    pointer-events: all;
+
+    .col {
+        border: 1px dashed #ccc;
+        &:nth-child(n + 2) {
+            border-left: none;
+        }
+    }
+}

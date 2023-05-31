@@ -1,0 +1,21 @@
+.block{
+    position: relative;
+    border: 1px dashed #ccc;
+    &.empty{
+        background: #FAFBFD;
+        &::before{
+            content: attr(data-empty-content);
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #C4C6CC;
+            pointer-events: all;
+        }
+    }
+}

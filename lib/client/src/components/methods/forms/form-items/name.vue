@@ -1,20 +1,20 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType">
-        <bk-form-item
-            label="函数名称"
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType">
+        <lc-form-item
+            :label="$t('form_函数名称')"
             property="funcName"
             error-display-type="normal"
             :required="true"
-            :rules="[requireRule('函数名称'), nameRepeatRule, groupNameRule]">
+            :rules="[requireRule($t('form_函数名称')), nameRepeatRule, groupNameRule]">
             <bk-input
-                placeholder="由大小写英文字母、数字组成，开头和结尾还可以是下划线，且必须符合驼峰命名规范"
+                :placeholder="$t('由大小写英文字母、数字组成，开头和结尾还可以是下划线，且必须符合驼峰命名规范')"
                 :disabled="disabled"
                 :value="form.funcName"
                 @input="(funcName) => updateValue({ funcName })"
             >
             </bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>
@@ -36,12 +36,12 @@
                     validator: (val) => {
                         return !this.functionList.find((func) => (func.funcName === val && func.id !== this.form.id))
                     },
-                    message: '函数名称在当前应用下重复，请修改后重试',
+                    message: this.$t('函数名称在当前应用下重复，请修改后重试'),
                     trigger: 'blur'
                 },
                 groupNameRule: {
                     validator: val => /^[A-Za-z_][A-Za-z]*[A-Za-z_]?$/.test(val),
-                    message: '由大小写英文字母组成，开头和结尾还可以是下划线，且必须符合驼峰命名规范',
+                    message: this.$t('由大小写英文字母组成，开头和结尾还可以是下划线，且必须符合驼峰命名规范'),
                     trigger: 'blur'
                 }
             }

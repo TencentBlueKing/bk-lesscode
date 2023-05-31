@@ -2,7 +2,7 @@
     <main class="func-main">
         <bk-resize-layout
             class="func-form-home"
-            :initial-divide="650"
+            :initial-divide="$store.state.Language === 'en' ? 605 : 650"
             :max="750"
             :border="false"
         >
@@ -64,18 +64,18 @@
                 theme="primary"
                 :loading="isSubmitting"
                 @click="handleSaveFunction"
-            >保存</bk-button>
+            >{{ $t('保存') }}</bk-button>
             <bk-button
                 v-if="showSaveUse"
                 class="mr5"
                 :loading="isSubmitting"
                 :disabled="!formChanged"
                 @click="handleSaveChooseFunction"
-            >保存并使用</bk-button>
+            >{{ $t('保存并使用') }}</bk-button>
             <bk-button
                 :loading="isSubmitting"
                 @click="handleClose"
-            >取消</bk-button>
+            >{{ $t('取消') }}</bk-button>
         </footer>
     </main>
 </template>
@@ -83,6 +83,9 @@
 <script>
     import mixins from './form-mixins'
     import { mapGetters, mapActions } from 'vuex'
+    import {
+        triggerEventListener
+    } from '@/common/watcher'
 
     export default {
         mixins: [mixins],
@@ -123,8 +126,8 @@
                     monacoRef?.exitFullScreen()
                 } else if (this.formChanged) {
                     this.$bkInfo({
-                        title: '请确认是否关闭',
-                        subTitle: '存在未保存的函数，关闭后不会保存更改',
+                        title: this.$t('请确认是否关闭'),
+                        subTitle: this.$t('存在未保存的函数，关闭后不会保存更改'),
                         confirmFn
                     })
                 } else {
@@ -153,6 +156,8 @@
                         }
                         // 保存或者更新完需要及时刷新列表，以供画布使用最新的数据
                         await this.refreshLayoutFunctionList()
+                        // 触发函数更新事件
+                        triggerEventListener(form.funcCode)
                         resolve(form)
                     } catch (err) {
                         if (err?.code === 499) {
@@ -179,7 +184,7 @@
             submitEdit (form) {
                 return this.editFunction(form).then(() => {
                     this.formChanged = false
-                    this.messageSuccess('编辑函数成功')
+                    this.messageSuccess(this.$t('编辑函数成功'))
                     this.$emit('success-save')
                 })
             },
@@ -191,7 +196,7 @@
                     versionId: this.currentVersionId
                 }).then(() => {
                     this.formChanged = false
-                    this.messageSuccess('新增函数成功')
+                    this.messageSuccess(this.$t('新增函数成功'))
                     this.$emit('success-save')
                 })
             },
