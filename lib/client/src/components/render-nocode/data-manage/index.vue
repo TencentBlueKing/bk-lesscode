@@ -17,7 +17,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import DrawLayout from '@/views/index/components/draw-layout'
-    import Layout from '@/components/render/pc/widget/layout'
+    import Layout from '@/components/render-nocode/components/layout'
     import FormData from './form-data.vue'
     import FlowData from './flow-data/index.vue'
     import LayoutSetting from '@/element-materials/modifier/template'

@@ -14,14 +14,6 @@
                     margin-top: auto;
                 }
             }
-            .navigation-container {
-                .container-content {
-                    flex: unset;
-                    height: auto !important;
-                    max-height: unset !important;
-                    overflow: unset !important
-                }
-            }
         }
     }
     .nav-slider-list {
@@ -136,12 +128,17 @@
             pointer-events: auto !important;
         }
     }
-    .lesscode-bk-navigation-wrapper .navigation-container .container-content {
-        overflow: visible;
+    .lesscode-bk-navigation-wrapper, .bk-navigation {
+        .navigation-container .container-content {
+            overflow: auto !important;
+            @mixin scroller;
+        }
     }
 }
 .lesscode-layout-empty {
-    min-height: calc(100vh - 160px);
+    height: calc(100vh - 160px);
+    overflow: auto;
+    @mixin scroller;
     .container-content{
         padding: 20px;
     }

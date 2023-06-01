@@ -41,6 +41,11 @@
                 <bk-table-column :label="$t('所属分类')" prop="category" min-width="120" sortable show-overflow-tooltip />
                 <!-- <bk-table-column label="是否公开" prop="isPublic" show-overflow-tooltip>
                 </bk-table-column> -->
+                <bk-table-column :label="$t('VUE 版本')" prop="framework" width="150" show-overflow-tooltip>
+                    <template slot-scope="{ row }">
+                        {{ row.framework || 'vue2' }}
+                    </template>
+                </bk-table-column>
                 <bk-table-column :label="$t('使用版本')" prop="currentVersion" width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div :class="[$style['component-version'], { [$style['outdate']]: row.useingVersion.versionId !== row.versionId }]"

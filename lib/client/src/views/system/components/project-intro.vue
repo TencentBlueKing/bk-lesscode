@@ -25,8 +25,12 @@
                         desc: window.i18n.t('注意：运行之前，请检查配置文件.babelrc、eslintrc.js等以.开头的配置文件是否存在。部分操作系统会默认隐藏这类文件，导致在推送到代码仓库时漏掉，最终影响部署结果。')
                     },
                     {
+                        title: window.i18n.t('检查依赖'),
+                        desc: window.i18n.t('请在源码根目录下package.json文件中查看nodejs及npm包版本信息，并将本地开发环境中的nodejs及npm包版本升级')
+                    },
+                    {
                         title: window.i18n.t('登录'),
-                        desc: window.i18n.t('如需本地运行， 请先到lib/server/conf/token文件中，填写dev配置中的appCode跟secret，整个框架自带登录实现，在刚打开时，如果没有登录会直接跳到登录页，如果打开后，登录过期（接口返回401状态）会弹出登录窗口')
+                        desc: window.i18n.t('如需本地运行， 请先到lib/server/conf/token文件中，填写dev配置中的bk_app_code及bk_app_secret（可通过\'发布部署-》更多操作-》基本信息\'跳转至蓝鲸开发者中心获取该配置值），应用源码已集成登录逻辑')
                     },
                     {
                         title: window.i18n.t('本地数据库配置'),

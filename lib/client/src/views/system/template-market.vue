@@ -261,6 +261,9 @@
     import { parseFuncAndVar } from '@/common/parse-function-var'
     import LC from '@/element-materials/core'
     import frameworkTag from '@/components/framework-tag.vue'
+    import {
+        isMatchFramework
+    } from 'shared/util'
 
     const PROJECT_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
     const PAGE_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PAGE_TEMPLATE_TYPE)
@@ -420,7 +423,12 @@
                 this.selectLoading = true
                 try {
                     const { projectList } = await this.$store.dispatch('project/query', { config: {} })
-                    this.dialog.page.projectList.splice(0, this.dialog.page.projectList.length, ...projectList)
+                    // 过滤出符合框架的项目
+                    this.dialog.page.projectList.splice(
+                        0,
+                        this.dialog.page.projectList.length,
+                        ...projectList.filter(project => isMatchFramework(project.framework, this.dialog.page.curPage.framework))
+                    )
                 } catch (e) {
                     console.error(e)
                 } finally {

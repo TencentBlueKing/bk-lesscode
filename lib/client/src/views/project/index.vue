@@ -8,7 +8,12 @@
                     <bk-option v-for="option in filterProjectList"
                         :key="option.id"
                         :id="option.id"
-                        :name="option.projectName">
+                        :name="option.projectName"
+                    >
+                        <span class="project-name">
+                            <span v-bk-overflow-tips>{{option.projectName}}</span>
+                            <framework-tag :framework="option.framework" />
+                        </span>
                     </bk-option>
                 </bk-select>
             </div>
@@ -120,9 +125,12 @@
 <script>
     import { bus } from '@/common/bus'
     import ExtraLinks from '@/components/ui/extra-links'
+    import FrameworkTag from '@/components/framework-tag.vue'
+
     export default {
         components: {
-            ExtraLinks
+            ExtraLinks,
+            FrameworkTag
         },
         data () {
             return {
@@ -525,6 +533,19 @@
 
     .select-project-dropdown .bk-select-search-input {
         padding: 0 10px 0 30px;
+    }
+
+    .select-project-dropdown .project-name {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        span {
+            max-width: calc(100% - 50px);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     }
 
     .project-layout {
