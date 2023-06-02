@@ -141,7 +141,7 @@
         },
         data () {
             const formData = generatorData({
-                framework: this.$store.getters['project/currentProject'].framework
+                framework: this.$store.getters['project/currentProject'].framework || 'vue2'
             })
             return {
                 isSubmiting: false,
@@ -191,7 +191,7 @@
                 this.formData.categoryId = categoryId
                 this.formData.description = description
                 this.formData.log = versionLog
-                this.formData.framework = framework
+                this.formData.framework = framework || 'vue2'
                 this.lastVersion = version
             },
             'formData.log' (log) {
@@ -241,6 +241,9 @@
                 ],
                 log: [
                     { required: true, message: window.i18n.t('版本日志不能为空'), trigger: 'blur' }
+                ],
+                framework: [
+                    { required: true, message: window.i18n.t('组件对应 Vue 版本必须选择'), trigger: 'blur' }
                 ]
             }
         },
@@ -298,7 +301,7 @@
             },
             close () {
                 this.formData = generatorData({
-                    framework: this.$store.getters['project/currentProject'].framework
+                    framework: this.$store.getters['project/currentProject'].framework || 'vue2'
                 })
                 this.$emit('update:isShow', false)
             },

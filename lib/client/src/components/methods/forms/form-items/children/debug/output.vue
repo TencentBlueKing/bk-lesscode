@@ -6,7 +6,7 @@
             class="debug-output"
         >
             <i :class="[output.icon, 'message-icon']"></i>
-            {{ renderContent(output.content) }}
+            {{ renderContent(output.contents) }}
         </li>
     </ul>
 </template>
@@ -22,8 +22,7 @@
         },
 
         setup () {
-            const renderContent = (content) => {
-                const contents = Array.isArray(content) ? content : [content]
+            const renderContent = (contents) => {
                 const renders = contents.reduce((acc, cur) => {
                     switch (typeof cur) {
                         case 'object':

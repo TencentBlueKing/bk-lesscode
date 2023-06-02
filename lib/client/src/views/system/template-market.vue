@@ -271,6 +271,7 @@
         projectName: '',
         projectCode: '',
         projectDesc: '',
+        framework: '',
         copyFrom: null
     }
 
@@ -515,6 +516,7 @@
             },
             handleApply (project) {
                 defaultCreateFormData.copyFrom = project.id
+                defaultCreateFormData.framework = project.framework
                 defaultCreateFormData.projectName = ''
                 this.dialog.project.templateName = project.projectName
                 this.dialog.project.visible = true
@@ -624,7 +626,6 @@
                 window.open(`/preview/project/${id}/`, '_blank')
             },
             handlePreviewTemplate (template) {
-                console.log(template, '====================')
                 window.open(`/preview-template/project/${template.belongProjectId}/${template.id}?framework=${template.framework}`, '_blank')
             },
             handleDownloadProject (project) {

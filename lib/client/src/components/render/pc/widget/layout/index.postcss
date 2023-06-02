@@ -1,7 +1,7 @@
 @import "@/css/mixins/scroller";
 .lesscode-editor-layout {
     transform: translate(0, 0);
-    min-height: calc(100vh - 129px);
+    min-height: calc(100vh - 144px);
 
     .bk-navigation {
         width: auto;
@@ -130,6 +130,7 @@
     }
     .lesscode-bk-navigation-wrapper, .bk-navigation {
         .navigation-container .container-content {
+            height: 100% !important;
             overflow: auto !important;
             @mixin scroller;
         }
@@ -137,10 +138,11 @@
 }
 .lesscode-layout-empty {
     height: calc(100vh - 160px);
-    overflow: auto;
-    @mixin scroller;
     .container-content{
         padding: 20px;
+        overflow: auto;
+        height: 100%;
+        @mixin scroller;
     }
 }
 .lesscode-layout-message-theme{
