@@ -4106,5 +4106,6 @@
   "VUE 版本": "VUE version",
   "检查依赖": "Checking Dependencies",
   "请在源码根目录下package.json文件中查看nodejs及npm包版本信息，并将本地开发环境中的nodejs及npm包版本升级": "Please check the nodejs and npm package version information in the package.json file in the root directory of the source code, and upgrade the nodejs and npm package version in your local development environment",
-  "如需本地运行， 请先到lib/server/conf/token文件中，填写dev配置中的bk_app_code及bk_app_secret（可通过'发布部署-》更多操作-》基本信息'跳转至蓝鲸开发者中心获取该配置值），应用源码已集成登录逻辑": "If you want to run locally, please go to lib/server/conf/token file and fill in bk_app_code and bk_app_secret in the dev configuration first (you can get the configuration value by jumping to Blue Whale Developer Center through 'Release Deployment -> More Operations -> Basic Information), the application source code has integrated login logic"
+  "如需本地运行， 请先到lib/server/conf/token文件中，填写dev配置中的bk_app_code及bk_app_secret（可通过'发布部署-》更多操作-》基本信息'跳转至蓝鲸开发者中心获取该配置值），应用源码已集成登录逻辑": "If you want to run locally, please go to lib/server/conf/token file and fill in bk_app_code and bk_app_secret in the dev configuration first (you can get the configuration value by jumping to Blue Whale Developer Center through 'Release Deployment -> More Operations -> Basic Information), the application source code has integrated login logic",
+  "组件对应 Vue 版本必须选择": "The component's Vue version must be selected"
 }
