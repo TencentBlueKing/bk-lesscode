@@ -121,7 +121,11 @@
                     tips
                 } = directiveConfig
                 if (propConfig[prop]) {
-                    const propConfigType = propConfig[directiveConfig.prop].type
+                    let propConfigType = propConfig[directiveConfig.prop].type
+                    // text类型也绑定string类型变量
+                    if (propConfig[directiveConfig.prop].type === 'text') {
+                        propConfigType = 'string'
+                    }
                     // 解析对应 prop 配置的值类型、默认值
                     const valueTypeInclude = Array.isArray(propConfigType) ? propConfigType : [propConfigType]
                     const renderValue = propConfig[directiveConfig.prop].val

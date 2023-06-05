@@ -241,7 +241,7 @@
             padding: 2px 5px;
             display: inline-block;
             transform: scale(0.83, 0.83);
-            max-width: 90px;
+            max-width: 96px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
