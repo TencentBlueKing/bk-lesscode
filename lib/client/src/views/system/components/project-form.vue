@@ -18,7 +18,7 @@
                 @on-delete="handleUploadReset"
             ></bk-upload>
         </bk-form-item>
-        <bk-form-item label="VUE 版本" required property="framework" error-display-type="normal">
+        <bk-form-item :label="$t('VUE 版本')" required property="framework" error-display-type="normal">
             <div class="bk-button-group">
                 <bk-button
                     @click="formData.framework = 'vue2'"
@@ -129,20 +129,20 @@
                 importProjectData: {}
             }
         },
-        watch: {
-            'propsFormData.framework': {
-                handler (val) {
-                    this.formData.framework = val || 'vue2'
-                },
-                immediate: true
-            }
-        },
         computed: {
             formType () {
                 return this.type === 'templateProject' ? 'vertical' : 'horizontal'
             },
             uploadUrl () {
                 return `${process.env.BK_AJAX_URL_PREFIX}/page/importJson`
+            }
+        },
+        watch: {
+            'propsFormData.framework': {
+                handler (val) {
+                    this.formData.framework = val || 'vue2'
+                },
+                immediate: true
             }
         },
         created () {

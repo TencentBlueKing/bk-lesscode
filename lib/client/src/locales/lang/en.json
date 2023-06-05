@@ -1114,6 +1114,7 @@
   "组件名称": "Component Name",
   "table_组件名称": "Component name",
   "form_组件名称": "Component name",
+  "下载开发框架":"Download the development framework",
   "请从左侧拖入组件或者选中组件": "Please drag in the component from the left or select the component",
   "输入框": "Input",
   "高级控件": "Others",
@@ -2010,7 +2011,7 @@
   "适用于搭建 PC 端 Web 界面": "Suitable for building PC-side Web interface",
   "适用于搭建H5，小程序，APP页面": "Suitable for building H5, applets, APP pages",
   "eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n": "eg: Add XXX function\n    Upgrade XXX function\n    Fix XXX function\n",
-  "只允许上传ZIP包；\n组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID({0})前缀，即：{0}-xxx；组件源码须使用平台提供的打包工具打包生成min.js文件后再上传。": "Only ZIP packages are allowed to be uploaded;\nThe type configuration in config.json in the component package corresponding to the component ID will automatically add the application ID ({0}) prefix after the upload is successful, namely: {0}-xxx; the component source code must be packaged with the packaging tool provided by the platform to generate min \nThe .js file will be uploaded later.",
+  "只允许上传ZIP包；\n组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID({0})前缀，即：{0}-xxx；\n必须使用系统提供的框架构建后上传。": "Only ZIP packages can be uploaded. \nThe type configuration in config.json of the component package corresponding to the component ID is automatically prefixed with {0}, that is, {0}-xxx. \nYou must use the framework provided by the system to build and upload.",
   "分类重名": "Duplicate category name",
   "删除组件分类成功": "Delete component category successfully",
   "添加组件分类成功": "Add component category successfully",
@@ -4126,5 +4127,10 @@
   "请输入关键词搜索": "Please enter keywords to search",
   "人员选择": "Personnel Selection",
   "表单保存成功，表单配置关联数据表变更成功": "The form is saved successfully, and the associated data table of the form configuration is changed successfully",
-  "导航类型": "Navigation Type"
+  "导航类型": "Navigation Type",
+  "VUE 版本": "VUE version",
+  "检查依赖": "Checking Dependencies",
+  "请在源码根目录下package.json文件中查看nodejs及npm包版本信息，并将本地开发环境中的nodejs及npm包版本升级": "Please check the nodejs and npm package version information in the package.json file in the root directory of the source code, and upgrade the nodejs and npm package version in your local development environment",
+  "如需本地运行， 请先到lib/server/conf/token文件中，填写dev配置中的bk_app_code及bk_app_secret（可通过'发布部署-》更多操作-》基本信息'跳转至蓝鲸开发者中心获取该配置值），应用源码已集成登录逻辑": "If you want to run locally, please go to lib/server/conf/token file and fill in bk_app_code and bk_app_secret in the dev configuration first (you can get the configuration value by jumping to Blue Whale Developer Center through 'Release Deployment -> More Operations -> Basic Information), the application source code has integrated login logic",
+  "组件对应 Vue 版本必须选择": "The component's Vue version must be selected"
 }

@@ -134,7 +134,6 @@
     }
 </script>
 <style lang="postcss" module>
-    @import "@/css/mixins/scroller";
 
     .top-wrapper{
         height: 100%;
@@ -146,8 +145,6 @@
         margin: 0 20px 20px;
         padding-top: 20px;
         height: 100%;
-        overflow: auto;
-        @mixin scroller;
     }
     .vertical-wrapper{
         background: #fff;

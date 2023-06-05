@@ -101,7 +101,7 @@
     import ExtraLinks from '@/components/ui/extra-links'
 
     import { getProjectNavList } from './project-data'
-
+    
     export default {
         components: {
             SelectProject,
@@ -321,6 +321,19 @@
     .select-project-dropdown {
         .bk-select-search-input {
             padding: 0 10px 0 30px;
+        }
+    }
+
+    .select-project-dropdown .project-name {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        span {
+            max-width: calc(100% - 50px);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
     }
 

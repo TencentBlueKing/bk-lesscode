@@ -80,6 +80,10 @@
                 type: Function,
                 default: () => {}
             },
+            autoGetData: {
+                type: Boolean,
+                default: true
+            },
             title: {
                 type: String
             },

@@ -13,7 +13,7 @@
 </template>
 <script>
     import DrawLayout from '@/views/index/components/draw-layout'
-    import Layout from '@/components/render/pc/widget/layout'
+    import Layout from '@/components/render-nocode/components/layout'
     import PageSetting from '@/element-materials/modifier/page'
     import LayoutSetting from '@/element-materials/modifier/template'
     import { mapGetters } from 'vuex'

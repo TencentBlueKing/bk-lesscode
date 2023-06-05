@@ -402,8 +402,8 @@
                 .query-remove{
                     position: absolute;
                     top: 0;
-                    top: 17px;
-                    right: -28px;
+                    top: 10px;
+                    right: -27.5px;
                     display: flex;
                     font-size: 16px;
                     color: #979BA5;

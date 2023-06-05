@@ -341,7 +341,7 @@
                     if (usageArray.length) {
                         documentation = this.$t('函数使用情况：') + '\n' + documentation
                         usageArray.forEach((usage) => {
-                            documentation += `${ this.$t('组件ID【{0}】的【{1}】', [usage.componentId, usage.key]) }【${sourceNameMap[usage.source] || usage.source}】\n`
+                            documentation += `${this.$t('组件ID【{0}】的【{1}】', [usage.componentId, usage.key])}【${sourceNameMap[usage.source] || usage.source}】\n`
                         })
                     }
                     this.proposals.push({
@@ -458,7 +458,7 @@
                 this.outputs = []
                 this.isDebuging = true
                 // 收集方法
-                const collectOutput = (type, content) => {
+                const collectOutput = (type, contents) => {
                     const iconMap = {
                         info: 'bk-icon icon-angle-right-line',
                         output: 'bk-icon icon-angle-left-line',
@@ -466,7 +466,7 @@
                     }
                     this.outputs.push({
                         icon: iconMap[type],
-                        content
+                        contents
                     })
                 }
                 try {
@@ -519,10 +519,10 @@
                         }
                     )
                     // 收集返回值
-                    collectOutput('output', content || 'undefined')
+                    collectOutput('output', [content || 'undefined'])
                 } catch (error) {
                     // 收集错误信息
-                    collectOutput('error', error.message || error)
+                    collectOutput('error', [error.message || error])
                 } finally {
                     this.isDebuging = false
                 }
