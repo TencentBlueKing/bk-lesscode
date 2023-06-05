@@ -25,7 +25,7 @@
                             </div>
                             <div class="col-name">{{ pageDetail.pageName }}</div>
                             <div class="col-version">{{versionName}}</div>
-                            <frameworkTag :framework="projectDetail.framework" bg-color="#dcdee5"></frameworkTag>
+                            <frameworkTag :framework="projectDetail.framework" bg-color="#fff"></frameworkTag>
                         </div>
                         <i class="bk-select-angle bk-icon icon-angle-down" />
                     </div>
@@ -69,12 +69,14 @@
         mapGetters
     } from 'vuex'
     import { NOCODE_TYPE_MAP } from '@/common/constant'
+    import frameworkTag from '@/components/framework-tag'
     import CreatePageEntry from '@/views/project/page-manage/children/create-page-entry'
     import PageDialog from '@/components/project/page-dialog'
 
     export default {
         name: '',
         components: {
+            frameworkTag,
             PageDialog,
             CreatePageEntry
         },

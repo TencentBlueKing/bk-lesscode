@@ -13,6 +13,10 @@
                 :key="option.id"
                 :id="option.id"
                 :name="option.projectName">
+                <span class="project-name">
+                    <span v-bk-overflow-tips>{{option.projectName}}</span>
+                    <framework-tag :framework="option.framework" />
+                </span>
             </bk-option>
             <div slot="extension" class="extension">
                 <div
@@ -33,11 +37,13 @@
 </template>
 
 <script>
+    import FrameworkTag from '@/components/framework-tag.vue'
     import CreateDialog from '@/views/system/components/create-empty-project-dialog'
     import TemplateDialog from '@/views/system/components/template-dialog'
 
     export default {
         components: {
+            FrameworkTag,
             CreateDialog,
             TemplateDialog
         },
