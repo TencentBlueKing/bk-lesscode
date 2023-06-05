@@ -3,10 +3,10 @@
         <div class="config-title">Headers</div>
         <div class="config-content">
             <div class="label-area">
-                <div class="col-item col-key">参数名</div>
-                <div class="col-item col-val">值</div>
-                <div class="col-item col-desc">备注</div>
-                <div class="col-item col-opt">操作</div>
+                <div class="col-item col-key">{{ $t('参数名') }}</div>
+                <div class="col-item col-val">{{ $t('值') }}</div>
+                <div class="col-item col-desc">{{ $t('备注') }}</div>
+                <div class="col-item col-opt">{{ $t('操作') }}</div>
             </div>
             <div v-for="(item, index) in headerList" class="header-config-item" :key="index">
                 <div class="col-item col-key">

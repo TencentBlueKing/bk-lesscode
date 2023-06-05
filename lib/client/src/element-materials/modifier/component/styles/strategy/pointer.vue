@@ -10,8 +10,8 @@
 -->
 
 <template>
-    <style-layout title="鼠标">
-        <style-item :name="'cursor'">
+    <style-layout :title="$t('鼠标')">
+        <style-item :name="'Cursor'">
             <bk-select
                 :value="cursorValue"
                 font-size="medium"

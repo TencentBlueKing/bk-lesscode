@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import iconComponentList from '@/element-materials/materials/icon-list.js'
+    import iconComponentList from '@/element-materials/materials/vue2/icon-list.js'
 
     export default {
         name: 'icon-select',

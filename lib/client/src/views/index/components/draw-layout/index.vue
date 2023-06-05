@@ -22,7 +22,7 @@
             v-if="!isDataManagePage"
             :class="[$style['collapsed-left-btn'],{ [$style['collapsed-nocode-left-btn']]: isNocodeForm }]"
             v-bk-tooltips.right="{
-                content: '查看所有组件',
+                content: $t('查看所有组件'),
                 disabled: !isLeftCollapse
             }"
             @click="handleToggleLeft">
@@ -32,7 +32,7 @@
             v-if="!hideRightSlot && !isDataManagePage"
             :class="$style['collapsed-right-btn']"
             v-bk-tooltips.right="{
-                content: '查看组件配置',
+                content: $t('查看组件配置'),
                 disabled: !isRightCollapse
             }"
             @click="handleToggleRight">

@@ -1,16 +1,16 @@
 <template>
     <div class="normal-node-nodeDetail">
-        <form-section title="基础配置">
+        <form-section :title="$t('基础配置')">
             <bk-form
                 ref="basicForm"
                 style="width: 656px"
                 form-type="vertical"
                 :rules="rules"
                 :model="nodeData">
-                <bk-form-item label="节点名称" property="name" :required="true">
+                <bk-form-item :label="$t('form_节点名称')" property="name" :required="true">
                     <bk-input :value="nodeData.name" @change="handleNameChange"></bk-input>
                 </bk-form-item>
-                <bk-form-item label="处理人" :required="true">
+                <bk-form-item :label="$t('处理人')" :required="true">
                     <processors
                         ref="processorsForm"
                         :value="processorData"
@@ -22,11 +22,11 @@
                 </bk-form-item>
             </bk-form>
         </form-section>
-        <form-section title="表单配置" style="margin-top: 16px;" v-bkloading="{ isLoading: formContentLoading }">
+        <form-section :title="$t('表单配置')" style="margin-top: 16px;" v-bkloading="{ isLoading: formContentLoading }">
             <node-form-setting
                 ref="formSetting"
-                :flow-config="flowConfig"
                 :form-content-loading="formContentLoading"
+                :workflow-id="workflowId"
                 @close="$emit('close')">
             </node-form-setting>
         </form-section>
@@ -47,6 +47,9 @@
             Processors,
             NodeFormSetting
         },
+        props: {
+            workflowId: Number
+        },
         data () {
             return {
                 formContentLoading: false,
@@ -54,7 +57,7 @@
                     name: [
                         {
                             required: true,
-                            message: '节点名称为必填项',
+                            message: this.$t('节点名称为必填项'),
                             trigger: 'blur'
                         }
                     ]

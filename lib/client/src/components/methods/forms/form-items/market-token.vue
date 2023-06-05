@@ -1,13 +1,13 @@
 <template>
-    <bk-form :label-width="110" :model="copyForm" ref="funcForm" :form-type="formType" v-if="copyForm.funcType === 1">
-        <bk-form-item property="withToken" class="token-item">
+    <lc-form :label-width="110" :model="copyForm" ref="funcForm" :form-type="formType" v-if="copyForm.funcType === 1">
+        <lc-form-item property="withToken" class="token-item">
             <bk-checkbox :true-value="1"
                 :false-value="0"
                 v-model="copyForm.withToken"
                 @change="(val) => updateValue('withToken', val)"
-            >蓝鲸应用认证</bk-checkbox>
-        </bk-form-item>
-    </bk-form>
+            >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>

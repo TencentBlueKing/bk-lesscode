@@ -1,5 +1,5 @@
 <template>
-    <bk-button @click="handlePreview">预览</bk-button>
+    <bk-button @click="handlePreview">{{$t('预览')}}</bk-button>
 </template>
 
 <script>
@@ -26,12 +26,12 @@
                 // await this.handleSave()
                 const pageRoute = this.layoutPageList.find(({ pageId }) => pageId === Number(this.pageDetail.id))
                 if (!pageRoute.id) {
-                    this.messageError('页面未配置路由，请先配置')
+                    this.messageErrorwindow.i18n.t('页面未配置路由，请先配置')
                     return
                 }
 
                 if (this.pageDetail.nocodeType === 'FORM' && !this.pageDetail.formId) {
-                    this.messageError('新创建的表单类型页面请先保存后再预览')
+                    this.messageError(window.i18n.t('新创建的表单类型页面请先保存后再预览'))
                     return
                 }
 

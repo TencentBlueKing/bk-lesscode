@@ -10,14 +10,14 @@
 -->
 
 <template>
-    <style-layout title="背景">
-        <style-item name="颜色" v-if="handleHasKey('backgroundColor')">
+    <style-layout :title="$t('背景')">
+        <style-item :name="$t('颜色')" v-if="handleHasKey('backgroundColor')">
             <bk-color-picker
                 :value="renderValueMap.backgroundColor"
                 @change="handleValueChange('backgroundColor', $event)"
                 style="width: 100%;" />
         </style-item>
-        <style-item name="背景图" v-if="handleHasKey('backgroundImage')">
+        <style-item :name="$t('form_背景图')" v-if="handleHasKey('backgroundImage')">
             <bk-switcher
                 :value="backgroundImageShow"
                 theme="primary"
@@ -31,10 +31,10 @@
                     @change="handleValueChange('backgroundImage', $event)"
                     style="width: 100%" />
             </style-item>
-            <style-item name="大小">
+            <style-item :name="$t('大小')">
                 <size-input
                     :value="backgroundSize.width"
-                    :item="{ font: '宽', name: '宽度' }"
+                    :item="{ icon: 'bk-drag-kuandu', name: $t('宽度') }"
                     @change="handleBackgroundSizeChange('width', $event)"
                     style="width: 100%;margin-top: 0">
                     <size-unit
@@ -45,7 +45,7 @@
             <style-item name="">
                 <size-input
                     :value="backgroundSize.height"
-                    :item="{ font: '高', name: '高度' }"
+                    :item="{ icon: 'bk-drag-gaodu', name: $t('高度') }"
                     @change="handleBackgroundSizeChange('height', $event)"
                     style="width: 100%;margin-top: 0">
                     <size-unit
@@ -54,10 +54,10 @@
                 </size-input>
             </style-item>
 
-            <style-item name="位置">
+            <style-item :name="$t('位置')">
                 <size-input
                     :value="backgroundPosition.x"
-                    :item="{ icon: 'bk-drag-icon bk-drag-zuobianju', name: '左边距' }"
+                    :item="{ icon: 'bk-drag-icon bk-drag-zuobianju', name: $t('左边距') }"
                     @change="handleBackgroundPositionChange('x', $event)"
                     style="width: 100%;margin-top: 0">
                     <size-unit
@@ -68,7 +68,7 @@
             <style-item name="">
                 <size-input
                     :value="backgroundPosition.y"
-                    :item="{ icon: 'bk-drag-icon bk-drag-dingbianju', name: '上边距' }"
+                    :item="{ icon: 'bk-drag-icon bk-drag-dingbianju', name: $t('上边距') }"
                     @change="handleBackgroundPositionChange('y', $event)"
                     style="width: 100%;margin-top: 0">
                     <size-unit

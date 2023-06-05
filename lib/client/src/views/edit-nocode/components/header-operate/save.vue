@@ -10,15 +10,19 @@
     import { bus } from '@/common/bus'
     export default {
         props: {
-            custom: Boolean // 是否需要自定义保存逻辑
+            custom: Boolean, // 是否需要自定义保存逻辑
+            customLoading: Boolean,
+            disabled: Boolean,
+            tips: String
         },
         data () {
             return {
-                isLoading: false,
+                loading: false,
                 isLocked: false,
                 item: {
                     icon: 'bk-drag-icon bk-drag-save',
-                    text: '保存',
+                    text: window.i18n.t('保存'),
+                    tips: this.tips,
                     func: this.handleSubmit
                 }
             }
@@ -33,10 +37,16 @@
             },
             projectId () {
                 return this.$route.params.projectId
+            },
+            isLoading () {
+                return this.customLoading || this.loading
             }
         },
         methods: {
             async handleSubmit () {
+                if (this.disabled) {
+                    return
+                }
                 if (this.custom) {
                     if (this.validateForm()) {
                         this.$emit('save', this.$store.state.nocode.formSetting.fieldsList)
@@ -100,7 +110,7 @@
                         this.savePreviewImg()
                         this.$bkMessage({
                             theme: 'success',
-                            message: '保存成功，数据表结构变更成功'
+                            message: window.i18n.t('保存成功，数据表结构变更成功')
                         })
                         if (action === 'createForm') {
                             this.$store.commit('page/setPageDetail', Object.assign({}, this.pageDetail, { formId: res.id }))
@@ -111,7 +121,7 @@
                 } catch (e) {
                     console.error(e)
                 } finally {
-                    this.isLoading = false
+                    this.loading = false
                 }
             },
             // 保存页面content
@@ -124,7 +134,7 @@
                     styleSetting: JSON.stringify(this.pageDetail.styleSetting || {})
                 }
                 try {
-                    this.isLoading = true
+                    this.loading = true
                     const res = await this.$store.dispatch('page/update', {
                         data: {
                             pageData,
@@ -136,13 +146,13 @@
                         this.savePreviewImg()
                         this.$bkMessage({
                             theme: 'success',
-                            message: '保存成功'
+                            message: window.i18n.t('保存成功')
                         })
                     }
                 } catch (e) {
                     console.error(e)
                 } finally {
-                    this.isLoading = false
+                    this.loading = false
                 }
             },
             // 校验表单配置
@@ -150,19 +160,19 @@
                 if (this.$store.state.nocode.formSetting.fieldsList.length < 1) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '表单项不能为空'
+                        message: window.i18n.t('表单项不能为空')
                     })
                     return false
                 }
                 let message = ''
                 this.$store.state.nocode.formSetting.fieldsList.some(field => {
                     if (!/^[a-zA-Z0-9_]*$/.test(field.key)) {
-                        message = `字段【${field.name}】唯一标识需要由字母、数字、下划线组成`
+                        message = window.i18n.t('字段【{0}】唯一标识需要由字母、数字、下划线组成', [field.name])
                     } else if (field.key === 'title') {
-                        message = `字段【${field.name}】唯一标识title为系统内置字符，请修改后保存`
+                        message = window.i18n.t('字段【{0}】唯一标识title为系统内置字符，请修改后保存', [field.name])
                     } else if (field.show_type === 0) {
                         if (!('expressions' in field.show_conditions) || field.show_conditions.expressions.some(item => item.key === '' || item.condition === '' || item.value === '')) {
-                            message = `字段【${field.name}】需要配置隐藏条件`
+                            message = window.i18n.t('字段【{0}】需要配置隐藏条件', [field.name])
                         }
                     }
                     if (message) {
@@ -175,9 +185,8 @@
                     if (this.checkAccuracy(field)) {
                         this.$bkMessage({
                             theme: 'error',
-                            message: `字段【${field.name}】未设置默认时间精度`
+                            message: window.i18n.t('字段【{0}】未设置默认时间精度', [field.name])
                         })
-                        isKeyValid = false
                         return true
                     }
                 })
@@ -240,3 +249,9 @@
         }
     }
 </script>
+<style lang="postcss" scoped>
+    .item.disabled {
+        color: #c2c4c6;
+        cursor: not-allowed;
+    }
+</style>

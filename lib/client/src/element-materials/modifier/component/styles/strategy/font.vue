@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <style-layout title="文字">
+    <style-layout :title="$t('文字')">
         <section style="display: flex; justify-content: space-between;flex-wrap: wrap;">
             <icon-size-input
                 v-if="handleHasKey('fontFamily')"
@@ -72,66 +72,66 @@
             </icon-size-input>
         </section>
         
-        <style-item name="字体样式" v-if="handleHasKey('fontStyle')" type="vertical">
+        <style-item :name="$t('form_字体样式')" v-if="handleHasKey('fontStyle')" type="vertical">
             <select-tab style="width: 100%;" :tab-list="fontStyleList" :active-item="renderValueMap.fontStyle" :item-change="(val) => handleFontChange('fontStyle', val)" />
         </style-item>
-        <style-item name="文本修饰" tips="text-decoration" v-if="handleHasKey('textDecoration')" type="vertical">
+        <style-item :name="$t('form_文本修饰')" tips="text-decoration" v-if="handleHasKey('textDecoration')" type="vertical">
             <select-tab style="width: 100%;" :tab-list="textDecorationList" :active-item="renderValueMap.textDecoration" :item-change="(val) => handleFontChange('textDecoration', val)" />
         </style-item>
-        <style-item name="对齐方式" tips="text-align" v-if="handleHasKey('textAlign')" type="vertical">
+        <style-item :name="$t('对齐方式')" tips="text-align" v-if="handleHasKey('textAlign')" type="vertical">
             <select-tab style="width: 100%;" :tab-list="fontAlignList" :active-item="renderValueMap.textAlign" :item-change="(val) => handleFontChange('textAlign', val)" />
         </style-item>
 
-        <style-item name="text-overflow" tips="如何展示溢出文本" v-if="handleHasKey('textOverflow')">
+        <style-item name="text-overflow" :tips="$t('如何展示溢出文本')" v-if="handleHasKey('textOverflow')">
             <bk-select
                 :value="renderValueMap.textOverflow"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('textOverflow', $event)"
                 style="width: 100%;">
-                <bk-option id="clip" name="clip" v-bk-tooltips="getTooltipsConfig('截断溢出文本')" />
-                <bk-option id="ellipsis" name="ellipsis" v-bk-tooltips="getTooltipsConfig('使用一个省略号来表示溢出文本')" />
+                <bk-option id="clip" name="clip" v-bk-tooltips="getTooltipsConfig($t('截断溢出文本'))" />
+                <bk-option id="ellipsis" name="ellipsis" v-bk-tooltips="getTooltipsConfig($t('使用一个省略号来表示溢出文本'))" />
             </bk-select>
         </style-item>
-        <style-item name="word-break" tips="控制单词如何被拆分换行" v-if="handleHasKey('wordBreak')">
+        <style-item name="Word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
             <bk-select
                 :value="renderValueMap.wordBreak"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('wordBreak', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig('默认的换行规则')" />
-                <bk-option id="break-all" name="break-all" v-bk-tooltips="getTooltipsConfig('对于 non-CJK (CJK 指中文/日文/韩文) 文本，可在任意字符间断行')" />
-                <bk-option id="keep-all" name="keep-all" v-bk-tooltips="getTooltipsConfig('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal')" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('默认的换行规则'))" />
+                <bk-option id="break-all" name="break-all" v-bk-tooltips="getTooltipsConfig($t('对于 non-CJK (CJK 指中文/日文/韩文) 文本，可在任意字符间断行'))" />
+                <bk-option id="keep-all" name="keep-all" v-bk-tooltips="getTooltipsConfig($t('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal'))" />
             </bk-select>
         </style-item>
-        <style-item name="word-wrap" tips="控制长度超过一行的单词是否被拆分换行" v-if="handleHasKey('wordWrap')">
+        <style-item name="Word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
             <bk-select
                 :value="renderValueMap.wordWrap"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('wordWrap', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig('不换行')" />
-                <bk-option id="break-word" name="break-word" v-bk-tooltips="getTooltipsConfig('长单词内部换行')" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('不换行'))" />
+                <bk-option id="break-word" name="break-word" v-bk-tooltips="getTooltipsConfig($t('长单词内部换行'))" />
             </bk-select>
         </style-item>
-        <style-item name="white-space" tips="控制空白字符的显示" v-if="handleHasKey('whiteSpace')">
+        <style-item name="White-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
             <bk-select
                 :value="renderValueMap.whiteSpace"
                 font-size="medium"
                 :clearable="false"
                 @change="handleFontChange('whiteSpace', $event)"
                 style="width: 100%;">
-                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig('连续的空白符会被合并，换行符会被当作空白符来处理')" />
-                <bk-option id="pre" name="pre" v-bk-tooltips="getTooltipsConfig('连续的空白符会被保留。在遇到换行符或者 br 元素时才会换行')" />
-                <bk-option id="nowrap" name="nowrap" v-bk-tooltips="getTooltipsConfig('和 normal 一样，连续的空白符会被合并。文本内的换行无效')" />
-                <bk-option id="pre-wrap" name="pre-wrap" v-bk-tooltips="getTooltipsConfig('连续的空白符会被保留。在遇到换行符或者 br 元素时会换行，且可以自动换行')" />
-                <bk-option id="pre-line" name="pre-line" v-bk-tooltips="getTooltipsConfig('连续的空白符会被合并。在遇到换行符或者 br 元素时会换行，且可以自动换行')" />
-                <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig('继承父元素该属性')" />
+                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被合并，换行符会被当作空白符来处理'))" />
+                <bk-option id="pre" name="pre" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被保留。在遇到换行符或者 br 元素时才会换行'))" />
+                <bk-option id="nowrap" name="nowrap" v-bk-tooltips="getTooltipsConfig($t('和 normal 一样，连续的空白符会被合并。文本内的换行无效'))" />
+                <bk-option id="pre-wrap" name="pre-wrap" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被保留。在遇到换行符或者 br 元素时会换行，且可以自动换行'))" />
+                <bk-option id="pre-line" name="pre-line" v-bk-tooltips="getTooltipsConfig($t('连续的空白符会被合并。在遇到换行符或者 br 元素时会换行，且可以自动换行'))" />
+                <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig($t('继承父元素该属性'))" />
             </bk-select>
         </style-item>
-        <style-item name="垂直对齐" v-if="handleHasKey('verticalAlign')">
+        <style-item :name="$t('form_垂直对齐')" v-if="handleHasKey('verticalAlign')">
             <bk-select
                 :value="renderValueMap.verticalAlign"
                 font-size="medium"
@@ -217,18 +217,18 @@
                     fontFamily: {
                         type: 'select',
                         icon: 'bk-drag-ziti',
-                        tips: '字体',
+                        tips: window.i18n.t('字体'),
                         payload: {},
                         options: [
-                            { id: 'inherit', name: '默认' },
-                            { id: 'Microsoft Yahei, san-serif', name: '微软雅黑' },
-                            { id: 'PingFang SC, sans-serif', name: '苹方' },
-                            { id: 'Heiti SC san-serif', name: '黑体' },
-                            { id: 'Hiragino Sans GB san-serif', name: '冬青黑体' },
-                            { id: 'Noto Sans san-serif', name: '思源黑体' },
-                            { id: 'Songti SC, sans-serif', name: '宋体' },
-                            { id: 'KaiTi san-serif', name: '楷体' },
-                            { id: 'WenQuanYi Micro Hei san-serif', name: '文泉驿微米黑' },
+                            { id: 'inherit', name: window.i18n.t('默认') },
+                            { id: 'Microsoft Yahei, san-serif', name: window.i18n.t('微软雅黑') },
+                            { id: 'PingFang SC, sans-serif', name: window.i18n.t('苹方') },
+                            { id: 'Heiti SC, san-serif', name: window.i18n.t('黑体') },
+                            { id: 'Hiragino Sans GB san-serif', name: window.i18n.t('冬青黑体') },
+                            { id: 'Noto Sans, san-serif', name: '思源黑体' },
+                            { id: 'Songti SC, sans-serif', name: window.i18n.t('宋体') },
+                            { id: 'KaiTi, san-serif', name: '楷体' },
+                            { id: 'WenQuanYi Micro Hei, san-serif', name: '文泉驿微米黑' },
                             { id: 'Arial, sans-serif', name: 'Arial' },
                             { id: 'Monospace, sans-serif', name: 'Monospace' },
                             { id: 'Apple Color Emoji san-serif', name: 'Apple Color Emoji' },
@@ -269,7 +269,7 @@
                     },
                     lineHeight: {
                         icon: 'bk-drag-xinggao',
-                        tips: '行高'
+                        tips: window.i18n.t('行高')
                     },
                     letterSpacing: {
                         icon: 'bk-drag-zijianju',
@@ -281,7 +281,7 @@
                     },
                     textIndent: {
                         icon: 'bk-drag-suojin',
-                        tips: '缩进'
+                        tips: window.i18n.t('缩进')
                     }
                 },
                 fontStyleList: [
@@ -305,34 +305,34 @@
                     {
                         id: 'underline',
                         icon: 'bk-drag-icon bk-drag-xiahuaxian',
-                        tips: '下划线'
+                        tips: window.i18n.t('下划线')
                     },
                     {
                         id: 'overline',
                         icon: 'bk-drag-icon bk-drag-shanghuaxian',
-                        tips: '上划线'
+                        tips: window.i18n.t('上划线')
                     },
                     {
                         id: 'line-through',
                         icon: 'bk-drag-icon bk-drag-zhonghuaxian',
-                        tips: '中划线'
+                        tips: window.i18n.t('中划线')
                     }
                 ],
                 fontAlignList: [
                     {
                         id: 'left',
                         icon: 'bk-drag-icon bk-drag-zuoduiqi-2',
-                        tips: '左对齐'
+                        tips: window.i18n.t('左对齐')
                     },
                     {
                         id: 'center',
                         icon: 'bk-drag-icon bk-drag-juzhongduiqi',
-                        tips: '居中对齐'
+                        tips: window.i18n.t('居中对齐')
                     },
                     {
                         id: 'right',
                         icon: 'bk-drag-icon bk-drag-youduiqi-2',
-                        tips: '右对齐'
+                        tips: window.i18n.t('右对齐')
                     }
                 ]
             }

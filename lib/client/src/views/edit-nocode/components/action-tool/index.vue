@@ -1,8 +1,6 @@
 <template>
     <div class="action-tool-list">
-        <!-- <save v-if="!hideSave" :custom="customSave" @save="$emit('save', $event)" />
-        <preview v-if="!hidePreview" /> -->
-        <clear v-if="!hideClear" />
+        <clear v-if="!hideClear" :disabled="disabled" :tips="disabledTips" />
         <code-and-json v-if="!hideJson" />
     </div>
 </template>
@@ -16,9 +14,10 @@
             CodeAndJson
         },
         props: {
-            customSave: Boolean,
             hideJson: Boolean,
-            hideClear: Boolean
+            hideClear: Boolean,
+            disabled: Boolean,
+            disabledTips: String
         }
     }
 </script>

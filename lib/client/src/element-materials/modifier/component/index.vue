@@ -30,14 +30,13 @@
                 <div
                     v-if="isModifierEmpty"
                     class="empty">
-                    配置项为空
-                </div>
+                    {{ $t('配置项为空') }} </div>
             </div>
         </template>
         <div
             v-else
             class="empty">
-            <span>请选择组件</span>
+            <span>{{ $t('请选择组件') }}</span>
         </div>
     </div>
 </template>
@@ -65,10 +64,10 @@
         data () {
             return {
                 tabPanels: [
-                    { id: 'styles', name: '样式' },
-                    { id: 'props', name: '属性' },
-                    { id: 'events', name: '事件' },
-                    { id: 'directives', name: '指令' }
+                    { id: 'styles', name: this.$t('样式-styles') },
+                    { id: 'props', name: this.$t('属性-props') },
+                    { id: 'events', name: this.$t('事件-events') },
+                    { id: 'directives', name: this.$t('指令-directives') }
                 ],
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
@@ -101,18 +100,18 @@
                 // 目前只有 button 按钮有权限面板
                 if (target.type === 'bk-button') {
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { id: 'styles', name: '样式' },
-                        { id: 'props', name: '属性' },
-                        { id: 'events', name: '事件' },
-                        { id: 'directives', name: '指令' },
-                        { id: 'perms', name: '权限' }
+                        { id: 'styles', name: this.$t('样式-styles') },
+                        { id: 'props', name: this.$t('属性-props') },
+                        { id: 'events', name: this.$t('事件-events') },
+                        { id: 'directives', name: this.$t('指令-directives') },
+                        { id: 'perms', name: '权限-perms' }
                     ])
                 } else {
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { id: 'styles', name: '样式' },
-                        { id: 'props', name: '属性' },
-                        { id: 'events', name: '事件' },
-                        { id: 'directives', name: '指令' }
+                        { id: 'styles', name: this.$t('样式-styles') },
+                        { id: 'props', name: this.$t('属性-props') },
+                        { id: 'events', name: this.$t('事件-events') },
+                        { id: 'directives', name: this.$t('指令-directives') }
                     ])
                 }
             }
@@ -165,6 +164,17 @@
             background: #fff;
             padding: 8px 12px;
             border-bottom: 1px solid $boxBorderColor;
+        }
+        .bk-tab.en-king-tab {
+            .bk-tab-header {
+                .bk-tab-label-wrapper {
+                    .bk-tab-label-list {
+                        padding-left: 2px;
+                        padding-right: 12px;
+                    }
+                }
+            }
+
         }
         .material-modifier-container {
             @mixin scroller;

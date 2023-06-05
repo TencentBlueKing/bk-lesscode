@@ -1,14 +1,14 @@
 <template>
     <section>
         <style-layout
-            title="页面样式配置">
+            :title="$t('页面样式配置')">
             <template>
-                <style-item name="最小宽度" type="vertical">
+                <style-item :name="$t('最小宽度')" type="vertical">
                     <size-input :value="minWidth.value" @change="handleItemChange('minWidth', 'value', $event)" style="width: 100%">
                         <size-unit :value="minWidth.unit" @change="handleItemChange('minWidth', 'unit', $event)"></size-unit>
                     </size-input>
                 </style-item>
-                <style-item name="背景色" type="vertical">
+                <style-item :name="$t('背景色')" type="vertical">
                     <bk-color-picker
                         :value="styleSetting.backgroundColor"
                         style="width: 100%;"
@@ -17,9 +17,10 @@
             </template>
         </style-layout>
         <style-layout
-            title="字体预设"
-            tips="可以设置字体的显示偏好设置，如不设置，则默认使用系统默认字体"
+            :title="$t('字体预设')"
+            :tips="$t('可以设置字体的显示偏好设置，如不设置，则默认使用系统默认字体')"
         >
+            <i slot="header" class="bk-drag-icon bk-drag-undo-2" @click.stop="handleReset" v-bk-tooltips="{ content: $t('重置属性值') }"></i>
             <template>
                 <style-item name="font-family" type="vertical">
                     <bk-input
@@ -84,6 +85,10 @@
             }
         },
         methods: {
+            handleReset () {
+                this.fontFamily = this.defaultFontFamily
+                this.updateStyleSetting('fontFamily', this.fontFamily)
+            },
             updateStyleSetting (key, value) {
                 const styleSetting = Object.assign({}, this.page.styleSetting, { [key]: value })
                 this.$store.commit('page/setPageDetail', {

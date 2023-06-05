@@ -1,22 +1,22 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item" v-if="form.funcType === 1">
-        <bk-form-item
-            label="Api Data"
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item" v-if="form.funcType === 1">
+        <lc-form-item
+            label="API Data"
             property="funcApiData"
             error-display-type="normal"
             :rules="[objRule]"
-            :desc="{ width: 350, content: 'HTTP 请求（例如 POST）的请求体数据包。如果是GET请求，请在 Api Url 中填写请求头参数' }">
+            :desc="{ width: 350, content: $t('HTTP 请求（例如 POST）的请求体数据包。如果是GET请求，请在 Api Url 中填写请求头参数') }">
             <bk-input
                 type="textarea"
                 :value="form.funcApiData"
                 :rows="3"
                 :maxlength="500"
                 :disabled="disabled"
-                :placeholder="`请输入请求体数据包，例如：{ name: {{name}}, age: 17 }`"
+                :placeholder="$t('请输入请求体数据包，例如：{ name: {0}, age: 17 }', ['name'])"
                 @input="(funcApiData) => updateValue({ funcApiData })">
             </bk-input>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>
@@ -39,7 +39,7 @@
                             return false
                         }
                     },
-                    message: 'apiData需要是json格式的数据',
+                    message: this.$t('apiData需要是json格式的数据'),
                     trigger: 'blur'
                 }
             }

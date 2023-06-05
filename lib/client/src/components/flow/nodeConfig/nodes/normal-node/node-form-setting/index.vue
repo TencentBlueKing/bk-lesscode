@@ -2,7 +2,7 @@
     <section class="node-form-setting">
         <div
             v-if="formConfig.type !== ''"
-            v-bkloading="{ isLoading: formContentLoading || pageContextLoading }"
+            v-bkloading="{ isLoading: formContentLoading || pageDetailLoading }"
             class="edit-form-card">
             <div class="card-header">
                 <h5>{{ formConfig.formName }}</h5>
@@ -10,20 +10,18 @@
             </div>
             <div class="related-info">
                 <template v-if="nodeData.is_first_state && nodeData.type === 'NORMAL'">
-                    流程提单页：
-                    <span
+                    {{ $t('流程提单页：') }} <span
                         :class="['related-item-name', { 'not-empty': hasCreatedTicketPage }]"
                         @click="handlePageClick">
-                        {{ pageDetail.pageName || '--' }}
+                        {{ hasCreatedTicketPage ? createTicketPage.pageName : '--' }}
                     </span>
                     <i
                         v-if="hasCreatedTicketPage"
                         :class="['bk-icon', 'icon-delete', 'delete-page-icon']"
-                        @click="handleDelCreatePage">
+                        @click="handleDelCreateTicketPageClick">
                     </i>
                 </template>
-                关联数据表：
-                <span
+                {{ $t('关联数据表：') }} <span
                     :class="['related-item-name', { 'not-empty': formConfig.id }]"
                     @click="handleTableClick">
                     {{ typeof formConfig.id === 'number' ? formConfig.code : '--' }}
@@ -36,7 +34,7 @@
                     @click="handleEditClick">
                 </i>
                 <i
-                    v-bk-tooltips.top="'预览表单内容'"
+                    v-bk-tooltips.top="$t('预览表单内容')"
                     class="bk-drag-icon bk-drag-visible-eye"
                     style="font-size: 16px; margin-right: 14px;"
                     @click="handlePreviewClick(formConfig.content)">
@@ -44,7 +42,7 @@
                 <i
                     class="bk-icon icon-delete"
                     style="font-size: 12px;"
-                    @click="handleDelClick">
+                    @click="handleDelFormConfigClick">
                 </i>
             </div>
         </div>
@@ -58,25 +56,22 @@
                 {{ item.name }}
             </div>
         </div>
-        <p v-if="isUnset" class="error-tips">请选择配置表单</p>
+        <p v-if="isUnset" class="error-tips">{{ $t('请选择配置表单') }}</p>
         <edit-form-panel
             v-if="editFormPanelShow"
-            :edit-form-panel-show.sync="editFormPanelShow"
-            :hide-setting="!isFirstNormalNode || !hasCreatedTicketPage"
-            :hide-func="!isFirstNormalNode || !hasCreatedTicketPage"
-            :hide-preview="!isFirstNormalNode || !hasCreatedTicketPage"
-            :hide-save="formConfig.type === 'USE_FORM'"
-            :hide-clear="formConfig.type === 'USE_FORM'"
-            :flow-config="flowConfig"
-            :form-config="formConfig"
-            @save="hanadleSaveFormContent"
-            @closeNode="$emit('close')">
+            class="node-config-fields-panel"
+            :workflow-id="workflowId"
+            @save="isUnset = false"
+            @backToFlow="$emit('close')"
+            @backToNode="handleBackToNode"
+            @back="handleBackToNode">
         </edit-form-panel>
         <select-form-dialog
-            :method="selectedType"
+            :type="selectedType"
             :show.sync="selectFormDialogShow"
+            :workflowId="workflowId"
             @preview="handlePreviewClick"
-            @confirm="handleSelectForm">
+            @confirm="isUnset = false">
         </select-form-dialog>
         <preview-form-dialog
             :fields="previewFormContent"
@@ -89,11 +84,9 @@
     import { mapState, mapGetters } from 'vuex'
     import pinyin from 'pinyin'
     import { uuid } from '@/common/util'
-    import { syncVariableValue } from '@/views/index/components/utils'
     import EditFormPanel from './edit-form-panel.vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import PreviewFormDialog from './preview-form-dialog.vue'
-    import PreviewMixin from '@/views/edit-nocode/preview-mixin'
 
     export default {
         name: 'NodeFormSetting',
@@ -102,99 +95,88 @@
             SelectFormDialog,
             PreviewFormDialog
         },
-        mixins: [PreviewMixin],
         props: {
-            formContentLoading: Boolean
+            formContentLoading: Boolean,
+            workflowId: Number
         },
         data () {
             return {
                 createFormMethods: [
-                    { id: 'NEW_FORM', name: '新建空白表单' },
-                    { id: 'COPY_FORM', name: '引用已有表单' },
-                    { id: 'USE_FORM', name: '复用已有表单' }
+                    { id: 'NEW_FORM', name: this.$t('新建空白表单') },
+                    { id: 'COPY_FORM', name: this.$t('引用已有表单') },
+                    { id: 'USE_FORM', name: this.$t('复用已有表单') }
                 ],
                 typeNameMap: {
-                    NEW_FORM: '新建表单',
-                    COPY_FORM: '引用表单',
-                    USE_FORM: '复用表单'
+                    NEW_FORM: this.$t('新建表单'),
+                    COPY_FORM: this.$t('引用表单'),
+                    USE_FORM: this.$t('复用表单')
                 },
-                pageContextLoading: false,
                 selectedType: this.$store.state.nocode.nodeConfig.formConfig.type,
+                pageDetailLoading: false,
                 editFormPanelShow: false, // 表单编辑
                 selectFormDialogShow: false, // 选择表单弹窗
                 previewFormContent: [], // 预览表单字段
                 previewFormDialogShow: false, // 预览弹窗
-                isUnset: false
+                isUnset: false // 人工节点是否配置表单
             }
         },
         computed: {
             ...mapGetters(['user']),
-            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig']),
-            ...mapState('nocode/flow', ['flowConfig', 'delCreateTicketPageId']),
-            ...mapGetters('page', ['pageDetail']),
+            ...mapState('nocode/nodeConfig', ['nodeData', 'formConfig', 'createTicketPage']),
+            ...mapState('nocode/flow', ['flowConfig']),
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+
             projectId () {
                 return this.$route.params.projectId
             },
             isFirstNormalNode () {
                 return this.nodeData.type === 'NORMAL' && this.nodeData.is_first_state
             },
-            // 是否生成提单页
-            // 该节点为第一个节点提单节点，生成了提单页，并且没有再编辑时删除
+            // 该节点是否为第一个节点提单节点，并生成了提单页
             hasCreatedTicketPage () {
-                return this.isFirstNormalNode && this.flowConfig.pageId && !this.delCreateTicketPageId
-            }
-        },
-        watch: {
-            'flowConfig.pageId' (val) {
-                if (val) {
-                    this.getPageDetail()
-                }
+                return this.isFirstNormalNode && !!this.flowConfig.pageId
             }
         },
         created () {
             // 如果流程生成了提单页并且当前节点为第一个人工节点，则加载页面详情的上下文数据
-            if (this.nodeData.is_first_state && this.flowConfig.pageId) {
+            if (this.isFirstNormalNode && this.flowConfig.pageId) {
                 this.getPageDetail()
             }
-        },
-        beforeDestroy () {
-            this.clearContext()
         },
         methods: {
             async getPageDetail () {
                 try {
-                    this.pageContextLoading = true
-                    const [pageDetail, functionData] = await Promise.all([
-                        this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId }),
-                        this.$store.dispatch('functions/getAllGroupAndFunction', {
-                            projectId: this.projectId,
-                            versionId: this.versionId
-                        }),
-                        this.$store.dispatch('layout/getPageLayout', { pageId: this.flowConfig.pageId }),
-                        this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId }),
-                        this.$store.dispatch('page/getPageSetting', {
-                            pageId: this.flowConfig.pageId,
-                            projectId: this.projectId,
-                            versionId: this.versionId
-                        })
-                    ])
-
-                    const variableList = await this.$store.dispatch('variable/getAllVariable', {
-                        projectId: this.projectId,
-                        pageCode: pageDetail.pageCode,
-                        versionId: this.versionId,
-                        effectiveRange: 0
-                    })
-
-                    this.$store.commit('page/setPageDetail', pageDetail || {})
-                    this.$store.commit('functions/setFunctionData', functionData)
-                    syncVariableValue(pageDetail.content, variableList)
+                    this.pageDetailLoading = true
+                    const res = await this.$store.dispatch('page/detail', { pageId: this.flowConfig.pageId })
+                    this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', res)
                 } catch (e) {
                     console.error(e)
                 } finally {
-                    this.pageContextLoading = false
+                    this.pageDetailLoading = false
                 }
+            },
+            // 删除流程提单页
+            async delCreateTicketPage () {
+                return Promise.all([
+                    this.$store.dispatch('page/delete', { pageId: this.createTicketPage.id }),
+                    this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, pageId: 0 })
+                ]).then(() => {
+                    this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0 })
+                    this.$store.commit('nocode/nodeConfig/setCreateTicketPageData', {})
+                })
+            },
+            // 删除节点的表单配置
+            delFormConfig () {
+                this.$store.commit('nocode/flow/delFlowNodeFormId', this.nodeData.id)
+                return Promise.all([
+                    this.$store.dispatch('nocode/flow/editFlow', { id: this.flowConfig.id, formIds: this.flowConfig.formIds, deployed: 0 }),
+                    this.$store.dispatch('nocode/flow/patchNodeData', { id: this.nodeData.id, data: { is_draft: true } }),
+                    this.$store.dispatch('nocode/flow/batchSaveFields', { fields: [], delete_ids: this.nodeData.fields, state_id: this.nodeData.id, })
+                ]).then(() => {
+                    this.$store.commit('nocode/flow/setFlowConfig', { pageId: 0, deployed: 0 })
+                    this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
+                    this.isUnset = true
+                })
             },
             // 新建空白或者引用表单时的初始化配置
             getNewFormConfig () {
@@ -204,7 +186,7 @@
                     heteronym: false
                 }).join('_')
 
-                const formName = `${this.nodeData.name}_表单`
+                const formName = this.$t('{0}_表单', [this.nodeData.name])
                 const code = `${cnName}_${this.nodeData.id}_${uuid(4)}`
                 return {
                     id: '',
@@ -212,57 +194,40 @@
                     formName
                 }
             },
+            // 设置表单的使用类型
             handleSetForm (val) {
                 this.selectedType = val
                 if (val === 'NEW_FORM') {
                     const config = this.getNewFormConfig()
                     this.editFormPanelShow = true
-                    this.updateFormConfig({ ...config, content: [] })
+                    this.updateFormConfig({ ...config, type: 'NEW_FORM', content: [] })
                 } else {
                     this.selectFormDialogShow = true
                 }
             },
-            // 删除流程提单页
-            handleDelCreatePage () {
+            // 单独删除流程提单页
+            handleDelCreateTicketPageClick () {
                 const h = this.$createElement
                 this.$bkInfo({
-                    width: 422,
+                    width: 500,
                     extCls: 'delete-page-dialog',
-                    title: '确认删除？',
-                    subHeader: h('div', {
-                        style: {
-                            'text-align': 'center',
-                            'margin-top': '-10px'
-                        }
-                    }, [
-                        h('span', {
-                            style: {
-                                'color': '#979BA5',
-                                'font-size': '12px'
-                            }
-                        }, `页面：${this.pageDetail.pageName}`),
-                        h('div', {
-                            style: {
-                                'color': '#63656E',
-                                'margin-top': '10px',
-                                'text-align': 'left',
-                                'font-size': '14px'
-                            }
-                        }, [
-                            h('p', {}, '1.删除该流程提单页面，对应的流程数据不会删除'),
-                            h('p', { style: { 'margin-top': '8px' } }, '2.确认该信息后，需“保存”该节点配置方可生效')
-                        ])
-                    ]),
+                    title: this.$t('确认删除流程提单页面？'),
+                    subTitle: this.$t('删除该流程提单页面，对应的流程数据不会删除'),
                     theme: 'danger',
-                    confirmFn: () => {
-                        this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
-                        this.clearContext()
+                    confirmLoading: true,
+                    confirmFn: async() => {
+                        await this.delCreateTicketPage()
+                        return true
                     }
                 })
             },
             // 编辑表单内容
             handleEditClick () {
-                this.editFormPanelShow = true
+                if (this.hasCreatedTicketPage) {
+                    this.handlePageClick()
+                } else {
+                    this.editFormPanelShow = true
+                }
             },
             // 预览表单内容
             handlePreviewClick (content) {
@@ -273,71 +238,38 @@
                 this.previewFormDialogShow = false
                 this.previewFormContent = []
             },
-            // 删除配置的表单
-            // 创建/引用的方式表单配置删除后，清空保存的id、code、type、content
-            handleDelClick () {
+            // 删除节点的表单配置，删除节点和表单的绑定关系，如果是提单节点并且有生成提单页则需要同时删除提单
+            handleDelFormConfigClick () {
+                let tips = this.$t('已生成的关联数据表及表数据将继续保留')
+                if (this.hasCreatedTicketPage) {
+                    tips = this.$t('流程提单页将同步被删除，') + tips
+                }
                 const h = this.$createElement
                 this.$bkInfo({
-                    width: 422,
+                    width: 600,
                     extCls: 'delete-page-dialog',
-                    subHeader: h('div', {}, [
-                        h('span', {
-                            style: {
-                                'color': '#313238',
-                                'font-size': '20px'
-                            }
-                        }, '该删除操作将有以下影响：'),
-                        h('div', {
-                            style: {
-                                'color': '#63656E',
-                                'margin-top': '10px',
-                                'text-align': 'left',
-                                'font-size': '14px'
-                            }
-                        }, [
-                            h('p', { style: { 'margin': '14px 0 0 10px' } }, '1.已生成的流程提单页将同步被删除'),
-                            h('p', { style: { 'margin': '8px 0 0 10px' } }, '2.已生成的关联数据表及表数据将继续保留'),
-                            h('p', { style: { 'margin': '14px 0 0 0' } }, '确认删除吗？')
-                        ])
-                    ]),
+                    title: this.$t('确认删除表单配置？'),
+                    subTitle: tips,
                     theme: 'danger',
-                    confirmFn: () => {
-                        this.isUnset = true
-                        this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
-                        this.$store.commit('nocode/flow/setDeletedPageId', this.pageDetail.id)
-                        this.clearContext()
+                    confirmLoading: true,
+                    confirmFn: async() => {
+                        if (this.nodeData.is_first_state && this.createTicketPage.id) {
+                            await this.delCreateTicketPage()
+                        }
+                        await this.delFormConfig()
+                        return true
                     }
                 })
             },
-            // 选择引用或复用表单
-            handleSelectForm (form) {
-                const { id, content, tableName: code, formName } = form
-                // 引用和复用表单都需要把itsm的字段id清空，保存时重新创建新的字段
-                const contentArr = JSON.parse(content).map(item => {
-                    return { ...item, id: null }
-                })
-                this.isUnset = false
-                this.selectFormDialogShow = false
-                if (this.selectedType === 'COPY_FORM') {
-                    const config = this.getNewFormConfig()
-                    this.updateFormConfig({ ...config, content: contentArr, type: this.selectedType })
-                } else {
-                    this.updateFormConfig({ id, code, formName, content: contentArr, type: this.selectedType })
-                }
-            },
-            // 保存表单配置
-            hanadleSaveFormContent (content) {
-                this.isUnset = false
-                this.updateFormConfig({ content, type: this.selectedType })
-                this.$bkMessage({
-                    message: '保存成功',
-                    theme: 'success'
-                })
-            },
-            // 流程提单页点击
+            // 流程提单页点击跳转
             handlePageClick () {
-                if (this.flowConfig.pageId && !this.delCreateTicketPageId) {
-                    this.editFormPanelShow = true
+                if (this.hasCreatedTicketPage) {
+                    const { projectId, flowId } = this.$route.params
+                    this.$router.push({
+                        name: 'createTicketPageEdit',
+                        params: { projectId, flowId, pageId: this.flowConfig.pageId },
+                        query: { from: 'node' }
+                    })
                 }
             },
             // 关联数据表点击
@@ -347,13 +279,14 @@
                     window.open(route.href, '_blank')
                 }
             },
+            handleBackToNode () {
+                if (this.isUnset) {
+                    this.updateFormConfig({ id: '', type: '', code: '', formName: '', content: [] })
+                }
+                this.editFormPanelShow = false
+            },
             updateFormConfig (data) {
                 this.$store.commit('nocode/nodeConfig/setFormConfig', data)
-            },
-            // 清除page以及layout相关的上下文数据
-            clearContext () {
-                this.$store.commit('page/setPageDetail', {})
-                this.$store.commit('layout/setPageLayout', {})
             },
             validate () {
                 this.isUnset = this.formConfig.type === ''
@@ -454,6 +387,16 @@
                 }
             }
         }
+    }
+    .node-config-fields-panel {
+        position: fixed;
+        /* 全局导航高度 */
+        top: 52px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: #fafbfd;
+        z-index: 3000;
     }
     .error-tips {
         font-size: 12px;

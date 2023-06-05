@@ -2,22 +2,21 @@
     <section>
         <div class="page-menu-header">
             <div class="version-selector">
-                应用当前版本：
+                {{ $t('应用当前版本：') }}
                 <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
             </div>
             <div class="operate-icon">
-                <!-- <i v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play"></i> -->
                 <bk-dropdown-menu v-if="hasMobilePage" :align="'center'" :ext-cls="'preview-dropdown'">
                     <div class="dropdown-trigger-btn" slot="dropdown-trigger">
                         <i class="bk-drag-icon bk-drag-play"></i>
                     </div>
                     <ul class="bk-dropdown-list" slot="dropdown-content">
-                        <li><a href="javascript:;" @click="handlePreviewPcProject">预览PC页面</a></li>
-                        <li><a href="javascript:;" @click="handlePreviewMobileProject">预览移动端页面</a></li>
+                        <li><a href="javascript:;" @click="handlePreviewPcProject">{{ $t('预览PC页面') }}</a></li>
+                        <li><a href="javascript:;" @click="handlePreviewMobileProject">{{ $t('预览移动端页面') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
-                <i v-else v-bk-tooltips="'预览应用'" class="bk-drag-icon bk-drag-play" @click="handlePreviewPcProject"></i>
-                <i v-bk-tooltips="'下载应用源码'" class="bk-drag-icon bk-drag-download" @click="handleShowDownload"></i>
+                <i v-else v-bk-tooltips="$t('预览应用')" class="bk-drag-icon bk-drag-play" @click="handlePreviewPcProject"></i>
+                <i v-bk-tooltips="$t('下载应用源码')" class="bk-drag-icon bk-drag-download" @click="handleShowDownload"></i>
             </div>
         </div>
         <download-dialog ref="downloadDialog"></download-dialog>

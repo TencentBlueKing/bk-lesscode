@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <style-layout title="边距" :icon-show="true" @reset="handleReset">
+    <style-layout :title="$t('边距')" :icon-show="true" @reset="handleReset">
         <i slot="header" class="bk-drag-icon bk-drag-undo-2" @click.stop="handleReset" v-bk-tooltips="{ content: '重置属性值' }"></i>
         <distance-container title="MARGIN" style="height: 140px;">
             <template v-slot:center>

@@ -2,10 +2,12 @@
     <div class="item">
         <div
             class="item-text"
+            v-enStyle="'white-space: nowrap'"
             v-bk-tooltips="{
                 placement: 'bottom',
                 content: item.tips,
-                disabled: !item.tips
+                disabled: !item.tips,
+                hideOnClick: false
             }"
             @click="item.func">
             <i :class="item.icon"></i>

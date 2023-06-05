@@ -1,8 +1,8 @@
 <template>
     <div class="render-list">
         <div class="header">
-            <bk-button theme="primary" @click="handleShowOperation">新建</bk-button>
-            <bk-button style="margin-left: 10px;" :disabled="!data.length" @click="handleExport">导出</bk-button>
+            <bk-button theme="primary" @click="handleShowOperation">{{ $t('新建') }}</bk-button>
+            <bk-button style="margin-left: 10px;" :disabled="!data.length" @click="handleExport">{{ $t('导出') }}</bk-button>
             <div class="header-right">
                 <type-select class="type-select" @select-change="handleSelectChange"></type-select>
             </div>
@@ -18,7 +18,7 @@
                 :pagination="pagination"
                 @page-change="handlePageChange"
                 @page-limit-change="handlePageLimitChange">
-                <bk-table-column label="组件名称" prop="name" align="left" min-width="150" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_组件名称')" prop="name" align="left" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span class="comp-type">
                             <i v-if="row.compType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
@@ -31,8 +31,8 @@
                             src="/static/images/icon/off.svg" />
                     </template>
                 </bk-table-column>
-                <bk-table-column label="组件ID" prop="type" align="left" show-overflow-tooltip />
-                <bk-table-column label="所属分类" prop="category" align="left" show-overflow-tooltip>
+                <bk-table-column :label="$t('组件ID')" prop="type" :render-header="renderHeaderAddTitle" align="left" show-overflow-tooltip />
+                <bk-table-column :label="$t('所属分类')" prop="category" :render-header="renderHeaderAddTitle" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-scope">
                             <span class="scope-name">
@@ -42,7 +42,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="公开范围" prop="scope" align="left" show-overflow-tooltip>
+                <bk-table-column :label="$t('table_公开范围')" prop="scope" :render-header="renderHeaderAddTitle" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-scope" :title="getScopeName(getPublicScope(row.id)[0])">
                             <span class="scope-name">
@@ -52,7 +52,7 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="最新版本" prop="latestVersionId" align="left" width="120">
+                <bk-table-column :label="$t('table_最新版本')" prop="latestVersionId" :render-header="renderHeaderAddTitle" align="left" width="120">
                     <template slot-scope="{ row }">
                         <div class="component-version" @click="handleVersionDetail(row)">
                             <span>{{ row.version }}</span>
@@ -60,13 +60,13 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column label="更新时间" prop="updateTime" align="left" width="160" :formatter="timeFormatter" show-overflow-tooltip />
-                <bk-table-column label="更新人" prop="updateUser" align="left" width="120" show-overflow-tooltip />
-                <bk-table-column label="操作" prop="statusText" align="left" width="200">
+                <bk-table-column :label="$t('table_更新时间')" prop="updateTime" align="left" width="160" :formatter="timeFormatter" show-overflow-tooltip />
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser" align="left" width="120" show-overflow-tooltip />
+                <bk-table-column :label="$t('操作')" prop="statusText" align="left" width="200">
                     <template slot-scope="{ row }">
-                        <bk-button v-if="row.status === 0" text @click="handleUpdate(row)">更新</bk-button>
-                        <bk-button v-if="row.status === 0" text @click="handleOff(row)">下架</bk-button>
-                        <bk-button v-if="row.status === 1" text @click="handleOnline(row)">上架</bk-button>
+                        <bk-button v-if="row.status === 0" text @click="handleUpdate(row)">{{ $t('更新') }}</bk-button>
+                        <bk-button v-if="row.status === 0" text @click="handleOff(row)">{{ $t('下架') }}</bk-button>
+                        <bk-button v-if="row.status === 1" text @click="handleOnline(row)">{{ $t('上架') }}</bk-button>
                     </template>
                 </bk-table-column>
                 <empty-status slot="empty"></empty-status>
@@ -93,7 +93,7 @@
     </div>
 </template>
 <script>
-    import { execCopy } from '@/common/util'
+    import { execCopy, renderHeaderAddTitle } from '@/common/util'
     import Operation from './operation'
     import VersionLog from '@/components/version-log'
     import PublicScope from '../../public-scope'
@@ -205,7 +205,7 @@
                     id: component.id
                 })
                 this.fetchData()
-                this.messageSuccess('操作成功')
+                this.messageSuccess(window.i18n.t('操作成功'))
             },
             async handleOnline (component) {
                 await this.$store.dispatch('components/online', {
@@ -213,7 +213,7 @@
                     id: component.id
                 })
                 this.fetchData()
-                this.messageSuccess('操作成功')
+                this.messageSuccess(window.i18n.t('操作成功'))
             },
             handleCopytnpm (content) {
                 execCopy(content)
@@ -230,11 +230,11 @@
                 // 是否公开给所有应用
                 const isAll = this.publicScope.all.findIndex(item => item.id === compId) !== -1
                 if (isAll) {
-                    scope = ['所有应用', 1]
+                    scope = [window.i18n.t('所有应用'), 1]
                 } else if (this.publicScope.specify[compId]) {
                     scope = [this.publicScope.specify[compId], -1]
                 } else {
-                    scope = ['仅本应用', 0]
+                    scope = [window.i18n.t('仅本应用'), 0]
                 }
                 this.componentScope[compId] = scope
                 return scope
@@ -265,7 +265,8 @@
             handleCategory (category) {
                 this.currentCategoryDate = category
                 this.isShowCategory = true
-            }
+            },
+            renderHeaderAddTitle
         }
     }
 </script>

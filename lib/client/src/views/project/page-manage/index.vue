@@ -11,7 +11,7 @@
                 <div class="search-and-create">
                     <search-box
                         style="width: 100%;margin-right: 6px;"
-                        placeholder="页面名称"
+                        :placeholder="$t('form_页面名称')"
                         input-cls=""
                         :list="renderList"
                         :reset-keyword-on-change-list="false"
@@ -25,7 +25,7 @@
                         class="group-list-empty"
                         type="empty"
                         scene="part">
-                        <span>暂无数据</span>
+                        <span>{{ $t('暂无数据') }}</span>
                     </bk-exception>
                 </template>
                 <template v-else v-for="(pageList, groupName) in routeGroupMap">
@@ -60,10 +60,10 @@
                 >
                 </iframe>
                 <bk-exception v-else class="exception-wrap-item" type="empty">
-                    <span>暂无页面内容</span>
+                    <span>{{ $t('暂无页面内容') }}</span>
                     <div class="exception-desc">
-                        <span class="text">你可以通过编辑页面生成内容，</span>
-                        <span class="link-btn" @click="handleEditPage(currentPage)">立即编辑</span>
+                        <span class="text">{{ $t('你可以通过编辑页面生成内容，') }}</span>
+                        <span class="link-btn" @click="handleEditPage(currentPage)">{{ $t('立即编辑') }}</span>
                     </div>
                 </bk-exception>
             </div>
@@ -88,7 +88,7 @@
     import SelectTab from '@/components/ui/select-tab'
     import GroupBox from '@/components/ui/group'
     import SearchBox from '@/views/index/components/material-panel/components/common/search-box'
-    import { defineComponent, reactive, ref, computed, onBeforeMount } from '@vue/composition-api'
+    import { defineComponent, ref, onBeforeMount } from '@vue/composition-api'
     import usePageOperation from './children/use-page-operation'
     import store from '@/store'
     import router from '@/router'

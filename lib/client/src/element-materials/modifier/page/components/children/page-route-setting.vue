@@ -34,7 +34,7 @@
         },
         data () {
             return {
-                groupName: '路由配置',
+                groupName: window.i18n.t('路由配置'),
                 renderValue: {
                     layoutId: '',
                     pageRoute: ''
@@ -58,7 +58,7 @@
                 return [
                     {
                         id: 'layoutId',
-                        name: '导航布局',
+                        name: window.i18n.t('导航布局'),
                         type: 'select',
                         props: {
                             clearable: false
@@ -69,19 +69,19 @@
                                 type: 'option',
                                 props: {
                                     id: layout.id,
-                                    name: `${layout.defaultName}（路由：${layout.routePath}）`
+                                    name: window.i18n.t('{0}（路由：{1}）', [layout.defaultName, layout.routePath])
                                 }
                             }
                         })
                     },
                     {
                         id: 'pageRoute',
-                        name: '页面路由',
+                        name: window.i18n.t('页面路由'),
                         type: 'select',
                         props: {
                             clearable: false
                         },
-                        placeholder: '未设置',
+                        placeholder: window.i18n.t('未设置'),
                         children: this.routeSelect
                     }
                 ]

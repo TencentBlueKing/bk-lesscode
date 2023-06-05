@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <style-layout title="透明度">
+    <style-layout :title="$t('透明度')">
         <style-item name="opacity">
             <div class="opacity-container" style="width: 100%;">
                 <bk-slider ext-cls="border-radius-slider" :step="0.1" :max-value="1" v-model="opacityValue" @change="handleOpacityChange"></bk-slider>

@@ -1,11 +1,11 @@
 <template>
-    <bk-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
-        <bk-form-item
-            label="所属分类"
+    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
+        <lc-form-item
+            :label="$t('所属分类')"
             property="funcGroupId"
             error-display-type="normal"
             :required="true"
-            :rules="[requireRule('所属分类')]">
+            :rules="[requireRule($t('所属分类'))]">
             <bk-select
                 :value="form.funcGroupId"
                 :popover-options="{ appendTo: 'parent' }"
@@ -21,8 +21,8 @@
                     :name="option.groupName">
                 </bk-option>
             </bk-select>
-        </bk-form-item>
-    </bk-form>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>

@@ -38,7 +38,7 @@
             />
             <select-value
                 class="select-value"
-                placeholder="可用逗号分隔的字符串表示数组"
+                :placeholder="$t('可用逗号分隔的字符串表示数组')"
                 :value="condition.value"
                 :param="condition.param"
                 @change="(val) => handleValueChange(index, val)"

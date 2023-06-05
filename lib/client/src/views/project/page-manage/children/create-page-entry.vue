@@ -9,22 +9,26 @@
             <ul class="bk-dropdown-list select-page-type" slot="dropdown-content">
                 <li>
                     <a href="javascript:;" @click="handleCreate('PC', '')">
-                        <i :style="{ color: NOCODE_TYPE_MAP['color'][''] }" class="bk-drag-icon bk-drag-page" style=""> </i>PC自定义页面
+                        <i :style="{ color: NOCODE_TYPE_MAP['color'][''] }" class="bk-drag-icon bk-drag-page" style=""> </i>
+                        {{ $t('PC自定义页面') }}
                     </a>
                 </li>
                 <li>
                     <a href="javascript:;" @click="handleCreate('PC', 'FORM')">
-                        <i :style="{ color: NOCODE_TYPE_MAP['color']['FORM'] }" class="bk-drag-icon bk-drag-biaodan"> </i>PC表单页面
+                        <i :style="{ color: NOCODE_TYPE_MAP['color']['FORM'] }" class="bk-drag-icon bk-drag-biaodan"> </i>
+                        {{ $t('PC表单页面') }}
                     </a>
                 </li>
                 <li>
                     <a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')">
-                        <i :style="{ color: NOCODE_TYPE_MAP['color']['MARKDOWN'] }" class="bk-drag-icon bk-drag-markdown"> </i>Markdown文档
+                        <i :style="{ color: NOCODE_TYPE_MAP['color']['MARKDOWN'] }" class="bk-drag-icon bk-drag-markdown"> </i>
+                        {{ $t('Markdown文档') }}
                     </a>
                 </li>
                 <li>
                     <a href="javascript:;" @click="handleCreate('MOBILE', '')">
-                        <i :style="{ color: NOCODE_TYPE_MAP['color'][''] }" class="bk-drag-icon bk-drag-mobilephone"> </i>Mobile自定义页面
+                        <i :style="{ color: NOCODE_TYPE_MAP['color'][''] }" class="bk-drag-icon bk-drag-mobilephone"> </i>
+                        {{ $t('Mobile自定义页面') }}
                     </a>
                 </li>
             </ul>
@@ -68,6 +72,9 @@
         /deep/ .bk-dropdown-trigger .trigger-content {
             background: #EAEBF0;
             color: #63656E;
+            &:hover {
+                background: #F0F1F5;
+            }
         }
     }
     

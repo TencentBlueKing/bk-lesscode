@@ -11,14 +11,14 @@
 
 <template>
     <section>
-        <style-layout title="自定义样式">
-            <style-item name="自定义样式">
+        <style-layout :title="$t('自定义样式')">
+            <style-item :name="$t('form_自定义样式')">
                 <div style="width: 200px; text-align: right">
                     <bk-button
                         theme="primary"
                         size="small"
                         @click="showEditStyle(true)">
-                        CSS编辑
+                        {{ $t('CSS编辑') }}
                     </bk-button>
                 </div>
             </style-item>
@@ -36,8 +36,7 @@
             class="custom-style">
             <div class="custom-style-container">
                 <div class="container-tips">
-                    请在{}内编写该组件的自定义样式，样式优先级：自定义样式 > 样式面板设置 > 组件默认样式
-                </div>
+                    {{ $t('请在{}内编写该组件的自定义样式，样式优先级：自定义样式 > 样式面板设置 > 组件默认样式') }} </div>
                 <monaco
                     :value.sync="styleValue"
                     height="400px"
@@ -48,14 +47,13 @@
                 <div class="container-footer">
                     <div class="footer-wrapper">
                         <bk-button
+                            class="g-mr8"
                             theme="primary"
                             style="margin-right: 8px"
                             @click.native="confirm">
-                            保存
-                        </bk-button>
+                            {{ $t('保存') }} </bk-button>
                         <bk-button @click="showEditStyle(false)">
-                            取消
-                        </bk-button>
+                            {{ $t('取消') }} </bk-button>
                     </div>
                 </div>
             </div>
@@ -133,7 +131,7 @@
                     if (lSplit.length !== 2 || rSplit.length !== 2) {
                         this.$bkMessage({
                             theme: 'error',
-                            message: '请输入语法正确的css样式'
+                            message: window.i18n.t('请输入语法正确的css样式')
                         })
                         return {}
                     }
@@ -152,7 +150,7 @@
                 } catch (error) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '请输入语法正确的css样式'
+                        message: this.$t('请输入语法正确的css样式')
                     })
                     return {}
                 }

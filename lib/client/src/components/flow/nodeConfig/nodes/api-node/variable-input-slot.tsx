@@ -11,7 +11,7 @@ export default (row, handleUpdate) => {
             </bk-checkbox>
             <bk-input
                 class="variable-input"
-                placeholder="请输入变量名称"
+                placeholder={window.i18n.t('请输入变量名称')}
                 disabled={row.disabled || !row.hooked}
                 value={row.code}
                 onBlur={(val) => handleUpdate(row, 'code', val)}>

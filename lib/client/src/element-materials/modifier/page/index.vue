@@ -26,11 +26,11 @@
             const typeList = [
                 {
                     id: 'pageSetting',
-                    name: '页面配置'
+                    name: window.i18n.t('页面配置')
                 },
                 {
                     id: 'pageFunc',
-                    name: '页面函数'
+                    name: window.i18n.t('页面函数')
                 }
             ]
             const activeType = ref('pageSetting')

@@ -31,7 +31,7 @@
                 const list = [
                     {
                         key: 'edit',
-                        label: ['FLOW_MANAGE', 'FORM_MANAGE'].includes(this.pageDetail.nocodeType) ? '数据管理设计' : (this.pageDetail.nocodeType === 'FORM' ? '表单设计' : '画布'),
+                        label: ['FLOW_MANAGE', 'FORM_MANAGE'].includes(this.pageDetail.nocodeType) ? window.i18n.t('数据管理设计') : (this.pageDetail.nocodeType === 'FORM' ? window.i18n.t('表单设计') : window.i18n.t('画布')),
                         icon: 'bk-drag-huabu'
                     }
                 ]
@@ -45,14 +45,14 @@
                 if (!this.hideFunc) {
                     list.push({
                         key: 'pageFunction',
-                        label: '页面函数',
+                        label: window.i18n.t('页面函数'),
                         icon: 'bk-drag-yemianhanshu'
                     })
                 }
                 if (!this.hideSetting) {
                     list.push({
                         key: 'setting',
-                        label: '页面设置',
+                        label: window.i18n.t('页面设置'),
                         icon: 'bk-drag-set'
                     })
                 }

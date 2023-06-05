@@ -5,7 +5,7 @@
             <bk-input
                 clearable
                 ext-cls="form-search-input"
-                :placeholder="'组件名称'"
+                :placeholder="$t('请输入组件名称搜索')"
                 :right-icon="'bk-icon icon-search'"
                 v-model.trim="searchValue"
                 @change="handleSearch"
@@ -44,7 +44,7 @@
                     }"
                     class="outside-ul">
                     <li class="search-dropdown-list-item">
-                        <span class="text">没有找到</span>
+                        <span class="text">{{ $t('没有找到') }}</span>
                     </li>
                 </ul>
             </div>
@@ -81,10 +81,10 @@
                         <li
                             v-for="field in group.items"
                             v-bk-tooltips="{
-                                disabled: pageType !== 'FLOW' || !layoutGroup.includes(field.type),
-                                content: '流程表单暂不支持布局类型控件'
+                                disabled: !isFieldDisable(field.type),
+                                content: $t('流程表单暂不支持布局类型控件')
                             }"
-                            :class="['field-item drag-entry', { 'not-available': pageType === 'FLOW' && layoutGroup.includes(field.type) }]"
+                            :class="['field-item drag-entry', { 'not-available': isFieldDisable(field.type) }]"
                             :data-type="field.type"
                             :key="field.type">
                             <i :class="['comp-icon',field.icon]"></i> <span>{{ field.name }}</span>
@@ -98,10 +98,12 @@
 
 <script>
     import draggable from 'vuedraggable'
-    import { FIELDS_TYPES } from '@/components/flow-form-comp/form/constants/forms'
+    import { FIELDS_TYPES } from 'shared/no-code/constant'
     import _ from 'lodash'
     const LAYOUT_GROUP = ['DESC', 'DIVIDER']
-    const ASVANCED_CONTROLS = ['COMPUTE', 'SERIAL']
+    const ADVANCED_GROUP = ['COMPUTE', 'SERIAL']
+    const ALL_FIELDS = FIELDS_TYPES()
+
     export default {
         components: {
             draggable
@@ -112,7 +114,7 @@
         },
         data () {
             return {
-                list: this.getGroupedFields(FIELDS_TYPES),
+                list: this.getGroupedFields(ALL_FIELDS),
                 searchValue: '',
                 isShowList: '',
                 selectedIndex: 0,
@@ -125,17 +127,17 @@
             getGroupedFields (fieldsArr) {
                 const group = [
                     {
-                        name: '布局控件',
+                        name: this.$t('布局控件'),
                         items: [],
                         isFolded: false
                     },
                     {
-                        name: '基础控件',
+                        name: this.$t('基础控件'),
                         items: [],
                         isFolded: false
                     },
                     {
-                        name: '高级控件',
+                        name: this.$t('高级控件'),
                         items: [],
                         isFolded: false
                     }
@@ -143,13 +145,16 @@
                 fieldsArr.forEach(item => {
                     if (LAYOUT_GROUP.includes(item.type)) {
                         group[0].items.push(item)
-                    } else if (ASVANCED_CONTROLS.includes(item.type)) {
+                    } else if (ADVANCED_GROUP.includes(item.type)) {
                         group[2].items.push(item)
                     } else {
                         group[1].items.push(item)
                     }
                 })
                 return group
+            },
+            isFieldDisable (type) {
+                return this.pageType === 'FLOW' && [...LAYOUT_GROUP, ...ADVANCED_GROUP, 'RATE'].includes(type)
             },
             handleMove () {
                 this.$emit('move')
@@ -168,11 +173,11 @@
                 this.filterRenderList()
             }, 300),
             filterRenderList () {
-                this.renderList = FIELDS_TYPES.filter(item => item.name.includes(this.searchValue))
+                this.renderList = ALL_FIELDS.filter(item => item.name.includes(this.searchValue))
                 this.isShowList = true
             },
             handleResetField () {
-                this.list = this.getGroupedFields(FIELDS_TYPES)
+                this.list = this.getGroupedFields(ALL_FIELDS)
                 this.isShowList = true
                 this.handleHideDropList()
             },
@@ -241,12 +246,12 @@
                 this.searchValue = data.name
                 const group = [
                     {
-                        name: '布局控件',
+                        name: this.$t('布局控件'),
                         items: [],
                         isFolded: false
                     },
                     {
-                        name: '基础控件',
+                        name: this.$t('基础控件'),
                         items: [],
                         isFolded: false
                     }

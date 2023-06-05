@@ -4,13 +4,14 @@
             class="row-box"
             v-for="(relation, index) in rule.relations"
             :key="`${relation.field}_${relation.type}_${index}`">
-            <span>当表单中</span>
+            <span>{{ $t('当表单中') }}</span>
             <bk-select
                 v-model="relation.field"
-                style="width: 350px;"
+                style="width: 300px;"
                 size="small"
-                placeholder="表单字段"
+                :placeholder="$t('表单字段')"
                 :loading="!isCurrentTable && formListLoading"
+                :disabled="disabled"
                 @change="ruleChange">
                 <bk-option
                     v-for="item in relFieldList"
@@ -19,14 +20,14 @@
                     :name="item.name">
                 </bk-option>
             </bk-select>
-            <span>的值处于</span>
+            <span>{{ $t('的值处于') }}</span>
         </div>
         <div class="interval-row" v-for="(item,intervalIndex) in rule.intervals " :key="intervalIndex">
-            <bk-input v-model="item.min" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
+            <bk-input v-model="item.min" :disabled="disabled" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
             ~
-            <bk-input v-model="item.max" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
-            <span>区间值为</span>
-            <bk-rate :rate="item.value" :edit="false"></bk-rate>
+            <bk-input v-model="item.max" :disabled="disabled" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
+            <span>{{ $t('区间值为')}}</span>
+            <bk-rate :rate="item.value" :disabled="disabled" :edit="false"></bk-rate>
         </div>
     </div>
 </template>
@@ -47,7 +48,8 @@
             relFieldList: {
                 type: Array,
                 default: () => []
-            }
+            },
+            disabled: Boolean
         },
         data () {
             return {

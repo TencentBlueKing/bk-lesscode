@@ -69,7 +69,6 @@
                 font-size: 24px;
                 color: #63656E;
                 transition: all .1s linear;
-                margin-right: 8px;
                 &.floded {
                     transform: rotate(-90deg);
                 }
@@ -78,7 +77,7 @@
                 display: block;
                 position: absolute;
                 top: 0;
-                left: 28px;
+                left: 24px;
                 line-height: 32px;
             }
         }

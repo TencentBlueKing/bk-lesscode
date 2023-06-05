@@ -42,6 +42,7 @@ module.exports = {
     },
     // add your custom rules hered
     rules: {
+        'standard/no-callback-literal': 0,
         '@typescript-eslint/adjacent-overload-signatures': 'error',
         /**
          * 类的只读属性若是一个字面量，则必须使用只读属性而不是 getter

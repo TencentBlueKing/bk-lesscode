@@ -10,7 +10,7 @@
             @delete="handleDelete">
             <bk-button v-bind="getProperties(button)" text>{{ button.name }}</bk-button>
         </comp-box>
-        <i v-bk-tooltips="'添加操作'" class="bk-icon icon-plus add-btn" @click.stop="handleAdd"></i>
+        <i v-bk-tooltips="$t('添加操作')" class="bk-icon icon-plus add-btn" @click.stop="handleAdd"></i>
     </section>
 </template>
 <script>
@@ -46,7 +46,7 @@
                 const buttons = this.buttons.slice(0)
                 buttons.push({
                     id: `Button-${uuid(8)}`,
-                    name: '操作',
+                    name: this.$t('操作'),
                     props: {},
                     events: { click: { enable: false, name: '' } },
                     perms: []

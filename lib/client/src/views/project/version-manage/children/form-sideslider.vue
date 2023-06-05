@@ -1,38 +1,39 @@
 <template>
-    <bk-sideslider
+    <lc-sideslider
         transfer
         class="version-sideslider"
         :is-show.sync="show"
         :width="796"
-        :title="isEdit ? '编辑版本' : '新建版本'">
+        :title="isEdit ? $t('编辑版本') : $t('新建版本')">
         <div slot="content" class="form-content">
-            <bk-alert class="alert-info" type="info" title="基于“默认”版本内容新建" v-if="!isEdit"></bk-alert>
-            <bk-form :label-width="90" :model="formData" :rules="rules" ref="form">
-                <bk-form-item label="应用版本" :required="true" property="version" error-display-type="normal">
+            <bk-alert class="alert-info" type="info" :title="$t('基于“默认”版本内容新建')" v-if="!isEdit"></bk-alert>
+            <lc-form :label-width="$store.state.Language === 'en' ? 120 : 90" :model="formData" :rules="rules" ref="form">
+                <lc-form-item :label="$t('form_应用版本')" :required="true" property="version" error-display-type="normal">
                     <bk-input
-                        placeholder="请输入版本号，仅支持英文、数字、下划线、中划线和英文句号"
+                        :placeholder="$t('请输入版本号，仅支持英文、数字、下划线、中划线和英文句号')"
                         maxlength="30"
                         :disabled="isEdit"
                         v-model="formData.version">
                     </bk-input>
-                </bk-form-item>
-                <bk-form-item label="版本日志" :required="true" property="versionLog" error-display-type="normal" ref="versionLog">
+                </lc-form-item>
+                <lc-form-item :label="$t('form_版本日志')" :required="true" property="versionLog" error-display-type="normal" ref="versionLog">
                     <mavon-editor
                         :external-link="false"
                         v-model="formData.versionLog"
                         default-open="edit"
                         :placeholder="versionLogPlaceholder" />
-                </bk-form-item>
-            </bk-form>
+                </lc-form-item>
+            </lc-form>
             <div class="form-footer">
-                <bk-button theme="primary" class="confirm-button" @click="handleConfirm" :loading="submitting">确定</bk-button>
-                <bk-button @click="handleCancel" :disabled="submitting">取消</bk-button>
+                <bk-button theme="primary" class="confirm-button" @click="handleConfirm" :loading="submitting">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleCancel" :disabled="submitting">{{ $t('取消') }}</bk-button>
             </div>
         </div>
-    </bk-sideslider>
+    </lc-sideslider>
 </template>
 
 <script>
+    import { leaveConfirm } from '@/common/leave-confirm'
     const generatorData = () => ({
         version: '',
         versionLog: ''
@@ -83,20 +84,20 @@
             }
         },
         created () {
-            this.versionLogPlaceholder = 'eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n'
+            this.versionLogPlaceholder = window.i18n.t('eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n')
             this.rules = {
                 version: [
-                    { required: true, message: '应用版本不能为空', trigger: 'blur' },
+                    { required: true, message: window.i18n.t('应用版本不能为空'), trigger: 'blur' },
                     {
                         validator: value => {
                             return /^[\w-\.]{1,40}$/.test(value)
                         },
-                        message: '仅支持英文、数字、下划线、中划线和英文句号',
+                        message: window.i18n.t('仅支持英文、数字、下划线、中划线和英文句号'),
                         trigger: 'blur'
                     }
                 ],
                 versionLog: [
-                    { required: true, message: '版本日志不能为空', trigger: 'blur' }
+                    { required: true, message: window.i18n.t('版本日志不能为空'), trigger: 'blur' }
                 ]
             }
         },
@@ -104,8 +105,11 @@
             async handleConfirm () {
                 try {
                     await this.$refs.form.validate()
-                } catch {
-                    return
+                } catch (validator) {
+                    return this.$bkMessage({
+                        message: validator.content || this.$t('数据校验不通过，请修改后重试'),
+                        theme: 'error'
+                    })
                 }
 
                 this.submitting = true
@@ -117,16 +121,17 @@
                             id: this.data.id,
                             projectId: this.projectId
                         })
-                        this.messageSuccess('版本编辑成功')
+                        this.messageSuccess(window.i18n.t('版本编辑成功'))
                     } else {
                         await this.$store.dispatch('projectVersion/create', {
                             ...this.formData,
                             projectId: this.projectId
                         })
-                        this.messageSuccess('版本创建成功')
+                        this.messageSuccess(window.i18n.t('版本创建成功'))
                     }
+                    window.leaveConfirm = false
                     this.$emit('updated')
-                    this.handleCancel()
+                    this.$emit('update:isShow', false)
                 } catch (error) {
                     console.error(error)
                 } finally {
@@ -134,8 +139,11 @@
                 }
             },
             handleCancel () {
-                this.formData = generatorData()
-                this.$emit('update:isShow', false)
+                leaveConfirm(window.i18n.t('存在未保存的版本，关闭后不会保存更改'))
+                    .then(() => {
+                        this.formData = generatorData()
+                        this.$emit('update:isShow', false)
+                    })
             }
         }
     }

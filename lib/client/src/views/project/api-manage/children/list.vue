@@ -3,12 +3,12 @@
         <section class="api-main">
             <h3 class="api-head">
                 <section>
-                    <bk-button theme="primary" @click="handleCreateApi">新建</bk-button>
+                    <bk-button theme="primary" @click="handleCreateApi">{{ $t('新建') }}</bk-button>
                 </section>
 
                 <bk-input
                     class="head-input"
-                    placeholder="请输入"
+                    :placeholder="$t('请输入')"
                     right-icon="bk-icon icon-search"
                     clearable
                     v-model="searchApiStr"
@@ -26,7 +26,8 @@
             >
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'name')"
-                    label="名称"
+                    :label="$t('名称')"
+                    :render-header="renderHeaderAddTitle"
                     prop="name"
                     show-overflow-tooltip
                     sortable
@@ -37,7 +38,7 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'code')"
-                    label="标识"
+                    :label="$t('标识')"
                     prop="code"
                     show-overflow-tooltip
                     sortable
@@ -48,7 +49,8 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'categoryName')"
-                    label="所属分类"
+                    :label="$t('所属分类')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="100px"
                     show-overflow-tooltip
                     sortable
@@ -57,7 +59,8 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'method')"
-                    label="方法"
+                    :label="$t('方法')"
+                    :render-header="renderHeaderAddTitle"
                     prop="method"
                     show-overflow-tooltip
                     sortable
@@ -68,7 +71,7 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'url')"
-                    label="路径"
+                    :label="$t('路径')"
                     prop="url"
                     show-overflow-tooltip
                     sortable
@@ -79,31 +82,31 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'query')"
-                    label="默认请求参数"
+                    :label="$t('table_默认请求参数')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="110px"
                     show-overflow-tooltip
                 >
                     <template slot-scope="props">
                         <bk-button :text="true" title="primary" @click="showParamModel(props.row)">
-                            查看
-                        </bk-button>
+                            {{ $t('查看') }} </bk-button>
                     </template>
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'response')"
-                    label="请求响应示例"
+                    :label="$t('table_请求响应示例')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="110px"
                     show-overflow-tooltip
                 >
                     <template slot-scope="props">
                         <bk-button :text="true" title="primary" @click="showResponseModel(props.row)">
-                            查看
-                        </bk-button>
+                            {{ $t('查看') }} </bk-button>
                     </template>
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'useInfo')"
-                    label="引用"
+                    :label="$t('引用')"
                     show-overflow-tooltip
                 >
                     <template slot-scope="props">
@@ -120,7 +123,8 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'funcSummary')"
-                    label="备注"
+                    :label="$t('备注')"
+                    :render-header="renderHeaderAddTitle"
                     prop="funcSummary"
                     show-overflow-tooltip
                     sortable
@@ -131,7 +135,8 @@
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateUser')"
-                    label="更新人"
+                    :label="$t('更新人')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="90px"
                     prop="updateUser"
                     sortable
@@ -139,7 +144,8 @@
                 ></bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateTime')"
-                    label="更新时间"
+                    :label="$t('table_更新时间')"
+                    :render-header="renderHeaderAddTitle"
                     min-width="100px"
                     prop="updateTime"
                     :formatter="timeFormatter"
@@ -147,15 +153,15 @@
                     sortable
                 ></bk-table-column>
                 <bk-table-column
-                    label="操作"
-                    width="200"
+                    :label="$t('操作')"
+                    :width="$store.state.Language === 'en' ? 270 : 200"
                     fixed="right"
                 >
                     <template slot-scope="props">
-                        <span class="table-btn" @click="handleEditApi(props.row)">编辑</span>
-                        <span class="table-btn" @click="handleCopyApi(props.row)">复制</span>
-                        <span class="table-btn" @click="handleCreateFunction(props.row)">生成函数</span>
-                        <span class="table-btn" @click="handleDeleteApi(props.row)">删除</span>
+                        <span class="table-btn" @click="handleEditApi(props.row)">{{ $t('编辑') }}</span>
+                        <span class="table-btn" @click="handleCopyApi(props.row)">{{ $t('复制') }}</span>
+                        <span class="table-btn" @click="handleCreateFunction(props.row)">{{ $t('生成函数') }}</span>
+                        <span class="table-btn" @click="handleDeleteApi(props.row)">{{ $t('删除') }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column
@@ -183,7 +189,7 @@
         />
 
         <edit-func-sideslider
-            title="添加函数"
+            :title="$t('添加函数')"
             :is-show="editFuncObj.isShow"
             :is-edit="false"
             :func-data="editFuncObj.funcData"
@@ -195,7 +201,7 @@
             render-directive="if"
             theme="primary"
             ext-cls="delete-dialog-wrapper"
-            title="确定删除？"
+            :title="$t('确定删除？')"
             width="400"
             footer-position="center"
             :mask-close="false"
@@ -206,8 +212,8 @@
                 <bk-button
                     theme="danger"
                     :loading="delObj.loading"
-                    @click="requestDelete">删除</bk-button>
-                <bk-button @click="delObj.show = false" :disabled="delObj.loading">取消</bk-button>
+                    @click="requestDelete">{{ $t('删除') }}</bk-button>
+                <bk-button @click="delObj.show = false" :disabled="delObj.loading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
 
@@ -243,19 +249,20 @@
         FUNCTION_TYPE,
         FUNCTION_TIPS
     } from 'shared/function'
+    import { renderHeaderAddTitle } from '@/common/util'
 
     const tableFields = [
-        { id: 'name', label: '名称', disabled: true },
-        { id: 'code', label: '标识' },
-        { id: 'categoryName', label: '所属分类' },
-        { id: 'method', label: '方法' },
-        { id: 'url', label: '路径' },
-        { id: 'query', label: '默认请求参数' },
-        { id: 'response', label: '请求响应示例' },
-        { id: 'useInfo', label: '引用' },
-        { id: 'funcSummary', label: '备注' },
-        { id: 'updateUser', label: '更新人' },
-        { id: 'updateTime', label: '更新时间' },
+        { id: 'name', label: window.i18n.t('名称'), disabled: true },
+        { id: 'code', label: window.i18n.t('标识') },
+        { id: 'categoryName', label: window.i18n.t('所属分类') },
+        { id: 'method', label: window.i18n.t('方法') },
+        { id: 'url', label: window.i18n.t('路径') },
+        { id: 'query', label: window.i18n.t('默认请求参数') },
+        { id: 'response', label: window.i18n.t('请求响应示例') },
+        { id: 'useInfo', label: window.i18n.t('引用') },
+        { id: 'funcSummary', label: window.i18n.t('备注') },
+        { id: 'updateUser', label: window.i18n.t('更新人') },
+        { id: 'updateTime', label: window.i18n.t('更新时间') }
     ]
 
     export default {
@@ -362,7 +369,7 @@
                 this.editFuncObj.funcData = getDefaultFunction({
                     projectId: this.projectId,
                     funcType: FUNCTION_TYPE.REMOTE,
-                    funcBody: FUNCTION_TIPS[FUNCTION_TYPE.REMOTE] + 'return res\n',
+                    funcBody: FUNCTION_TIPS()[FUNCTION_TYPE.REMOTE] + 'return res\n',
                     funcApiUrl: row.url,
                     funcMethod: row.method,
                     apiQuery: row.query.map(parseScheme2UseScheme),
@@ -378,7 +385,7 @@
             handleCreateApi () {
                 this.apiData.isShow = true
                 this.apiData.isEdit = false
-                this.apiData.title = '新增 API'
+                this.apiData.title = window.i18n.t('新增 API')
                 this.apiData.form = {
                     categoryId: this.categoryId,
                     projectId: this.projectId
@@ -388,7 +395,7 @@
             handleEditApi (row) {
                 this.apiData.isShow = true
                 this.apiData.isEdit = true
-                this.apiData.title = '编辑 API'
+                this.apiData.title = window.i18n.t('编辑 API')
                 this.apiData.form = row
             },
 
@@ -400,7 +407,7 @@
             handleCopyApi (row) {
                 this.apiData.isShow = true
                 this.apiData.isEdit = false
-                this.apiData.title = '复制 API'
+                this.apiData.title = window.i18n.t('复制 API')
                 const date = new Date()
                 let name = row.name
                 const apiList = this.apiList
@@ -432,7 +439,7 @@
 
                 this.delObj.show = true
                 this.delObj.id = row.id
-                this.delObj.nameTips = `删除 API【${row.name}】`
+                this.delObj.nameTips = window.i18n.t('删除 API【{0}】', [row.name])
             },
 
             requestDelete () {
@@ -440,7 +447,7 @@
                 this.deleteApi(this.delObj.id).then(() => {
                     this.delObj.show = false
                     this.freshList()
-                    this.messageSuccess('删除成功')
+                    this.messageSuccess(window.i18n.t('删除成功'))
                 }).finally(() => {
                     this.delObj.loading = false
                 })
@@ -453,27 +460,27 @@
             getUseInfoTips ({ funcCodes }) {
                 const tips = []
                 funcCodes?.forEach((funcCode) => {
-                    tips.push(`函数标识【${funcCode}】`)
+                    tips.push(window.i18n.t('函数标识【{0}】', [funcCode]))
                 })
                 return tips
             },
 
             getDeleteStatus (row) {
                 let tip = ''
-                if (row.useInfo?.funcCodes?.length > 0) tip = '该 API 被函数引用，无法删除'
+                if (row.useInfo?.funcCodes?.length > 0) tip = window.i18n.t('该 API 被函数引用，无法删除')
                 return tip
             },
 
             showParamModel (row) {
                 if (METHODS_WITHOUT_DATA.includes(row.method)) {
-                    this.showModel(parseQueryScheme2QueryString(row.query), '默认请求参数（query）')
+                    this.showModel(parseQueryScheme2QueryString(row.query), window.i18n.t('默认请求参数（query）'))
                 } else {
-                    this.showModel(parseScheme2Value(row.body), '默认请求参数（body）')
+                    this.showModel(parseScheme2Value(row.body), window.i18n.t('默认请求参数（body）'))
                 }
             },
 
             showResponseModel (row) {
-                this.showModel(parseScheme2Value(row.response), '请求响应示例')
+                this.showModel(parseScheme2Value(row.response), window.i18n.t('请求响应示例'))
             },
 
             showModel (jsonValue, title) {
@@ -493,7 +500,9 @@
 
             handlerClearSearch (searchEmpty) {
                 this.searchApiStr = searchEmpty
-            }
+            },
+
+            renderHeaderAddTitle
         }
     }
 </script>
@@ -531,6 +540,9 @@
             /deep/ .bk-table-body-wrapper {
                 height: calc(100% - 43px);
                 overflow-y: auto;
+            }
+            /deep/ .bk-table-fixed-right {
+                border-bottom: none
             }
             th.is-leaf {
                 border: none;

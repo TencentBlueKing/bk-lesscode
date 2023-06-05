@@ -1,6 +1,6 @@
 <template>
     <section>
-        <span class="g-prop-sub-title g-mb8">数据表</span>
+        <span class="g-prop-sub-title g-mb8">{{ $t('数据表') }}</span>
         <choose-data-table
             :value="chooseTableName"
             :data-source-type="dataSourceType"
@@ -88,8 +88,8 @@
 
             return {
                 chooseTableName,
-                handleFetchData,
                 dataSourceType,
+                handleFetchData,
                 chooseTable,
                 clearTable
             }

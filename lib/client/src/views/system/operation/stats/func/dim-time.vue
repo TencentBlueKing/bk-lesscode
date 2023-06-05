@@ -4,7 +4,7 @@
             <bk-date-picker class="filter-item"
                 v-model="filters.dateRange"
                 type="daterange"
-                placeholder="选择时间范围"
+                :placeholder="$t('选择时间范围')"
                 :clearable="false"
                 :use-shortcut-text="true"
                 :shortcut-selected-index="dateShortcutSelectedIndex"
@@ -13,9 +13,9 @@
                 @shortcut-change="handleDateShortcutChange">
             </bk-date-picker>
             <bk-radio-group class="filter-item" v-model="filters.dateType" @change="handleTimeTypeChange">
-                <bk-radio-button value="YEAR">按年</bk-radio-button>
-                <bk-radio-button value="MONTH">按月</bk-radio-button>
-                <bk-radio-button value="DAY">按天</bk-radio-button>
+                <bk-radio-button value="YEAR">{{ $t('按年') }}</bk-radio-button>
+                <bk-radio-button value="MONTH">{{ $t('按月') }}</bk-radio-button>
+                <bk-radio-button value="DAY">{{ $t('按天') }}</bk-radio-button>
             </bk-radio-group>
             <export-button name="func" dim="time" :list="exportList" :fields="exportFields" />
         </div>
@@ -48,7 +48,7 @@
                     </template>
                 </bk-table-column>
                 <div class="append-tips" slot="append">
-                    <i>* 不包含内置和已删除数据，同一页面使用同一函数多次被记作1次</i>
+                    <i>* {{ $t('不包含内置和已删除数据，同一页面使用同一函数多次被记作1次') }}</i>
                 </div>
             </bk-table>
         </div>
@@ -73,7 +73,7 @@
             return {
                 chart: {
                     base: {
-                        title: '按时间新增函数量',
+                        title: window.i18n.t('按时间新增函数量'),
                         inst: null,
                         data: []
                     }
@@ -96,12 +96,12 @@
                     }
                 },
                 exportFields: [
-                    { id: 'time', name: '时间' },
-                    { id: 'count', name: '数量' }
+                    { id: 'time', name: window.i18n.t('时间') },
+                    { id: 'count', name: window.i18n.t('数量') }
                 ],
                 totalColumns: [
-                    { id: 'func', name: '函数总数' },
-                    { id: 'pageUsed', name: '被页面使用的函数总数' }
+                    { id: 'func', name: window.i18n.t('函数总数') },
+                    { id: 'pageUsed', name: window.i18n.t('被页面使用的函数总数') }
                 ]
             }
         },
@@ -121,7 +121,7 @@
                 return [
                     ...charts,
                     {
-                        title: '汇总',
+                        title: window.i18n.t('汇总'),
                         data: this.total,
                         fields: this.totalColumns
                     }

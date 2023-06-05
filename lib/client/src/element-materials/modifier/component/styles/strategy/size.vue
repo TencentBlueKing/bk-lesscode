@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <style-layout title="尺寸">
+    <style-layout :title="$t('尺寸')">
         <div class="size-container">
             <template v-for="item in sizeConfigRender">
                 <size-input
@@ -39,32 +39,32 @@
 
     const sizeConfig = [
         {
-            name: '宽度',
+            name: window.i18n.t('宽度'),
             key: 'width',
-            font: '宽'
+            icon: 'bk-drag-kuandu'
         },
         {
-            name: '高度',
+            name: window.i18n.t('高度'),
             key: 'height',
-            font: '高'
+            icon: 'bk-drag-gaodu'
         },
         {
-            name: '最小宽度',
+            name: window.i18n.t('最小宽度'),
             key: 'minWidth',
             icon: 'bk-drag-zuixiaokuandu'
         },
         {
-            name: '最小高度',
+            name: window.i18n.t('最小高度'),
             key: 'minHeight',
             icon: 'bk-drag-zuixiaogaodu'
         },
         {
-            name: '最大宽度',
+            name: window.i18n.t('最大宽度'),
             key: 'maxWidth',
             icon: 'bk-drag-zuidakuandu'
         },
         {
-            name: '最大高度',
+            name: window.i18n.t('最大高度'),
             key: 'maxHeight',
             icon: 'bk-drag-zuidagaodu'
         },

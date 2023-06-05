@@ -27,7 +27,7 @@
                 </span>
             </div>
         </div>
-        <p class="modifier-input-error-text" v-if="isError">{{describe.regErrorText || '格式错误，请重新输入'}}</p>
+        <p class="modifier-input-error-text" v-if="isError">{{$t(describe.regErrorText) || $t('格式错误，请重新输入')}}</p>
     </div>
 </template>
 

@@ -3,7 +3,7 @@
         <div class="header" v-if="!isComplexSide">{{ templateData.showName }}</div>
         <div class="main" :class="{ 'is-complex-side': isComplexSide }">
             <editor-prop
-                v-if="!isComplexSide && !isMobileLayout "
+                v-if="!isComplexSide && !isMobileLayout && !isVue3"
                 v-bind="templateData"
                 @on-change="handleChange" />
             <div ref="container" :class="{ 'container': true, 'is-complex': isComplexSide }">
@@ -24,6 +24,7 @@
     import RenderComplexTop from './complex-top'
     import RenderComplexSide from './complex-side'
     import RenderMobileBottomMenu from './mobile-tab-bar'
+    import store from '@/store'
 
     const panelComMap = {
         info: RenderInfo,
@@ -57,6 +58,9 @@
             },
             isMobileLayout () {
                 return this.templateData.panelActive === 'mobileBottomMenu'
+            },
+            isVue3 () {
+                return store.getters['project/currentProject']?.framework === 'vue3'
             }
         },
         methods: {

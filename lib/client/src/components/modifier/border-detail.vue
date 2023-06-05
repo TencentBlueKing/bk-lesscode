@@ -25,7 +25,7 @@
             </div> -->
             <div class="size-item" style="width: 180px;">
                 <div class="input-prefix" style="width: 44px;">
-                    <span>样式</span>
+                    <span>{{ $t('样式') }}</span>
                 </div>
                 <bk-select :value="borderStyle" style="width: 100%;" class="style-icon-select" @change="changeBorderStyle">
                     <div slot="trigger">
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="width-container details-box">
-            <icon-size-input style="width: 180px" :value="borderWidth" @change="$emit('borderWidthChange', $event)" :item="{ font: '宽度', prefixWidth: '44px' }" />
+            <icon-size-input style="width: 180px" :value="borderWidth" @change="$emit('borderWidthChange', $event)" :item="{ font: $t('宽度'), prefixWidth: '44px' }" />
         </div>
         <div class="color-container details-box">
             <bk-color-picker style="width: 100%;" :value="borderColor" @change="$emit('borderColorChange', $event)"></bk-color-picker>

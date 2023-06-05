@@ -10,7 +10,7 @@
             <span
                 slot="title"
                 class="sql-title"
-            >SQL 编辑器（仅支持 SELECT 查询语句）</span>
+            >{{ $t('SQL 编辑器（仅支持 SELECT 查询语句）') }}</span>
         </monaco>
         <section class="db-tree">
             <bk-big-tree
@@ -38,7 +38,7 @@
                     </span>
                     <i
                         v-if="data.isTable"
-                        v-bk-tooltips="{ content: '点击生成查询该表SQL' }"
+                        v-bk-tooltips="{ content: $t('点击生成查询该表SQL') }"
                         class="bk-drag-icon bk-drag-sql"
                         @click.stop="handleAddQuerySql(data)"
                     ></i>
@@ -49,7 +49,7 @@
                 class="exception-part"
                 type="empty"
                 scene="part">
-                <span>暂无数据</span>
+                <span>{{ $t('暂无数据') }}</span>
             </bk-exception>
         </section>
     </section>
@@ -105,7 +105,7 @@
                 }
                 if (isEmpty(data)) {
                     node.data = [{
-                        name: '暂无数据',
+                        name: window.i18n.t('暂无数据'),
                         disabled: true
                     }]
                 }
@@ -124,9 +124,9 @@
             // 校验
             const validate = () => {
                 if (isEmpty(props.sql)) {
-                    return Promise.reject(new Error('Sql 语句不能为空'))
+                    return Promise.reject(new Error(window.i18n.t('Sql 语句不能为空')))
                 } else if (!/;$/.test(props.sql?.trim())) {
-                    return Promise.reject(new Error('Sql 语句不完整，需要是【;】号结尾'))
+                    return Promise.reject(new Error(window.i18n.t('Sql 语句不完整，需要是【;】号结尾')))
                 } else {
                     return Promise.resolve()
                 }

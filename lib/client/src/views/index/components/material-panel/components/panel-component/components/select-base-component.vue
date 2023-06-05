@@ -6,7 +6,7 @@
         @show="handleToggleSelectPanel(true)"
         @hide="handleToggleSelectPanel(false)">
         <div slot="dropdown-trigger" style="height:42px;">
-            <span class="tab-item-label" v-bk-tooltips="{ content: componentNameText ,distance: 8 }">
+            <span class="tab-item-label" v-bk-tooltips="{ content: $t(componentNameText) ,distance: 8 }">
                 {{ componentNameText }}
             </span>
             <i
@@ -43,6 +43,8 @@
 </template>
 <script>
     import { mapGetters } from 'vuex'
+    import LC from '@/element-materials/core'
+
     export default {
         name: '',
         props: {
@@ -55,33 +57,49 @@
             return {
                 isShowSelectPanel: false,
                 list: {
-                    PC: [
-                        {
+                    vue2: {
+                        PC: [
+                            {
+                                key: 'bk',
+                                name: 'BKUI-VUE2',
+                                type: 'Vue',
+                                tooltip: '当前组件库版本为“2.4.14，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog?anchor=2.4.14" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                            },
+                            {
+                                key: 'element',
+                                name: 'Element UI (Vue)',
+                                type: 'Vue',
+                                tooltip: '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases/tag/v2.15.1" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                            }
+                        ],
+                        MOBILE: [{
+                            key: 'vant',
+                            name: 'Vant UI (Vue)',
+                            type: 'Vue',
+                            tooltip: '当前组件库版本为“2.12.39”，<a target="_blank" href="https://vant-ui.github.io/vant/v2/#/zh-CN/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                        }]
+                    },
+                    vue3: {
+                        PC: [{
                             key: 'bk',
-                            name: 'BKUI-VUE2',
+                            name: 'BKUI-VUE3',
                             type: 'Vue',
-                            tooltip: '当前组件库版本为“2.4.14，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog?anchor=2.4.14" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
-                        },
-                        {
-                            key: 'element',
-                            name: 'Element UI',
+                            tooltip: '当前组件库版本为“0.0.1-beta.404，<a target="_blank" href="https://magicbox.bk.tencent.com/magicbox/3.0/start" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                        }],
+                        MOBILE: [{
+                            key: 'vant',
+                            name: 'Vant UI (Vue)',
                             type: 'Vue',
-                            tooltip: '当前组件库版本为“2.15.1”，<a target="_blank" href="https://github.com/ElemeFE/element/releases/tag/v2.15.1" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
-                        }
-                    ],
-                    MOBILE: [{
-                        key: 'vant',
-                        name: 'Vant UI',
-                        type: 'Vue',
-                        tooltip: '当前组件库版本为“2.12.39”，<a target="_blank" href="https://vant-ui.github.io/vant/v2/#/zh-CN/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
-                    }]
+                            tooltip: '当前组件库版本为“4.3.1”，<a target="_blank" href="https://vant-ui.github.io/vant/#/zh-CN/changelog" style="cursor: pointer;color: #3a84ff">查看更新日志</a>'
+                        }]
+                    }
                 }
             }
         },
         computed: {
             ...mapGetters('page', ['platform']),
             componentList () {
-                return this.list[this.platform]
+                return this.list[LC.getFramework()][this.platform]
             },
             componentNameText () {
                 const currentLibrary = this.componentList.find(item => item.key === this.value)

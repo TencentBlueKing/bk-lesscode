@@ -1,13 +1,13 @@
 <template>
     <div class="drag-group-box" :class="{ 'fold-box': isFolded }">
-        <div class="group-name" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
-            <section style="display: flex" @click="handleToggle">
+        <div class="group-name" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17), maxWidth: 400 }">
+            <section style="display: flex;height: 40px;" @click="handleToggle">
                 <i
                     class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                     :class="{
                         floded: isFolded
                     }" />
-                <span>{{ groupName }}</span>
+                <span class="name-content" :style="{ width: $slots.tag ? '200px' : '' }">{{ $t(groupName) }}</span>
             </section>
             <div v-if="$slots.tag">
                 <slot name="tag" />
@@ -19,7 +19,7 @@
                 class="group-list-empty"
                 type="empty"
                 scene="part">
-                <span>暂无数据</span>
+                <span>{{ $t('暂无数据') }}</span>
             </bk-exception>
             <vue-draggable
                 v-else
@@ -97,7 +97,6 @@
                 } else {
                     const materialConfig = this.list[event.oldIndex]
                     const node = LC.createNode(materialConfig.type)
-
                     Object.values(createHacker).forEach(task => task(node, materialConfig))
 
                     // 自定义组件
@@ -164,8 +163,12 @@
                     transform: rotate(-90deg);
                 }
             }
-            span {
+            .name-content {
                 display: block;
+                max-width: 240px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
                 line-height: 40px;
             }
             .group-tag {
@@ -215,6 +218,8 @@
             cursor: move;
             user-select: none;
             font-size: 0;
+            display: flex;
+            align-items: center;
             span{
                 font-size: 12px;
             }
@@ -234,4 +239,11 @@
         font-size: 16px;
         padding-right: 6px;
     }
+    .comp-name {
+            width: 90px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            margin-right: 2px;
+        }
 </style>

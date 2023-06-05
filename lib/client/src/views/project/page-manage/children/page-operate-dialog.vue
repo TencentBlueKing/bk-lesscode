@@ -120,7 +120,7 @@
                 }
                 this.createInitData = initData
                 this.$refs.createPageDialog.isShow = true
-            },
+            }
         }
     }
 </script>

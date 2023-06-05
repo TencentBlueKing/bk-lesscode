@@ -17,7 +17,7 @@
                 <div class="field-label">
                     <span v-bk-tooltips="{ content: field.desc, disabled: !field.desc }" class="field-display-name">{{field.name}}</span>：
                 </div>
-                <div :class="['field-value', { 'is-loading': loadingState.includes(field) }]">
+                <div :class="['field-value', { 'is-loading': loadingState.includes(field) }]" v-enStyle="'width:490px'">
                     <template v-if="field !== editField.field">
                         <div class="field-content">
                             <span class="field-display-value">{{getFieldDisplayValue(field) || '--'}}</span>
@@ -37,9 +37,9 @@
                             <div class="buttons">
                                 <bk-button text size="small" theme="primary"
                                     :disabled="disabled"
-                                    @click="handleConfirmSave">确定</bk-button>
+                                    @click="handleConfirmSave">{{ $t('确定') }}</bk-button>
                                 <span class="divider">|</span>
-                                <bk-button text size="small" theme="primary" @click="handleCancel">取消</bk-button>
+                                <bk-button text size="small" theme="primary" @click="handleCancel">{{ $t('取消') }}</bk-button>
                             </div>
                         </div>
                     </template>
@@ -55,15 +55,15 @@
     import LC from '@/element-materials/core'
 
     const lifeCycleDescMap = {
-        created: '在页面创建完成后被立即调用，这个时候页面还未渲染，可以做获取远程数据的操作',
-        beforeMount: '在页面挂载开始之前被调用',
-        mounted: '页面被挂载后调用，这个时候页面已经渲染完成，可以做 DOM 操作',
-        beforeUpdate: '在数据更新后，页面实时更新前调用，这里适合在更新之前访问现有的 DOM',
-        updated: '在数据更新后，页面实时更新后调用',
-        activated: '被 keep-alive 缓存的组件激活时调用',
-        deactivated: '被 keep-alive 缓存的组件停用时调用',
-        beforeDestroy: '页面关闭之前调用，页面中的数据仍然完全可用，可以做离开页面前的操作',
-        destroyed: '页面关闭后调用，该钩子被调用后，页面中的数据不可用'
+        created: window.i18n.t('在页面创建完成后被立即调用，这个时候页面还未渲染，可以做获取远程数据的操作'),
+        beforeMount: window.i18n.t('在页面挂载开始之前被调用'),
+        mounted: window.i18n.t('页面被挂载后调用，这个时候页面已经渲染完成，可以做 DOM 操作'),
+        beforeUpdate: window.i18n.t('在数据更新后，页面实时更新前调用，这里适合在更新之前访问现有的 DOM'),
+        updated: window.i18n.t('在数据更新后，页面实时更新后调用'),
+        activated: window.i18n.t('被 keep-alive 缓存的组件激活时调用'),
+        deactivated: window.i18n.t('被 keep-alive 缓存的组件停用时调用'),
+        beforeDestroy: window.i18n.t('页面关闭之前调用，页面中的数据仍然完全可用，可以做离开页面前的操作'),
+        destroyed: window.i18n.t('页面关闭后调用，该钩子被调用后，页面中的数据不可用')
     }
 
     export default {
@@ -115,7 +115,7 @@
                 })
 
                 const lifeCycleSettings = {
-                    title: '生命周期配置',
+                    title: window.i18n.t('生命周期配置'),
                     settingFields: lifeCycleSettingFields
                 }
 
@@ -187,7 +187,7 @@
                     const methodCode = relateFuncCodeKey[index]
                     const func = this.functionList.find(func => func.funcCode === methodCode)
                     if (!func) {
-                        errorStack.push(`页面中【${relateFuncCodeMap[methodCode]}】使用了不存在的函数【${methodCode}】,请修改后再试`)
+                        errorStack.push(window.i18n.t('页面中【{0}】使用了不存在的函数【{1}】,请修改后再试', [relateFuncCodeMap[methodCode], methodCode]))
                     } else {
                         functionData.push(func.id)
                     }
@@ -198,7 +198,7 @@
                     const methodData = typeof value === 'object' ? value : { methodCode: value }
                     methodData?.params?.forEach((param) => {
                         if (param.format === 'variable' && !param.code) {
-                            errorStack.push(`页面的【${key}】生命周期中，函数参数为变量，但是没有设置值，请修改后再试`)
+                            errorStack.push(window.i18n.t('页面的【{0}】生命周期中，函数参数为变量，但是没有设置值，请修改后再试', [key]))
                         }
                     })
                 })

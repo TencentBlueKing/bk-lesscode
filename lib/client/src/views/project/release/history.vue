@@ -2,36 +2,35 @@
     <section>
         <div class="history-container" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
             <div class="history-content">
-                <bk-table :data="list" type="small" ext-cls="history-table" empty-text="暂无部署记录">
-                    <bk-table-column label="关联的应用模块" prop="bindInfo" min-width="120" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column label="源码包类型" prop="releaseType" width="120" show-overflow-tooltip>
+                <bk-table :data="list" type="small" ext-cls="history-table" :empty-text="$t('暂无部署记录')">
+                    <bk-table-column :label="$t('table_关联的应用模块')" prop="bindInfo" :render-header="renderHeaderAddTitle" min-width="120" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('table_源码包类型')" prop="releaseType" :render-header="renderHeaderAddTitle" width="120" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             {{releaseTypeMap[row.releaseType]}}
                             <span v-if="row.releaseType === 'PROJECT_VERSION'">
-                                {{`${row.fromProjectVersion === '' ? `(默认)` : (row.fromProjectVersion ? `(${row.fromProjectVersion})` : '') }` }}
+                                {{`${row.fromProjectVersion === '' ? `(${$t('默认')})` : (row.fromProjectVersion ? `(${row.fromProjectVersion})` : '') }` }}
                             </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="部署环境" prop="env" :formatter="envFormatter" width="100" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column label="部署包版本" prop="version" width="100" show-overflow-tooltip>
+                    <bk-table-column :label="$t('table_部署环境')" prop="env" :render-header="renderHeaderAddTitle" :formatter="envFormatter" width="100" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('部署包版本')" prop="version" :render-header="renderHeaderAddTitle" width="100" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             <div v-if="row.codeUrl" class="status-result">
                                 <a class="status-log-link" :href="row.codeUrl">{{row.version}}</a>
                             </div>
                             <span v-else-if="row.isOffline">{{ row.version}} </span>
-                            <span v-else v-bk-tooltips.right="'本次部署无版本包生成'">{{row.version}} </span>
+                            <span v-else v-bk-tooltips.right="$t('本次部署无版本包生成')">{{row.version}} </span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="部署执行的 Sql" width="115">
+                    <bk-table-column :label="$t('table_部署执行的 Sql')" width="115">
                         <template slot-scope="{ row }">
                             <bk-button text @click="showSql(row)" v-if="row.releaseSqlIds">
-                                查看详情
-                            </bk-button>
+                                {{ $t('查看详情') }} </bk-button>
                             <span v-else>--</span>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="操作人" prop="createUser" :formatter="userFormatter" width="80" show-overflow-tooltip></bk-table-column>
-                    <bk-table-column label="操作结果" prop="status" min-width="150">
+                    <bk-table-column :label="$t('操作人')" prop="createUser" :formatter="userFormatter" width="80" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('table_操作结果')" prop="status" min-width="150">
                         <template slot-scope="{ row }">
                             <div class="status-result">
                                 <svg v-if="row.status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
@@ -40,23 +39,23 @@
                                 <!-- <i v-if="row.status === 'running'" class="bk-drag-icon bk-drag-icon bk-drag-loading-2 history-status-icon" class="loading-rotate"></i> -->
                                 <i v-else class="bk-drag-icon bk-drag-circle-shape history-status-icon" :class="[`icon-${row.status}`]"></i>
                                 <span>{{ typeMap[row.isOffline] }}{{ statusMap[row.status] }}</span>
-                                <span v-if="!row.isOffline" class="status-log-link" @click="showLog(row)">，查看详情</span>
+                                <span v-if="!row.isOffline" class="status-log-link" @click="showLog(row)">，{{ $t('查看详情') }}</span>
                             </div>
                         </template>
                     </bk-table-column>
-                    <bk-table-column label="操作时间" prop="createTime" :formatter="timeFormatter" width="150"></bk-table-column>
-                    <bk-table-column label="操作来源" prop="releaseType" :formatter="sourceFormatter" show-overflow-tooltip :min-width="120"></bk-table-column>
+                    <bk-table-column :label="$t('table_操作时间')" prop="createTime" :formatter="timeFormatter" width="150"></bk-table-column>
+                    <bk-table-column :label="$t('table_操作来源')" prop="releaseType" :formatter="sourceFormatter" show-overflow-tooltip :min-width="120"></bk-table-column>
                     <empty-status slot="empty"></empty-status>
                 </bk-table>
             </div>
         </div>
         <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :current-app-info="currentAppInfo" :env="env" :deploy-id="deployId" :default-content="defaultContent" :status="status" @closeLog="closeLog"></completed-log>
-        <running-log v-if="showRunningLog" :is-show="showRunningLog" :current-app-info="currentAppInfo" :env="env" :deploy-id="deployId" @closeLog="closeLog" :title="`${envMap[env]}部署执行日志`"></running-log>
+        <running-log v-if="showRunningLog" :is-show="showRunningLog" :current-app-info="currentAppInfo" :env="env" :deploy-id="deployId" @closeLog="closeLog" :title="$t('{0}部署执行日志',[envMap[env]])"></running-log>
         <bk-sideslider
             :is-show.sync="isShowSql"
             :quick-close="true"
             :width="960"
-            :title="`数据库变更详情【${envFormatter('', '', sqlEnv)}】`"
+            :title="$t('数据库变更详情【{0}】',[envFormatter(``, ``, sqlEnv)])"
         >
             <div slot="content">
                 <monaco
@@ -76,6 +75,7 @@
     import completedLog from './components/completed-log'
     import runningLog from './components/running-log'
     import monaco from '@/components/monaco.vue'
+    import { renderHeaderAddTitle } from '@/common/util'
     export default {
         components: {
             completedLog,
@@ -85,20 +85,20 @@
         data () {
             return {
                 envMap: {
-                    prod: '生产环境',
-                    stag: '预发布环境'
+                    prod: window.i18n.t('生产环境'),
+                    stag: window.i18n.t('预发布环境')
                 },
-                typeMap: ['部署', '下架'],
+                typeMap: [window.i18n.t('部署'), window.i18n.t('下架')],
                 statusMap: {
-                    successful: '成功',
-                    failed: '失败',
-                    running: '中'
+                    successful: window.i18n.t('成功'),
+                    failed: window.i18n.t('失败'),
+                    running: window.i18n.t('中')
                 },
                 releaseTypeMap: {
-                    NEW_VERSION: '应用默认版本',
-                    PROJECT_VERSION: '应用版本',
-                    HISTORY_VERSION: '历史部署包',
-                    FROM_V3: 'PaaS平台部署包'
+                    NEW_VERSION: window.i18n.t('应用默认版本'),
+                    PROJECT_VERSION: window.i18n.t('应用版本'),
+                    HISTORY_VERSION: window.i18n.t('历史部署包'),
+                    FROM_V3: window.i18n.t('PaaS平台部署包')
                 },
                 isLoading: true,
                 list: [],
@@ -157,7 +157,7 @@
                 }
             },
             sourceFormatter (obj, con, val) {
-                return val === 'FROM_V3' ? 'PaaS平台' : '可视化开发平台'
+                return val === 'FROM_V3' ? window.i18n.t('PaaS平台') : window.i18n.t('可视化开发平台')
             },
             envFormatter (obj, con, val) {
                 return this.envMap[val] || val
@@ -181,7 +181,7 @@
                     moduleCode: row.moduleCode
                 }
                 if (row.status !== 'running' || showCompleted) {
-                    this.defaultContent = this.defaultContent = row.errorMsg || '日志为空'
+                    this.defaultContent = this.defaultContent = row.errorMsg || window.i18n.t('日志为空')
                     this.showCompletedLog = true
                 } else {
                     this.showRunningLog = true
@@ -207,7 +207,8 @@
                 }).finally(() => {
                     this.isLoadingSql = false
                 })
-            }
+            },
+            renderHeaderAddTitle
         }
     }
 </script>

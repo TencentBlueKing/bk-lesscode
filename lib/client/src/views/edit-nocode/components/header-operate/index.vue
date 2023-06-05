@@ -1,7 +1,13 @@
 <template>
     <div class="page-header-operate">
-        <save-btn v-if="!hideSave" :custom="customSave" @save="$emit('save', $event)" />
-        <preview-btn v-if="!hidePreview" />
+        <save-btn
+            v-if="!hideSave"
+            :custom="customSave"
+            :custom-loading="customLoading"
+            :disabled="disabled"
+            :tips="disabledTips"
+            @save="$emit('save', $event)" />
+        <preview-btn v-if="!hidePreview" :disabled="disabled" :tips="disabledTips" />
         <form-page-operate v-if="pageDetail.nocodeType === 'FORM'"></form-page-operate>
         <data-manage-operate v-if="['FORM_MANAGE', 'FLOW_MANAGE'].includes(pageDetail.nocodeType)"></data-manage-operate>
         <page-setting-btn v-if="!hidePageSetting" />
@@ -29,7 +35,10 @@
             customSave: Boolean,
             hideSave: Boolean,
             hidePreview: Boolean,
-            hidePageSetting: Boolean
+            hidePageSetting: Boolean,
+            customLoading: Boolean,
+            disabled: Boolean,
+            disabledTips: String
         },
         computed: {
             ...mapGetters('page', ['pageDetail'])

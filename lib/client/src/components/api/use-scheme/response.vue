@@ -1,6 +1,6 @@
 <template>
     <section>
-        <scheme-header slot-label="设置为全局变量" :hide-required="true" />
+        <scheme-header :slot-label="$t('设置为全局变量')" :hide-required="true" />
         <single-scheme
             ref="singleSchemeRef"
             :scheme="renderResponseParam"

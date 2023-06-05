@@ -8,7 +8,7 @@
                         close: !showNameProp
                     }"
                 ></i>
-                <div>应用名称</div>
+                <div>{{ $t('应用名称') }}</div>
             </div>
             <div class="action-content" v-if="showNameProp">
                 <bk-input :value="siteName" @change="handleSiteNameChange" />
@@ -22,7 +22,7 @@
                         close: !showLogoProp
                     }"
                 ></i>
-                <div>logo 设置</div>
+                <div>{{ $t('logo 设置') }}</div>
             </div>
             <div class="action-content" v-if="showLogoProp">
                 <src-input :value="logo" file-type="img" @change="handleLogoChange" />

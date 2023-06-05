@@ -1,7 +1,7 @@
 <template>
     <div class="lesscode-deploy-log-wrapper" :class="[isRunning ? 'lesscode-deploy-log-running' : '']">
-        <stage-item title="准备阶段" :data="readyList" ref="readyStageRef" v-if="isShowReady" />
-        <stage-item title="构建阶段" :ext-cls="isRunning ? 'running-cls' : ''" can-full-screen :data="buildList" style="margin-top: 8px;" ref="buildStageRef" v-if="isShowBuild" />
+        <stage-item :title="$t('准备阶段')" :data="readyList" ref="readyStageRef" v-if="isShowReady" />
+        <stage-item :title="$t('构建阶段')" :ext-cls="isRunning ? 'running-cls' : ''" can-full-screen :data="buildList" style="margin-top: 8px;" ref="buildStageRef" v-if="isShowBuild" />
         <deploy-stage-item
             :loading="processLoading"
             :data="processList"

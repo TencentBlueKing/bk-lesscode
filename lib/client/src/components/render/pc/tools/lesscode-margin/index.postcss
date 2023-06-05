@@ -1,0 +1,33 @@
+.achor-top,
+.achor-left{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+}
+.achor-top{
+    :global(.bk-drag-icon){
+        transform: rotateZ(90deg);
+    }
+}
+.tip-top,
+.tip-left{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ff9700;
+}
+.tip-top{
+    left: 7px;
+    bottom: 7px;
+    border-left: 1px solid #ff9700;
+}
+.tip-left{
+    top: -10px;
+    right: 7px;
+    border-bottom: 1px solid #ff9700;
+}

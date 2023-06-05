@@ -2,12 +2,12 @@
     <div class="page-setting-container">
         <!-- 基本配置 -->
         <style-layout
-            title="基本配置">
+            :title="$t('基本配置')">
             <template>
-                <style-item name="页面名称" type="vertical">
+                <style-item :name="$t('页面名称')" type="vertical">
                     <bk-input :value="pageDetail.pageName" />
                 </style-item>
-                <style-item name="页面ID" type="vertical">
+                <style-item :name="$t('页面ID')" type="vertical">
                     <bk-input :value="pageDetail.id" disabled />
                 </style-item>
             </template>

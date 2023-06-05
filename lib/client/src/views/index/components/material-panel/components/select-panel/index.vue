@@ -24,22 +24,22 @@
                 panelList: [
                     {
                         key: 'component',
-                        tips: '组件库',
+                        tips: window.i18n.t('组件库'),
                         icon: 'bk-drag-icon bk-drag-custom-comp-default'
                     },
                     {
                         key: 'template',
-                        tips: '页面模板管理',
+                        tips: window.i18n.t('页面模板管理'),
                         icon: 'bk-drag-icon bk-drag-template-fill'
                     },
                     {
                         key: 'icon',
-                        tips: '图标',
+                        tips: window.i18n.t('图标'),
                         icon: 'bk-icon icon-smile-shape'
                     },
                     {
                         key: 'tree',
-                        tips: '页面组件树',
+                        tips: window.i18n.t('页面组件树'),
                         icon: 'bk-drag-icon bk-drag-level-down'
                     }
                 ]

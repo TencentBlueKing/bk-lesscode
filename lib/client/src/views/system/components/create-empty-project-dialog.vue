@@ -11,7 +11,7 @@
         ext-cls="project-create-dialog">
         <span slot="header">
             {{ createDialogTitle }}
-            <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: '创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块' }"></i>
+            <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: $t('创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块') }"></i>
         </span>
         <!-- 表单组件，根据projectType来判断是创建空白应用还是导入应用，还是从已有模板选择 -->
         <project-form
@@ -24,8 +24,8 @@
             <bk-button
                 theme="primary"
                 :loading="loading"
-                @click="handleCreateConfirm">确定</bk-button>
-            <bk-button @click="handleCancel('create')" :disabled="loading">取消</bk-button>
+                @click="handleCreateConfirm">{{ $t('确定') }}</bk-button>
+            <bk-button @click="handleCancel('create')" :disabled="loading">{{ $t('取消') }}</bk-button>
         </div>
     </bk-dialog>
 </template>
@@ -50,7 +50,7 @@
         },
         computed: {
             createDialogTitle () {
-                return this.projectType === 'copyProject' ? '复制应用' : (this.projectType === 'importProject') ? '导入应用' : '新建应用'
+                return this.projectType === 'copyProject' ? window.i18n.t('复制应用') : (this.projectType === 'importProject') ? window.i18n.t('导入应用') : window.i18n.t('新建应用')
             }
         },
         created () {
@@ -109,7 +109,7 @@
                         if (typeof importProjectData?.route !== 'object' || typeof importProjectData?.func !== 'object' || typeof importProjectData?.page !== 'object') {
                             this.$bkMessage({
                                 theme: 'error',
-                                message: '请先上传符合规范的应用json'
+                                message: window.i18n.t('请先上传符合规范的应用json')
                             })
                             return
                         }
@@ -119,7 +119,7 @@
                     this.loading = true
                     const projectId = await this.$store.dispatch(actionMethod, { data })
 
-                    this.messageSuccess('应用创建成功')
+                    this.messageSuccess(window.i18n.t('应用创建成功'))
                     this.visible = false
 
                     setTimeout(() => {

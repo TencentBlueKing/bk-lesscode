@@ -84,7 +84,7 @@
             theme="primary"
             icon="bk-drag-icon bk-drag-plus-circle"
             @click="addLinkTable"
-        >添加关联表</bk-link>
+        >{{ $t('添加关联表') }}</bk-link>
     </section>
 </template>
 
@@ -151,10 +151,10 @@
                     name: JOIN_TYPE[type]
                 }))
             const fieldTypeList = Object
-                .keys(SQL_FUNCTION_TYPE)
+                .keys(SQL_FUNCTION_TYPE())
                 .map((type) => ({
-                    id: SQL_FUNCTION_TYPE[type].VAL,
-                    name: SQL_FUNCTION_TYPE[type].NAME
+                    id: SQL_FUNCTION_TYPE()[type].VAL,
+                    name: SQL_FUNCTION_TYPE()[type].NAME
                 }))
 
             // 校验
@@ -164,7 +164,7 @@
                     && !isEmpty(props.queryGroup?.fields)
                     && !props.queryGroup?.fields?.some(field => field.fieldId === fieldId)
                 ) {
-                    message = '设置了 GROUP 的情况下，查询字段只能为【AVG，COUNT，MAX，MIN，SUM】或者 GROUP 字段'
+                    message = window.i18n.t('设置了 GROUP 的情况下，查询字段只能为【AVG，COUNT，MAX，MIN，SUM】或者 GROUP 字段')
                 }
                 return message
             }

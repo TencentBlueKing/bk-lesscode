@@ -16,8 +16,9 @@
                     <bk-checkbox
                         :true-value="true"
                         :false-value="false"
+                        :disabled="disabled"
                         v-model="localValIsDisplayTag">
-                        <span v-bk-tooltips="showTagToolTips">显示为标签</span>
+                        <span v-bk-tooltips="showTagToolTips">{{ $t('显示为标签') }}</span>
                     </bk-checkbox>
                 </div>
             </div>
@@ -25,11 +26,11 @@
         <data-source
             v-if="show"
             ref="dataSource"
-            :app-id="appId"
             :source-type="sourceType"
             :field-type="fieldType"
             :use-variable="true"
             :value="localVal"
+            :disabled="disabled"
             :local-val-is-display-tag="localValIsDisplayTag"
             :api-detail="apiDetail"
             :res-array-tree-data="resArrayTreeData"
@@ -38,11 +39,11 @@
         <div id="showTagToolTips" class="show-tag-tooltips" v-if="sourceType === 'CUSTOM'">
             <bk-table :data="toolTipData" ref="table" size="small" :outer-border="false">
                 <bk-table-column
-                    label="选项"
+                    :label="$t('选项')"
                     prop="status"
                     :render-header="renderHeader">
-                    <bk-tag ext-cls="choice-one">选项一</bk-tag>
-                    <bk-tag ext-cls="choice-two">选项二</bk-tag>
+                    <bk-tag ext-cls="choice-one">{{ $t('选项一') }}</bk-tag>
+                    <bk-tag ext-cls="choice-two">{{ $t('选项二') }}</bk-tag>
                 </bk-table-column>
             </bk-table>
         </div>
@@ -74,10 +75,10 @@
                 type: Boolean,
                 default: false
             },
-            appId: String,
             sourceType: String,
             fieldType: String,
-            value: [Array, Object] // 自定义数据为Array，api数据、表单数据为Object`
+            value: [Array, Object], // 自定义数据为Array，api数据、表单数据为Object`
+            disabled: Boolean
         },
         data () {
             return {
@@ -115,11 +116,11 @@
             },
             getTitle () {
                 if (this.sourceType === 'CUSTOM') {
-                    return '配置自定义数据'
+                    return this.$t('配置自定义数据')
                 } else if (this.sourceType === 'API') {
-                    return '配置接口数据源'
+                    return this.$t('配置接口数据源')
                 } else {
-                    return '配置表单数据'
+                    return this.$t('配置表单数据')
                 }
             },
             renderHeader (h, data) {
@@ -178,7 +179,7 @@
 .custom-selection{
   position: absolute;
   top: 2px;
-  left: 164px;
+  right: 20px;
 }
 </style>
 <style lang="postcss">

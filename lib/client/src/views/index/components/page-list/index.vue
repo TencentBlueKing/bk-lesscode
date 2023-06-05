@@ -2,7 +2,7 @@
     <div class="page-select">
         <div class="page-name">
             <div class="back-icon-container" @click="handleBackPageList">
-                <i class="bk-drag-icon bk-drag-arrow-back" title="返回页面列表" />
+                <i class="bk-drag-icon bk-drag-arrow-back" :title="$t('返回页面列表')" />
             </div>
             <div
                 id="editPageSwitchPage"
@@ -25,6 +25,7 @@
                             </div>
                             <div class="col-name">{{ pageDetail.pageName }}</div>
                             <div class="col-version">{{versionName}}</div>
+                            <frameworkTag :framework="projectDetail.framework" bg-color="#dcdee5"></frameworkTag>
                         </div>
                         <i class="bk-select-angle bk-icon icon-angle-down" />
                     </div>
@@ -46,14 +47,14 @@
                             :key="option.id"
                             :id="option.id"
                             :name="option.pageName">
-                            <span>{{option.pageName}}</span>
+                            <span class="page-collapse g-mr8 overflowhidden-oh" :title="option.pageName">{{option.pageName}}</span>
                             <i v-if="!option.nocodeType"
                                 class="bk-drag-icon bk-drag-copy"
                                 style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%)"
                                 @click.stop="handleCopyPage(option)"
-                                title="复制页面"></i>
+                                :title="$t('复制页面')"></i>
                         </bk-option>
-                        <li style="padding: 0 28px" v-show="!group.children.length && !group.collapse">暂无页面</li>
+                        <li style="padding: 0 28px" v-show="!group.children.length && !group.collapse">{{ $t('暂无页面') }}</li>
                     </bk-option-group>
                 </bk-select>
             </div>
@@ -84,14 +85,14 @@
                 emptyClassPageList: [
                     {
                         id: 'PC',
-                        name: 'PC 页面',
+                        name: window.i18n.t('PC 页面'),
                         collapse: false,
                         icon: 'bk-drag-pc',
                         children: []
                     },
                     {
                         id: 'MOBILE',
-                        name: 'Mobile 页面',
+                        name: window.i18n.t('Mobile 页面'),
                         collapse: false,
                         icon: 'bk-drag-mobilephone',
                         children: []
@@ -170,8 +171,9 @@
                 const toRouteName = NOCODE_TYPE_MAP?.toRouteName[page.nocodeType] || 'new'
                 if (currentRouteName === toRouteName) {
                     this.$bkInfo({
-                        title: '确认离开?',
-                        subTitle: '您将离开画布编辑页面，请确认相应修改已保存',
+                        title: window.i18n.t('确认离开'),
+                        okText: window.i18n.t('离开'),
+                        subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
                         confirmFn: async () => {
                             this.toNewPage(page, toRouteName)
                         }
@@ -332,4 +334,7 @@
             }
         }
     }
+    .page-collapse {
+            display: block;
+        }
 </style>

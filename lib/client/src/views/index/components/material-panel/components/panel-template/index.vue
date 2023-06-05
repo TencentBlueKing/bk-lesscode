@@ -20,7 +20,7 @@
         <div class="template-list">
             <search-box
                 :list="renderTemplateList"
-                placeholder="模板名称"
+                :placeholder="$t('模板名称')"
                 @on-change="handleSearchChange" />
             <group-box
                 v-for="(group) in renderGroupTemplateList"
@@ -46,8 +46,7 @@
                                 theme="primary"
                                 size="small"
                                 @click.stop="handleApply(template)">
-                                添加到应用
-                            </bk-button>
+                                {{ $t('添加到应用') }} </bk-button>
                         </div>
                     </div>
                     <div class="item-info">
@@ -55,8 +54,7 @@
                         <span
                             class="preview"
                             @click="handlePreview(template)">
-                            预览
-                        </span>
+                            {{ $t('预览') }} </span>
                     </div>
                 </div>
             </group-box>
@@ -98,11 +96,11 @@
                 tabList: [
                     {
                         key: 'project',
-                        name: '页面模板'
+                        name: window.i18n.t('页面模板')
                     },
                     {
                         key: 'market',
-                        name: '模板市场'
+                        name: window.i18n.t('模板市场')
                     }
                 ],
                 type: 'project',
@@ -124,6 +122,7 @@
             ...mapGetters('projectVersion', {
                 versionId: 'currentVersionId'
             }),
+            ...mapGetters('project', ['projectDetail']),
             renderTemplateList () {
                 return this.type === 'project' ? this.projectTemplateList : this.marketTemplateList
             }
@@ -147,8 +146,8 @@
                         tmpMarketTemplateList
                     ] = await Promise.all([
                         this.$store.dispatch('pageTemplate/categoryList', { projectId: this.projectId }),
-                        this.$store.dispatch('pageTemplate/list', { projectId: this.projectId }),
-                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL' })
+                        this.$store.dispatch('pageTemplate/list', { projectId: this.projectId, framework: this.projectDetail.framework }),
+                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL', framework: this.projectDetail.framework })
                     ])
                     const projectTemplateList = tmpProjectTemplateList.map(item => ({
                         ...item,
@@ -249,7 +248,7 @@
              * @param { Number } template
              */
             handlePreview (template) {
-                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}`, '_blank')
+                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}?framework=${this.projectDetail.framework}`, '_blank')
             },
 
             handleApply (template) {

@@ -14,7 +14,7 @@
         >
             <bk-input
                 class="choose-input"
-                placeholder="请选择函数"
+                :placeholder="$t('请选择函数')"
                 :value="renderChoosenFunction.methodCode"
                 readonly
             />
@@ -50,6 +50,7 @@
                         >
                             <bk-input
                                 class="choose-function-search"
+                                v-enStyle="'width: 360px'"
                                 left-icon="bk-icon icon-search"
                                 behavior="simplicity"
                                 v-model="searchFunctionName"
@@ -61,7 +62,7 @@
                                         :key="funcGroup.groupName"
                                         v-for="funcGroup in computedFunctionData"
                                     >
-                                        <span class="function-group-name">
+                                        <span class="function-group-name" v-enStyle="'width: 360px'">
                                             {{ funcGroup.groupName }}（{{ funcGroup.children.length }}）
                                         </span>
                                         <ul class="group-function-list">
@@ -97,7 +98,7 @@
                                     text
                                     @click="handleCreateFunction"
                                 >
-                                    <i class="bk-icon icon-plus-circle"></i>新增
+                                    <i class="bk-icon icon-plus-circle"></i>{{ $t('新增') }}
                                 </bk-button>
                             </template>
                             <ul class="function-list" v-else>
@@ -117,7 +118,7 @@
                                     <span
                                         class="function-tool"
                                         @click="handleInsertFunction(functionData)"
-                                    >引用</span>
+                                    >{{ $t('引用') }}</span>
                                 </li>
                             </ul>
                             <bk-exception
@@ -142,7 +143,10 @@
                 >
                     <span
                         v-bk-tooltips="{
-                            content: '1. 配置的执行参数，会在函数执行的时候传入<br>2. 参数选择【事件】类型，则无需填写，函数执行的时候会使用组件事件提供的值作为参数（如表格组件的 page-change 事件会提供参数）<br>3. 组件事件提供的参数是优先接收的，确保放到前边<br>4. 参数还可以选择手动输入值、使用变量值或表达式',
+                            content: `1.${$t('配置的执行参数，会在函数执行的时候传入')}
+                            2. ${$t('参数选择【事件】类型，则无需填写，函数执行的时候会使用组件事件提供的值作为参数（如表格组件的 page-change 事件会提供参数）')}
+                            3. ${$t('组件事件提供的参数是优先接收的，确保放到前边')}
+                            4. ${$t('参数还可以选择手动输入值、使用变量值或表达式')}`,
                             width: '350px',
                             placements: ['left'],
                             boundary: 'window'
@@ -150,7 +154,7 @@
                         class="param-title"
                         slot="title"
                     >
-                        <span class="title">参数（{{ computedParamKeys[index] }}）</span>
+                        <span class="title">{{$t('参数（{0}）',[computedParamKeys[index]])}}</span>
                     </span>
                     <bk-input
                         :value="panel.value"
@@ -208,9 +212,9 @@
         data () {
             return {
                 functionTypeList: [
-                    { name: 'functionTemplate', label: '事件模板' },
-                    { name: 'functionMarket', label: '函数市场' },
-                    { name: 'functionList', label: '应用函数管理' }
+                    { name: 'functionTemplate', label: this.$t('事件模板') },
+                    { name: 'functionMarket', label: this.$t('函数市场') },
+                    { name: 'functionList', label: this.$t('应用函数管理') }
                 ],
                 searchFunctionName: '',
                 functionType: 'functionList',

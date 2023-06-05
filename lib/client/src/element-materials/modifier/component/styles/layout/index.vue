@@ -127,7 +127,6 @@
                 font-size: 24px;
                 color: #63656E;
                 transition: all .1s linear;
-                margin-right: 8px;
                 &.floded {
                     transform: rotate(-90deg);
                 }
@@ -135,7 +134,7 @@
             span {
                 display: block;
                 position: absolute;
-                left: 28px;
+                left: 24px;
                 line-height: 40px;
             }
             .tips-content {

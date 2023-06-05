@@ -38,7 +38,7 @@
             }
 
             return {
-                showTips: '配置面板显示页面配置',
+                showTips: window.i18n.t('配置面板显示页面配置'),
                 handleShowPageSetting
             }
         }

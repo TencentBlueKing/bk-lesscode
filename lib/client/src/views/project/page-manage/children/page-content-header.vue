@@ -3,11 +3,11 @@
         <div class="page-info">
             <span class="icon-span"><i :style="{ color: NOCODE_TYPE_MAP['color'][currentPage.nocodeType || ''] }" :class="NOCODE_TYPE_MAP['icon'][currentPage.nocodeType || '']"></i></span>
             <span class="name-span">{{currentPage.pageName}}</span>
-            <span class="tag-span">{{NOCODE_TYPE_MAP['title'][currentPage.nocodeType || '']}}</span>
+            <span class="tag-span" :title="NOCODE_TYPE_MAP['title'][currentPage.nocodeType || '']">{{NOCODE_TYPE_MAP['title'][currentPage.nocodeType || '']}}</span>
         </div>
         <div class="page-operate">
-            <bk-button theme="primary" @click="handleEditPage(currentPage)">编辑</bk-button>
-            <bk-button @click="handlePreview(currentPage)">预览</bk-button>
+            <bk-button theme="primary" @click="handleEditPage(currentPage)">{{ $t('编辑') }}</bk-button>
+            <bk-button @click="handlePreview(currentPage)">{{ $t('预览') }}</bk-button>
         </div>
     </div>
 </template>

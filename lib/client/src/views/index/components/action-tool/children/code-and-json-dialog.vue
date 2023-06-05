@@ -29,7 +29,7 @@
                 :change="setImportData"
                 name="targetData"
                 type="json"
-                dialog-title="json数据将会覆盖当前已有页面内容" />
+                :dialog-title="$t('json数据将会覆盖当前已有页面内容')" />
         </section>
     </bk-dialog>
 </template>

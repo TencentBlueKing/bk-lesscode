@@ -2,17 +2,15 @@
     <div :class="{ 'empty-type': part } ">
         <bk-exception v-if="type === 'search'" class="component-list-empty" type="search-empty" scene="part">
             <div class="empty-text search-empty">
-                搜索结果为空
-            </div>
+                {{ $t('搜索结果为空') }} </div>
             <div class="tooltip-text">
-                <span>可以尝试 调整关键词 或 </span>
-                <bk-button text theme="primary" auth="create_app" @click="handlerClear" class="clear-text">清空筛选条件</bk-button>
+                <span>{{ $t('可以尝试 调整关键词 或') }} </span>
+                <bk-button text theme="primary" auth="create_app" @click="handlerClear" class="clear-text">{{ $t('清空筛选条件') }}</bk-button>
             </div>
         </bk-exception>
         <bk-exception v-else class="component-list-empty" type="empty" scene="part">
             <div class="empty-text">
-                暂无数据
-            </div>
+                {{ $t('暂无数据') }} </div>
         </bk-exception>
     </div>
 </template>

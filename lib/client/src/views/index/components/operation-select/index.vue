@@ -5,14 +5,15 @@
             :class="{ active: value === 'edit' }"
             @click="handleChange('edit')">
             <i class="bk-drag-icon bk-drag-huabu" />
-            <span>画布</span>
+            <span>{{ $t('画布') }}</span>
         </div>
         <div
             class="select-item"
             :class="{ active: value === 'vueCode' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('vueCode')">
             <i class="bk-drag-icon bk-drag-yuanma" />
-            <span>源码</span>
+            <span>{{ $t('源码') }}</span>
         </div>
         <div
             class="select-item"
@@ -24,23 +25,26 @@
         <div
             class="select-item"
             :class="{ active: value === 'pageFunction' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('pageFunction')">
             <i class="bk-drag-icon bk-drag-yemianhanshu" />
-            <span>页面函数</span>
+            <span>{{ $t('页面函数') }}</span>
         </div>
         <div
             class="select-item"
             :class="{ active: value === 'pageVariable' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('pageVariable')">
             <i class="bk-drag-icon bk-drag-page-variable" />
-            <span>页面变量</span>
+            <span>{{ $t('页面变量') }}</span>
         </div>
         <div
             class="select-item"
             :class="{ active: value === 'setting' }"
+            v-enStyle="'white-space: nowrap'"
             @click="handleChange('setting')">
             <i class="bk-drag-icon bk-drag-set" />
-            <span>页面设置</span>
+            <span>{{ $t('页面设置') }}</span>
         </div>
     </div>
 </template>

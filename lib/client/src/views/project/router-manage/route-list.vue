@@ -1,10 +1,10 @@
 <template>
     <div :class="[$style['routes'], 'page-content']" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
         <div :class="['info-flexible', $style['inner']]" v-show="!pageLoading">
-            <bk-link :class="[$style['to-link'],'nav-link']" theme="primary" @click="handleCreateLayout">导航布局管理</bk-link>
+            <bk-link :class="[$style['to-link'],'nav-link']" theme="primary" @click="handleCreateLayout">{{ $t('导航布局管理') }}</bk-link>
             <div :class="$style['caption']">
-                <div :class="$style['col']">路由配置</div>
-                <div :class="$style['col']">绑定页面跳转路由</div>
+                <div :class="$style['col']">{{ $t('table_路由配置') }}</div>
+                <div :class="$style['col']">{{ $t('绑定页面跳转路由') }}</div>
             </div>
             <dl :class="$style['content']" v-if="routeGroup.length">
                 <div v-if="type === 'MOBILE'" :class="$style['mobile-route']">
@@ -23,7 +23,7 @@
                                 $style['path'],
                                 { [$style['editing']]: layoutEditState.group === group.layoutId }
                             ]">
-                                <div :class="$style['path-name']" v-if="layoutEditState.group !== group.layoutId">{{getDisplayLayoutPath(group.layoutPath)}}</div>
+                                <div :class="$style['path-name']" v-if="layoutEditState.group !== group.layoutId" v-tooltips="getDisplayLayoutPath(group.layoutPath)">{{getDisplayLayoutPath(group.layoutPath)}}</div>
                                 <div v-else
                                     :class="[
                                         $style['edit-form'],
@@ -36,30 +36,30 @@
                                             :maxlength="60"
                                             @enter="handleConfirmParentRoute"
                                             @input="handleParentRouteInput"
-                                            placeholder="请输入路由名称，回车结束"
+                                            :placeholder="$t('请输入路由名称，回车结束')"
                                         />
                                         <i class="bk-icon icon-exclamation-circle-shape tips-icon"
-                                            v-bk-tooltips="editState.error === 1 ? '请检查路径正确性' : '需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成'"></i>
+                                            v-bk-tooltips="editState.error === 1 ? $t('请检查路径正确性') : $t('需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')"></i>
                                     </div>
                                     <div :class="$style['buttons']">
                                         <bk-button text size="small" theme="primary"
                                             :disabled="parentPathInputDisabled"
-                                            @click="handleConfirmParentRoute">确定</bk-button>
+                                            @click="handleConfirmParentRoute">{{ $t('确定') }}</bk-button>
                                         <span :class="$style['divider']">|</span>
-                                        <bk-button text size="small" theme="primary" @click="handleParentRouteCancel">取消</bk-button>
+                                        <bk-button text size="small" theme="primary" @click="handleParentRouteCancel">{{ $t('取消') }}</bk-button>
                                     </div>
                                 </div>
                                 <div :class="[$style['opts'], { [$style['hide']]: editState.route !== null || removeLoading }]">
                                     <i :class="['bk-icon icon-edit2 ml10', $style['icon']]"
                                         @click="handleEditLayoutPath(group)"
-                                        v-bk-tooltips="'编辑'"></i>
+                                        v-bk-tooltips=" $t('编辑')"></i>
                                     <i :class="['bk-icon icon-plus', $style['icon']]"
                                         v-show="editState.type !== 'new'"
-                                        v-bk-tooltips="'添加子路由'"
+                                        v-bk-tooltips="$t('添加子路由')"
                                         @click="handleAddSubRoute(group)"></i>
                                     <i :class="['bk-icon icon-eye click-icon',$style['icon-eye']]"
                                         v-if="group.type !== 'empty' && group.type !== 'mobile-empty' && projectId"
-                                        v-bk-tooltips="'预览'" @click="handlePreview(group)"></i>
+                                        v-bk-tooltips="$t('预览')" @click="handlePreview(group)"></i>
                                 </div>
                             </div>
                             <div :class="[$style['bind'], { [$style['disabled']]: editState.route !== null || removeLoading }]">
@@ -82,7 +82,7 @@
                                     { [$style['editing']]: editState.route === route }
                                 ]">
                                     <div :class="$style['path-name']">
-                                        <span v-if="editState.route !== route" :title="route.path">{{route.path | routeShow}}</span>
+                                        <span v-if="editState.route !== route" v-bk-tooltips="{ content: route.path , disabled: !( route.path && route.path.length > 26) }">{{route.path | routeShow}}</span>
                                         <div
                                             :class="[
                                                 $style['edit-form'],
@@ -96,32 +96,32 @@
                                                     :maxlength="60"
                                                     @enter="handleConfirmSubRoute"
                                                     @input="handleSubRouteInput"
-                                                    placeholder="请输入路由名称，回车结束"
+                                                    :placeholder="$t('请输入路由名称，回车结束')"
                                                 />
                                                 <i class="bk-icon icon-exclamation-circle-shape tips-icon"
                                                     v-bk-tooltips="editState.error === 1 ?
-                                                        '请检查路径正确性' :
-                                                        (editState.error === 2 ? '根路由请直接在父级绑定' : '需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')"></i>
+                                                        $t('请检查路径正确性') :
+                                                        (editState.error === 2 ? $t('根路由请直接在父级绑定') : $t('需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成'))"></i>
                                             </div>
                                             <div :class="$style['buttons']">
                                                 <bk-button text size="small" theme="primary"
                                                     :disabled="pathInputDisabled"
-                                                    @click="handleConfirmSubRoute">确定</bk-button>
+                                                    @click="handleConfirmSubRoute">{{ $t('确定') }}</bk-button>
                                                 <span :class="$style['divider']">|</span>
-                                                <bk-button text size="small" theme="primary" @click="handleSubRouteCancel">取消</bk-button>
+                                                <bk-button text size="small" theme="primary" @click="handleSubRouteCancel">{{ $t('取消') }}</bk-button>
                                             </div>
                                         </div>
                                     </div>
                                     <div :class="[$style['opts'], { [$style['hide']]: editState.route !== null || removeLoading }]">
                                         <i :class="['bk-icon icon-edit2', $style['icon']]" @click="handleEditRoute(route)"></i>
                                         <bk-popconfirm trigger="click" width="320"
-                                            confirm-text="删除"
+                                            :confirm-text="$t('删除')"
                                             @confirm="handleConfirmDelRoute(route)"
                                             :on-hide="handleHideDelPopover">
                                             <div slot="content">
                                                 <div :class="$style['del-tips']">
                                                     <i :class="['bk-icon icon-info-circle-shape pr5', $style['content-icon']]"></i>
-                                                    <div :class="$style['content-text']">删除路由后，绑定到此路由的页面则无法访问，指向此路由的跳转路由也将失效</div>
+                                                    <div :class="$style['content-text']">{{ $t('删除路由后，绑定到此路由的页面则无法访问，指向此路由的跳转路由也将失效') }}</div>
                                                 </div>
                                             </div>
                                             <i :class="['bk-icon icon-close ml10', $style['icon']]" @click="handleShowDelPopover(route)"></i>
@@ -148,7 +148,7 @@
             </dl>
             <div :class="$style['empty']" v-else>
                 <bk-exception class="exception-wrap-item exception-part" type="empty" scene="part">
-                    <div :class="$style['empty-text']">暂无路由，先去<bk-link theme="primary" @click="handleCreatePage">创建页面</bk-link></div>
+                    <div :class="$style['empty-text']">{{ $t('暂无路由，先去') }}<bk-link theme="primary" @click="handleCreatePage">{{ $t('创建页面') }}</bk-link></div>
                 </bk-exception>
             </div>
         </div>
@@ -220,6 +220,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('project', ['projectDetail']),
             projectId () {
                 return Number(this.$route.params.projectId)
             },
@@ -586,7 +587,7 @@
                 }
             },
             getDisplayLayoutPath (path) {
-                return this.type === 'MOBILE' && path.startsWith('/mobile') ? path.replace('/mobile', '') : path
+                return this.type === 'MOBILE' && path.includes('/mobile/') ? path.replace('/mobile', '') : path
             },
             getBindDisplayValue (route) {
                 const { pageId, pageName, redirect, path } = route
@@ -598,7 +599,7 @@
                 if (pageId !== -1) {
                     return pageName
                 }
-                return path === '' ? '未绑定根路由' : '未绑定'
+                return path === '' ? window.i18n.t('未绑定根路由') : window.i18n.t('未绑定')
             },
             checkRoutePath (value, isParent = false) {
                 let error = false
@@ -631,7 +632,7 @@
                 })
             },
             handlePreview (group) {
-                window.open(`/preview-template/project/${this.projectId}/${group.layoutId}?type=nav-template`, '_blank')
+                window.open(`/preview-template/project/${this.projectId}/${group.layoutId}?type=nav-template&framework=${this.projectDetail.framework}`, '_blank')
             }
         }
     }
@@ -678,10 +679,6 @@
         position: relative;
         height: 36px;
         line-height: 36px;
-
-        & + .route-group {
-            margin-left: 66px;
-          }
 
         &:hover {
              background: #E1ECFF;

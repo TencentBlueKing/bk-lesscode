@@ -7,19 +7,19 @@
             </div>
             <div class="tag-and-operate" style="position: positive">
                 <form-manage-page v-if="page.nocodeType === 'FORM' && getFormManagePages(page.formId).length" :manage-pages="getFormManagePages(page.formId)"></form-manage-page>
-                <span class="tag-span">{{NOCODE_TYPE_MAP['title'][page.nocodeType || '']}}</span>
+                <span class="tag-span" :title="NOCODE_TYPE_MAP['title'][page.nocodeType || '']">{{NOCODE_TYPE_MAP['title'][page.nocodeType || '']}}</span>
                 <bk-dropdown-menu :ref="`moreActionDropdown${page.id}`">
                     <span slot="dropdown-trigger" class="more-menu-trigger">
                         <i class="bk-drag-icon bk-drag-more"></i>
                     </span>
                     <ul class="bk-dropdown-list page-item-ul" slot="dropdown-content" @click.stop="hideDropdownMenu(page.id)">
-                        <li><a href="javascript:;" @click="handleEditPage(page)">编辑</a></li>
-                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleShowDialog(page, 'copy')">复制</a></li>
-                        <li><a href="javascript:;" @click="handleShowDialog(page, 'rename')">重命名</a></li>
-                        <li><a href="javascript:;" @click="handleShowDialog(page, 'editRoute')">修改路由</a></li>
-                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page)">下载源码</a></li>
-                        <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleShowDialog(page, 'createFormManage')">生成数据管理页</a></li>
-                        <li><a href="javascript:;" @click="handleDelete(page)">删除</a></li>
+                        <li><a href="javascript:;" @click="handleEditPage(page)">{{$t('编辑')}}</a></li>
+                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleShowDialog(page, 'copy')">{{$t('复制')}}</a></li>
+                        <li><a href="javascript:;" @click="handleShowDialog(page, 'rename')">{{$t('重命名')}}</a></li>
+                        <li><a href="javascript:;" @click="handleShowDialog(page, 'editRoute')">{{$t('修改路由')}}</a></li>
+                        <li v-if="!page.nocodeType"><a href="javascript:;" @click="handleDownloadSource(page)">{{$t('下载源码')}}</a></li>
+                        <li v-if="page.nocodeType === 'FORM'"><a href="javascript:;" @click="handleShowDialog(page, 'createFormManage')">{{$t('生成数据管理页')}}</a></li>
+                        <li><a href="javascript:;" @click="handleDelete(page)">{{$t('删除')}}</a></li>
                     </ul>
                 </bk-dropdown-menu>
             </div>
@@ -80,7 +80,7 @@
                 if (!page.content) {
                     this.$bkMessage({
                         theme: 'error',
-                        message: '该页面为空页面，无源码生成'
+                        message: window.i18n.t('该页面为空页面，无源码生成')
                     })
                     return
                 }
@@ -105,7 +105,7 @@
                 this.$bkInfo({
                     width: 422,
                     extCls: 'delete-page-dialog',
-                    title: `确认删除该${this.NOCODE_TYPE_MAP.title[page.nocodeType] || '页面'}`,
+                    title: window.i18n.t('确认删除该{0}页面', [this.NOCODE_TYPE_MAP.title[page.nocodeType]]),
                     subHeader: this.getDeleteSubHeader(page.pageName, this.NOCODE_TYPE_MAP.deleteTips[page.nocodeType] || ''),
                     theme: 'danger',
                     confirmFn: async () => {
@@ -138,7 +138,7 @@
                             'color': '#979BA5',
                             'font-size': '12px'
                         }
-                    }, `页面：${pageName}`),
+                    }, `${window.i18n.t('页面')}：${pageName}`),
                     h('div', {
                         style: {
                             'color': '#63656E',
@@ -241,7 +241,10 @@
             padding: 2px 5px;
             display: inline-block;
             transform: scale(0.83, 0.83);
-            
+            max-width: 90px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .more-menu-trigger {

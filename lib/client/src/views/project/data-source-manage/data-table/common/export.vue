@@ -1,14 +1,14 @@
 <template>
     <section>
-        <bk-button v-if="onlyExportAll" size="small" @click="showExport('select')">导出</bk-button>
+        <bk-button v-if="onlyExportAll" size="small" @click="showExport('select')">{{ $t('导出') }}</bk-button>
         <bk-dropdown-menu ref="dropdownRef" v-else>
             <div class="dropdown-trigger-btn" slot="dropdown-trigger">
-                <span>导出</span>
+                <span>{{ $t('导出') }}</span>
                 <i :class="['bk-icon icon-angle-down']"></i>
             </div>
             <ul class="bk-dropdown-list" slot="dropdown-content">
-                <li><a href="javascript:;" :class="{ disabled: disablePartialSelection || disabled }" @click="showExport('select')">{{ exportSelectionText }}</a></li>
-                <li><a href="javascript:;" :class="{ disabled: disabled }" @click="showExport('all')">{{ exportAllText }}</a></li>
+                <li><a href="javascript:;" :class="{ disabled: disablePartialSelection || disabled }" @click="showExport('select')">{{ isExportSelectionText }}</a></li>
+                <li><a href="javascript:;" :class="{ disabled: disabled }" @click="showExport('all')">{{ isExportAllText }}</a></li>
             </ul>
         </bk-dropdown-menu>
 
@@ -20,16 +20,14 @@
             :title="title"
             :show-footer="false">
             <section class="export-home">
-                <h3 class="export-title">请选择导出格式</h3>
+                <h3 class="export-title">{{ $t('请选择导出格式') }}</h3>
                 <p class="export-items">
                     <span @click="downLoad('xlsx')" class="export-item">
                         <i class="bk-drag-icon bk-drag-xlsx"></i>
-                        XLSX 文件
-                    </span>
+                        {{ $t('XLSX 文件') }} </span>
                     <span @click="downLoad('sql')" class="export-item">
                         <i class="bk-drag-icon bk-drag-sql"></i>
-                        SQL 文件
-                    </span>
+                        {{ $t('SQL 文件') }} </span>
                 </p>
             </section>
         </bk-dialog>
@@ -58,11 +56,11 @@
             },
             exportSelectionText: {
                 type: String,
-                default: '导出选中数据'
+                default: ''
             },
             exportAllText: {
                 type: String,
-                default: '导出所有数据'
+                default: ''
             }
         },
 
@@ -71,6 +69,8 @@
             const isDropdownShow = ref<boolean>(false)
             const downLoadType = ref('all')
             const dropdownRef = ref(null)
+            const isExportSelectionText = props.exportSelectionText || ref(window.i18n.t('导出选中数据'))
+            const isExportAllText = props.exportAllText || ref(window.i18n.t('导出所有数据'))
 
             const dropdownHide = () => {
                 dropdownRef.value?.hide()
@@ -93,6 +93,8 @@
                 isShowExport,
                 isDropdownShow,
                 dropdownRef,
+                isExportSelectionText,
+                isExportAllText,
                 showExport,
                 downLoad
             }

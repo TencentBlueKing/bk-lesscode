@@ -10,13 +10,13 @@
                 <span>{{managePages.length}}</span>
             </span>
             <div slot="content" class="form-manage-list">
-                <div class="list-title"><span>关联的表单数据管理页</span></div>
+                <div class="list-title"><span>{{$t('关联的表单数据管理页')}}</span></div>
                 <ul class="list-ul">
                     <li v-for="item in managePages" :key="item.id">
                         <i style="color: #71C26E" class="bk-drag-icon bk-drag-shujuyuan"></i>
                         <span class="name">{{item.pageName}}</span>
-                        <i title="预览" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
-                        <i title="编辑" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
+                        <i :title="$t('预览')" class="bk-icon icon-eye click-icon" @click="handlePreview(item)"></i>
+                        <i :title="$t('编辑')" class="bk-drag-icon bk-drag-edit click-icon" style="font-size: 16px;" @click="handleEditPage(item)"></i>
                     </li>
                 </ul>
             </div>

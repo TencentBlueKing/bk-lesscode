@@ -1,7 +1,7 @@
 <template>
     <div class="flow-selector-wrapper">
         <bk-select
-            style="width: 340px;"
+            style="width: 360px;"
             ext-cls="flow-selector"
             ext-popover-cls="select-flow-dropdown"
             :value="flowConfig.id"
@@ -13,11 +13,11 @@
                 <i class="prefix-icon bk-drag-icon bk-drag-flow-fill"></i>
                 <div class="name-wrapper">
                     <div class="flow-name" :title="flowConfig.flowName">{{ flowConfig.flowName }}</div>
-                    <span v-if="flowConfig.deleteFlag" class="flow-status-tag archived">已归档</span>
+                    <span v-if="flowConfig.deleteFlag" class="flow-status-tag archived">{{ $t('已归档') }}</span>
                     <span
                         v-else-if="'deployed' in flowConfig"
                         :class="['flow-status-tag', flowConfig.deployed ? 'deployed' : 'undeployed']">
-                        {{ flowConfig.deployed ? '已部署' : '未部署' }}
+                        {{ flowConfig.deployed ? $t('已部署') : $t('未部署') }}
                     </span>
                 </div>
                 <i class="bk-select-angle bk-icon icon-angle-down" />
@@ -32,7 +32,7 @@
                 <div
                     class="create-btn"
                     @click="isCreateDialogShow = true">
-                    <i class="bk-icon icon-plus-circle" /> 新建流程
+                    <i class="bk-icon icon-plus-circle" /> {{ $t('新建流程') }}
                 </div>
             </div>
         </bk-select>
@@ -40,7 +40,7 @@
     </div>
 </template>
 <script>
-    import CreateFlowDialog from '../../create-flow-dialog.vue'
+    import CreateFlowDialog from '../../list/create-flow-dialog.vue'
 
     export default {
         name: 'FlowSelector',
@@ -71,8 +71,8 @@
         methods: {
             handleSelectFlow (val) {
                 this.$bkInfo({
-                    title: '确认离开?',
-                    subTitle: '您将离开流程页面，请确认相应修改已保存',
+                    title: window.i18n.t('确认离开'),
+                    subTitle: window.i18n.t('您将离开流程页面，请确认相应修改已保存'),
                     confirmFn: async () => {
                         this.$router.push({
                             name: 'flowConfig',

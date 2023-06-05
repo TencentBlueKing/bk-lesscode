@@ -1,0 +1,14 @@
+.form-item {
+    & + .form-item{
+        margin-top: 20px
+    }
+    &.inline{
+        display: inline-block;
+        margin-top: 0;
+        margin-bottom: 0;
+        vertical-align: middle;
+        & + .inline{
+            margin-left: 8px;
+        }
+    }
+}

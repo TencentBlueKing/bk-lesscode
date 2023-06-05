@@ -34,12 +34,10 @@
                 </node-template>
             </template>
         </bk-flow>
-        <bk-sideslider
-            title="线条配置"
+        <lc-sideslider
+            :title="$t('线条配置')"
             :width="700"
-            :quick-close="false"
-            :is-show="showLineConfigPanel"
-            :before-close="hanldeLineConfigPanelClose">
+            :is-show.sync="showLineConfigPanel">
             <line-config
                 slot="content"
                 :line="lineConfig"
@@ -48,9 +46,9 @@
                 :delete-pending="lineDeletePending"
                 @save="handleLineSave"
                 @delete="handleLineDelete"
-                @close="hanldeLineConfigPanelClose">
+                @close="handlerClose">
             </line-config>
-        </bk-sideslider>
+        </lc-sideslider>
     </div>
 </template>
 <script>
@@ -63,6 +61,7 @@
     import NodeTemplate from './nodeTemplate.vue'
     import ToolPanel from './toolPanel.vue'
     import LineConfig from './lineConfig.vue'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     const endpointOptions = {
         endpoint: 'Dot',
@@ -226,7 +225,7 @@
                 const value = {
                     id: `label_${line.id}`,
                     type: 'Label',
-                    name: `<span class="bk-label-test-name">${line.name || '默认'}</span>`,
+                    name: `<span class="bk-label-test-name">${line.name || window.i18n.t('默认')}</span>`,
                     cls: 'label-test',
                     location: 0.5
                 }
@@ -268,7 +267,7 @@
                             axis: { x, y }
                         }
                     }
-                    this.$store.dispatch('nocode/flow/updateNodePos', params)
+                    this.$store.dispatch('nocode/flow/patchNodeData', params)
                 } catch (e) {
                     console.error(e)
                 }
@@ -324,7 +323,7 @@
                 try {
                     const { x, y, type } = node
                     const nodeDesc = NODE_TYPE_LIST.find(item => item.type === type)
-                    const name = nodeDesc ? nodeDesc.name : '新增节点'
+                    const name = nodeDesc ? nodeDesc.name : this.$t('新增节点')
                     const params = {
                         name,
                         type,
@@ -397,7 +396,7 @@
                 try {
                     const params = {
                         workflow: this.flowId,
-                        name: '默认',
+                        name: this.$t('默认'),
                         axis: {
                             start: source.anchor,
                             end: target.anchor
@@ -464,33 +463,33 @@
                 const tNode = this.canvasData.nodes.find(item => item.id === targetId)
                 if (sourceId === targetId) {
                     result = false
-                    message = '节点自身不能相连'
+                    message = this.$t('节点自身不能相连')
                 } else {
                     // 开始节点只能输出（且只能单一输出），结束节点只能输入
                     if (sNode.type === 'START') {
                         if (this.canvas.lines.find(item => item.sourceId === sNode.id)) {
                             result = false
-                            message = '开始节点只能单一输出！'
+                            message = this.$t('开始节点只能单一输出！')
                         }
                     }
                     if (tNode.type === 'START') {
                         result = false
-                        message = '开始节点只能输出！'
+                        message = this.$t('开始节点只能输出！')
                     }
                     if (sNode.type === 'END') {
                         result = false
-                        message = '结束节点只能输入！'
+                        message = this.$t('结束节点只能输入！')
                     }
                     if (sNode.type === 'START' && tNode.type === 'END') {
                         result = false
-                        message = '开始节点和结束节点不能直接相连！'
+                        message = this.$t('开始节点和结束节点不能直接相连！')
                     }
                 }
                 // 已存在相同的连线不能相连
                 for (let i = 0; i < this.canvasData.lines.length; i++) {
                     if (sourceId === this.canvasData.lines[i].source.id && targetId === this.canvasData.lines[i].target.id) {
                         result = false
-                        message = '已存在的连线相同连线！'
+                        message = this.$t('已存在的连线相同连线！')
                     }
                 }
                 if (message) {
@@ -595,6 +594,7 @@
                     const index = this.canvasData.lines.findIndex(item => item.lineInfo.id === this.lineConfig.id)
                     this.canvasData.lines.splice(index, 1)
                     this.hanldeLineConfigPanelClose()
+                    window.leaveConfirm = false
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -607,6 +607,12 @@
             },
             hanldeLineConfigPanelClose () {
                 this.showLineConfigPanel = false
+            },
+            handlerClose () {
+                leaveConfirm()
+                    .then(() => {
+                        this.hanldeLineConfigPanelClose()
+                    })
             },
             updateStoreNodes () {
                 const nodes = this.canvasData.nodes.map(item => item.nodeInfo)

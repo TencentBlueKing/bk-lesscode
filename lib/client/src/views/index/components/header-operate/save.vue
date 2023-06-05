@@ -1,5 +1,5 @@
 <template>
-    <bk-button theme="primary" :loading="isLoading" @click="handleSubmit">保存</bk-button>
+    <bk-button theme="primary" :loading="isLoading" @click="handleSubmit">{{$t('保存')}}</bk-button>
 </template>
 <script>
     import {
@@ -50,7 +50,7 @@
             const handleSubmit = async () => {
                 if (isLocked.value) {
                     currentInstance.proxy.$bkMessage({
-                        message: `画布正在被 ${lockInfo.activeUser} 编辑无法保存`,
+                        message: window.i18n.t('画布正在被 {0} 编辑无法保存', [lockInfo.activeUser]),
                         theme: 'warning'
                     })
                     return

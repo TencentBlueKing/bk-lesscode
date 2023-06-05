@@ -25,13 +25,12 @@
             <div :class="$style['buttons']">
                 <span v-if="codeType === 'code'" :class="$style['with-nav']">
                     <bk-switcher :value="withNav" theme="primary" size="small" @change="switchWithNav" style="margin-right: 10px;" />
-                    {{ withNav ? '不包含导航源码' : '包含导航源码' }}
+                    {{ withNav ? $t('不包含导航源码') : $t('包含导航源码') }}
                 </span>
-                <i v-bk-tooltips="{ boundary: 'window', content: `复制${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
-                <i v-bk-tooltips="{ boundary: 'window', content: `下载${typeName}` }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
-                <i v-if="codeType === 'json'" v-bk-tooltips="{ boundary: 'window', content: '导入JSON' }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>
-                <!-- <i v-if="codeType === 'code'" v-bk-tooltips="{ boundary: 'window', content: withNav ? '不包含导航源码' : '包含导航源码' }" :class="['bk-drag-icon', 'bk-drag-switcher', $style['icon'], { [$style['without-nav']]: !withNav }]" @click="switchWithNav"></i> -->
-                <i v-bk-tooltips="{ boundary: 'window', content: '全屏' }" :class="['bk-drag-icon', 'bk-drag-full-screen', $style['icon']]" @click="handleScreenfull"></i>
+                <i v-bk-tooltips="{ boundary: 'window', content: $t('复制{n}',{ n: typeName }) }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
+                <i v-bk-tooltips="{ boundary: 'window', content: $t('下载{n}',{ n: typeName }) }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
+                <i v-if="codeType === 'json'" v-bk-tooltips="{ boundary: 'window', content: $t('导入JSON') }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>
+                <i v-bk-tooltips="{ boundary: 'window', content: $t('全屏') }" :class="['bk-drag-icon', 'bk-drag-full-screen', $style['icon']]" @click="handleScreenfull"></i>
                 <i :class="['bk-drag-icon', 'bk-drag-close-line', $style['icon']]" @click="$emit('close')"></i>
             </div>
         </div>
@@ -79,7 +78,7 @@
         computed: {
             ...mapGetters('page', ['pageDetail']),
             typeName () {
-                return this.codeType === 'json' ? 'JSON' : '源码'
+                return this.codeType === 'json' ? 'JSON' : this.$t('源码')
             },
             filename () {
                 const suffix = this.codeType === 'json' ? 'json' : 'vue'
@@ -119,7 +118,7 @@
                 const el = document.querySelector(`.${this.$style['code-viewer']}`)
                 if (!screenfull.isEnabled) {
                     this.$bkMessage({
-                        message: '浏览器不支持全屏',
+                        message: this.$t('浏览器不支持全屏'),
                         theme: 'error'
                     })
                     return false
@@ -142,7 +141,7 @@
                     document.getSelection().removeAllRanges()
                     document.getSelection().addRange(selected)
                 }
-                this.$bkMessage({ theme: 'primary', message: '复制成功', delay: 2000, dismissable: false })
+                this.$bkMessage({ theme: 'primary', message: this.$t('复制成功'), delay: 2000, dismissable: false })
             }
         }
     }

@@ -18,11 +18,11 @@
                             close: !showContent
                         }"
                     ></i>
-                    <span>开启侧边导航</span>
+                    <span>{{ $t('开启侧边导航') }}</span>
                 </div>
                 <div class="info-content" v-if="showContent">
                     <bk-switcher
-                        v-bk-tooltips="hasSideMenu ? '清空侧边导航' : '添加侧边导航'"
+                        v-bk-tooltips="hasSideMenu ? $t('清空侧边导航') : $t('添加侧边导航')"
                         size="small"
                         theme="primary"
                         :value="hasSideMenu"
@@ -38,7 +38,7 @@
                             close: !showMenuContent
                         }"
                     ></i>
-                    <span>导航菜单</span>
+                    <span>{{ $t('导航菜单') }}</span>
                 </div>
                 <vue-draggable
                     v-if="showMenuContent"
@@ -61,7 +61,7 @@
                 </vue-draggable>
             </div>
             <div v-if="hasSideMenu && showMenuContent" class="footer">
-                <bk-button size="small" text @click="handleAddSideMenu">继续添加</bk-button>
+                <bk-button size="small" text @click="handleAddSideMenu">{{ $t('继续添加') }}</bk-button>
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@
         <aside class="aside" v-if="!hideSideNav" @mouseenter="asideHover = true" @mouseleave="asideHover = false">
             <div class="side-hd">
                 <div class="open-select-menu-div" :class="{ 'show-select-project': !asideFolded || asideHover }">
-                    <i class="back-icon bk-drag-icon bk-drag-arrow-back" title="返回应用列表" @click="toProjects"></i>
+                    <i class="back-icon bk-drag-icon bk-drag-arrow-back" :title="$t('返回应用列表')" @click="toProjects"></i>
                     <select-project :project-list="projectList" />
                 </div>
                 <div v-show="asideFolded && !asideHover" class="fold-logo">
@@ -75,13 +75,13 @@
                 <div class="page-top">
                     <h3 class="current">{{ currentPage }}</h3>
                     <div class="version-selector" v-if="isShowProjectVersionSelector">
-                        应用当前版本：
+                        {{ $t('应用当前版本：') }}
                         <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
                     </div>
                     <div class="instructions" v-if="helpDocument">
                         <a class="download-demo" :href="helpDocument" target="_blank">
                             <bk-icon class="bk-layout-component-kkgoknfg bkIcon1f258 bk-icon-help" type="question-circle"> </bk-icon>
-                            使用指引
+                            {{ $t('使用指引') }}
                         </a>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
     import SelectProject from '@/components/project/select-project'
     import ExtraLinks from '@/components/ui/extra-links'
 
-    import { PROJECT_NAV_LIST } from './project-data'
+    import { getProjectNavList } from './project-data'
 
     export default {
         components: {
@@ -174,7 +174,7 @@
         },
         async created () {
             try {
-                this.navList = JSON.parse(JSON.stringify(PROJECT_NAV_LIST))
+                this.navList = getProjectNavList()
                 this.pageLoading = true
                 this.updateCurrentVersion(this.getInitialVersion())
                 bus.$on('update-project-version', this.updateCurrentVersion)
@@ -289,6 +289,7 @@
                 const url = IAM_ENABLE ? 'iam/myProject' : 'project/my'
                 const projectList = await this.$store.dispatch(url, { config: {} })
                 this.projectList = projectList
+                this.filterProjectList = projectList
             },
             handleChangeProjectVersion (versionId, version) {
                 this.setCurrentVersion(version)
@@ -302,6 +303,11 @@
             handleSelect (routeName) {
                 this.$router.push({
                     name: routeName
+                })
+            },
+            remoteHandler (keyword) {
+                this.filterProjectList = this.projectList.filter((project) => {
+                    return (project.projectName || '').includes(keyword)
                 })
             }
         }

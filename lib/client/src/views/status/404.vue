@@ -12,8 +12,8 @@
 <template>
     <div :class="$style['container']">
         <bk-exception :class="$style['exception-wrap']" type="404">
-            <div>页面不存在</div>
-            <bk-link theme="primary" @click="$router.replace({ path: '/' })">返回首页</bk-link>
+            <div>{{ $t('页面不存在') }}</div>
+            <bk-link theme="primary" @click="$router.replace({ path: '/' })">{{ $t('返回首页') }}</bk-link>
         </bk-exception>
     </div>
 </template>

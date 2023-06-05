@@ -13,7 +13,7 @@
     <div :class="[$style['container'], 'preview-exception']">
         <bk-exception :class="$style['exception-wrap']" type="403">
             <div>{{renderMsg}}</div>
-            <div :class="$style['text-subtitle']">系统将在 {{countdown}}s 后返回应用列表页</div>
+            <div :class="$style['text-subtitle']">{{ $t('系统将在 {0}s 后返回应用列表页', [countdown]) }}</div>
         </bk-exception>
     </div>
 </template>
@@ -34,7 +34,7 @@
             }
         },
         created () {
-            this.renderMsg = this.message || '访问的资源不存在'
+            this.renderMsg = this.message || this.$t('访问的资源不存在')
             this.timer = setInterval(() => {
                 this.countdown--
                 if (this.countdown === 0) {
