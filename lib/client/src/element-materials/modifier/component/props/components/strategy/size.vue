@@ -50,6 +50,11 @@
                 sizeUnit: ''
             }
         },
+        watch: {
+            defaultValue () {
+                this.initData()
+            }
+        },
         created () {
             this.initData()
         },

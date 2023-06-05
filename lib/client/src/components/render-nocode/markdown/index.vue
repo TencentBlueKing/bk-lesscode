@@ -1,18 +1,20 @@
 <template>
-    <draw-layout :hide-right-slot="navEmpty">
+    <draw-layout>
         <layout>
             <div class="markdown-page-wrapper">
                 <mavon-editor style="height: 100%" v-model="localValue" ref="md" @imgAdd="uploadImg" :tool-bars="toolbarsSetting" />
             </div>
         </layout>
-        <div v-if="!navEmpty" class="markdown-setting-wrapper" slot="right">
-            <layout-setting :template-data="curTemplateData" />
+        <div class="markdown-setting-wrapper" slot="right">
+            <layout-setting v-if="curTemplateData.panelActive" :template-data="curTemplateData" />
+            <page-setting v-else />
         </div>
     </draw-layout>
 </template>
 <script>
     import DrawLayout from '@/views/index/components/draw-layout'
     import Layout from '@/components/render-nocode/components/layout'
+    import PageSetting from '@/element-materials/modifier/page'
     import LayoutSetting from '@/element-materials/modifier/template'
     import { mapGetters } from 'vuex'
 
@@ -21,6 +23,7 @@
         components: {
             DrawLayout,
             Layout,
+            PageSetting,
             LayoutSetting
         },
         data () {

@@ -128,6 +128,11 @@
                             required: true,
                             message: this.$t('必填项'),
                             trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该页面名称已存在',
+                            trigger: 'blur'
                         }
                     ],
                     pageCode: [
@@ -139,6 +144,11 @@
                         {
                             regex: /^[a-z][a-z0-9]{0,60}$/,
                             message: this.$t('以小写字母开头，由小写字母与数字组成,少于60个字符'),
+                            trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该页面ID已存在',
                             trigger: 'blur'
                         }
                     ],
@@ -247,6 +257,23 @@
                     this.save()
                 }
             },
+            async checkName () {
+                const nameExist = await this.$store.dispatch('page/checkName', {
+                    data: {
+                        pageName: this.formData.pageName,
+                        pageCode: this.formData.pageCode,
+                        projectId: this.projectId,
+                        versionId: this.versionId,
+                        from: 'create',
+                        blurCheck: true
+                    }
+                })
+                if (nameExist) {
+                    return false
+                } else {
+                    return true
+                }
+            },
             async save () {
                 try {
                     this.loading = true
@@ -341,6 +368,8 @@
                         Object.assign(this.formData, this.initPageData)
                     }
                     this.initData()
+                } else {
+                    this.$emit('closeDialog')
                 }
             },
             handleLayoutChecked (layout) {
@@ -376,7 +405,8 @@
                     margin: 18px 0 14px;
                     .platform-icon {
                         font-size: 16px;
-                        padding: 2px;
+                        margin-right: 8px;
+                        padding: 2px 3px;
                         color: #979ba5;
                         border-radius: 2px;
                         background: #f0f1f5;

@@ -159,7 +159,7 @@
         },
         created () {
             this.fetchData()
-            const isProd = process.env.V3_ENV === 'prod'
+            const isProd = window.BKPAAS_ENVIRONMENT === 'prod'
             this.tnpmPrefix = isProd ? '' : 'test-'
         },
         methods: {

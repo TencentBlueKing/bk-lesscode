@@ -16,3 +16,22 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    .render-drag-icon-item{
+        width: 36px;
+        height: 36px;
+        margin-right: 4px;
+        margin-bottom: 4px;
+        background-color: #fafbfd;
+        color: #979ba5;
+        text-align: center;
+        font-size: 16px;
+        line-height: 36px;
+        cursor: pointer;
+        &:hover{
+            background: #3a84ff;
+            color: #fff;
+        }
+    }
+</style>

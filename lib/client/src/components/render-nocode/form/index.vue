@@ -104,6 +104,10 @@
                 this.crtField = {}
                 this.crtIndex = -1
             })
+            bus.$on('clearCurFormField', () => {
+                this.crtField = {}
+                this.crtIndex = -1
+            })
         },
         beforeDestroy () {
             bus.$off('resetFieldList')

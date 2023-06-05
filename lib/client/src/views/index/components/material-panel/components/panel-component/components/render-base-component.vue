@@ -1,6 +1,7 @@
 <template>
     <div>
         <search-box
+            :placeholder="$t('组件名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
         <div>
