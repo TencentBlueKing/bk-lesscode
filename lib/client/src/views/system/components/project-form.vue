@@ -98,12 +98,22 @@
                             regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
                             message: window.i18n.t('由汉字，英文字母，数字组成，20个字符以内'),
                             trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该应用名称已存在',
+                            trigger: 'blur'
                         }
                     ],
                     projectCode: [
                         {
                             regex: /^[a-z]{1,16}$/,
                             message: window.i18n.t('只能由小写字母组成, 16个字符以内'),
+                            trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkCode,
+                            message: '该应用ID已存在',
                             trigger: 'blur'
                         }
                     ],
@@ -141,6 +151,26 @@
             this.importProjectData = []
         },
         methods: {
+            async checkName () {
+                const res = await this.$store.dispatch('project/checkname', {
+                    data: {
+                        name: this.formData.projectName,
+                        isBlurCheck: true
+                    }
+                })
+                // 接口返回true， 代表重复
+                return res.data !== true
+            },
+            async checkCode () {
+                const res = await this.$store.dispatch('project/checkname', {
+                    data: {
+                        projectCode: this.formData.projectCode,
+                        isBlurCheck: true
+                    }
+                })
+                // 接口返回true， 代表重复
+                return res.data !== true
+            },
             async validate () {
                 const res = await this.$refs.infoForm.validate()
                 return res

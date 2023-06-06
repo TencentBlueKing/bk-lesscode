@@ -216,7 +216,7 @@
         width: 100%;
         align-content: flex-start;
         margin-top: 10px;
-        padding: 8px;
+        padding: 8px 0;
         overflow-y: auto;
         overflow-x: hidden;
         @mixin scroller;

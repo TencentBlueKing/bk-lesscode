@@ -11,15 +11,15 @@
 
 <template>
     <style-layout :title="$t('透明度')">
-        <style-item name="Opacity">
-            <div class="bk-form-control" style="width: 100%;">
-                <div class="bk-input-number">
+        <style-item name="opacity">
+            <div class="opacity-container" style="width: 100%;">
+                <bk-slider ext-cls="border-radius-slider" :step="0.1" :max-value="1" v-model="opacityValue" @change="handleOpacityChange"></bk-slider>
+                <div class="bk-input-number" style="width: 68px">
                     <input type="text"
-                        style="width: 100%"
                         class="bk-form-input"
+                        :value="opacityValue"
                         @keydown="inputKeydownHandler($event)"
-                        v-model="opacityValue"
-                        @input="handleOpacityChange" />
+                        @input="handleInput" />
                     <span class="input-number-option">
                         <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
                         <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
@@ -62,13 +62,20 @@
                     190, // .
                     38, 40, 37, 39, // up down left right
                     46, // del
-                    9 // tab
+                    9, // tab
+                    96, 97, 98, 99, 100, 101, 102, 103, 104, 105, // 小键盘0-9
+                    109, 110 // 小键盘 - .
                 ]
             }
         },
         methods: {
+            handleInput (e) {
+                const val = e.target.value || 1
+                this.opacityValue = Number(val)
+                this.handleOpacityChange()
+            },
             handleOpacityChange () {
-                const val = this.opacityValue
+                const val = Number(this.opacityValue)
                 this.change('opacity', val)
             },
 
@@ -104,7 +111,7 @@
                 if (parseFloat(this.opacityValue) >= 1) {
                     return
                 }
-                this.opacityValue = accAdd(this.opacityValue, 0.1)
+                this.opacityValue = Number(accAdd(this.opacityValue, 0.1))
                 this.handleOpacityChange()
             },
 
@@ -112,9 +119,23 @@
                 if (parseFloat(this.opacityValue) <= 0) {
                     return
                 }
-                this.opacityValue = accSub(this.opacityValue, 0.1)
+                this.opacityValue = Number(accSub(this.opacityValue, 0.1))
                 this.handleOpacityChange()
             }
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    .opacity-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 234px;
+        height: 32px;
+        .border-radius-slider {
+            width: 92px;
+            margin-right: 12px;
+        }
+    }
+</style>

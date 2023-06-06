@@ -47,13 +47,19 @@
             </div>
             <main class="main-container" :style="{ 'height': showInput ? '450px' : '350px' }">
                 <div class="init-json">
-                    <textarea class="json-input" :placeholder="$t('请输入JSON格式的数据')" v-model="initJsonStr"></textarea>
+                    <span class="area-name">{{$t('编辑区')}}</span>
+                    <div class="area-container">
+                        <textarea ref="jsonInput" class="json-input" :placeholder="$t('请输入JSON格式的数据')" v-model="initJsonStr"></textarea>
+                    </div>
                 </div>
                 <div class="transform-json">
-                    <json-viewer
-                        :value="initJson"
-                        :expand-depth="5"
-                    ></json-viewer>
+                    <span class="area-name">{{$t('预览区')}}</span>
+                    <div class="area-container area-scroll">
+                        <json-viewer
+                            :value="initJson"
+                            :expand-depth="5"
+                        ></json-viewer>
+                    </div>
                 </div>
             </main>
         </bk-dialog>
@@ -127,6 +133,13 @@
                     this.initJsonStr = circleJSON(defaultValue, null, 4)
                 },
                 immediate: true
+            },
+            isShow (val) {
+                if (val) {
+                    setTimeout(() => {
+                        this.$refs.jsonInput.focus()
+                    }, 500)
+                }
             }
         },
         methods: {
@@ -193,9 +206,6 @@
     .json-setting-dialog {
         /deep/ .bk-dialog {
             position: initial;
-            /* &.ease-enter-active.ease-enter-to {
-                animation: none!important;
-            } */
             .bk-dialog-content {
                 top: calc(50vh - 324px)!important;
             }
@@ -209,16 +219,20 @@
             display:flex;
             overflow: hidden;
             margin: 0 auto;
-            border: solid 1px #E5EBEE;
-            > div {
-                border-right: solid 1px #E5EBEE;
+            .area-container {
+                height: 430px;
+                border: 1px solid #E5EBEE;
+            }
+            .area-scroll {
                 overflow: auto;
                 @mixin scroller;
+            }
+            .area-name {
+                font-size: 12px;
             }
             .init-json {
                 flex: 1;
                 overflow: hidden;
-                margin-top: 10px;
                 .json-input {
                     border: 0px;
                     width: 100%;

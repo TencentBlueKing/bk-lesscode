@@ -78,6 +78,7 @@
 <script>
     import ProjectForm from './project-form.vue'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
+    import { bus } from '@/common/bus'
     import { PROJECT_TEMPLATE_TYPE } from '@/common/constant'
     import frameworkTag from '@/components/framework-tag.vue'
 
@@ -154,7 +155,7 @@
                         this.isShow = false
 
                         setTimeout(() => {
-                            this.$emit('to-page', projectId)
+                            this.handleGotoPage(projectId)
                         }, 300)
                     }
                 } catch (e) {
@@ -162,6 +163,16 @@
                 } finally {
                     this.loading = false
                 }
+            },
+            handleGotoPage (projectId) {
+                bus.$emit('update-project-info')
+                // 开发应用和页面管理时调用跳到@/views/project/page-manage
+                this.$router.replace({
+                    name: 'pageList',
+                    params: {
+                        projectId
+                    }
+                })
             },
             handleClickFilter (link) {
                 this.filter = link

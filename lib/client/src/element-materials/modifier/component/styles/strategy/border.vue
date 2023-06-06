@@ -20,31 +20,31 @@
                         <span class="bk-drag-icon bk-drag-radius-sj" :class="!isAllBorder && 'active'" @click="isAllBorder = false"></span>
                     </div>
                     <bk-slider ext-cls="border-radius-slider" :max-value="99" v-model="borderRadius"></bk-slider>
-                    <append-number-input v-model="borderRadius" format></append-number-input>
+                    <icon-size-input v-model="borderRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0px;" />
                 </div>
                 <div class="single-border-container" v-show="!isAllBorder">
                     <div class="row-container">
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-s.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <append-number-input v-model="borderTopLeftRadius" format></append-number-input>
+                            <icon-size-input v-model="borderTopLeftRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-zs.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <append-number-input v-model="borderTopRightRadius" format></append-number-input>
+                            <icon-size-input v-model="borderTopRightRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                     </div>
                     <div class="row-container">
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-ys.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <append-number-input v-model="borderBottomLeftRadius" format></append-number-input>
+                            <icon-size-input v-model="borderBottomLeftRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                         <div class="single-border">
                             <img src="../../../../../images/svg/icon-radius-yx.svg" alt="" width="20px">
                             <div class="img-cover" v-show="isDifferent"></div>
-                            <append-number-input v-model="borderBottomRightRadius" format></append-number-input>
+                            <icon-size-input v-model="borderBottomRightRadius" :item="{ name: ' ' }" style="width: 68px;margin-top: 0" />
                         </div>
                     </div>
                 </div>
@@ -69,6 +69,7 @@
                     </div>
                     <div class="border-icon-container" @click="activeBorder = 'borderRight'">
                         <img src="../../../../../images/svg/icon-border-y.svg" alt="" width="20px">
+                        <!-- <i class="bk-drag-icon bk-drag-border-y" /> -->
                         <div class="img-cover" v-show="activeBorder === 'borderRight'"></div>
                     </div>
                 </div>
@@ -140,16 +141,22 @@
                     style="width: 100%" />
             </style-item>
             <style-item :name="$t('偏移')">
-                <size-input
+                <icon-size-input
                     :value="borderImageSlice.x"
                     :placeholder="' '"
+                    :item="{ font: 'x', 'noUnit': true }"
                     @change="handleBorderSliceChange('x', $event)"
-                    style="width: 85px" />
-                <size-input
+                    style="width: 85px;margin-top: 0">
+                    <div></div>
+                </icon-size-input>
+                <icon-size-input
                     :value="borderImageSlice.y"
+                    :item="{ font: 'y', 'noUnit': true }"
                     :placeholder="' '"
                     @change="handleBorderSliceChange('y', $event)"
-                    style="width: 85px" />
+                    style="width: 85px;margin-top: 0">
+                    <div></div>
+                </icon-size-input>
             </style-item>
             <style-item name="repeat">
                 <bk-select
@@ -170,9 +177,8 @@
 <script>
     import StyleLayout from '../layout/index'
     import StyleItem from '../layout/item'
-    import AppendNumberInput from '@/components/modifier/append-number-input'
+    import IconSizeInput from '@/components/modifier/icon-size-input'
     import BorderDetail from '@/components/modifier/border-detail'
-    import SizeInput from '@/components/modifier/size-input'
     import SrcInput from '@/components/src-input/index.vue'
     import { splitValueAndUnit, computeIsDifferent } from '@/common/util'
 
@@ -180,9 +186,8 @@
         components: {
             StyleLayout,
             StyleItem,
-            AppendNumberInput,
+            IconSizeInput,
             BorderDetail,
-            SizeInput,
             SrcInput
         },
         props: {
@@ -388,7 +393,7 @@
                     justify-content: space-between;
                     align-items: center;
                     height: 32px;
-                    margin-top: 8px;
+                    margin-top: 12px;
                     .single-border {
                         position: relative;
                         display: flex;
@@ -423,7 +428,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 10px;
+        margin-top: 12px;
         .border-icons-container {
             width: 72px;
             .icons-box {

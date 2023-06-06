@@ -79,6 +79,7 @@
 <style lang="postcss" scoped>
     .sort-selector {
         width: 112px;
+        height: 32px;
         border: none;
         background: #EAEBF0;
         margin-left: 8px;

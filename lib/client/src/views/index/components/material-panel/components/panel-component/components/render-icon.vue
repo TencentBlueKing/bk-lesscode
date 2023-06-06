@@ -1,6 +1,7 @@
 <template>
     <div class="render-icon">
         <search-box
+            placeholder="图标名称"
             :list="searchList"
             @on-change="handleSearchChange" />
         <group-box
