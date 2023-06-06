@@ -112,6 +112,7 @@
                 'pageDetail'
             ]),
             ...mapGetters('layout', ['pageLayout']),
+            ...mapGetters('project', ['projectDetail']),
             projectId () {
                 return this.$route.params.projectId
             }
@@ -145,7 +146,7 @@
         methods: {
             async toggleTemplateList (val) {
                 if (val) {
-                    this.templateList = await this.$store.dispatch('pageTemplate/list', { projectId: this.projectId })
+                    this.templateList = await this.$store.dispatch('pageTemplate/list', { projectId: this.projectId, framework: this.projectDetail.framework })
                 }
             },
             async getTemplateCategory () {
@@ -185,7 +186,8 @@
                             versionId: this.versionId,
                             fromPageCode: this.pageDetail && this.pageDetail.pageCode,
                             content: JSON.stringify(this.eventData.value),
-                            previewImg: imgData
+                            previewImg: imgData,
+                            framework: this.projectDetail.framework
                         }
                         
                         if (formData.saveType === 'edit') {

@@ -11,6 +11,10 @@
 
 <template>
     <div v-if="config.length">
+        <div class="custom-style-tips" v-if="lastStyles.customStyle && Object.keys(lastStyles.customStyle).length">
+            <bk-alert type="warning" title="当前组件有设置自定义样式，对于相同的样式属性，自定义样式的优先级高于样式面板">
+            </bk-alert>
+        </div>
         <position
             v-if="checkConfig('position')"
             :value="lastStyles"
@@ -23,17 +27,9 @@
             :include="getConfig('size').include"
             :exclude="getConfig('size').exclude"
             :change="handleChange" />
-        <padding
-            v-if="checkConfig('padding')"
+        <margin-padding
+            v-if="checkConfig('margin') || checkConfig('padding')"
             :value="lastStyles"
-            :include="getConfig('padding').include"
-            :exclude="getConfig('padding').exclude"
-            :change="handleChange" />
-        <margin
-            v-if="checkConfig('margin')"
-            :value="lastStyles"
-            :include="getConfig('margin').include"
-            :exclude="getConfig('margin').exclude"
             :change="handleChange" />
         <font-config
             v-if="checkConfig('font')"
@@ -80,8 +76,7 @@
     import StyleItem from './layout/item'
     import StyleCustom from './strategy/custom-style'
     import StyleSize from './strategy/size'
-    import StylePadding from './strategy/padding'
-    import StyleMargin from './strategy/margin'
+    import StyleMarginPadding from './strategy/margin-padding'
     import StyleFont from './strategy/font'
     import StyleBorder from './strategy/border'
     import StylePosition from './strategy/position'
@@ -95,8 +90,7 @@
         StyleCustom,
         position: StylePosition,
         size: StyleSize,
-        padding: StylePadding,
-        margin: StyleMargin,
+        marginPadding: StyleMarginPadding,
         fontConfig: StyleFont,
         pointer: StylePointer,
         background: StyleBackground,
@@ -174,3 +168,10 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    .custom-style-tips {
+        margin: 10px 12px 10px 8px;
+        font-size: 12px;
+    }
+</style>

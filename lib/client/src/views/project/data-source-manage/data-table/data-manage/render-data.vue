@@ -28,12 +28,12 @@
             >
                 <template v-slot:tips="slotProps">
                     <template v-if="slotProps.fileType === DATA_FILE_TYPE.SQL">
-                        支持INSERT、UPDATE、DELETE三种操作，时间类型的值需要转成0时区，
+                        {{$t('支持INSERT、UPDATE、DELETE三种操作，时间类型的值需要转成0时区，')}}
                     </template>
                 </template>
                 <template v-slot="slotProps">
                     <template v-if="slotProps.fileType === DATA_FILE_TYPE.XLSX">
-                        <h5 class="import-title">操作类型</h5>
+                        <h5 class="import-title">{{$t('操作类型')}}</h5>
                         <bk-radio-group
                             v-model="dataImportOperationType"
                             class="import-content"
@@ -495,6 +495,7 @@
                 const sql = dataParse.set(dataJsonParser).export(dataSqlParser)
 
                 return modifyOnlineDb(sql).then((res) => {
+                    window.leaveConfirm = false
                     close()
                     getDataList()
                     return res
@@ -603,6 +604,7 @@
                 // sql 导入则直接执行 sql 语法
                 if (fileType === DATA_FILE_TYPE.SQL) {
                     return modifyOnlineDb(data.content).then((results) => {
+                        window.leaveConfirm = false
                         close()
                         getDataList()
                         handleImportSuccessMessage(results)

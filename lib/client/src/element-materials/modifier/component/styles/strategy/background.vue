@@ -32,43 +32,51 @@
                     style="width: 100%" />
             </style-item>
             <style-item :name="$t('大小')">
-                <template>
-                    <size-input
-                        :value="backgroundSize.width"
-                        :placeholder="' '"
-                        @change="handleBackgroundSizeChange('width', $event)"
-                        style="width: 60px" />
-                    <size-input
-                        :value="backgroundSize.height"
-                        :placeholder="' '"
-                        @change="handleBackgroundSizeChange('height', $event)"
-                        style="width: 60px" />
-                </template>
-                <append-select
-                    :value="backgroundSize.unit"
-                    is-margin-style
-                    @change="handleUnitChange('backgroundSize', $event)"
-                    style="border: 1px solid #c4c6cc" />
+                <size-input
+                    :value="backgroundSize.width"
+                    :item="{ icon: 'bk-drag-kuandu', name: $t('宽度') }"
+                    @change="handleBackgroundSizeChange('width', $event)"
+                    style="width: 100%;margin-top: 0">
+                    <size-unit
+                        :value="backgroundSize.widthUnit"
+                        @change="handleBackgroundSizeChange('widthUnit', $event)" />
+                </size-input>
             </style-item>
+            <style-item name="">
+                <size-input
+                    :value="backgroundSize.height"
+                    :item="{ icon: 'bk-drag-gaodu', name: $t('高度') }"
+                    @change="handleBackgroundSizeChange('height', $event)"
+                    style="width: 100%;margin-top: 0">
+                    <size-unit
+                        :value="backgroundSize.heightUnit"
+                        @change="handleBackgroundSizeChange('heightUnit', $event)" />
+                </size-input>
+            </style-item>
+
             <style-item :name="$t('位置')">
-                <template>
-                    <size-input
-                        :value="backgroundPosition.x"
-                        :placeholder="' '"
-                        @change="handleBackgroundPositionChange('x', $event)"
-                        style="width: 60px" />
-                    <size-input
-                        :value="backgroundPosition.y"
-                        :placeholder="' '"
-                        @change="handleBackgroundPositionChange('y', $event)"
-                        style="width: 60px" />
-                </template>
-                <append-select
-                    :value="backgroundPosition.unit"
-                    is-margin-style
-                    @change="handleUnitChange('backgroundPosition', $event)"
-                    style="border: 1px solid #c4c6cc" />
+                <size-input
+                    :value="backgroundPosition.x"
+                    :item="{ icon: 'bk-drag-icon bk-drag-zuobianju', name: $t('左边距') }"
+                    @change="handleBackgroundPositionChange('x', $event)"
+                    style="width: 100%;margin-top: 0">
+                    <size-unit
+                        :value="backgroundPosition.xUnit"
+                        @change="handleBackgroundPositionChange('xUnit', $event)" />
+                </size-input>
             </style-item>
+            <style-item name="">
+                <size-input
+                    :value="backgroundPosition.y"
+                    :item="{ icon: 'bk-drag-icon bk-drag-dingbianju', name: $t('上边距') }"
+                    @change="handleBackgroundPositionChange('y', $event)"
+                    style="width: 100%;margin-top: 0">
+                    <size-unit
+                        :value="backgroundPosition.yUnit"
+                        @change="handleBackgroundPositionChange('yUnit', $event)" />
+                </size-input>
+            </style-item>
+            
             <style-item name="repeat">
                 <bk-select
                     :value="imageConfig.backgroundRepeat"
@@ -98,20 +106,22 @@
 <script>
     import StyleLayout from '../layout/index'
     import StyleItem from '../layout/item'
-    import AppendSelect from '@/components/modifier/append-select'
-    import SizeInput from '@/components/modifier/size-input'
+    import SizeInput from '@/components/modifier/icon-size-input'
+    import SizeUnit from '@/components/modifier/size-unit'
     import SrcInput from '@/components/src-input/index.vue'
     import { splitValueAndUnit } from '@/common/util'
     import { getCssProperties } from '../common/util'
+    import defaultUnitMixin from '@/common/defaultUnit.mixin'
 
     export default {
         components: {
             StyleLayout,
             StyleItem,
-            AppendSelect,
+            SizeUnit,
             SizeInput,
             SrcInput
         },
+        mixins: [defaultUnitMixin],
         props: {
             value: {
                 type: Object,
@@ -130,24 +140,26 @@
         },
         data () {
             return {
-                unitList: [
-                    { name: 'px', id: 'px' },
-                    { name: '%', id: '%' }
-                ],
                 valueMap: {
                     backgroundColor: this.value.backgroundColor,
                     backgroundImage: this.value.backgroundImage
                 },
                 // background-image相关属性
                 backgroundImageShow: false,
-                backgroundSize: { width: '', height: '', unit: 'px' },
-                backgroundPosition: { x: '', y: '', unit: 'px' },
+                backgroundSize: { width: '', height: '', widthUnit: this.defaultUnit, heightUnit: this.defaultUnit },
+                backgroundPosition: { x: '', y: '', xUnit: this.defaultUnit, yUnit: this.defaultUnit },
                 imageConfig: {
                     backgroundRepeat: this.value.backgroundRepeat || 'repeat',
                     backgroundAttachment: this.value.backgroundAttachment || 'scroll'
                 },
                 renderValueMap: {}
             }
+        },
+        created () {
+            this.backgroundSize.widthUnit = this.defaultUnit
+            this.backgroundSize.heightUnit = this.defaultUnit
+            this.backgroundPosition.xUnit = this.defaultUnit
+            this.backgroundPosition.yUnit = this.defaultUnit
         },
         mounted () {
             this.handleMapInit()
@@ -157,6 +169,7 @@
                 this.renderValueMap = getCssProperties(this.valueMap, this.include, this.exclude)
 
                 // 初始化background-image相关属性
+                console.log(this.value, 'value')
                 if (this.renderValueMap.hasOwnProperty('backgroundImage')) {
                     if (this.renderValueMap.backgroundImage) {
                         this.backgroundImageShow = true
@@ -166,13 +179,15 @@
                         const size = this.value.backgroundSize.split(' ')
                         this.backgroundSize.width = splitValueAndUnit('value', size[0])
                         this.backgroundSize.height = splitValueAndUnit('value', size[1])
-                        this.backgroundSize.unit = splitValueAndUnit('unit', size[0])
+                        this.backgroundSize.widthUnit = splitValueAndUnit('unit', size[0]) || this.defaultUnit
+                        this.backgroundSize.heightUnit = splitValueAndUnit('unit', size[1]) || this.defaultUnit
                     }
                     if (this.value.backgroundPosition) {
                         const pos = this.value.backgroundPosition.split(' ')
                         this.backgroundPosition.x = splitValueAndUnit('value', pos[0])
                         this.backgroundPosition.y = splitValueAndUnit('value', pos[1])
-                        this.backgroundPosition.unit = splitValueAndUnit('unit', pos[0])
+                        this.backgroundPosition.xUnit = splitValueAndUnit('unit', pos[0]) || this.defaultUnit
+                        this.backgroundPosition.yUnit = splitValueAndUnit('unit', pos[1]) || this.defaultUnit
                     }
                 }
             },
@@ -185,14 +200,6 @@
                 this.imageConfig[key] = value
                 this.change(key, value)
             },
-            handleUnitChange (key, val) {
-                if (key === 'backgroundSize') {
-                    this.backgroundSize.unit = val
-                } else if (key === 'backgroundPosition') {
-                    this.backgroundPosition.unit = val
-                }
-                this.handleInputChange(key)
-            },
             handleBackgroundSizeChange (key, val) {
                 this.backgroundSize[key] = val
                 this.handleInputChange('backgroundSize')
@@ -204,12 +211,10 @@
             handleInputChange (key) {
                 let newValue
                 if (key === 'backgroundSize' && this.backgroundSize.width && this.backgroundSize.height) {
-                    const unit = this.backgroundSize.unit
-                    newValue = `${this.backgroundSize.width}${unit} ${this.backgroundSize.height}${unit}`
+                    newValue = `${this.backgroundSize.width}${this.backgroundSize.widthUnit} ${this.backgroundSize.height}${this.backgroundSize.heightUnit}`
                 } else if (key === 'backgroundPosition' && (this.backgroundPosition.x || this.backgroundPosition.y)) {
-                    const unit = this.backgroundPosition.unit
-                    const x = this.backgroundPosition.x ? `${this.backgroundPosition.x}${unit}` : `0${unit}`
-                    const y = this.backgroundPosition.y ? `${this.backgroundPosition.y}${unit}` : `0${unit}`
+                    const x = this.backgroundPosition.x ? `${this.backgroundPosition.x}${this.backgroundPosition.xUnit}` : '0'
+                    const y = this.backgroundPosition.y ? `${this.backgroundPosition.y}${this.backgroundPosition.yUnit}` : 0
                     newValue = `${x} ${y}`
                 } else {
                     newValue = ''
@@ -223,8 +228,8 @@
                     this.handleValueChange('backgroundImage', '')
                     this.handleConfigChange('backgroundRepeat', '')
                     this.handleConfigChange('backgroundAttachment', '')
-                    this.backgroundSize = { width: '', height: '', unit: 'px' }
-                    this.backgroundPosition = { x: '', y: '', unit: 'px' }
+                    this.backgroundSize = { width: '', height: '', unit: this.defaultUnit }
+                    this.backgroundPosition = { x: '', y: '', unit: this.defaultUnit }
                     this.handleInputChange('backgroundSize', '')
                     this.handleInputChange('backgroundPosition', '')
                     return

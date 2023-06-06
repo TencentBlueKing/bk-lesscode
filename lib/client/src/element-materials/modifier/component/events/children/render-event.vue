@@ -35,6 +35,7 @@
                 </span>
                 <bk-switcher
                     size="small"
+                    theme="primary"
                     v-bk-tooltips="{
                         content: $t('关闭后，该事件不生效'),
                         boundary: 'window'

@@ -4,7 +4,9 @@
         v-bk-clickoutside="handleHideDropList">
         <bk-input
             ref="input"
+            :ext-cls="inputCls"
             right-icon="bk-icon icon-search"
+            :placeholder="placeholder"
             :value="keyword"
             :clearable="true"
             @change="handleSearch"
@@ -68,7 +70,7 @@
         render (h, ctx) {
             const textClass = 'text'
             const { node, query } = ctx.props
-            const searchName = `${node.name} ${node.displayName}`
+            const searchName = node.displayName ? `${node.name} ${node.displayName}` : node.name
             return (
                 <span title={searchName} domPropsInnerHTML={
                     query ? searchName.replace(new RegExp(`(${query})`, 'i'), '<em style="font-style: normal;color: #3a84ff;">$1</em>') : searchName
@@ -84,7 +86,19 @@
         props: {
             list: {
                 type: Array,
-                default: () => []
+                default: () => ([])
+            },
+            // 当list变化时重置keyword
+            resetKeywordOnChangeList: {
+                type: Boolean,
+                default: true
+            },
+            inputCls: {
+                type: String,
+                default: 'canvas-search-input'
+            },
+            placeholder: {
+                type: String
             }
         },
         data () {
@@ -99,7 +113,9 @@
         watch: {
             list: {
                 handler (val) {
-                    this.keyword = ''
+                    if (this.resetKeywordOnChangeList) {
+                        this.keyword = ''
+                    }
                 },
                 immediate: true
             }
@@ -117,8 +133,7 @@
                 }
                 const reg = new RegExp(encodeRegexp(searchText), 'i')
                 const renderList = this.list.reduce((result, item) => {
-                    if (reg.test(item.type)
-                        || reg.test(item.name)
+                    if (reg.test(item.name)
                         || reg.test(item.displayName)) {
                         result.push(item)
                     }
@@ -196,6 +211,16 @@
         }
     }
 </script>
+<style lang="postcss">
+    .canvas-search-input input {
+        background-color: #F5F7FA;
+        border-radius: 2px;
+        border: 1px solid #fff;
+        &:focus {
+            border: 1px solid #3a84ff;
+        }
+    }
+</style>
 <style lang="postcss" scoped>
     @import "@/css/mixins/scroller";
     @import "@/css/mixins/ellipsis";
@@ -230,7 +255,7 @@
                 line-height: 32px;
                 padding: 0 10px;
                 color: #63656E;
-                font-size: 14px;
+                font-size: 12px;
                 .text {
                     @mixin ellipsis 100%;
                     em {

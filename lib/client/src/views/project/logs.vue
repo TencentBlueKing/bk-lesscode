@@ -38,9 +38,9 @@
                 </div>
             </div>
             <div :class="$style['filter-item']">
-                <div :class="$style['label']">{{ $t('日期区间') }}</div>
+                <div :class="$style['label']">{{ $t('form_日期区间') }}</div>
                 <div :class="$style['form-control']">
-                    <bk-date-picker :class="$style['date-picker']" :shortcuts="dateShortcuts" type="datetimerange"
+                    <bk-date-picker :class="$style['date-picker']" :shortcuts="resDateShortcuts" type="datetimerange"
                         v-model="dateTimeRange"
                         :clearable="false"
                         :shortcut-close="true"
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapGetters } from 'vuex'
     import dayjs from 'dayjs'
     export default {
         filters: {
@@ -152,7 +152,7 @@
             }
         },
         computed: {
-            ...mapState('logs', ['dateShortcuts']),
+            ...mapGetters('logs', ['resDateShortcuts']),
             projectId () {
                 return this.$route.params.projectId
             },
@@ -215,7 +215,7 @@
             setFilterDateTime () {
                 let timeRange = this.dateTimeRange
                 if (this.dateShortcutSelectedIndex !== -1) {
-                    timeRange = this.dateShortcuts[this.dateShortcutSelectedIndex].value()
+                    timeRange = this.resDateShortcuts[this.dateShortcutSelectedIndex].value()
                 }
                 this.filter.timeStart = +new Date(`${timeRange[0]}`)
                 this.filter.timeEnd = +new Date(`${timeRange[1]}`)

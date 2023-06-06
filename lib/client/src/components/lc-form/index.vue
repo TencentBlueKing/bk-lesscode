@@ -44,6 +44,7 @@
              */
             handleApplyChange () {
                 this.isApplyChange = true
+                console.log('handleApplyChangehandleApplyChange')
             },
             /**
              * @desc 验证表单

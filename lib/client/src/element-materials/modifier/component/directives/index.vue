@@ -14,7 +14,8 @@
         v-if="directiveList.length"
         class="directive-home">
         <h3 class="directive-tip">
-            {{ $t('编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值') }} </h3>
+            <bk-alert type="info" :title="$t('编辑函数时，可以使用 lesscode.指令值，必须通过编辑器自动补全功能选择对应属性指令值，来获取或者修改当前页面中配置了指令的组件属性值')"></bk-alert>
+        </h3>
         <ul>
             <li
                 v-for="(directive, index) in directiveList"
@@ -120,7 +121,11 @@
                     tips
                 } = directiveConfig
                 if (propConfig[prop]) {
-                    const propConfigType = propConfig[directiveConfig.prop].type
+                    let propConfigType = propConfig[directiveConfig.prop].type
+                    // text类型也绑定string类型变量
+                    if (propConfig[directiveConfig.prop].type === 'text') {
+                        propConfigType = 'string'
+                    }
                     // 解析对应 prop 配置的值类型、默认值
                     const valueTypeInclude = Array.isArray(propConfigType) ? propConfigType : [propConfigType]
                     const renderValue = propConfig[directiveConfig.prop].val

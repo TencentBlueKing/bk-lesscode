@@ -12,18 +12,31 @@
 <template>
     <div :class="[$style['code-viewer'], { [$style['fullscreen']]: isFullscreen }]">
         <div :class="$style['toolbar']">
-            <p><span v-if="pageType === 'json'">{{ $t('仅包含页面内容区域JSON数据') }}</span></p>
+            <div :class="[$style['code-type']]">
+                <div v-for="type in typeList"
+                    :key="type"
+                    :class="[$style['code-type-item'], { [$style['isActive']]: type === codeType }]"
+                    @click="$emit('change-code-type', type)"
+                >
+                    {{titleMap[type]}}
+                </div>
+                <span class="seperate-line">|</span>
+            </div>
             <div :class="$style['buttons']">
-                <i v-bk-tooltips="{ boundary: 'window', content: `${$t('复制')}${typeName}` }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
-                <i v-bk-tooltips="{ boundary: 'window', content: `${$t('下载')}${typeName}` }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
-                <i v-if="pageType === 'json'" v-bk-tooltips="{ boundary: 'window', content: $t('导入JSON') }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>
-                <i v-if="pageType === 'code'" v-bk-tooltips="{ boundary: 'window', content: withNav ? $t('不包含导航源码') : $t('包含导航源码') }" :class="['bk-drag-icon', 'bk-drag-switcher', $style['icon'], { [$style['without-nav']]: !withNav }]" @click="switchWithNav"></i>
+                <span v-if="codeType === 'code'" :class="$style['with-nav']">
+                    <bk-switcher :value="withNav" theme="primary" size="small" @change="switchWithNav" style="margin-right: 10px;" />
+                    {{ withNav ? $t('不包含导航源码') : $t('包含导航源码') }}
+                </span>
+                <i v-bk-tooltips="{ boundary: 'window', content: $t('复制{n}',{ n: typeName }) }" :class="['bk-drag-icon', 'bk-drag-copy', $style['icon']]" @click="handleCodeCopy"></i>
+                <i v-bk-tooltips="{ boundary: 'window', content: $t('下载{n}',{ n: typeName }) }" :class="['bk-drag-icon', 'bk-drag-download', $style['icon']]" @click="handleDownloadFile"></i>
+                <i v-if="codeType === 'json'" v-bk-tooltips="{ boundary: 'window', content: $t('导入JSON') }" :class="['bk-drag-icon', 'bk-drag-upload', $style['icon']]" @click="showEditData"></i>
                 <i v-bk-tooltips="{ boundary: 'window', content: $t('全屏') }" :class="['bk-drag-icon', 'bk-drag-full-screen', $style['icon']]" @click="handleScreenfull"></i>
+                <i :class="['bk-drag-icon', 'bk-drag-close-line', $style['icon']]" @click="$emit('close')"></i>
             </div>
         </div>
         <div :class="$style['content']">
             <div :class="$style['code-panel']" style="height: 100%">
-                <monaco :value.sync="code" :language="pageType === 'code' ? 'html' : 'json'" :show-header="false" :read-only="true" height="100%" :class="$style['monaco-code']" ref="monaco"></monaco>
+                <monaco :value.sync="code" :language="codeType === 'code' ? 'html' : 'json'" :show-header="false" :read-only="true" height="100%" :class="$style['monaco-code']" ref="monaco"></monaco>
             </div>
         </div>
     </div>
@@ -32,6 +45,7 @@
 <script>
     import screenfull from 'screenfull'
     import monaco from '@/components/monaco'
+    import { mapGetters } from 'vuex'
 
     export default {
         components: {
@@ -42,26 +56,33 @@
                 type: String,
                 default: ''
             },
-            filename: {
-                type: String,
-                default: ''
+            typeList: {
+                type: Array,
+                default: () => (['code', 'json'])
             },
-            withNav: {
-                type: Boolean
-            },
-            pageType: {
+            codeType: {
                 type: String,
                 default: 'code'
             }
         },
         data () {
             return {
-                isFullscreen: false
+                withNav: true,
+                isFullscreen: false,
+                titleMap: {
+                    json: 'JSON',
+                    code: '源码'
+                }
             }
         },
         computed: {
+            ...mapGetters('page', ['pageDetail']),
             typeName () {
-                return this.pageType === 'json' ? 'JSON' : this.$t('源码')
+                return this.codeType === 'json' ? 'JSON' : this.$t('源码')
+            },
+            filename () {
+                const suffix = this.codeType === 'json' ? 'json' : 'vue'
+                return `bklesscode-page-${this.pageDetail?.pageCode}.${suffix}`
             }
         },
         mounted () {
@@ -76,8 +97,9 @@
             screenfull.off('change', this.screenfullChange)
         },
         methods: {
-            switchWithNav () {
-                this.$emit('change-with-nav', !this.withNav)
+            switchWithNav (val) {
+                this.withNav = val
+                this.$emit('change-with-nav', val)
             },
             showEditData () {
                 this.$emit('show-edit-data')
@@ -129,9 +151,9 @@
     @import "@/css/mixins/scroller";
 
     .code-viewer {
-        --toolbar-height: 42px;
+        --toolbar-height: 40px;
         height: 100%;
-        background: #313238;
+        background: #1A1A1A;
         border-radius: 2px;
 
         &.fullscreen {
@@ -146,10 +168,42 @@
             align-items: center;
             justify-content: space-between;
             height: var(--toolbar-height);
-            padding: 0 22px 0 10px;
-            background: #4B4D55;
+            padding-right: 22px;
+            background: #2E2E2E;
+
+            .code-type {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                .code-type-item {
+                    display: flex;
+                    align-items: center;
+                    height: 40px;
+                    padding: 0 24px;
+                    color: #8A8F99;
+                    font-size: 12px;
+                }
+                .code-type-item.isActive {
+                    background: #1A1A1A;
+                    border-top: 3px solid #3A84FF;
+                    color: #C4C6CC;
+                }
+                .seperate-line {
+                    height: 20px;
+                    color: #45464D;
+                }
+            }
 
             .buttons {
+                display: flex;
+                align-items: center;
+                .with-nav {
+                    display: flex;
+                    align-items: center;
+                    font-size: 12px;
+                    margin-right: 30px;
+                    color: #979BA5;
+                }
                 .icon {
                     font-size: 16px;
                     color: #C4C6CC;
@@ -157,7 +211,7 @@
                     display: inline-block;
 
                     & + .icon {
-                        margin-left: 12px;
+                        margin-left: 16px;
                     }
 
                     &:hover {

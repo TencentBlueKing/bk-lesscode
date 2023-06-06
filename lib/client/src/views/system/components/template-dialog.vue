@@ -51,6 +51,7 @@
                                     <span class="template-name" :title="template.projectName">{{ template.projectName }}</span>
                                     <span class="template-preview" @click.stop.prevent="handlePreview(template.id)">{{ $t('预览') }}</span>
                                 </div>
+                                <frameworkTag class="frameworkTag-op" :framework="template.framework"></frameworkTag>
                             </li>
                         </div>
                         <div class="empty" v-show="!list.length">
@@ -60,7 +61,7 @@
                 </div>
             </div>
             <div class="layout-right">
-                <project-form ref="projectForm" type="templateProject" :template-name="formData.templateName"></project-form>
+                <project-form ref="projectForm" type="templateProject" :template-name="formData.templateName" :propsFormData="{ framework: formData.framework }"></project-form>
             </div>
             <div class="dialog-footer" slot="footer">
                 <bk-button
@@ -77,10 +78,13 @@
 <script>
     import ProjectForm from './project-form.vue'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
+    import { bus } from '@/common/bus'
     import { PROJECT_TEMPLATE_TYPE } from '@/common/constant'
+    import frameworkTag from '@/components/framework-tag.vue'
 
     const defaultFormData = {
         templateName: '',
+        framework: 'vue2',
         copyFrom: null
     }
     const projectTemplateType = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
@@ -89,7 +93,8 @@
         name: 'template-dialog',
         components: {
             ProjectForm,
-            PagePreviewThumb
+            PagePreviewThumb,
+            frameworkTag
         },
         data () {
             return {
@@ -150,7 +155,7 @@
                         this.isShow = false
 
                         setTimeout(() => {
-                            this.$emit('to-page', projectId)
+                            this.handleGotoPage(projectId)
                         }, 300)
                     }
                 } catch (e) {
@@ -158,6 +163,16 @@
                 } finally {
                     this.loading = false
                 }
+            },
+            handleGotoPage (projectId) {
+                bus.$emit('update-project-info')
+                // 开发应用和页面管理时调用跳到@/views/project/page-manage
+                this.$router.replace({
+                    name: 'pageList',
+                    params: {
+                        projectId
+                    }
+                })
             },
             handleClickFilter (link) {
                 this.filter = link
@@ -174,9 +189,11 @@
                 if (!template.checked) {
                     this.formData.templateName = ''
                     this.formData.copyFrom = null
+                    this.formData.framework = ''
                 } else {
                     this.formData.templateName = template.projectName
                     this.formData.copyFrom = template.id
+                    this.formData.framework = template.framework
                 }
             },
             handlePreview (id) {
@@ -201,6 +218,7 @@
                     } else {
                         this.formData.templateName = ''
                         this.formData.copyFrom = null
+                        this.formData.framework = ''
                     }
                 }
             },
@@ -375,6 +393,11 @@
                                 display: none;
                                 color: #3A84FF;
                             }
+                        }
+                        .frameworkTag-op{
+                            position: absolute;
+                            top: 10px;
+                            right: 10px;
                         }
                     }
                 }

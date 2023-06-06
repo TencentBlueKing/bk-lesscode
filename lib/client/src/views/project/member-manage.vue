@@ -24,13 +24,13 @@
             </bk-table-column>
         </bk-table>
 
-        <bk-sideslider :is-show.sync="sideObj.isShow" :title="sideObj.title" quick-close :width="796" @hidden="clearForm">
-            <bk-form :label-width="80" :model="sideObj.form" class="member-form" slot="content">
-                <bk-form-item :label="$t('成员')" :required="true" property="users">
+        <lc-sideslider :is-show="sideObj.isShow" :title="sideObj.title" quick-close :width="796" @update:isShow="clearForm">
+            <lc-form :label-width="80" :model="sideObj.form" class="member-form" slot="content">
+                <lc-form-item :label="$t('成员')" :required="true" property="users">
                     <bk-input :value="sideObj.form.users.join('')" disabled v-if="sideObj.isEdit" class="member-form-input"></bk-input>
                     <member-selector v-model="sideObj.form.users" :user-list.sync="filterUserList" v-else></member-selector>
-                </bk-form-item>
-                <bk-form-item :label="$t('角色')" :required="true" property="roleId">
+                </lc-form-item>
+                <lc-form-item :label="$t('角色')" :required="true" property="roleId">
                     <bk-radio-group v-model="sideObj.form.roleId">
                         <bk-radio-button :value="2">
                             <span :class="['check-radio', { choose: sideObj.form.roleId === 2 }]"></span>
@@ -41,13 +41,13 @@
                             <span class="check-radio-title">{{ $t('管理员') }}</span><br>
                             {{ $t('拥有应用的所有权限') }} </bk-radio-button>
                     </bk-radio-group>
-                </bk-form-item>
-                <bk-form-item>
+                </lc-form-item>
+                <lc-form-item>
                     <bk-button ext-cls="mr5" theme="primary" :title="$t('提交')" @click="submitMember" :loading="sideObj.isLoading">{{ $t('提交') }}</bk-button>
                     <bk-button ext-cls="mr5" theme="default" :title="$t('取消')" @click="cancleMember" :disabled="sideObj.isLoading ">{{ $t('取消') }}</bk-button>
-                </bk-form-item>
-            </bk-form>
-        </bk-sideslider>
+                </lc-form-item>
+            </lc-form>
+        </lc-sideslider>
 
         <bk-dialog v-model="deleteObj.visible"
             render-directive="if"
@@ -75,6 +75,7 @@
 <script>
     import dayjs from 'dayjs'
     import memberSelector from '@/components/member-selector'
+    import { leaveConfirm } from '@/common/leave-confirm'
 
     export default {
         components: {
@@ -174,6 +175,7 @@
                 this.sideObj.isLoading = true
                 this.$store.dispatch('member/addMembers', payload).then(() => {
                     this.$bkMessage({ message: window.i18n.t('操作成功'), theme: 'success' })
+                    window.leaveConfirm = false
                     this.sideObj.isShow = false
                     this.getMember()
                 }).catch((err) => {
@@ -187,10 +189,14 @@
                 this.sideObj.form.users = []
                 this.sideObj.form.roleId = 2
                 this.sideObj.isEdit = false
+                this.sideObj.isShow = false
             },
 
             cancleMember () {
-                this.sideObj.isShow = false
+                leaveConfirm()
+                    .then(() => {
+                        this.sideObj.isShow = false
+                    })
             },
 
             handleCreate () {

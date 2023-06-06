@@ -88,7 +88,7 @@
             window.__lesscodeEditPageGuide = this
         },
         mounted () {
-            this.init()
+            setTimeout(this.init(), 1000)
             window.addEventListener('resize', this.handleReize)
         },
         beforeDestroy () {
@@ -102,8 +102,10 @@
             */
             init () {
                 if (!this.isDone) {
-                    document.body.appendChild(this.$refs.wraper)
-                    this.activeStep()
+                    this.$nextTick(() => {
+                        document.body.appendChild(this.$refs.wraper)
+                        this.activeStep()
+                    })
                 }
             },
             /**

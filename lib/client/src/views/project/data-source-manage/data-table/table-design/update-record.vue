@@ -118,6 +118,7 @@
                 recordStatus.createUser = ''
                 recordStatus.timeRange = []
                 emptyType.value = 'noData'
+                getRecordList()
             }
 
             onBeforeMount(getRecordList)

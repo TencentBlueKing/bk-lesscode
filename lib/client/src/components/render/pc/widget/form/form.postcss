@@ -1,0 +1,23 @@
+.form{
+    border: 1px dashed #ccc;
+    &.empty{
+        position: relative;
+        height: 80px;
+        line-height: 80px;
+        font-size: 18px;
+        background: #FAFBFD;
+        .tip-set{
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #C4C6CC;
+            pointer-events: all;
+        }
+    }
+}

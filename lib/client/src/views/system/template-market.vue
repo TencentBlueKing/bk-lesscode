@@ -44,6 +44,8 @@
                                             auth="create_app_with_template"
                                             @click="handleApply(project)"
                                             style="margin-left: 7px;width: 106px"
+                                            v-enClass="'en-btn-title'"
+                                            :title="$t('创建为新应用')"
                                             :permission="iamNoResourcesPerm[$IAM_ACTION.create_app_with_template[0]]">
                                             {{ $t('创建为新应用') }} </auth-button>
                                         <auth-button
@@ -56,6 +58,8 @@
                                             auth="download_app_template_source"
                                             @click="handleDownloadProject(project)"
                                             style="margin-left: 10px;width: 76px"
+                                            v-enClass="'en-btn-title'"
+                                            :title="$t('下载源码')"
                                             :permission="iamNoResourcesPerm[$IAM_ACTION.download_app_template_source[0]]">
                                             {{ $t('下载源码') }} </auth-button>
                                     </div>
@@ -63,8 +67,10 @@
                                 <div class="item-ft">
                                     <div class="col">
                                         <h3 class="name" :title="project.projectName">{{project.projectName}}</h3>
-                                        <div class="stat">{{$t('由') + (project.createUser || 'admin') + $t('上传')}}</div>
+                                        <div class="stat"> {{$t('由 {0} 上传',[project.createUser || 'admin'])}}</div>
+                                       
                                     </div>
+                                    <framework-tag class="framework-op" :framework="project.framework"></framework-tag>
                                 </div>
                                 <span class="favorite-btn">
                                     <i class="bk-icon icon-info-circle" v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false }"></i>
@@ -116,14 +122,20 @@
                                 </div>
                                 <div class="item-ft">
                                     <div class="col">
-                                        <div class="page-name">
-                                            <span class="page-type">
-                                                <i v-if="page.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
-                                                <i v-else class="bk-drag-icon bk-drag-pc"> </i>
-                                            </span>
-                                            <div class="name" :title="page.templateName">{{page.templateName}}</div>
+                                        <div class="col-warp">
+                                            <div>
+                                                <div class="page-name">
+                                                    <span class="page-type">
+                                                        <i v-if="page.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
+                                                        <i v-else class="bk-drag-icon bk-drag-pc"> </i>
+                                                    </span>
+                                                    <div class="name" :title="page.templateName">{{page.templateName}}</div>
+                                            
+                                                </div>
+                                                <div class="stat">{{$t('由 {0} 上传',[page.createUser || 'admin'])}}</div>
+                                            </div>
+                                            <framework-tag class="framework-op" :framework="page.framework"></framework-tag>
                                         </div>
-                                        <div class="stat">{{$t('由') + (page.createUser || 'admin') + $t('上传')}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -148,8 +160,8 @@
             ext-cls="project-create-dialog"
             @value-change="handleProjectDialogToggle">
             <div class="selected-project">{{ $t('已选模板：{0}', [dialog.project.templateName]) }}</div>
-            <bk-form ref="createForm" :label-width="86" :rules="dialog.project.formRules" :model="dialog.project.formData">
-                <bk-form-item :label="$t('应用名称')" required property="projectName" error-display-type="normal">
+            <bk-form ref="createForm" :label-width="$store.state.Language === 'en' ? 100 : 86" :rules="dialog.project.formRules" :model="dialog.project.formData">
+                <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.project.formData.projectName"
                         :placeholder="$t('请输入应用名称，60个字符以内')">
                     </bk-input>
@@ -159,7 +171,7 @@
                         :placeholder="$t('只能由小写字母组成，该ID将作为自定义组件前缀，创建后不可更改')">
                     </bk-input>
                 </bk-form-item>
-                <bk-form-item :label="$t('应用简介')" required property="projectDesc" error-display-type="normal">
+                <bk-form-item :label="$t('form_应用简介')" required property="projectDesc" error-display-type="normal">
                     <bk-input
                         v-model.trim="dialog.project.formData.projectDesc"
                         :type="'textarea'"
@@ -248,6 +260,10 @@
     import { PROJECT_TEMPLATE_TYPE, PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import { parseFuncAndVar } from '@/common/parse-function-var'
     import LC from '@/element-materials/core'
+    import frameworkTag from '@/components/framework-tag.vue'
+    import {
+        isMatchFramework
+    } from 'shared/util'
 
     const PROJECT_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
     const PAGE_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PAGE_TEMPLATE_TYPE)
@@ -255,6 +271,7 @@
         projectName: '',
         projectCode: '',
         projectDesc: '',
+        framework: '',
         copyFrom: null
     }
 
@@ -262,7 +279,8 @@
         name: 'template-market',
         components: {
             DownloadDialog,
-            PagePreviewThumb
+            PagePreviewThumb,
+            frameworkTag
         },
         data () {
             return {
@@ -370,7 +388,7 @@
                     const params = { filter: 'official', officialType: this.template.project.filter }
                     const [{ projectList }, pageTemplateList] = await Promise.all([
                         this.$store.dispatch('project/query', { config: { params } }),
-                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL' })
+                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL', framework: 'all' })
                     ])
                     this.projectList = projectList
                     this.pageList = pageTemplateList
@@ -406,7 +424,12 @@
                 this.selectLoading = true
                 try {
                     const { projectList } = await this.$store.dispatch('project/query', { config: {} })
-                    this.dialog.page.projectList.splice(0, this.dialog.page.projectList.length, ...projectList)
+                    // 过滤出符合框架的项目
+                    this.dialog.page.projectList.splice(
+                        0,
+                        this.dialog.page.projectList.length,
+                        ...projectList.filter(project => isMatchFramework(project.framework, this.dialog.page.curPage.framework))
+                    )
                 } catch (e) {
                     console.error(e)
                 } finally {
@@ -493,6 +516,7 @@
             },
             handleApply (project) {
                 defaultCreateFormData.copyFrom = project.id
+                defaultCreateFormData.framework = project.framework
                 defaultCreateFormData.projectName = ''
                 this.dialog.project.templateName = project.projectName
                 this.dialog.project.visible = true
@@ -602,7 +626,7 @@
                 window.open(`/preview/project/${id}/`, '_blank')
             },
             handlePreviewTemplate (template) {
-                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}`, '_blank')
+                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}?framework=${template.framework}`, '_blank')
             },
             handleDownloadProject (project) {
                 this.$refs.downloadDialog.isShow = true
@@ -695,6 +719,16 @@
         }
         .page-item{
              margin: 0 14px 30px 0;
+             .col-warp{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                .framework-op{
+                    position: absolute;
+                    right: -30px;
+                }
+             }
         }
         .project-item, .page-item {
             position: relative;

@@ -18,6 +18,20 @@
                 @on-delete="handleUploadReset"
             ></bk-upload>
         </bk-form-item>
+        <bk-form-item :label="$t('VUE 版本')" required property="framework" error-display-type="normal">
+            <div class="bk-button-group">
+                <bk-button
+                    @click="formData.framework = 'vue2'"
+                    :class="formData.framework === 'vue2' ? 'is-selected' : ''"
+                    :disabled="type !== 'newProject'"
+                >VUE 2</bk-button>
+                <bk-button
+                    @click="formData.framework = 'vue3'"
+                    :class="formData.framework === 'vue3' ? 'is-selected' : ''"
+                    :disabled="type !== 'newProject'"
+                >VUE 3</bk-button>
+            </div>
+        </bk-form-item>
         <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
             <bk-input maxlength="60" v-model.trim="formData.projectName"
                 :placeholder="$t('由汉字，英文字母，数字组成，20个字符以内')">
@@ -49,7 +63,8 @@
     const defaultFormData = {
         projectCode: '',
         projectName: '',
-        projectDesc: ''
+        projectDesc: '',
+        framework: 'vue2'
     }
 
     export default {
@@ -83,12 +98,22 @@
                             regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
                             message: window.i18n.t('由汉字，英文字母，数字组成，20个字符以内'),
                             trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该应用名称已存在',
+                            trigger: 'blur'
                         }
                     ],
                     projectCode: [
                         {
                             regex: /^[a-z]{1,16}$/,
                             message: window.i18n.t('只能由小写字母组成, 16个字符以内'),
+                            trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkCode,
+                            message: '该应用ID已存在',
                             trigger: 'blur'
                         }
                     ],
@@ -112,12 +137,40 @@
                 return `${process.env.BK_AJAX_URL_PREFIX}/page/importJson`
             }
         },
+        watch: {
+            'propsFormData.framework': {
+                handler (val) {
+                    this.formData.framework = val || 'vue2'
+                },
+                immediate: true
+            }
+        },
         created () {
             this.formData = Object.assign({}, defaultFormData, this.propsFormData)
             this.formLayoutList = this.defaultLayoutList
             this.importProjectData = []
         },
         methods: {
+            async checkName () {
+                const res = await this.$store.dispatch('project/checkname', {
+                    data: {
+                        name: this.formData.projectName,
+                        isBlurCheck: true
+                    }
+                })
+                // 接口返回true， 代表重复
+                return res.data !== true
+            },
+            async checkCode () {
+                const res = await this.$store.dispatch('project/checkname', {
+                    data: {
+                        projectCode: this.formData.projectCode,
+                        isBlurCheck: true
+                    }
+                })
+                // 接口返回true， 代表重复
+                return res.data !== true
+            },
             async validate () {
                 const res = await this.$refs.infoForm.validate()
                 return res
@@ -152,3 +205,14 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+.bk-button-group {
+    width: 100%;
+    display: flex;
+    .bk-button {
+        flex: 1;
+        height: 32px;
+    }
+}
+</style>

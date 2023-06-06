@@ -36,7 +36,7 @@
                             class="template-item"
                             :class="item.type === 'selection' ? 'disabled' : ''"
                         >
-                            <div class="label">label</div>
+                            <div class="label">{{ $t('名称') }}</div>
                             <bk-input
                                 :value="item.label"
                                 @change="val => handleChange(val, 'label', index)"
@@ -113,7 +113,7 @@
                         <template v-else>
                             <div class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                                 <div class="label">
-                                    <span class="g-config-subline" v-bk-tooltips="{ content: $t('该列对应的字段名') }">prop</span>
+                                    <span class="g-config-subline" v-bk-tooltips="{ content: $t('该列对应的字段名') }">{{ $t('字段名') }}</span>
                                 </div>
                                 <bk-input :value="item.prop" @change="val => handleChange(val, 'prop', index)" />
                             </div>
@@ -135,7 +135,7 @@
                         </template>
                         <div class="template-item">
                             <div class="label">
-                                <span class="g-config-subline" v-bk-tooltips="{ content: $t('列宽度，请填写正整数，单位为px') }">width</span>
+                                <span class="g-config-subline" v-bk-tooltips="{ content: $t('列宽度，请填写正整数，单位为px') }">{{ $t('宽度') }}</span>
                             </div>
                             <bk-input :value="item.width" type="number" @change="val => handleChange(val, 'width', index)">
                                 <template slot="append">
@@ -145,7 +145,7 @@
                         </div>
                         <div class="template-item">
                             <div class="label">
-                                <span class="g-config-subline" v-bk-tooltips="{ content: $t('对齐方式') }">align</span>
+                                <span class="g-config-subline" v-bk-tooltips="{ content: $t('对齐方式') }">{{ $t('对齐方式') }}</span>
                             </div>
                             <bk-select
                                 style="width: 100%; background-color: #fff"

@@ -4,7 +4,8 @@
         <div class="search-container" v-bk-clickoutside="handleHideDropList">
             <bk-input
                 clearable
-                :placeholder="$t('组件名称')"
+                ext-cls="form-search-input"
+                :placeholder="$t('请输入组件名称搜索')"
                 :right-icon="'bk-icon icon-search'"
                 v-model.trim="searchValue"
                 @change="handleSearch"
@@ -262,12 +263,23 @@
         }
     }
 </script>
+<style lang="postcss">
+    .form-search-input input {
+        background-color: #F5F7FA;
+        border-radius: 2px;
+        border: 1px solid #fff;
+        &:focus {
+            border: 1px solid #3a84ff;
+        }
+    }
+</style>
 <style lang="postcss" scoped>
 @import "@/css/mixins/scroller";
 @import "@/css/mixins/ellipsis";
 .side-panel {
   position: relative;
   height: 100%;
+  width: 300px;
   box-shadow: 1px 0 0 0 #DCDEE5;
   z-index: 1;
 }
@@ -328,7 +340,7 @@
   }
 }
 .search-container{
-  padding: 12px;
+  padding: 10px;
   position: relative;
   .search-dropdown-list {
     position: absolute;
@@ -359,7 +371,7 @@
       line-height: 32px;
       padding: 0 10px;
       color: #63656E;
-      font-size: 14px;
+      font-size: 12px;
       .text {
         @mixin ellipsis 100%;
         em {

@@ -52,8 +52,7 @@
         data () {
             return {
                 item: {
-                    icon: window.i18n.t('bk-drag-icon bk-drag-keyboard'),
-                    text: window.i18n.t('快捷键'),
+                    icon: 'bk-drag-icon bk-drag-keyboard',
                     func: () => {}
                 },
                 quickOperationList: [

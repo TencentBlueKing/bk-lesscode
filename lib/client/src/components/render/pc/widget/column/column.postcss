@@ -1,0 +1,29 @@
+.column{
+    position: relative;
+    width: 100% !important;
+    height: 100% !important;
+    
+    &.render-grid-empty{
+        min-height: 34px !important;
+    }
+}
+.render-grid-empty{
+    min-height: 64px !important;
+}
+.empty{
+    background: #FAFBFD;
+    &::before{
+        content: attr(data-empty-content);
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: #C4C6CC;
+        pointer-events: all;
+    }
+}

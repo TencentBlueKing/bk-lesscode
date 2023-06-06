@@ -5,11 +5,11 @@
         <div class="form-btn-list">
             <div class="list-item">
                 <span class="list-span">{{ $t('显示提交按钮') }}</span>
-                <bk-switcher size="small" v-model="btnSetting['SHOW_SUBMIT_BTN']" @change="(val) => changeShowButton('SHOW_SUBMIT_BTN', val)"></bk-switcher>
+                <bk-switcher size="small" theme="primary" v-model="btnSetting['SHOW_SUBMIT_BTN']" @change="(val) => changeShowButton('SHOW_SUBMIT_BTN', val)"></bk-switcher>
             </div>
             <div class="list-item">
                 <span class="list-span">{{ $t('显示取消按钮') }}</span>
-                <bk-switcher size="small" v-model="btnSetting['SHOW_CANCEL_BTN']" @change="(val) => changeShowButton('SHOW_CANCEL_BTN', val)"></bk-switcher>
+                <bk-switcher size="small" theme="primary" v-model="btnSetting['SHOW_CANCEL_BTN']" @change="(val) => changeShowButton('SHOW_CANCEL_BTN', val)"></bk-switcher>
             </div>
         </div>
     </section>

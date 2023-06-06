@@ -124,13 +124,18 @@
                 })
                 this.panelItems = [...this.componentNode.children]
                 // 设置默认选中的tab
+                const props = {
+                    format: 'value',
+                    code: 'tab1',
+                    renderValue: 'tab1'
+                }
+                if (LC.getFramework() === 'vue3') {
+                    props.directive = 'v-model'
+                } else {
+                    props.modifiers = ['sync']
+                }
                 this.componentNode.setProp({
-                    active: LC.utils.genPropFormatValue({
-                        format: 'value',
-                        code: 'tab1',
-                        renderValue: 'tab1',
-                        modifiers: ['sync']
-                    })
+                    active: LC.utils.genPropFormatValue(props)
                 })
             },
             handleAdd () {

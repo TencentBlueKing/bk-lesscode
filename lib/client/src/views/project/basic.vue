@@ -225,7 +225,7 @@
                     this.projectDetail = { ...this.projectDetail, ...data.fields }
                     this.$store.commit('project/updateCurrentProject', data.fields)
 
-                    bus.$emit('update-project-list')
+                    bus.$emit('update-project-info')
                 } catch (e) {
                     console.error(e)
                 } finally {
