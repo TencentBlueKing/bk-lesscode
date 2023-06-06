@@ -44,7 +44,6 @@ export default (row, handleUpdate) => {
                                 placeholder={window.i18n.t('请输入参数值')}
                                 value={row.value}
                                 disabled={disabled}
-                                type={row.type === API_PARAM_TYPES.NUMBER.VAL ? 'number' : 'text'}
                                 onChange={(val) => handleUpdate(row, { value: row.type === API_PARAM_TYPES.NUMBER.VAL ? +val : val })}
                             >
                             </bk-input>
