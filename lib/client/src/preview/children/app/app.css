@@ -69,3 +69,7 @@ td,th {
 .lesscode-bk-menu-submenu .submenu-header-icon {
     color: #96a2b9;
 }
+
+.lesscode-bk-table-body-content .cell.none {
+    display: block !important;
+}
