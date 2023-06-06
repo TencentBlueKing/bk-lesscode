@@ -129,10 +129,13 @@
         }
     }
     .lesscode-bk-navigation-wrapper, .bk-navigation {
-        .navigation-container .container-content {
-            height: 100% !important;
-            overflow: auto !important;
-            @mixin scroller;
+        .navigation-container {
+            max-width: 100% !important;
+            .container-content {
+                height: 100% !important;
+                overflow: auto !important;
+                @mixin scroller;
+            }
         }
     }
 }
@@ -175,4 +178,7 @@
     .container-content{
         padding: 20px !important;
     }
+}
+.empty-padding.lesscode-bk-popover.lesscode-bk-pop2-content {
+    padding: 0 !important;
 }

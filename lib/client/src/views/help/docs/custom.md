@@ -6,7 +6,7 @@
 
 2. 将原来的业务代码复制到 `src/`目录下
 
-3. `config.json`文件添加`framework`字段，标明自定义组件适用于哪个版本的框架，可以填 vue2 或者 vue3
+3. `config.json`文件添加`framework`字段，标明自定义组件使用的框架，可以填 vue2 或者 vue3
 
 4. 参照开发文档进行组件开发和构建
 ```
@@ -45,6 +45,11 @@
         <td>name</td>
         <td>String</td>
         <td>页面展示的英文名</td>
+    </tr>
+    <tr>
+        <td>framework</td>
+        <td>String</td>
+        <td>组件使用的框架</td>
     </tr>
     <tr>
         <td>displayName</td>
