@@ -143,7 +143,7 @@
                                 </template>
                             </bk-input>
                         </div>
-                        <div class="template-item">
+                        <div class="template-item" v-if="projectDetail.framework !== 'vue3'">
                             <div class="label">
                                 <span class="g-config-subline" v-bk-tooltips="{ content: $t('对齐方式') }">{{ $t('对齐方式') }}</span>
                             </div>
@@ -160,7 +160,7 @@
                                 </bk-option>
                             </bk-select>
                         </div>
-                        <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                        <div v-if="item.type !== 'customCol' && projectDetail.framework !== 'vue3'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.sortable" @change="val => handleChange(val, 'sortable', index)" style="font-size: 12px;">
                                 {{$t('全局排序')}}
                                 <i
@@ -172,7 +172,7 @@
                                 ></i>
                             </bk-checkbox>
                         </div>
-                        <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                        <div v-if="item.type !== 'customCol' && projectDetail.framework !== 'vue3'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
                                 {{$t('全局过滤')}}
                                 <i
@@ -250,7 +250,8 @@
         },
 
         computed: {
-            ...mapGetters('functions', ['funcGroups'])
+            ...mapGetters('functions', ['funcGroups']),
+            ...mapGetters('project', ['projectDetail'])
         },
 
         setup (props) {
