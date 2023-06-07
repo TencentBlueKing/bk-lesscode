@@ -65,14 +65,6 @@
                         margin-top: auto;
                     }
                 }
-                .navigation-container {
-                    .container-content {
-                        flex: unset;
-                        height: auto !important;
-                        max-height: unset !important;
-                        overflow: unset !important
-                    }
-                }
             }
         }
         .nav-slider-list {
