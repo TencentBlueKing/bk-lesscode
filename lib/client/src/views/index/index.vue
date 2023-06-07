@@ -38,7 +38,7 @@
 </template>
 <script>
     import Vue from 'vue'
-    import { init, vue3Resource } from 'bk-lesscode-render'
+    import { init, vue3Resource, registerComponent } from 'bk-lesscode-render'
     import { mapActions, mapGetters, mapState } from 'vuex'
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
@@ -176,8 +176,6 @@
              */
             registerCustomComponent () {
                 this.isCustomComponentLoading = true
-                // 包含所有的自定组件
-                window.__innerCustomRegisterComponent__ = {}
                 return new Promise((resolve, reject) => {
                     const script = document.createElement('script')
                     script.src = `/${this.projectId}/${this.pageId}/component/register.js`
@@ -187,7 +185,9 @@
                                 config,
                                 componentSource
                             ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue)
-                            window.__innerCustomRegisterComponent__[config.type] = componentSource
+                            new Promise((resolve) => componentSource(resolve)).then((component) => {
+                                registerComponent(config.type, component)
+                            })
                             // 注册自定义组件 material
                             LC.registerMaterial(config.type, config, config.framework)
                         })
@@ -201,7 +201,6 @@
                     document.body.appendChild(script)
                     this.$once('hook:beforeDestroy', () => {
                         document.body.removeChild(script)
-                        window.__innerCustomRegisterComponent__ = {}
                     })
                 })
             },

@@ -145,7 +145,7 @@
                             type: 'v-model',
                             prop,
                             format: 'variable',
-                            formatInclude: ['variable'], // v-bind 支持配置（变量）
+                            formatInclude: ['variable', 'expression'], // v-bind 支持配置（变量）
                             code: '',
                             valueTypeInclude,
                             renderValue,
@@ -192,7 +192,9 @@
                     renderValue: 1,
                     tips: (dir) => {
                         return dir.code
-                            ? window.i18n.t('渲染多个组件时，如果需要基于 v-for 指令的值给每个组件单独赋值。可以使用如下规则给该组件或子组件的指令或属性的表达式赋值（当前组件的 v-if 和 v-show 指令除外）：')
+                            ? window.i18n.t('可以使用以下规则给组件的属性或者指令赋值（当前组件的 v-if 和 v-show 指令不能使用）：')
+                                + '<br>' + window.i18n.t('如果需要基于 v-for 指令的 index 给每个组件单独赋值，可以使用【{0}Index】为表达式赋值', [this.id])
+                                + '<br>' + window.i18n.t('如果需要基于 v-for 指令的值给每个组件单独赋值。可以使用如下规则')
                                 + '<br> 1. ' + window.i18n.t('当输入的值为数组、数字或者对象时，请使用【{0}Item】为表达式赋值', [this.id])
                                 + '<br> 2. ' + window.i18n.t('当输入的值为数组且数组子项为对象时，请使用【{0}Item.对象key】为表达式赋值', [this.id])
                                 + '<br> 3. ' + window.i18n.t('当输入的值为数据表时，请使用【{0}Item.表字段名】为表达式赋值', [this.id])
@@ -312,7 +314,7 @@
                 switch (type) {
                     case 'v-for':
                         const lastDirective = this.lastDirectiveMap[this.genDirectiveKey(directive)]
-                        res = lastDirective.code ? `（${this.id}Item）` : ''
+                        res = lastDirective.code ? `（${this.id}Item, ${this.id}Index）` : ''
                         break
                     default:
                         res = ''
