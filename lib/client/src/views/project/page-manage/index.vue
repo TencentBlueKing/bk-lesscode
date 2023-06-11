@@ -16,7 +16,7 @@
                         :list="renderList"
                         :reset-keyword-on-change-list="false"
                         @on-change="handleSearch" />
-                    <create-page-entry />
+                    <create-page-entry :framework="projectDetail.framework"/>
                 </div>
             </div>
             <div class="menu-content">
@@ -50,7 +50,7 @@
         </div>
         <div class="right-content">
             <page-header :current-page="currentPage" />
-            <div class="page-content" v-if="currentPageId">
+            <div class="preview-page-content" v-if="currentPageId">
                 <iframe
                     v-if="currentPage.content || currentPage.nocodeType"
                     width="100%"
@@ -109,6 +109,7 @@
 
             const projectId = router?.currentRoute?.params?.projectId
             const versionId = store.getters['projectVersion/currentVersionId']
+            const projectDetail = store.getters['project/projectDetail']
             const params = { projectId: projectId, versionId }
 
             const isLoading = ref(false)
@@ -222,6 +223,7 @@
 
             return {
                 isLoading,
+                projectDetail,
                 hasMobilePage,
                 platformActive,
                 platformList,
@@ -281,6 +283,12 @@
     .right-content {
         width: 100%;
         height: 100%;
+
+        .preview-page-content {
+            padding: 16px 24px;
+            display: flex;
+            height: calc(100% - 50px);
+        }
 
         .exception-wrap-item {
             margin-top: 80px;

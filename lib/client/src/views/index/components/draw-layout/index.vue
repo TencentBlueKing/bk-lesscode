@@ -185,6 +185,8 @@
     .page-data-manage-layout{
       /* max-width: 100vw; */
       position: relative;
+      height: 100%;
+      overflow-y: hidden;
       padding-right:  $layoutRightWidth;
       transition: all .1s;
 
@@ -203,7 +205,7 @@
         }
       }
       .layout-center {
-        height: calc(100% - 40px);
+        /* height: calc(100% - 40px); */
         padding: 20px;
       }
       .layout-right{
