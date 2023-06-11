@@ -1,14 +1,26 @@
 <template>
     <section>
         <bk-table
-            v-bkloading="{ isLoading }"
             v-bind="$props"
-            v-on="$listeners"
             :pagination="renderPagination"
             :data="renderData"
-            @page-change="handlePageChange"
+            @page-value-change="handlePageChange"
             @page-limit-change="handleLimitChange"
-            @sort-change="handleSortChange"
+            @select="(...args) => $emit('select', ...args)"
+            @select-all="(...args) => $emit('select-all', ...args)"
+            @selection-change="(...args) => $emit('selection-change', ...args)"
+            @cell-click="(...args) => $emit('cell-click', ...args)"
+            @cell-dblclick="(...args) => $emit('cell-dblclick', ...args)"
+            @row-click="(...args) => $emit('row-click', ...args)"
+            @row-dblclick="(...args) => $emit('row-dblclick', ...args)"
+            @column-pick="(...args) => $emit('column-pick', ...args)"
+            @column-sort="(...args) => $emit('column-sort', ...args)"
+            @column-filter="(...args) => $emit('column-filter', ...args)"
+            @col-filter-save="(...args) => $emit('col-filter-save', ...args)"
+            @row-expand="(...args) => $emit('row-expand', ...args)"
+            @setting-change="(...args) => $emit('setting-change', ...args)"
+            @click="(...args) => $emit('click', ...args)"
+            @dblclick="(...args) => $emit('dblclick', ...args)"
         >
             <slot></slot>
             <bk-table-column
@@ -16,19 +28,19 @@
                 label="操作"
                 width="120"
             >
-                <template slot-scope="{ row }">
+                <template #default="prop">
                     <bk-button
                         class="mr5"
-                        title="primary"
+                        theme="primary"
                         :text="true"
-                        @click="handleEdit(row)"
+                        @click="handleEdit(prop?.row)"
                     >
                         编辑
                     </bk-button>
                     <bk-button
-                        title="primary"
+                        theme="primary"
                         :text="true"
-                        @click="handleDelete(row)"
+                        @click="handleDelete(prop?.row)"
                     >
                         删除
                     </bk-button>
@@ -38,11 +50,12 @@
 
         <bk-sideslider
             title="编辑数据"
-            :is-show.sync="editData.show"
+            :is-show="editData.show"
             :width="740"
             :transfer="true"
+            @update:is-show="editData.show = false"
         >
-            <div slot="content">
+            <template #default>
                 <bk-form
                     class="edit-data-form"
                     ref="formRef"
@@ -90,7 +103,8 @@
                         ></bk-date-picker>
                         <edit-object
                             v-else-if="column.type === 'json'"
-                            :value.sync="editData.form[column.propertyName]"
+                            :value="editData.form[column.propertyName]"
+                            @change="changeDate(column.propertyName, ...arguments)"
                         >
                         </edit-object>
                         <bk-input
@@ -112,7 +126,7 @@
                         >取消</bk-button>
                     </bk-form-item>
                 </bk-form>
-            </div>
+            </template>
         </bk-sideslider>
 
         <bk-dialog
@@ -120,28 +134,55 @@
             ext-cls=""
             :loading="deleteData.isloading"
             :mask-close="false"
-            v-model="deleteData.show"
+            :is-show="deleteData.show"
+            @closed="() => deleteData.show = false"
         >
             确定删除【id：{{ deleteData.form.id }}】？
-            <div class="dialog-footer" slot="footer">
-                <bk-button
-                    theme="danger"
-                    :loading="deleteData.isloading"
-                    @click="handleConfirmDelete">确定</bk-button>
-                <bk-button @click="handleCloseDialog" :disabled="deleteData.isloading">取消</bk-button>
-            </div>
+            <template #footer>
+                <div class="dialog-footer">
+                    <bk-button
+                        class="mr5"
+                        theme="danger"
+                        :loading="deleteData.isloading"
+                        @click="handleConfirmDelete">确定</bk-button>
+                    <bk-button @click="handleCloseDialog" :disabled="deleteData.isloading">取消</bk-button>
+                </div>
+            </template>
         </bk-dialog>
     </section>
 </template>
 
 <script>
     import dayjs from 'dayjs'
-    import editObject from '@/components/edit-object.vue'
+    import editObject from '@/components/edit-object'
     import DayJSUtcPlugin from 'dayjs/plugin/utc'
     dayjs.extend(DayJSUtcPlugin)
 
+    const events = [
+        'select',
+        'select-all',
+        'selection-change',
+        'cell-click',
+        'cell-dblclick',
+        'row-click',
+        'row-dblclick',
+        'column-pick',
+        'column-sort',
+        'column-filter',
+        'col-filter-save',
+        'row-expand',
+        'page-limit-change',
+        'page-value-change',
+        'setting-change',
+        'scroll-bottom',
+        'click',
+        'dblclick'
+    ]
+
     export default {
         name: 'widget-bk-table',
+
+        emits: events,
 
         components: {
             editObject
@@ -149,110 +190,76 @@
 
         props: {
             data: {
-                type: Array,
-                default: function () {
-                    return []
-                }
+                type: Array
             },
-            size: {
-                type: String,
-                default: 'small',
-                validator (val) {
-                    return ['small', 'medium', 'large'].includes(val)
-                }
+            columnPick: {
+                type: String
             },
-            height: [String, Number],
-            maxHeight: [String, Number],
-            fit: {
-                type: Boolean,
-                default: true
+            pagination: {
+                type: Object
             },
-            rowAutoHeight: {
-                type: Boolean,
-                default: false
+            height: {
+                type: String
             },
-            stripe: Boolean,
-            border: Boolean,
+            minHeight: {
+                type: String
+            },
+            maxHeight: {
+                type: String
+            },
+            virtualEnabled: {
+                type: Boolean
+            },
+            border: {
+                type: Array
+            },
             outerBorder: {
-                type: Boolean,
-                default: true
+                type: Boolean
             },
-            rowBorder: {
-                type: Boolean,
-                default: true
+            settings: {
+                type: Boolean
             },
-            colBorder: Boolean,
-            rowKey: [String, Function],
-            context: {
-                type: Object,
-                default: () => ({})
+            rowClass: {
+                type: String
             },
-            showHeader: {
-                type: Boolean,
-                default: true
+            rowStyle: {
+                type: String
             },
-            showSummary: Boolean,
-            sumText: String,
-            summaryMethod: Function,
-            rowClassName: [String, Function],
-            rowStyle: [Object, Function],
-            cellClassName: [String, Function],
-            cellStyle: [Object, Function],
-            headerBorder: {
-                type: Boolean,
-                default: false
-            },
-            headerRowClassName: [String, Function],
-            headerRowStyle: [Object, Function],
-            headerCellClassName: [String, Function],
-            headerCellStyle: [Object, Function],
-            highlightCurrentRow: Boolean,
-            currentRowKey: [String, Number],
-            emptyText: String,
-            emptyBlockClassName: String,
-            expandRowKeys: Array,
-            defaultExpandAll: Boolean,
-            defaultSort: Object,
-            spanMethod: Function,
-            selectOnIndeterminate: {
-                type: Boolean,
-                default: true
-            },
-            pagination: Object,
-            showPaginationInfo: {
-                type: Boolean,
-                default: true
-            },
-            autoScrollToTop: {
-                type: Boolean,
-                default: false
-            },
-            extCls: {
-                type: String,
-                default: ''
-            },
-            setting: {
-                type: Object,
-                default: () => ({
-                    columns: []
-                }),
-                validator (setting) {
-                    return Array.isArray(setting.columns)
-                }
-            },
-            cellAttributes: [Function, Object],
-            headerCellAttributes: [Function, Object],
-            virtualRender: {
-                type: [Object, Boolean],
-                default: false
+            cellClass: {
+                type: String
             },
             scrollLoading: {
-                type: Object,
-                default: () => ({ isLoading: false })
+                type: Boolean
             },
-            popoverOptions: {
-                type: Object,
-                default: () => ({})
+            reserveExpand: {
+                type: Boolean
+            },
+            selectionKey: {
+                type: String
+            },
+            rowKey: {
+                type: String
+            },
+            showOverflowTooltip: {
+                type: Boolean
+            },
+            rowHover: {
+                type: String
+            },
+            isRowSelectEnable: {
+                type: Boolean
+            },
+            resizerWay: {
+                type: String
+            },
+            observerResize: {
+                type: Boolean
+            },
+            showHead: {
+                type: Boolean
+            },
+            emptyText: {
+                type: String
             },
             tableName: String,
             paginationType: String,
@@ -262,6 +269,7 @@
         },
 
         data () {
+            const self = this
             return {
                 editData: {
                     isLoading: false,
@@ -285,7 +293,8 @@
                 renderData: [],
                 isLoading: false,
                 queryObject: {},
-                sortObject: {}
+                sortObject: {},
+                listeners: events.map(event => (...args) => self.$emit(event, ...args))
             }
         },
 
@@ -594,5 +603,8 @@
         .bk-form-control {
             width: 100%;
         }
+    }
+    .mr5 {
+        margin-right: 5px;
     }
 </style>

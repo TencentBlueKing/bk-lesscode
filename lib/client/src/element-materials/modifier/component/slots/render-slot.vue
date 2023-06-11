@@ -9,24 +9,26 @@
         <template v-slot:title>
             <section class="slot-title-wrapper">
                 <span class="slot-name">
-                    <i
-                        :class="{
-                            'bk-icon icon-angle-down': true,
-                            close: !isShowSlot
-                        }"
-                        @click="toggleShowSlot"
-                    ></i>
-                    <span
-                        :class="{
-                            'slot-tips': describe.tips
-                        }"
-                        v-bk-tooltips="computedSlotTip"
-                    >
-                        {{ $t(describe.displayName) }}
-                        <span v-if="describe.type && describe.type.length <= 1">
-                            ({{ formData.valueType | capFirstLetter }})
+                    <section class="icon-and-name" @click="toggleShowSlot">
+                        <i
+                            :class="{
+                                'bk-icon icon-angle-down': true,
+                                close: !isShowSlot
+                            }"
+                        ></i>
+                        <span
+                            class="name-content"
+                            :class="{
+                                'slot-tips': describe.tips
+                            }"
+                            v-bk-tooltips="computedSlotTip"
+                        >
+                            {{ $t(describe.displayName) }}
+                            <span v-if="describe.type && describe.type.length <= 1">
+                                ({{ formData.valueType | capFirstLetter }})
+                            </span>
                         </span>
-                    </span>
+                    </section>
                 </span>
                 <template v-if="describe.name && describe.name.length > 1">
                     <span class="slot-label">{{ $t('组件标签') }}</span>
@@ -560,6 +562,14 @@
         display: flex;
         align-items: center;
         border-top: 1px solid #EAEBF0;
+        .icon-and-name {
+            display: flex;
+            cursor: pointer;
+            .name-content {
+                display: flex;
+                align-items: center;
+            }
+        }
         .icon-angle-down {
             cursor: pointer;
             font-size: 20px;

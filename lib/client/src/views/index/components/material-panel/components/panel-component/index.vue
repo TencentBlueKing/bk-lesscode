@@ -13,12 +13,6 @@
                 @click="handleChangeTab('customComponent')">
                 <span class="tab-item-label" :title="$store.state.Language === 'en' ? $t('自定义组件') : ''">{{ $t('自定义组件') }}</span>
             </div>
-            <div
-                class="tab-item"
-                :class="{ active: tab === 'icon' }"
-                @click="handleChangeTab('icon')">
-                <span class="tab-item-label">{{ $t('图标') }}</span>
-            </div>
         </div>
         <div class="drag-component-list">
             <component :is="com" :base-component="baseComponent" />
@@ -29,7 +23,6 @@
     import SelectBaseComponent from './components/select-base-component.vue'
     import RenderBaseComponent from './components/render-base-component'
     import RenderCustomComponent from './components/render-custom-component'
-    import RnderIcon from './components/render-icon'
     import { mapGetters } from 'vuex'
 
     export default {
@@ -48,8 +41,7 @@
             com () {
                 const comMap = {
                     baseComponent: RenderBaseComponent,
-                    customComponent: RenderCustomComponent,
-                    icon: RnderIcon
+                    customComponent: RenderCustomComponent
                 }
                 return comMap[this.tab]
             }
@@ -79,46 +71,52 @@
         height: 100%;
         .category-tabs {
             display: flex;
-            height: 46px;
-            border-bottom: 1px solid #ccc;
-            padding: 0 20px;
+            height: 42px;
             user-select: none;
 
             .tab-item {
-                flex: 0 0 auto;
-                font-size: 14px;
-                height: 46px;
+                display: flex;
+                justify-content: center;
+                /* align-items: center; */
+                height: 42px;
+                line-height: 42px;
+                background: #F5F7FA;
+                border-bottom: 1px solid #EAEBF0;
+                border-right: 1px solid #EAEBF0;
+                flex: 1 1;
+                font-size: 12px;
                 padding: 0 10px;
-                line-height: 46px;
                 white-space: nowrap;
                 cursor: pointer;
                 user-select: none;
                 &:hover {
                     color: #3A84FF;
+                    /* background: #FFF; */
                 }
                 &:first-child{
                     margin-right: auto;
                 }
                 &.active {
                     color: #3A84FF;
-                    border-bottom: 2px solid #3A84FF;
+                    background: #FFF;
+                    border-bottom: none;
                 }
                 .tab-item-label {
-                    font-size: 14px;
-                    @mixin ellipsis 86px;
+                    font-size: 12px;
+                    @mixin ellipsis 110px;
                 }
                 .toggle-icon {
-                    line-height: 46px;
+                    line-height: 42px;
                     overflow: hidden;
                     display: inline-block;
                 }
             }
         }
         .search-box{
-            padding: 12px 20px;
+            padding: 6px 12px;
         }
         .drag-component-list{
-            height: calc(100% - 46px);
+            height: calc(100% - 42px);
             padding-bottom: 10px;
             overflow-y: auto;
             @mixin scroller;

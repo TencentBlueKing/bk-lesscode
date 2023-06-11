@@ -1,7 +1,7 @@
 @import "@/css/mixins/scroller";
 .lesscode-editor-layout {
     transform: translate(0, 0);
-    min-height: calc(100vh - 129px);
+    min-height: calc(100vh - 144px);
 
     .bk-navigation {
         width: auto;
@@ -12,14 +12,6 @@
                 height: auto;
                 .nav-slider-footer {
                     margin-top: auto;
-                }
-            }
-            .navigation-container {
-                .container-content {
-                    flex: unset;
-                    height: auto !important;
-                    max-height: unset !important;
-                    overflow: unset !important
                 }
             }
         }
@@ -136,14 +128,24 @@
             pointer-events: auto !important;
         }
     }
-    .lesscode-bk-navigation-wrapper .navigation-container .container-content {
-        overflow: visible;
+    .lesscode-bk-navigation-wrapper, .bk-navigation {
+        .navigation-container {
+            max-width: 100% !important;
+            .container-content {
+                height: 100% !important;
+                overflow: auto !important;
+                @mixin scroller;
+            }
+        }
     }
 }
 .lesscode-layout-empty {
-    min-height: calc(100vh - 160px);
+    height: calc(100vh - 160px);
     .container-content{
         padding: 20px;
+        overflow: auto;
+        height: 100%;
+        @mixin scroller;
     }
 }
 .lesscode-layout-message-theme{
@@ -176,4 +178,7 @@
     .container-content{
         padding: 20px !important;
     }
+}
+.empty-padding.lesscode-bk-popover.lesscode-bk-pop2-content {
+    padding: 0 !important;
 }

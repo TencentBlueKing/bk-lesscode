@@ -1,6 +1,7 @@
 <template>
     <div class="render-custom-component" v-bkloading="{ isLoading }">
         <search-box
+            :placeholder="$t('自定义组件名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
         <div>
@@ -20,7 +21,6 @@
                 <group-box
                     :list="favoriteComponentList"
                     :group-name="$t('我的收藏')"
-                    :folded="favoriteComponentList.length < 1"
                     key="favorite">
                     <render-custom-component
                         v-for="component in favoriteComponentList"
@@ -52,8 +52,9 @@
                         public-group
                         :data="component"
                         @on-favorite="handleFavorite" />
-                    <div slot="tag">
-                        {{ $t('公共') }} </div>
+                    <div slot="tag" class="group-tag">
+                        {{ $t('公共') }}
+                    </div>
                 </group-box>
             </template>
         </div>

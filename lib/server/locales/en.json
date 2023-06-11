@@ -98,7 +98,7 @@
   "模板名称重复": "Duplicate template name",
   "模板导入成功": "Template imported successfully",
   "模板权限": "Template permissions",
-  "模板添加至项目成功": "Template added to project successfully",
+  "模板添加至应用成功": "Template added to application successfully",
   "没有抢占权限": "No preemption",
   "没有权限，请去权限中心申请权限": "No permission, please go to the IAM to apply for permission",
   "注册实例视图失败：{{0}}: {{1}}": "Failed to register instance view: {{0}}: {{1}}",

@@ -40,7 +40,7 @@
                             <bk-radio :value="0">{{ $t('否') }}</bk-radio>
                         </bk-radio-group>
                     </bk-form-item>
-                    <bk-form-item :label="$t('form_公开模板分类')" required property="offcialType" error-display-type="normal">
+                    <bk-form-item v-if="dialog.formData.isOffcial === 1" :label="$t('form_公开模板分类')" required property="offcialType" error-display-type="normal">
                         <bk-select
                             :clearable="false"
                             v-model="dialog.formData.offcialType"

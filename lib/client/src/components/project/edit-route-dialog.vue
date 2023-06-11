@@ -72,8 +72,8 @@
             routeOptionList () {
                 const routeList = this.routeGroup.map(({ children }) => children)
                     .reduce((pre, cur) => pre.concat(cur), [])
-                    .map(({ id, layoutPath, path, pageId, redirect }) => ({
-                        id,
+                    .map(({ id, routeId, layoutPath, path, pageId, redirect }) => ({
+                        id: routeId || id,
                         name: `${layoutPath}${layoutPath.endsWith('/') ? '' : '/'}${path}`,
                         pageId,
                         redirect,
@@ -87,6 +87,8 @@
             'dialog.visible' (val) {
                 if (val) {
                     this.setSelectedRoute()
+                } else {
+                    this.$emit('closeDialog')
                 }
             },
             currentRoute () {

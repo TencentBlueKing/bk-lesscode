@@ -115,6 +115,11 @@
                     </div>
                 </template>
             </bk-table-column>
+            <bk-table-column :label="$t('VUE 版本')" prop="framework" min-width="90" show-overflow-tooltip>
+                <template v-slot="{ row }">
+                    {{ row.framework || 'vue2' }}
+                </template>
+            </bk-table-column>
             <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
                 <template v-slot="{ row }">
                     {{getUpdateInfo(row).updateUser}}
@@ -224,7 +229,7 @@
     .list-table {
         width: 100%;
         height: 100%;
-        padding: 8px;
+        padding: 8px 0;
 
         .name-content {
             display: flex;

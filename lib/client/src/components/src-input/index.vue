@@ -46,8 +46,8 @@
                 isShowPreviewViewer: false,
                 previewFileList: []
             })
-            const isPlaceholder = props.placeholder || ref(window.i18n.t('可选择或粘贴链接'))
-            const isTriggerText = props.trigger || ref(window.i18n.t('选择图片'))
+            const isPlaceholder = props.placeholder || window.i18n.t('可选择或粘贴链接')
+            const isTriggerText = props.trigger || window.i18n.t('选择图片')
 
             const url = computed({
                 get () {

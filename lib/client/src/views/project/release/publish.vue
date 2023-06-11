@@ -71,12 +71,13 @@
                         <span>{{ $t('更多操作') }}</span>
                         <i :class="['bk-icon icon-angle-down', { 'icon-flip': isDropdownShow }]"></i>
                     </div>
-                    <ul class="bk-dropdown-list" slot="dropdown-content">
+                    <ul class="bk-dropdown-list" style="max-height: 194px" slot="dropdown-content">
                         <li><a href="javascript:;" @click="toManagePage('deploy')">{{ $t('部署管理') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('process')">{{ $t('进程管理') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('log?tab=structured')">{{ $t('日志查询') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('environment_variable')">{{ $t('环境配置') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('app_entry_config')">{{ $t('访问入口') }}</a></li>
+                        <li><a href="javascript:;" @click="toManagePage('base-info', false)">{{ $t('基本信息') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
             </div>
@@ -472,8 +473,8 @@
                     this.flowListLoading = false
                 }
             },
-            toManagePage (pageUrl) {
-                window.open(`${this.createLinkUrl}/apps/${this.currentAppInfo.appCode}/${this.currentAppInfo.moduleCode}/${pageUrl}`, '_blank')
+            toManagePage (pageUrl, showModule = true) {
+                window.open(`${this.createLinkUrl}/apps/${this.currentAppInfo.appCode}${showModule ? '/' + this.currentAppInfo.moduleCode : ''}/${pageUrl}`, '_blank')
             },
             copy (value) {
                 execCopy(value)

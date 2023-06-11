@@ -1,23 +1,14 @@
 <template>
-    <menu-item
-        v-bkloading="{ isLoading }"
-        :item="item"
-        :class="{
-            disabled
-        }" />
+    <bk-button theme="primary" :loading="isLoading" @click="handleSubmit">保存</bk-button>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
     import html2canvas from 'html2canvas'
-    import MenuItem from '@/views/index/components/action-tool/components/menu-item'
     import { checkAccuracy } from '@/components/flow-form-comp/form/util/index.js'
 
     import { bus } from '@/common/bus'
     export default {
-        components: {
-            MenuItem
-        },
         props: {
             custom: Boolean, // 是否需要自定义保存逻辑
             customLoading: Boolean,
@@ -97,8 +88,24 @@
                     Object.assign(formData, { id: this.pageDetail.formId })
                 }
                 try {
-                    this.loading = true
-                    const res = await this.$store.dispatch(`form/${action}`, formData)
+                    this.isLoading = true
+                    // 修改form表，并且保存名称、生命周期、函数设置等
+                    const [res] = await Promise.all([
+                        this.$store.dispatch(`form/${action}`, formData),
+                        this.$store.dispatch('page/update', {
+                            data: {
+                                pageData: {
+                                    id: this.pageDetail.id,
+                                    name: this.pageDetail.pageName,
+                                    content: JSON.stringify([]),
+                                    lifeCycle: JSON.stringify(this.pageDetail.lifeCycle || {}),
+                                    styleSetting: JSON.stringify(this.pageDetail.styleSetting || {})
+                                },
+                                projectId: this.projectId,
+                                versionId: this.versionId
+                            }
+                        })
+                    ])
                     if (res && res.id) {
                         this.savePreviewImg()
                         this.$bkMessage({
@@ -121,7 +128,10 @@
             async savePageContent (content) {
                 const pageData = {
                     id: this.pageDetail.id,
-                    content
+                    name: this.pageDetail.pageName,
+                    content,
+                    lifeCycle: JSON.stringify(this.pageDetail.lifeCycle || {}),
+                    styleSetting: JSON.stringify(this.pageDetail.styleSetting || {})
                 }
                 try {
                     this.loading = true

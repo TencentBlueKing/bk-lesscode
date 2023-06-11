@@ -12,9 +12,29 @@
 <template>
     <div class="modifier-border-detail-container">
         <div class="style-container details-box">
-            <div class="detail-name">{{ $t('样式') }}</div>
+            <!-- <div class="detail-name">样式</div>
             <div class="detail-content">
                 <bk-select :value="borderStyle" style="width: 100%;" @change="changeBorderStyle">
+                    <bk-option v-for="option in borderStyleList" :key="option" :id="option" :name="option">
+                        <template v-if="option === 'none'">none</template>
+                        <div v-else class="modifier-border-style-option">
+                            <span :style="{ 'border-top-style': option }"></span>
+                        </div>
+                    </bk-option>
+                </bk-select>
+            </div> -->
+            <div class="size-item" style="width: 180px;">
+                <div class="input-prefix" style="width: 44px;">
+                    <span>{{ $t('样式') }}</span>
+                </div>
+                <bk-select :value="borderStyle" style="width: 100%;" class="style-icon-select" @change="changeBorderStyle">
+                    <div slot="trigger">
+                        <template v-if="borderStyle === 'none'">none</template>
+                        <div v-else class="modifier-border-style-option" style="padding: 0 30px 0 10px">
+                            <span :style="{ 'border-top-style': borderStyle }"></span>
+                        </div>
+                        <i class="bk-select-angle bk-icon icon-angle-down" />
+                    </div>
                     <bk-option v-for="option in borderStyleList" :key="option" :id="option" :name="option">
                         <template v-if="option === 'none'">none</template>
                         <div v-else class="modifier-border-style-option">
@@ -25,26 +45,20 @@
             </div>
         </div>
         <div class="width-container details-box">
-            <div class="detail-name">{{ $t('宽度') }}</div>
-            <div class="detail-content">
-                <append-number-input :value="borderWidth" style="width: 100%;" controls @change="$emit('borderWidthChange', $event)"></append-number-input>
-            </div>
+            <icon-size-input style="width: 180px" :value="borderWidth" @change="$emit('borderWidthChange', $event)" :item="{ font: $t('宽度'), prefixWidth: '44px' }" />
         </div>
         <div class="color-container details-box">
-            <div class="detail-name">{{ $t('颜色') }}</div>
-            <div class="detail-content">
-                <bk-color-picker style="width: 100%;" :value="borderColor" @change="$emit('borderColorChange', $event)"></bk-color-picker>
-            </div>
+            <bk-color-picker style="width: 100%;" :value="borderColor" @change="$emit('borderColorChange', $event)"></bk-color-picker>
         </div>
     </div>
 </template>
 
 <script>
-    import AppendNumberInput from '@/components/modifier/append-number-input'
+    import IconSizeInput from './icon-size-input'
 
     export default {
         components: {
-            AppendNumberInput
+            IconSizeInput
         },
         props: {
             borderStyle: {
@@ -82,7 +96,7 @@
             align-items: center;
             height: 32px;
             &:not(:first-child) {
-                margin-top: 10px;
+                margin-top: 12px;
             }
             .detail-name {
                 width: 44px;
@@ -94,6 +108,29 @@
                 align-items: center;
                 width: 128px;
             }
+        }
+        .size-item-focus {
+            border-color: #3A84FF !important;
+        }
+        .size-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #C4C6CC;
+            border-radius: 2px;
+            margin-top: 0px;
+            .input-prefix {
+                cursor: default;
+                display: flex;
+                justify-content: center;
+                span {
+                    font-size: 12px;
+                }
+            }
+        }
+        .style-icon-select {
+            flex: 1;
+            border: none;
+            border-left: 1px solid #EAEBF0 !important;
         }
     }
     .modifier-border-style-option {

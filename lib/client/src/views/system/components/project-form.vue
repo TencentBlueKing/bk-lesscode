@@ -18,7 +18,7 @@
                 @on-delete="handleUploadReset"
             ></bk-upload>
         </bk-form-item>
-        <bk-form-item label="VUE 版本" required property="framework" error-display-type="normal">
+        <bk-form-item :label="$t('VUE 版本')" required property="framework" error-display-type="normal">
             <div class="bk-button-group">
                 <bk-button
                     @click="formData.framework = 'vue2'"
@@ -98,12 +98,22 @@
                             regex: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
                             message: window.i18n.t('由汉字，英文字母，数字组成，20个字符以内'),
                             trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该应用名称已存在',
+                            trigger: 'blur'
                         }
                     ],
                     projectCode: [
                         {
                             regex: /^[a-z]{1,16}$/,
                             message: window.i18n.t('只能由小写字母组成, 16个字符以内'),
+                            trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkCode,
+                            message: '该应用ID已存在',
                             trigger: 'blur'
                         }
                     ],
@@ -119,14 +129,6 @@
                 importProjectData: {}
             }
         },
-        watch: {
-            'propsFormData.framework': {
-                handler (val) {
-                    this.formData.framework = val || 'vue2'
-                },
-                immediate: true
-            }
-        },
         computed: {
             formType () {
                 return this.type === 'templateProject' ? 'vertical' : 'horizontal'
@@ -135,12 +137,40 @@
                 return `${process.env.BK_AJAX_URL_PREFIX}/page/importJson`
             }
         },
+        watch: {
+            'propsFormData.framework': {
+                handler (val) {
+                    this.formData.framework = val || 'vue2'
+                },
+                immediate: true
+            }
+        },
         created () {
             this.formData = Object.assign({}, defaultFormData, this.propsFormData)
             this.formLayoutList = this.defaultLayoutList
             this.importProjectData = []
         },
         methods: {
+            async checkName () {
+                const res = await this.$store.dispatch('project/checkname', {
+                    data: {
+                        name: this.formData.projectName,
+                        isBlurCheck: true
+                    }
+                })
+                // 接口返回true， 代表重复
+                return res.data !== true
+            },
+            async checkCode () {
+                const res = await this.$store.dispatch('project/checkname', {
+                    data: {
+                        projectCode: this.formData.projectCode,
+                        isBlurCheck: true
+                    }
+                })
+                // 接口返回true， 代表重复
+                return res.data !== true
+            },
             async validate () {
                 const res = await this.$refs.infoForm.validate()
                 return res
