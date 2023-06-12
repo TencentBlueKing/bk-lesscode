@@ -207,7 +207,6 @@ const SingleSchemeComponent = defineComponent({
                                     : <bk-input
                                         value={this.copyScheme.value}
                                         disabled={this.finalDisable}
-                                        type={this.copyScheme.type === API_PARAM_TYPES.NUMBER.VAL ? 'number' : 'text'}
                                         onChange={(val) => this.update({ value: this.copyScheme.type === API_PARAM_TYPES.NUMBER.VAL ? +val : val })}
                                     >
                                     </bk-input>

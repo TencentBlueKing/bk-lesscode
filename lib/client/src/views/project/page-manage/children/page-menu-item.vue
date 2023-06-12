@@ -153,11 +153,8 @@
                 if (page.nocodeType) {
                     if (page.nocodeType === 'FLOW') {
                         this.$router.push({
-                            name: 'flowConfig',
-                            params: {
-                                projectId: this.projectId,
-                                flowId: page.flowId
-                            }
+                            name: 'createTicketPageEdit',
+                            params: { projectId: this.projectId, flowId: page.flowId, pageId: page.id }
                         })
                     } else {
                         this.$router.push({
