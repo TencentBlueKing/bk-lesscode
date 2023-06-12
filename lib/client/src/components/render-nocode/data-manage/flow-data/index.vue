@@ -32,7 +32,7 @@
                     </bk-table-column>
                 </bk-table>
             </bk-tab-panel>
-            <bk-tab-panel :label="$t('节点数据')" name="node" render-directive="if">
+            <bk-tab-panel :label="$t('节点数据')" name="node">
                 <node-data-manage v-if="!flowConfigLoading" :flow-config="flowConfig">
                 </node-data-manage>
             </bk-tab-panel>
@@ -62,6 +62,10 @@
         },
         created () {
             this.getFlowConfig()
+        },
+        beforeDestroy () {
+            this.$store.commit('nocode/dataManage/resetPageConfig')
+            this.$store.commit('nocode/dataManage/setActiveNode', '')
         },
         methods: {
             async getFlowConfig () {

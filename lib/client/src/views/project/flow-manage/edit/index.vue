@@ -29,7 +29,7 @@
                     v-for="item in steps"
                     :key="item.id"
                     :item="item"
-                    :class="{ active: $route.name === item.id }">
+                    :class="{ 'menu-actived': $route.name === item.id }">
                 </menu-item>
             </div>
             <div class="genarate-action">
@@ -252,6 +252,10 @@
         justify-content: center;
         min-width: 360px;
         height: 100%;
+        .menu-actived {
+            background: #e1ecff;
+            color: #3a84ff;
+        }
     }
     .genarate-action {
         position: absolute;
