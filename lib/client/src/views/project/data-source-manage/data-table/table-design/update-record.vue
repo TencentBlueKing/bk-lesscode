@@ -137,6 +137,7 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
     .table-header {
         display: flex;
         align-items: center;
@@ -149,6 +150,9 @@
     }
     .table-main {
         padding: 20px 24px;
+        height: calc(100% - 52px);
+        overflow-y: auto;
+        @mixin scroller;
         .filter-item {
             width: 400px;
         }

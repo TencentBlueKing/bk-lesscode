@@ -136,6 +136,7 @@
 
 <style lang="postcss" scoped>
     @import "@/css/mixins/ellipsis";
+    @import "@/css/mixins/scroller";
 
     .table-header {
         display: flex;
@@ -154,6 +155,7 @@
         padding: 20px 24px;
         height: calc(100% - 52px);
         overflow-y: auto;
+        @mixin scroller;
     }
     .table-section {
         background: #ffffff;

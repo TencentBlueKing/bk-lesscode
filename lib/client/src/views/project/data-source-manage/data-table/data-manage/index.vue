@@ -339,6 +339,7 @@
                 padding: 20px;
                 height: calc(100% - 50px);
                 overflow-y: auto;
+                @mixin scroller;
             }
             ::v-deep .bk-tab-section {
                 padding: 0;
