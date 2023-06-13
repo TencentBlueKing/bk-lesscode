@@ -16,7 +16,8 @@
         render,
         registerComponent,
         vue3Resource,
-        framework
+        framework,
+        createStore
     } from 'bk-lesscode-render'
     import 'bk-lesscode-render/dist/index.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
@@ -28,6 +29,8 @@
     import { bundless } from '@blueking/bundless'
     import bundlessPluginVue2 from '@blueking/bundless-plugin-vue2'
     import bundlessPluginVue3 from '@blueking/bundless-plugin-vue3'
+    import { storeConfig } from '@/store'
+    import Vuex from 'vuex'
 
     window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []
@@ -191,12 +194,14 @@
                     this.isLoading = false
                     code = code.replace('components: { chart: ECharts },', '')
                     const res = generateComponent(code, projectId)
+                    const store = createStore(storeConfig, Vuex)
                     // render
                     setTimeout(() => {
                         render({
                             component: res,
                             selector: '#preview-template',
-                            i18nConfig
+                            i18nConfig,
+                            store
                         })
                     }, 50)
                 } catch (err) {
