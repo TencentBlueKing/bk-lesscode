@@ -76,7 +76,7 @@
                 this.checkAttachToFrom()
             }
 
-            const activeClearCallback = (event) => {
+            const activeClearCallback = () => {
                 this.componentData = {}
                 this.componentId = ''
                 this.componentDocument = ''

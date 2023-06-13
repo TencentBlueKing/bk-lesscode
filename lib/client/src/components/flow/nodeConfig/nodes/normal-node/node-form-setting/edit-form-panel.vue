@@ -16,17 +16,14 @@
                     id="toolActionBox"
                     class="function-and-tool">
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
-                    <action-tool
-                        :hide-clear="false"
-                    >
-                    </action-tool>
+                    <action-tool :hide-clear="false" :disabled="isUseForm" :disabled-tips="isUseForm ? $t('复用表单模式下表单不可编辑') : ''"></action-tool>
                 </div>
                 <page-operate
                     :custom-save="true"
                     :hide-preview="!isCreateTicketPage"
                     :hide-page-setting="!isCreateTicketPage"
                     :disabled="isUseForm"
-                    :disabled-tips="isUseForm ? '复用表单模式下表单不可编辑' : ''"
+                    :disabled-tips="isUseForm ? $t('复用表单模式下表单不可编辑') : ''"
                     :custom-loading="savePending"
                     @save="handleSave">
                 </page-operate>
