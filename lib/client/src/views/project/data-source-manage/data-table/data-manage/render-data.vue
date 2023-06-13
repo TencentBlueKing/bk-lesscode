@@ -21,7 +21,7 @@
                 class="import-data"
                 :title="$t('导入数据')"
                 :tips="$t('如果导入 sql 文件，仅支持解析插入数据的语法')"
-                :uploadKey="dataImportOperationType"
+                :upload-key="dataImportOperationType"
                 :parse-import="parseImport"
                 :handle-import="handleImport"
                 @downloadTemplate="handleDownloadTemplate"
@@ -538,7 +538,7 @@
             }
 
             const exportAllDatas = (fileType) => {
-                window.open(`/api/data-source/exportDatas/projectId/${projectId}/fileType/${fileType}/tableName/${activeTable.value.tableName}/environment/${environment.value.key}`)
+                window.open(`/api/data-source/exportDatas/projectId/${projectId}/fileType/${fileType}/tableName/${activeTable.value.tableName}/environment/${environment.value.key}?x-timezone-offset=${new Date().getTimezoneOffset()}`)
             }
 
             const exportSelectDatas = (fileType) => {
