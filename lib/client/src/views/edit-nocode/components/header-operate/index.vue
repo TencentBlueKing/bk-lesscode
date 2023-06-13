@@ -7,7 +7,7 @@
             :disabled="disabled"
             :tips="disabledTips"
             @save="$emit('save', $event)" />
-        <preview-btn v-if="!hidePreview" :disabled="disabled" :tips="disabledTips" />
+        <preview-btn v-if="!hidePreview" />
         <form-page-operate v-if="pageDetail.nocodeType === 'FORM'"></form-page-operate>
         <data-manage-operate v-if="['FORM_MANAGE', 'FLOW_MANAGE'].includes(pageDetail.nocodeType)"></data-manage-operate>
         <page-setting-btn v-if="!hidePageSetting" />

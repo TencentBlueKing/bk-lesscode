@@ -154,6 +154,7 @@
 
                 try {
                     this.submitPending = true
+                    const self = this
                     const data = this.getFieldsData()
                     if (this.type === 'FLOW') {
                         const params = {
@@ -173,8 +174,8 @@
                         }
                         const reqConfig = {
                             handingError (message) {
-                                if (typeof message === 'string' && message.includes(this.$t('服务未启用'))) {
-                                    return this.$t('当前流程未部署，请部署后提单')
+                                if (typeof message === 'string' && message.includes('服务未启用')) {
+                                    return self.$t('当前流程未部署，请部署后提单')
                                 }
                                 return message
                             }

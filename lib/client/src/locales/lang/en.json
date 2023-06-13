@@ -581,6 +581,7 @@
   "关联数据表：": "Associated data table:",
   "复用已有表单": "Reuse an existing form",
   "复用表单": "Reuse Form",
+  "复用表单模式下表单不可编辑": "Forms cannot be edited in form reuse mode",
   "引用已有表单": "Reference an existing form",
   "引用表单": "Citation Form",
   "新建空白表单": "New Blank Form",
