@@ -10,14 +10,13 @@
 -->
 <template>
     <router-link
-        class="page-link"
         target="_blank"
         :to="route">
         <!-- {{ name }} -->
         <bk-button
             style="margin-left: 8px"
         >
-            {{name}}
+            <span class="page-link">{{name}}</span>
         </bk-button>
     </router-link>
 </template>
@@ -79,9 +78,7 @@
     .page-link {
         display: inline-block;
         max-width: 200px;
-        line-height: 1;
         font-size: 12px;
-        color: #3a84ff;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

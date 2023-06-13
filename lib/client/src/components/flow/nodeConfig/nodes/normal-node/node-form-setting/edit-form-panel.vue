@@ -17,7 +17,7 @@
                     class="function-and-tool">
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
                     <action-tool
-                        :hide-clear="hideClear"
+                        :hide-clear="false"
                     >
                     </action-tool>
                 </div>
@@ -287,7 +287,7 @@
         }
     }
     .edit-content-wrapper {
-        height: calc(100% - 52px);
+        height: calc(100% - 52px - 52px);
         .lesscode-editor-page-content {
             height: 100%;
         }
