@@ -112,7 +112,7 @@
                 return this.$route.query.framework || 'vue2'
             }
         },
-        async created () {
+        created () {
             // init
             init(this.framework)
             console.log('preview-template')
@@ -128,23 +128,11 @@
                 this.isCustomComponentLoading = false
             }
             document.body.appendChild(script)
-
-            if (this.type === 'nav-template') {
-                try {
-                    const { list } = await this.$store.dispatch('layout/getFullList', { projectId: this.projectId, versionId: this.versionId })
-                    this.detail = list.filter(item => item.id === parseInt(this.templateId))[0]
-                } catch (e) {
-                    console.error(e)
-                }
-            } else {
-                this.detail = await this.$store.dispatch('pageTemplate/detail', { id: this.templateId })
-            }
-
-            await this.loadFile()
         },
-        mounted () {
+        async mounted () {
             this.minHeight = window.innerHeight
             window.addEventListener('resize', this.resizeHandler)
+            await this.loadFile()
         },
         destroyed () {
             window.removeEventListener('resize', this.resizeHandler)
@@ -152,6 +140,18 @@
         methods: {
             async loadFile () {
                 this.isLoading = true
+
+                if (this.type === 'nav-template') {
+                    try {
+                        const { list } = await this.$store.dispatch('layout/getFullList', { projectId: this.projectId, versionId: this.versionId })
+                        this.detail = list.filter(item => item.id === parseInt(this.templateId))[0]
+                    } catch (e) {
+                        console.error(e)
+                    }
+                } else {
+                    this.detail = await this.$store.dispatch('pageTemplate/detail', { id: this.templateId })
+                }
+            
                 try {
                     if (this.type !== 'nav-template') {
                         this.targetData.push(JSON.parse(this.detail.content || {}))
@@ -192,11 +192,13 @@
                     code = code.replace('components: { chart: ECharts },', '')
                     const res = generateComponent(code, projectId)
                     // render
-                    render({
-                        component: res,
-                        selector: '#preview-template',
-                        i18nConfig
-                    })
+                    setTimeout(() => {
+                        render({
+                            component: res,
+                            selector: '#preview-template',
+                            i18nConfig
+                        })
+                    }, 50)
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',

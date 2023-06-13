@@ -2144,6 +2144,8 @@
   "重新部署": "Redeploy",
   "预览环境": "Preview Env",
   "预览环境数据表结构有更新，需": "The structure of the Preview Env data table has been updated.",
+  "query 参数，表示查询数据的 id 字段": "The query parameter, indicating the id field of the query data",
+  "获取 {0} 表的某一条数据": "Get a data item of the {0} table",
   "query 参数，数字类型，表示分页的页码。不传表示获取所有数据": "Query parameter, number type, indicates the page number of the pagination. \nDo not pass means get all data",
   "query 参数，数字类型，表示每页数量。不传表示获取所有数据": "Query parameter, number type, indicates the quantity per page. \nDo not pass means get all data",
   "query 参数，表示删除数据的 id 字段": "Query parameter, indicating the ID field of the deleted data",
