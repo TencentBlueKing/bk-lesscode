@@ -16,7 +16,8 @@
         render,
         registerComponent,
         vue3Resource,
-        framework
+        framework,
+        createStore
     } from 'bk-lesscode-render'
     import 'bk-lesscode-render/dist/index.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
@@ -28,6 +29,8 @@
     import { bundless } from '@blueking/bundless'
     import bundlessPluginVue2 from '@blueking/bundless-plugin-vue2'
     import bundlessPluginVue3 from '@blueking/bundless-plugin-vue3'
+    import { storeConfig } from '@/store'
+    import Vuex from 'vuex'
 
     window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []
@@ -112,7 +115,7 @@
                 return this.$route.query.framework || 'vue2'
             }
         },
-        async created () {
+        created () {
             // init
             init(this.framework)
             console.log('preview-template')
@@ -128,23 +131,11 @@
                 this.isCustomComponentLoading = false
             }
             document.body.appendChild(script)
-
-            if (this.type === 'nav-template') {
-                try {
-                    const { list } = await this.$store.dispatch('layout/getFullList', { projectId: this.projectId, versionId: this.versionId })
-                    this.detail = list.filter(item => item.id === parseInt(this.templateId))[0]
-                } catch (e) {
-                    console.error(e)
-                }
-            } else {
-                this.detail = await this.$store.dispatch('pageTemplate/detail', { id: this.templateId })
-            }
-
-            await this.loadFile()
         },
-        mounted () {
+        async mounted () {
             this.minHeight = window.innerHeight
             window.addEventListener('resize', this.resizeHandler)
+            await this.loadFile()
         },
         destroyed () {
             window.removeEventListener('resize', this.resizeHandler)
@@ -152,6 +143,18 @@
         methods: {
             async loadFile () {
                 this.isLoading = true
+
+                if (this.type === 'nav-template') {
+                    try {
+                        const { list } = await this.$store.dispatch('layout/getFullList', { projectId: this.projectId, versionId: this.versionId })
+                        this.detail = list.filter(item => item.id === parseInt(this.templateId))[0]
+                    } catch (e) {
+                        console.error(e)
+                    }
+                } else {
+                    this.detail = await this.$store.dispatch('pageTemplate/detail', { id: this.templateId })
+                }
+            
                 try {
                     if (this.type !== 'nav-template') {
                         this.targetData.push(JSON.parse(this.detail.content || {}))
@@ -191,12 +194,16 @@
                     this.isLoading = false
                     code = code.replace('components: { chart: ECharts },', '')
                     const res = generateComponent(code, projectId)
+                    const store = createStore(storeConfig, Vuex)
                     // render
-                    render({
-                        component: res,
-                        selector: '#preview-template',
-                        i18nConfig
-                    })
+                    setTimeout(() => {
+                        render({
+                            component: res,
+                            selector: '#preview-template',
+                            i18nConfig,
+                            store
+                        })
+                    }, 50)
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',

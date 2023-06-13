@@ -98,6 +98,19 @@
         }, {})
         return [
             {
+                url: url + '/detail',
+                type: FUNCTION_METHOD.GET,
+                params: {
+                    id: window.i18n.t('query 参数，表示查询数据的 id 字段')
+                },
+                result: {
+                    code: window.i18n.t('状态码,-1表示接口异常'),
+                    data: dataObject,
+                    message: window.i18n.t('接口返回的消息')
+                },
+                summary: window.i18n.t('获取 {0} 表的某一条数据', [tableName])
+            },
+            {
                 url,
                 type: FUNCTION_METHOD.GET,
                 params: {
