@@ -433,6 +433,7 @@
             async handleCopy (project) {
                 this.$refs.createDialog.projectType = 'copyProject'
                 this.$refs.createDialog.formData.copyFrom = project.id
+                this.$refs.createDialog.formData.framework = project.framework || 'vue2'
                 this.$refs.createDialog.formData.projectName = `${project.projectName}copy`
                 this.$refs.createDialog.visible = true
             },

@@ -151,11 +151,7 @@
             // 清空 store
             this.$store.commit('page/setPageDetail', {})
             this.$store.commit('layout/setPageLayout', {})
-            // 清空 LC
-            const root = LC.getRoot()
-            root.children.forEach(children => {
-                root.removeChild(children)
-            })
+
             // 重置 platform
             LC.platform = 'PC'
         },

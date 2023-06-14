@@ -1,5 +1,18 @@
 <template>
-    <bk-button theme="primary" :loading="isLoading" @click="handleSubmit">保存</bk-button>
+    <div
+        v-bk-tooltips="{
+        disabled: !tips,
+        content: tips,
+        placement: 'bottom'
+    }">
+        <bk-button
+            theme="primary"
+            :loading="isLoading"
+            :disabled="disabled"
+            @click="handleSubmit">
+            保存
+        </bk-button>
+    </div>
 </template>
 
 <script>

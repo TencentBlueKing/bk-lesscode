@@ -268,6 +268,7 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
     .table-header {
         display: flex;
         align-items: center;
@@ -282,6 +283,7 @@
         padding: 20px 24px;
         height: calc(100% - 52px);
         overflow-y: auto;
+        @mixin scroller;
     }
     .table-section {
         background: #ffffff;

@@ -14,6 +14,9 @@
         methods: {
             clearValidator () {
                 this.$refs.bkFormItem.clearValidator()
+            },
+            validate () {
+                return this.$refs.bkFormItem.validate()
             }
         }
     }
