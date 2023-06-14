@@ -2168,7 +2168,7 @@
   "导入数据": "Import Data",
   "将会直接删除{0} id 为【{1}】的数据": "The data whose {0} ID is [{1}] will be deleted directly",
   "批量删除": "Multi-delete",
-  "数据是【datetime】类型，但是值【{0}】不符合【datetime】格式": "The data is of type [datetime], but the value [{0}] does not conform to the format of [datetime]",
+  "数据是【{1}】类型，但是值【{0}】不符合【{1}】格式": "The data is of type [{1}], but the value [{0}] does not conform to the format of [{1}]",
   "数据的增删改会直接影响到{0}，请谨慎操作": "The addition, deletion and modification of data will directly affect {0}, please operate with caution.",
   "新增数据": "New Data",
   "确认要删除？": "Are you sure you want to delete?",
