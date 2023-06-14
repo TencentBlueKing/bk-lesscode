@@ -18,7 +18,7 @@
                 item: {
                     icon: 'bk-drag-icon bk-drag-yuanma',
                     func: this.toggleCodeAndJson,
-                    tips: '查看JSON'
+                    tips: window.i18n.t('查看JSON')
                 },
                 showDialog: false
             }

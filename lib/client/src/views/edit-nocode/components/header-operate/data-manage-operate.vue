@@ -41,7 +41,7 @@
             if (this.pageDetail.nocodeType === 'FORM_MANAGE') {
                 this.getFormPage()
             } else {
-                this.name = `编辑流程【${this.pageDetail.flowName}】`
+                this.name = window.i18n.t('编辑流程【{0}】', [this.pageDetail.flowName])
                 this.route = {
                     name: 'flowConfig',
                     params: {

@@ -10,7 +10,7 @@
             :loading="isLoading"
             :disabled="disabled"
             @click="handleSubmit">
-            保存
+            {{ $t('保存') }}
         </bk-button>
     </div>
 </template>
