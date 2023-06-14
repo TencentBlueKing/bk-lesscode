@@ -40,6 +40,7 @@
                 ref="summary"
             ></form-summary>
             <form-monaco
+                v-bkloading="{ isLoading }"
                 :form.sync="form"
                 :function-list="functionList"
                 :variable-list="variableList"
