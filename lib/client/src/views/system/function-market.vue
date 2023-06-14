@@ -29,7 +29,7 @@
                 class="function-card"
                 @click.native="handleShowSource(card)">
                 <h3 class="card-title">{{ card.funcName }}</h3>
-                <p class="card-body" v-bk-overflow-tips>{{ card.funcSummary }}</p>
+                <p class="card-body" v-bk-overflow-tips>{{ $t(card.funcSummary) }}</p>
                 <bk-popconfirm
                     v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]"
                     :content="$t('确定删除该函数？')"
@@ -39,7 +39,7 @@
                 </bk-popconfirm>
 
                 <div slot="footer" class="foot-main">
-                    <bk-button text class="foot-btn" @click.stop="handleShowSource(card)">{{ $t('查看源码') }}</bk-button>
+                    <bk-button text class="foot-btn" v-enStyle="'flex:1.2'" @click.stop="handleShowSource(card)">{{ $t('查看源码') }}</bk-button>
                     <bk-divider direction="vertical"></bk-divider>
                     <bk-button text class="foot-btn" @click.stop="handleShowAddFuncFromMarket(card)">{{ $t('添加至应用') }}</bk-button>
                     <template v-if="iamNoResourcesPerm[$IAM_ACTION.manage_function[0]]">

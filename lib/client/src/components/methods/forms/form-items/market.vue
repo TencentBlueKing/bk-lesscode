@@ -46,7 +46,7 @@
             ...mapActions('functionMarket', ['getFunctionList']),
 
             getTips (funcSummary) {
-                const tips = transformTipsWidth(funcSummary, 350)
+                const tips = transformTipsWidth(window.i18n.t(funcSummary), 350)
                 let tipObj = {
                     content: tips,
                     placement: 'left',
