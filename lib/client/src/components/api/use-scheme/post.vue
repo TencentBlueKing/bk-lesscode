@@ -12,6 +12,7 @@
                 :plus-brother-disable="true"
                 :disable="disabled"
                 :render-slot="renderSlot"
+                :name-options="nameOptions"
                 @minusNode="handleMinusNode"
                 @update="handleUpdate"
             />
@@ -52,7 +53,8 @@
             params: Object,
             renderSlot: Function,
             getParamVal: Function,
-            disabled: Boolean
+            disabled: Boolean,
+            nameOptions: Array
         },
 
         setup (props, { emit }) {

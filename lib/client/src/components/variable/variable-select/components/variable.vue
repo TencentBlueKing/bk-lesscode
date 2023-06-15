@@ -367,7 +367,7 @@
                     if (defaultValueType === VARIABLE_VALUE_TYPE.SAME) {
                         value = defaultValue.all
                     } else if (defaultValueType === VARIABLE_VALUE_TYPE.DIFFERENT) {
-                        value = defaultValue.stag
+                        value = defaultValue.preview
                     }
                     if ([VARIABLE_TYPE.ARRAY.VAL, VARIABLE_TYPE.OBJECT.VAL].includes(valueType)) {
                         value = JSON.parse(value)

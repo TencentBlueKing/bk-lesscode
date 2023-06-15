@@ -14,8 +14,9 @@
                 :minus-disable="renderQueryParams.length <= 1"
                 :render-slot="renderSlot"
                 :disable="disabled"
-                @plusBrotherNode="handlePlusBrotherNode"
-                @minusNode="handleMinusNode"
+                :name-options="nameOptions"
+                @plusBrotherNode="handlePlusBrotherNode(index)"
+                @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
             >
             </single-scheme>
@@ -57,7 +58,8 @@
             params: Array,
             renderSlot: Function,
             getParamVal: Function,
-            disabled: Boolean
+            disabled: Boolean,
+            nameOptions: Array
         },
 
         setup (props, { emit }) {
@@ -70,8 +72,8 @@
             const renderQueryParams = ref([])
             const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value, props.getParamVal))
 
-            const handlePlusBrotherNode = () => {
-                renderQueryParams.value.push(getDefaultApiUseScheme())
+            const handlePlusBrotherNode = (index) => {
+                renderQueryParams.value.splice(index + 1, 0, getDefaultApiUseScheme())
                 triggleChange()
             }
 
