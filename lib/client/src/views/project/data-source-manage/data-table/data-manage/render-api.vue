@@ -85,7 +85,7 @@
 
     // 默认提供的函数
     const getDataApiList = (tableName, columns) => {
-        const url = `/data-source/user/tableName/${tableName}`
+        const url = `/api/data-source/user/tableName/${tableName}`
         const dataObject = columns.reduce((acc, cur) => {
             acc[cur.name] = window.i18n.t('{0}的值', [cur.name])
             return acc
@@ -111,11 +111,30 @@
                 summary: window.i18n.t('获取 {0} 表的某一条数据', [tableName])
             },
             {
+                url: url + '/update/condition',
+                type: FUNCTION_METHOD.PUT,
+                params: {
+                    data: dataObject,
+                    where: {
+                        '[key]': 'value'
+                    }
+                },
+                result: {
+                    code: window.i18n.t('状态码,-1表示接口异常'),
+                    data: window.i18n.t('数字类型，返回更新操作影响的行数'),
+                    message: window.i18n.t('接口返回的消息')
+                },
+                summary: window.i18n.t('使用 where 条件更新 {0} 表的数据。注意：匹配到 where 条件的数据都会执行更新', [tableName])
+            },
+            {
                 url,
                 type: FUNCTION_METHOD.GET,
                 params: {
                     page: window.i18n.t('query 参数，数字类型，表示分页的页码。不传表示获取所有数据'),
-                    pageSize: window.i18n.t('query 参数，数字类型，表示每页数量。不传表示获取所有数据')
+                    pageSize: window.i18n.t('query 参数，数字类型，表示每页数量。不传表示获取所有数据'),
+                    bkSortKey: window.i18n.t('query 参数，排序字段的 key'),
+                    bkSortValue: window.i18n.t('query 参数，排序方式，降序使用【DESC】，升序使用【ASC】'),
+                    '[key]': window.i18n.t('query 参数，用于对数据进行过滤，key 可以表里的任意字段')
                 },
                 result: {
                     code: window.i18n.t('状态码,-1表示接口异常'),
@@ -153,7 +172,7 @@
                 url,
                 type: FUNCTION_METHOD.DELETE,
                 params: {
-                    id: window.i18n.t('query 参数，表示删除数据的 id 字段')
+                    '[key]': window.i18n.t('query 参数，传入 id 或者 unqiue 字段来唯一定位到要删除的数据')
                 },
                 result: {
                     code: window.i18n.t('状态码,-1表示接口异常'),
