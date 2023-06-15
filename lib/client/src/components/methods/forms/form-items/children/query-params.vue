@@ -2,6 +2,7 @@
     <use-get-scheme
         :params="renderQuery"
         :disabled="disabled"
+        :name-options="nameOptions"
         :render-slot="renderSlot"
         :get-param-val="getParamVal"
     />
@@ -29,7 +30,8 @@
         props: {
             query: Array,
             disabled: Boolean,
-            variableList: Array
+            variableList: Array,
+            nameOptions: Array
         },
 
         setup (props, { emit }) {

@@ -92,7 +92,7 @@
                 </bk-select>
                 <bk-input
                     class="compose-url"
-                    :placeholder="$t('请输入接口地址')"
+                    :placeholder="$t('请输入接口地址，可以使用{变量标识}使用变量，变量会在函数使用阶段替换成真实的值')"
                     :value="formData.url"
                     @change="update('url', ...arguments)"
                 ></bk-input>
