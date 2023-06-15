@@ -58,7 +58,7 @@
         if (!tree) {
             return []
         }
-        
+
         return tree.map(node => Object.freeze({
             id: node.componentId,
             name: node.componentId,
@@ -85,12 +85,12 @@
                 return this.allExpanded ? window.i18n.t('收起所有') : window.i18n.t('展开所有')
             }
         },
-        
+
         mounted () {
             const data = getDataFromNodeTree(LC.getRoot().children)
             this.$refs.tree.setData(data)
             this.isEmpty = data.length < 1
-            
+
             /**
              * @desc 组件树监听 update 回调
              * @param { Object } event
@@ -138,14 +138,14 @@
                     }
                     activeNodeParent = activeNodeParent.parentNode
                 }
-                
+
                 this.$refs.tree.setSelected(activeNode.componentId)
             }
 
             LC.addEventListener('update', updateCallback)
             LC.addEventListener('active', activeCallback)
             LC.addEventListener('toggleInteractive', updateCallback)
-            
+
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('update', updateCallback)
                 LC.removeEventListener('active', activeCallback)
@@ -239,7 +239,7 @@
                     }
                     return null
                 }
-                
+
                 componentData.active()
 
                 // 选中节点对应的组件是交互式组件
