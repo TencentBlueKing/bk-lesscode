@@ -1,10 +1,11 @@
 <template>
     <draw-layout>
-        <layout>
-            <div class="markdown-page-wrapper">
-                <mavon-editor style="height: 100%" v-model="localValue" ref="md" @imgAdd="uploadImg" :tool-bars="toolbarsSetting" />
-            </div>
-        </layout>
+        <section class="nocode-center-content-wrapper" ref="root" :style="centerRenderStyle"></section>
+            <layout>
+                <div class="markdown-page-wrapper">
+                    <mavon-editor style="height: 100%" v-model="localValue" ref="md" @imgAdd="uploadImg" :tool-bars="toolbarsSetting" />
+                </div>
+            </layout>
         <div class="markdown-setting-wrapper" slot="right">
             <layout-setting v-if="curTemplateData.panelActive" :template-data="curTemplateData" />
             <page-setting v-else />

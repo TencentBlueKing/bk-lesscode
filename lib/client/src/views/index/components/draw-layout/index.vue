@@ -266,6 +266,7 @@
     .page-nocode-layout{
       /* max-width: 100vw; */
       padding-left: 300px !important;
+      /* padding-right: 300px !important; */
       &.is-left-collapsed{
         padding-left: 0 !important;
         .collapsed-left-btn{
@@ -294,8 +295,6 @@
     }
     .collapsed-nocode-left-btn{
       left: 300px !important;
-    }
-    .nocode-collapsed-right-btn{
     }
 
     .nocode-layout-center{
