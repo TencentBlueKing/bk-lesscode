@@ -188,12 +188,33 @@
             }
         },
 
+        created () {
+            this.getVariableList()
+        },
+
         methods: {
+            ...mapActions('variable', [
+                'getAllVariable'
+            ]),
             ...mapActions('functions', [
                 'getFunctionList',
                 'bulkCreateFunction',
                 'deleteFunction'
             ]),
+
+            getVariableList () {
+                const params = {
+                    projectId: this.projectId,
+                    versionId: this.versionId,
+                    effectiveRange: 0
+                }
+                this.isLoading = true
+                this.getAllVariable(params).catch((err) => {
+                    this.$bkMessage({ theme: 'error', message: err.message || err })
+                }).finally(() => {
+                    this.isLoading = false
+                })
+            },
 
             initData () {
                 this.isLoadingFunc = true

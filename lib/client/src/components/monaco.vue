@@ -202,7 +202,7 @@
             },
 
             createDependencyProposals () {
-                const proposals = this.proposals
+                const self = this
                 this.proposalsRef = monaco.languages.registerCompletionItemProvider('javascript', {
                     provideCompletionItems (model, position) {
                         const word = model.getWordUntilPosition(position)
@@ -212,7 +212,7 @@
                             startColumn: word.startColumn,
                             endColumn: word.endColumn
                         }
-                        const suggestions = proposals.map((proposal) => ({
+                        const suggestions = self.proposals.map((proposal) => ({
                             range,
                             ...proposal
                         }))
