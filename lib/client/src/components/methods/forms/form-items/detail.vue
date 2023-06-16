@@ -261,8 +261,10 @@
                 immediate: true
             },
             'form.apiChoosePath': {
-                handler () {
-                    this.getNameOptions()
+                handler (val, oldVal) {
+                    if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
+                        this.getNameOptions()
+                    }
                 },
                 immediate: true
             }
