@@ -24,12 +24,21 @@
                     boundary: 'window'
                 }"
             >{{ $t(key.label) }}</div>
-            <bk-select
+            <bk-tag-input
                 class="g-mb8 h32"
+                trigger="focus"
+                :max-data="1"
+                :allow-create="true"
                 :key="key.id"
-                :value="valueKeys[key.id]"
+                :value="[valueKeys[key.id]].filter(v => v)"
                 :loading="isLoading"
-                @change="val => changeParams(key.id, val)"
+                :list="options.map(x => ({ id: x, name: x }))"
+                @change="([val]) => changeParams(key.id, val)">
+            </bk-tag-input>
+            
+            <!-- <bk-select
+                
+                @change=""
             >
                 <span
                     v-bk-overflow-tips="{ content: valueKeys[key.id] }"
@@ -44,7 +53,7 @@
                     :key="option"
                     :id="option"
                     :name="option"
-                />
+                /> -->
             </bk-select>
         </template>
     </section>
@@ -55,8 +64,7 @@
         defineComponent,
         PropType,
         ref,
-        watch,
-        nextTick
+        watch
     } from '@vue/composition-api'
     import store from '@/store'
 
@@ -120,25 +128,6 @@
                         const table = tables.find(table => table.tableName === props.payload.sourceData.tableName)
                         options.value = table.columns.map(column => column.name)
                     }
-                    // 选项变了以后，要清空列表没有的数据
-                    nextTick(() => {
-                        let valueChanged = false
-                        const value = Object.keys(props.valueKeys).reduce((acc, cur) => {
-                            const val = props.valueKeys[cur]
-                            if (options.value.includes(val)) {
-                                acc[cur] = val
-                            } else {
-                                // 因数据变化导致值置空的情况，需要update
-                                if (val) {
-                                    valueChanged = true
-                                }
-                            }
-                            return acc
-                        }, {})
-                        if (valueChanged) {
-                            triggerUpdata(value)
-                        }
-                    })
                 },
                 {
                     immediate: true,
