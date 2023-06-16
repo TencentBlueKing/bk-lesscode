@@ -12,7 +12,7 @@
                 :rows="3"
                 :maxlength="100"
                 :disabled="disabled"
-                :value="form.funcSummary"
+                :value="$t(form.funcSummary)"
                 @input="(funcSummary) => updateValue({ funcSummary })">
             </bk-input>
         </lc-form-item>

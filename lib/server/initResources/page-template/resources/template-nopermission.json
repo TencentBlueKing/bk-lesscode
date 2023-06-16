@@ -1,1 +1,28 @@
-{"template":{"id":234,"updateTime":"2022-08-26T02:26:10.000Z","createTime":"2022-06-27T03:35:51.000Z","createUser":"","updateUser":"","deleteFlag":0,"templateName":"无权限提示页面","templateCode":null,"templateType":"PC","fromPageCode":"nopermission","content":"{\"componentId\":\"block-c1b44\",\"type\":\"render-block\",\"name\":\"block\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{},\"renderSlots\":{\"default\":[{\"componentId\":\"image-1bfc3\",\"type\":\"bk-image\",\"name\":\"image\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"src\":{\"format\":\"value\",\"code\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/template-imgs/latest/lesscode-img-permissionlock.svg\",\"valueType\":\"string\",\"renderValue\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/template-imgs/latest/lesscode-img-permissionlock.svg\",\"payload\":{},\"modifiers\":[]},\"alt\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"string\",\"payload\":{}}},\"renderSlots\":{},\"renderStyles\":{\"display\":\"block\",\"width\":\"255px\",\"verticalAlign\":\"middle\",\"height\":\"134px\"},\"renderAlign\":{}},{\"componentId\":\"block-46c1d\",\"type\":\"render-block\",\"name\":\"block\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{},\"renderSlots\":{\"default\":[{\"componentId\":\"text-1e0ac\",\"type\":\"span\",\"name\":\"text\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"title\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"string\",\"payload\":{}}},\"renderSlots\":{\"default\":{\"format\":\"value\",\"code\":\"您无权访问，请联系管理员添加权限\",\"component\":\"text\",\"valueType\":\"text\",\"payload\":{},\"renderValue\":\"您无权访问，请联系管理员添加权限\"}},\"renderStyles\":{\"display\":\"inline-block\",\"textAlign\":\"center\",\"fontSize\":\"14px\",\"verticalAlign\":\"middle\"},\"renderAlign\":{}}]},\"renderStyles\":{\"display\":\"block\",\"width\":\"100%\",\"marginTop\":\"8px\"},\"renderAlign\":{\"horizontal\":\"align-horizontal-center\",\"vertical\":\"align-vertical-center\"}}]},\"renderStyles\":{\"display\":\"block\",\"width\":\"100%\",\"height\":\"310px\"},\"renderAlign\":{\"horizontal\":\"align-horizontal-center\",\"vertical\":\"align-vertical-center\"}}","previewImg":"","isOffcial":1,"offcialType":"INFO","categoryId":1198,"parentId":null,"belongProjectId":1206,"versionId":null},"functions":[],"vars":[]}
+{
+    "template":{
+        "id":234,
+        "updateTime":"2022-08-26T02:26:10.000Z",
+        "createTime":"2022-06-27T03:35:51.000Z",
+        "createUser":"",
+        "updateUser":"",
+        "deleteFlag":0,
+        "templateName":"无权限提示页面",
+        "templateCode":null,
+        "templateType":"PC",
+        "fromPageCode":"nopermission",
+        "content":"{\"componentId\":\"block-c1b44\",\"type\":\"render-block\",\"name\":\"block\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{},\"renderSlots\":{\"default\":[{\"componentId\":\"image-1bfc3\",\"type\":\"bk-image\",\"name\":\"image\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"src\":{\"format\":\"value\",\"code\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/template-imgs/latest/lesscode-img-permissionlock.svg\",\"valueType\":\"string\",\"renderValue\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/template-imgs/latest/lesscode-img-permissionlock.svg\",\"payload\":{},\"modifiers\":[]},\"alt\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"string\",\"payload\":{}}},\"renderSlots\":{},\"renderStyles\":{\"display\":\"block\",\"width\":\"255px\",\"verticalAlign\":\"middle\",\"height\":\"134px\"},\"renderAlign\":{}},{\"componentId\":\"block-46c1d\",\"type\":\"render-block\",\"name\":\"block\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{},\"renderSlots\":{\"default\":[{\"componentId\":\"text-1e0ac\",\"type\":\"span\",\"name\":\"text\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"title\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"string\",\"payload\":{}}},\"renderSlots\":{\"default\":{\"format\":\"value\",\"code\":\"您无权访问，请联系管理员添加权限\",\"component\":\"text\",\"valueType\":\"text\",\"payload\":{},\"renderValue\":\"您无权访问，请联系管理员添加权限\"}},\"renderStyles\":{\"display\":\"inline-block\",\"textAlign\":\"center\",\"fontSize\":\"14px\",\"verticalAlign\":\"middle\"},\"renderAlign\":{}}]},\"renderStyles\":{\"display\":\"block\",\"width\":\"100%\",\"marginTop\":\"8px\"},\"renderAlign\":{\"horizontal\":\"align-horizontal-center\",\"vertical\":\"align-vertical-center\"}}]},\"renderStyles\":{\"display\":\"block\",\"width\":\"100%\",\"height\":\"310px\"},\"renderAlign\":{\"horizontal\":\"align-horizontal-center\",\"vertical\":\"align-vertical-center\"}}",
+        "previewImg":"",
+        "isOffcial":1,
+        "offcialType":"INFO",
+        "categoryId":1198,
+        "parentId":null,
+        "belongProjectId":1206,
+        "versionId":null
+    },
+    "functions":[
+
+    ],
+    "vars":[
+
+    ]
+}
