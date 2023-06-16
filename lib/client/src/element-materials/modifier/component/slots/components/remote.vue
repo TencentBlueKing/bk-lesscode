@@ -56,8 +56,6 @@
 
         methods: {
             remoteChange (name, val, type, methodData) {
-                // 更新 options
-                this.updateOptions(Object.keys(val?.[0] || {}))
                 // 更新值
                 this.copySlotVal = {
                     ...this.copySlotVal,
@@ -74,10 +72,6 @@
 
             triggleUpdate () {
                 this.change(this.copySlotVal, this.copyType)
-            },
-
-            updateOptions (optionList) {
-                this.$emit('option-change', optionList)
             }
         }
     }
