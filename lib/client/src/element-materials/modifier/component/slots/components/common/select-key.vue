@@ -35,26 +35,6 @@
                 :list="options.map(x => ({ id: x, name: x }))"
                 @change="([val]) => changeParams(key.id, val)">
             </bk-tag-input>
-            
-            <!-- <bk-select
-                
-                @change=""
-            >
-                <span
-                    v-bk-overflow-tips="{ content: valueKeys[key.id] }"
-                    class="display-value"
-                    slot="trigger"
-                >
-                    {{ valueKeys[key.id] }}
-                    <i class="bk-select-angle bk-icon icon-angle-down"></i>
-                </span>
-                <bk-option
-                    v-for="option in options"
-                    :key="option"
-                    :id="option"
-                    :name="option"
-                /> -->
-            </bk-select>
         </template>
     </section>
 </template>
