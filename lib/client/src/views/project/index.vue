@@ -73,7 +73,7 @@
         <section class="project-right-content">
             <div class="breadcrumbs" v-if="hasBreadcrumb">
                 <div class="page-top">
-                    <h3 class="current">{{ currentPage }}</h3>
+                    <h3 class="current">{{ $t(currentPage) }}</h3>
                     <div class="version-selector" v-if="isShowProjectVersionSelector">
                         {{ $t('应用当前版本：') }}
                         <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />

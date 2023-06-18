@@ -8,12 +8,11 @@
             :header-cell-style="{ background: '#f0f1f5' }"
         >
             <bk-table-column
-                show-overflow-tooltip
                 :label="$t('table_请求地址')"
                 prop="url"
             >
                 <template slot-scope="props">
-                    <span class="api-url">{{ props.row.url }}</span>
+                    <span class="api-url" v-bk-overflow-tips>{{ props.row.url }}</span>
                     <copy-icon :value="props.row.url"></copy-icon>
                 </template>
             </bk-table-column>
@@ -101,7 +100,7 @@
                 url: url + '/detail',
                 type: FUNCTION_METHOD.GET,
                 params: {
-                    id: window.i18n.t('query 参数，表示查询数据的 id 字段')
+                    '[key]': window.i18n.t('query 参数，可以填写多个键值对，并使用 AND 关系查询具体的数据，如果匹配到多条数据，则返回第一条。key 可以填写任意字段。value 填写值，可以用 %xx% 的形式进行模糊匹配。示例：\'name\': \'xxx\' 或者 \'name\': \'%xxx%\'')
                 },
                 result: {
                     code: window.i18n.t('状态码,-1表示接口异常'),
@@ -116,7 +115,7 @@
                 params: {
                     data: dataObject,
                     where: {
-                        '[key]': 'value'
+                        '[key]': '可以填写多个键值对，并使用 AND 关系查询匹配到的数据。key 可以填写任意字段。value 填写值，可以用 %xx% 的形式进行模糊匹配。示例：\'name\': \'xxx\' 或者 \'name\': \'%xxx%\''
                     }
                 },
                 result: {
@@ -134,7 +133,7 @@
                     pageSize: window.i18n.t('query 参数，数字类型，表示每页数量。不传表示获取所有数据'),
                     bkSortKey: window.i18n.t('query 参数，排序字段的 key'),
                     bkSortValue: window.i18n.t('query 参数，排序方式，降序使用【DESC】，升序使用【ASC】'),
-                    '[key]': window.i18n.t('query 参数，用于对数据进行过滤，key 可以表里的任意字段')
+                    '[key]': window.i18n.t('query 参数，可以填写多个键值对，并使用 AND 关系进行模糊匹配。key 可以填写任意字段。value 填写值，示例：\'name\': \'xxx\'')
                 },
                 result: {
                     code: window.i18n.t('状态码,-1表示接口异常'),

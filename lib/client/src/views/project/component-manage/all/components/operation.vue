@@ -61,7 +61,7 @@
                         @on-success="handleUploadSuccess"
                         @on-progress="handleProgress" />
                 </lc-form-item>
-                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">{{ $t('下载开发框架') }}</bk-link>
+                <bk-link class="component-demo-link" v-enStyle="'margin-left:174px'" theme="primary" @click="handleDownloadDemo">{{ $t('下载开发框架') }}</bk-link>
                 <lc-form-item :label="$t('form_组件名称')" required property="name" error-display-type="normal">
                     <bk-input
                         :value="formData.displayName && formData.name ? `${formData.displayName}(${formData.name})` : ''"
