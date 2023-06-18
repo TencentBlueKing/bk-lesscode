@@ -5,12 +5,12 @@
                 class="project-icon-empty"
                 type="empty"
                 scene="part">
-                <p class="empty-content"><span>暂无图标，</span><span class="to-icon-link" @click="toIconManage">跳转绑定</span></p>
+                <p class="empty-content"><span>{{$t('暂无图标')}}，</span><span class="to-icon-link" @click="toIconManage">{{$t('跳转绑定')}}</span></p>
             </bk-exception>
         </template>
         <template v-else>
             <search-box
-                placeholder="图标名称"
+            :placeholder="$t('图标名称')"
                 :list="searchList"
                 @on-change="handleSearchChange" />
             <group-box

@@ -30,7 +30,7 @@
                         @enter="handleCreateCategory"
                     ></bk-input>
                 </div>
-                <i class="bk-icon icon-plus" v-bk-tooltips.top="$t('添加分类')"></i>
+                <i class="bk-drag-icon bk-drag-crosshair" v-bk-tooltips.top="$t('添加分类')"></i>
             </bk-popconfirm>
         </h3>
 

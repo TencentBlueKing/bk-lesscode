@@ -74,7 +74,7 @@
                         class="field-plus"
                         slot="dropdown-trigger"
                     >
-                        <i class="bk-icon icon-plus"></i>
+                        <i class="bk-drag-icon bk-drag-crosshair"></i>
                     </span>
                 </select-type>
             </select-wrapper>

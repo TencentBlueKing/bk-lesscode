@@ -29,11 +29,11 @@
                 tabList: [
                     {
                         key: 'projectIcon',
-                        name: 'Icon Cool图标'
+                        name: window.i18n.t('Icon Cool图标')
                     },
                     {
                         key: 'offcialIcon',
-                        name: '蓝鲸官方图标'
+                        name: window.i18n.t('蓝鲸官方图标')
                     }
                 ]
             }

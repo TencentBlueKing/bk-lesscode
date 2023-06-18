@@ -146,6 +146,9 @@
                 right: 2px;
                 color: #979BA5;
                 font-size: 14px;
+                :hover {
+                    color: #3a84ff;
+                }
             }
         }
     }

@@ -82,6 +82,14 @@
                     this.editor.layout()
                 }
             },
+            // 语言切换后，.layout方法更新无效， 销毁重新渲染
+            language (val) {
+                if (this.editor) {
+                    this.editor?.dispose?.()
+                    this.proposalsRef?.dispose?.()
+                    this.initMonaco()
+                }
+            },
 
             value (newValue) {
                 if (this.editor) {

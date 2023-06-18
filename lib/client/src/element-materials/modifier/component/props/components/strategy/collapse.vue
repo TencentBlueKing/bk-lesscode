@@ -16,7 +16,6 @@
             <li v-for="(collapse, index) in collapseList" :key="index" class="collapse-item">
                 <bk-input :value="collapse.name" @change="val => handleChange(val, 'name', index)" />
                 <i class="bk-icon icon-minus-circle" @click="changeNum(false, index)"></i>
-                <!-- <i class="bk-icon icon-plus" @click="changeNum(true, index)"></i> -->
             </li>
         </ul>
         <div class="collapse-add" @click="changeNum(true, collapseList.length - 1)"><i class="bk-icon icon-plus-circle"></i>{{ $t('添加一项') }}</div>
