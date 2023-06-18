@@ -50,21 +50,26 @@
         </div>
         <div class="right-content">
             <page-header :current-page="currentPage" />
-            <div class="preview-page-content" v-if="currentPageId">
-                <iframe
-                    v-if="currentPage.content || currentPage.nocodeType"
-                    width="100%"
-                    height="100%"
-                    style="border: none"
-                    :src="iframeUrl"
-                >
-                </iframe>
+            <div class="preview-page-content">
+                <template v-if="currentPageId > 0">
+                    <iframe
+                        v-if="currentPage && (currentPage.content || currentPage.nocodeType)"
+                        width="100%"
+                        height="100%"
+                        style="border: none"
+                        :src="iframeUrl"
+                    >
+                    </iframe>
+                    <bk-exception v-else class="exception-wrap-item" type="empty">
+                        <span>{{ $t('暂无页面内容') }}</span>
+                        <div class="exception-desc">
+                            <span class="text">{{ $t('你可以通过编辑页面生成内容，') }}</span>
+                            <span class="link-btn" @click="handleEditPage(currentPage)">{{ $t('立即编辑') }}</span>
+                        </div>
+                    </bk-exception>
+                </template>
                 <bk-exception v-else class="exception-wrap-item" type="empty">
-                    <span>{{ $t('暂无页面内容') }}</span>
-                    <div class="exception-desc">
-                        <span class="text">{{ $t('你可以通过编辑页面生成内容，') }}</span>
-                        <span class="link-btn" @click="handleEditPage(currentPage)">{{ $t('立即编辑') }}</span>
-                    </div>
+                    <span>{{ $t('暂无页面，请新建页面') }}</span>
                 </bk-exception>
             </div>
         </div>
@@ -165,8 +170,10 @@
                 // 过滤platform
                 setRenderList()
                 // 默认选中第一个页面
-                const defaultId = renderList.value[0]?.pageId || {}
-                changeCurrentPage(defaultId)
+                const defaultId = renderList.value[0]?.pageId || 0
+                if (defaultId) {
+                    changeCurrentPage(defaultId)
+                }
             }
 
             function handleSelectPlatform (val) {

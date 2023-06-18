@@ -46,9 +46,17 @@
             }
         },
         computed: {
-            ...mapState('iconManage', ['iconList'])
+            ...mapState('iconManage', ['iconList']),
+            projectId () {
+                return this.$route.params.projectId
+            }
         },
         created () {
+            if (!this.iconList.length) {
+                this.$store.dispatch('iconManage/list', {
+                    belongProjectId: this.projectId
+                })
+            }
             const groupIconMap = {
                 '自定义图标': []
             }
@@ -111,9 +119,13 @@
                 this.renderGroupIconMap = Object.freeze(renderGroupIconMap)
             },
             toIconManage () {
-                this.$router.push({
-                    name: 'iconManage'
+                const route = this.$router.resolve({
+                    name: 'iconManage',
+                    params: {
+                        projectId: this.projectId
+                    }
                 })
+                window.open(route.href, '_blank')
             }
         }
     }
