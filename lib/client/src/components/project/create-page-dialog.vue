@@ -401,6 +401,7 @@
             padding: 0 24px;
             .header {
                 .dialog-title {
+                    display: flex;
                     text-align: left;
                     margin: 18px 0 14px;
                     .platform-icon {

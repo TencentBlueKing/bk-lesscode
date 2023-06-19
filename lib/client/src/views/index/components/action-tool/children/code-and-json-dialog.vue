@@ -89,7 +89,7 @@
                     this.initContent()
                     this.codeType = this.defaultType
                 }
-            }
+            },
         },
         methods: {
             changeCodeType (val) {
@@ -97,8 +97,8 @@
             },
             initContent () {
                 console.log(this.pageDetail, 'pagedetail')
-                // json内容
-                if (['FORM', 'FLOW'].includes(this.pageDetail?.nocodeType)) {
+                // json内容， 表单页或流程编辑表单页
+                if (['FORM', 'FLOW'].includes(this.pageDetail?.nocodeType) || this.$route.name === 'flowConfig') {
                     const content = this.$store.state.nocode.formSetting.fieldsList || []
                     this.json = circleJSON(content)
                     console.log(this.json, this.$store.state.nocode.formSetting.fieldsList)

@@ -22,17 +22,16 @@
 <style lang="postcss" scoped>
 
 .app-com-version {
-    height: 20px;
+    color: #979BA5;
+    background: #FFF;
+    border-radius: 2px;
     font-size: 12px;
-    text-align: left;
-    line-height: 20px;
-    background: #F0F1F5;
-    text-align: center;
-    margin-left: 10px;
-    border-radius: 11px;
-    padding: 0 8px;
-    line-height: 20px;
+    line-height: 18px;
+    white-space: nowrap;
     display: inline-block;
+    padding: 2px 5px;
+    display: inline-block;
+    transform: scale(0.83, 0.83);
 }
 
 </style>

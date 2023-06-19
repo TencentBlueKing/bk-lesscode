@@ -104,7 +104,7 @@
                         { id: 'props', name: this.$t('属性-props') },
                         { id: 'events', name: this.$t('事件-events') },
                         { id: 'directives', name: this.$t('指令-directives') },
-                        { id: 'perms', name: '权限-perms' }
+                        { id: 'perms', name: this.$t('权限-perms') }
                     ])
                 } else {
                     this.tabPanels.splice(0, this.tabPanels.length, ...[

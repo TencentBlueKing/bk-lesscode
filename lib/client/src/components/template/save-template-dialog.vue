@@ -121,9 +121,9 @@
             isShow (val) {
                 if (val) {
                     this.getTemplateCategory()
-                    setTimeout(() => {
-                        this.$refs.nameInput && this.$refs.nameInput.$el.querySelector('input').focus()
-                    }, 50)
+                    // setTimeout(() => {
+                    //     this.$refs.nameInput && this.$refs.nameInput.$el.querySelector('input').focus()
+                    // }, 50)
                 } else {
                     this.dialog.formData.saveType = 'new'
                     this.dialog.formData.templateName = ''

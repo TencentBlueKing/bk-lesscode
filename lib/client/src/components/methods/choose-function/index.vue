@@ -68,7 +68,7 @@
                                         <ul class="group-function-list">
                                             <li
                                                 v-bk-tooltips="{
-                                                    content: functionData.funcSummary,
+                                                    content: $t(functionData.funcSummary),
                                                     disabled: !functionData.funcSummary,
                                                     placements: ['left-start'],
                                                     width: 200,
@@ -106,7 +106,7 @@
                                     class="function-item"
                                     v-for="functionData in computedFunctionData"
                                     v-bk-tooltips="{
-                                        content: functionData.funcSummary,
+                                        content: $t(functionData.funcSummary),
                                         disabled: !functionData.funcSummary,
                                         placements: ['left-start'],
                                         width: 200,

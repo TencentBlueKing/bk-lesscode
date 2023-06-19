@@ -73,7 +73,7 @@
         <section class="project-right-content">
             <div class="breadcrumbs" v-if="hasBreadcrumb">
                 <div class="page-top">
-                    <h3 class="current">{{ currentPage }}</h3>
+                    <h3 class="current">{{ $t(currentPage) }}</h3>
                     <div class="version-selector" v-if="isShowProjectVersionSelector">
                         {{ $t('应用当前版本：') }}
                         <project-version-selector :bordered="false" :popover-width="200" v-model="projectVersionId" @change="handleChangeProjectVersion" />
@@ -97,6 +97,7 @@
 
 <script>
     import { bus } from '@/common/bus'
+    import { FOLD_MENU_ROUTE_LIST } from '@/common/constant-en'
     import SelectProject from '@/components/project/select-project'
     import ExtraLinks from '@/components/ui/extra-links'
 
@@ -184,7 +185,7 @@
                     this.showMenuFooter = showMenuFooter
                 })
 
-                if (['new', 'editNocode'].indexOf(this.$route.name) > -1) {
+                if (FOLD_MENU_ROUTE_LIST.indexOf(this.$route.name) > -1) {
                     this.asideFolded = true
                     this.showMenuFooter = false
                 }
@@ -269,6 +270,12 @@
                 if (['pageList', 'new', 'editNocode'].includes(name)) {
                     name = 'pageList'
                 }
+
+                // 流程管理子页面、左侧选中流程管理
+                if (name?.startsWith('flow')) {
+                    name = 'flowList'
+                }
+
                 this.defaultActive = name
             },
             toProjects () {

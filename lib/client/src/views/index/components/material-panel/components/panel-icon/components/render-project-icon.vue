@@ -5,12 +5,12 @@
                 class="project-icon-empty"
                 type="empty"
                 scene="part">
-                <p class="empty-content"><span>暂无图标，</span><span class="to-icon-link" @click="toIconManage">跳转绑定</span></p>
+                <p class="empty-content"><span>{{$t('暂无图标')}}，</span><span class="to-icon-link" @click="toIconManage">{{$t('跳转绑定')}}</span></p>
             </bk-exception>
         </template>
         <template v-else>
             <search-box
-                placeholder="图标名称"
+            :placeholder="$t('图标名称')"
                 :list="searchList"
                 @on-change="handleSearchChange" />
             <group-box
@@ -46,9 +46,17 @@
             }
         },
         computed: {
-            ...mapState('iconManage', ['iconList'])
+            ...mapState('iconManage', ['iconList']),
+            projectId () {
+                return this.$route.params.projectId
+            }
         },
         created () {
+            if (!this.iconList.length) {
+                this.$store.dispatch('iconManage/list', {
+                    belongProjectId: this.projectId
+                })
+            }
             const groupIconMap = {
                 '自定义图标': []
             }
@@ -111,9 +119,13 @@
                 this.renderGroupIconMap = Object.freeze(renderGroupIconMap)
             },
             toIconManage () {
-                this.$router.push({
-                    name: 'iconManage'
+                const route = this.$router.resolve({
+                    name: 'iconManage',
+                    params: {
+                        projectId: this.projectId
+                    }
                 })
+                window.open(route.href, '_blank')
             }
         }
     }

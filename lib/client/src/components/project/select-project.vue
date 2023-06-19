@@ -8,7 +8,7 @@
             :clearable="false"
             :searchable="true"
             @selected="changeProject"
-            search-placeholder="输入应用名称搜索">
+            :search-placeholder="$t('输入应用名称搜索')">
             <bk-option v-for="option in projectList"
                 :key="option.id"
                 :id="option.id"
@@ -22,12 +22,12 @@
                 <div
                     class="page-row"
                     @click="handleCreate('newProject')">
-                    <i class="bk-icon icon-plus-circle" /> 新建空白应用
+                    <i class="bk-icon icon-plus-circle" /> {{ $t('abbr_新建空白应用') }}
                 </div>
                 <div
                     class="page-row"
                     @click="handleTempCreate">
-                    <i class="bk-icon icon-plus-circle" /> 从模板新建应用
+                    <i class="bk-icon icon-plus-circle" /> {{ $t('abbr_从模板新建应用') }}
                 </div>
             </div>
         </bk-select>

@@ -116,10 +116,12 @@
                 error-display-type="normal"
                 class="func-form-item">
                 <query-params
+                    v-bkloading="{ isLoading: isLoadingOptions }"
                     class="mt38"
                     :query="form.apiQuery"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :name-options="nameOptions"
                     @change="(apiQuery) => updateValue({ apiQuery })"
                 ></query-params>
             </lc-form-item>
@@ -130,10 +132,12 @@
                 error-display-type="normal"
                 class="func-form-item">
                 <body-params
+                    v-bkloading="{ isLoading: isLoadingOptions }"
                     class="mt38"
                     :body="form.apiBody"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :name-options="nameOptions"
                     @change="(apiBody) => updateValue({ apiBody })"
                 >
                 </body-params>
@@ -231,7 +235,9 @@
                     show: false,
                     code: ''
                 },
-                isLoadingUrl: false
+                isLoadingUrl: false,
+                nameOptions: [],
+                isLoadingOptions: false
             }
         },
 
@@ -253,6 +259,14 @@
                     this.updateUrl()
                 },
                 immediate: true
+            },
+            'form.apiChoosePath': {
+                handler (val, oldVal) {
+                    if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
+                        this.getNameOptions()
+                    }
+                },
+                immediate: true
             }
         },
 
@@ -272,6 +286,57 @@
                     this.isLoadingUrl = false
                 }
                 this.form.funcApiUrl = funcApiUrl
+            },
+
+            getNameOptions () {
+                // 非数据源，不获取下拉数据
+                if (this.form?.apiChoosePath?.[0]?.id !== 'datasource-api') {
+                    this.nameOptions = []
+                    return
+                }
+                this.isLoadingOptions = true
+                const [, { name: tableName }, { name: apiType }] = this.form.apiChoosePath
+                this
+                    .$store
+                    .dispatch('dataSource/findOne', { tableName })
+                    .then((data) => {
+                        const columns = data.columns
+                        if (apiType.startsWith('get')) {
+                            this.nameOptions = [
+                                {
+                                    name: 'page',
+                                    comment: this.$t('query 参数，数字类型，表示分页的页码。不传表示获取所有数据')
+                                },
+                                {
+                                    name: 'pageSize',
+                                    comment: this.$t('query 参数，数字类型，表示每页数量。不传表示获取所有数据')
+                                },
+                                {
+                                    name: 'bkSortKey',
+                                    comment: this.$t('query 参数，排序字段的 key')
+                                },
+                                {
+                                    name: 'bkSortValue',
+                                    comment: this.$t('query 参数，排序方式，降序使用【DESC】，升序使用【ASC】')
+                                },
+                                ...columns
+                            ]
+                            return
+                        }
+                        if (apiType.startsWith('delete')) {
+                            this.nameOptions = [
+                                {
+                                    name: 'id'
+                                },
+                                ...columns.filter(column => column.unique)
+                            ]
+                            return
+                        }
+                        this.nameOptions = columns
+                    })
+                    .finally(() => {
+                        this.isLoadingOptions = false
+                    })
             },
 
             tagChange (key, val) {

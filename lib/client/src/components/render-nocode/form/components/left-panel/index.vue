@@ -62,7 +62,7 @@
                     <span>{{ group.name }}</span>
                 </div>
                 <draggable
-                    :class="['list-wrap', { 'disabled': disabled }]"
+                    :class="['form-list-wrap', { 'disabled': disabled }]"
                     handle=".field-item"
                     filter=".not-available"
                     tag="p"
@@ -325,13 +325,12 @@
     color: #63656E;
     transition: all .1s linear;
     margin-right: 8px;
-  //transform: rotate(-270deg);
 
     &.floded {
       transform: rotate(-90deg);
     }
   }
-  span{
+  span {
     display: block;
     position: absolute;
     top: 0;
@@ -403,11 +402,11 @@
   margin: 0 !important;
 }
 
-.list-wrap {
+.form-list-wrap {
   display: flex;
   justify-content: space-between;
   flex-flow: row wrap;
-//margin-top: 12px; padding: 12px;
+  padding: 12px;
   &.disabled {
     .field-item {
         cursor: inherit;;
