@@ -31,6 +31,10 @@
     import bundlessPluginVue3 from '@blueking/bundless-plugin-vue3'
     import { storeConfig } from '@/store'
     import Vuex from 'vuex'
+    import renderHtml from '@/components/render/pc/widget/html/index'
+    import widgetBkTable from '@/components/render/pc/widget/table/table'
+    import widgetElTable from '@/components/patch/widget-el-table/index.vue'
+    import widgetTableColumn from '@/components/render/pc/widget/table/table-column'
 
     window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []
@@ -131,6 +135,11 @@
                 this.isCustomComponentLoading = false
             }
             document.body.appendChild(script)
+            // 注入全局组件
+            registerComponent('render-html', renderHtml)
+            registerComponent('widget-bk-table', widgetBkTable)
+            registerComponent('widget-el-table', widgetElTable)
+            registerComponent('widget-table-column', widgetTableColumn)
         },
         async mounted () {
             this.minHeight = window.innerHeight

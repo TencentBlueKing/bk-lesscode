@@ -173,9 +173,9 @@
                 }
                 
                 this.dialog.loading = true
-                const $rootElm = this.eventData.target.$elm
+                const elm = document.querySelector('.lesscode-editor-layout')
                 
-                html2canvas($rootElm).then(async (canvas) => {
+                html2canvas(elm).then(async (canvas) => {
                     try {
                         const imgData = canvas.toDataURL('image/png')
                         let data = {}
