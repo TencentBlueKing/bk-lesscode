@@ -9,9 +9,11 @@
         :auto-close="false"
         header-position="left"
         ext-cls="project-create-dialog">
-        <span slot="header">
+        <span slot="header" style="display: flex;align-items: center;">
             {{ createDialogTitle }}
-            <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: $t('创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块') }"></i>
+            <i class="bk-icon icon-info-circle" style="font-size: 14px;margin-left: 2px;"
+                v-bk-tooltips.top="{ content: $t('创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块') }">
+            </i>
         </span>
         <!-- 表单组件，根据projectType来判断是创建空白应用还是导入应用，还是从已有模板选择 -->
         <project-form

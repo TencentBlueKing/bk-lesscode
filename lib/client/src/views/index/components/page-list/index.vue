@@ -58,7 +58,7 @@
                     </bk-option-group>
                 </bk-select>
             </div>
-            <create-page-entry class="canvas-theme" />
+            <create-page-entry :framework="projectDetail.framework" class="canvas-theme" />
         </div>
         <page-dialog ref="pageDialog" action="copy" :refresh-list="getPageList" />
     </div>

@@ -16,7 +16,7 @@
                     id="toolActionBox"
                     class="function-and-tool">
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
-                    <action-tool :disabled="isUseForm" :disabled-tips="isUseForm ? $t('复用表单模式下表单不可编辑') : ''"></action-tool>
+                    <action-tool :hide-clear="false" :disabled="isUseForm" :disabled-tips="isUseForm ? $t('复用表单模式下表单不可编辑') : ''"></action-tool>
                 </div>
                 <page-operate
                     :custom-save="true"
@@ -284,7 +284,7 @@
         }
     }
     .edit-content-wrapper {
-        height: calc(100% - 52px);
+        height: calc(100% - 52px - 52px);
         .lesscode-editor-page-content {
             height: 100%;
         }

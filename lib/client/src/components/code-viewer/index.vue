@@ -12,7 +12,7 @@
 <template>
     <div :class="[$style['code-viewer'], { [$style['fullscreen']]: isFullscreen }]">
         <div :class="$style['toolbar']">
-            <div :class="[$style['code-type']]">
+            <div :class="$style['code-type']">
                 <div v-for="type in typeList"
                     :key="type"
                     :class="[$style['code-type-item'], { [$style['isActive']]: type === codeType }]"
@@ -36,7 +36,7 @@
         </div>
         <div :class="$style['content']">
             <div :class="$style['code-panel']" style="height: 100%">
-                <monaco :value.sync="code" :language="codeType === 'code' ? 'html' : 'json'" :show-header="false" :read-only="true" height="100%" :class="$style['monaco-code']" ref="monaco"></monaco>
+                <monaco :value.sync="code" :language="renderLang" :show-header="false" :read-only="true" height="100%" :class="$style['monaco-code']" ref="monaco"></monaco>
             </div>
         </div>
     </div>
@@ -83,6 +83,9 @@
             filename () {
                 const suffix = this.codeType === 'json' ? 'json' : 'vue'
                 return `bklesscode-page-${this.pageDetail?.pageCode}.${suffix}`
+            },
+            renderLang () {
+                return this.codeType === 'code' ? 'html' : 'json'
             }
         },
         mounted () {

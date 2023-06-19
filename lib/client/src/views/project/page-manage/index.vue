@@ -16,7 +16,7 @@
                         :list="renderList"
                         :reset-keyword-on-change-list="false"
                         @on-change="handleSearch" />
-                    <create-page-entry />
+                    <create-page-entry :framework="projectDetail.framework"/>
                 </div>
             </div>
             <div class="menu-content">
@@ -50,21 +50,26 @@
         </div>
         <div class="right-content">
             <page-header :current-page="currentPage" />
-            <div class="page-content" v-if="currentPageId">
-                <iframe
-                    v-if="currentPage.content || currentPage.nocodeType"
-                    width="100%"
-                    height="100%"
-                    style="border: none"
-                    :src="iframeUrl"
-                >
-                </iframe>
+            <div class="preview-page-content">
+                <template v-if="currentPageId > 0">
+                    <iframe
+                        v-if="currentPage && (currentPage.content || currentPage.nocodeType)"
+                        width="100%"
+                        height="100%"
+                        style="border: none"
+                        :src="iframeUrl"
+                    >
+                    </iframe>
+                    <bk-exception v-else class="exception-wrap-item" type="empty">
+                        <span>{{ $t('暂无页面内容') }}</span>
+                        <div class="exception-desc">
+                            <span class="text">{{ $t('你可以通过编辑页面生成内容，') }}</span>
+                            <span class="link-btn" @click="handleEditPage(currentPage)">{{ $t('立即编辑') }}</span>
+                        </div>
+                    </bk-exception>
+                </template>
                 <bk-exception v-else class="exception-wrap-item" type="empty">
-                    <span>{{ $t('暂无页面内容') }}</span>
-                    <div class="exception-desc">
-                        <span class="text">{{ $t('你可以通过编辑页面生成内容，') }}</span>
-                        <span class="link-btn" @click="handleEditPage(currentPage)">{{ $t('立即编辑') }}</span>
-                    </div>
+                    <span>{{ $t('暂无页面，请新建页面') }}</span>
                 </bk-exception>
             </div>
         </div>
@@ -109,6 +114,7 @@
 
             const projectId = router?.currentRoute?.params?.projectId
             const versionId = store.getters['projectVersion/currentVersionId']
+            const projectDetail = store.getters['project/projectDetail']
             const params = { projectId: projectId, versionId }
 
             const isLoading = ref(false)
@@ -164,8 +170,10 @@
                 // 过滤platform
                 setRenderList()
                 // 默认选中第一个页面
-                const defaultId = renderList.value[0]?.pageId || {}
-                changeCurrentPage(defaultId)
+                const defaultId = renderList.value[0]?.pageId || 0
+                if (defaultId) {
+                    changeCurrentPage(defaultId)
+                }
             }
 
             function handleSelectPlatform (val) {
@@ -222,6 +230,7 @@
 
             return {
                 isLoading,
+                projectDetail,
                 hasMobilePage,
                 platformActive,
                 platformList,
@@ -281,6 +290,12 @@
     .right-content {
         width: 100%;
         height: 100%;
+
+        .preview-page-content {
+            padding: 16px 24px;
+            display: flex;
+            height: calc(100% - 50px);
+        }
 
         .exception-wrap-item {
             margin-top: 80px;

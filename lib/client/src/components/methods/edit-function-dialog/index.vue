@@ -36,7 +36,7 @@
                                 ></bk-input>
                             </div>
                             <i
-                                class="bk-icon icon-plus"
+                                class="bk-drag-icon bk-drag-crosshair"
                                 v-bk-tooltips="{ content: $t('添加分类'), placements: ['top'] }"
                                 @click="newGroupName = ''"
                             ></i>

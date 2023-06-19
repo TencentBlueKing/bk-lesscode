@@ -109,7 +109,7 @@
                 const {
                     width
                 } = this.$refs.root.getBoundingClientRect()
-                
+
                 this.renderStyles = {
                     width: `${width}px`,
                     'min-height': `calc(100vh - ${top + 25}px)`

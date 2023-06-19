@@ -2,7 +2,7 @@
     <div class="image-file">
         <div v-if="!viewMode" :class="['image-upload-wrapper', { disabled }]">
             <div class="upload-text">
-                <i class="bk-icon icon-plus"></i>
+                <i class="bk-drag-icon bk-drag-crosshair"></i>
                 <div>{{$t('点击上传')}}</div>
             </div>
             <input

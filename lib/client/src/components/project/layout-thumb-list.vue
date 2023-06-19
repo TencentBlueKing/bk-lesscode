@@ -13,13 +13,13 @@
             </div>
             <div class="layout-label" v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty' && layout.projectId">
                 <div class="layout-name" :title="layout.defaultName">
-                    {{ layout.defaultName }}
+                    {{ $t(layout.defaultName) }}
                 </div>
                 <div class="layout-preview" @click.prevent.stop="handlePreview(layout)">
                     {{ $t('预览') }} </div>
             </div>
-            <div v-else class="layout-empty-name" :title="layout.defaultName">
-                {{ layout.defaultName }}
+            <div v-else class="layout-empty-name" :title="$t(layout.defaultName)">
+                {{ $t(layout.defaultName) }}
             </div>
         </li>
     </ul>

@@ -7,7 +7,7 @@
                     :class="{
                         floded: isFolded
                     }" />
-                <span class="name-content" :style="{ width: $slots.tag ? '200px' : '' }">{{ $t(groupName) }}</span>
+                <span class="name-content" :style="{ 'max-width': $slots.tag ? '200px' : '240px' }">{{ $t(groupName) }}</span>
             </section>
             <div v-if="$slots.tag">
                 <slot name="tag" />
@@ -179,6 +179,7 @@
                 color: #3A84FF;
                 background: #F0F5FF;
                 border-radius: 2px;
+                transform: scale(.83);
             }
         }
 

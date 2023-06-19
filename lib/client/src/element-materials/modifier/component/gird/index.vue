@@ -145,7 +145,6 @@
 </script>
 <style lang="postcss">
     .modifier-grid {
-        padding: 0 10px;
         .column-title {
             display: flex;
             align-items: center;

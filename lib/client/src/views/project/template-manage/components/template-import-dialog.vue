@@ -173,10 +173,7 @@
                         this.isShow = false
                     }
                 } catch (err) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: err.message || err
-                    })
+                    console.error(err, 'import err')
                 } finally {
                     this.dialog.loading = false
                 }
