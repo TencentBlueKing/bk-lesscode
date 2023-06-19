@@ -10,7 +10,7 @@ module.exports = {
     host: process.env.BK_APP_HOST,
     publicPath: process.env.BK_STATIC_URL,
     typescript: true,
-    bundleAnalysis: true,
+    bundleAnalysis: false,
     parseNodeModules: false,
     replaceStatic: true,
     parallel: 8,
