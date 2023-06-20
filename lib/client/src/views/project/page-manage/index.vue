@@ -49,9 +49,9 @@
             </div>
         </div>
         <div class="right-content">
-            <page-header :current-page="currentPage" />
-            <div class="preview-page-content">
-                <template v-if="currentPageId > 0">
+            <template v-if="currentPageId > 0">
+                <page-header :current-page="currentPage" />
+                <div class="preview-page-content">
                     <iframe
                         v-if="currentPage && (currentPage.content || currentPage.nocodeType)"
                         width="100%"
@@ -67,11 +67,11 @@
                             <span class="link-btn" @click="handleEditPage(currentPage)">{{ $t('立即编辑') }}</span>
                         </div>
                     </bk-exception>
-                </template>
-                <bk-exception v-else class="exception-wrap-item" type="empty">
-                    <span>{{ $t('暂无页面，请新建页面') }}</span>
-                </bk-exception>
-            </div>
+                </div>
+            </template>
+            <bk-exception v-else class="exception-wrap-item" type="empty">
+                <span>{{ $t('暂无页面，请新建页面') }}</span>
+            </bk-exception>
         </div>
         <page-operate-dialog
             :show-dialog="showDialog"
@@ -152,6 +152,7 @@
                 await initData()
             })
 
+            // 页面初始跟页面删除后回掉
             async function initData () {
                 isLoading.value = true
                 const [routeTree, pageRouteArr, projectPageArr] = await Promise.all([
@@ -164,7 +165,15 @@
                 pageList = projectPageArr
 
                 hasMobilePage.value = pageList.filter(page => page.pageType === 'MOBILE').length > 0
-
+                const hasPcPage = pageList.filter(page => page.pageType !== 'MOBILE').length > 0
+                // 如果移动端页面不存在页面，选中pc
+                if (!hasMobilePage.value) {
+                    platformActive.value = 'PC'
+                }
+                // 如果含有移动端页面，不含pc页面，选中mobile
+                if (hasMobilePage && !hasPcPage) {
+                    platformActive.value = 'MOBILE'
+                }
                 routeGroup.value = routeTree
 
                 // 过滤platform
@@ -173,6 +182,9 @@
                 const defaultId = renderList.value[0]?.pageId || 0
                 if (defaultId) {
                     changeCurrentPage(defaultId)
+                } else {
+                    currentPageId.value = 0
+                    currentPage.value = {}
                 }
             }
 
