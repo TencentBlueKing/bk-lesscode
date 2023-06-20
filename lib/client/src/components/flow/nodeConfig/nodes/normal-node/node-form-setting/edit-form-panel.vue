@@ -32,6 +32,7 @@
                 <nocode-form
                     v-show="operationType === 'edit'"
                     page-type="FLOW"
+                    :is-from-flow="true"
                     :content="formConfig.content"
                     :disabled="isUseForm">
                 </nocode-form>

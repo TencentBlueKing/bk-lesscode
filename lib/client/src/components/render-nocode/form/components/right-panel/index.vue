@@ -2,7 +2,7 @@
     <div class="right-panel">
         <layout-setting v-if="editType === 'LAYOUT'" :template-data="curTemplateData" />
         <page-setting v-else-if="!field.type && pageDetail.id" />
-        <form-setting v-else :field="field" :list="list" :disabled="disabled" @update="$emit('update', $event)" />
+        <form-setting v-else :is-from-flow="isFromFlow" :field="field" :list="list" :disabled="disabled" @update="$emit('update', $event)" />
     </div>
 </template>
 
@@ -18,6 +18,7 @@
             PageSetting
         },
         props: {
+            isFromFlow: Boolean,
             field: {
                 type: Object,
                 default: () => ({})
