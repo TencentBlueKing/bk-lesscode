@@ -284,7 +284,7 @@
         }
     }
     .edit-content-wrapper {
-        height: calc(100% - 52px - 52px);
+        height: calc(100% - 52px);
         .lesscode-editor-page-content {
             height: 100%;
         }
