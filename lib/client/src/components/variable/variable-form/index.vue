@@ -412,7 +412,7 @@
         margin-right: 65px;
     }
     .confirm-button {
-        margin-left: 84px;
+        margin-left: 120px;
     }
     .variable-button {
         display: inline-block;

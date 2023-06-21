@@ -87,11 +87,11 @@
     }
     .en-debug-headers{
         .debug-header {
-            width: 130px;
+            width: 150px;
         }
         .active {
             &::before {
-                width: 130px;
+                width: 150px;
             }
         }
     }

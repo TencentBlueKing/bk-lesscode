@@ -15,7 +15,7 @@
                 slot="trigger"
             >
                 <span v-if="value">{{ value }}</span>
-                <span style="color: #b2b2b2" v-else>请选择数据表</span>
+                <span style="color: #b2b2b2" v-else>{{$t('请选择数据表')}}</span>
                 <img src="../images/svg/loading.svg" class="bk-select-loading" v-if="isLoadingList">
                 <i class="bk-select-angle bk-icon icon-angle-down" v-else></i>
             </span>
