@@ -52,7 +52,8 @@
                         <span
                             v-bk-tooltips.light="{
                                 content: getUseInfoTips(props.row.useInfo).join('<br>'),
-                                disabled: !getUseInfoTips(props.row.useInfo).length
+                                disabled: !getUseInfoTips(props.row.useInfo).length,
+                                maxWidth: 400
                             }"
                             class="use-info"
                         >
@@ -65,7 +66,7 @@
                         <span class="table-btn" @click="handleEditFunction(props.row)">{{ $t('编辑') }}</span>
                         <span class="table-btn" @click="handleCopyFunction(props.row)">{{ $t('复制') }}</span>
                         <span @click="handleDeleteFunction(props.row)"
-                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
+                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400 }"
                             :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
                         >{{ $t('删除') }}</span>
                     </template>

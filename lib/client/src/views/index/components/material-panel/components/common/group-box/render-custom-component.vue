@@ -5,7 +5,8 @@
         :class="displayClass"
         v-bk-tooltips="{
             content: data.displayName,
-            disabled: !(data.displayName && data.displayName.length > 5)
+            disabled: !(data.displayName && data.displayName.length > 5),
+            maxWidth: 400
         }">
         <section class="flex-container">
             <i :class="['bk-drag-icon', 'comp-icon', data.icon || 'bk-drag-custom-comp-default']"></i>

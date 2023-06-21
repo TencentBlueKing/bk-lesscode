@@ -171,7 +171,7 @@ const SingleSchemeComponent = defineComponent({
                                                     id={option.name}
                                                     name={option.name}
                                                     key={option.name}
-                                                    v-bk-tooltips={{ content: option.comment, disabled: !option.comment }}
+                                                    v-bk-tooltips={{ content: option.comment, disabled: !option.comment, maxWidth: 400 }}
                                                 >
                                                 </bk-option>
                                             ))
@@ -238,7 +238,7 @@ const SingleSchemeComponent = defineComponent({
                     </section>
                     <bk-input
                         class="layout-middle"
-                        v-bk-tooltips={{ content: this.copyScheme.description, disabled: !this.copyScheme.description }}
+                        v-bk-tooltips={{ content: this.copyScheme.description, disabled: !this.copyScheme.description, maxWidth: 400 }}
                         value={this.copyScheme.description}
                         disabled={this.finalDisable}
                         onChange={(description) => this.update({ description })}

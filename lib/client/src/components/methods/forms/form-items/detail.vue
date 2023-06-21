@@ -16,7 +16,7 @@
                     <i
                         class="bk-icon icon-info ml5"
                         v-if="temp.info"
-                        v-bk-tooltips="{ content: temp.info, allowHtml: true }"
+                        v-bk-tooltips="{ content: temp.info, allowHtml: true, maxWidth: 400 }"
                     ></i>
                 </bk-radio-button>
             </bk-radio-group>

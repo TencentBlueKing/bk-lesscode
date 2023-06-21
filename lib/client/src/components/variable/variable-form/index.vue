@@ -78,7 +78,7 @@
             >{{$t('取消')}}</bk-button>
             <section
                 class="variable-button"
-                v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled }"
+                v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled, maxWidth: 400 }"
             >
                 <bk-button
                     :loading="isUseSaving"

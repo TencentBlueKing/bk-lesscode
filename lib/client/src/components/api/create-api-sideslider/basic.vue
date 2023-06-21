@@ -106,7 +106,8 @@
                 :false-value="0"
                 :value="formData.withToken"
                 v-bk-tooltips="{
-                    content: $t('勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）')
+                    content: $t('勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）'),
+                    maxWidth: 400
                 }"
                 @change="update('withToken', ...arguments)"
             >{{ $t('蓝鲸应用认证') }}</bk-checkbox>

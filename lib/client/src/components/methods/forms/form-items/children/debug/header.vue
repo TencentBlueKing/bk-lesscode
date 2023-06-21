@@ -4,7 +4,8 @@
             v-for="panel in panels"
             v-bk-tooltips="{
                 content: panel.tips,
-                disabled: !panel.tips
+                disabled: !panel.tips,
+                maxWidth: 400
             }"
             :class="{
                 'debug-header': true,

@@ -40,7 +40,8 @@
                             v-bk-tooltips="{
                                 disabled: computedPermissionInfo.hasPermission,
                                 content: computedPermissionInfo.message,
-                                placements: ['bottom']
+                                placements: ['bottom'],
+                                maxWidth: 400
                             }"
                             @click.stop="handleDeleteGroup"
                         >{{ $t('删除') }}</li>

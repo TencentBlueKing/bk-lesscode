@@ -113,7 +113,8 @@
                         <span
                             v-bk-tooltips.light="{
                                 content: getUseInfoTips(props.row.useInfo).join('<br>'),
-                                disabled: !getUseInfoTips(props.row.useInfo).length
+                                disabled: !getUseInfoTips(props.row.useInfo).length,
+                                maxWidth: 400
                             }"
                             class="use-info"
                         >

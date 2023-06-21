@@ -54,7 +54,7 @@
                 :name="tableGroups[1].name"
             >
                 <span slot="group-name">
-                    <span v-bk-tooltips="{ content: $t('目前只支持查询 mysql 或 tspider 的结果表') }">{{ tableGroups[1].name }}</span>
+                    <span v-bk-tooltips="{ content: $t('目前只支持查询 mysql 或 tspider 的结果表'), maxWidth: 400 }">{{ tableGroups[1].name }}</span>
                     <i
                         class="bk-icon icon-refresh tool-icon"
                         @click="handleGetBkBaseBizs"
@@ -130,7 +130,7 @@
                                 target="href"
                                 v-bk-tooltips="{
                                     boundary: 'window',
-                                    width: 350,
+                                    maxWidth: 400,
                                     content: $t('应用需要接口') + '【v3_queryengine_user_query_sync & v3_meta_result_tables_mine_get & v3_meta_bizs】' + $t('的权限，用于应用调用数据平台接口')
                                 }"
                             >{{ $t('申请权限') }}</bk-link>

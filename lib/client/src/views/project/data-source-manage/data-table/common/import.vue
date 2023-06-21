@@ -11,7 +11,7 @@
                 {{ title }}
                 <i
                     v-if="tips"
-                    v-bk-tooltips="{ content: tips }"
+                    v-bk-tooltips="{ content: tips, maxWidth: 400 }"
                     class="bk-icon icon-info"
                 ></i>
             </span>

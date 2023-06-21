@@ -56,7 +56,7 @@
             </bk-input>
             <i
                 v-if="validateStatus.isError"
-                v-bk-tooltips="{ content: validateStatus.message }"
+                v-bk-tooltips="{ content: validateStatus.message, maxWidth: 400 }"
                 :class="{
                     'bk-icon icon-exclamation-circle-shape tooltips-icon': true,
                     'with-alias': displayAlias

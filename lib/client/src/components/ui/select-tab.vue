@@ -9,7 +9,8 @@
                     @click="itemChange(item.id)"
                     v-bk-tooltips="{
                         content: item.tips,
-                        disabled: !item.tips
+                        disabled: !item.tips,
+                        maxWidth: 400
                     }"
                 >
                     <i v-if="item.icon" :class="`${item.icon} ${!item.name ? 'only-icon' : ''}`"></i>
