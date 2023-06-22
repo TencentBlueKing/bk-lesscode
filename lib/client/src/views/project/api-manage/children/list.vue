@@ -222,6 +222,7 @@
             width="1000"
             header-position="left"
             :title="apiModel.title"
+            :position="{ 'top': 100 }"
             v-model="apiModel.show"
         >
             <monaco

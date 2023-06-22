@@ -11,7 +11,7 @@
             <div class="component-guide">
                 <a href="/help/custom" target="_blank">{{ $t('组件开发指引') }}</a>
             </div>
-            <lc-form ref="form" :label-width="$store.state.Language === 'en' ? 174 : 90" :model="formData" :rules="rules">
+            <lc-form ref="form" :label-width="200" :model="formData" :rules="rules" form-type="vertical">
                 <lc-form-item :label="$t('form_组件类型')" required error-display-type="normal">
                     <bk-radio-group v-model="formData.compType">
                         <bk-radio-button value="PC">
@@ -371,7 +371,7 @@
             }
         }
         .sideslider-footer{
-            padding-left: 120px;
+            padding-left: 30px;
             .bk-button {
                 margin-right: 10px;
             }

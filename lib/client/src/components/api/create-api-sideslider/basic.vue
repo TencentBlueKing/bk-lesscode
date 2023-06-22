@@ -2,7 +2,7 @@
     <lc-form
         ref="formRef"
         form-type="vertical"
-        :label-width="100"
+        :label-width="150"
         :model="formData"
     >
         <lc-form-item
@@ -43,7 +43,7 @@
         </lc-form-item>
         <lc-form-item
             :label="$t('分类')"
-            :label-width="$store.state.Language === 'en' ? 110 : 100"
+            :label-width="150"
             property="categoryId"
             error-display-type="normal"
             :required="true"

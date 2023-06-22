@@ -40,7 +40,7 @@
                             <div class="group-text">{{ routePrepend }}</div>
                         </template>
                     </bk-input>
-                    <p class="mt5 mb0 f12" slot="tip">{{ $t('导航布局路由将会作为本应用一级路由，请谨慎命名') }}</p>
+                    <p style="line-height: 20px" class="mt5 mb0 f12" slot="tip">{{ $t('导航布局路由将会作为本应用一级路由，请谨慎命名') }}</p>
                 </bk-form-item>
                 <bk-form-item :label="$t('form_布局实例')" v-if="action === 'create'" error-display-type="normal">
                     <layout-thumb-list :toolkit="['select']" :list="filterLayoutList" @change-checked="handleLayoutChecked" />

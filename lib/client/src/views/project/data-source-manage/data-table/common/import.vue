@@ -44,7 +44,7 @@
 
             <span class="import-tip">
                 {{ $t('支持 {0} 文件格式，', [fileType]) }}<slot name="tips" :file-type="fileType"></slot>
-                <bk-link theme="primary" @click="downloadTemplate(fileType)">
+                <bk-link theme="primary" @click="downloadTemplate(fileType)" style="min-width: 100px;">
                     <i class="bk-drag-icon bk-drag-download"></i>{{ $t('{0} 模板', [fileType]) }}
                 </bk-link>
             </span>

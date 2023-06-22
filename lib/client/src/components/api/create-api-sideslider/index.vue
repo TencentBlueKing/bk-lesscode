@@ -30,7 +30,7 @@
                     class="api-response-button"
                     size="small"
                     :loading="isLoadingResponse"
-                    v-bk-tooltips="{ cotent: $t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑'), maxWidth: 400 }"
+                    v-bk-tooltips="{ content: $t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑'), maxWidth: 400 }"
                     @click="getApiResponse"
                 >{{ $t('获取请求响应') }}</bk-button>
             </h3>

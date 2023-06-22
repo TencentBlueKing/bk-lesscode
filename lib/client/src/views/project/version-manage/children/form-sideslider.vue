@@ -7,7 +7,7 @@
         :title="isEdit ? $t('编辑版本') : $t('新建版本')">
         <div slot="content" class="form-content">
             <bk-alert class="alert-info" type="info" :title="$t('基于“默认”版本内容新建')" v-if="!isEdit"></bk-alert>
-            <lc-form :label-width="$store.state.Language === 'en' ? 120 : 90" :model="formData" :rules="rules" ref="form">
+            <lc-form :label-width="200" :model="formData" :rules="rules" ref="form" form-type="vertical">
                 <lc-form-item :label="$t('form_应用版本')" :required="true" property="version" error-display-type="normal">
                     <bk-input
                         :placeholder="$t('请输入版本号，仅支持英文、数字、下划线、中划线和英文句号')"
@@ -159,9 +159,7 @@
             }
         }
         .form-footer {
-            margin: 20px 0 0 90px;
             margin-top: 20px;
-
             .bk-button {
                 & + .bk-button {
                     margin-left: 4px;

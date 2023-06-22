@@ -302,7 +302,7 @@
                 size: 'small'
             })
             const downloadType = ref('')
-            const dataImportOperationType = ref(DATA_IMPORT_OPERATION_TYPE.ALL_INSERT.ID)
+            const dataImportOperationType = ref(DATA_IMPORT_OPERATION_TYPE().ALL_INSERT.ID)
             const userInfo = store.state.user
 
             const calcTableSetting = () => {
@@ -633,7 +633,7 @@
                         rest.createUser = userInfo.username
                     }
                     // 新增导入和有唯一性约束的情况下，导入不需要id字段
-                    if (dataImportOperationType.value === DATA_IMPORT_OPERATION_TYPE.ALL_INSERT.ID
+                    if (dataImportOperationType.value === DATA_IMPORT_OPERATION_TYPE().ALL_INSERT.ID
                         || activeTable.value.columns.some(column => column.unique)
                     ) {
                         delete rest.id
@@ -716,7 +716,7 @@
 
             return {
                 DATA_FILE_TYPE,
-                DATA_IMPORT_OPERATION_TYPE,
+                DATA_IMPORT_OPERATION_TYPE: DATA_IMPORT_OPERATION_TYPE(),
                 formRef,
                 dataStatus,
                 formStatus,
