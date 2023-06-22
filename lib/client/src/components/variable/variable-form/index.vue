@@ -7,7 +7,7 @@
         :transfer="true"
         :title="isAdd ? $t('新增变量') : $t('编辑变量')">
         <section slot="content" class="variable-form-main">
-            <lc-form :label-width="$store.state.Language === 'en' ? 120 : 84" :model="copyForm" ref="variableForm">
+            <lc-form form-type="vertical" :label-width="200" :model="copyForm" ref="variableForm">
                 <lc-form-item :label="$t('form_变量名称')" :required="true" :rules="[requireRule($t('form_变量名称')), nameRule]" property="variableName" error-display-type="normal">
                     <bk-input
                         :placeholder="$t('由汉字、英文字母、数字、连字符(-)组成，长度小于20个字符')"
@@ -78,7 +78,7 @@
             >{{$t('取消')}}</bk-button>
             <section
                 class="variable-button"
-                v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled }"
+                v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled, maxWidth: 400 }"
             >
                 <bk-button
                     :loading="isUseSaving"
@@ -410,9 +410,6 @@
     }
     .range-radio {
         margin-right: 65px;
-    }
-    .confirm-button {
-        margin-left: 84px;
     }
     .variable-button {
         display: inline-block;

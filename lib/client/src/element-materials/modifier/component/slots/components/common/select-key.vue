@@ -8,7 +8,8 @@
                 v-bk-tooltips="{
                     content: $t('可以设置字段的映射关系，来做数据转换。注意：值改变下拉选项会自动改变'),
                     placements: ['left-start'],
-                    boundary: 'window'
+                    boundary: 'window',
+                    maxWidth: 400
                 }"
             >
                 {{ $t('字段映射') }}
@@ -21,7 +22,8 @@
                 v-bk-tooltips="{
                     content: $t(key.tips),
                     placements: ['left-start'],
-                    boundary: 'window'
+                    boundary: 'window',
+                    maxWidth: 400
                 }"
             >{{ $t(key.label) }}</div>
             <bk-tag-input

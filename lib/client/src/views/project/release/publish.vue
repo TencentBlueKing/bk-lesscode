@@ -6,18 +6,18 @@
         <section v-show="!isLoading" :class="$style['release-container']">
             <div :class="$style['release-summary']">
                 <span :class="$style['setting']">
-                    <span :class="$style['label']"><span v-bk-tooltips="bindInfoTips" :class="$style['bind-label']">{{ $t('绑定蓝鲸应用模块') }}</span>：</span>
+                    <span :class="$style['label']"><span v-bk-tooltips="{ content: bindInfoTips, maxWidth: 400 }" :class="$style['bind-label']">{{ $t('绑定蓝鲸应用模块') }}</span>：</span>
                     <app-module-select ref="appModuleSelect"></app-module-select>
                 </span>
                 <span :class="[$style['latest-info']]">
                     <span :class="$style['label']">{{ $t('当前生产环境部署版本：') }}</span>
                     <span v-if="prodInfo.version && !prodInfo.isOffline">
-                        <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="getInfoTips(prodInfo)">
+                        <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="{ content: getInfoTips(prodInfo), maxWidth: 400 }">
                             <a target="_blank" :href="prodInfo.accessUrl">
                                 {{ prodInfo.version }}
                                 <i class="bk-drag-icon bk-drag-jump-link"></i>
                             </a>
-                            <a v-if="prodInfo.mobileUrl" href="javascript:;" @click="copy(prodInfo.accessUrl + prodInfo.mobileUrl)" v-bk-tooltips.top="$t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接')">
+                            <a v-if="prodInfo.mobileUrl" href="javascript:;" @click="copy(prodInfo.accessUrl + prodInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
                                 <i class="bk-drag-icon bk-drag-mobilephone"> </i>
                             </a>
                         </span>
@@ -43,7 +43,7 @@
                                 {{ stagInfo.version }}
                                 <i class="bk-drag-icon bk-drag-jump-link"></i>
                             </a>
-                            <a v-if="stagInfo.mobileUrl" href="javascript:;" @click="copy(stagInfo.accessUrl + stagInfo.mobileUrl)" v-bk-tooltips.top="$t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接')">
+                            <a v-if="stagInfo.mobileUrl" href="javascript:;" @click="copy(stagInfo.accessUrl + stagInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
                                 <i class="bk-drag-icon bk-drag-mobilephone"> </i>
                             </a>
                         </span>

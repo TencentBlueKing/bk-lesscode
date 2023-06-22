@@ -82,7 +82,7 @@
                 <img src="../../images/wx-work.png" />
                 <span>蓝鲸MagicBox助手</span>
             </a> -->
-            Copyright &copy; 2012-{{currentYear}} Tencent BlueKing. All Rights Reserved. {{$t('腾讯蓝鲸 版权所有')}}
+            Copyright &copy; 2012 Tencent BlueKing. All Rights Reserved. {{$t('腾讯蓝鲸 版权所有')}}
         </footer>
     </main>
 </template>
@@ -96,7 +96,6 @@
         },
         data () {
             return {
-                currentYear: new Date().getUTCFullYear(),
                 asideFolded: false,
                 asideHover: false,
                 region: 'tencent',

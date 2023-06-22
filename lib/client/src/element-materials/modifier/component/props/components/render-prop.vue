@@ -29,7 +29,7 @@
                         ></i>
                         <span
                             :class="{ label: describe.tips }"
-                            v-bk-tooltips="introTips">
+                            v-bk-tooltips="{ content: introTips, maxWidth: 400 }">
                             {{ displayName }}
                         </span>
                     </section>
@@ -93,7 +93,8 @@
                     v-bk-tooltips="{
                         content: $t('使用值覆盖表头的默认列，请确认后再操作'),
                         placement: 'left-start',
-                        boundary: 'window'
+                        boundary: 'window',
+                        maxWidth: 400
                     }"
                     class="g-prop-sub-title g-mb6 g-mt12 g-config-subline"
                 >

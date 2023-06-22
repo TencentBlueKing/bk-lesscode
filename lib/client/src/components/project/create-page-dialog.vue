@@ -33,8 +33,8 @@
             </div>
 
             <page-from-template :platform="platform" :create-from-template="createFromTemplate" :template-change="changeTemplate" :nocode-type="nocodeType">
-                <bk-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" form-type="vertical">
-                    <bk-form-item :label="$t('form_当前已选模板')" :label-width="$store.state.Language === 'en' ? 210 : 150" property="templateName" error-display-type="normal" v-if="createFromTemplate">
+                <bk-form ref="templateForm" :label-width="300" :rules="formRules" :model="formData" form-type="vertical">
+                    <bk-form-item :label="$t('form_当前已选模板')" property="templateName" error-display-type="normal" v-if="createFromTemplate">
                         <bk-input readonly v-model.trim="selectTemplate.templateName"
                             :placeholder="$t('模板名称')">
                         </bk-input>
@@ -67,7 +67,6 @@
                     <bk-form-item
                         :label="$t('form_本页面添加到导航菜单')"
                         v-if="showAddNavListSwitcher"
-                        :label-width="$store.state.Language === 'en' ? 260 : 170"
                         error-display-type="normal">
                         <bk-switcher
                             theme="primary"

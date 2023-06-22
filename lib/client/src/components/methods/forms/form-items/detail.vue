@@ -1,5 +1,5 @@
 <template>
-    <lc-form :label-width="180" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
+    <lc-form :label-width="200" :model="form" ref="funcForm" :form-type="formType" class="func-detail">
         <lc-form-item :label="$t('form_函数类型')" property="funcType" class="func-form-item">
             <bk-radio-group
                 :value="form.funcType"
@@ -14,9 +14,9 @@
                 >
                     {{ temp.name }}
                     <i
-                        class="bk-icon icon-info ml5"
+                        class="bk-icon icon-info"
                         v-if="temp.info"
-                        v-bk-tooltips="{ content: temp.info, allowHtml: true }"
+                        v-bk-tooltips="{ content: temp.info, allowHtml: true, maxWidth: 400 }"
                     ></i>
                 </bk-radio-button>
             </bk-radio-group>

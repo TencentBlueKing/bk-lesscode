@@ -10,7 +10,7 @@
             header-position="left"
             ext-cls="page-operate-dialog"
         >
-            <bk-form ref="dialogForm" class="dialog-form" :label-width="86" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="dialogForm" class="dialog-form" :label-width="200" form-type="vertical" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('form_页面名称')" required property="pageName" error-display-type="normal">
                     <bk-input ref="projectDialogInput"
                         maxlength="60"

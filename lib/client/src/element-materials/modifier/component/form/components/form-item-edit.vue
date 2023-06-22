@@ -21,9 +21,10 @@
             <div class="form-item-title">{{ $t('基本信息') }}</div>
             <lc-form
                 ref="operation"
+                form-type="vertical"
                 :model="formItemData"
                 :rules="rules"
-                :label-width="100">
+                :label-width="200">
                 <lc-form-item
                     :label="$t('form_字段名称')"
                     required

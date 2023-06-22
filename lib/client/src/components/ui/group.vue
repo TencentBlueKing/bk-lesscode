@@ -1,6 +1,6 @@
 <template>
     <div class="ui-group-box" :class="{ 'box-border-top': showBorderTop }">
-        <div class="ui-group-name" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
+        <div class="ui-group-name" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17), maxWidth: 400 }">
             <i
                 class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                 :class="{

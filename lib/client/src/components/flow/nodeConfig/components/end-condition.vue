@@ -27,7 +27,8 @@
                             v-bk-tooltips="{
                                 disabled: tipsContent(expression).length === 0,
                                 content: tipsContent(expression),
-                                placements: ['top']
+                                placements: ['top'],
+                                maxWidth: 400
                             }"
                             type="number"
                             :clearable="false"

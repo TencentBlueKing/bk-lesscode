@@ -6,7 +6,7 @@
         @show="handleToggleSelectPanel(true)"
         @hide="handleToggleSelectPanel(false)">
         <div slot="dropdown-trigger" style="height:42px;">
-            <span class="tab-item-label" v-bk-tooltips="{ content: $t(componentNameText) ,distance: 8 }">
+            <span class="tab-item-label" v-bk-tooltips="{ content: $t(componentNameText) ,distance: 8, maxWidth: 400 }">
                 {{ componentNameText }}
             </span>
             <i
@@ -33,7 +33,8 @@
                         v-bk-tooltips.light="{
                             content: item.tooltip,
                             placements: ['top-end'],
-                            allowHtml: true
+                            allowHtml: true,
+                            maxWidth: 400
                         }" />
                     <span>{{item.type}}</span>
                 </div>

@@ -285,7 +285,7 @@
                     <div>
                         <div class="form-tip">
                             <span><bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleShowTipsChange">{{ $t('添加额外填写说明') }}</bk-checkbox></span>
-                            <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, 'extCls': 'custom-require-tips' }">{{ $t('效果预览') }}</span>
+                            <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, maxWidth: 400, 'extCls': 'custom-require-tips' }">{{ $t('效果预览') }}</span>
                         </div>
                         <bk-input
                             v-if="checkTips"

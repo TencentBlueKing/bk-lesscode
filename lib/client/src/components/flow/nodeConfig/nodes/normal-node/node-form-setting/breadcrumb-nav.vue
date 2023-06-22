@@ -13,7 +13,7 @@
             </bk-input>
             <i
                 v-if="errorTips.length > 0"
-                v-bk-tooltips="errorTips"
+                v-bk-tooltips="{ content: errorTips, maxWidth: 400 }"
                 class="bk-icon icon-exclamation-circle-shape error-icon">
             </i>
         </template>

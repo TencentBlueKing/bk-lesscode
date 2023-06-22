@@ -3,7 +3,8 @@
         class="bk-drag-icon bk-drag-add-fill"
         v-bk-tooltips="{
             content: tips,
-            disabled: !tips
+            disabled: !tips,
+            maxWidth: 400
         }"
         @click="handleClick"
     ></i>

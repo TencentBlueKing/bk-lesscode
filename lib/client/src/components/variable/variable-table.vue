@@ -17,7 +17,7 @@
             </bk-table-column>
             <bk-table-column :label="$t('引用')" width="100" show-overflow-tooltip>
                 <template slot-scope="props">
-                    <span v-bk-tooltips.light="{ content: getUseInfoTips(props.row.useInfo).join('<br>'), disabled: !getUseInfoTips(props.row.useInfo).length }" class="use-info">
+                    <span v-bk-tooltips.light="{ content: getUseInfoTips(props.row.useInfo).join('<br>'), disabled: !getUseInfoTips(props.row.useInfo).length, maxWidth: 400 }" class="use-info">
                         {{ getUseInfoTips(props.row.useInfo).length }}
                     </span>
                 </template>
@@ -35,11 +35,11 @@
             <bk-table-column :label="$t('操作')" width="120">
                 <template slot-scope="props">
                     <span @click="showVariableForm(props.row)"
-                        v-bk-tooltips="{ content: getEditStatus(props.row), disabled: !getEditStatus(props.row) }"
+                        v-bk-tooltips="{ content: getEditStatus(props.row), disabled: !getEditStatus(props.row), maxWidth: 400 }"
                         :class="{ 'table-btn': true, disable: getEditStatus(props.row) }"
                     >{{ $t('编辑') }}</span>
                     <span @click="showDeleteVariable(props.row)"
-                        v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
+                        v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400 }"
                         :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
                     >{{ $t('删除') }}</span>
                 </template>
