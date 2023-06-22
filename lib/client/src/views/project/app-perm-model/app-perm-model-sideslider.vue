@@ -7,7 +7,7 @@
             :width="696"
             @update:isShow="close">
             <div class="wrapper" slot="content" v-bkloading="{ isLoading: isLoading }">
-                <lc-form :label-width="$store.state.Language === 'en' ? 150 : 120" :model="formData" :rules="rules" ref="validateForm">
+                <lc-form :label-width="200" form-type="vertical" :model="formData" :rules="rules" ref="validateForm">
                     <lc-form-item :label="$t('操作 ID')" required property="actionId">
                         <bk-input v-model="formData.actionId" :disabled="isEdit || isDefaultAction" :placeholder="$t('请输入操作 ID：如 {0}',[IAM_APP_PERM_BUILDIN_ACTION])"></bk-input>
                     </lc-form-item>

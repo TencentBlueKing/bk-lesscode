@@ -1,7 +1,7 @@
 <template>
     <main class="account page-content">
         <div class="user-info-wrapper">
-            <bk-form :label-width="100" :model="userData">
+            <bk-form :label-width="200" form-type="vertical" :model="userData">
                 <bk-form-item :label="$t('用户名：')">
                     {{userData.username}}
                 </bk-form-item>

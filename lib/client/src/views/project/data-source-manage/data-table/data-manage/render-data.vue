@@ -121,7 +121,7 @@
                     ref="formRef"
                     form-type="vertical"
                     :model="formStatus.editForm"
-                    :label-width="120"
+                    :label-width="300"
                 >
                     <lc-form-item
                         v-for="column in activeTable.columns.filter(column => column.name !== 'id')"

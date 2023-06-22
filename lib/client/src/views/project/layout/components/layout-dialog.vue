@@ -10,7 +10,7 @@
             header-position="left"
             ext-cls="layout-operate-dialog"
         >
-            <bk-form ref="dialogForm" class="dialog-form" :label-width="90" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="dialogForm" class="dialog-form" :label-width="200" form-type="vertical" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('导航类型')" required property="showName" error-display-type="normal">
                     <bk-radio-group v-model="dialog.formData.layoutType">
                         <bk-radio-button value="PC" :disabled="action !== 'create' && dialog.formData.layoutType !== 'PC'">
@@ -322,6 +322,9 @@
     .layout-operate-dialog {
         .bk-dialog-body {
             padding: 3px 6px 26px;
+        }
+        .bk-dialog-header {
+            padding-bottom: 10px;
         }
     }
 </style>

@@ -6,7 +6,7 @@
         :mask-close="false"
         :auto-close="false"
         header-position="left">
-        <bk-form class="dialog-form" :label-width="86">
+        <bk-form class="dialog-form" :label-width="200" form-type="vertical">
             <bk-form-item :label="$t('form_页面路由')" error-display-type="normal">
                 <bk-select
                     searchable
@@ -23,7 +23,7 @@
                         <i class="bk-drag-icon bk-drag-jump-link"></i> {{ $t('新建路由') }}
                     </div>
                 </bk-select>
-                <p class="mt5 mb0 f12" slot="tip">
+                <p style="line-height: 20px;" class="mt5 mb0 f12" slot="tip">
                     {{ $t('修改一级路由的同时会变更页面模板，已绑定页面或跳转的路由不能再次选择') }} </p>
             </bk-form-item>
         </bk-form>

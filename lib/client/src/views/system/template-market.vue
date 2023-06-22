@@ -160,7 +160,7 @@
             ext-cls="project-create-dialog"
             @value-change="handleProjectDialogToggle">
             <div class="selected-project">{{ $t('已选模板：{0}', [dialog.project.templateName]) }}</div>
-            <bk-form ref="createForm" :label-width="$store.state.Language === 'en' ? 100 : 86" :rules="dialog.project.formRules" :model="dialog.project.formData">
+            <bk-form ref="createForm" :label-width="200" form-type="vertical" :rules="dialog.project.formRules" :model="dialog.project.formData">
                 <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
                     <bk-input maxlength="60" v-model.trim="dialog.project.formData.projectName"
                         :placeholder="$t('请输入应用名称，60个字符以内')">

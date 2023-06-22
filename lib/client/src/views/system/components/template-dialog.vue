@@ -13,7 +13,8 @@
             @value-change="handleDialogToggle">
             <div slot="header">
                 <span slot="header">
-                    {{ $t('从模板新建应用') }} <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: $t('创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块') }"></i>
+                    {{ $t('从模板新建应用') }}
+                    <i class="bk-icon icon-info-circle" style="font-size: 14px;" v-bk-tooltips.top="{ content: $t('创建lesscode应用时，会同步在蓝鲸开发者中心创建应用的default模块'), maxWidth: 400 }"></i>
                 </span>
             </div>
             <div class="layout-left">

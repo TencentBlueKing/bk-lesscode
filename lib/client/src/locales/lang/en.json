@@ -1231,7 +1231,7 @@
   "申请权限": "Request for Access",
   "目前只支持查询 mysql 或 tspider 的结果表": "Currently only supports querying the result table of MySQL or tspider.",
   "绑定蓝鲸应用模块": "Bind the BlueKing application module",
-  "获取数据": "Retrieve data",
+  "获取数据": "Get Data",
   "请": "Please",
   "请先": "Please first",
   "请点击上方刷新按钮获取 Mysql 数据表": "Please click the refresh button above to get the MySQL data table",

@@ -2,7 +2,7 @@
     <lc-form
         ref="formRef"
         form-type="vertical"
-        :label-width="150"
+        :label-width="300"
         :model="formData"
     >
         <lc-form-item
