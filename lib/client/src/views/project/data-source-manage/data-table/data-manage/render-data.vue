@@ -171,7 +171,7 @@
                             :placeholder="$t('请输入字符串')"
                         ></bk-input>
                     </lc-form-item>
-                    <lc-form-item>
+                    <lc-form-item style="margin-top: 32px;">
                         <bk-button
                             theme="primary"
                             class="mr5"
