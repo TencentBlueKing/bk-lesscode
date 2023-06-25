@@ -95,7 +95,7 @@
             },
             transValToTagArray (val) {
                 const name = []
-                if (['API', 'WORKSHEET'].includes(this.field.source_type)) {
+                if (['WORKSHEET'].includes(this.field.source_type)) {
                     name.push(val)
                 } else if (['CHECKBOX', 'MULTISELECT'].includes(this.field.type)) {
                     this.field.choice.forEach((item) => {

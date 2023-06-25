@@ -4,7 +4,7 @@
         ext-cls="data-source-dialog"
         :mask-close="false"
         :auto-close="false"
-        :width="sourceType === 'API' ? 960 : 780"
+        :width="780"
         :show-type-select="false"
         :value="show"
         @confirm="onConfirm"
