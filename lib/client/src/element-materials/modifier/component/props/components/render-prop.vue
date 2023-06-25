@@ -29,7 +29,7 @@
                         ></i>
                         <span
                             :class="{ label: describe.tips }"
-                            v-bk-tooltips="{ content: introTips, maxWidth: 400 }">
+                            v-bk-tooltips="introTips">
                             {{ displayName }}
                         </span>
                     </section>
@@ -373,7 +373,8 @@
                     disabled: !tip,
                     interactive: false,
                     placements: ['left-start'],
-                    boundary: 'window'
+                    boundary: 'window',
+                    maxWidth: 300
                 }
                 return typeof tip === 'string'
                     ? {

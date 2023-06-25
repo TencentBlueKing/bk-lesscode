@@ -330,6 +330,7 @@
             .step-action{
                 display: flex;
                 justify-content: flex-end;
+                align-items: center;
                 margin-top: 14px;
                 .action-text{
                     color: #3A84FF;

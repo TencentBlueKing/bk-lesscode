@@ -23,7 +23,7 @@
                             }"
                             v-bk-tooltips="computedSlotTip"
                         >
-                            {{ $t(describe.displayName) }}
+                            {{ $t(describe.displayName) && $t(describe.displayName).toLowerCase() }}
                             <span v-if="describe.type && describe.type.length <= 1">
                                 ({{ formData.valueType | capFirstLetter }})
                             </span>

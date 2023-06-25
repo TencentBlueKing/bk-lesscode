@@ -49,22 +49,22 @@
             icon: 'bk-drag-gaodu'
         },
         {
-            name: window.i18n.t('最小宽度'),
+            name: window.i18n.t('style_最小宽度'),
             key: 'minWidth',
             icon: 'bk-drag-zuixiaokuandu'
         },
         {
-            name: window.i18n.t('最小高度'),
+            name: window.i18n.t('style_最小高度'),
             key: 'minHeight',
             icon: 'bk-drag-zuixiaogaodu'
         },
         {
-            name: window.i18n.t('最大宽度'),
+            name: window.i18n.t('style_最大宽度'),
             key: 'maxWidth',
             icon: 'bk-drag-zuidakuandu'
         },
         {
-            name: window.i18n.t('最大高度'),
+            name: window.i18n.t('style_最大高度'),
             key: 'maxHeight',
             icon: 'bk-drag-zuidagaodu'
         },
