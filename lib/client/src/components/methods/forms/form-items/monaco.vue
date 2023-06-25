@@ -52,8 +52,8 @@
                 class="monaco-title"
             >{{ $t('JS 编辑器') }}</span>
             <template v-slot:tools>
-                <i class="bk-drag-icon bk-drag-info-tips icon-style" :key="form.funcType" v-bk-tooltips="{ content: functionTips, maxWidth: 400 }"></i>
-                <i class="bk-drag-icon bk-drag-fix icon-style" @click="handleFixMethod" v-bk-tooltips="{ content: fixMethodTips, maxWidth: 400 }"></i>
+                <i class="bk-drag-icon bk-drag-info-tips icon-style" :key="form.funcType" v-bk-tooltips="functionTips"></i>
+                <i class="bk-drag-icon bk-drag-fix icon-style" @click="handleFixMethod" v-bk-tooltips="functionTips"></i>
                 <slot name="tools"></slot>
             </template>
         </monaco>

@@ -1599,7 +1599,7 @@
   "左": "Left",
   "最小宽度": "Min width",
   "内边距": "Padding",
-  "透明度": "Transparency",
+  "透明度": "opacity",
   "鼠标": "Cursor",
   "页面样式配置": "Page Style Setting",
   "可以设置字体的显示偏好设置，如不设置，则默认使用系统默认字体": "You can set font family of the page, if not set, the system default font will be used by default",
