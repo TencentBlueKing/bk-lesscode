@@ -14,7 +14,7 @@
             :width="900"
             @hidden="handleClose">
             <div class="header-wrapper" slot="header">
-                {{ $t('变量列表') }} <i class="bk-icon icon-info tips-icon" v-bk-tooltips="$t('可使用的流程变量是指，流程执行时该节点之前的流程节点输出到执行环境的变量，例如人工节点的字段、api节点响应数据中设置的全局变量')"></i>
+                {{ $t('变量列表') }} <i class="bk-icon icon-info tips-icon" v-bk-tooltips="{ content: $t('可使用的流程变量是指，流程执行时该节点之前的流程节点输出到执行环境的变量，例如人工节点的字段、api节点响应数据中设置的全局变量'), maxWidth: 400 }"></i>
             </div>
             <section v-bkloading="{ isLoading: loading }" class="flow-variables-content" slot="content">
                 <div v-if="varList.length > 0" class="search-input-area">

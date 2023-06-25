@@ -1,5 +1,5 @@
 <template>
-    <div class="setting-btn" v-bk-tooltips="{ content: showTips }" @click="handleShowPageSetting">
+    <div class="setting-btn" v-bk-tooltips="{ content: showTips, maxWidth: 400 }" @click="handleShowPageSetting">
         <i class="bk-drag-icon bk-drag-setting-fill"></i>
     </div>
 </template>

@@ -10,22 +10,6 @@
             :local-val-is-display-tag="localValIsDisplayTag"
             @update="$emit('change', $event)">
         </custom-data>
-        <!-- 接口数据 -->
-        <api-data
-            v-else-if="sourceType === 'API'"
-            ref="api"
-            :flow-id="flowId"
-            :node-id="nodeId"
-            :change-source="showTypeSelect"
-            :source-type-list="sourceTypeList"
-            :use-variable="useVariable"
-            :value="value"
-            :disabled="disabled"
-            :api-detail="apiDetail"
-            :res-array-tree-data="resArrayTreeData"
-            @sourceTypeChange="$emit('sourceTypeChange', $event)"
-            @update="$emit('change', $event)">
-        </api-data>
         <!-- 表单数据 -->
         <worksheet-data
             v-else-if="sourceType === 'WORKSHEET'"
@@ -43,15 +27,13 @@
     </div>
 </template>
 <script>
-    import CustomData from './custumData.vue'
-    import ApiData from './apiData.vue'
-    import WorksheetData from './worksheetData.vue'
+    import CustomData from './custom-data.vue'
+    import WorksheetData from './worksheet-data.vue'
 
     export default {
         name: 'DataSource',
         components: {
             CustomData,
-            ApiData,
             WorksheetData
         },
         props: {
@@ -61,14 +43,6 @@
             sourceTypeList: {
                 type: Array,
                 default: () => []
-            },
-            apiDetail: {
-                type: Object,
-                default: () => ({})
-            },
-            resArrayTreeData: {
-                type: Array,
-                default: () => ([])
             },
             flowId: Number,
             nodeId: Number,

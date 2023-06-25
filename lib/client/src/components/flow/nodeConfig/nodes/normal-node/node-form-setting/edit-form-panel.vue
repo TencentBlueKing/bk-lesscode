@@ -32,6 +32,7 @@
                 <nocode-form
                     v-show="operationType === 'edit'"
                     page-type="FLOW"
+                    :is-from-flow="true"
                     :content="formConfig.content"
                     :disabled="isUseForm">
                 </nocode-form>
@@ -284,7 +285,7 @@
         }
     }
     .edit-content-wrapper {
-        height: calc(100% - 52px - 52px);
+        height: calc(100% - 52px);
         .lesscode-editor-page-content {
             height: 100%;
         }

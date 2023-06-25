@@ -65,32 +65,48 @@
                     </ul>
                 </bk-form-item>
                 <bk-form-item :label="$t('数据源')" v-if="fieldProps.fieldsDataSource.includes(fieldData.type)">
-                    <bk-select
+                    <!-- <bk-select
                         :value="fieldData.source_type"
                         :clearable="false"
                         :disabled="disabled"
                         @selected="handleSourceTypeChange">
                         <bk-option v-for="item in sourceTypeList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                    </bk-select>
-                    <bk-select
+                    </bk-select> -->
+                    <bk-radio-group class="g-prop-radio-group" :value="fieldData.source_type" @change="handleSourceTypeChange">
+                        <bk-radio-button
+                            v-for="item in sourceTypeList"
+                            :disabled="isFromFlow && item.id === 'FUNCTION'"
+                            :key="item.id"
+                            :value="item.id">
+                            {{ item.name }}
+                        </bk-radio-button>
+                    </bk-radio-group>
+                    <function-data
+                        v-if="fieldData.source_type === 'FUNCTION'"
+                        :key="fieldData.key"
+                        :config="fieldData.meta.function_data_source_config"
+                        @change="handleFunctionDataSourceChange">
+                    </function-data>
+                     <bk-button
+                        v-else
+                        style="margin-top: 8px;"
+                        theme="primary"
+                        size="small"
+                        :title="$t('配置')"
+                        @click="dataSourceDialogShow = true">
+                        {{ $t('配置数据源') }}
+                    </bk-button>
+                    <!-- <bk-select
                         class="mt8"
                         v-if="fieldData.source_type === 'API'"
                         v-model="fieldData.api_info.remote_system_id"
-                        :placeholder="$t('请选择接口')"
+                        :placeholder="$t('请选择API')"
                         :clearable="false"
                         :disabled="disabled || systemListLoading"
                         :loading="systemListLoading"
                         @selected="handleSelectSystem">
                         <bk-option v-for="item in systemList" :key="item.id" :id="item.id" :name="item.name"></bk-option>
-                    </bk-select>
-                    <bk-button
-                        style="margin-top: 8px;"
-                        theme="primary"
-                        size="small"
-                        :title="$t('配置')"
-                        :disabled="isConfigDataSourceDisabled"
-                        @click="dataSourceDialogShow = true">
-                        {{ $t('配置数据源') }} </bk-button>
+                    </bk-select> -->
                 </bk-form-item>
                 <bk-divider />
                 <div class="group-name" @click="handleIsFolded = !handleIsFolded">
@@ -285,7 +301,7 @@
                     <div>
                         <div class="form-tip">
                             <span><bk-checkbox v-model="checkTips" :disabled="disabled" @change="handleShowTipsChange">{{ $t('添加额外填写说明') }}</bk-checkbox></span>
-                            <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, 'extCls': 'custom-require-tips' }">{{ $t('效果预览') }}</span>
+                            <span class="tips" v-show="checkTips" v-bk-tooltips.top="{ 'content': fieldData.tips, maxWidth: 400, 'extCls': 'custom-require-tips' }">{{ $t('效果预览') }}</span>
                         </div>
                         <bk-input
                             v-if="checkTips"
@@ -331,9 +347,7 @@
             :field-type="fieldData.type"
             :value="sourceData"
             :disabled="disabled"
-            :api-detail="apiDetail"
             :is-display-tag="fieldData.isDisplayTag"
-            :res-array-tree-data="resArrayTreeData"
             @confirm="handleDataSourceChange">
         </data-source-dialog>
         <config-desc-comp-value-dialog
@@ -352,6 +366,7 @@
     import RequireDialog from './requireDialog.vue'
     import ShowTypeDialog from './showTypeDialog.vue'
     import DataSourceDialog from './dataSourceDialog.vue'
+    import FunctionData from './data-source/function-data.vue'
     import ConfigDescCompValueDialog from './configDescCompValueDialog'
     import TableHeaderSetting from './tableHeaderSetting.vue'
     import RichText from '@/components/flow-form-comp/form/fields/richText.vue'
@@ -363,10 +378,8 @@
         FIELDS_SOURCE_TYPE
     } from '../../../common/form'
     import { DATA_SOURCE_FIELD } from '@/components/flow-form-comp/form/constants/forms'
-
     import { REGX_CHIOCE_LIST } from '../../../../../../../shared/no-code/constant'
     import { mapGetters } from 'vuex'
-    import { transSchemeToArrayTypeTree } from '../../../common/apiScheme'
         
     export default {
         name: 'formEdit',
@@ -378,6 +391,7 @@
             RequireDialog,
             ShowTypeDialog,
             DataSourceDialog,
+            FunctionData,
             ConfigDescCompValueDialog,
             RichText,
             ComputeEdit,
@@ -388,6 +402,7 @@
             event: 'change'
         },
         props: {
+            isFromFlow: Boolean,
             value: {
                 type: Object,
                 default: () => ({})
@@ -410,10 +425,6 @@
                     fieldsShowDefaultValue: FIELDS_SHOW_DEFAULT_VALUE,
                     fieldsDataSource: DATA_SOURCE_FIELD
                 },
-                systemList: [],
-                systemListLoading: false,
-                apiDetail: {},
-                resArrayTreeData: [],
                 alignList: [{ id: 'left', name: this.$t('居左') }, { id: 'right', name: this.$t('居右') }, { id: 'center', name: this.$t('居中') }],
                 dataSourceDialogShow: false,
                 readerOnlyShow: false,
@@ -448,18 +459,12 @@
                 }
                 return FIELDS_SOURCE_TYPE
             },
-            isConfigDataSourceDisabled () {
-                return this.fieldData.source_type === 'API' && !this.fieldData.api_info.remote_system_id
-            },
             sourceData () {
-                const { source_type: sourceType, choice, meta, api_info: apiInfo, kv_relation: kvRelation } = this.fieldData
+                const { source_type: sourceType, choice, meta } = this.fieldData
                 let data = {}
                 switch (sourceType) {
                     case 'CUSTOM':
                         data = choice
-                        break
-                    case 'API':
-                        data = { apiInfo, kvRelation }
                         break
                     case 'WORKSHEET':
                         data = meta.data_config
@@ -477,15 +482,7 @@
                     this.basicIsFolded = false
                     this.handleIsFolded = false
                 }
-                if (this.fieldProps.fieldsDataSource.includes(val.type) && val.id !== oldVal.id) {
-                    this.getSystems()
-                }
                 this.fieldData = cloneDeep(val)
-            }
-        },
-        created () {
-            if (this.fieldProps.fieldsDataSource.includes(this.fieldData.type)) {
-                this.getSystems()
             }
         },
         methods: {
@@ -546,9 +543,6 @@
                     this.fieldData.choice = val.localVal
                     this.fieldData.default = val.localVal.find(item => item.isDefaultVal)?.key || ''
                     this.fieldData.isDisplayTag = !!val?.localValIsDisplayTag
-                } else if (sourceType === 'API') {
-                    this.fieldData.api_info = val.api_info
-                    this.fieldData.kv_relation = val.kv_relation
                 } else if (sourceType === 'WORKSHEET') {
                     this.fieldData.meta.data_config = val.localVal
                 }
@@ -558,58 +552,47 @@
             handleSourceTypeChange (val) {
                 this.fieldData.source_type = val
                 if (val === 'CUSTOM') {
-                    this.fieldData.choice = [
-                        { key: 'XUANXIANG1', name: this.$t('选项1'), color: '#3a84ff', isDefaultVal: true },
-                        { key: 'XUANXIANG2', name: this.$t('选项2'), color: '#2dcb56', isDefaultVal: false }
-                    ]
-                    delete this.fieldData.meta.data_config
-                    this.fieldData.kv_relation = {}
-                } else if (val === 'API') {
-                    this.fieldData.choice = []
-                    this.fieldData.api_info = {
-                        remote_api_id: '',
-                        remote_system_id: '',
-                        req_body: {},
-                        req_params: {},
-                        rsp_data: ''
+                    if (!this.fieldData.choice || this.fieldData.choice.length === 0) {
+                        this.fieldData.choice = [
+                            { key: 'XUANXIANG1', name: this.$t('选项1'), color: '#3a84ff', isDefaultVal: true },
+                            { key: 'XUANXIANG2', name: this.$t('选项2'), color: '#2dcb56', isDefaultVal: false }
+                        ]
                     }
-                    this.fieldData.kv_relation = { key: '', name: '' }
                 } else if (val === 'WORKSHEET') {
-                    this.fieldData.choice = []
-                    this.fieldData.kv_relation = {}
-                    this.fieldData.meta.data_config = {
-                        formId: '',
-                        tableName: '',
-                        field: '',
-                        conditions: {
-                            type: 'and',
-                            expressions: []
+                    if (!this.fieldData.meta.data_config) {
+                        this.fieldData.meta.data_config = {
+                            formId: '',
+                            tableName: '',
+                            field: '',
+                            conditions: {
+                                type: 'and',
+                                expressions: []
+                            }
+                        }
+                    }
+                } else if (val === 'FUNCTION') {
+                    if (!this.fieldData.meta.function_data_source_config) {
+                        this.fieldData.meta.function_data_source_config = {
+                            payload: {
+                                methodData: {
+                                    methodCode: '',
+                                    params: []
+                                }
+                            },
+                            returnedValue: [],
+                            keys: {}
                         }
                     }
                 }
                 this.change()
             },
-            // 获取系统列表
-            async getSystems () {
-                try {
-                    this.systemListLoading = true
-                    const params = {
-                        projectId: this.projectId,
-                        versionId: this.versionId
-                    }
-                    this.systemList = await this.$store.dispatch('nocode/formSetting/getRemoteSystem', params)
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.systemListLoading = false
+            // 函数数据源配置变更
+            handleFunctionDataSourceChange (val) {
+                // 防止接口返回速度慢的情况下，切换数据源类型之后再更新数据
+                if (this.fieldData.source_type === 'FUNCTION') {
+                    this.fieldData.meta.function_data_source_config = val
+                    this.change()
                 }
-            },
-            async handleSelectSystem (val) {
-                this.setFormData(val)
-            },
-            setFormData (apiId) {
-                this.apiDetail = this.systemList.find(item => item.id === apiId)
-                this.resArrayTreeData = transSchemeToArrayTypeTree(this.apiDetail.response)
             },
             // 默认值修改
             handleDefaultValChange (val) {

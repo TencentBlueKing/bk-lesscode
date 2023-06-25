@@ -39,7 +39,8 @@
                                             class="show-tip"
                                             v-bk-tooltips="{
                                                 content: $t('可输入html模板或vue template，<br>`props.row`作为内置变量代表表格每一行的数据，如`props.row.id`代表每一行的id字段，<br>也可以在此处调用函数管理已有的函数（若使用了函数管理中的函数，需在模板绑定函数项勾选用到的函数），<br>如默认值demo即可实现一项编辑操作列'),
-                                                allowHtml: true
+                                                allowHtml: true,
+                                                maxWidth: 400
                                             }">{{$t('自定义列模板')}}</span>
                                     </div>
                                     <bk-input type="textarea" :value="item.templateCol" @change="val => handleChange(val, 'templateCol', index)" />

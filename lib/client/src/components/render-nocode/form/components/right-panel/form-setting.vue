@@ -7,6 +7,7 @@
                 <field-edit
                     v-if="field.type"
                     v-model="configData"
+                    :is-from-flow="isFromFlow"
                     :list="list"
                     :disabled="disabled"
                     @change="$emit('update', $event)">
@@ -28,6 +29,7 @@
             fieldEdit
         },
         props: {
+            isFromFlow: Boolean,
             disabled: Boolean,
             field: {
                 type: Object,

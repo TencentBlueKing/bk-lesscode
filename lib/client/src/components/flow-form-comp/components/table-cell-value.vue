@@ -14,7 +14,8 @@
                     v-bk-tooltips="{
                         content: transValToTagArray(value[field.key]).map(i => i.name).join(','),
                         placements: ['top'],
-                        extCls: 'custom-tooltip'
+                        extCls: 'custom-tooltip',
+                        maxWidth: 400
                     }"
                     :style="{ 'background-color': tag.color }">
                     {{tag.name}}
@@ -94,7 +95,7 @@
             },
             transValToTagArray (val) {
                 const name = []
-                if (['API', 'WORKSHEET'].includes(this.field.source_type)) {
+                if (['WORKSHEET'].includes(this.field.source_type)) {
                     name.push(val)
                 } else if (['CHECKBOX', 'MULTISELECT'].includes(this.field.type)) {
                     this.field.choice.forEach((item) => {

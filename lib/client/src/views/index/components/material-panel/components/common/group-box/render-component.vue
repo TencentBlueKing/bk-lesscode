@@ -4,7 +4,8 @@
         <span class="comp-name"
             v-bk-tooltips="{
                 content: $t(data.displayName),
-                disabled: $t(data.displayName).length < 13
+                disabled: $t(data.displayName).length < 13,
+                maxWidth: 400
             }">
             {{ $t(data.displayName) }}
         </span>

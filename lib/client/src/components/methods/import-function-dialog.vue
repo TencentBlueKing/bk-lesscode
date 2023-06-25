@@ -9,7 +9,7 @@
         @after-leave="afterLeave"
     >
         <section class="mb10">
-            <bk-button @click="importFunction" class="mr10" theme="primary" v-bk-tooltips="{ content: $t('只可导入JSON文件格式，且文件内容需要是JSON格式的数组') }">{{ $t('导入') }}</bk-button>
+            <bk-button @click="importFunction" class="mr10" theme="primary" v-bk-tooltips="{ content: $t('只可导入JSON文件格式，且文件内容需要是JSON格式的数组'), maxWidth: 400 }">{{ $t('导入') }}</bk-button>
             <slot></slot>
         </section>
 

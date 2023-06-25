@@ -11,7 +11,7 @@
 
 <template>
     <style-layout :title="$t('边距')" :icon-show="true" @reset="handleReset">
-        <i slot="header" class="bk-drag-icon bk-drag-undo-2" @click.stop="handleReset" v-bk-tooltips="{ content: '重置属性值' }"></i>
+        <i slot="header" class="bk-drag-icon bk-drag-undo-2" @click.stop="handleReset" v-bk-tooltips="{ content: $t('重置属性值') }"></i>
         <distance-container title="MARGIN" style="height: 140px;">
             <template v-slot:center>
                 <section style="margin-left: 42px;margin-top: 10px;width: 190px;padding: 2px;background: #fff;">

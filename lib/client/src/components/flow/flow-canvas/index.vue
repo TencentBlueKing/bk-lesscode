@@ -489,7 +489,7 @@
                 for (let i = 0; i < this.canvasData.lines.length; i++) {
                     if (sourceId === this.canvasData.lines[i].source.id && targetId === this.canvasData.lines[i].target.id) {
                         result = false
-                        message = this.$t('已存在的连线相同连线！')
+                        message = this.$t('已存在的相同连线！')
                     }
                 }
                 if (message) {

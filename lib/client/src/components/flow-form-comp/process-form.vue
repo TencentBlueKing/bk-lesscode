@@ -11,7 +11,8 @@
                     <bk-button
                         v-bk-tooltips="{
                             disabled: viewType === 'projectCode' || type === 'FORM' || flowDeployed,
-                            content: $t('流程有更新未部署，提单或流程执行可能会失败')
+                            content: $t('流程有更新未部署，提单或流程执行可能会失败'),
+                            maxWidth: 400
                         }"
                         theme="primary"
                         style="min-width: 88px; margin-right: 4px;"

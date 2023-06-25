@@ -5,16 +5,16 @@
         transfer
         :is-show="isShow"
         @update:isShow="close"
-        :width="$store.state.Language === 'en' ? 907 : 796"
+        :width="796"
         :title="dialogTitle">
         <div slot="content" class="operation-content" v-enClass="'en-operation-content'">
             <div class="component-guide">
                 <a href="/help/custom" target="_blank">{{ $t('组件开发指引') }}</a>
             </div>
-            <lc-form ref="form" :label-width="$store.state.Language === 'en' ? 174 : 90" :model="formData" :rules="rules">
+            <lc-form ref="form" :label-width="200" :model="formData" :rules="rules" form-type="vertical">
                 <lc-form-item :label="$t('form_组件类型')" required error-display-type="normal">
-                    <bk-radio-group v-model="formData.compType">
-                        <bk-radio-button value="PC">
+                    <bk-radio-group v-model="formData.compType" style="display: flex;">
+                        <bk-radio-button value="PC" style="flex: 1">
                             <bk-radio :checked="formData.compType === 'PC'"
                             ></bk-radio>
                             <i class="bk-drag-icon bk-drag-pc"></i>
@@ -61,7 +61,7 @@
                         @on-success="handleUploadSuccess"
                         @on-progress="handleProgress" />
                 </lc-form-item>
-                <bk-link class="component-demo-link" v-enStyle="'margin-left:174px'" theme="primary" @click="handleDownloadDemo">{{ $t('下载开发框架') }}</bk-link>
+                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">{{ $t('下载开发框架') }}</bk-link>
                 <lc-form-item :label="$t('form_组件名称')" required property="name" error-display-type="normal">
                     <bk-input
                         :value="formData.displayName && formData.name ? `${formData.displayName}(${formData.name})` : ''"
@@ -361,17 +361,14 @@
                 }
             }
             .component-demo-link {
-                margin: -16px 90px 0;
+                margin-top: -16px;
                 .bk-link-text {
                     font-size: 12px;
                 }
             }
-            .en-component-demo-link{
-                margin-left: 174px;
-            }
         }
         .sideslider-footer{
-            padding-left: 120px;
+            padding-left: 30px;
             .bk-button {
                 margin-right: 10px;
             }
@@ -381,7 +378,6 @@
         }
 
         .bk-form-radio-button .bk-radio-button-text {
-            width: 315px;
             height: 56px;
             display: flex;
             align-items: center;
@@ -414,18 +410,11 @@
         }
 
         .bk-button-group {
-            width: 630px;
             display: flex;
             .bk-button {
                 flex: 1;
                 height: 56px;
             }
-        }
-    }
-    .en-operation-content{
-
-        .bk-form-radio-button .bk-radio-button-text {
-            width: 327px;
         }
     }
 </style>

@@ -39,7 +39,7 @@
                                             :placeholder="$t('请输入路由名称，回车结束')"
                                         />
                                         <i class="bk-icon icon-exclamation-circle-shape tips-icon"
-                                            v-bk-tooltips="editState.error === 1 ? $t('请检查路径正确性') : $t('需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')"></i>
+                                            v-bk-tooltips="{ content: editState.error === 1 ? $t('请检查路径正确性') : $t('需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成'), maxWidth: 400 }"></i>
                                     </div>
                                     <div :class="$style['buttons']">
                                         <bk-button text size="small" theme="primary"
@@ -99,9 +99,12 @@
                                                     :placeholder="$t('请输入路由名称，回车结束')"
                                                 />
                                                 <i class="bk-icon icon-exclamation-circle-shape tips-icon"
-                                                    v-bk-tooltips="editState.error === 1 ?
+                                                    v-bk-tooltips="{ content: editState.error === 1 ?
                                                         $t('请检查路径正确性') :
-                                                        (editState.error === 2 ? $t('根路由请直接在父级绑定') : $t('需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成'))"></i>
+                                                        (editState.error === 2 ? $t('根路由请直接在父级绑定') : $t('需由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')),
+                                                        maxWidth: 400 }
+                                                    ">
+                                                </i>
                                             </div>
                                             <div :class="$style['buttons']">
                                                 <bk-button text size="small" theme="primary"

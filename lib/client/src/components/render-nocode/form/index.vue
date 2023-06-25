@@ -23,7 +23,7 @@
         </section>
         <!-- </section> -->
         <!-- 表单右边设置区域 -->
-        <right-panel slot="right" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
+        <right-panel slot="right" :is-from-flow="isFromFlow" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
     </draw-layout>
 
 </template>
@@ -50,6 +50,7 @@
         },
         mixins: [contentWidthMixin],
         props: {
+            isFromFlow: Boolean, //标识是否是流程表单
             pageType: String,
             content: Array,
             disabled: {

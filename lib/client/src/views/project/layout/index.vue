@@ -93,7 +93,7 @@
                         list: PCLayouts
                     },
                     {
-                        title: 'MOBILE',
+                        title: 'Mobile',
                         list: MOBILELayout
                     }
                 ]

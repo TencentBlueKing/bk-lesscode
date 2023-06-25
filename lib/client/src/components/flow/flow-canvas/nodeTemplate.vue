@@ -29,7 +29,8 @@
                             class="bk-drag-icon bk-drag-page"
                             v-bk-tooltips.top="{
                                 allowHtml: true,
-                                content: '#create-ticket-page-tips'
+                                content: '#create-ticket-page-tips',
+                                maxWidth: 400
                             }"
                             @click="$emit('preview')">
                         </i>

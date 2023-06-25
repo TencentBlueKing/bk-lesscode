@@ -297,7 +297,7 @@
   }
   .multiple-form-wrapper {
     display: flex;
-    align-items: end;
+    align-items: flex-end;
     justify-content: space-between;
     margin-top: 15px;
   }

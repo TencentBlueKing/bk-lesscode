@@ -6,7 +6,8 @@
                 :class="{ 'has-tips': showTips }"
                 v-bk-tooltips="{
                     disabled: !showTips,
-                    content: config.tips
+                    content: config.tips,
+                    maxWidth: 400
                 }">
                 {{ config.propertyDisplayName }}
                 <template v-if="config.type">({{ config.type | caseConversion }})</template>

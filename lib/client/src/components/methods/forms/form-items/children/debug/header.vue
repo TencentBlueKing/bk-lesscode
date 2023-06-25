@@ -4,7 +4,8 @@
             v-for="panel in panels"
             v-bk-tooltips="{
                 content: panel.tips,
-                disabled: !panel.tips
+                disabled: !panel.tips,
+                maxWidth: 400
             }"
             :class="{
                 'debug-header': true,
@@ -87,11 +88,11 @@
     }
     .en-debug-headers{
         .debug-header {
-            width: 130px;
+            width: 150px;
         }
         .active {
             &::before {
-                width: 130px;
+                width: 150px;
             }
         }
     }

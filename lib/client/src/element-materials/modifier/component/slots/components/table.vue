@@ -72,7 +72,8 @@
                                             content: `1. ${$t('请勾选列模板中使用到的函数管理中的函数')}
                                                       2. ${$t('未使用函数则无须勾选')}
                                                       3. ${$t('注意：此处系统显示函数标识')}`,
-                                            allowHtml: true
+                                            allowHtml: true,
+                                            maxWidth: 400
                                         }">
                                         {{$t('模板绑定函数')}}
                                     </span>
@@ -167,7 +168,7 @@
                                     class="bk-icon icon-info"
                                     v-bk-tooltips="{
                                         content: $t('当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【sort-change】事件中处理排序逻辑。其它情况系统会自动处理'),
-                                        width: '400'
+                                        maxWidth: '400'
                                     }"
                                 ></i>
                             </bk-checkbox>
@@ -179,7 +180,7 @@
                                     class="bk-icon icon-info"
                                     v-bk-tooltips="{
                                         content: $t('当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【filter-change】事件中处理过滤逻辑。其它情况系统会自动处理'),
-                                        width: '400'
+                                        maxWidth: '400'
                                     }"
                                 ></i>
                             </bk-checkbox>

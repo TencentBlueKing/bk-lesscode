@@ -1,5 +1,5 @@
 <template>
-    <lc-form :label-width="110" :model="copyForm" ref="funcForm" :form-type="formType" v-if="copyForm.funcType === 1">
+    <lc-form :label-width="200" :model="copyForm" ref="funcForm" :form-type="formType" v-if="copyForm.funcType === 1">
         <lc-form-item property="withToken" class="token-item">
             <bk-checkbox :true-value="1"
                 :false-value="0"

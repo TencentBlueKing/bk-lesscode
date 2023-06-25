@@ -12,7 +12,7 @@
         <span slot="header" style="display: flex;align-items: center;">
             {{ createDialogTitle }}
             <i class="bk-icon icon-info-circle" style="font-size: 14px;margin-left: 2px;"
-                v-bk-tooltips.top="{ content: $t('创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块') }">
+                v-bk-tooltips.top="{ content: $t('创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块'), maxWidth: 400 }">
             </i>
         </span>
         <!-- 表单组件，根据projectType来判断是创建空白应用还是导入应用，还是从已有模板选择 -->
@@ -140,88 +140,10 @@
     }
 </script>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
     .project-create-dialog {
-        .layout-desc {
-            font-size: 12px;
-            color: #979BA5;
-        }
-        .layout-list {
-            display: flex;
-            margin-left: 10px;
-            .list-item {
-                position: relative;
-                width: 158px;
-                height: 120px;
-                background: #ffffff;
-                border-radius: 2px;
-                &:hover {
-                    .default-setting {
-                        display: block;
-                    }
-                }
-                .default-span {
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                    border-radius: 2px;
-                    font-size: 12px;
-                    padding: 0 5px;
-                }
-                .default-checked {
-                    cursor: default;
-                    color: #fff;
-                    background: #FFB848;
-                }
-                .default-setting {
-                    display: none;
-                    background: #e1ecff;
-                    color: #3a84ff;
-                    cursor: pointer;
-                }
-                .checked-icon-div {
-                    position: absolute;
-                    right: 0;
-                    bottom: 0;
-                    width: 34px;
-                    height: 32px;
-                    background: linear-gradient(135deg,transparent 50%,#3a84ff 50%);
-                    border-radius: 0px 2px 0px;
-                    text-align: right;
-                    .checked-icon {
-                        display: block;
-                        color: #fff;
-                        font-size: 20px;
-                        margin: 12px 0 0 12px;
-                    }
-                }
-            }
-            .layout-empty-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #979ba5;
-                font-size: 12px;
-                border: 1px solid #c4c6cc;
-                cursor: default;
-            }
-            .layout-item {
-                cursor: pointer;
-                border: 1px solid #dcdee5;
-                margin-left: 12px;
-                .layout-img {
-                    margin: 6px 6px 0;
-                    img {
-                        width: 146px;
-                        height: 88px;
-                    }
-                }
-                .layout-info {
-                    text-align: center;
-                    font-size: 12px;
-                    color: #63656e;
-                }
-            }
+        .bk-dialog-header {
+            padding-bottom: 10px;
         }
     }
 </style>
