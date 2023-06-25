@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <style-layout :title="$t('文字')">
+    <style-layout :title="$t('字体')">
         <section style="display: flex; justify-content: space-between;flex-wrap: wrap;">
             <icon-size-input
                 v-if="handleHasKey('fontFamily')"
@@ -93,7 +93,7 @@
                 <bk-option id="ellipsis" name="ellipsis" v-bk-tooltips="getTooltipsConfig($t('使用一个省略号来表示溢出文本'))" />
             </bk-select>
         </style-item>
-        <style-item name="Word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
+        <style-item name="word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
             <bk-select
                 :value="renderValueMap.wordBreak"
                 font-size="medium"
@@ -105,7 +105,7 @@
                 <bk-option id="keep-all" name="keep-all" v-bk-tooltips="getTooltipsConfig($t('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal'))" />
             </bk-select>
         </style-item>
-        <style-item name="Word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
+        <style-item name="word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
             <bk-select
                 :value="renderValueMap.wordWrap"
                 font-size="medium"
@@ -116,7 +116,7 @@
                 <bk-option id="break-word" name="break-word" v-bk-tooltips="getTooltipsConfig($t('长单词内部换行'))" />
             </bk-select>
         </style-item>
-        <style-item name="White-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
+        <style-item name="white-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
             <bk-select
                 :value="renderValueMap.whiteSpace"
                 font-size="medium"
@@ -217,7 +217,7 @@
                     fontFamily: {
                         type: 'select',
                         icon: 'bk-drag-ziti',
-                        tips: window.i18n.t('字体'),
+                        tips: window.i18n.t('style_字体'),
                         payload: {},
                         options: [
                             { id: 'inherit', name: window.i18n.t('默认') },
@@ -225,10 +225,10 @@
                             { id: 'PingFang SC, sans-serif', name: window.i18n.t('苹方') },
                             { id: 'Heiti SC, san-serif', name: window.i18n.t('黑体') },
                             { id: 'Hiragino Sans GB san-serif', name: window.i18n.t('冬青黑体') },
-                            { id: 'Noto Sans, san-serif', name: '思源黑体' },
+                            { id: 'Noto Sans, san-serif', name: window.i18n.t('思源黑体') },
                             { id: 'Songti SC, sans-serif', name: window.i18n.t('宋体') },
-                            { id: 'KaiTi, san-serif', name: '楷体' },
-                            { id: 'WenQuanYi Micro Hei, san-serif', name: '文泉驿微米黑' },
+                            { id: 'KaiTi, san-serif', name: window.i18n.t('楷体') },
+                            { id: 'WenQuanYi Micro Hei, san-serif', name: window.i18n.t('文泉驿微米黑') },
                             { id: 'Arial, sans-serif', name: 'Arial' },
                             { id: 'Monospace, sans-serif', name: 'Monospace' },
                             { id: 'Apple Color Emoji san-serif', name: 'Apple Color Emoji' },
@@ -247,15 +247,15 @@
                     },
                     fontSize: {
                         icon: 'bk-drag-zitidaxiao',
-                        tips: '字号'
+                        tips: window.i18n.t('字号')
                     },
                     fontWeight: {
                         type: 'select',
                         icon: 'bk-drag-zizhong',
-                        tips: '字重',
+                        tips: window.i18n.t('字重'),
                         payload: {},
                         options: [
-                            { id: 'inherit', name: '默认' },
+                            { id: 'inherit', name: window.i18n.t('默认') },
                             { id: 'normal', name: 'normal' },
                             { id: 'lighter', name: 'lighter' },
                             { id: 'bolder', name: 'bolder' },
@@ -273,34 +273,34 @@
                     },
                     letterSpacing: {
                         icon: 'bk-drag-zijianju',
-                        tips: '字间距'
+                        tips: window.i18n.t('字间距')
                     },
                     wordSpacing: {
                         icon: 'bk-drag-dancijianju',
-                        tips: '词间距'
+                        tips: window.i18n.t('词间距')
                     },
                     textIndent: {
                         icon: 'bk-drag-suojin',
-                        tips: window.i18n.t('缩进')
+                        tips: window.i18n.t('style_缩进')
                     }
                 },
                 fontStyleList: [
                     {
                         id: 'normal',
                         icon: 'bk-drag-icon bk-drag-morenziti',
-                        tips: '默认（非斜体）'
+                        tips: window.i18n.t('默认（非斜体）')
                     },
                     {
                         id: 'italic',
                         icon: 'bk-drag-icon bk-drag-xieti',
-                        tips: '斜体'
+                        tips: window.i18n.t('style_斜体')
                     }
                 ],
                 textDecorationList: [
                     {
                         id: 'none',
                         icon: 'bk-drag-icon bk-drag-zitiyangshi',
-                        tips: '无修饰线'
+                        tips: window.i18n.t('无修饰线')
                     },
                     {
                         id: 'underline',
@@ -322,17 +322,17 @@
                     {
                         id: 'left',
                         icon: 'bk-drag-icon bk-drag-zuoduiqi-2',
-                        tips: window.i18n.t('左对齐')
+                        tips: window.i18n.t('style_左对齐')
                     },
                     {
                         id: 'center',
                         icon: 'bk-drag-icon bk-drag-juzhongduiqi',
-                        tips: window.i18n.t('居中对齐')
+                        tips: window.i18n.t('style_居中对齐')
                     },
                     {
                         id: 'right',
                         icon: 'bk-drag-icon bk-drag-youduiqi-2',
-                        tips: window.i18n.t('右对齐')
+                        tips: window.i18n.t('style_右对齐')
                     }
                 ]
             }
