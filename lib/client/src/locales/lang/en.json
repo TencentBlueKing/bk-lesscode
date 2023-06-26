@@ -1278,6 +1278,7 @@
   "新增一行": "Add a Grid",
   "清空画布": "Clear Canvas",
   "确定清空画布": "Are you sure you want to clear the canvas?",
+  "请先选中布局或组件作为粘贴放置位置": "Please select a container or component first",
   "粘贴": "Paste",
   "警告": "Alert",
   "垂直居中": "Vertical Center",
