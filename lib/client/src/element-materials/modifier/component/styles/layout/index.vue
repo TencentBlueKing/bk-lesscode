@@ -143,10 +143,13 @@
             }
             .operate-icon {
                 position: absolute;
-                right: 2px;
+                right: 0px;
+                padding: 4px;
                 color: #979BA5;
+                border-radius: 2px;
                 font-size: 14px;
-                :hover {
+                &:hover {
+                    background-color: #F0F5FF;
                     color: #3a84ff;
                 }
             }
