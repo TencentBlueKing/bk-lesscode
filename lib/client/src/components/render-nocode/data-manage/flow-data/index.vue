@@ -91,6 +91,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
             .bk-form-item {
                 flex: 1;
                 margin: 0 8px;
