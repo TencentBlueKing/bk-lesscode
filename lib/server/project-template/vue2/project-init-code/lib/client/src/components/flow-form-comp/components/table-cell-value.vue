@@ -14,8 +14,7 @@
                     v-bk-tooltips="{
                         content: transValToTagArray(value[field.key]).map(i => i.name).join(','),
                         placements: ['top'],
-                        extCls: 'custom-tooltip',
-                        maxWidth: 400
+                        extCls: 'custom-tooltip'
                     }"
                     :style="{ 'background-color': tag.color }">
                     {{tag.name}}
