@@ -238,4 +238,10 @@
         width:6px;
         height:6px;
     }
+
+    .header-small-padding-dialog {
+        .bk-dialog-header {
+            padding-bottom: 6px;
+        }
+    }
 </style>
