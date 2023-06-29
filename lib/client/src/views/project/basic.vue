@@ -34,6 +34,7 @@
             width="600"
             :mask-close="false"
             :auto-close="false"
+            ext-cls="header-small-padding-dialog"
             header-position="left">
             <bk-form ref="editForm" :label-width="200" form-type="vertical" :rules="dialog.edit.formRules" :model="dialog.edit.formData">
                 <bk-form-item :label="$t('form_应用名称')" required property="projectName">

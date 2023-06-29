@@ -178,7 +178,7 @@
                     templateName: template.templateName,
                     isOffcial: template.isOffcial,
                     offcialType: template.offcialType,
-                    previewImg: template?.previewImg.startsWith('http:') ? template.previewImg : ''
+                    previewImg: template?.previewImg.startsWith('http') ? template.previewImg : ''
                 }
             },
             async handleImport () {

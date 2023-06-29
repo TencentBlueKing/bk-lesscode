@@ -159,7 +159,7 @@
         },
         created () {
             this.fetchData()
-            const isProd = window.BKPAAS_ENVIRONMENT === 'prod'
+            const isProd = process.env.BK_LESSCODE_ENVIRONMENT === 'prod'
             this.tnpmPrefix = isProd ? '' : 'test-'
         },
         methods: {

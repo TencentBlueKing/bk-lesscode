@@ -11,7 +11,7 @@
 4. 参照开发文档进行组件开发和构建
 ```
 
-### 自定义组件工程文件结构
+### 自定义组件工程文件结构 [代码库地址](https://github.com/TencentBlueKing/lesscode-custom-components)
 
 下载开发框架: [Vue2](/static/bk-lesscode-component-vue2.zip) [Vue3](/static/bk-lesscode-component-vue3.zip)
 

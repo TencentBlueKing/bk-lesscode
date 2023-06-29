@@ -246,7 +246,7 @@
             padding: 0 24px 24px;
         }
         .bk-dialog-header {
-            padding-bottom: 10px;
+            padding-bottom: 6px;
         }
     }
 </style>

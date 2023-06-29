@@ -32,7 +32,7 @@
             }
 
             const projectId = route.params.projectId
-            const pagePath = route.query.pagePath || '/mobile'
+            const pagePath = route.query.pagePath || ''
             const versionId = route.query.version
 
             let pathStr = `${versionId ? `/version/${versionId}` : ''}`
