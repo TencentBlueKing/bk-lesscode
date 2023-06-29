@@ -132,7 +132,9 @@
         .navigation-container {
             max-width: 100% !important;
             .container-content {
-                height: 100% !important;
+                max-height: calc(100vh - 187px) !important;
+                min-height: calc(100vh - 187px) !important;
+                height: calc(100vh - 187px) !important;
                 overflow: auto !important;
                 @mixin scroller;
             }
