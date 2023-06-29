@@ -76,7 +76,7 @@
         },
         data () {
             return {
-                ticketStatus: TICKET_STATUS,
+                ticketStatus: TICKET_STATUS(),
                 filterData: this.getURLQuery(),
                 ticketList: [],
                 ticketListLoading: false,
@@ -125,7 +125,7 @@
                 })
                 const res = await this.$http.post('/nocode/v2/itsm/get_tickets/', params)
                 this.ticketList = res.data.items.map(ticket => {
-                    const statusConfig = TICKET_STATUS.find(item => ticket.current_status === item.key)
+                    const statusConfig = TICKET_STATUS().find(item => ticket.current_status === item.key)
                     ticket.status_name = statusConfig?.name || ticket.current_status
                     ticket.color = statusConfig?.color || '#63656e'
                     ticket.backgroundColor = statusConfig?.backgroundColor || 'transparent'
