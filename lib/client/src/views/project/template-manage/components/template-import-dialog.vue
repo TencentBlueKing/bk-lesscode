@@ -8,7 +8,7 @@
             :mask-close="false"
             :auto-close="false"
             header-position="left"
-            ext-cls="template-import-dialog"
+            ext-cls="template-import-dialog header-small-padding-dialog"
         >
             <bk-form ref="pageTemplateFrom" class="import-dialog-form" form-type="vertical" :label-width="300" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('form_导入模板json')" required property="templateName" error-display-type="normal">

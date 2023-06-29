@@ -51,9 +51,9 @@
                 return this.$route.params.projectId
             }
         },
-        created () {
+        async created () {
             if (!this.iconList.length) {
-                this.$store.dispatch('iconManage/list', {
+                await this.$store.dispatch('iconManage/list', {
                     belongProjectId: this.projectId
                 })
             }
