@@ -1,5 +1,5 @@
 <template>
-    <bk-button v-if="showRaw" v-bind="$attrs" v-on="$listeners">
+    <bk-button v-if="showRaw" v-bind="$attrs">
         <slot />
     </bk-button>
     <bk-button
