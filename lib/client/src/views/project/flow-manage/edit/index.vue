@@ -102,7 +102,7 @@
             })
         },
         beforeRouteLeave (to, from, next) {
-            if (this.flowConfig.deployed || this.allowExitRoute) {
+            if (this.flowConfig.deployed || this.allowExitRoute  || to.name === 'createTicketPageEdit') {
                 next()
                 return
             }
