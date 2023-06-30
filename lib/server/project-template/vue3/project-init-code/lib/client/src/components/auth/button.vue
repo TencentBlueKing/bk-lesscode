@@ -32,7 +32,7 @@
             // 不传: 直接发请求鉴权
             permission: {
                 type: [
-                    Boolean, String
+                    String, Boolean
                 ],
                 default: ''
             },
