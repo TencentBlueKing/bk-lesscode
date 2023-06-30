@@ -72,8 +72,8 @@
             }
         },
         created () {
-            this.applyText = this.$t('去申请')
-            this.appliedText = this.$t('已申请')
+            this.applyText = window.i18n?.t('去申请') || '去申请'
+            this.appliedText =  window.i18n?.t('已申请') || '已申请'
         },
         methods: {
             /**
