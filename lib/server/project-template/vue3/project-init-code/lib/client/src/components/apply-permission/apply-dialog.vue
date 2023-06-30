@@ -48,7 +48,8 @@
             return {
                 isLoading: false,
                 isShowDialog: false,
-                isAppleFlag: true
+                isAppleFlag: true,
+                authData: this.authResult
             }
         },
         computed: {
@@ -56,8 +57,8 @@
                 if (this.isLoading) {
                     return []
                 }
-                if (this.authResult.requiredPermissions) {
-                    return this.authResult.requiredPermissions
+                if (this.authData.requiredPermissions) {
+                    return this.authData.requiredPermissions
                 }
                 return []
             }
@@ -78,7 +79,7 @@
                         data: this.authParams
                     })
                     this.hasPermission = resData.pass
-                    this.authResult = resData
+                    this.authData = resData
                 } catch (e) {
                     console.error(e)
                 } finally {
