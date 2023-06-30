@@ -2,6 +2,7 @@
     <bk-dialog
         v-model:is-show="isShowDialog"
         class="apply-permission-dialog"
+        title=""
         :mask-close="false"
         :esc-close="false"
         :width="768">
@@ -48,8 +49,7 @@
             return {
                 isLoading: false,
                 isShowDialog: false,
-                isAppleFlag: true,
-                authData: this.authResult
+                isAppleFlag: true
             }
         },
         computed: {
@@ -57,8 +57,8 @@
                 if (this.isLoading) {
                     return []
                 }
-                if (this.authData.requiredPermissions) {
-                    return this.authData.requiredPermissions
+                if (this.authResult.requiredPermissions) {
+                    return this.authResult.requiredPermissions
                 }
                 return []
             }
@@ -79,7 +79,7 @@
                         data: this.authParams
                     })
                     this.hasPermission = resData.pass
-                    this.authData = resData
+                    this.authResult = resData
                 } catch (e) {
                     console.error(e)
                 } finally {
