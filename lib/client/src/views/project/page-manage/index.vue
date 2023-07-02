@@ -93,7 +93,7 @@
     import SelectTab from '@/components/ui/select-tab'
     import GroupBox from '@/components/ui/group'
     import SearchBox from '@/views/index/components/material-panel/components/common/search-box'
-    import { defineComponent, ref, onBeforeMount } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onBeforeMount } from '@vue/composition-api'
     import usePageOperation from './children/use-page-operation'
     import store from '@/store'
     import router from '@/router'
@@ -114,8 +114,9 @@
 
             const projectId = router?.currentRoute?.params?.projectId
             const versionId = store.getters['projectVersion/currentVersionId']
-            const projectDetail = store.getters['project/projectDetail']
             const params = { projectId: projectId, versionId }
+
+            const projectDetail = computed(() => store.getters['project/projectDetail'])
 
             const isLoading = ref(false)
             const hasMobilePage = ref(true)

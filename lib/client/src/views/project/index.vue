@@ -284,7 +284,7 @@
                 })
             },
             async setCurrentProject () {
-                const project = this.projectList.find(item => item.id === this.projectId)
+                const project = this.projectList.find(item => item.id === parseInt(this.projectId))
                 this.$store.commit('project/setCurrentProject', project)
                 this.curProject = Object.assign({}, project)
             },
