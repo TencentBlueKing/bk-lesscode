@@ -15,7 +15,7 @@
                     :label="resourceText">
                     <template #default="{ row }">
                         <div class="resource-content">
-                            <template v-if="row.relatedResources.length > 0">
+                            <template v-if="row?.relatedResources?.length > 0">
                                 <p v-for="(resource, index) in row.relatedResources" :key="index">
                                     <span>{{ resource.resourceTypeName }}</span>：
                                     <span>{{ resource.resourceName }}</span>

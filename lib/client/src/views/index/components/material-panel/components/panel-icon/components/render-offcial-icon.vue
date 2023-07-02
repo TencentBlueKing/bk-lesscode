@@ -17,10 +17,12 @@
     </div>
 </template>
 <script>
-    import iconComponentList from '@/element-materials/materials/vue2/icon-list.js'
+    import vue2IconComponentList from '@/element-materials/materials/vue2/icon-list.js'
+    import vue3IconComponentList from '@/element-materials/materials/vue3/icon-list.js'
     import GroupBox from '../../common/group-box'
     import SearchBox from '../../common/search-box'
     import RenderIcon from '../../common/group-box/render-icon'
+    import LC from '@/element-materials/core'
 
     export default {
         name: '',
@@ -44,6 +46,9 @@
                 '线性图标': []
             }
             const searchList = []
+            const iconComponentList = LC.getFramework() === 'vue3'
+                ? vue3IconComponentList
+                : vue2IconComponentList
             iconComponentList.forEach(icon => {
                 groupIconMap[icon.group].push(icon)
                 searchList.push(icon)
