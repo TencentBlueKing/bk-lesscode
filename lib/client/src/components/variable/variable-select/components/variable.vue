@@ -70,7 +70,7 @@
                 <bk-table-column
                     :label="$t('table_初始类型')"
                     show-overflow-tooltip
-                    width="100">
+                    width="90">
                     <template slot-scope="props">
                         <span>{{ getVariableTypeText(props.row) }}</span>
                     </template>
@@ -96,7 +96,14 @@
                         </span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('操作')" width="60">
+                <bk-table-column :label="$t('引用')" width="70" show-overflow-tooltip>
+                    <template slot-scope="props">
+                        <span v-bk-tooltips.light="{ content: getUseInfoTips(props.row.useRecord).join('<br>'), disabled: !getUseInfoTips(props.row.useRecord).length, maxWidth: 400 }" class="table-btn">
+                            {{ getUseInfoTips(props.row.useRecord).length }}
+                        </span>
+                    </template>
+                </bk-table-column>
+                <bk-table-column :label="$t('操作')" width="100">
                     <template slot-scope="props">
                         <span>
                             <bk-button
@@ -105,6 +112,12 @@
                             >
                                 {{ $t('编辑') }} </bk-button>
                         </span>
+
+                        <span @click.stop="showDeleteVariable(props.row)"
+                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400 }"
+                            :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
+                            style="margin-left: 6px;"
+                        >{{ $t('删除') }}</span>
                     </template>
                 </bk-table-column>
             </bk-table>
@@ -132,6 +145,24 @@
                 ref="example"
                 :data="remoteConfig" />
         </div>
+        <bk-dialog v-model="deleteObj.visible"
+            render-directive="if"
+            theme="primary"
+            ext-cls="delete-dialog-wrapper"
+            :title="$t('删除变量')"
+            width="400"
+            footer-position="center"
+            :mask-close="false"
+            :auto-close="false">
+            {{ $t('确定删除变量【{0}】', [deleteObj.code]) }}<div class="dialog-footer" slot="footer">
+                <bk-button
+                    theme="danger"
+                    :loading="deleteObj.loading"
+                    @click="requestDeleteVariable(deleteObj.id)"
+                >{{ $t('删除') }}</bk-button>
+                <bk-button @click="handleDeleteCancel" :disabled="deleteObj.loading">{{ $t('取消') }}</bk-button>
+            </div>
+        </bk-dialog>
         <variable-form
             :is-show.sync="variableFormData.isShow"
             :form-data="variableFormData.formData"
@@ -143,7 +174,7 @@
 </template>
 <script>
     import _ from 'lodash'
-    import { mapGetters } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
     import remoteExample from '@/element-materials/modifier/component/props/components/strategy/remote-example'
     import { VARIABLE_TYPE, VARIABLE_VALUE_TYPE } from 'shared/variable/index.js'
     import VariableForm from '@/components/variable/variable-form/index.vue'
@@ -182,6 +213,11 @@
                     isShow: false,
                     formData: {}
                 },
+                deleteObj: {
+                    visible: false,
+                    code: '',
+                    loading: false
+                },
                 customVariableMap: {}
             }
         },
@@ -206,9 +242,11 @@
                         useInfo.disabled = true
                         useInfo.tips = this.$t('该变量使用在组件【ID：{0}】的【{1}】的自定义变量中，不可重复使用', [customVariableInfo.componentId, customVariableInfo.key])
                     }
+                    const useRecord = variable.useInfo
                     return {
                         ...variable,
-                        useInfo
+                        useInfo,
+                        useRecord
                     }
                 })
             }
@@ -225,7 +263,7 @@
             }
             this.htmlConfig = {
                 allowHtml: true,
-                width: 744,
+                width: 850,
                 trigger: 'click',
                 theme: 'light',
                 content: '.variable-list',
@@ -241,6 +279,7 @@
             }
         },
         methods: {
+            ...mapActions('variable', ['deleteVariable', 'getAllVariable']),
             // 获取已使用的自定义变量 map
             getVariableList () {
                 const recTree = node => {
@@ -300,7 +339,7 @@
                     0: '本应用',
                     1: '本页面'
                 }
-                return rangeMap[effectiveRange]
+                return window.i18n.t(rangeMap[effectiveRange])
             },
             /**
              * @desc 变量列表行样式
@@ -408,6 +447,72 @@
                     code: '',
                     renderValue: this.formData.renderValue
                 })
+            },
+            showDeleteVariable (row) {
+                const isDisable = this.getDeleteStatus(row)
+                this.$refs.tooltipsHtml._tippy.hide()
+                if (isDisable) return
+                this.deleteObj.id = row.id
+                this.deleteObj.code = row.variableCode
+                this.deleteObj.visible = true
+            },
+            requestDeleteVariable (id) {
+                this.deleteObj.loading = true
+                this.deleteVariable(id).then(() => {
+                    this.$bkMessage({ theme: 'success', message: window.i18n.t('删除成功') })
+                }).catch((err) => {
+                    this.$bkMessage({ theme: 'error', message: err.message || err })
+                }).finally(() => {
+                    this.deleteObj.loading = false
+                    this.deleteObj.visible = false
+                })
+            },
+            handleDeleteCancel () {
+                this.deleteObj.visible = false
+            },
+            getDeleteStatus (row) {
+                let tip = ''
+                if (this.getUseInfoTips(row.useRecord).length > 0) tip = this.$t('该变量被引用，无法删除')
+                if (this.simpleDisplay && row.effectiveRange === 0) tip = this.$t('应用级变量，请到变量管理进行删除')
+                return tip
+            },
+
+            getUseInfoTips (useInfo) {
+                const tips = [];
+                (useInfo || []).forEach((item) => {
+                    const { pageCode, funcCode, type, useInfo, parentVariableId } = item
+                    switch (type) {
+                        case 'func':
+                            tips.push(this.$t('函数【{0}】', [funcCode]))
+                            break
+                        case 'var':
+                            const variable = this.projectVariableList.find((variable) => (variable.id === parentVariableId)) || {}
+                            tips.push(this.$t('变量【{0}】', [variable.variableCode]))
+                            break
+                        default:
+                            (useInfo || []).forEach((detail) => {
+                                if (detail.type === 'v-bind') {
+                                    const modifiers = (detail.modifiers || []).join('.')
+                                    const modifierStr = modifiers ? '，' + this.$t('修饰符为{0}', [modifiers]) : ''
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】属性{3}', [pageCode, detail.componentId, detail.prop, modifierStr]))
+                                } else if (detail.source === 'prop') {
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】属性', [pageCode, detail.componentId, detail.key]))
+                                } else if (detail.source === 'slot') {
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】插槽', [pageCode, detail.componentId, detail.key]))
+                                } else if (detail.type === 'slots') {
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】插槽', [pageCode, detail.componentId, detail.slot]))
+                                } else if (detail.source === 'lifecycle') {
+                                    tips.push(this.$t('页面【{0}】的【{1}】的生命周期', [pageCode, detail.key]))
+                                } else if (detail.source === 'event') {
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】事件', [pageCode, detail.componentId, detail.key]))
+                                } else {
+                                    tips.push(this.$t('页面【{0}】内组件【{1}】的【{2}】指令', [pageCode, detail.componentId, (detail.type || detail.source)]))
+                                }
+                            })
+                            break
+                    }
+                })
+                return tips
             }
         }
     }
@@ -542,6 +647,10 @@
         .table-btn {
             color: #3a84ff;
             cursor: pointer;
+            &.disable {
+                cursor: not-allowed;
+                color: #dcdee5;
+            }
         }
    }
    .remote-example {
