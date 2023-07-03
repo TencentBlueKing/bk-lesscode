@@ -20,7 +20,7 @@
     &[align-horizontal-center],
     &[align-horizontal-right],
     &[align-horizontal-space-between]{
-        & > div{
+        & > div > div{
             display: flex !important;
             align-items: flex-start;
             flex-wrap: wrap;
@@ -31,29 +31,29 @@
 
     }
     &[align-horizontal-left]{
-        & > div{
+        & > div > div{
             justify-content: flex-start;
         }
     }
     &[align-horizontal-center]{
-        & > div{
+        & > div > div{
             justify-content: center;
         }
     }
     &[align-horizontal-right]{
-        & > div{
+        & > div > div{
             justify-content: flex-end;
         }
     }
     &[align-horizontal-space-between]{
-        & > div{
+        & > div > div{
             justify-content: space-between;
         }
     }
     &[align-vertical-top],
     &[align-vertical-center],
     &[align-vertical-bottom]{
-        & > div{
+        & > div > div{
             display: flex !important;
             flex-wrap: wrap;
             & > * {
@@ -63,17 +63,17 @@
 
     }
     &[align-vertical-top]{
-        & > div{
+        & > div > div{
             align-items: flex-start;
         }
     }
     &[align-vertical-center]{
-        & > div{
+        & > div > div{
             align-items: center;
         }
     }
     &[align-vertical-bottom]{
-        & > div{
+        & > div > div{
             align-items: flex-end;
         }
     }
