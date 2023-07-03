@@ -14,7 +14,6 @@
         <div class="size-container">
             <template v-for="item in sizeConfigRender">
                 <size-input
-                    v-if="!isInline"
                     :key="item.key"
                     :value="item.value"
                     :item="item"
@@ -111,12 +110,6 @@
                 sizeConfigRender: []
             }
         },
-        computed: {
-            isInline () {
-                const display = this.sizeConfigRender.filter(item => item.key === 'display')
-                return display.length && display[0].value === 'inline'
-            }
-        },
         watch: {
             value: {
                 handler (value) {
@@ -148,7 +141,12 @@
                 this.change(key, value)
             },
             handleInputChange (item, val) {
-                const newValue = val === '' ? '' : val + item.unit
+                let newValue = ''
+                if (item.key !== 'display') {
+                    newValue = newValue = val === '' ? '' : val + item.unit
+                } else {
+                    newValue = val
+                }
                 item.value = val
                 
                 this.triggerChange(item.key, newValue)
@@ -159,19 +157,6 @@
                     item.value = Math.min(item.value, unit === '%' ? 100 : item.value)
                     this.triggerChange(item.key, item.value + unit)
                 }
-            },
-            handleDisplayChange (item, val) {
-                item.value = val
-                if (val === 'inline') {
-                    const that = this
-                    this.sizeConfigRender.forEach(function (item) {
-                        if (item.key !== 'display') {
-                            item.value = ''
-                            that.handleInputChange(item, '')
-                        }
-                    })
-                }
-                this.triggerChange('display', val)
             }
         }
     }

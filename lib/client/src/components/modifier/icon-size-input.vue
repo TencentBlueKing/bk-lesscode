@@ -103,7 +103,7 @@
                     return
                 }
                 this.isError = false
-                this.$emit('change', Number(val))
+                this.$emit('change', val)
             },
 
             handleSelectChange (val) {
