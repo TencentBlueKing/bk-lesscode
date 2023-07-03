@@ -1,6 +1,9 @@
 <template>
     <transition name="fade">
-        <article class="function-home" v-if="show">
+        <article
+            id="lesscodeEditFunctionDialog"
+            class="function-home"
+            v-if="show">
             <bk-resize-layout
                 class="function-main method-layout"
                 v-bkloading="{ isLoading }"

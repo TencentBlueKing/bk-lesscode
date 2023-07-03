@@ -154,6 +154,10 @@
                     return
                 }
 
+                // 函数管理弹框
+                if (document.querySelector('#lesscodeEditFunctionDialog')) {
+                    return
+                }
                 // 右侧样式面板自定义样式弹框
                 if (document.querySelector('#materialsModifierCustomStyle')) {
                     return
