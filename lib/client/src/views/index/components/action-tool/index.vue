@@ -4,7 +4,7 @@
         <clear-canvas />
         <code-and-json />
         <show-function />
-        <!-- <show-variable /> -->
+        <show-variable />
         <quick-operation />
         <canvas-guide />
         <ai v-if="isAiAvailable" />
@@ -17,7 +17,7 @@
     import ClearCanvas from './components/clear-canvas'
     import CodeAndJson from './components/code-and-json'
     import ShowFunction from './components/show-function'
-    // import ShowVariable from './components/show-variable'
+    import ShowVariable from './components/show-variable'
     import QuickOperation from './components/quick-operation'
     import CanvasGuide from './components/canvas-guide'
     import Ai from './components/ai.vue'
@@ -28,7 +28,7 @@
             ClearCanvas,
             CodeAndJson,
             ShowFunction,
-            // ShowVariable,
+            ShowVariable,
             QuickOperation,
             CanvasGuide,
             Ai
