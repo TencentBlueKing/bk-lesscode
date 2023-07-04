@@ -454,7 +454,8 @@
                 this.$refs.setTemplateDialog.projectId = project.id
                 this.$refs.setTemplateDialog.formData = {
                     isOffcial: project.isOffcial,
-                    offcialType: project.offcialType
+                    offcialType: project.offcialType,
+                    templateImg: project?.templateImg?.startsWith('http') ? project.templateImg : ''
                 }
             },
             async handleRename (project) {

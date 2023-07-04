@@ -8,7 +8,7 @@
             :mask-close="false"
             :auto-close="false"
             header-position="left"
-            ext-cls="template-edit-dialog"
+            ext-cls="template-edit-dialog header-small-padding-dialog"
         >
             <bk-form ref="pageTemplateFrom" class="dialog-form" form-type="vertical" :label-width="300" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('form_模板名称')" required property="templateName" error-display-type="normal">

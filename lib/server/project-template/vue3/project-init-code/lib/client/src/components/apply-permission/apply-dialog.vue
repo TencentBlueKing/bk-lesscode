@@ -1,7 +1,8 @@
 <template>
     <bk-dialog
-        v-model="isShowDialog"
+        v-model:is-show="isShowDialog"
         class="apply-permission-dialog"
+        title=""
         :mask-close="false"
         :esc-close="false"
         :width="768">

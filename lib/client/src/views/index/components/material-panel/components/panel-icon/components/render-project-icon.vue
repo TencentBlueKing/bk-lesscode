@@ -10,7 +10,7 @@
         </template>
         <template v-else>
             <search-box
-            :placeholder="$t('图标名称')"
+                :placeholder="$t('图标名称')"
                 :list="searchList"
                 @on-change="handleSearchChange" />
             <group-box
@@ -51,9 +51,9 @@
                 return this.$route.params.projectId
             }
         },
-        created () {
+        async created () {
             if (!this.iconList.length) {
-                this.$store.dispatch('iconManage/list', {
+                await this.$store.dispatch('iconManage/list', {
                     belongProjectId: this.projectId
                 })
             }
@@ -91,7 +91,6 @@
             }
             
             this.groupIconMap = Object.freeze(groupIconMap)
-            console.log(this.groupIconMap, 223889)
             this.renderGroupIconMap = Object.freeze(groupIconMap)
             this.searchList = Object.freeze(searchList)
         },

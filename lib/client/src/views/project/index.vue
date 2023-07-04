@@ -175,7 +175,6 @@
         },
         async created () {
             try {
-                this.navList = getProjectNavList()
                 this.pageLoading = true
                 this.updateCurrentVersion(this.getInitialVersion())
                 bus.$on('update-project-version', this.updateCurrentVersion)
@@ -193,37 +192,7 @@
                 this.projectId = parseInt(this.$route.params.projectId)
                 await this.updateProjectInfo()
 
-                // 在 setCurrentProject 请求之后再赋值，因为 setCurrentProject 请求会给 curProject 设置 canXXXX 等操作的属性
-                const dealPermission = (item) => {
-                    if (item.iamAction === this.$IAM_ACTION.develop_app[0]) {
-                        item.permission = this.curProject.canDevelop
-                    }
-                    if (item.iamAction === this.$IAM_ACTION.deploy_app[0]) {
-                        item.permission = this.curProject.canDeploy
-                    }
-                    if (item.iamAction === this.$IAM_ACTION.manage_perms_in_app[0]) {
-                        item.permission = this.curProject.canManagePerms
-                    }
-                    if (item.iamAction === this.$IAM_ACTION.manage_app[0]) {
-                        item.permission = this.curProject.canManage
-                    }
-                }
-                const navList = []
-                navList.splice(0, 0, ...this.navList)
-
-                if (!IAM_ENABLE) {
-                    navList.splice(6, 1)
-                }
-
-                navList.forEach(item => {
-                    dealPermission(item)
-                    if (item.children) {
-                        item.children.forEach(child => {
-                            dealPermission(child)
-                        })
-                    }
-                })
-                this.navList.splice(0, this.navList.length, ...navList)
+                this.setNavList()
             } catch (e) {
                 console.error(e)
             } finally {
@@ -250,6 +219,44 @@
             async updateProjectInfo () {
                 await this.getProjectList()
                 await this.setCurrentProject()
+            },
+            setNavList () {
+                this.navList = getProjectNavList()
+                // 在 setCurrentProject 请求之后再赋值，因为 setCurrentProject 请求会给 curProject 设置 canXXXX 等操作的属性
+                const dealPermission = (item) => {
+                    if (item.iamAction === this.$IAM_ACTION.develop_app[0]) {
+                        item.permission = this.curProject.canDevelop
+                    }
+                    if (item.iamAction === this.$IAM_ACTION.deploy_app[0]) {
+                        item.permission = this.curProject.canDeploy
+                    }
+                    if (item.iamAction === this.$IAM_ACTION.manage_perms_in_app[0]) {
+                        item.permission = this.curProject.canManagePerms
+                    }
+                    if (item.iamAction === this.$IAM_ACTION.manage_app[0]) {
+                        item.permission = this.curProject.canManage
+                    }
+                }
+                let navList = []
+                navList.splice(0, 0, ...this.navList)
+
+                // 如果未开启权限， 不展示权限管理
+                if (!IAM_ENABLE) {
+                    navList = navList.filter(item => item.url !== 'authManage')
+                }
+                if (this.curProject?.framework === 'vue3') {
+                    navList = navList.filter(item => item.url !== 'flowList')
+                }
+
+                navList.forEach(item => {
+                    dealPermission(item)
+                    if (item.children) {
+                        item.children.forEach(child => {
+                            dealPermission(child)
+                        })
+                    }
+                })
+                this.navList.splice(0, this.navList.length, ...navList)
             },
             setDefaultActive () {
                 let name = this.$route.name
@@ -284,9 +291,10 @@
                 })
             },
             async setCurrentProject () {
-                const project = this.projectList.find(item => item.id === this.projectId)
+                const project = this.projectList.find(item => item.id === parseInt(this.projectId))
                 this.$store.commit('project/setCurrentProject', project)
                 this.curProject = Object.assign({}, project)
+                this.setNavList()
             },
             updateCurrentVersion (version) {
                 this.projectVersionId = version.id

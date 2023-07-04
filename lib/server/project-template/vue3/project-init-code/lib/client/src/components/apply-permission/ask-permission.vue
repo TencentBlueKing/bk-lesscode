@@ -9,13 +9,13 @@
                 <bk-table-column
                     :width="300"
                     :label="actionText">
-                    <template slot-scope="{ row }">{{ row.actionName }}</template>
+                    <template #default="{ row }">{{ row.actionName }}</template>
                 </bk-table-column>
                 <bk-table-column
                     :label="resourceText">
-                    <template slot-scope="{ row }">
+                    <template #default="{ row }">
                         <div class="resource-content">
-                            <template v-if="row.relatedResources.length > 0">
+                            <template v-if="row?.relatedResources?.length > 0">
                                 <p v-for="(resource, index) in row.relatedResources" :key="index">
                                     <span>{{ resource.resourceTypeName }}</span>：
                                     <span>{{ resource.resourceName }}</span>
@@ -25,9 +25,9 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <div slot="empty">
+                <template #empty>
                     <span v-if="!loading">{{ errorTips }}</span>
-                </div>
+                </template>
             </bk-table>
         </div>
     </div>

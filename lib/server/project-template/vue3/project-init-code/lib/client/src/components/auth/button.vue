@@ -1,5 +1,5 @@
 <template>
-    <bk-button v-if="showRaw" v-bind="$attrs" v-on="$listeners">
+    <bk-button v-if="showRaw" v-bind="$attrs">
         <slot />
     </bk-button>
     <bk-button
@@ -32,7 +32,7 @@
             // 不传: 直接发请求鉴权
             permission: {
                 type: [
-                    Boolean, String
+                    String, Boolean
                 ],
                 default: ''
             },
