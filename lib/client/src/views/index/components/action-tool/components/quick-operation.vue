@@ -163,6 +163,11 @@
                     return
                 }
 
+                // 画布双击文本编辑
+                if (['lesscodeEditTextarea', 'lesscodeEditInput'].includes(event.target.id)) {
+                    return
+                }
+
                 // 输入框获得焦点画布不响应复制、粘贴、剪切操作
                 const isInputFocused = event.target.classList.contains('bk-form-input')
                 if (!isInputFocused) {
