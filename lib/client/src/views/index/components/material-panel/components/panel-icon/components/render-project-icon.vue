@@ -91,7 +91,6 @@
             }
             
             this.groupIconMap = Object.freeze(groupIconMap)
-            console.log(this.groupIconMap, 223889)
             this.renderGroupIconMap = Object.freeze(groupIconMap)
             this.searchList = Object.freeze(searchList)
         },

@@ -69,7 +69,7 @@
                     </bk-exception>
                 </div>
             </template>
-            <bk-exception v-else class="exception-wrap-item" type="empty">
+            <bk-exception v-else-if="!isLoading" class="exception-wrap-item" type="empty">
                 <span>{{ $t('暂无页面，请新建页面') }}</span>
             </bk-exception>
         </div>
