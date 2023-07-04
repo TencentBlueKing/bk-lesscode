@@ -169,7 +169,7 @@
                 }
 
                 // 输入框获得焦点画布不响应复制、粘贴、剪切操作
-                const isInputFocused = event.target.classList.contains('bk-form-input')
+                const isInputFocused = event.target.classList.contains('bk-form-input') || event.target.classList.contains('bk-form-textarea')
                 if (!isInputFocused) {
                     if (event.ctrlKey || event.metaKey) {
                         // 复制（Ctrl + C）
