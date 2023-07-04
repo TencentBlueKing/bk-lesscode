@@ -43,7 +43,7 @@
                         <!-- 如果数据处理节点由人工节点生成，则提供同步按钮 -->
                         <i
                             v-if="normalNodeData.id"
-                            v-bk-tooltips="$t('将设置【{0}（{1}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则', [normalNodeData.name, normalNodeData.id])"
+                            v-bk-tooltips="{ content: $t('将设置【{0}（{1}）】节点的表单为目标表单，并自动生成插入动作及字段映射规则', [normalNodeData.name, normalNodeData.id]), maxWidth: 400 }"
                             class="bk-drag-icon bk-drag-refill sync-btn"
                             @click="handleSyncNormalNodeFields">
                         </i>

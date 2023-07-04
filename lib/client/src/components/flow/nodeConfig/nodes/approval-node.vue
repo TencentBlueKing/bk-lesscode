@@ -22,7 +22,7 @@
                 </bk-form-item>
                 <bk-form-item :label="$t('form_审批方式')" :required="true">
                     <bk-radio-group v-model="approvalType" class="approval-type-radios" @change="handleApprovalChange">
-                        <bk-radio value="orsign" v-bk-tooltips="$t('任一处理人完成审批即可')">{{ $t('或签') }}</bk-radio>
+                        <bk-radio value="orsign" v-bk-tooltips="$t('任一处理人完成审批即可')">{{ $t('其中一人') }}</bk-radio>
                         <bk-radio value="orderCountersign" v-bk-tooltips="$t('所有处理人按顺序进行审批')">{{ $t('顺序会签') }}</bk-radio>
                         <bk-radio value="randomCountersign" v-bk-tooltips="$t('所有处理人随机进行审批')">{{ $t('随机会签') }}</bk-radio>
                     </bk-radio-group>

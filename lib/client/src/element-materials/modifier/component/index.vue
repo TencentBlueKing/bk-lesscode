@@ -10,26 +10,18 @@
 -->
 
 <template>
-    <div class="material-modifier" :style="{ '--width': tabLabelItemWidth }">
+    <div class="material-modifier">
         <template v-if="renderKey">
-            <bk-tab
-                :active="tabPanelActive"
-                type="unborder-card"
-                class="king-tab"
-                v-enClass="'en-king-tab'"
-                @tab-change="handleModifier">
-                <bk-tab-panel
-                    v-for="(tabPanel, panelIndex) in tabPanels"
-                    v-bind="tabPanel"
-                    :key="panelIndex" />
-            </bk-tab>
+            <div class="modifier-tab-container">
+                <select-tab
+                    :tab-list="tabPanels"
+                    :active-item="tabPanelActive"
+                    :item-change="handleModifier">
+                </select-tab>
+            </div>
             <div
                 ref="container"
                 class="material-modifier-container">
-                <div
-                    v-if="tabPanelActive === 'styles'"
-                    class="style-setting-tips">
-                    {{ $t('样式面板中设置的样式将覆盖组件自带的默认样式，请谨慎调整') }} </div>
                 <template v-for="(com, index) in modifierComList">
                     <component
                         :is="com"
@@ -50,6 +42,7 @@
 </template>
 <script>
     import LC from '@/element-materials/core'
+    import SelectTab from '@/components/ui/select-tab'
     import ModifierStyles from './styles'
     import ModifierSlots from './slots'
     import ModifierGird from './gird'
@@ -63,21 +56,23 @@
     import ModifierPerms from './perms'
 
     export default {
-        name: '',
+        id: '',
+        components: {
+            SelectTab
+        },
         inheritAttrs: false,
         data () {
             return {
                 tabPanels: [
-                    { name: 'styles', label: this.$t('样式-styles'), count: 40 },
-                    { name: 'props', label: this.$t('属性-props'), count: 30 },
-                    { name: 'events', label: this.$t('事件-events'), count: 20 },
-                    { name: 'directives', label: this.$t('指令-directives'), count: 10 }
+                    { id: 'styles', name: this.$t('样式-styles') },
+                    { id: 'props', name: this.$t('属性-props') },
+                    { id: 'events', name: this.$t('事件-events') },
+                    { id: 'directives', name: this.$t('指令-directives') }
                 ],
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
                 renderKey: '',
-                isModifierEmpty: false,
-                tabLabelItemWidth: '25%'
+                isModifierEmpty: false
             }
         },
         computed: {
@@ -104,21 +99,19 @@
 
                 // 目前只有 button 按钮有权限面板
                 if (target.type === 'bk-button') {
-                    this.tabLabelItemWidth = this.$store.state.Language === 'en' ? '21%' : '20%'
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: this.$t('样式-styles'), count: 40 },
-                        { name: 'props', label: this.$t('属性-props'), count: 30 },
-                        { name: 'events', label: this.$t('事件-events'), count: 20 },
-                        { name: 'directives', label: this.$t('指令-directives'), count: 10 },
-                        { name: 'perms', label: this.$t('权限-perms'), count: 10 }
+                        { id: 'styles', name: this.$t('样式-styles') },
+                        { id: 'props', name: this.$t('属性-props') },
+                        { id: 'events', name: this.$t('事件-events') },
+                        { id: 'directives', name: this.$t('指令-directives') },
+                        { id: 'perms', name: this.$t('权限-perms') }
                     ])
                 } else {
-                    this.tabLabelItemWidth = '25%'
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
-                        { name: 'styles', label: this.$t('样式-styles'), count: 40 },
-                        { name: 'props', label: this.$t('属性-props'), count: 30 },
-                        { name: 'events', label: this.$t('事件-events'), count: 20 },
-                        { name: 'directives', label: this.$t('指令-directives'), count: 10 }
+                        { id: 'styles', name: this.$t('样式-styles') },
+                        { id: 'props', name: this.$t('属性-props') },
+                        { id: 'events', name: this.$t('事件-events') },
+                        { id: 'directives', name: this.$t('指令-directives') }
                     ])
                 }
             }
@@ -166,33 +159,11 @@
     @import "@/css/variable";
 
     .material-modifier {
-        .bk-tab.king-tab {
-            .bk-tab-header {
-                height: 47px;
-                border-bottom: 1px solid $boxBorderColor;
-                .bk-tab-label-wrapper {
-                    background: #fff;
-                    .bk-tab-label-list {
-                        width: 100%;
-                        height: 100%;
-                        padding: 0 20px;
-                        .bk-tab-label-item {
-                            width: calc(var(--width));
-                            line-height: 46px;
-                            min-width: auto;
-                            padding: 0 2px;
-                            &.active::after {
-                                left: 16%;
-                                width: 68%;
-                            }
-                        }
-                    }
-                }
-            }
-            .bk-tab-section {
-                padding: 0;
-            }
-
+        .modifier-tab-container {
+            height: 49px;
+            background: #fff;
+            padding: 8px 12px;
+            border-bottom: 1px solid $boxBorderColor;
         }
         .bk-tab.en-king-tab {
             .bk-tab-header {
@@ -207,9 +178,10 @@
         }
         .material-modifier-container {
             @mixin scroller;
-            height: calc(100vh - 167px - 93px);
+            height: calc(100vh - 104px - 42px - 84px);
             padding-bottom: 20px;
             overflow-y: auto;
+            overflow-x: hidden;
             position: relative;
         }
         /* bk-input 前后的 slot 文本样式 */

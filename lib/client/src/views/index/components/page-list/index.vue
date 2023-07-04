@@ -1,11 +1,9 @@
 <template>
     <div class="page-select">
         <div class="page-name">
-            <i
-                class="bk-drag-icon bk-drag-arrow-back"
-                :title="$t('返回页面列表')"
-                @click="handleBackPageList" />
-            <span class="seperate-line">|</span>
+            <div class="back-icon-container" @click="handleBackPageList">
+                <i class="bk-drag-icon bk-drag-arrow-back" :title="$t('返回页面列表')" />
+            </div>
             <div
                 id="editPageSwitchPage"
                 class="select-page-box">
@@ -22,8 +20,12 @@
                         <div
                             class="name-content"
                             :title="`${pageDetail.pageName}【${projectDetail.projectName}】`">
-                            <div class="col-name">{{ pageDetail.pageName }}<span class="project-name">【{{ projectDetail.projectName }}】</span></div>
+                            <div class="col-icon">
+                                <i :class="showIcon"></i>
+                            </div>
+                            <div class="col-name">{{ pageDetail.pageName }}</div>
                             <div class="col-version">{{versionName}}</div>
+                            <frameworkTag :framework="projectDetail.framework" bg-color="#fff"></frameworkTag>
                         </div>
                         <i class="bk-select-angle bk-icon icon-angle-down" />
                     </div>
@@ -31,13 +33,14 @@
                         v-for="group in classPageList"
                         :key="group.id"
                         :name="group.name">
-                        <template slot="group-name">
+                        <section slot="group-name" class="page-group-name">
                             <i
-                                :class="['bk-drag-icon', group.collapse ? 'bk-drag-angle-down-fill' : 'bk-drag-angle-up-fill']"
+                                :class="['bk-drag-icon', 'fold-icon', group.collapse ? 'bk-drag-angle-down-fill' : 'bk-drag-angle-up-fill']"
                                 @click="group.collapse = !group.collapse"></i>
                             <i :class="['bk-drag-icon', group.icon]"></i>
                             <span>{{group.name}}</span>
-                        </template>
+                            <span>（{{group.children.length}}）</span>
+                        </section>
                         <bk-option
                             v-show="!group.collapse && group.children"
                             v-for="option in group.children"
@@ -53,28 +56,11 @@
                         </bk-option>
                         <li style="padding: 0 28px" v-show="!group.children.length && !group.collapse">{{ $t('暂无页面') }}</li>
                     </bk-option-group>
-                    <div slot="extension" class="extension">
-                        <div
-                            class="page-row"
-                            @click="handleCreate('PC', '')">
-                            <i class="bk-icon icon-plus-circle" /> {{ $t('新建PC自定义页面') }}
-                        </div>
-                        <div
-                            class="page-row"
-                            @click="handleCreate('PC', 'FORM')">
-                            <i class="bk-icon icon-plus-circle" /> {{ $t('新建PC表单页面') }}
-                        </div>
-                        <div
-                            class="page-row"
-                            @click="handleCreate('MOBILE', '')">
-                            <i class="bk-icon icon-plus-circle" /> {{ $t('新建Mobile自定义页面') }}
-                        </div>
-                    </div>
                 </bk-select>
             </div>
+            <create-page-entry :framework="projectDetail.framework" class="canvas-theme" />
         </div>
-        <page-dialog ref="pageDialog" action="copy" />
-        <create-page-dialog ref="createPageDialog" :platform="createPlatform" :nocode-type="createNocodeType" />
+        <page-dialog ref="pageDialog" action="copy" :refresh-list="getPageList" />
     </div>
 </template>
 <script>
@@ -83,21 +69,22 @@
         mapGetters
     } from 'vuex'
     import { NOCODE_TYPE_MAP } from '@/common/constant'
+    import frameworkTag from '@/components/framework-tag'
+    import CreatePageEntry from '@/views/project/page-manage/children/create-page-entry'
     import PageDialog from '@/components/project/page-dialog'
-    import createPageDialog from '@/components/project/create-page-dialog'
 
     export default {
         name: '',
         components: {
+            frameworkTag,
             PageDialog,
-            createPageDialog
+            CreatePageEntry
         },
         data () {
             return {
+                NOCODE_TYPE_MAP,
                 selectPageId: '',
-                createPlatform: 'PC',
-                createNocodeType: '',
-                classPageList: [
+                emptyClassPageList: [
                     {
                         id: 'PC',
                         name: window.i18n.t('PC 页面'),
@@ -112,7 +99,8 @@
                         icon: 'bk-drag-mobilephone',
                         children: []
                     }
-                ]
+                ],
+                classPageList: []
             }
         },
         computed: {
@@ -125,7 +113,14 @@
                 'pageList',
                 'platform'
             ]),
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId', versionName: 'currentVersionName', getInitialVersion: 'initialVersion' })
+            ...mapGetters('projectVersion', { versionName: 'currentVersionName' }),
+            showIcon () {
+                if (this.platform === 'MOBILE') {
+                    return 'bk-drag-icon bk-drag-mobilephone'
+                } else {
+                    return 'bk-drag-icon bk-drag-pc'
+                }
+            }
         },
         watch: {
             pageList (val) {
@@ -136,9 +131,11 @@
             this.projectId = parseInt(this.$route.params.projectId)
             this.pageId = parseInt(this.$route.params.pageId)
             this.selectPageId = parseInt(this.$route.params.pageId)
+            this.initClassPageList()
         },
         methods: {
             initClassPageList () {
+                this.classPageList = JSON.parse(JSON.stringify(this.emptyClassPageList))
                 this.pageList.forEach(page => {
                     if (page.pageType === 'MOBILE') {
                         this.classPageList[1].children.push(page)
@@ -215,11 +212,29 @@
                 this.$refs.pageDialog.dialog.visible = true
                 this.$refs.pageSelect.close()
             },
-
-            handleCreate (platform, nocodeType) {
-                this.createPlatform = platform
-                this.createNocodeType = nocodeType
-                this.$refs.createPageDialog.isShow = true
+            async getPageList (newPageId) {
+                const pageList = await this.$store.dispatch('page/getList', {
+                    projectId: this.projectId,
+                    versionId: this.versionId
+                })
+                this.$store.commit('page/setPageList', pageList || [])
+                if (newPageId) {
+                    this.$bkInfo({
+                        title: '是否跳转到新复制的页面画布？',
+                        subTitle: '跳转到新页面前请确保当前画布内容已保存，选否则继续留在当前页面画布',
+                        okText: '是',
+                        cancelText: '否',
+                        width: 500,
+                        confirmFn: () => {
+                            this.$router.replace({
+                                name: 'new',
+                                params: {
+                                    pageId: newPageId
+                                }
+                            })
+                        }
+                    })
+                }
             }
         }
     }
@@ -232,64 +247,74 @@
             display: flex;
             align-items: center;
             height: 100%;
-            .bk-drag-icon {
-                padding: 10px;
+            .back-icon-container {
+                width: 42px;
+                height: 100%;
                 cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .bk-drag-arrow-back {
                 font-size: 13px;
                 color: #3a84ff;
             }
-            .template-logo svg {
-                vertical-align: middle;
-            }
-            .seperate-line {
-                width: 1px;
-                color: #d8d8d8;
-                margin: 0 2px 0 -2px;
-            }
 
             .name-content {
                 display: flex;
                 align-items: center;
-                font-size: 14px;
-                margin: 0 24px 0 10px;
-                .project-name {
-                    color: #979BA5;
-                }
+                font-size: 12px;
+                margin-right: 24px;
+                height: 32px;
 
+                .col-icon {
+                    background: #EAEBF0;
+                    color: #979BA5;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
                 .col-name {
                     overflow: hidden;
                     white-space: nowrap;
                     text-overflow: ellipsis;
+                    color: #63656E;
+                    margin: 0 8px 0 6px;
+                    max-width: 160px;
                 }
                 .col-version {
-                    background: #dcdee5;
-                    border-radius: 9px;
-                    height: 18px;
+                    color: #979BA5;
+                    background: #FFF;
+                    border-radius: 2px;
                     font-size: 12px;
                     line-height: 18px;
-                    color: #63656e;
-                    padding: 0 8px;
                     white-space: nowrap;
+                    display: inline-block;
+                    padding: 2px 5px;
+                    display: inline-block;
+                    transform: scale(0.83, 0.83);
                 }
             }
 
             .select-page-box {
                 display: flex;
-                flex: 1;
                 align-items: center;
                 height: 100%;
-                margin: 0 4px;
+                width: 256px;
+                margin: 0 8px 0 4px;
                 .select-page {
-                    width: 350px;
-                    margin-left: 5px;
+                    width: 100%;
                     border: none;
                     background-color: #f0f1f5;
                     &:hover {
+                        border: none;
+                        box-shadow: none;
                         background-color: #dedee5;
                     }
                     &.is-focus {
+                        border: none;
                         box-shadow: none;
                         background-color: #dedee5;
                     }
@@ -302,10 +327,12 @@
         .bk-select-search-input {
             padding: 0 10px 0 30px;
         }
-        .extension {
-            cursor: pointer;
-            .page-row:hover {
-                color: #3A84FF;
+        .page-group-name {
+            .fold-icon {
+                cursor: pointer;
+            }
+            i {
+                margin-right: 4px;
             }
         }
     }

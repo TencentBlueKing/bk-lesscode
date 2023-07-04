@@ -10,19 +10,37 @@
 -->
 
 <template>
-    <div class="modifier-style">
-        <div class="style-title">
-            {{ title }}
-            <span
-                class="style-icon"
-                v-if="iconShow"
-                v-bk-tooltips.top="$t('重置属性值')"
-                @click="handleClick">
-                <i class="bk-drag-icon bk-drag-undo" />
-            </span>
-        </div>
-        <div class="style-action">
-            <slot />
+    <div class="modifier-style" :class="{ 'no-padding': isFolded }">
+        <div class="style-group-box">
+            <div class="ui-group-name">
+                <section @click="handleToggle" style="display: flex;align-items: center;">
+                    <i
+                        class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                        :class="{
+                            floded: isFolded
+                        }" />
+                    <span
+                        class="label"
+                        :class="{ 'tips-content': tips }"
+                        v-bk-tooltips="{
+                            width: 300,
+                            interactive: false,
+                            allowHtml: true,
+                            disabled: !tips,
+                            content: tips
+                        }">
+                        {{ title }}
+                    </span>
+                </section>
+                <div class="operate-icon">
+                    <slot name="header" />
+                </div>
+            </div>
+            <div class="style-action">
+                <template v-if="!isFolded">
+                    <slot />
+                </template>
+            </div>
         </div>
     </div>
 </template>
@@ -37,9 +55,21 @@
             iconShow: {
                 type: Boolean,
                 default: false
+            },
+            tips: {
+                type: String,
+                default: ''
+            }
+        },
+        data () {
+            return {
+                isFolded: this.folded
             }
         },
         methods: {
+            handleToggle () {
+                this.isFolded = !this.isFolded
+            },
             handleClick () {
                 this.$emit('reset')
             }
@@ -48,12 +78,13 @@
 </script>
 
 <style lang='postcss'>
+    .modifier-style.no-padding {
+        padding-bottom: 0;
+    }
     .modifier-style {
         display: flex;
         flex-direction: column;
-        width: 276px;
-        padding: 0 0 16px;
-        margin-left: 10px;
+        padding-bottom: 16px;
         .style-title {
             font-size: 12px;
             display: flex;
@@ -69,6 +100,58 @@
                 font-size: 16px;
                 line-height: 18px;
                 margin-left: 10px;
+            }
+        }
+    }
+    .style-group-box {
+        padding: 0 8px 0 12px;
+        border-top: 1px solid #dde4eb;
+        .ui-group-name {
+            margin-left: -6px;
+            height: 40px;
+            font-size: 12px;
+            color: #313238;
+            font-weight: Bold;
+            position: relative;
+            display: flex;
+            align-items: center;
+            &:hover{
+                cursor: pointer;
+            }
+            .toggle-arrow {
+                position: absolute;
+                display: block;
+                line-height: 40px;
+                top: 0;
+                left: 0;
+                font-size: 24px;
+                color: #63656E;
+                transition: all .1s linear;
+                &.floded {
+                    transform: rotate(-90deg);
+                }
+            }
+            span {
+                display: block;
+                position: absolute;
+                left: 24px;
+                line-height: 40px;
+            }
+            .tips-content {
+                border-bottom: 1px dashed #313238;
+                line-height: 19px;
+            }
+            .operate-icon {
+                position: absolute;
+                right: 0px;
+                padding: 4px;
+                color: #979BA5;
+                border-radius: 2px;
+                font-size: 14px;
+                &:hover {
+                    background-color: #F0F5FF;
+                    color: #3a84ff;
+                }
             }
         }
     }

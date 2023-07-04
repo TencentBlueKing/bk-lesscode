@@ -8,9 +8,9 @@
             :mask-close="false"
             :auto-close="false"
             header-position="left"
-            ext-cls="set-template-dialog"
+            ext-cls="set-template-dialog header-small-padding-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="120">
+            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="300" form-type="vertical">
                 <bk-form-item :label="$t('form_是否公开')" required property="isOffcial" error-display-type="normal">
                     <bk-radio-group v-model="formData.isOffcial">
                         <bk-radio :value="1" style="margin-right: 20px;">{{ $t('是') }}</bk-radio>

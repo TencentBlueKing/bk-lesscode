@@ -10,111 +10,79 @@
 -->
 
 <template>
-    <style-layout :title="$t('文字')">
-        <style-item :name="$t('字体')" v-if="handleHasKey('fontFamily')">
-            <bk-select
+    <style-layout :title="$t('字体')">
+        <section style="display: flex; justify-content: space-between;flex-wrap: wrap;">
+            <icon-size-input
+                v-if="handleHasKey('fontFamily')"
                 :value="renderValueMap.fontFamily"
-                font-size="medium"
-                :clearable="false"
-                @change="handleFontChange('fontFamily', $event)"
-                style="width: 100%;">
-                <bk-option id="inherit" :name="$t('默认')" />
-                <bk-option id="PingFang SC, sans-serif" :name="$t('苹方')" />
-                <bk-option id="Microsoft Yahei, san-serif" :name="$t('微软雅黑')" />
-                <bk-option id="Songti SC, sans-serif" :name="$t('宋体')" />
-                <bk-option id="Arial, sans-serif" name="Arial" />
-                <bk-option id="Helvetica, sans-serif" name="Helvetica" />
-            </bk-select>
-        </style-item>
-        <style-item :name="$t('form_字号字重')" v-if="handleHasKey('fontSize') || handleHasKey('fontWeight')">
-            <font-size-input :value="renderValueMap.fontSize" @change="handleFontWithUnitChange('fontSize', $event)" />
-            <bk-select
-                :value="renderValueMap.fontWeight"
-                font-size="medium"
-                :clearable="false"
-                @change="handleFontChange('fontWeight', $event)"
-                style="width: 96px;">
-                <bk-option id="inherit" :name="$t('默认')" />
-                <bk-option id="normal" name="normal" />
-                <bk-option id="lighter" name="lighter" />
-                <bk-option id="bolder" name="bolder" />
-                <bk-option id="400" name="400" />
-                <bk-option id="500" name="500" />
-                <bk-option id="600" name="600" />
-                <bk-option id="700" name="700" />
-                <bk-option id="800" name="800" />
-                <bk-option id="900" name="900" />
-            </bk-select>
-        </style-item>
-        <style-item :name="$t('颜色')" v-if="handleHasKey('color')">
+                :item="iconSizeData.fontFamily"
+                @change="handleFontChange('fontFamily', $event)">
+            </icon-size-input>
+
+            <template v-if="handleHasKey('fontSize') || handleHasKey('fontWeight')">
+                <icon-size-input
+                    :value="renderValueMap.fontSize"
+                    :item="iconSizeData.fontSize"
+                    @change="handleFontWithUnitChange('fontSize', $event)">
+                </icon-size-input>
+                <icon-size-input
+                    :value="renderValueMap.fontWeight"
+                    :item="iconSizeData.fontWeight"
+                    @change="handleFontChange('fontWeight', $event)">
+                </icon-size-input>
+            </template>
+
             <bk-color-picker
                 :value="renderValueMap.color"
-                style="width: 100%;"
+                style="width: 126px;margin-top: 12px;"
                 @change="handleFontChange('color', $event)" />
-        </style-item>
-        <style-item :name="$t('form_字体样式')" v-if="handleHasKey('fontStyle')">
-            <bk-select
-                :value="renderValueMap.fontStyle"
-                font-size="medium"
-                :clearable="false"
-                @change="handleFontChange('fontStyle', $event)"
-                style="width: 100%;">
-                <bk-option id="normal" name="normal" v-bk-tooltips="getTooltipsConfig($t('普通'))" />
-                <bk-option id="italic" name="italic" v-bk-tooltips="getTooltipsConfig($t('斜体'))" />
-                <bk-option id="oblique" name="oblique" v-bk-tooltips="getTooltipsConfig($t('倾斜体'))" />
-                <bk-option id="inherit" name="inherit" v-bk-tooltips="getTooltipsConfig($t('继承父元素'))" />
-            </bk-select>
-        </style-item>
-        <style-item :name="$t('form_行高')" v-if="handleHasKey('lineHeight')">
-            <size-input :value="renderValueMap.lineHeight" @change="handleInputChange('lineHeight', $event)">
-                <append-select :value="unitMap.lineHeight" @change="handleSelectChange('lineHeight', $event)" />
-            </size-input>
-        </style-item>
-        <style-item :name="$t('form_字符间距')" v-if="handleHasKey('letterSpacing')">
-            <font-size-input
+
+            <icon-size-input
+                v-if="handleHasKey('lineHeight')"
+                :value="renderValueMap.lineHeight"
+                :item="iconSizeData.lineHeight"
+                @change="handleInputChange('lineHeight', $event)">
+                <size-unit
+                    :value="unitMap.lineHeight"
+                    @change="handleSelectChange('lineHeight', $event)" />
+            </icon-size-input>
+
+            <icon-size-input
+                v-if="handleHasKey('letterSpacing')"
                 :value="renderValueMap.letterSpacing"
-                :placeholder="$t('请输入')"
-                @change="handleFontWithUnitChange('letterSpacing', $event)"
-                style="width: 100%" />
-        </style-item>
-        <style-item :name="$t('form_单词间距')" v-if="handleHasKey('wordSpacing')">
-            <font-size-input
+                :item="iconSizeData.letterSpacing"
+                @change="handleFontWithUnitChange('letterSpacing', $event)">
+            </icon-size-input>
+
+            <icon-size-input
+                v-if="handleHasKey('textIndent')"
+                :value="renderValueMap.textIndent"
+                :item="iconSizeData.textIndent"
+                @change="handleInputChange('textIndent', $event)">
+                <size-unit
+                    :value="unitMap.textIndent"
+                    @change="handleSelectChange('textIndent', $event)" />
+            </icon-size-input>
+
+            <icon-size-input
+                v-if="handleHasKey('wordSpacing')"
                 :value="renderValueMap.wordSpacing"
-                :placeholder="$t('请输入')"
-                @change="handleFontWithUnitChange('wordSpacing', $event)"
-                style="width: 100%" />
+                :item="iconSizeData.wordSpacing"
+                @change="handleFontWithUnitChange('wordSpacing', $event)">
+            </icon-size-input>
+        </section>
+        
+        <style-item :name="$t('form_字体样式')" v-if="handleHasKey('fontStyle')" type="vertical">
+            <select-tab style="width: 100%;" :tab-list="fontStyleList" :active-item="renderValueMap.fontStyle" :item-change="(val) => handleFontChange('fontStyle', val)" />
         </style-item>
-        <style-item name="Text-align" :tips="$t('文本的水平对齐方式')" v-if="handleHasKey('textAlign')">
-            <bk-select
-                :value="renderValueMap.textAlign"
-                font-size="medium"
-                :clearable="false"
-                @change="handleFontChange('textAlign', $event)"
-                style="width: 100%;">
-                <bk-option id="left" name="left" />
-                <bk-option id="center" name="center" />
-                <bk-option id="right" name="right" />
-            </bk-select>
+        <style-item :name="$t('form_文本修饰')" tips="text-decoration" v-if="handleHasKey('textDecoration')" type="vertical">
+            <select-tab style="width: 100%;" :tab-list="textDecorationList" :active-item="renderValueMap.textDecoration" :item-change="(val) => handleFontChange('textDecoration', val)" />
         </style-item>
-        <style-item name="Text-decoration" :tips="$t('文本的修饰线')" v-if="handleHasKey('textDecoration')">
-            <bk-select
-                :value="renderValueMap.textDecoration"
-                font-size="medium"
-                :clearable="false"
-                @change="handleFontChange('textDecoration', $event)"
-                style="width: 100%;">
-                <bk-option id="none" name="none" v-bk-tooltips="getTooltipsConfig($t('无修饰线'))" />
-                <bk-option id="underline" name="underline" v-bk-tooltips="getTooltipsConfig($t('下划线'))" />
-                <bk-option id="overline" name="overline" v-bk-tooltips="getTooltipsConfig($t('上划线'))" />
-                <bk-option id="line-through" name="line-through" v-bk-tooltips="getTooltipsConfig($t('中划线'))" />
-            </bk-select>
+        <style-item :name="$t('对齐方式')" tips="text-align" v-if="handleHasKey('textAlign')" type="vertical">
+            <select-tab style="width: 100%;" :tab-list="fontAlignList" :active-item="renderValueMap.textAlign" :item-change="(val) => handleFontChange('textAlign', val)" />
         </style-item>
-        <style-item :name="$t('缩进')" v-if="handleHasKey('textIndent')">
-            <size-input :value="renderValueMap.textIndent" @change="handleInputChange('textIndent', $event)">
-                <append-select :value="unitMap.textIndent" @change="handleSelectChange('textIndent', $event)" />
-            </size-input>
-        </style-item>
-        <style-item name="Text-overflow" :tips="$t('如何展示溢出文本')" v-if="handleHasKey('textOverflow')">
+
+        <style-item name="text-overflow" :tips="$t('如何展示溢出文本')" v-if="handleHasKey('textOverflow')">
             <bk-select
                 :value="renderValueMap.textOverflow"
                 font-size="medium"
@@ -125,7 +93,7 @@
                 <bk-option id="ellipsis" name="ellipsis" v-bk-tooltips="getTooltipsConfig($t('使用一个省略号来表示溢出文本'))" />
             </bk-select>
         </style-item>
-        <style-item name="Word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
+        <style-item name="word-break" :tips="$t('控制单词如何被拆分换行')" v-if="handleHasKey('wordBreak')">
             <bk-select
                 :value="renderValueMap.wordBreak"
                 font-size="medium"
@@ -137,7 +105,7 @@
                 <bk-option id="keep-all" name="keep-all" v-bk-tooltips="getTooltipsConfig($t('CJK (CJK 指中文/日文/韩文) 文本不断行。Non-CJK 文本表现同 normal'))" />
             </bk-select>
         </style-item>
-        <style-item name="Word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
+        <style-item name="word-wrap" :tips="$t('控制长度超过一行的单词是否被拆分换行')" v-if="handleHasKey('wordWrap')">
             <bk-select
                 :value="renderValueMap.wordWrap"
                 font-size="medium"
@@ -148,7 +116,7 @@
                 <bk-option id="break-word" name="break-word" v-bk-tooltips="getTooltipsConfig($t('长单词内部换行'))" />
             </bk-select>
         </style-item>
-        <style-item name="White-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
+        <style-item name="white-space" :tips="$t('控制空白字符的显示')" v-if="handleHasKey('whiteSpace')">
             <bk-select
                 :value="renderValueMap.whiteSpace"
                 font-size="medium"
@@ -186,20 +154,21 @@
 <script>
     import StyleLayout from '../layout/index'
     import StyleItem from '../layout/item'
-    import FontSizeInput from '@/components/modifier/font-size-input'
-    import AppendSelect from '@/components/modifier/append-select'
-    import SizeInput from '@/components/modifier/size-input'
+    import SelectTab from '@/components/ui/select-tab'
     import { splitValueAndUnit } from '@/common/util'
     import { getCssProperties, getTooltipsConfig } from '../common/util'
     import defaultUnitMixin from '@/common/defaultUnit.mixin'
+
+    import IconSizeInput from '@/components/modifier/icon-size-input'
+    import SizeUnit from '@/components/modifier/size-unit'
 
     export default {
         components: {
             StyleLayout,
             StyleItem,
-            FontSizeInput,
-            AppendSelect,
-            SizeInput
+            SelectTab,
+            IconSizeInput,
+            SizeUnit
         },
         mixins: [defaultUnitMixin],
         props: {
@@ -239,10 +208,133 @@
                     verticalAlign: this.value.verticalAlign || 'baseline'
                 },
                 unitMap: {
+                    // font
                     lineHeight: '',
                     textIndent: ''
                 },
-                renderValueMap: {}
+                renderValueMap: {},
+                iconSizeData: {
+                    fontFamily: {
+                        type: 'select',
+                        icon: 'bk-drag-ziti',
+                        tips: window.i18n.t('style_字体'),
+                        payload: {},
+                        options: [
+                            { id: 'inherit', name: window.i18n.t('默认') },
+                            { id: 'Microsoft Yahei, san-serif', name: window.i18n.t('微软雅黑') },
+                            { id: 'PingFang SC, sans-serif', name: window.i18n.t('苹方') },
+                            { id: 'Heiti SC, san-serif', name: window.i18n.t('黑体') },
+                            { id: 'Hiragino Sans GB san-serif', name: window.i18n.t('冬青黑体') },
+                            { id: 'Noto Sans, san-serif', name: window.i18n.t('思源黑体') },
+                            { id: 'Songti SC, sans-serif', name: window.i18n.t('宋体') },
+                            { id: 'KaiTi, san-serif', name: window.i18n.t('楷体') },
+                            { id: 'WenQuanYi Micro Hei, san-serif', name: window.i18n.t('文泉驿微米黑') },
+                            { id: 'Arial, sans-serif', name: 'Arial' },
+                            { id: 'Monospace, sans-serif', name: 'Monospace' },
+                            { id: 'Apple Color Emoji san-serif', name: 'Apple Color Emoji' },
+                            { id: 'Consolas san-serif', name: 'Consolas' },
+                            { id: 'Helvetica, sans-serif', name: 'Helvetica' },
+                            { id: 'Helvetica Neue san-serif', name: 'Helvetica Neue' },
+                            { id: 'Noto Color Emoji san-serif', name: 'Noto Color Emoji' },
+                            { id: 'Menlo san-serif', name: 'Menlo' },
+                            { id: 'Roboto san-serif', name: 'Roboto' },
+                            { id: 'Segoe UI san-serif', name: 'Segoe UI' },
+                            { id: 'San Francisco san-serif', name: 'San Francisco' },
+                            { id: 'Segoe UI Emoji san-serif', name: 'Segoe UI Emoji' },
+                            { id: 'Tahoma san-serif', name: 'Tahoma' },
+                            { id: 'Fira code san-serif', name: 'Fira code' }
+                        ]
+                    },
+                    fontSize: {
+                        icon: 'bk-drag-zitidaxiao',
+                        tips: window.i18n.t('字号')
+                    },
+                    fontWeight: {
+                        type: 'select',
+                        icon: 'bk-drag-zizhong',
+                        tips: window.i18n.t('字重'),
+                        payload: {},
+                        options: [
+                            { id: 'inherit', name: window.i18n.t('默认') },
+                            { id: 'normal', name: 'normal' },
+                            { id: 'lighter', name: 'lighter' },
+                            { id: 'bolder', name: 'bolder' },
+                            { id: '400', name: '400' },
+                            { id: '500', name: '500' },
+                            { id: '600', name: '600' },
+                            { id: '700', name: '700' },
+                            { id: '800', name: '800' },
+                            { id: '900', name: '900' }
+                        ]
+                    },
+                    lineHeight: {
+                        icon: 'bk-drag-xinggao',
+                        tips: window.i18n.t('行高')
+                    },
+                    letterSpacing: {
+                        icon: 'bk-drag-zijianju',
+                        tips: window.i18n.t('字间距')
+                    },
+                    wordSpacing: {
+                        icon: 'bk-drag-dancijianju',
+                        tips: window.i18n.t('词间距')
+                    },
+                    textIndent: {
+                        icon: 'bk-drag-suojin',
+                        tips: window.i18n.t('style_缩进')
+                    }
+                },
+                fontStyleList: [
+                    {
+                        id: 'normal',
+                        icon: 'bk-drag-icon bk-drag-morenziti',
+                        tips: window.i18n.t('默认（非斜体）')
+                    },
+                    {
+                        id: 'italic',
+                        icon: 'bk-drag-icon bk-drag-xieti',
+                        tips: window.i18n.t('style_斜体')
+                    }
+                ],
+                textDecorationList: [
+                    {
+                        id: 'none',
+                        icon: 'bk-drag-icon bk-drag-zitiyangshi',
+                        tips: window.i18n.t('无修饰线')
+                    },
+                    {
+                        id: 'underline',
+                        icon: 'bk-drag-icon bk-drag-xiahuaxian',
+                        tips: window.i18n.t('下划线')
+                    },
+                    {
+                        id: 'overline',
+                        icon: 'bk-drag-icon bk-drag-shanghuaxian',
+                        tips: window.i18n.t('上划线')
+                    },
+                    {
+                        id: 'line-through',
+                        icon: 'bk-drag-icon bk-drag-zhonghuaxian',
+                        tips: window.i18n.t('中划线')
+                    }
+                ],
+                fontAlignList: [
+                    {
+                        id: 'left',
+                        icon: 'bk-drag-icon bk-drag-zuoduiqi-2',
+                        tips: window.i18n.t('style_左对齐')
+                    },
+                    {
+                        id: 'center',
+                        icon: 'bk-drag-icon bk-drag-juzhongduiqi',
+                        tips: window.i18n.t('style_居中对齐')
+                    },
+                    {
+                        id: 'right',
+                        icon: 'bk-drag-icon bk-drag-youduiqi-2',
+                        tips: window.i18n.t('style_右对齐')
+                    }
+                ]
             }
         },
         mounted () {
@@ -278,6 +370,7 @@
                 this.change(key, newValue)
             },
             handleSelectChange (key, unit) {
+                this.unitMap[key] = unit
                 if (this.renderValueMap[key] !== '') {
                     this.change(key, this.renderValueMap[key] + unit)
                 }

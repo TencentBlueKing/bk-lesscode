@@ -42,7 +42,8 @@
                             v-bk-tooltips="{
                                 content: config.tips,
                                 placements: ['left-start'],
-                                boundary: 'window'
+                                boundary: 'window',
+                                maxWidth: 400
                             }"
                         >
                             count
@@ -79,7 +80,8 @@
                                 v-bk-tooltips="{
                                     content: config.tips,
                                     placements: ['left-start'],
-                                    boundary: 'window'
+                                    boundary: 'window',
+                                    maxWidth: 400
                                 }"
                             >
                                 {{ config.name }}

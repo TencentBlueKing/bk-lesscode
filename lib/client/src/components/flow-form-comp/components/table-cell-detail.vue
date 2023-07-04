@@ -133,31 +133,10 @@
                 })
             },
             setSourceData (field) {
-                if (field.source_type === 'API') {
-                    this.setApiData(field)
+                if (field.source_type === 'FUNCTION') {
+                    this.setFunctionData(field)
                 } else if (field.source_type === 'WORKSHEET') {
                     this.setWorksheetData(field)
-                }
-            },
-            async setApiData (field) {
-                try {
-                    const { id, api_info, api_instance_id, kv_relation } = field
-                    const params = {
-                        id,
-                        api_instance_id,
-                        kv_relation,
-                        api_info: {
-                            api_instance_info: api_info,
-                            remote_api_info: api_info.remote_api_info
-                        }
-                    }
-                    const resp = await this.$store.dispatch('setting/getSourceData', params)
-                    field.choice = resp.data.map((item) => {
-                        const { key, name } = item
-                        return { key, name }
-                    })
-                } catch (e) {
-                    console.error(e)
                 }
             },
             textTrans (val) {
@@ -184,6 +163,21 @@
                     })
                 } catch (e) {
                     console.error(e)
+                }
+            },
+            setFunctionData (field) {
+                const { returnedValue, keys } = field.meta.function_data_source_config
+                if (Array.isArray(returnedValue)) {
+                    const data = []
+                    const idKey = keys.id || 'id'
+                    const nameKey = keys.name || 'name'
+                    returnedValue.forEach(valItem => {
+                        data.push({
+                            key: valItem[idKey],
+                            name: valItem[nameKey]
+                        })
+                    })
+                    field.choice = data
                 }
             },
             handleClose () {

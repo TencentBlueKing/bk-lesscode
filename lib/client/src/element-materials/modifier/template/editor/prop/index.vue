@@ -14,7 +14,8 @@
                         placements: ['left-start'],
                         boundary: 'window',
                         content: prop.tips,
-                        disabled: !prop.tips
+                        disabled: !prop.tips,
+                        maxWidth: 400
                     }">
                     {{ prop.name }}
                     <span v-if="prop.type">({{ prop.type }})</span>

@@ -11,11 +11,13 @@
 <template>
     <component
         :is="`bk-${field.type}`"
-        :class="[`form-component ${field.type}`, { error: (errors[field.id] || []).length }]"
+        :class="[`form-component ${field.type}`]"
         :placeholder="placeholder"
         v-model.trim="syncValue"
         v-bind="field.props"
-        :ref="`component-${field.id}`">
+        @toggle="toggleSelect"
+        @change="(value) => $emit('valueChange', field.id, value)"
+    >
         <slot-component
             v-for="child in field.children"
             :key="child.id"
@@ -37,10 +39,10 @@
                 </template>
             </slot-component-child>
         </slot-component>
-        <div slot="extension" style="cursor: pointer;" @click="$emit('goPage', 'layout')" v-if="field.id === 'layoutId'">
-            <i class="bk-drag-icon bk-drag-jump-link"></i> {{ $t('新建模板实例') }}
+        <div slot="extension" style="cursor: pointer;" @click="goPage('layout')" v-if="field.id === 'layoutId'">
+            <i class="bk-drag-icon bk-drag-jump-link"></i> {{ $t('新建导航布局实例') }}
         </div>
-        <div slot="extension" style="cursor: pointer;" @click="$emit('goPage', 'routes')" v-if="field.id === 'pageRoute'">
+        <div slot="extension" style="cursor: pointer;" @click="goPage('routes')" v-if="field.id === 'pageRoute'">
             <i class="bk-drag-icon bk-drag-jump-link"></i> {{ $t('新建路由') }}
         </div>
     </component>
@@ -56,10 +58,6 @@
                 type: [String, Number],
                 default: ''
             },
-            errors: {
-                type: Object,
-                default: () => ({})
-            },
             placeholder: {
                 type: String,
                 default: ''
@@ -72,6 +70,22 @@
                 },
                 set (val) {
                     this.$emit('update:value', val)
+                }
+            }
+        },
+        methods: {
+            goPage (name) {
+                const route = this.$router.resolve({
+                    name,
+                    params: {
+                        projectId: this.$route.params.projectId
+                    }
+                })
+                window.open(route.href, '_blank')
+            },
+            toggleSelect (isShow) {
+                if (isShow) {
+                    this.$emit('refreshData')
                 }
             }
         }

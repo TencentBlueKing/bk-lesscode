@@ -8,17 +8,19 @@
     import LC from '@/element-materials/core'
     import ComponentModifier from './component'
     import TemplateModifier from './template'
+    import PageModifier from './page'
 
     const comMap = {
         template: TemplateModifier,
-        component: ComponentModifier
+        component: ComponentModifier,
+        page: PageModifier
     }
 
     export default {
         name: 'element-modifier',
         data () {
             return {
-                panel: 'component',
+                panel: 'page',
                 templateInfo: {}
             }
         },
@@ -26,6 +28,9 @@
             ...mapGetters('drag', [
                 'curTemplateData'
             ]),
+            activeNode () {
+                return LC.getActiveNode()
+            },
             com () {
                 if (comMap.hasOwnProperty(this.panel)) {
                     return comMap[this.panel]
@@ -36,21 +41,35 @@
         watch: {
             // template没有指定面板，展示component修改器
             curTemplateData (curTemplateData) {
-                if (curTemplateData.panelActive) {
-                    this.panel = 'template'
-                } else {
-                    this.panel = 'component'
-                }
+                this.changePanel()
             }
         },
         created () {
             const activeCallback = () => {
                 this.panel = 'component'
             }
+            const activeClearCallback = () => {
+                this.changePanel()
+            }
             LC.addEventListener('active', activeCallback)
+            LC.addEventListener('activeClear', activeClearCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('active', activeCallback)
             })
+            this.$once('hook:beforeDestroy', () => {
+                LC.removeEventListener('activeClear', activeClearCallback)
+            })
+        },
+        methods: {
+            changePanel () {
+                if (this.curTemplateData.panelActive) {
+                    this.panel = 'template'
+                } else if (this.aciveNode?.componentId) {
+                    this.panel = 'component'
+                } else {
+                    this.panel = 'page'
+                }
+            }
         }
     }
 </script>

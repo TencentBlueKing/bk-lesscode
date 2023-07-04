@@ -4,6 +4,7 @@
         <div class="search-container" v-bk-clickoutside="handleHideDropList">
             <bk-input
                 clearable
+                ext-cls="form-search-input"
                 :placeholder="$t('请输入组件名称搜索')"
                 :right-icon="'bk-icon icon-search'"
                 v-model.trim="searchValue"
@@ -61,7 +62,7 @@
                     <span>{{ group.name }}</span>
                 </div>
                 <draggable
-                    :class="['list-wrap', { 'disabled': disabled }]"
+                    :class="['form-list-wrap', { 'disabled': disabled }]"
                     handle=".field-item"
                     filter=".not-available"
                     tag="p"
@@ -262,12 +263,23 @@
         }
     }
 </script>
+<style lang="postcss">
+    .form-search-input input {
+        background-color: #F5F7FA;
+        border-radius: 2px;
+        border: 1px solid #fff;
+        &:focus {
+            border: 1px solid #3a84ff;
+        }
+    }
+</style>
 <style lang="postcss" scoped>
 @import "@/css/mixins/scroller";
 @import "@/css/mixins/ellipsis";
 .side-panel {
   position: relative;
   height: 100%;
+  width: 300px;
   box-shadow: 1px 0 0 0 #DCDEE5;
   z-index: 1;
 }
@@ -313,13 +325,12 @@
     color: #63656E;
     transition: all .1s linear;
     margin-right: 8px;
-  //transform: rotate(-270deg);
 
     &.floded {
       transform: rotate(-90deg);
     }
   }
-  span{
+  span {
     display: block;
     position: absolute;
     top: 0;
@@ -328,7 +339,7 @@
   }
 }
 .search-container{
-  padding: 12px;
+  padding: 10px;
   position: relative;
   .search-dropdown-list {
     position: absolute;
@@ -359,7 +370,7 @@
       line-height: 32px;
       padding: 0 10px;
       color: #63656E;
-      font-size: 14px;
+      font-size: 12px;
       .text {
         @mixin ellipsis 100%;
         em {
@@ -391,11 +402,11 @@
   margin: 0 !important;
 }
 
-.list-wrap {
+.form-list-wrap {
   display: flex;
   justify-content: space-between;
   flex-flow: row wrap;
-//margin-top: 12px; padding: 12px;
+  padding: 12px;
   &.disabled {
     .field-item {
         cursor: inherit;;

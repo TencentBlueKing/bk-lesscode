@@ -1,0 +1,33 @@
+.mobile-tabbar-layout-wrapper {
+    height: 100%;
+    :global(.lesscode-editor-layout) {
+        min-height: auto;
+    }
+    .van-tabbar {
+        position: absolute;
+    }
+    .tabbar-item-wrapper {
+        width: 100%;
+        display: flex;
+        box-sizing: content-box;
+        border: 1px  solid transparent;
+        z-index: 2;
+        cursor: pointer;
+        &:hover {
+            border: 1px dashed #3a84ff;
+        }
+        &.selected {
+            border: 1px solid #3a84ff;
+        }
+        .van-tabbar-item {
+            pointer-events: none;
+        }
+    }
+}
+
+.mobile-layout-wrapper {
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

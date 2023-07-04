@@ -10,14 +10,15 @@
 -->
 
 <template functional>
-    <div class="style-item">
+    <div class="style-item" :class="props.type === 'vertical' ? 'vertical-item' : 'horizontal-item'">
         <div
             class="item-label"
             v-bk-tooltips="{
                 content: props.tips,
                 disabled: !props.tips,
                 placements: ['left-start'],
-                boundary: 'window'
+                boundary: 'window',
+                maxWidth: 400
             }"
         >
             <span
@@ -36,23 +37,40 @@
 
 <style lang='postcss'>
     .style-item {
-        display: flex;
-        margin-top: 10px;
-        height: 32px;
+        margin-top: 12px;
         &:first-child {
             margin-top: 4px;
         }
         .item-label {
             display: flex;
             align-items: center;
-            width: 95px;
             font-size: 12px;
         }
         .item-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            
+        }
+    }
+    .horizontal-item {
+        display: flex;
+        height: 32px;
+        .item-label {
+            width: 95px;
+        }
+        .item-content {
             width: 181px;
+        }
+    }
+    .vertical-item {
+        /* margin-bottom: 12px; */
+        .item-label {
+            margin-bottom: 6px;
+            width: 100%;
+        }
+        .item-content {
+            width: 100%;
         }
     }
 </style>

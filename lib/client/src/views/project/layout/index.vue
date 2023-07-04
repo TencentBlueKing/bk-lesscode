@@ -80,6 +80,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('project', ['projectDetail']),
             projectId () {
                 return this.$route.params.projectId
             },
@@ -92,7 +93,7 @@
                         list: PCLayouts
                     },
                     {
-                        title: 'MOBILE',
+                        title: 'Mobile',
                         list: MOBILELayout
                     }
                 ]
@@ -183,7 +184,7 @@
                 return require(`@/images/${previewImg}`)
             },
             handlePreview (layout) {
-                window.open(`/preview-template/project/${layout.projectId}/${layout.id}?type=nav-template&v=${layout.versionId || ''}`, '_blank')
+                window.open(`/preview-template/project/${layout.projectId}/${layout.id}?type=nav-template&v=${layout.versionId || ''}&framework=${this.projectDetail.framework}`, '_blank')
             }
         }
     }

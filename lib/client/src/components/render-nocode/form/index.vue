@@ -5,34 +5,39 @@
         v-bkloading="{ isLoading }">
         <!-- 表单左边标签选择面板 -->
         <left-panel slot="left" :page-type="pageType" :disabled="disabled" @move="fieldPanelHover = true" @end="fieldPanelHover = false" />
-        <layout style="background: #fff; height: 100%">
-            <!-- 表单面板 -->
-            <form-content
-                :fields="fieldsList"
-                :curfield="crtField"
-                :disabled="disabled"
-                @add="handleAddField"
-                @select="handleSelectField"
-                @copy="handleCopyField"
-                @delete="handleDeleteField"
-                @move="handleOrderField"
-                @clickOutSide="crtField = {}"
-            />
-        </layout>
+        <!-- <section ref="root"> -->
+        <section ref="root" class="nocode-center-content-wrapper" :style="centerRenderStyle">
+            <layout style="background: #fff; height: 100%">
+                <form-content
+                    :fields="fieldsList"
+                    :curfield="crtField"
+                    :disabled="disabled"
+                    @add="handleAddField"
+                    @select="handleSelectField"
+                    @copy="handleCopyField"
+                    @delete="handleDeleteField"
+                    @move="handleOrderField"
+                    @clickOutSide="crtField = {}"
+                />
+            </layout>
+        </section>
+        <!-- </section> -->
         <!-- 表单右边设置区域 -->
-        <right-panel slot="right" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
+        <right-panel slot="right" :is-from-flow="isFromFlow" :field="crtField" :list="fieldsList" :disabled="disabled" @update="handleUpdateField" />
     </draw-layout>
 
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'   
     import cloneDeep from 'lodash.clonedeep'
+    import _ from 'lodash'
     import { messageError } from '@/common/bkmagic'
+    import contentWidthMixin from '../content-width-mixin'
     import DrawLayout from '@/views/index/components/draw-layout'
     import LeftPanel from './components/left-panel'
     import RightPanel from './components/right-panel'
-    import Layout from '@/components/render/pc/widget/layout'
+    import Layout from '@/components/render-nocode/components/layout'
     import FormContent from './components/form-content'
     import { bus } from '@/common/bus'
     export default {
@@ -43,7 +48,9 @@
             Layout,
             FormContent
         },
+        mixins: [contentWidthMixin],
         props: {
+            isFromFlow: Boolean, //标识是否是流程表单
             pageType: String,
             content: Array,
             disabled: {
@@ -103,6 +110,21 @@
                 })
                 this.crtField = {}
                 this.crtIndex = -1
+            })
+            bus.$on('clearCurFormField', () => {
+                this.crtField = {}
+                this.crtIndex = -1
+            })
+        },
+        mounted () {
+            const resizeObserverCallback = _.throttle(() => {
+                this.calcRenderStyles()
+            }, 100)
+
+            const activeResizeObserver = new ResizeObserver(resizeObserverCallback)
+            activeResizeObserver.observe(this.$refs.root)
+            this.$once('hook:beforeDestroy', () => {
+                activeResizeObserver.unobserve(this.$refs.root)
             })
         },
         beforeDestroy () {

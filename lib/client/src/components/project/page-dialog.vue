@@ -10,7 +10,7 @@
             header-position="left"
             ext-cls="page-operate-dialog"
         >
-            <bk-form ref="dialogForm" class="dialog-form" :label-width="86" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="dialogForm" class="dialog-form" :label-width="200" form-type="vertical" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('form_页面名称')" required property="pageName" error-display-type="normal">
                     <bk-input ref="projectDialogInput"
                         maxlength="60"
@@ -33,16 +33,6 @@
                             </div>
                         </template>
                     </bk-input>
-                </bk-form-item>
-                <bk-form-item
-                    :label="$t('form_本页面添加到导航菜单')"
-                    v-if="action === 'create' && showAddNavListSwitcher"
-                    :label-width="170"
-                    error-display-type="normal">
-                    <bk-switcher
-                        theme="primary"
-                        :value="isAddNavList"
-                        @change="(val) => isAddNavList = val" />
                 </bk-form-item>
             </bk-form>
             <div class="dialog-footer" slot="footer">
@@ -100,6 +90,11 @@
                                 required: true,
                                 message: this.$t('必填项'),
                                 trigger: 'blur'
+                            },
+                            {
+                                validator: this.checkName,
+                                message: '该页面名称已存在',
+                                trigger: 'blur'
                             }
                         ],
                         pageCode: [
@@ -111,6 +106,11 @@
                             {
                                 regex: /^[a-z][a-zA-Z0-9]{0,60}$/,
                                 message: this.$t('以小写字母开头，由字母与数字组成'),
+                                trigger: 'blur'
+                            },
+                            {
+                                validator: this.checkName,
+                                message: '该页面ID已存在',
                                 trigger: 'blur'
                             }
                         ],
@@ -165,9 +165,6 @@
             },
             isMobile () {
                 return this.dialog.formData.pageType === 'MOBILE'
-            },
-            showAddNavListSwitcher () {
-                return this.selectedLayout.type && !['empty', 'mobile-empty'].includes(this.selectedLayout.type)
             }
         },
         watch: {
@@ -176,6 +173,8 @@
                     setTimeout(() => {
                         this.$refs.projectDialogInput && this.$refs.projectDialogInput.$el.querySelector('input').focus()
                     }, 50)
+                } else {
+                    this.$emit('closeDialog')
                 }
             },
             action: {
@@ -196,6 +195,24 @@
             this.layoutList = await this.$store.dispatch('layout/getList', { projectId: this.projectId, versionId: this.versionId })
         },
         methods: {
+            async checkName () {
+                const nameExist = await this.$store.dispatch('page/checkName', {
+                    data: {
+                        pageName: this.dialog.formData.pageName,
+                        pageCode: this.dialog.formData.pageCode,
+                        projectId: this.projectId,
+                        versionId: this.versionId,
+                        currentName: this.currentName,
+                        from: this.action,
+                        blurCheck: true
+                    }
+                })
+                if (nameExist) {
+                    return false
+                } else {
+                    return true
+                }
+            },
             async handleDialogConfirm () {
                 this.dialog.loading = true
                 try {
@@ -228,14 +245,6 @@
                             versionId: this.versionId
                         }
                     }
-                    if (this.action === 'create') {
-                        const { id, routePath } = this.layoutList.find(layout => layout.checked)
-                        payload.data.layout = { id, routePath }
-
-                        if (this.showAddNavListSwitcher) {
-                            payload.data.pageData.isAddNav = this.isAddNavList
-                        }
-                    }
                     const res = await this.$store.dispatch(this.requestMethod, payload)
                     if (res) {
                         this.$bkMessage({
@@ -243,7 +252,7 @@
                             message: this.$t('{0}成功', [this.actionName])
                         })
                         this.dialog.visible = false
-                        this.refreshList()
+                        this.refreshList(res)
                     }
                 } catch (err) {
                     console.error(err)

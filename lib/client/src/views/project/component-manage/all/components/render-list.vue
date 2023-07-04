@@ -42,6 +42,11 @@
                         </div>
                     </template>
                 </bk-table-column>
+                <bk-table-column :label="$t('VUE 版本')" prop="framework" width="150" show-overflow-tooltip>
+                    <template slot-scope="{ row }">
+                        {{ row.framework || 'vue2' }}
+                    </template>
+                </bk-table-column>
                 <bk-table-column :label="$t('table_公开范围')" prop="scope" :render-header="renderHeaderAddTitle" align="left" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <div class="component-scope" :title="getScopeName(getPublicScope(row.id)[0])">
@@ -154,7 +159,7 @@
         },
         created () {
             this.fetchData()
-            const isProd = process.env.V3_ENV === 'prod'
+            const isProd = process.env.BK_LESSCODE_ENVIRONMENT === 'prod'
             this.tnpmPrefix = isProd ? '' : 'test-'
         },
         methods: {

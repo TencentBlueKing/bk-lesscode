@@ -1,13 +1,18 @@
 <template>
     <div class="area-wrapper">
-        <simulatorMobile :page-size="pageSize" :source="source" />
+        <div id="preview-mobile"></div>
     </div>
 </template>
 
 <script>
     import { useRoute } from '@/router'
-    import simulatorMobile from '@/components/render/mobile/common/simulator-mobile.vue'
+    import simulatorMobile from '@/components/render/mobile/common/simulator-mobile/simulator-mobile'
     import getHeaderHeight from '@/components/render/mobile/common/mobile-header-height'
+    import {
+        init,
+        render,
+    } from 'bk-lesscode-render'
+    import { i18nConfig } from '@/locales/i18n.js'
 
     export default {
         components: {
@@ -15,6 +20,8 @@
         },
         setup () {
             const route = useRoute()
+            // 初始化单例
+            init(route.query.framework)
             const width = 375
             const height = 812
             const { height: headerHeight } = getHeaderHeight()
@@ -25,7 +32,7 @@
             }
 
             const projectId = route.params.projectId
-            const pagePath = route.query.pagePath || '/mobile'
+            const pagePath = route.query.pagePath || ''
             const versionId = route.query.version
 
             let pathStr = `${versionId ? `/version/${versionId}` : ''}`
@@ -35,12 +42,24 @@
                 pageSize,
                 source: `${location.origin}/preview/project/${projectId}${pathStr}${pagePath}`
             }
+        },
+
+        mounted () {
+            render({
+                component: simulatorMobile,
+                props: {
+                    pageSize: this.pageSize,
+                    source: this.source
+                },
+                selector: '#preview-mobile',
+                i18nConfig
+            })
         }
     }
 </script>
 
 <style lang="postcss" scoped>
-    @import './../../components/render/mobile/area.scss';
+    @import './../../components/render/mobile/area.postcss';
 
     .area-wrapper {
         display: flex;

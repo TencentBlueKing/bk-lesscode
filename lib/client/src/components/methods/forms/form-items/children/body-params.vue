@@ -2,6 +2,7 @@
     <use-post-scheme
         :params="renderBody"
         :disabled="disabled"
+        :name-options="nameOptions"
         :render-slot="renderSlot"
         :get-param-val="getParamVal"
     />
@@ -30,7 +31,8 @@
         props: {
             body: Object,
             disabled: Boolean,
-            variableList: Array
+            variableList: Array,
+            nameOptions: Array
         },
 
         setup (props, { emit }) {

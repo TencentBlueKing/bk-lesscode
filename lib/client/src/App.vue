@@ -162,6 +162,11 @@
         font-family: -apple-system, BlinkMacSystemFont, PingFang SC, Microsoft YaHei, Helvetica Neue, Arial;
     }
 
+    input::-webkit-input-placeholder {
+        /* placeholder字体大小 */
+        font-size: 12px;
+    }
+
     .dialog-footer {
         button + button {
             margin-left: 6px;
@@ -232,5 +237,11 @@
         border-radius:50%;
         width:6px;
         height:6px;
+    }
+
+    .header-small-padding-dialog {
+        .bk-dialog-header {
+            padding-bottom: 6px;
+        }
     }
 </style>

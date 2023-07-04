@@ -68,7 +68,7 @@
                                         <ul class="group-function-list">
                                             <li
                                                 v-bk-tooltips="{
-                                                    content: functionData.funcSummary,
+                                                    content: $t(functionData.funcSummary),
                                                     disabled: !functionData.funcSummary,
                                                     placements: ['left-start'],
                                                     width: 200,
@@ -106,7 +106,7 @@
                                     class="function-item"
                                     v-for="functionData in computedFunctionData"
                                     v-bk-tooltips="{
-                                        content: functionData.funcSummary,
+                                        content: $t(functionData.funcSummary),
                                         disabled: !functionData.funcSummary,
                                         placements: ['left-start'],
                                         width: 200,
@@ -232,16 +232,17 @@
 
             computedFunctionData () {
                 let functionData
+                const reg = new RegExp(this.searchFunctionName, 'i')
                 switch (this.functionType) {
                     case 'functionTemplate':
                         functionData = this
                             .functionTemplates
-                            ?.filter(functionTemplate => functionTemplate.funcName?.includes(this.searchFunctionName))
+                            ?.filter(functionTemplate => reg.test(functionTemplate.funcName))
                         break
                     case 'functionMarket':
                         functionData = this
                             .marketFunctionList
-                            ?.filter(marketFunction => marketFunction.funcName?.includes(this.searchFunctionName))
+                            ?.filter(marketFunction => reg.test(marketFunction.funcName))
                         break
                     case 'functionList':
                         functionData = this
@@ -249,7 +250,8 @@
                             ?.reduce((acc, cur) => {
                                 const children = cur
                                     .children
-                                    .filter(functionData => functionData.funcName?.includes(this.searchFunctionName))
+                                    // .filter(functionData => functionData.funcName?.reg(this.searchFunctionName))
+                                    .filter(functionData => reg.test(functionData.funcName))
                                 acc.push({
                                     ...cur,
                                     children

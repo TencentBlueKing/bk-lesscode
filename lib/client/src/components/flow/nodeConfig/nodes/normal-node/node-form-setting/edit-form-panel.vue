@@ -15,24 +15,24 @@
                 <div
                     id="toolActionBox"
                     class="function-and-tool">
-                    <operation-select v-model="operationType" :hide-setting="!isCreateTicketPage" :hide-func="!isCreateTicketPage"></operation-select>
                     <!-- 保存、预览、快捷键等tool单独抽离 -->
-                    <action-tool
-                        :custom-save="true"
-                        :hide-preview="!isCreateTicketPage"
-                        :hide-func="!isCreateTicketPage"
-                        :disabled="isUseForm"
-                        :disabled-tips="isUseForm ? '复用表单模式下表单不可编辑' : ''"
-                        :custom-loading="savePending"
-                        @save="handleSave">
-                    </action-tool>
+                    <action-tool :hide-clear="false" :disabled="isUseForm" :disabled-tips="isUseForm ? $t('复用表单模式下表单不可编辑') : ''"></action-tool>
                 </div>
-                <extra-links></extra-links>
+                <page-operate
+                    :custom-save="true"
+                    :hide-preview="!isCreateTicketPage"
+                    :hide-page-setting="!isCreateTicketPage"
+                    :disabled="isUseForm"
+                    :disabled-tips="isUseForm ? $t('复用表单模式下表单不可编辑') : ''"
+                    :custom-loading="savePending"
+                    @save="handleSave">
+                </page-operate>
             </div>
             <div class="edit-content-wrapper">
                 <nocode-form
                     v-show="operationType === 'edit'"
                     page-type="FLOW"
+                    :is-from-flow="true"
                     :content="formConfig.content"
                     :disabled="isUseForm">
                 </nocode-form>
@@ -47,8 +47,7 @@
     import { mapState, mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import BreadcrumbNav from './breadcrumb-nav.vue'
-    import ExtraLinks from '@/components/ui/extra-links'
-    import OperationSelect from '@/views/edit-nocode/components/operation-select'
+    import PageOperate from '@/views/edit-nocode/components/header-operate'
     import ActionTool from '@/views/edit-nocode/components/action-tool'
     import NocodeForm from '@/components/render-nocode/form/index.vue'
     import PageSetting from '@/views/index/components/operation-area/components/page-setting'
@@ -59,8 +58,9 @@
         name: 'EditFormPanel',
         components: {
             BreadcrumbNav,
-            ExtraLinks,
-            OperationSelect,
+            // ExtraLinks,
+            // OperationSelect,
+            PageOperate,
             ActionTool,
             NocodeForm,
             PageSetting,

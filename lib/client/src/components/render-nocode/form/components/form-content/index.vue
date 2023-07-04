@@ -224,7 +224,7 @@
 @import "@/css/mixins/scroller";
 
 .form-panel {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 180px);
 }
 
 .fields-container {

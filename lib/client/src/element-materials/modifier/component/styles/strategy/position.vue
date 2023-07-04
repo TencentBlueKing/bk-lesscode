@@ -11,7 +11,7 @@
 
 <template>
     <style-layout :title="$t('定位')">
-        <style-item name="Position">
+        <style-item name="position">
             <bk-select
                 :value="positionValue"
                 font-size="medium"
@@ -24,48 +24,65 @@
                 <bk-option id="unset" name="unset" v-bk-tooltips="getTooltipsConfig($t('未设置'))" />
             </bk-select>
         </style-item>
-        <template v-if="positionValue && positionValue !== 'static' && positionValue !== 'unset'">
-            <style-item :name="item.name" v-for="item in posConfigRender" :key="item.key">
-                <size-input
-                    :value="item.value"
-                    :is-natural="false"
-                    :min="-Infinity"
-                    @change="handleInputChange(item, $event)">
-                    <append-select
+        <div v-if="positionValue && positionValue !== 'static' && positionValue !== 'unset'" style="margin-top: 12px;">
+            <distance-container style="z-index: 10">
+                <template v-for="item in posConfigRender">
+                    <distance-item
                         v-if="item.key !== 'zIndex'"
-                        :value="item.unit"
-                        @change="handleSelectChange(item, $event)" />
-                </size-input>
+                        :name="item.name"
+                        :key="item.key"
+                        :unit="item.unit"
+                        :value="item.value"
+                        :distance="item.distanceStyle"
+                        @change="handleInputChange(item, $event)"
+                    >
+                        <size-unit :value="item.unit" @change="handleSelectChange(item, $event)" class="small-padding"></size-unit>
+                    </distance-item>
+                </template>
+            </distance-container>
+            <style-item name="zIndex">
+                <bk-input
+                    type="number"
+                    :value="zIndexItem.value || ''"
+                    :min="0"
+                    @change="handleInputChange(item, $event)"
+                />
             </style-item>
-        </template>
+        </div>
     </style-layout>
 </template>
 
 <script>
     import StyleLayout from '../layout/index'
     import StyleItem from '../layout/item'
-    import AppendSelect from '@/components/modifier/append-select'
-    import SizeInput from '@/components/modifier/size-input'
     import { splitValueAndUnit } from '@/common/util'
     import { getCssProperties, getTooltipsConfig } from '../common/util'
     import defaultUnitMixin from '@/common/defaultUnit.mixin'
+    import distanceContainer from '@/components/modifier/distance-container'
+    import distanceItem from '@/components/modifier/distance-item'
+    import SizeUnit from '@/components/modifier/size-unit'
+    import SizeInput from '@/components/modifier/size-input'
 
     const posConfig = [
         {
             name: 'top',
-            key: 'top'
+            key: 'top',
+            distanceStyle: 'distance-top'
         },
         {
             name: 'left',
-            key: 'left'
+            key: 'left',
+            distanceStyle: 'distance-left'
         },
         {
             name: 'right',
-            key: 'right'
+            key: 'right',
+            distanceStyle: 'distance-right'
         },
         {
             name: 'bottom',
-            key: 'bottom'
+            key: 'bottom',
+            distanceStyle: 'distance-bottom'
         },
         {
             name: 'z-index',
@@ -77,7 +94,9 @@
         components: {
             StyleLayout,
             StyleItem,
-            AppendSelect,
+            distanceContainer,
+            distanceItem,
+            SizeUnit,
             SizeInput
         },
         mixins: [defaultUnitMixin],
@@ -101,6 +120,11 @@
             return {
                 positionValue: this.value.position || '',
                 posConfigRender: []
+            }
+        },
+        computed: {
+            zIndexItem () {
+                return this.posConfigRender.find(item => item.key === 'zIndex') || {}
             }
         },
         mounted () {

@@ -11,81 +11,81 @@
 
 <template>
     <style-layout :title="$t('尺寸')">
-        <template v-for="item in sizeConfigRender">
-            <style-item
-                v-if="item.key === 'display' || (item.key !== 'display' && !isInline)"
-                :name="item.name"
-                :key="item.key">
-                <bk-select
-                    v-if="item.key === 'display'"
-                    :value="item.value"
-                    font-size="medium"
-                    :clearable="false"
-                    @change="handleDisplayChange(item, $event)"
-                    style="width: 100%;">
-                    <bk-option id="block" name="block" />
-                    <bk-option id="inline" name="inline" />
-                    <bk-option id="inline-block" name="inline-block" />
-                    <bk-option id="unset" name="unset" />
-                </bk-select>
+        <div class="size-container">
+            <template v-for="item in sizeConfigRender">
                 <size-input
-                    v-else
+                    :key="item.key"
                     :value="item.value"
+                    :item="item"
                     @change="handleInputChange(item, $event)">
-                    <append-select
+                    <size-unit
+                        v-if="item.key !== 'display'"
                         :value="item.unit"
                         @change="handleSelectChange(item, $event)" />
                 </size-input>
-            </style-item>
-        </template>
+            </template>
+        </div>
     </style-layout>
 </template>
 
 <script>
     import StyleLayout from '../layout/index'
-    import StyleItem from '../layout/item'
-    import AppendSelect from '@/components/modifier/append-select'
-    import SizeInput from '@/components/modifier/size-input'
+    import SizeInput from '@/components/modifier/icon-size-input'
+    import SizeUnit from '@/components/modifier/size-unit'
     import { splitValueAndUnit } from '@/common/util'
     import { getCssProperties } from '../common/util'
     import defaultUnitMixin from '@/common/defaultUnit.mixin'
 
     const sizeConfig = [
         {
-            name: 'Display',
-            key: 'display'
-        },
-        {
             name: window.i18n.t('宽度'),
-            key: 'width'
+            key: 'width',
+            icon: 'bk-drag-kuandu'
         },
         {
             name: window.i18n.t('高度'),
-            key: 'height'
+            key: 'height',
+            icon: 'bk-drag-gaodu'
         },
         {
-            name: window.i18n.t('最小宽度'),
-            key: 'minWidth'
+            name: window.i18n.t('style_最小宽度'),
+            key: 'minWidth',
+            icon: 'bk-drag-zuixiaokuandu'
         },
         {
-            name: window.i18n.t('最大宽度'),
-            key: 'maxWidth'
+            name: window.i18n.t('style_最小高度'),
+            key: 'minHeight',
+            icon: 'bk-drag-zuixiaogaodu'
         },
         {
-            name: window.i18n.t('最小高度'),
-            key: 'minHeight'
+            name: window.i18n.t('style_最大宽度'),
+            key: 'maxWidth',
+            icon: 'bk-drag-zuidakuandu'
         },
         {
-            name: window.i18n.t('最大高度'),
-            key: 'maxHeight'
+            name: window.i18n.t('style_最大高度'),
+            key: 'maxHeight',
+            icon: 'bk-drag-zuidagaodu'
+        },
+        {
+            tips: 'display',
+            name: 'display',
+            key: 'display',
+            icon: 'bk-drag-display-3',
+            type: 'select',
+            options: [
+                { id: 'block', name: 'block' },
+                { id: 'inline', name: 'inline' },
+                { id: 'inline-block', name: 'inline-block' },
+                { id: 'unset', name: 'unset' }
+            ]
         }
     ]
     
     export default {
         components: {
             StyleLayout,
-            StyleItem,
-            AppendSelect,
+            SizeUnit,
             SizeInput
         },
         mixins: [defaultUnitMixin],
@@ -108,12 +108,6 @@
         data () {
             return {
                 sizeConfigRender: []
-            }
-        },
-        computed: {
-            isInline () {
-                const display = this.sizeConfigRender.filter(item => item.key === 'display')
-                return display.length && display[0].value === 'inline'
             }
         },
         watch: {
@@ -147,7 +141,12 @@
                 this.change(key, value)
             },
             handleInputChange (item, val) {
-                const newValue = val === '' ? '' : val + item.unit
+                let newValue = ''
+                if (item.key !== 'display') {
+                    newValue = newValue = val === '' ? '' : val + item.unit
+                } else {
+                    newValue = val
+                }
                 item.value = val
                 
                 this.triggerChange(item.key, newValue)
@@ -158,20 +157,15 @@
                     item.value = Math.min(item.value, unit === '%' ? 100 : item.value)
                     this.triggerChange(item.key, item.value + unit)
                 }
-            },
-            handleDisplayChange (item, val) {
-                item.value = val
-                if (val === 'inline') {
-                    const that = this
-                    this.sizeConfigRender.forEach(function (item) {
-                        if (item.key !== 'display') {
-                            item.value = ''
-                            that.handleInputChange(item, '')
-                        }
-                    })
-                }
-                this.triggerChange('display', val)
             }
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    .size-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+</style>

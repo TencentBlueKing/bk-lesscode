@@ -4,13 +4,13 @@
             render-directive="if"
             theme="primary"
             :title="dialogTitle"
-            :width="$store.state.Language === 'en' ? 750 : 600"
+            :width="600"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
-            ext-cls="template-edit-dialog"
+            ext-cls="template-edit-dialog header-small-padding-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="$store.state.Language === 'en' ? 168 : 120" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="pageTemplateFrom" class="dialog-form" form-type="vertical" :label-width="300" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('form_模板名称')" required property="templateName" error-display-type="normal">
                     <bk-input ref="nameInput"
                         maxlength="40"
@@ -40,7 +40,7 @@
                             <bk-radio :value="0">{{ $t('否') }}</bk-radio>
                         </bk-radio-group>
                     </bk-form-item>
-                    <bk-form-item :label="$t('form_公开模板分类')" required property="offcialType" error-display-type="normal">
+                    <bk-form-item v-if="dialog.formData.isOffcial === 1" :label="$t('form_公开模板分类')" required property="offcialType" error-display-type="normal">
                         <bk-select
                             :clearable="false"
                             v-model="dialog.formData.offcialType"

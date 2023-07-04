@@ -13,11 +13,15 @@
                 </div>
                 <div class="action-wrapper">
                     <i
-                        v-if="!isAttachToForm"
                         class="bk-drag-icon bk-drag-delet mr5"
                         id="del-component-right-sidebar"
                         @click="handleRemoveElement"
                         v-bk-tooltips="$t('删除')" />
+                    <i
+                        v-if="!isAttachToForm"
+                        class="bk-drag-icon bk-drag-copy mr5"
+                        @click="handleCopyCompId"
+                        v-bk-tooltips="$t('复制id')" />
                     <i class="bk-drag-icon"
                         v-show="componentData.isInteractiveComponent"
                         :class="componentData.interactiveShow ? 'bk-drag-visible-eye' : 'bk-drag-invisible-eye'"
@@ -41,6 +45,7 @@
     import _ from 'lodash'
     import LC from '@/element-materials/core'
     import MaterialModifier from '@/element-materials/modifier'
+    import { execCopy } from '@/common/util'
 
     export default {
         name: '',
@@ -71,7 +76,7 @@
                 this.checkAttachToFrom()
             }
 
-            const activeClearCallback = (event) => {
+            const activeClearCallback = () => {
                 this.componentData = {}
                 this.componentId = ''
                 this.componentDocument = ''
@@ -112,10 +117,24 @@
              */
             handleToggleInteractiveShow () {
                 this.componentData.toggleInteractive()
+            },
+            /**
+             * @desc 复制组件id
+             */
+            handleCopyCompId () {
+                execCopy(this.componentData?.componentId)
             }
         }
     }
 </script>
+<style lang="postcss">
+    .draw-page-modifier-panel {
+        .bk-select.medium-font {
+            font-size: 12px !important;
+            --font-size: 12px !important;
+        }
+    }
+</style>
 <style lang="postcss" scoped>
     .draw-page-modifier-panel {
         position: relative;
@@ -127,25 +146,26 @@
 
         .component-info {
             display: flex;
-            padding: 15px 0;
-            text-align: center;
+            align-items: center;
+            height: 42px;
+            padding: 0 20px;
+            justify-content: center;
             border-bottom: 1px solid #dcdee5;
 
             .component-id {
-                padding: 0 10px;
                 overflow: hidden;
-                width: 239px;
+                max-width: 230px;
+                margin-right: 10px;
                 white-space: nowrap;
                 text-overflow: ellipsis;
             }
             .action-wrapper {
-                flex: 1;
-                padding-right: 20px;
-                &:hover {
-                    color: #3a84ff;
-                }
+                display: flex;
                 i {
                     cursor: pointer;
+                    &:hover {
+                    color: #3a84ff;
+                }
                 }
             }
 

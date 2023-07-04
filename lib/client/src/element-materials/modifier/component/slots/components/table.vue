@@ -72,7 +72,8 @@
                                             content: `1. ${$t('请勾选列模板中使用到的函数管理中的函数')}
                                                       2. ${$t('未使用函数则无须勾选')}
                                                       3. ${$t('注意：此处系统显示函数标识')}`,
-                                            allowHtml: true
+                                            allowHtml: true,
+                                            maxWidth: 400
                                         }">
                                         {{$t('模板绑定函数')}}
                                     </span>
@@ -143,7 +144,7 @@
                                 </template>
                             </bk-input>
                         </div>
-                        <div class="template-item">
+                        <div class="template-item" v-if="projectDetail.framework !== 'vue3'">
                             <div class="label">
                                 <span class="g-config-subline" v-bk-tooltips="{ content: $t('对齐方式') }">{{ $t('对齐方式') }}</span>
                             </div>
@@ -160,26 +161,26 @@
                                 </bk-option>
                             </bk-select>
                         </div>
-                        <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                        <div v-if="item.type !== 'customCol' && projectDetail.framework !== 'vue3'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.sortable" @change="val => handleChange(val, 'sortable', index)" style="font-size: 12px;">
                                 {{$t('全局排序')}}
                                 <i
                                     class="bk-icon icon-info"
                                     v-bk-tooltips="{
                                         content: $t('当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【sort-change】事件中处理排序逻辑。其它情况系统会自动处理'),
-                                        width: '400'
+                                        maxWidth: '400'
                                     }"
                                 ></i>
                             </bk-checkbox>
                         </div>
-                        <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                        <div v-if="item.type !== 'customCol' && projectDetail.framework !== 'vue3'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
                                 {{$t('全局过滤')}}
                                 <i
                                     class="bk-icon icon-info"
                                     v-bk-tooltips="{
                                         content: $t('当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【filter-change】事件中处理过滤逻辑。其它情况系统会自动处理'),
-                                        width: '400'
+                                        maxWidth: '400'
                                     }"
                                 ></i>
                             </bk-checkbox>
@@ -250,7 +251,8 @@
         },
 
         computed: {
-            ...mapGetters('functions', ['funcGroups'])
+            ...mapGetters('functions', ['funcGroups']),
+            ...mapGetters('project', ['projectDetail'])
         },
 
         setup (props) {

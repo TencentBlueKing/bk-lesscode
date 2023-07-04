@@ -88,8 +88,8 @@
 
             return {
                 chooseTableName,
-                handleFetchData,
                 dataSourceType,
+                handleFetchData,
                 chooseTable,
                 clearTable
             }

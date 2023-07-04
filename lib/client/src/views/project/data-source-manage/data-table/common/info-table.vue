@@ -178,7 +178,7 @@
             margin-right: 10px;
             display: flex;
             .field-label {
-                width: 60px;
+                width: 100px;
                 display: inline-block;
             }
             .field-value {

@@ -88,7 +88,7 @@
             window.__lesscodeEditPageGuide = this
         },
         mounted () {
-            this.init()
+            setTimeout(this.init(), 1000)
             window.addEventListener('resize', this.handleReize)
         },
         beforeDestroy () {
@@ -102,8 +102,10 @@
             */
             init () {
                 if (!this.isDone) {
-                    document.body.appendChild(this.$refs.wraper)
-                    this.activeStep()
+                    this.$nextTick(() => {
+                        document.body.appendChild(this.$refs.wraper)
+                        this.activeStep()
+                    })
                 }
             },
             /**
@@ -328,6 +330,7 @@
             .step-action{
                 display: flex;
                 justify-content: flex-end;
+                align-items: center;
                 margin-top: 14px;
                 .action-text{
                     color: #3A84FF;

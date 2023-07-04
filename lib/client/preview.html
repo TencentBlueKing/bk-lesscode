@@ -12,8 +12,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="icon" href="<%= process.env.BK_STATIC_URL %>/images/logo.png" type="image/x-icon" />
-        <link rel="shortcut icon" href="<%= process.env.BK_STATIC_URL %>/images/logo.png" type="image/x-icon" />
+        <link rel="icon" href="<%= process.env.BK_STATIC_URL %>/static/images/logo.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="<%= process.env.BK_STATIC_URL %>/static/images/logo.png" type="image/x-icon" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>可视化开发平台 | 腾讯蓝鲸智云</title>
@@ -96,14 +96,15 @@
                 }
             }
             .preview-tip {
+                display: none;
                 position: fixed;
-                top: 7px;
+                top: 11px;
                 right: -29px;
                 transform: rotate(45deg);
                 font-size: 12px;
                 line-height: 13px;
                 padding: 6px 0;
-                width: 110px;
+                width: 120px;
                 text-align: center;
                 background: rgba(239, 184, 61, 0.8);
                 color: #000000;
@@ -115,7 +116,7 @@
     <body>
         <div id="preview-app">
             <div class="bk-loading">
-                <div class="bk-loading-wrapper">
+                <div class="bk-loading-wrapper">  
                     <div class="bk-loading1 bk-colorful bk-size-large">
                         <div class="point point1"></div>
                         <div class="point point2"></div>
@@ -125,7 +126,7 @@
                 </div>
             </div>
         </div>
-        <div class="preview-tip">未发布<br>请勿分享</div>
+        <div id="preview-tip" class="preview-tip"></div>
         <script>
             var BK_STATIC_URL = '<%= process.env.BK_STATIC_URL %>'
             var BKPAAS_ENVIRONMENT = '<%= process.env.BK_PAAS_ENVIRONMENT %>'

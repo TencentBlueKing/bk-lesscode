@@ -11,21 +11,26 @@
 
 <template>
     <style-layout :title="$t('鼠标')">
-        <style-item :name="'Cursor'">
+        <style-item :name="'cursor'">
             <bk-select
                 :value="cursorValue"
                 font-size="medium"
                 :clearable="false"
                 @change="handleChange"
                 style="width: 100%;">
-                <bk-option id="auto" name="auto" />
-                <bk-option id="default" name="default" />
-                <bk-option id="crosshair" name="crosshair" />
-                <bk-option id="pointer" name="pointer" />
-                <bk-option id="move" name="move" />
-                <bk-option id="text" name="text" />
-                <bk-option id="wait" name="wait" />
-                <bk-option id="help" name="help" />
+                <div slot="trigger">
+                    <div class="icon-content">
+                        <i :class="iconMap[cursorValue]"></i>
+                        {{cursorValue}}
+                    </div>
+                    <i class="bk-select-angle bk-icon icon-angle-down" />
+                </div>
+                <template v-for="item in Object.keys(iconMap)">
+                    <bk-option :id="item" :name="item" :key="item">
+                        <i :class="iconMap[item]" style="color: #000;margin-right: 6px;"></i>
+                        <span>{{item}}</span>
+                    </bk-option>
+                </template>
             </bk-select>
         </style-item>
     </style-layout>
@@ -52,7 +57,17 @@
         },
         data () {
             return {
-                cursorValue: this.value.cursor || 'auto'
+                cursorValue: this.value.cursor || 'auto',
+                iconMap: {
+                    auto: 'bk-drag-icon bk-drag-auto',
+                    default: 'bk-drag-icon bk-drag-shubiaozhizhen',
+                    crosshair: 'bk-drag-icon bk-drag-crosshair',
+                    pointer: 'bk-drag-icon bk-drag-pointer',
+                    move: 'bk-drag-icon bk-drag-move',
+                    text: 'bk-drag-icon bk-drag-text-3',
+                    wait: 'bk-drag-icon bk-drag-wait',
+                    help: 'bk-drag-icon bk-drag-help'
+                }
             }
         },
         methods: {
@@ -63,3 +78,12 @@
         }
     }
 </script>
+
+<style lang="postcss" scoped>
+    .icon-content {
+        margin-left: 8px;
+        i {
+            color: #000;
+        }
+    }
+</style>

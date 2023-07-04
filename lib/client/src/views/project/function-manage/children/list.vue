@@ -42,7 +42,7 @@
                 </bk-table-column>
                 <bk-table-column :label="$t('简介')" prop="funcSummary" :min-width="110" show-overflow-tooltip>
                     <template slot-scope="props">
-                        <span>{{ props.row.funcSummary || '--' }}</span>
+                        <span>{{ $t(props.row.funcSummary) || '--' }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('table_更新人')" prop="updateUser"></bk-table-column>
@@ -52,7 +52,8 @@
                         <span
                             v-bk-tooltips.light="{
                                 content: getUseInfoTips(props.row.useInfo).join('<br>'),
-                                disabled: !getUseInfoTips(props.row.useInfo).length
+                                disabled: !getUseInfoTips(props.row.useInfo).length,
+                                maxWidth: 400
                             }"
                             class="use-info"
                         >
@@ -65,7 +66,7 @@
                         <span class="table-btn" @click="handleEditFunction(props.row)">{{ $t('编辑') }}</span>
                         <span class="table-btn" @click="handleCopyFunction(props.row)">{{ $t('复制') }}</span>
                         <span @click="handleDeleteFunction(props.row)"
-                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row) }"
+                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400 }"
                             :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
                         >{{ $t('删除') }}</span>
                     </template>
@@ -188,12 +189,33 @@
             }
         },
 
+        created () {
+            this.getVariableList()
+        },
+
         methods: {
+            ...mapActions('variable', [
+                'getAllVariable'
+            ]),
             ...mapActions('functions', [
                 'getFunctionList',
                 'bulkCreateFunction',
                 'deleteFunction'
             ]),
+
+            getVariableList () {
+                const params = {
+                    projectId: this.projectId,
+                    versionId: this.versionId,
+                    effectiveRange: 0
+                }
+                this.isLoading = true
+                this.getAllVariable(params).catch((err) => {
+                    this.$bkMessage({ theme: 'error', message: err.message || err })
+                }).finally(() => {
+                    this.isLoading = false
+                })
+            },
 
             initData () {
                 this.isLoadingFunc = true

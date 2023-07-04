@@ -19,7 +19,8 @@ const SingleSchemeComponent = defineComponent({
         minusDisable: Boolean,
         plusBrotherDisable: Boolean,
         renderSlot: Function,
-        hideRequired: Boolean
+        hideRequired: Boolean,
+        nameOptions: Array
     },
 
     setup (props, { emit }) {
@@ -155,12 +156,34 @@ const SingleSchemeComponent = defineComponent({
                             property="name"
                             error-display-type="tooltips"
                         >
-                            <bk-input
-                                value={this.copyScheme.name}
-                                disabled={this.finalDisable}
-                                onInput={(name) => this.update({ name })}
-                            >
-                            </bk-input>
+                            {
+                                this.nameOptions?.length > 0
+                                && ![API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)
+                                    ? <bk-select
+                                        clearable={false}
+                                        disabled={this.finalDisable}
+                                        value={this.copyScheme.name}
+                                        onChange={(name) => this.update({ name })}
+                                    >
+                                        {
+                                            this.nameOptions.map((option: any) => (
+                                                <bk-option
+                                                    id={option.name}
+                                                    name={option.name}
+                                                    key={option.name}
+                                                    v-bk-tooltips={{ content: option.comment, disabled: !option.comment, maxWidth: 400 }}
+                                                >
+                                                </bk-option>
+                                            ))
+                                        }
+                                    </bk-select>
+                                    : <bk-input
+                                        value={this.copyScheme.name}
+                                        disabled={this.finalDisable}
+                                        onInput={(name) => this.update({ name })}
+                                    >
+                                    </bk-input>
+                            }
                         </bk-form-item>
                     </bk-form>
                     {
@@ -207,7 +230,7 @@ const SingleSchemeComponent = defineComponent({
                                     : <bk-input
                                         value={this.copyScheme.value}
                                         disabled={this.finalDisable}
-                                        onChange={(val) => this.update({ value: val })}
+                                        onChange={(val) => this.update({ value: this.copyScheme.type === API_PARAM_TYPES.NUMBER.VAL && !isNaN(+val) ? +val : val })}
                                     >
                                     </bk-input>
                         
@@ -215,6 +238,7 @@ const SingleSchemeComponent = defineComponent({
                     </section>
                     <bk-input
                         class="layout-middle"
+                        v-bk-tooltips={{ content: this.copyScheme.description, disabled: !this.copyScheme.description, maxWidth: 400 }}
                         value={this.copyScheme.description}
                         disabled={this.finalDisable}
                         onChange={(description) => this.update({ description })}
@@ -310,6 +334,7 @@ const SingleSchemeComponent = defineComponent({
                                 scheme={property}
                                 hideRequired={this.hideRequired}
                                 renderSlot={this.renderSlot}
+                                nameOptions={this.nameOptions}
                                 onUpdate={this.triggleChange}
                                 onPlusBrotherNode={this.plusChildProperty}
                                 onMinusNode={() => this.minusProperty(index)}

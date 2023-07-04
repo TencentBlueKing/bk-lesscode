@@ -1,15 +1,15 @@
 <template>
-    <div class="drag-group-box">
-        <div class="group-title" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17),width: 400 }">
-            <i
-                class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
-                :class="{
-                    floded: isFolded
-                }" />
-            <span>{{ groupName }}</span>
-            <div
-                v-if="$slots.tag"
-                class="tag">
+    <div class="drag-group-box" :class="{ 'fold-box': isFolded }">
+        <div class="group-name" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17), maxWidth: 400 }">
+            <section style="display: flex;height: 40px;" @click="handleToggle">
+                <i
+                    class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                    :class="{
+                        floded: isFolded
+                    }" />
+                <span class="name-content" :style="{ 'max-width': $slots.tag ? '200px' : '240px' }">{{ $t(groupName) }}</span>
+            </section>
+            <div v-if="$slots.tag">
                 <slot name="tag" />
             </div>
         </div>
@@ -24,7 +24,7 @@
             <vue-draggable
                 v-else
                 :options="dragOptions"
-                class="group-content"
+                class="list-wrap"
                 :list="list"
                 :sort="false"
                 :group="dragGroup"
@@ -71,7 +71,7 @@
                     pull: 'clone',
                     put: false
                 },
-                isFolded: this.folded
+                isFolded: false
             }
         },
         computed: {
@@ -81,6 +81,7 @@
         },
         created () {
             this.newNode = null
+            this.isFolded = this.folded
         },
         methods: {
             handleToggle () {
@@ -96,7 +97,6 @@
                 } else {
                     const materialConfig = this.list[event.oldIndex]
                     const node = LC.createNode(materialConfig.type)
-
                     Object.values(createHacker).forEach(task => task(node, materialConfig))
 
                     // 自定义组件
@@ -132,52 +132,57 @@
         }
     }
 </script>
+
 <style lang="postcss">
-    .drag-group-box{
-        user-select: none;
-        & ~ .drag-group-box{
-            margin-top: 12px;
-        }
-        .group-title{
-            position: relative;
+    .drag-group-box.fold-box {
+        margin-bottom: 0;
+    }
+    .drag-group-box {
+        margin-bottom: 8px;
+        .group-name {
+            padding: 0 7px;
             height: 40px;
-            line-height: 38px;
-            font-size: 14px;
-            background: #F5F6FA;
-            color: #63656E;
-            padding-left: 42px;
-            padding-right: 16px;
-            border-top: 1px solid #DCDEE5;
-            border-bottom: 1px solid #DCDEE5;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            cursor: pointer;
-            overflow: hidden;
-            .toggle-arrow{
-                position: absolute;
-                top: 7px;
-                left: 16px;
+            font-size: 12px;
+            color: #313238;
+            font-weight: Bold;
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #dde4eb;
+            &:hover{
+                cursor: pointer;
+            }
+            .toggle-arrow {
+                display: block;
+                line-height: 40px;
                 font-size: 24px;
-                color: #979BA5;
+                color: #63656E;
                 transition: all .1s linear;
-                &.floded{
+                margin-right: 8px;
+                &.floded {
                     transform: rotate(-90deg);
                 }
             }
-            .tag{
-                position: absolute;
-                top: -8px;
-                left: -26px;
-                width: 64px;
-                height: 30px;
+            .name-content {
+                display: block;
+                max-width: 240px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                line-height: 40px;
+            }
+            .group-tag {
+                margin-left: 6px;
                 font-size: 12px;
-                color: #fff;
-                background: #3A84FF;
-                transform: rotateZ(-45deg) scale(0.667);
-                text-align: center;
+                font-weight: normal;
+                padding: 2px 4px;
+                color: #3A84FF;
+                background: #F0F5FF;
+                border-radius: 2px;
+                transform: scale(.83);
             }
         }
+
         .group-list-empty{
             padding: 0 0 12px;
             .part-img{
@@ -188,60 +193,58 @@
                 margin-top: -8px;
             }
         }
-        .group-content{
+
+        .list-wrap {
             display: flex;
-            flex-wrap: wrap;
-            .render-drag-item{
-                position: relative;
-                width: 60px;
-                height: 68px;
-                text-align: center;
-                color: #979BA5;
-                border: 1px solid #DCDEE5;
-                border-radius: 2px;
-                background: #FAFBFD;
-                margin-top: 10px;
-                margin-left: 12px;
-                cursor: pointer;
-                &:hover{
-                    border: 1px solid #3a84ff;
-                    background: #3a84ff;
-                    color: #fff;
-                }
-                .component-icon{
-                    margin: 11px 0 2px 0;
-                }
-                .component-name{
-                    font-size: 12px;
-                    padding: 0 5px;
-                    margin-top: 1px;
-                    width: 100%;
-                    overflow: hidden;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    display: -webkit-box;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: normal;
-                    word-break: break-all;
-                }
-            }
-            .render-drag-icon-item{
-                width: 36px;
-                height: 36px;
-                margin-left: 12px;
-                margin-top: 10px;
-                background-color: #fafbfd;
-                color: #979ba5;
-                text-align: center;
-                font-size: 16px;
-                line-height: 36px;
-                cursor: pointer;
-                &:hover{
-                    background: #3a84ff;
-                    color: #fff;
+            /* justify-content: space-between; */
+            flex-flow: row wrap;
+            padding-left: 10px;
+            &.disabled {
+                .field-item {
+                    cursor: inherit;;
                 }
             }
         }
+
+        .field-item {
+            margin: 0 8px 8px 0;
+            padding: 0 4px 0 12px;
+            width: 134px;
+            height: 32px;
+            line-height: 32px;
+            color: #63656e;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: move;
+            user-select: none;
+            font-size: 0;
+            display: flex;
+            align-items: center;
+            span{
+                font-size: 12px;
+            }
+            &:not(.not-available):hover {
+                color: #3a84ff;
+                border-color: #3a84ff;
+            }
+            &.not-available {
+                color: #c4c6cc;
+                border-color: #dcdee5;
+                cursor: not-allowed;
+            }
+        }
     }
+
+    .comp-icon {
+        font-size: 16px;
+        padding-right: 6px;
+    }
+    .comp-name {
+            width: 90px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            margin-right: 2px;
+        }
 </style>

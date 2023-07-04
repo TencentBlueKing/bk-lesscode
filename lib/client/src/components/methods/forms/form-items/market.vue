@@ -16,7 +16,7 @@
                         :name="option.funcName">
                         <span class="market-function-name">
                             {{ option.funcName }}
-                            <i class="bk-icon icon-info" v-bk-tooltips="getTips(option.funcSummary)"></i>
+                            <i class="bk-icon icon-info" v-bk-tooltips="{ content: getTips(option.funcSummary), maxWidth: 400 }"></i>
                         </span>
                     </bk-option>
                 </bk-select>
@@ -46,7 +46,7 @@
             ...mapActions('functionMarket', ['getFunctionList']),
 
             getTips (funcSummary) {
-                const tips = transformTipsWidth(funcSummary, 350)
+                const tips = transformTipsWidth(window.i18n.t(funcSummary), 350)
                 let tipObj = {
                     content: tips,
                     placement: 'left',

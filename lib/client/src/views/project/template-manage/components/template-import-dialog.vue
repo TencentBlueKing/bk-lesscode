@@ -4,13 +4,13 @@
             render-directive="if"
             theme="primary"
             :title="dialogTitle"
-            :width="$store.state.Language === 'en' ? 750 : 600"
+            :width="600"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
-            ext-cls="template-import-dialog"
+            ext-cls="template-import-dialog header-small-padding-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="import-dialog-form" :label-width="$store.state.Language === 'en' ? 170 : 120" :rules="dialog.formRules" :model="dialog.formData">
+            <bk-form ref="pageTemplateFrom" class="import-dialog-form" form-type="vertical" :label-width="300" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('form_导入模板json')" required property="templateName" error-display-type="normal">
                     <bk-upload
                         with-credentials
@@ -173,10 +173,7 @@
                         this.isShow = false
                     }
                 } catch (err) {
-                    this.$bkMessage({
-                        theme: 'error',
-                        message: err.message || err
-                    })
+                    console.error(err, 'import err')
                 } finally {
                     this.dialog.loading = false
                 }

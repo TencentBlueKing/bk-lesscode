@@ -6,7 +6,8 @@
                 :class="{ 'has-tips': showTips }"
                 v-bk-tooltips="{
                     disabled: !showTips,
-                    content: config.tips
+                    content: config.tips,
+                    maxWidth: 400
                 }">
                 {{ config.propertyDisplayName }}
                 <template v-if="config.type">({{ config.type | caseConversion }})</template>
@@ -20,7 +21,7 @@
                 :name="config.propertyDisplayName"
                 :change="handleIconChange">
             </icon-select>
-            <bk-switcher v-else-if="config.type === 'boolean'" v-model="localVal.val" size="small" @change="$emit('change', localVal)"></bk-switcher>
+            <bk-switcher v-else-if="config.type === 'boolean'" v-model="localVal.val" theme="primary" size="small" @change="$emit('change', localVal)"></bk-switcher>
             <bk-select v-else-if="Array.isArray(config.options)" v-model="localVal.val" @change="$emit('change', localVal)">
                 <bk-option v-for="item in config.options" :key="item" :id="item" :name="item"></bk-option>
             </bk-select>

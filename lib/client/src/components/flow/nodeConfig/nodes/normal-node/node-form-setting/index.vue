@@ -52,7 +52,7 @@
                 class="create-method-item"
                 :key="item.id"
                 @click="handleSetForm(item.id)">
-                <i class="bk-icon icon-plus"></i>
+                <i class="bk-drag-icon bk-drag-crosshair"></i>
                 {{ item.name }}
             </div>
         </div>
@@ -394,7 +394,7 @@
         top: 52px;
         right: 0;
         bottom: 0;
-        left: 0;
+        left: 59px;
         background: #fafbfd;
         z-index: 3000;
     }

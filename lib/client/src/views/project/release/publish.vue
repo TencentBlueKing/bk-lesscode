@@ -6,18 +6,18 @@
         <section v-show="!isLoading" :class="$style['release-container']">
             <div :class="$style['release-summary']">
                 <span :class="$style['setting']">
-                    <span :class="$style['label']"><span v-bk-tooltips="bindInfoTips" :class="$style['bind-label']">{{ $t('绑定蓝鲸应用模块') }}</span>：</span>
+                    <span :class="$style['label']"><span v-bk-tooltips="{ content: bindInfoTips, maxWidth: 400 }" :class="$style['bind-label']">{{ $t('绑定蓝鲸应用模块') }}</span>：</span>
                     <app-module-select ref="appModuleSelect"></app-module-select>
                 </span>
                 <span :class="[$style['latest-info']]">
                     <span :class="$style['label']">{{ $t('当前生产环境部署版本：') }}</span>
                     <span v-if="prodInfo.version && !prodInfo.isOffline">
-                        <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="getInfoTips(prodInfo)">
+                        <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="{ content: getInfoTips(prodInfo), maxWidth: 400 }">
                             <a target="_blank" :href="prodInfo.accessUrl">
                                 {{ prodInfo.version }}
                                 <i class="bk-drag-icon bk-drag-jump-link"></i>
                             </a>
-                            <a v-if="prodInfo.mobileUrl" href="javascript:;" @click="copy(prodInfo.accessUrl + prodInfo.mobileUrl)" v-bk-tooltips.top="$t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接')">
+                            <a v-if="prodInfo.mobileUrl" href="javascript:;" @click="copy(prodInfo.accessUrl + prodInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
                                 <i class="bk-drag-icon bk-drag-mobilephone"> </i>
                             </a>
                         </span>
@@ -43,7 +43,7 @@
                                 {{ stagInfo.version }}
                                 <i class="bk-drag-icon bk-drag-jump-link"></i>
                             </a>
-                            <a v-if="stagInfo.mobileUrl" href="javascript:;" @click="copy(stagInfo.accessUrl + stagInfo.mobileUrl)" v-bk-tooltips.top="$t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接')">
+                            <a v-if="stagInfo.mobileUrl" href="javascript:;" @click="copy(stagInfo.accessUrl + stagInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
                                 <i class="bk-drag-icon bk-drag-mobilephone"> </i>
                             </a>
                         </span>
@@ -71,12 +71,13 @@
                         <span>{{ $t('更多操作') }}</span>
                         <i :class="['bk-icon icon-angle-down', { 'icon-flip': isDropdownShow }]"></i>
                     </div>
-                    <ul class="bk-dropdown-list" slot="dropdown-content">
+                    <ul class="bk-dropdown-list" style="max-height: 194px" slot="dropdown-content">
                         <li><a href="javascript:;" @click="toManagePage('deploy')">{{ $t('部署管理') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('process')">{{ $t('进程管理') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('log?tab=structured')">{{ $t('日志查询') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('environment_variable')">{{ $t('环境配置') }}</a></li>
                         <li><a href="javascript:;" @click="toManagePage('app_entry_config')">{{ $t('访问入口') }}</a></li>
+                        <li><a href="javascript:;" @click="toManagePage('base-info', false)">{{ $t('基本信息') }}</a></li>
                     </ul>
                 </bk-dropdown-menu>
             </div>
@@ -92,15 +93,15 @@
                     <div :class="$style['type']">
                         <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('form_部署环境') }}</span>
                         <bk-radio-group v-model="versionForm.env" :class="$style['version-type']" @change="getReleaseSql">
-                            <bk-radio value="stag">{{ $t('预发布环境') }}</bk-radio>
-                            <bk-radio value="prod" style="margin-left: 70px">{{ $t('生产环境') }}</bk-radio>
+                            <bk-radio style="width: 120px" value="stag">{{ $t('预发布环境') }}</bk-radio>
+                            <bk-radio value="prod" style="margin-left: 50px">{{ $t('生产环境') }}</bk-radio>
                         </bk-radio-group>
                     </div>
                     <div :class="[$style['type'], $style['is-source']]">
                         <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('form_源码包') }}</span>
                         <div>
                             <bk-radio-group v-model="versionForm.releaseType" :class="$style['version-type']" @change="getReleaseSql">
-                                <bk-radio value="PROJECT_VERSION">{{ $t('应用版本') }}
+                                <bk-radio style="width: 120px" value="PROJECT_VERSION">{{ $t('应用版本') }}
                                     <i :class="['bk-icon', 'icon-info', $style['icon']]"
                                         v-bk-tooltips="{
                                             content: $t('基于应用“默认”或未归档的版本'),
@@ -108,7 +109,7 @@
                                         }"
                                     ></i>
                                 </bk-radio>
-                                <bk-radio value="HISTORY_VERSION" style="margin-left: 70px">{{ $t('历史部署包') }}
+                                <bk-radio value="HISTORY_VERSION" style="margin-left: 50px">{{ $t('历史部署包') }}
                                     <i :class="['bk-icon', 'icon-info', $style['icon']]"
                                         v-bk-tooltips="{
                                             content: $t('已部署成功过的的源码包')
@@ -132,6 +133,7 @@
                     </div>
                     <div
                         :class="[$style['last-version-tips'], $style['version-table']]"
+                        v-enClass="$style['en-m-left']"
                         v-if="showReleaseTips"
                         v-bkloading="{ isLoading: isLoadingReleaseSql || flowListLoading }">
                         <i :class="$style['table-icon']" class="bk-drag-icon bk-drag-info-tips"></i>
@@ -161,7 +163,7 @@
                                 style="width: 400px"
                                 v-model="versionForm.releaseVersion">
                             </bk-input>
-                            <p :class="$style['version-err-tips']" v-enStyle="'left:260px'" v-show="versionErrTips">{{versionErrTips}}</p>
+                            <p :class="$style['version-err-tips']" v-enStyle="'left:220px'" v-show="versionErrTips">{{versionErrTips}}</p>
                         </div>
                         <bk-select v-else-if="isSucVersion" :placeholder="$t('请选择要部署的历史版本')" style="width: 400px"
                             :clearable="false"
@@ -176,7 +178,7 @@
                     <div :class="$style['form-item']" v-if="isProjVersion">
                         <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('form_创建应用版本') }}</span>
                         <bk-radio-group v-model="versionForm.isCreateProjVersion" :class="$style['version-type']">
-                            <bk-radio :value="0">{{ $t('否') }}</bk-radio>
+                            <bk-radio style="width: 120px" :value="0">{{ $t('否') }}</bk-radio>
                             <bk-radio :value="1" style="margin-left: 50px">{{ $t('是，部署成功后创建应用版本并归档') }}</bk-radio>
                         </bk-radio-group>
                     </div>
@@ -191,8 +193,8 @@
                         <p :class="$style['version-err-tips']" v-show="versionLogErrTips">{{versionLogErrTips}}</p>
                     </div>
 
-                    <div :class="[$style['operate-btn'], $style['m-left']]" v-enClass="$style['en-m-left']">
-                        <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
+                    <div :class="[$style['release-btn'], $style['m-left']]" v-enClass="$style['en-m-left']">
+                        <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release" v-enStyle="'width: 150px'">
                             {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? $t('部署中...') : $t('部署')}}
                         </bk-button>
                         <span :class="$style['release-tips']">{{ $t('由PaaS平台-开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理') }}</span>
@@ -216,7 +218,7 @@
                         <span :class="$style['offline-label']">{{ $t('下架环境') }}</span>
                         <bk-radio-group v-model="offlineEnv" :class="$style['offline-type']">
                             <bk-radio value="stag" :disabled="!(stagInfo.version && !stagInfo.isOffline)">{{ $t('预发布环境') }}</bk-radio>
-                            <bk-radio value="prod" :disabled="!(prodInfo.version && !prodInfo.isOffline)" style="margin-left: 70px">{{ $t('生产环境') }}</bk-radio>
+                            <bk-radio value="prod" :disabled="!(prodInfo.version && !prodInfo.isOffline)" style="margin-left: 50px">{{ $t('生产环境') }}</bk-radio>
                         </bk-radio-group>
                     </div>
                 </div>
@@ -472,8 +474,8 @@
                     this.flowListLoading = false
                 }
             },
-            toManagePage (pageUrl) {
-                window.open(`${this.createLinkUrl}/apps/${this.currentAppInfo.appCode}/${this.currentAppInfo.moduleCode}/${pageUrl}`, '_blank')
+            toManagePage (pageUrl, showModule = true) {
+                window.open(`${this.createLinkUrl}/apps/${this.currentAppInfo.appCode}${showModule ? '/' + this.currentAppInfo.moduleCode : ''}/${pageUrl}`, '_blank')
             },
             copy (value) {
                 execCopy(value)
@@ -701,6 +703,7 @@
             box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
 
             .label {
+                margin-right: 4px;
                 font-weight: bold;
             }
             .bind-label {
@@ -790,7 +793,7 @@
                 }
 
                 .en-m-left {
-                    margin-left: 260px;
+                    margin-left: 220px !important;
                 }
                 .release-tips {
                     color: #979ba5;
@@ -813,7 +816,7 @@
                     }
                     .en-version-label{
                         flex: none;
-                        width: 260px;
+                        width: 220px;
                     }
                     .version-type {
                         display: inline;
@@ -828,6 +831,10 @@
                     &.is-source {
                         align-items: flex-start;
                     }
+                }
+                .release-btn {
+                    display: flex;
+                    align-items: center;
                 }
                 .required:after {
                     content: '*';

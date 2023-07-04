@@ -113,6 +113,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('project', ['projectDetail']),
             projectId () {
                 return this.$route.params.projectId
             }
@@ -136,8 +137,8 @@
                     this.filterLinks = [{ id: '', name: this.$t('全部') }]
                     const [projectTemplateGroups, projectTemplateList, tmpMarketTemplateList] = await Promise.all([
                         this.$store.dispatch('pageTemplate/categoryList', { projectId: this.projectId }),
-                        this.$store.dispatch('pageTemplate/list', { projectId: this.projectId }),
-                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL' })
+                        this.$store.dispatch('pageTemplate/list', { projectId: this.projectId, framework: this.projectDetail.framework }),
+                        this.$store.dispatch('pageTemplate/list', { type: 'OFFCIAL', framework: this.projectDetail.framework })
                     ])
                     this.templateList = projectTemplateList
                     const marketTemplateList = tmpMarketTemplateList.map(item => ({
@@ -223,7 +224,7 @@
                     })
                     return
                 }
-                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}`, '_blank')
+                window.open(`/preview-template/project/${template.belongProjectId}/${template.id}?framework=${this.projectDetail.framework}`, '_blank')
             },
             handleApply (template) {
                 this.selectApplyTemplate = Object.assign({}, template)

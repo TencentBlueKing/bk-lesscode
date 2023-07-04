@@ -5,16 +5,16 @@
         transfer
         :is-show="isShow"
         @update:isShow="close"
-        :width="$store.state.Language === 'en' ? 907 : 796"
+        :width="796"
         :title="dialogTitle">
         <div slot="content" class="operation-content" v-enClass="'en-operation-content'">
             <div class="component-guide">
                 <a href="/help/custom" target="_blank">{{ $t('组件开发指引') }}</a>
             </div>
-            <lc-form ref="form" :label-width="$store.state.Language === 'en' ? 174 : 90" :model="formData" :rules="rules">
+            <lc-form ref="form" :label-width="200" :model="formData" :rules="rules" form-type="vertical">
                 <lc-form-item :label="$t('form_组件类型')" required error-display-type="normal">
-                    <bk-radio-group v-model="formData.compType">
-                        <bk-radio-button value="PC">
+                    <bk-radio-group v-model="formData.compType" style="display: flex;">
+                        <bk-radio-button value="PC" style="flex: 1">
                             <bk-radio :checked="formData.compType === 'PC'"
                             ></bk-radio>
                             <i class="bk-drag-icon bk-drag-pc"></i>
@@ -33,6 +33,22 @@
                         </bk-radio-button>
                     </bk-radio-group>
                 </lc-form-item>
+                <lc-form-item :label="$t('VUE 版本')" required error-display-type="normal">
+                    <bk-radio-group v-model="formData.framework">
+                        <div class="bk-button-group">
+                            <bk-button
+                                @click="formData.framework = 'vue2'"
+                                :class="formData.framework === 'vue2' ? 'is-selected' : ''"
+                                :disabled="!!data.id || currentProject.framework === 'vue3'"
+                            >VUE 2</bk-button>
+                            <bk-button
+                                @click="formData.framework = 'vue3'"
+                                :class="formData.framework === 'vue3' ? 'is-selected' : ''"
+                                :disabled="!!data.id || currentProject.framework !== 'vue3'"
+                            >VUE 3</bk-button>
+                        </div>
+                    </bk-radio-group>
+                </lc-form-item>
                 <lc-form-item :label="$t('form_组件包')" required error-display-type="normal">
                     <bk-upload
                         class="component-upload"
@@ -45,7 +61,7 @@
                         @on-success="handleUploadSuccess"
                         @on-progress="handleProgress" />
                 </lc-form-item>
-                <bk-link class="component-demo-link" v-enClass="'en-component-demo-link'" theme="primary" @click="handleDownloadDemo">{{ $t('下载demo示例包') }}</bk-link>
+                <bk-link class="component-demo-link" theme="primary" @click="handleDownloadDemo">{{ $t('下载开发框架') }}</bk-link>
                 <lc-form-item :label="$t('form_组件名称')" required property="name" error-display-type="normal">
                     <bk-input
                         :value="formData.displayName && formData.name ? `${formData.displayName}(${formData.name})` : ''"
@@ -95,7 +111,7 @@
     import tnpmVersionValid from '@/common/tnpm-version-valid'
     import { leaveConfirm } from '@/common/leave-confirm'
 
-    const generatorData = () => ({
+    const generatorData = (data = {}) => ({
         name: '',
         displayName: '',
         type: '',
@@ -104,7 +120,9 @@
         categoryId: '',
         description: '',
         log: '',
-        compType: 'PC'
+        compType: 'PC',
+        framework: 'vue2',
+        ...data
     })
     export default {
         name: '',
@@ -122,9 +140,12 @@
             }
         },
         data () {
+            const formData = generatorData({
+                framework: this.$store.getters['project/currentProject'].framework || 'vue2'
+            })
             return {
                 isSubmiting: false,
-                formData: generatorData(),
+                formData,
                 lastVersion: '',
                 categoryList: []
             }
@@ -160,7 +181,8 @@
                     categoryId,
                     version,
                     description,
-                    versionLog
+                    versionLog,
+                    framework
                 } = newData
                 this.formData.name = name
                 this.formData.displayName = displayName
@@ -169,6 +191,7 @@
                 this.formData.categoryId = categoryId
                 this.formData.description = description
                 this.formData.log = versionLog
+                this.formData.framework = framework || 'vue2'
                 this.lastVersion = version
             },
             'formData.log' (log) {
@@ -179,7 +202,7 @@
         },
         created () {
             this.belongProjectId = parseInt(this.$route.params.projectId)
-            this.uploadTips = window.i18n.t('只允许上传ZIP包；\n组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID({0})前缀，即：{0}-xxx；组件源码须使用平台提供的打包工具打包生成min.js文件后再上传。', [this.currentProject.projectCode, this.currentProject.projectCode] )
+            this.uploadTips = window.i18n.t('只允许上传ZIP包；\n组件ID对应的组件包内config.json里的type配置，上传成功后会自动添加应用ID({0})前缀，即：{0}-xxx；\n必须使用系统提供的框架构建后上传。', { '0': this.currentProject.projectCode })
             this.versionLogPlaceholder = window.i18n.t('eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n')
 
             this.markdownOption = {
@@ -218,6 +241,9 @@
                 ],
                 log: [
                     { required: true, message: window.i18n.t('版本日志不能为空'), trigger: 'blur' }
+                ],
+                framework: [
+                    { required: true, message: window.i18n.t('组件对应 Vue 版本必须选择'), trigger: 'blur' }
                 ]
             }
         },
@@ -274,7 +300,9 @@
                 }
             },
             close () {
-                this.formData = generatorData()
+                this.formData = generatorData({
+                    framework: this.$store.getters['project/currentProject'].framework || 'vue2'
+                })
                 this.$emit('update:isShow', false)
             },
             handleCancel () {
@@ -284,7 +312,7 @@
                     })
             },
             handleDownloadDemo () {
-                window.open('/static/bk-lesscode-component-demo.zip', '_self')
+                window.open(`/static/bk-lesscode-component-${this.formData.framework}.zip`, '_self')
             }
         }
     }
@@ -333,24 +361,23 @@
                 }
             }
             .component-demo-link {
-                margin: -16px 90px 0;
+                margin-top: -16px;
                 .bk-link-text {
                     font-size: 12px;
                 }
             }
-            .en-component-demo-link{
-                margin-left: 174px;
-            }
         }
         .sideslider-footer{
-            padding-left: 120px;
+            padding-left: 30px;
             .bk-button {
                 margin-right: 10px;
             }
         }
+        .middle-text .bk-radio-button-text {
+            justify-content: center;
+        }
 
         .bk-form-radio-button .bk-radio-button-text {
-            width: 315px;
             height: 56px;
             display: flex;
             align-items: center;
@@ -381,11 +408,13 @@
         .bk-form-radio-button .bk-radio-button-input:checked+.bk-radio-button-text i{
             color: #3a84ff;
         }
-    }
-    .en-operation-content{
 
-        .bk-form-radio-button .bk-radio-button-text {
-            width: 327px;
+        .bk-button-group {
+            display: flex;
+            .bk-button {
+                flex: 1;
+                height: 56px;
+            }
         }
     }
 </style>

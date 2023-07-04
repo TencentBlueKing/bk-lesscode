@@ -43,3 +43,8 @@
   height: 100%;
 }
 </style>
+<style lang="postcss">
+    .nocode-center-content-wrapper {
+        overflow-x: auto;
+    }
+</style>

@@ -1,6 +1,6 @@
 <template>
-    <div class="node-data-manage" v-bkloading="{ isLoading: initDataLoading }">
-        <div v-if="!initDataLoading" class="node-tabs-wrapper">
+    <div class="node-data-manage" v-bkloading="{ isLoading: nodeListLoading }">
+        <div v-if="!nodeListLoading" class="node-tabs-wrapper">
             <bk-tab :active="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
@@ -54,7 +54,7 @@
         },
         data () {
             return {
-                initDataLoading: true,
+                nodeListLoading: true,
                 nodes: [],
                 formContents: {},
                 nodesConfig: {},
@@ -73,15 +73,11 @@
         async created () {
             this.nodesConfig = this.getNodesConfig()
             this.$store.commit('nocode/dataManage/setPageConfig', this.nodesConfig)
-            await this.getInitData()
+            await this.getNodeList()
             if (this.nodes.length > 0) {
                 this.setActiveNode(this.nodes[0].id)
                 this.getFormData()
             }
-        },
-        beforeDestroy () {
-            this.$store.commit('nocode/dataManage/resetPageConfig')
-            this.$store.commit('nocode/dataManage/setActiveNode', '')
         },
         methods: {
             getNodesConfig () {
@@ -91,9 +87,10 @@
                     return Object.assign({ tableActions: [], buttons: [] }, cloneDeep(this.pageDetail.content))
                 }
             },
-            async getInitData () {
+            // 获取流程中人工节点类型节点列表
+            async getNodeList () {
                 try {
-                    this.initDataLoading = true
+                    this.nodeListLoading = true
                     const serviceData = await this.$store.dispatch('nocode/flow/getServiceData', this.flowConfig.itsmId)
                     const res = await this.$store.dispatch('nocode/flow/getFlowNodes', { workflow: serviceData.workflow_id, page_size: 1000 })
                     const nodes = []
@@ -106,9 +103,10 @@
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
-                    this.initDataLoading = false
+                    this.nodeListLoading = false
                 }
             },
+            // 获取节点表单字段
             async getFormData () {
                 try {
                     this.formDataLoading = true
@@ -120,6 +118,7 @@
                     this.formDataLoading = false
                 }
             },
+            // 切换节点tab
             handleTabChange (val) {
                 this.setActiveNode(val)
                 if (val in this.nodesConfig) {
@@ -134,6 +133,7 @@
                     this.getFormData()
                 }
             },
+            // 更新筛选字段和表格配置字段
             handleUpdate (type, val) {
                 const pageConfig = cloneDeep(this.pageConfig)
                 if (!pageConfig[this.activeNode]) {

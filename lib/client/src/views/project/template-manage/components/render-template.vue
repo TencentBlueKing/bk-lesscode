@@ -107,6 +107,7 @@
         },
         computed: {
             ...mapGetters(['user']),
+            ...mapGetters('project', ['projectDetail']),
             projectId () {
                 return this.$route.params.projectId
             }
@@ -132,7 +133,7 @@
             async getTemplateList () {
                 this.isLoading = true
                 try {
-                    this.templateList = await this.$store.dispatch('pageTemplate/list', { projectId: this.projectId, categoryId: this.categoryId })
+                    this.templateList = await this.$store.dispatch('pageTemplate/list', { projectId: this.projectId, categoryId: this.categoryId, framework: this.projectDetail.framework })
 
                     if (this.keyword) {
                         this.renderList = this.templateList.filter(item => item.templateName.indexOf(this.keyword) !== -1)
@@ -177,7 +178,7 @@
                     templateName: template.templateName,
                     isOffcial: template.isOffcial,
                     offcialType: template.offcialType,
-                    previewImg: template?.previewImg.startsWith('http:') ? template.previewImg : ''
+                    previewImg: template?.previewImg.startsWith('http') ? template.previewImg : ''
                 }
             },
             async handleImport () {
@@ -217,8 +218,8 @@
                     })
                     return
                 }
-                const versionQuery = `${template.versionId ? `?v=${template.versionId}` : ''}`
-                window.open(`/preview-template/project/${this.projectId}/${template.id}${versionQuery}`, '_blank')
+                const versionQuery = `${template.versionId ? `&v=${template.versionId}` : ''}`
+                window.open(`/preview-template/project/${this.projectId}/${template.id}?framework=${this.projectDetail.framework}${versionQuery}`, '_blank')
             },
             handleSearch (clear = false) {
                 if (clear) {

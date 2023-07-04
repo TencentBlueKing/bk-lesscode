@@ -2,7 +2,7 @@
     <lc-form
         ref="formRef"
         form-type="vertical"
-        :label-width="100"
+        :label-width="300"
         :model="formData"
     >
         <lc-form-item
@@ -43,7 +43,7 @@
         </lc-form-item>
         <lc-form-item
             :label="$t('分类')"
-            :label-width="$store.state.Language === 'en' ? 110 : 100"
+            :label-width="150"
             property="categoryId"
             error-display-type="normal"
             :required="true"
@@ -92,7 +92,7 @@
                 </bk-select>
                 <bk-input
                     class="compose-url"
-                    :placeholder="$t('请输入接口地址')"
+                    :placeholder="$t('请输入接口地址，可以使用{变量标识}使用变量，变量会在函数使用阶段替换成真实的值')"
                     :value="formData.url"
                     @change="update('url', ...arguments)"
                 ></bk-input>
@@ -106,7 +106,8 @@
                 :false-value="0"
                 :value="formData.withToken"
                 v-bk-tooltips="{
-                    content: $t('勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）')
+                    content: $t('勾选后会在请求中携带 Api gateway 所需的认证信息（该认证信息根据发送请求用户和绑定应用生成）'),
+                    maxWidth: 400
                 }"
                 @change="update('withToken', ...arguments)"
             >{{ $t('蓝鲸应用认证') }}</bk-checkbox>

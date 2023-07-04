@@ -12,12 +12,9 @@
     <section class="flow-edit-wrapper">
         <div class="page-header-container">
             <div class="nav-container">
-                <back-btn
-                    :from-page-list="fromPageList"
-                    :flow-config="flowConfig"
-                    :deploy-pending="deployPending"
-                    @deploy="handleDeploy">
-                </back-btn>
+                <div class="go-back-icon-wrapper">
+                    <i class="bk-drag-icon bk-drag-arrow-back" @click="handleBackClick"></i>
+                </div>
                 <flow-selector
                     :list="flowList"
                     :list-loading="listLoading"
@@ -29,7 +26,7 @@
                     v-for="item in steps"
                     :key="item.id"
                     :item="item"
-                    :class="{ active: $route.name === item.id }">
+                    :class="{ 'menu-actived': $route.name === item.id }">
                 </menu-item>
             </div>
             <div class="genarate-action">
@@ -49,7 +46,6 @@
     import { mapState, mapGetters } from 'vuex'
     import { messageError } from '@/common/bkmagic'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
-    import BackBtn from './components/back-btn.vue'
     import FlowSelector from './components/flow-selector.vue'
     import GenerateDataManagePage from './components/generate-data-manage-page.vue'
 
@@ -57,7 +53,6 @@
         name: 'flowEdit',
         components: {
             MenuItem,
-            BackBtn,
             FlowSelector,
             GenerateDataManagePage
         },
@@ -74,7 +69,8 @@
                 serviceDataLoading: true,
                 serviceData: {},
                 deployPending: false,
-                fromPageList: false // 是否由页面列表页进入
+                fromPageList: false, // 是否由页面列表页进入
+                allowExitRoute: false // 是否可以离开页面
             }
         },
         computed: {
@@ -104,6 +100,41 @@
                     vm.fromPageList = true
                 }
             })
+        },
+        beforeRouteLeave (to, from, next) {
+            if (this.flowConfig.deployed || this.allowExitRoute  || to.name === 'createTicketPageEdit') {
+                next()
+                return
+            }
+            let instance
+            const h = this.$createElement
+            const deployFlow = async() => {
+                await this.handleDeploy()
+                instance.close()
+            }
+            const deployApp = () => {
+                instance.close()
+                this.allowExitRoute = true
+                this.$router.push({ name: 'release', params: { projectId: this.projectId } })
+            }
+            const leave = () => {
+                next()
+                instance.close()
+            }
+            instance = this.$bkInfo({
+                title: window.i18n.t('流程未部署，确认离开？'),
+                width: 420,
+                extCls: 'leave-flow-page-tips',
+                subHeader: h('div', { class: 'tips-content' }, [
+                    window.i18n.t('当前流程未部署，需部署后，预览环境方可生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境。'),
+                    h('div', { class: 'action-btns' }, [
+                        h('bk-button', { props: { theme: 'primary' }, on: { click: deployFlow } }, window.i18n.t('部署流程')),
+                        h('bk-button', { on: { click: deployApp } }, window.i18n.t('部署应用')),
+                        h('bk-button', { on: { click: leave } }, window.i18n.t('离开'))
+                    ])
+                ])
+            })
+
         },
         beforeDestroy () {
             this.$store.commit('nocode/flow/clearFlowConfig')
@@ -219,6 +250,13 @@
                 } finally {
                     this.deployPending = false
                 }
+            },
+            handleBackClick () {
+                if (this.fromPageList) {
+                    this.$router.push({ name: 'pageList' })
+                } else {
+                    this.$router.push({ name: 'flowList' })
+                }
             }
         }
     }
@@ -244,6 +282,11 @@
         align-items: center;
         .go-back-icon-wrapper {
             margin: 0 21px;
+            i {
+                color: #3a84ff;
+                cursor: pointer;
+                font-size: 13px;
+            }
         }
     }
     .steps-container {
@@ -252,6 +295,10 @@
         justify-content: center;
         min-width: 360px;
         height: 100%;
+        .menu-actived {
+            background: #e1ecff;
+            color: #3a84ff;
+        }
     }
     .genarate-action {
         position: absolute;
@@ -263,4 +310,26 @@
 .flow-edit-main {
     height: calc(100% - 53px);
 }
+</style>
+<style lang="postcss">
+    .leave-flow-page-tips.bk-dialog-wrapper {
+        .tips-content {
+            color: #63656e;
+            font-size: 14px;
+            text-align: left;
+        }
+        .action-btns {
+            margin-top: 30px;
+            text-align: center;
+            .bk-button:not(:last-of-type) {
+                margin-right: 4px;
+            }
+        }
+        .bk-info-box .bk-dialog-sub-header {
+            padding: 3px 24px 26px;
+        }
+        .bk-dialog-footer {
+            display: none;
+        }
+    }
 </style>

@@ -11,7 +11,7 @@
                 {{ title }}
                 <i
                     v-if="tips"
-                    v-bk-tooltips="{ content: tips }"
+                    v-bk-tooltips="{ content: tips, maxWidth: 400 }"
                     class="bk-icon icon-info"
                 ></i>
             </span>
@@ -44,7 +44,7 @@
 
             <span class="import-tip">
                 {{ $t('支持 {0} 文件格式，', [fileType]) }}<slot name="tips" :file-type="fileType"></slot>
-                <bk-link theme="primary" @click="downloadTemplate(fileType)">
+                <bk-link theme="primary" @click="downloadTemplate(fileType)" style="min-width: 100px;">
                     <i class="bk-drag-icon bk-drag-download"></i>{{ $t('{0} 模板', [fileType]) }}
                 </bk-link>
             </span>

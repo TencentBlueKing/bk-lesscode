@@ -1,43 +1,31 @@
 ## 自定义组件开发指引
 
-### npm 安装自定义组件打包构建工具
-
+### 组件升级
 ```bash
-npm i -g @blueking/lesscode-cli
+1. 一定需要下载平台提供的开发框架
+
+2. 将原来的业务代码复制到 `src/`目录下
+
+3. `config.json`文件添加`framework`字段，标明自定义组件使用的框架，可以填 vue2 或者 vue3
+
+4. 参照开发文档进行组件开发和构建
 ```
 
-### 自定义组件工程文件结构
+### 自定义组件工程文件结构 [代码库地址](https://github.com/TencentBlueKing/lesscode-custom-components)
 
-[下载 demo 示例包](/static/bk-lesscode-component-demo.zip)
-
-```bash
-|-- ROOT/               # 自定义组件根目录
-    |-- config.json     # 必须。组件能力配置，自定义组件暴露给 lesscode 的能力说明
-    |-- index.vue       # 必须。组件实现源码
-    |-- components/     # 推荐。引用的子组件目录
-    |   ......          # ajax mock 的实现
-    |-- doc/            # 蓝鲸前端开发脚手架的文档工程，这里的细节与实际工程无关，就不详细介绍了，如有兴趣，可自行查看（doc 里的内容不会影响到实际的工程）
-    |   ......
-    |-- statics/        # 推荐。静态资源目录
-    |   ......
-```
-
-### 开始创建组件工程
+下载开发框架: [Vue2](/static/bk-lesscode-component-vue2.zip) [Vue3](/static/bk-lesscode-component-vue3.zip)
 
 ```bash
-1. 创建自定义组件工程主目录 component-project
-mkdir component-project
-
-2. 进入工程主目录
-cd component-project
-
-3. 解压组件开发demo示例包到上述目录
-
-4. 进行组件功能开发（文件 ./index.vue）
-touch index.vue
-
-5. 暴露组件给 LessCode 的能力配置（文件 ./config.json）
-touch config.json
+|-- ROOT                    # 自定义组件根目录
+    |-- src/                # 编写自定义组件目录
+        |-- config.json     # 必须。组件能力配置，自定义组件暴露给 lesscode 的能力说明
+        |-- index.vue       # 必须。组件实现源码
+        |-- components/     # 推荐。引用的子组件目录
+        |   ......          # ajax mock 的实现
+        |-- doc/            # 蓝鲸前端开发脚手架的文档工程，这里的细节与实际工程无关，就不详细介绍了，如有兴趣，可自行查看（doc 里的内容不会影响到实际的工程）
+        |   ......
+        |-- statics/        # 推荐。静态资源目录
+        |   ......
 ```
 
 ### config.json（暴露给 LessCode 的能力配置）
@@ -57,6 +45,11 @@ touch config.json
         <td>name</td>
         <td>String</td>
         <td>页面展示的英文名</td>
+    </tr>
+    <tr>
+        <td>framework</td>
+        <td>String</td>
+        <td>组件使用的框架</td>
     </tr>
     <tr>
         <td>displayName</td>
@@ -154,35 +147,22 @@ directives —— 支持配置那些指令
 
 ### 本地调试
 
-#### 自定义组件本地调试步骤：
-
-> 1、初始化一个完整的 vue 应用（使用蓝鲸前端脚手架 [bkui-cli](https://www.npmjs.com/package/bkui-cli)）
->
-> 2、运行上一步初始好的前端工程
->
-> 3、将开发好的自定义组件作为应用中引用的组件引入应用中（在蓝鲸前端脚手架初始化的工程中，通常是在 components 目录）
->
-> 4、在应用中使用你的自定义组件，测试组件的逻辑
->
-> 注意应用中的 css 的处理工具需要配置为 postcss
-
-#### 本地开发调试完成后，为保证组件能够在线上使用，需要做以下事情，：
-> 1、在组件工程根目录添加 config.json 文件，并按照上面步骤写入配置项
->
-> 2、去掉 package.json 中的 vue、bk-magic-vue 等已经由平台内置依赖，以减少组件包体积
->
-> 3、去掉应用入口文件中的 `import Vue from 'vue'` 语句，确保自定义组件使用平台提供的 vue 实例，来注册指令、组件等
->
-> 4、修改接口调用的方式，本地调试的接口调用统一修改为调用平台函数管理中的 getApiData 方法，注意本地调试接口与线上接口的字段是否存在差异
-
-### 开发完成打包
-
 ```bash
-# 完成自定义组件功能开发，进入自定义组件工程根目录的上一级目录，../component-project
-cd ../component-project
+1. 安装依赖
+npm i 
 
-# 在当前目录打包得到 component-project.zip（需先安装打包工具 npm i -g @blueking/lesscode-cli）
-bklc build component-project
+2. 本地开发
+npm run dev
+
+3. 编写组件逻辑，并进行测试
+```
+
+### 构建
+```bash
+1. 执行构建命令
+npm run build
+
+2. 构建完成后，/zip 目录下会构建出自定义组件
 ```
 
 ### 上传
@@ -211,7 +191,7 @@ bklc build component-project
 
 > 点击新建按钮会出现自定义组件新建弹框
 >
-> 操作表单第一项选择将要上传的自定义组件包（component-project.zip）
+> 操作表单第一项选择将要上传的自定义组件包（component-project.zip，构建后位于 /zip 文件夹下）
 >
 > 上传成功后会自动解析自定义组件包中的 config.json，返回提供的 type、name、displayName 并自动回填到对应的表单项中
 

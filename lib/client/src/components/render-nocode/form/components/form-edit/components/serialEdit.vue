@@ -34,67 +34,64 @@
             @confirm="handlerConfirm"
             @cancel="handlerCancel">
             <div class="rule-box">
-                <draggable v-model="serialConfigInfo.serialRules" force-fallback="true" group="people" animation="500"
-                    @end="draggableEnd">
-                    <transition-group>
-                        <div class="row-box" v-for="(item, index) in serialConfigInfo.serialRules" :key="index">
-                            <div class="label-text">
-                                <span>{{ item.name }}</span>
-                                <i v-if="item.type !== 'serialNumber'" class="icon bk-drag-icon bk-drag-delet"
-                                    @click.stop="handlerDelete(index)" />
-                            </div>
-                            <div class="input-warp">
-                                <i class="icon bk-drag-icon bk-drag-grag-fill" />
-                                <template v-if="item.type === 'serialNumber'">
-                                    <bk-input
-                                        class="input-item"
-                                        v-model="item.configValue"
-                                        @change="($event) => serialNumberChange($event, item)"
-                                        type="number"
-                                        :min="4"
-                                        :max="10"
-                                        :disabled="disabled">
-                                        <template slot="append">
-                                            <div class="group-text">{{ $t('位') }}</div>
-                                        </template>
-                                    </bk-input>
-                                </template>
-                                <template v-else-if="item.type === 'date'">
-                                    <bk-select
-                                        v-model="item.configValue"
-                                        class="input-item"
-                                        searchable
-                                        :disabled="disabled"
-                                        @change="($event) => dateChange($event, item)">
-                                        <bk-option v-for="option in dateFormats" :key="option.id" :id="option.id"
-                                            :name="option.name"></bk-option>
-                                    </bk-select>
-                                </template>
-                                <template v-else-if="item.type === 'formField'">
-                                    <bk-select
-                                        v-model="item.configValue"
-                                        class="input-item"
-                                        searchable
-                                        :disabled="disabled"
-                                        @change="($event) => formFieldChange($event, item)">
-                                        <bk-option v-for="option in fields" :key="option.key" :id="option.key"
-                                            :name="option.name"></bk-option>
-                                    </bk-select>
-                                </template>
-                                <template v-else-if="item.type === 'customizeChar'">
-                                    <bk-input
-                                        class="input-item"
-                                        v-model="item.configValue"
-                                        :clearable="true"
-                                        :maxlength="100"
-                                        :disabled="disabled"
-                                        @change="($event) => customizeCharChange($event, item)">
-                                    </bk-input>
-                                </template>
-                            </div>
-
+                <draggable v-model="serialConfigInfo.serialRules" force-fallback="true" group="people" animation="500" @end="draggableEnd">
+                    <div class="row-box" v-for="(item, index) in serialConfigInfo.serialRules" :key="index">
+                        <div class="label-text">
+                            <span>{{ item.name }}</span>
+                            <i v-if="item.type !== 'serialNumber'" class="drag-icon bk-drag-icon bk-drag-delet"
+                                @click.stop="handlerDelete(index)" />
                         </div>
-                    </transition-group>
+                        <div class="input-warp">
+                            <i class="drag-icon bk-drag-icon bk-drag-grag-fill" />
+                            <template v-if="item.type === 'serialNumber'">
+                                <bk-input
+                                    class="input-item"
+                                    v-model="item.configValue"
+                                    @change="($event) => serialNumberChange($event, item)"
+                                    type="number"
+                                    :min="4"
+                                    :max="10"
+                                    :disabled="disabled">
+                                    <template slot="append">
+                                        <div class="group-text">{{ $t('位') }}</div>
+                                    </template>
+                                </bk-input>
+                            </template>
+                            <template v-else-if="item.type === 'date'">
+                                <bk-select
+                                    v-model="item.configValue"
+                                    class="input-item"
+                                    searchable
+                                    :disabled="disabled"
+                                    @change="($event) => dateChange($event, item)">
+                                    <bk-option v-for="option in dateFormats" :key="option.id" :id="option.id"
+                                        :name="option.name"></bk-option>
+                                </bk-select>
+                            </template>
+                            <template v-else-if="item.type === 'formField'">
+                                <bk-select
+                                    v-model="item.configValue"
+                                    class="input-item"
+                                    searchable
+                                    :disabled="disabled"
+                                    @change="($event) => formFieldChange($event, item)">
+                                    <bk-option v-for="option in fields" :key="option.key" :id="option.key"
+                                        :name="option.name"></bk-option>
+                                </bk-select>
+                            </template>
+                            <template v-else-if="item.type === 'customizeChar'">
+                                <bk-input
+                                    class="input-item"
+                                    v-model="item.configValue"
+                                    :clearable="true"
+                                    :maxlength="100"
+                                    :disabled="disabled"
+                                    @change="($event) => customizeCharChange($event, item)">
+                                </bk-input>
+                            </template>
+                        </div>
+
+                    </div>
                 </draggable>
             </div>
             <div class="row-box add-btn">
@@ -355,19 +352,18 @@
 
 <style lang="postcss" >
 .row-box {
-    margin: 10px 0;
+    margin: 12px 0;
     font-size: 12px;
 
     .label-text {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-left: 25px;
+        padding-left: 28px;
 
         .bk-drag-delet {
-            font-size: 18px;
-
+            font-size: 14px;
         }
 
         .bk-drag-delet:hover {
@@ -382,7 +378,7 @@
 }
 
 .add-btn {
-    margin-left: 30px;
+    margin-left: 18px;
 }
 
 .rule-box {
@@ -414,9 +410,10 @@
         flex: 1
     }
 
-    .bk-drag-grag-fill {
+    .drag-icon {
         font-size: 18px;
         margin-right: 10px;
+        cursor: move;
     }
 }
 

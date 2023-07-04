@@ -35,6 +35,10 @@
     </bk-dialog>
 </template>
 <script>
+    import {
+        isMatchFramework
+    } from 'shared/util'
+
     export default {
         name: '',
         props: {
@@ -97,8 +101,9 @@
         async created () {
             const url = IAM_ENABLE ? 'iam/myProject' : 'project/my'
             const projectList = await this.$store.dispatch(url, { config: {} })
-            projectList.splice(projectList.findIndex(item => item.id === this.projectId), 1)
-            this.sourceProjectList = projectList
+            const currentProject = projectList.splice(projectList.findIndex(item => item.id === this.projectId), 1)[0]
+            // 过滤出符合框架版本的应用
+            this.sourceProjectList = projectList.filter((project) => isMatchFramework(currentProject.framework, project.framework))
         },
         methods: {
             appendSourceProject () {

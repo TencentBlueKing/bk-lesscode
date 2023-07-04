@@ -20,7 +20,7 @@
                 class="bk-icon icon-info"
                 v-bk-tooltips="{
                     content: buildInVariableTip,
-                    width: '300',
+                    maxWidth: '300',
                     placements: ['left-start'],
                     boundary: 'window'
                 }"

@@ -2,14 +2,14 @@
     <div class="basic page-content" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
         <div class="info-flexible" v-show="!pageLoading">
             <div class="title">{{ $t('基本信息') }}</div>
-            <bk-form class="info-list" :label-width="150">
+            <bk-form class="info-list" :label-width="$store.state.Language === 'en' ? 260 : 150">
                 <bk-form-item :label="$t('form_应用名称：')">
                     {{projectDetail.projectName}}
                 </bk-form-item>
                 <bk-form-item :label="$t('应用ID：')">
                     {{projectDetail.projectCode}}
                 </bk-form-item>
-                <bk-form-item :label="$t('form_绑定蓝鲸应用模块：')" :desc="$t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改')">
+                <bk-form-item :label="$t('form_绑定蓝鲸应用模块：')" :desc="{ content: $t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改'), maxWidth: 400 }">
                     <app-module-select :can-edit="true"></app-module-select>
                 </bk-form-item>
                 <bk-form-item :label="$t('form_应用简介：')">
@@ -23,7 +23,6 @@
                 </bk-form-item>
                 <bk-form-item class="buttons">
                     <bk-button theme="primary" @click="handleEdit">{{ $t('编辑') }}</bk-button>
-                    <!-- <bk-button :hover-theme="'danger'" @click="handleDelete">删除</bk-button> -->
                 </bk-form-item>
             </bk-form>
         </div>
@@ -35,8 +34,9 @@
             width="600"
             :mask-close="false"
             :auto-close="false"
+            ext-cls="header-small-padding-dialog"
             header-position="left">
-            <bk-form ref="editForm" :label-width="$store.state.Language === 'en' ? 100 : 90" :rules="dialog.edit.formRules" :model="dialog.edit.formData">
+            <bk-form ref="editForm" :label-width="200" form-type="vertical" :rules="dialog.edit.formRules" :model="dialog.edit.formData">
                 <bk-form-item :label="$t('form_应用名称')" required property="projectName">
                     <bk-input maxlength="20" v-model.trim="dialog.edit.formData.projectName"
                         :placeholder="$t('请输入应用名称，20个字符以内')">
@@ -225,7 +225,7 @@
                     this.projectDetail = { ...this.projectDetail, ...data.fields }
                     this.$store.commit('project/updateCurrentProject', data.fields)
 
-                    bus.$emit('update-project-list')
+                    bus.$emit('update-project-info')
                 } catch (e) {
                     console.error(e)
                 } finally {

@@ -15,7 +15,7 @@
             :class="[$style['layout-center'],{ [$style['nocode-layout-center']]: isNocodeForm }]">
             <slot />
         </div>
-        <div v-if="!hideRightSlot" :class="$style['layout-right']">
+        <div :class="$style['layout-right']">
             <slot name="right" />
         </div>
         <div
@@ -79,13 +79,13 @@
 </script>
 <style lang="postcss" module>
     @import "@/css/mixins/scroller";
-    $layoutLeftWidth: 340px;
+    $layoutLeftWidth: 342px;
     $layoutRightWidth: 300px;
 
     .draw-layout{
         position: relative;
         padding-right: 300px;
-        padding-left: 340px;
+        padding-left: 342px;
         transition: all .1s;
         &.is-left-collapsed{
             padding-left: 0;
@@ -168,7 +168,7 @@
             }
         }
         .collapsed-left-btn{
-            left: 340px;
+            left: 342px;
             border-radius: 0 8px 8px 0;
             :global(.bk-drag-angle-left) {
                 transform: rotate(0deg);
@@ -185,6 +185,8 @@
     .page-data-manage-layout{
       /* max-width: 100vw; */
       position: relative;
+      height: 100%;
+      overflow-y: hidden;
       padding-right:  $layoutRightWidth;
       transition: all .1s;
 
@@ -201,6 +203,10 @@
             transform: rotate(0deg);
           }
         }
+      }
+      .layout-center {
+        /* height: calc(100% - 40px); */
+        padding: 20px;
       }
       .layout-right{
         position: absolute;
@@ -260,6 +266,7 @@
     .page-nocode-layout{
       /* max-width: 100vw; */
       padding-left: 300px !important;
+      /* padding-right: 300px !important; */
       &.is-left-collapsed{
         padding-left: 0 !important;
         .collapsed-left-btn{
@@ -288,8 +295,6 @@
     }
     .collapsed-nocode-left-btn{
       left: 300px !important;
-    }
-    .nocode-collapsed-right-btn{
     }
 
     .nocode-layout-center{

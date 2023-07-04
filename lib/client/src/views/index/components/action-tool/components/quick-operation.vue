@@ -16,6 +16,7 @@
                 <div class="operation-title">
                     <span class="title-main">{{ $t('快捷键说明') }}</span>
                 </div>
+                <bk-button @click="operationRollbacker">test</bk-button>
                 <ul class="operation-list">
                     <li
                         v-for="(operation, shortcutIndex) in quickOperationList"
@@ -40,10 +41,16 @@
         </div>
     </menu-item>
 </template>
+
 <script>
+    import _ from 'lodash'
     import LC from '@/element-materials/core'
-    import { NodeHistory } from '@/element-materials/core/Node-history'
     import MenuItem from './menu-item'
+    import Dexie from 'dexie'
+    import { mapGetters } from 'vuex'
+    // import { syncVariableValue } from '../../utils/sync-variable-value'
+
+    const RECORD_TABLE_NAME = 'operationRecord'
 
     export default {
         components: {
@@ -60,83 +67,223 @@
                     { keys: ['Ctrl / Cmd', 'C'], name: window.i18n.t('复制') },
                     { keys: ['Ctrl / Cmd', 'V'], name: window.i18n.t('粘贴') },
                     { keys: ['Ctrl / Cmd', 'X'], name: window.i18n.t('剪切') },
-                    // { keys: ['Ctrl / Cmd', 'Z'], name: '撤销' },
+                    { keys: ['Ctrl / Cmd', 'Z'], name: '撤销' },
                     // { keys: ['Ctrl / Cmd', 'Y'], name: '恢复' },
                     // { keys: ['Ctrl / Cmd', 'S'], name: '保存' },
                     { keys: ['Delete / Backspace'], name: window.i18n.t('删除') }
-                ],
-                isFocused: false
+                ]
             }
+        },
+        computed: {
+            ...mapGetters('variable', ['variableList'])
         },
         created () {
-            const focusCallback = (event) => {
-                const $drawRoot = document.querySelector('#lesscodeDrawContent')
-                this.isFocused = false
-                const $target = event.target
-                for (let i = 0; i < $target.path; i++) {
-                    if ($target.path[i] === $drawRoot) {
-                        this.isFocused = true
-                        break
-                    }
+            this.db = new Dexie('historyDatabase')
+            this.db.version(2).stores({
+                [RECORD_TABLE_NAME]: '++id,activeComponentId,activePanel,componentIdList,lastContent,interactiveShowComponentId'
+            })
+
+            this.operationRecordClear()
+
+            this.isTimeTravel = false
+            this.recordComponentIdList = []
+            this.activeComponentId = ''
+            this.activePanel = ''
+            this.lastContent = []
+            this.interactiveShow = false
+
+            const activeCallbak = (event) => {
+                this.activeComponentId = event.target.componentId
+            }
+
+            const mountedCallback = () => {
+                this.lastContent = LC.getRoot().toJSON().renderSlots.default
+            }
+
+            const updateCallback = (event) => {
+                if (!LC.__isMounted || this.isTimeTravel) {
+                    return
+                }
+
+                this.recordComponentIdList.push(event.target.componentId)
+                this.activePanel = event.target.tabPanelActive
+                this.operationRecorder()
+            }
+
+            const interactiveCallback = (event) => {
+                if (event.interactiveShow) {
+                    this.interactiveShowComponentId = event.target.componentId
+                } else {
+                    this.interactiveShowComponentId = ''
                 }
             }
 
-            const activeCallbak = () => {
-                this.isFocused = true
+            const unloadCallback = () => {
+                this.operationRecordClear()
             }
-            
-            window.addEventListener('keydown', this.handleQuickOperation)
-            document.body.addEventListener('click', focusCallback)
+
+            LC.addEventListener('update', updateCallback)
             LC.addEventListener('active', activeCallbak)
+            LC.addEventListener('mounted', mountedCallback)
+            LC.addEventListener('toggleInteractive', interactiveCallback)
+            LC.addEventListener('unload', unloadCallback)
 
             this.$once('hook:beforeDestroy', () => {
-                window.removeEventListener('keydown', this.handleQuickOperation)
-                document.body.removeEventListener('click', focusCallback)
+                this.operationRecordClear()
                 LC.removeEventListener('active', activeCallbak)
+                LC.removeEventListener('update', updateCallback)
+                LC.removeEventListener('mounted', this.mountedCallback)
+                LC.removeEventListener('unload', this.unloadCallback)
             })
         },
-        
+        mounted () {
+            document.body.addEventListener('keydown', this.handleParseOperation)
+            this.$once('hook:beforeDestroy', () => {
+                document.body.removeEventListener('keydown', this.handleParseOperation)
+            })
+        },
         methods: {
-            handleQuickOperation (event) {
-                if (!this.isFocused) {
+            /**
+             * @desc 解析快捷键
+             * @param { Event } Event
+             */
+            handleParseOperation (event) {
+                // 有 dialog 弹框遮罩不响应快捷键操作
+                const dialogMaskEl = document.querySelector('[data-bkpop-mask]')
+                if (dialogMaskEl && dialogMaskEl.classList.contains('show-active')) {
                     return
                 }
-                // 如果当前焦点在input框，需要忽略快捷键监听
-                if (event.target && event.target.classList.contains('bk-form-input')) {
+
+                // 函数管理弹框
+                if (document.querySelector('#lesscodeEditFunctionDialog')) {
                     return
                 }
-                const copyKeyCode = [67]
-                const pastKeyCode = [86]
-                const cutKeyCode = [88]
-                const removeKeyCode = [8, 46]
-                
-                if (event.ctrlKey || event.metaKey) {
-                    if (pastKeyCode.includes(event.keyCode)) {
-                        LC.execCommand('paste')
-                    }
-                    if (copyKeyCode.includes(event.keyCode)) {
-                        LC.execCommand('copy')
-                    }
-                    if (cutKeyCode.includes(event.keyCode)) {
-                        LC.execCommand('cut')
-                    }
-                } else {
-                    if (removeKeyCode.includes(event.keyCode)) {
+                // 右侧样式面板自定义样式弹框
+                if (document.querySelector('#materialsModifierCustomStyle')) {
+                    return
+                }
+
+                // 画布双击文本编辑
+                if (['lesscodeEditTextarea', 'lesscodeEditInput'].includes(event.target.id)) {
+                    return
+                }
+
+                // 输入框获得焦点画布不响应复制、粘贴、剪切操作
+                const isInputFocused = event.target.classList.contains('bk-form-input') || event.target.classList.contains('bk-form-textarea')
+                if (!isInputFocused) {
+                    if (event.ctrlKey || event.metaKey) {
+                        // 复制（Ctrl + C）
+                        if (event.code === 'KeyC') {
+                            LC.execCommand('copy')
+                        }
+                        // 粘贴（Ctrl + V）
+                        if (event.code === 'KeyV') {
+                            LC.execCommand('paste')
+                        }
+                        // 剪切（Ctrl + X）
+                        if (event.code === 'KeyX') {
+                            LC.execCommand('cut')
+                        }
+                    } else if ([8, 46].includes(event.keyCode)) {
                         LC.execCommand('remove')
                     }
                 }
-            },
 
-            backHistory () {
-                NodeHistory.backHistoryList()
+                // 回撤（Ctrl + Z）
+                if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
+                    // 画布页面禁用默认 Ctrl + Z 快捷键操作
+                    event.preventDefault()
+                    this.operationRollbacker()
+                }
             },
+            // 清空画布操作记录
+            operationRecordClear () {
+                if (this.db) {
+                    this.db.tables.forEach(tableItem => {
+                        tableItem.clear()
+                    })
+                }
+            },
+            /**
+             * @desc 记录画布操作
+             */
+            operationRecorder: _.debounce(function () {
+                this.db[RECORD_TABLE_NAME].add({
+                    activeComponentId: this.activeComponentId,
+                    activePanel: this.activePanel,
+                    componentIdList: this.recordComponentIdList,
+                    lastContent: this.lastContent || [],
+                    interactiveShowComponentId: this.interactiveShowComponentId
+                }).catch((e) => {
+                    console.log('Record Error : ')
+                    console.dir(e)
+                }).finally(() => {
+                    this.recordComponentIdList = []
+                    this.lastContent = LC.getRoot().toJSON().renderSlots.default
+                })
+            }, 200),
+            /**
+             * @desc 操作回滚
+             */
+            async operationRollbacker () {
+                const collection = this.db[RECORD_TABLE_NAME].toCollection()
 
-            forwardTargetHistory () {
-                NodeHistory.forwardHistoryList()
+                const recordCount = await collection.count()
+                if (recordCount < 1) {
+                    return
+                }
+
+                collection.last(data => {
+                    try {
+                        this.isTimeTravel = true
+                        const currentPageActiveNode = LC.getActiveNode()
+                        if (currentPageActiveNode && currentPageActiveNode !== data.activeComponentId) {
+                            currentPageActiveNode.activeClear()
+                        }
+                        // syncVariableValue(data.lastContent, this.variableList)
+                        LC.parseHistory(data.lastContent)
+                        // 延迟执行，等页面状态完毕选中组件
+                        setTimeout(() => {
+                            LC.triggerEventListener('rollback')
+                            // 回滚选中的节点
+                            const nextActiveNode = LC.getNodeById(data.activeComponentId)
+                            if (nextActiveNode) {
+                                nextActiveNode.active()
+                                nextActiveNode.setProperty('tabPanelActive', data.activePanel)
+                            }
+                            // 回滚交互式组件的选中状态
+                            if (data.interactiveShowComponentId) {
+                                const interactiveNode = LC.getNodeById(data.interactiveShowComponentId)
+                                if (interactiveNode) {
+                                    interactiveNode.toggleInteractive(true)
+                                }
+                            }
+                            // 重新渲染受影响的组件
+                            data.componentIdList.forEach(componentId => {
+                                LC.triggerEventListener('update', {
+                                    target: {
+                                        componentId
+                                    }
+                                })
+                            })
+                        })
+                        // 删除记录
+                        this.db[RECORD_TABLE_NAME].where('id').equals(data.id).delete()
+                    } catch (error) {
+                        console.log('Time Traverl Error: ', error)
+                    } finally {
+                        this.lastContent = LC.getRoot().toJSON().renderSlots.default
+                        // 回退需要等待页面状态完毕， 200ms 控制充足的时间
+                        setTimeout(() => {
+                            this.isTimeTravel = false
+                        }, 200)
+                    }
+                })
             }
         }
     }
 </script>
+
 <style lang="postcss">
     #quickOperationIntro {
         height: 230px;

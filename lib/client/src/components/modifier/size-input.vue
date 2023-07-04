@@ -18,7 +18,7 @@
                 @keydown="inputKeydownHandler($event)"
                 v-model="renderValue"
                 @input="handleChange" />
-            <span class="input-number-option">
+            <span class="input-number-option" v-if="showControls">
                 <span class="number-option-item bk-icon icon-angle-up" @click="add"></span>
                 <span class="number-option-item bk-icon icon-angle-down" @click="sub"></span>
             </span>
@@ -48,6 +48,10 @@
             isNatural: {
                 type: Boolean,
                 default: true
+            },
+            showControls: {
+                type: Boolean,
+                default: true
             }
         },
         data () {
@@ -61,7 +65,9 @@
                     // 190, // .
                     38, 40, 37, 39, // up down left right
                     46, // del
-                    9 // tab
+                    9, // tab
+                    96, 97, 98, 99, 100, 101, 102, 103, 104, 105, // 小键盘0-9
+                    109, 110 // 小键盘 - .
                 ],
                 renderValue: 0
             }
@@ -125,3 +131,7 @@
         }
     }
 </script>
+
+<style scoped>
+    
+</style>

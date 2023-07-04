@@ -3,7 +3,7 @@
         <bk-dialog v-model="isShow"
             render-directive="if"
             :title="$t('存为模板')"
-            :width="$store.state.Language === 'en' ? 700 : 600"
+            :width="600"
             :mask-close="false"
             :auto-close="false"
             :close-icon="false"
@@ -12,8 +12,8 @@
             header-position="left"
             ext-cls="template-operate-dialog"
         >
-            <bk-form ref="pageTemplateFrom" class="dialog-form" :label-width="$store.state.Language === 'en' ? 168 : 95" :rules="dialog.formRules" :model="dialog.formData">
-                <bk-form-item :label="$t('form_操作类型')" property="templateName" style="margin-bottom: 20px">
+            <bk-form ref="pageTemplateFrom" class="dialog-form" form-type="vertical" :label-width="200" :rules="dialog.formRules" :model="dialog.formData">
+                <bk-form-item :label="$t('form_操作类型')" property="templateName" style="margin-bottom: 10px">
                     <bk-radio-group v-model="dialog.formData.saveType">
                         <bk-radio value="new" style="margin-right: 20px">{{ $t('存为新模板') }}</bk-radio>
                         <bk-radio value="edit">{{ $t('更新覆盖已有模板') }}</bk-radio>
@@ -112,6 +112,7 @@
                 'pageDetail'
             ]),
             ...mapGetters('layout', ['pageLayout']),
+            ...mapGetters('project', ['projectDetail']),
             projectId () {
                 return this.$route.params.projectId
             }
@@ -120,9 +121,9 @@
             isShow (val) {
                 if (val) {
                     this.getTemplateCategory()
-                    setTimeout(() => {
-                        this.$refs.nameInput && this.$refs.nameInput.$el.querySelector('input').focus()
-                    }, 50)
+                    // setTimeout(() => {
+                    //     this.$refs.nameInput && this.$refs.nameInput.$el.querySelector('input').focus()
+                    // }, 50)
                 } else {
                     this.dialog.formData.saveType = 'new'
                     this.dialog.formData.templateName = ''
@@ -145,7 +146,7 @@
         methods: {
             async toggleTemplateList (val) {
                 if (val) {
-                    this.templateList = await this.$store.dispatch('pageTemplate/list', { projectId: this.projectId })
+                    this.templateList = await this.$store.dispatch('pageTemplate/list', { projectId: this.projectId, framework: this.projectDetail.framework })
                 }
             },
             async getTemplateCategory () {
@@ -172,9 +173,9 @@
                 }
                 
                 this.dialog.loading = true
-                const $rootElm = this.eventData.target.$elm
+                const elm = document.querySelector('.lesscode-editor-layout')
                 
-                html2canvas($rootElm).then(async (canvas) => {
+                html2canvas(elm).then(async (canvas) => {
                     try {
                         const imgData = canvas.toDataURL('image/png')
                         let data = {}
@@ -185,7 +186,8 @@
                             versionId: this.versionId,
                             fromPageCode: this.pageDetail && this.pageDetail.pageCode,
                             content: JSON.stringify(this.eventData.value),
-                            previewImg: imgData
+                            previewImg: imgData,
+                            framework: this.projectDetail.framework
                         }
                         
                         if (formData.saveType === 'edit') {
@@ -241,7 +243,10 @@
     .template-operate-dialog {
         /* z-index: 2100 !important; */
         .bk-dialog-body {
-            padding: 10px 15px 25px;
+            padding: 0 24px 24px;
+        }
+        .bk-dialog-header {
+            padding-bottom: 6px;
         }
     }
 </style>

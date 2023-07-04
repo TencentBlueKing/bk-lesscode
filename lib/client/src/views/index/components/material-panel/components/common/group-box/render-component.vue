@@ -1,11 +1,14 @@
 <template>
-    <div class="render-drag-item" :class="displayClass">
-        <div class="component-icon">
-            <i class="bk-drag-icon" :class="data.icon" />
-        </div>
-        <div class="component-name"
-            v-enStyle="'word-break: break-word'"
-            :title="$t(data.displayName).length >= 12 ? $t(data.displayName) : ''">{{ $t(data.displayName) }}</div>
+    <div class="field-item drag-entry" :class="displayClass">
+        <i :class="['bk-drag-icon', 'comp-icon', data.icon]"></i>
+        <span class="comp-name"
+            v-bk-tooltips="{
+                content: $t(data.displayName),
+                disabled: $t(data.displayName).length < 13,
+                maxWidth: 400
+            }">
+            {{ $t(data.displayName) }}
+        </span>
         <slot />
     </div>
 </template>

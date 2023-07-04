@@ -33,8 +33,8 @@
             </div>
 
             <page-from-template :platform="platform" :create-from-template="createFromTemplate" :template-change="changeTemplate" :nocode-type="nocodeType">
-                <bk-form ref="templateForm" :label-width="150" :rules="formRules" :model="formData" form-type="vertical">
-                    <bk-form-item :label="$t('form_当前已选模板')" :label-width="$store.state.Language === 'en' ? 210 : 150" property="templateName" error-display-type="normal" v-if="createFromTemplate">
+                <bk-form ref="templateForm" :label-width="300" :rules="formRules" :model="formData" form-type="vertical">
+                    <bk-form-item :label="$t('form_当前已选模板')" property="templateName" error-display-type="normal" v-if="createFromTemplate">
                         <bk-input readonly v-model.trim="selectTemplate.templateName"
                             :placeholder="$t('模板名称')">
                         </bk-input>
@@ -67,7 +67,6 @@
                     <bk-form-item
                         :label="$t('form_本页面添加到导航菜单')"
                         v-if="showAddNavListSwitcher"
-                        :label-width="$store.state.Language === 'en' ? 260 : 170"
                         error-display-type="normal">
                         <bk-switcher
                             theme="primary"
@@ -128,6 +127,11 @@
                             required: true,
                             message: this.$t('必填项'),
                             trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该页面名称已存在',
+                            trigger: 'blur'
                         }
                     ],
                     pageCode: [
@@ -139,6 +143,11 @@
                         {
                             regex: /^[a-z][a-z0-9]{0,60}$/,
                             message: this.$t('以小写字母开头，由小写字母与数字组成,少于60个字符'),
+                            trigger: 'blur'
+                        },
+                        {
+                            validator: this.checkName,
+                            message: '该页面ID已存在',
                             trigger: 'blur'
                         }
                     ],
@@ -247,6 +256,23 @@
                     this.save()
                 }
             },
+            async checkName () {
+                const nameExist = await this.$store.dispatch('page/checkName', {
+                    data: {
+                        pageName: this.formData.pageName,
+                        pageCode: this.formData.pageCode,
+                        projectId: this.projectId,
+                        versionId: this.versionId,
+                        from: 'create',
+                        blurCheck: true
+                    }
+                })
+                if (nameExist) {
+                    return false
+                } else {
+                    return true
+                }
+            },
             async save () {
                 try {
                     this.loading = true
@@ -341,6 +367,8 @@
                         Object.assign(this.formData, this.initPageData)
                     }
                     this.initData()
+                } else {
+                    this.$emit('closeDialog')
                 }
             },
             handleLayoutChecked (layout) {
@@ -372,11 +400,13 @@
             padding: 0 24px;
             .header {
                 .dialog-title {
+                    display: flex;
                     text-align: left;
                     margin: 18px 0 14px;
                     .platform-icon {
                         font-size: 16px;
-                        padding: 2px;
+                        margin-right: 8px;
+                        padding: 2px 3px;
                         color: #979ba5;
                         border-radius: 2px;
                         background: #f0f1f5;

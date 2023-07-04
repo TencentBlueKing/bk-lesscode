@@ -35,7 +35,7 @@
     import LC from '@/element-materials/core'
 
     export default {
-        name: '',
+        name: 'operation-area',
         components: {
             Render
         },
@@ -109,9 +109,9 @@
                 const {
                     width
                 } = this.$refs.root.getBoundingClientRect()
-                
+
                 this.renderStyles = {
-                    width: `${width - 40}px`,
+                    width: `${width}px`,
                     'min-height': `calc(100vh - ${top + 25}px)`
                 }
             },
@@ -134,7 +134,6 @@
     }
 </script>
 <style lang="postcss" module>
-    @import "@/css/mixins/scroller";
 
     .top-wrapper{
         height: 100%;
@@ -146,8 +145,6 @@
         margin: 0 20px 20px;
         padding-top: 20px;
         height: 100%;
-        overflow: auto;
-        @mixin scroller;
     }
     .vertical-wrapper{
         background: #fff;

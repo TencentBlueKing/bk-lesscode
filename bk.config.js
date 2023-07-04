@@ -11,6 +11,7 @@ module.exports = {
     publicPath: process.env.BK_STATIC_URL,
     typescript: true,
     bundleAnalysis: false,
+    parseNodeModules: false,
     replaceStatic: true,
     parallel: 8,
     copy: {
@@ -40,7 +41,8 @@ module.exports = {
             resolve: {
                 alias: {
                     '@': path.resolve(__dirname, './lib/client/src'),
-                    'shared': path.resolve(__dirname, './lib/shared')
+                    'shared': path.resolve(__dirname, './lib/shared'),
+                    VueI18n: path.resolve(__dirname, './node_modules/vue-i18n')
                 },
                 fallback: {
                     buffer: require.resolve('buffer')
@@ -73,21 +75,49 @@ module.exports = {
                         toast: {
                             name: 'toast-ui',
                             test: /toast-ui/,
-                            priority: 20,
+                            priority: 1,
                             chunks: 'all',
                             reuseExistingChunk: true
                         },
                         element: {
                             name: 'element-ui',
                             test: /element-ui/,
-                            priority: 30,
+                            priority: 1,
                             chunks: 'all',
                             reuseExistingChunk: true
                         },
-                        third: {
+                        echartsMavonVant: {
                             name: 'echarts-mavon-vant',
                             test: /(echarts)|(mavon-editor)|(vant)/,
-                            priority: 40,
+                            priority: 1,
+                            chunks: 'all',
+                            reuseExistingChunk: true
+                        },
+                        render: {
+                            name: 'bk-lesscode-render',
+                            test: /bk-lesscode-render/,
+                            priority: 1,
+                            chunks: 'all',
+                            reuseExistingChunk: true
+                        },
+                        sqlParser: {
+                            name: 'node-sql-parser',
+                            test: /node-sql-parser/,
+                            priority: 1,
+                            chunks: 'all',
+                            reuseExistingChunk: true
+                        },
+                        blueking: {
+                            name: 'blueking',
+                            test: /@blueking/,
+                            priority: 1,
+                            chunks: 'all',
+                            reuseExistingChunk: true
+                        },
+                        xlsxTypeormMoment: {
+                            name: 'xlsx-typeorm-moment',
+                            test: /(xlsx)|(typeorm)|(moment)/,
+                            priority: 1,
                             chunks: 'all',
                             reuseExistingChunk: true
                         }

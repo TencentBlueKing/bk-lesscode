@@ -1,5 +1,5 @@
 <template>
-    <lc-form :label-width="$store.state.Language === 'en' ? 195 : 180" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
+    <lc-form :label-width="200" :model="form" ref="funcForm" :form-type="formType" class="func-form-item">
         <lc-form-item
             :label="$t('form_函数简介')"
             property="funcSummary"
@@ -12,7 +12,7 @@
                 :rows="3"
                 :maxlength="100"
                 :disabled="disabled"
-                :value="form.funcSummary"
+                :value="$t(form.funcSummary)"
                 @input="(funcSummary) => updateValue({ funcSummary })">
             </bk-input>
         </lc-form-item>

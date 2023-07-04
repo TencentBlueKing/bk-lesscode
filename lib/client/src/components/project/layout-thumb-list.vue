@@ -13,19 +13,21 @@
             </div>
             <div class="layout-label" v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty' && layout.projectId">
                 <div class="layout-name" :title="layout.defaultName">
-                    {{ layout.defaultName }}
+                    {{ $t(layout.defaultName) }}
                 </div>
                 <div class="layout-preview" @click.prevent.stop="handlePreview(layout)">
                     {{ $t('预览') }} </div>
             </div>
-            <div v-else class="layout-empty-name" :title="layout.defaultName">
-                {{ layout.defaultName }}
+            <div v-else class="layout-empty-name" :title="$t(layout.defaultName)">
+                {{ $t(layout.defaultName) }}
             </div>
         </li>
     </ul>
 </template>
 
 <script>
+    import store from '@/store'
+
     export default {
         props: {
             list: {
@@ -58,7 +60,7 @@
                 return require(`@/images/${previewImg}`)
             },
             handlePreview (layout) {
-                window.open(`/preview-template/project/${layout.projectId}/${layout.id}?type=nav-template`, '_blank')
+                window.open(`/preview-template/project/${layout.projectId}/${layout.id}?type=nav-template&framework=${store.getters['project/projectDetail'].framework}`, '_blank')
             }
         }
     }

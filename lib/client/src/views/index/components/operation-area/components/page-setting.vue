@@ -33,7 +33,8 @@
                         <span
                             v-bk-tooltips="{
                                 content: field.desc,
-                                disabled: !field.desc
+                                disabled: !field.desc,
+                                maxWidth: 400
                             }"
                             class="field-display-name">
                             {{field.name}}
