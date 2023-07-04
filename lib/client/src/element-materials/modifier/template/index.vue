@@ -25,6 +25,7 @@
     import RenderComplexSide from './complex-side'
     import RenderMobileBottomMenu from './mobile-tab-bar'
     import store from '@/store'
+    import LC from '@/element-materials/core'
 
     const panelComMap = {
         info: RenderInfo,
@@ -65,6 +66,7 @@
         },
         methods: {
             handleChange (field, value) {
+                LC.triggerEventListener('updateCanvas', true)
                 bus.$emit('on-template-change', {
                     ...this.templateData,
                     [field]: value
