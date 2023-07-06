@@ -334,19 +334,23 @@
     @import "@/css/mixins/scroller";
 
     .select-project-dropdown {
-        border: 1px solid #404a5c;
-        background: #0e1525;
-        color: #BAC7D8;
+        border: 1px solid #2F3847;
+        background: #0E1525;
+        font-size: 12px;
+        color: #C4C6CC;
         .bk-select-search-input {
             padding: 0 10px 0 30px;
-            background: #0e1525;
-            border-bottom: 1px solid #404a5c;
+            background: #0E1525;
+            border-bottom: 1px solid #2F3847;
+            &::placeholder {
+                color: #747E94;
+            }
         }
         .bk-options-wrapper {
             .bk-option{
                 &.is-selected {
-                    color: #80a7e8;
-                    background-color: #243C5F !important;
+                    color: #7FAEF5;
+                    background: #253B5F !important;
                 }
                 .bk-option-content:hover {
                 color: #f0f1f5;
@@ -355,8 +359,16 @@
             }
         }
             .bk-select-extension {
-                border-top: 1px solid #404a5c;
-                background: #29354f;
+                border-top: 1px solid #2F3847;
+                background: #28354D;
+                padding: 0;
+                .page-row {
+                    padding: 0 16px;
+                    font-size: 12px;
+                    &:hover {
+                        background: #324260;
+                    }
+                }
         }
     }
 
