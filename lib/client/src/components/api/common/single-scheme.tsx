@@ -14,6 +14,7 @@ import {
 const SingleSchemeComponent = defineComponent({
     props: {
         scheme: Object,
+        parent: Object,
         disable: Boolean,
         typeDisable: Boolean,
         minusDisable: Boolean,
@@ -33,7 +34,7 @@ const SingleSchemeComponent = defineComponent({
         // 校验规则
         const requireRule = {
             validator (val) {
-                return val.length >= 1 || props.minusDisable
+                return val.length >= 1 || props.minusDisable || props.parent?.type === API_PARAM_TYPES.ARRAY.VAL
             },
             message: window.i18n.t('参数名是必填项，请修改后重试'),
             trigger: 'blur'
@@ -178,8 +179,9 @@ const SingleSchemeComponent = defineComponent({
                                         }
                                     </bk-select>
                                     : <bk-input
+                                        placeholder={this.$t('请输入字段名')}
                                         value={this.copyScheme.name}
-                                        disabled={this.finalDisable}
+                                        disabled={this.finalDisable || this.parent?.type === API_PARAM_TYPES.ARRAY.VAL}
                                         onInput={(name) => this.update({ name })}
                                     >
                                     </bk-input>
@@ -228,8 +230,9 @@ const SingleSchemeComponent = defineComponent({
                                     >
                                     </bk-checkbox>
                                     : <bk-input
+                                        placeholder={this.$t('请输入字段值')}
                                         value={this.copyScheme.value}
-                                        disabled={this.finalDisable}
+                                        disabled={this.finalDisable || [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)}
                                         onChange={(val) => this.update({ value: this.copyScheme.type === API_PARAM_TYPES.NUMBER.VAL && !isNaN(+val) ? +val : val })}
                                     >
                                     </bk-input>
@@ -332,6 +335,7 @@ const SingleSchemeComponent = defineComponent({
                                 key={property.id}
                                 ref={'childComponentRef' + index}
                                 scheme={property}
+                                parent={this.copyScheme}
                                 hideRequired={this.hideRequired}
                                 renderSlot={this.renderSlot}
                                 nameOptions={this.nameOptions}
