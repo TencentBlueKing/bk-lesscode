@@ -43,7 +43,7 @@
                 // 页面配置修改，标记画布资源被修改
                 LC.triggerEventListener('updateCanvas', true)
                 const setPageDetail = { [key]: val }
-                store.commit('page/updatePageDetail', { ...setPageDetail })
+                store.commit('page/updatePageDetail', setPageDetail)
             }
 
             return {
