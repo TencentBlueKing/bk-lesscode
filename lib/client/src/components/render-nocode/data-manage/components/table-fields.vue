@@ -80,7 +80,6 @@
         },
         data () {
             return {
-                cols: this.tableConfig.slice(),
                 emptyData: [{}],
                 selectedFieldKeys: []
             }
@@ -88,11 +87,9 @@
         computed: {
             colFields () {
                 const list = []
-                this.cols.forEach(key => {
-                    let field = this.systemFields.find(item => item.key === key)
-                    if (!field) {
-                        field = this.fields.find(item => item.key === key)
-                    }
+                this.tableConfig.forEach(key => {
+                    const allFields = [...this.systemFields, ...this.fields]
+                    const field = allFields.find(item => item.key === key)
                     if (field) {
                         list.push(field)
                     }
@@ -101,19 +98,11 @@
             }
         },
         watch: {
-            fields (val) {
-                const selectedFieldKeys = []
-                this.tableConfig.forEach(key => {
-                    if (this.systemFields.find(field => field.key === key)
-                        || val.find(field => field.key === key)
-                    ) {
-                        selectedFieldKeys.push(key)
-                    }
-                })
-                this.selectedFieldKeys = selectedFieldKeys
-            },
-            tableConfig (val) {
-                this.cols = val.slice()
+            tableConfig: {
+                handler (val) {
+                    this.selectedFieldKeys = val.slice()
+                },
+                immediate: true
             }
         },
         methods: {
@@ -125,8 +114,7 @@
                 }
             },
             handleSelectConfirm () {
-                this.cols = [...this.selectedFieldKeys]
-                this.$emit('update', this.cols)
+                this.$emit('update', this.selectedFieldKeys)
                 this.$refs.settingCol.handleCancel()
             },
             handleSelectCancel () {

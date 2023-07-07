@@ -72,19 +72,24 @@
             }
         },
         data () {
-            const { filterFields, localVal } = this.getInitData()
             return {
-                filterFields,
-                localVal
+                filterFields: [],
+                localVal: {}
             }
         },
         watch: {
             value (val) {
                 this.localVal = cloneDeep(val)
+            },
+            filters: {
+                handler (val) {
+                    this.setData()
+                },
+                immediate: true
             }
         },
         methods: {
-            getInitData () {
+            setData () {
                 const filterFields = []
                 const localVal = {}
                 this.filters.forEach(key => {
@@ -103,7 +108,8 @@
                         localVal[fieldCopy.key] = key in this.value ? cloneDeep(this.value[key]) : ''
                     }
                 })
-                return { filterFields, localVal }
+                this.filterFields = filterFields
+                this.localVal = localVal
             },
             isSelectComp (type) {
                 return ['SELECT', 'INPUTSELECT', 'MULTISELECT', 'CHECKBOX', 'RADIO'].includes(type)
