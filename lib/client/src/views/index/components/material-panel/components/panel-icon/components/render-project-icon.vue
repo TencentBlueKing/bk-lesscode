@@ -10,7 +10,7 @@
         </template>
         <template v-else>
             <search-box
-            :placeholder="$t('图标名称')"
+                :placeholder="$t('图标名称')"
                 :list="searchList"
                 @on-change="handleSearchChange" />
             <group-box
@@ -91,7 +91,6 @@
             }
             
             this.groupIconMap = Object.freeze(groupIconMap)
-            console.log(this.groupIconMap, 223889)
             this.renderGroupIconMap = Object.freeze(groupIconMap)
             this.searchList = Object.freeze(searchList)
         },

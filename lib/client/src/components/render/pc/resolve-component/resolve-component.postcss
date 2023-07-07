@@ -16,65 +16,130 @@
             height: 100% !important;
         }
     }
-    &[align-horizontal-left],
-    &[align-horizontal-center],
-    &[align-horizontal-right],
-    &[align-horizontal-space-between]{
-        & > div{
-            display: flex !important;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            & > * {
-                flex-shrink: 0;
+    &.vue2 {
+        &[align-horizontal-left],
+        &[align-horizontal-center],
+        &[align-horizontal-right],
+        &[align-horizontal-space-between]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                display: flex !important;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                & > * {
+                    flex-shrink: 0;
+                }
+            }
+
+        }
+        &[align-horizontal-left]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                justify-content: flex-start;
             }
         }
-
-    }
-    &[align-horizontal-left]{
-        & > div{
-            justify-content: flex-start;
-        }
-    }
-    &[align-horizontal-center]{
-        & > div{
-            justify-content: center;
-        }
-    }
-    &[align-horizontal-right]{
-        & > div{
-            justify-content: flex-end;
-        }
-    }
-    &[align-horizontal-space-between]{
-        & > div{
-            justify-content: space-between;
-        }
-    }
-    &[align-vertical-top],
-    &[align-vertical-center],
-    &[align-vertical-bottom]{
-        & > div{
-            display: flex !important;
-            flex-wrap: wrap;
-            & > * {
-                flex-shrink: 0;
+        &[align-horizontal-center]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                justify-content: center;
             }
         }
+        &[align-horizontal-right]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                justify-content: flex-end;
+            }
+        }
+        &[align-horizontal-space-between]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                justify-content: space-between;
+            }
+        }
+        &[align-vertical-top],
+        &[align-vertical-center],
+        &[align-vertical-bottom]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                display: flex !important;
+                flex-wrap: wrap;
+                & > * {
+                    flex-shrink: 0;
+                }
+            }
 
-    }
-    &[align-vertical-top]{
-        & > div{
-            align-items: flex-start;
+        }
+        &[align-vertical-top]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                align-items: flex-start;
+            }
+        }
+        &[align-vertical-center]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                align-items: center;
+            }
+        }
+        &[align-vertical-bottom]{
+            > div:first-child > div:first-child > div:first-child[role=draggable] {
+                align-items: flex-end;
+            }
         }
     }
-    &[align-vertical-center]{
-        & > div{
-            align-items: center;
+    &.vue3 {
+        &[align-horizontal-left],
+        &[align-horizontal-center],
+        &[align-horizontal-right],
+        &[align-horizontal-space-between]{
+            > div:first-child > div:first-child[role=draggable] {
+                display: flex !important;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                & > * {
+                    flex-shrink: 0;
+                }
+            }
+
         }
-    }
-    &[align-vertical-bottom]{
-        & > div{
-            align-items: flex-end;
+        &[align-horizontal-left]{
+            > div:first-child > div:first-child[role=draggable] {
+                justify-content: flex-start;
+            }
+        }
+        &[align-horizontal-center]{
+            > div:first-child > div:first-child[role=draggable] {
+                justify-content: center;
+            }
+        }
+        &[align-horizontal-right]{
+            > div:first-child > div:first-child[role=draggable] {
+                justify-content: flex-end;
+            }
+        }
+        &[align-horizontal-space-between]{
+            > div:first-child > div:first-child[role=draggable] {
+                justify-content: space-between;
+            }
+        }
+        &[align-vertical-top],
+        &[align-vertical-center],
+        &[align-vertical-bottom]{
+            > div:first-child > div:first-child[role=draggable] {
+                display: flex !important;
+                flex-wrap: wrap;
+                & > * {
+                    flex-shrink: 0;
+                }
+            }
+
+        }
+        &[align-vertical-top]{
+            > div:first-child > div:first-child[role=draggable] {
+                align-items: flex-start;
+            }
+        }
+        &[align-vertical-center]{
+            > div:first-child > div:first-child[role=draggable] {
+                align-items: center;
+            }
+        }
+        &[align-vertical-bottom]{
+            > div:first-child > div:first-child[role=draggable] {
+                align-items: flex-end;
+            }
         }
     }
 }

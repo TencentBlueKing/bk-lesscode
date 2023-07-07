@@ -25,7 +25,7 @@
 </template>
 <script>
     import { deepClone } from './util/index.js'
-    import { FIELDS_TYPES } from './constants/forms.js'
+    import { FIELDS_TYPES } from 'shared/no-code/index.js'
     import AutoNumber from './fields/autoNumber.vue'
     import Checkbox from './fields/checkbox.vue'
     import CustomForm from './fields/customForm.vue'
@@ -105,7 +105,7 @@
             value: {
                 type: [String, Number, Boolean, Array],
                 default () {
-                    return deepClone(FIELDS_TYPES.find(item => item.type === this.field.type)?.default || '')
+                    return deepClone(FIELDS_TYPES().find(item => item.type === this.field.type)?.default || '')
                 }
             },
             showLabel: {
@@ -123,22 +123,16 @@
         },
         computed: {
             fieldComp () {
-                return FIELDS_TYPES.find(item => item.type === this.field.type)?.comp || ''
+                return FIELDS_TYPES().find(item => item.type === this.field.type)?.comp || ''
             },
             // 默认规则设置为禁止填写 和 字段设置为禁止编辑的时候禁止编辑
             isDisabled () {
-                return this.field.is_readonly
+                return this.field.is_readonly || this.disabled
             },
             needPagination () {
                 return this.$route.name !== 'editNocode'
             }
         }
-        // beforeCreate() {
-        //   const fields = registerField();
-        //   Object.keys(fields).forEach((item) => {
-        //     this.$options.components[item] = fields[item];
-        //   });
-        // },
     }
 </script>
 <style lang="postcss" scoped>

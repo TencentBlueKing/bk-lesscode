@@ -47,6 +47,8 @@
     import LC from '@/element-materials/core'
     import MenuItem from './menu-item'
     import Dexie from 'dexie'
+    import { mapGetters } from 'vuex'
+    // import { syncVariableValue } from '../../utils/sync-variable-value'
 
     const RECORD_TABLE_NAME = 'operationRecord'
 
@@ -72,11 +74,13 @@
                 ]
             }
         },
+        computed: {
+            ...mapGetters('variable', ['variableList'])
+        },
         created () {
             this.db = new Dexie('historyDatabase')
-            console.log('this.db = ', this.db)
-            this.db.version(1).stores({
-                [RECORD_TABLE_NAME]: '++id,activeComponentId,componentIdList,lastContent,interactiveShowComponentId'
+            this.db.version(2).stores({
+                [RECORD_TABLE_NAME]: '++id,activeComponentId,activePanel,componentIdList,lastContent,interactiveShowComponentId'
             })
 
             this.operationRecordClear()
@@ -84,6 +88,7 @@
             this.isTimeTravel = false
             this.recordComponentIdList = []
             this.activeComponentId = ''
+            this.activePanel = ''
             this.lastContent = []
             this.interactiveShow = false
 
@@ -101,6 +106,7 @@
                 }
 
                 this.recordComponentIdList.push(event.target.componentId)
+                this.activePanel = event.target.tabPanelActive
                 this.operationRecorder()
             }
 
@@ -142,8 +148,28 @@
              * @param { Event } Event
              */
             handleParseOperation (event) {
+                // 有 dialog 弹框遮罩不响应快捷键操作
+                const dialogMaskEl = document.querySelector('[data-bkpop-mask]')
+                if (dialogMaskEl && dialogMaskEl.classList.contains('show-active')) {
+                    return
+                }
+
+                // 函数管理弹框
+                if (document.querySelector('#lesscodeEditFunctionDialog')) {
+                    return
+                }
+                // 右侧样式面板自定义样式弹框
+                if (document.querySelector('#materialsModifierCustomStyle')) {
+                    return
+                }
+
+                // 画布双击文本编辑
+                if (['lesscodeEditTextarea', 'lesscodeEditInput'].includes(event.target.id)) {
+                    return
+                }
+
                 // 输入框获得焦点画布不响应复制、粘贴、剪切操作
-                const isInputFocused = event.target.classList.contains('bk-form-input')
+                const isInputFocused = event.target.classList.contains('bk-form-input') || event.target.classList.contains('bk-form-textarea')
                 if (!isInputFocused) {
                     if (event.ctrlKey || event.metaKey) {
                         // 复制（Ctrl + C）
@@ -164,12 +190,7 @@
                 }
 
                 // 回撤（Ctrl + Z）
-                if (event.code === 'KeyZ') {
-                    // 有 dialog 弹框遮罩不响应快捷键操作
-                    const dialogMaskEl = document.querySelector('[data-bkpop-mask]')
-                    if (dialogMaskEl && dialogMaskEl.classList.contains('show-active')) {
-                        return
-                    }
+                if ((event.ctrlKey || event.metaKey) && event.code === 'KeyZ') {
                     // 画布页面禁用默认 Ctrl + Z 快捷键操作
                     event.preventDefault()
                     this.operationRollbacker()
@@ -189,6 +210,7 @@
             operationRecorder: _.debounce(function () {
                 this.db[RECORD_TABLE_NAME].add({
                     activeComponentId: this.activeComponentId,
+                    activePanel: this.activePanel,
                     componentIdList: this.recordComponentIdList,
                     lastContent: this.lastContent || [],
                     interactiveShowComponentId: this.interactiveShowComponentId
@@ -218,6 +240,7 @@
                         if (currentPageActiveNode && currentPageActiveNode !== data.activeComponentId) {
                             currentPageActiveNode.activeClear()
                         }
+                        // syncVariableValue(data.lastContent, this.variableList)
                         LC.parseHistory(data.lastContent)
                         // 延迟执行，等页面状态完毕选中组件
                         setTimeout(() => {
@@ -226,6 +249,7 @@
                             const nextActiveNode = LC.getNodeById(data.activeComponentId)
                             if (nextActiveNode) {
                                 nextActiveNode.active()
+                                nextActiveNode.setProperty('tabPanelActive', data.activePanel)
                             }
                             // 回滚交互式组件的选中状态
                             if (data.interactiveShowComponentId) {

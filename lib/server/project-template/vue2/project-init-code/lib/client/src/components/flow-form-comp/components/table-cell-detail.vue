@@ -135,7 +135,7 @@
             },
             setSourceData (field) {
                 if (field.source_type === 'API') {
-                    this.setApiData(field)
+                    this.setFunctionData(field)
                 } else if (field.source_type === 'WORKSHEET') {
                     this.setWorksheetData(field)
                 }
@@ -185,6 +185,21 @@
                     })
                 } catch (e) {
                     console.error(e)
+                }
+            },
+            setFunctionData (field) {
+                const { returnedValue, keys } = field.meta.function_data_source_config
+                if (Array.isArray(returnedValue)) {
+                    const data = []
+                    const idKey = keys.id || 'id'
+                    const nameKey = keys.name || 'name'
+                    returnedValue.forEach(valItem => {
+                        data.push({
+                            key: valItem[idKey],
+                            name: valItem[nameKey]
+                        })
+                    })
+                    field.choice = data
                 }
             },
             handleClose () {

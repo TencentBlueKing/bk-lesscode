@@ -33,6 +33,7 @@
         </style-layout>
         <article
             v-if="isShow"
+            id="materialsModifierCustomStyle"
             class="custom-style">
             <div class="custom-style-container">
                 <div class="container-tips">

@@ -62,7 +62,7 @@
                 default: () => {
                     return {
                         filters: [],
-                        tableConfig: [],
+                        tableColsExclude: [],
                         buttons: [],
                         tableActions: []
                     }
@@ -73,7 +73,7 @@
             return {
                 showFilter: true,
                 filters: this.config.filters?.slice(0) || [],
-                tableConfig: this.config.tableConfig?.slice(0) || [],
+                tableConfig: [],
                 fields: [],
                 formDetailLoading: true,
                 systemFields: FORM_SYS_FIELD,
@@ -101,8 +101,10 @@
                         formDetail = formMap[this.formIds]
                     }
                     const { content = [], tableName } = formDetail
+                    const excludeKeys = this.config.tableColsExclude || []
                     this.fields = content.filter(field => !NO_VIEWED_FIELD.includes(field.type))
                     this.tableName = tableName
+                    this.tableConfig = this.fields.filter(item => !excludeKeys.includes(item.key)).map(item => item.key) 
                 } catch (e) {
                     console.error(e.message || e)
                 } finally {
