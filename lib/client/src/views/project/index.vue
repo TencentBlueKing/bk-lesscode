@@ -347,14 +347,17 @@
             }
         }
         .bk-options-wrapper {
-            .bk-option{
+            ::-webkit-scrollbar-thumb {
+                background-color:#3F4B5E;
+            }
+            .bk-option {
                 &.is-selected {
                     color: #7FAEF5;
                     background: #253B5F !important;
                 }
                 .bk-option-content:hover {
-                color: #f0f1f5;
-                background: #2d3542;
+                    color: #f0f1f5;
+                    background: #2d3542;
                 }
             }
         }
@@ -383,6 +386,10 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+        /deep/ .app-com-version {
+            color: #979BA5;
+        }
+        
     }
 
     .project-layout {
