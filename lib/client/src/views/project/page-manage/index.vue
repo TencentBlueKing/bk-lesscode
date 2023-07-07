@@ -70,7 +70,10 @@
                 </div>
             </template>
             <bk-exception v-else-if="!isLoading" class="exception-wrap-item" type="empty">
-                <span>{{ $t('暂无页面，请新建页面') }}</span>
+                <span>{{ $t('暂无页面') }}</span>
+                <div class="exception-desc">
+                    <span class="text">{{ $t('请先通过左侧页面创建入口新建页面') }}</span>
+                </div>
             </bk-exception>
         </div>
         <page-operate-dialog

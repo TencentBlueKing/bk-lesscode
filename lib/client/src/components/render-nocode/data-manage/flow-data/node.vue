@@ -4,6 +4,7 @@
             <bk-tab :active="activeNode" :label-height="24" @tab-change="handleTabChange">
                 <bk-tab-panel
                     v-for="node in nodes"
+                    render-directive="if"
                     :key="node.id"
                     :name="node.id"
                     :label="`【${node.name}】${$t('节点')}`">
@@ -35,6 +36,7 @@
     import { mapState, mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import { messageError } from '@/common/bkmagic'
+    import { NO_VIEWED_FIELD } from '@/components/flow-form-comp/form/constants/forms.js'
     import CustomBtnsEdit from '../components/custom-btns-edit.vue'
     import Filters from '../components/filters.vue'
     import TableFields from '../components/table-fields.vue'
@@ -70,23 +72,13 @@
                 return this.flowConfig.formIds ? JSON.parse(this.flowConfig.formIds) : {}
             }
         },
-        async created () {
-            this.nodesConfig = this.getNodesConfig()
-            this.$store.commit('nocode/dataManage/setPageConfig', this.nodesConfig)
-            await this.getNodeList()
-            if (this.nodes.length > 0) {
-                this.setActiveNode(this.nodes[0].id)
-                this.getFormData()
+        created () {
+            this.getNodeList()
+            if (Object.prototype.toString.call(this.pageDetail.content) === '[object Object]') {
+                this.nodesConfig = cloneDeep(this.pageDetail.content)
             }
         },
         methods: {
-            getNodesConfig () {
-                if (Array.isArray(this.pageDetail.content)) {
-                    return { filters: [], tableConfig: [], tableActions: [], buttons: [] }
-                } else {
-                    return Object.assign({ tableActions: [], buttons: [] }, cloneDeep(this.pageDetail.content))
-                }
-            },
             // 获取流程中人工节点类型节点列表
             async getNodeList () {
                 try {
@@ -111,7 +103,8 @@
                 try {
                     this.formDataLoading = true
                     const res = await this.$store.dispatch('nocode/form/formDetail', { formId: this.formIds[this.activeNode] })
-                    this.$set(this.formContents, this.activeNode, JSON.parse(res.content))
+                    const fields = JSON.parse(res.content).filter(field => !NO_VIEWED_FIELD.includes(field.type))
+                    this.$set(this.formContents, this.activeNode, fields)
                 } catch (e) {
                     messageError(e.message || e)
                 } finally {
@@ -119,18 +112,20 @@
                 }
             },
             // 切换节点tab
-            handleTabChange (val) {
+            async handleTabChange (val) {
                 this.setActiveNode(val)
+                if (!(val in this.formContents)) {
+                    await this.getFormData()
+                }
                 if (val in this.nodesConfig) {
+                    const tableColsExclude = this.nodesConfig[val].tableColsExclude || []
                     this.filters = this.nodesConfig[val].filters || []
-                    this.tableConfig = this.nodesConfig[val].tableConfig || []
+                    this.tableConfig = this.formContents[val].filter(item => !tableColsExclude.includes(item.key)).map(item => item.key)
                 } else {
                     this.filters = []
-                    this.tableConfig = []
-                    this.$set(this.nodesConfig, val, { filters: [], tableConfig: [] })
-                }
-                if (!(val in this.formContents)) {
-                    this.getFormData()
+                    this.tableConfig = this.formContents[val].map(item => item.key)
+                    this.$set(this.nodesConfig, val, { filters: [], tableColsExclude: [],  tableActions: [], buttons: [] })
+                    this.$store.commit('nocode/dataManage/setPageConfig', this.nodesConfig)
                 }
             },
             // 更新筛选字段和表格配置字段
@@ -144,9 +139,10 @@
                     this.filters = val
                     pageConfig[this.activeNode].filters = val
                 } else {
-                    this.nodesConfig[this.activeNode].tableConfig = val
+                    const excludeKeys = this.formContents[this.activeNode].filter(item => !val.includes(item.key)).map(item => item.key)
+                    this.nodesConfig[this.activeNode].tableColsExclude = excludeKeys
                     this.tableConfig = val
-                    pageConfig[this.activeNode].tableConfig = val
+                    pageConfig[this.activeNode].tableColsExclude = excludeKeys
                 }
                 this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
             },
@@ -171,7 +167,8 @@
             background: #f0f1f5;
             background-image: none !important;
             border: none;
-            .bk-tab-label {
+            .bk-tab-label-wrapper .bk-tab-label-list .bk-tab-label-item .bk-tab-label  {
+                box-shadow: none !important;
                 font-size: 12px;
             }
             .bk-tab-label-item {

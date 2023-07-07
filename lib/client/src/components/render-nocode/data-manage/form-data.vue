@@ -52,19 +52,9 @@
             ...mapGetters('page', ['pageDetail']),
             ...mapState('nocode/dataManage', ['pageConfig'])
         },
-        created () {
-            // 页面创建时content默认为数组
-            if (Array.isArray(this.pageDetail.content)) {
-                this.filters = []
-                this.tableConfig = []
-            } else {
-                const { filters, tableConfig } = this.pageDetail.content
-                this.filters = filters
-                this.tableConfig = tableConfig
-            }
-            const pageConfig = Array.isArray(this.pageDetail.content) ? { filters: [], tableConfig: [] } : cloneDeep(this.pageDetail.content)
-            this.getFormDetail()
-            this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
+        async created () {
+            await this.getFormDetail()
+            this.initConfigData()
         },
         beforeDestroy () {
             this.$store.commit('nocode/dataManage/resetPageConfig')
@@ -81,6 +71,17 @@
                     this.formDetailLoading = false
                 }
             },
+            initConfigData () {
+                let filters = []
+                let tableColsExclude = []
+                if (Object.prototype.toString.call(this.pageDetail.content) === '[object Object]') {
+                    filters = this.pageDetail.content.filters || []
+                    tableColsExclude = this.pageDetail.content.tableColsExclude || []
+                }
+                this.filters = filters
+                this.tableConfig = [...this.fields, ...this.systemFields].filter(item => !tableColsExclude.includes(item.key)).map(item => item.key)
+                this.$store.commit('nocode/dataManage/setPageConfig', { filters, tableColsExclude })
+            },
             handleUpdate (type, val) {
                 const pageConfig = cloneDeep(this.pageConfig)
                 if (type === 'filters') {
@@ -90,7 +91,7 @@
                     this.filters = this.filters.filter(item => this.tableConfig.includes(item))
                 }
                 pageConfig.filters = this.filters
-                pageConfig.tableConfig = this.tableConfig
+                pageConfig.tableColsExclude = [...this.fields, ...this.systemFields].filter(item => !val.includes(item.key)).map(item => item.key)
                 this.$store.commit('nocode/dataManage/setPageConfig', pageConfig)
             }
         }
