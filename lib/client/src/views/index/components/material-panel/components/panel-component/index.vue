@@ -105,10 +105,10 @@
                     font-size: 12px;
                     @mixin ellipsis 110px;
                 }
-                .toggle-icon {
-                    line-height: 42px;
-                    overflow: hidden;
-                    display: inline-block;
+                    .toggle-icon {
+                        overflow: hidden;
+                        display: inline-block;
+                        padding-top: 1px;
                 }
             }
         }
