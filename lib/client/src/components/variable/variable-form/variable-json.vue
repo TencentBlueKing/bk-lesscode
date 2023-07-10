@@ -1,6 +1,12 @@
 <template>
-    <section>
-        <template v-for="(item, index) in list">
+    <lc-form :model="copyValue" ref="form">
+        <lc-form-item
+            v-for="(item, index) in list"
+            error-display-type="normal"
+            :property="item.key"
+            :key="index"
+            :rules="[jsonValidate]"
+        >
             <span :key="index" class="variable-txt">{{item.txt}}：</span>
             <main :key="item.key" class="variable-code">
                 <bk-input class="json-input"
@@ -17,8 +23,8 @@
                     class="json-viewer"
                 />
             </main>
-        </template>
-    </section>
+        </lc-form-item>
+    </lc-form>
 </template>
 
 <script>
@@ -37,12 +43,26 @@
                 displayJSON: {
                     all: '',
                     stag: '',
-                    prod: ''
+                    prod: '',
+                    preview: ''
                 },
                 copyValue: {
                     all: '',
                     stag: '',
-                    prod: ''
+                    prod: '',
+                    preview: ''
+                },
+                jsonValidate: {
+                    validator: (val) => {
+                        try {
+                            const valType = Object.prototype.toString.apply(JSON.parse(val))
+                            return (this.valueType === 3 && valType === '[object Array]') || (this.valueType === 4 && valType === '[object Object]')
+                        } catch (error) {
+                            return false
+                        }
+                    },
+                    message: this.$t('默认值输入格式不正确'),
+                    trigger: 'blur'
                 }
             }
         },
@@ -99,6 +119,10 @@
                     4: this.$t('请输入 JSON 格式数据')
                 }
                 return messageMap[this.valueType]
+            },
+
+            validate () {
+                return this.$refs.form.validate()
             }
         }
     }
