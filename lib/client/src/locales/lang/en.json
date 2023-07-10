@@ -4192,5 +4192,6 @@
   "字段映射": "Field Mapping",
   "可以设置字段的映射关系，来做数据转换。注意：值改变下拉选项会自动改变": "You can set the mapping relationship of the fields to do data conversion. Note: The value change drop-down option will automatically change",
   "请输入字段名": "Please enter the field name",
-  "请输入字段值": "Please enter the field value"
+  "请输入字段值": "Please enter the field value",
+  "默认值输入格式不正确": "Incorrectly formatted default value input"
 }
