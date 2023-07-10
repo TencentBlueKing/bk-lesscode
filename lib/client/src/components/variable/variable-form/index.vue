@@ -343,7 +343,7 @@
                     Promise
                         .all([
                             this.$refs.variableForm.validate(),
-                            this.$refs.defaultValue.validate()
+                            this.$refs.defaultValue?.validate?.()
                         ])
                         .then(() => {
                             return confirmMethod(this.copyForm)
