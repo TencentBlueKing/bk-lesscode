@@ -67,6 +67,9 @@ module.exports = {
                         { from: /^\/$/, to: '/index.html' },
                         { from: /^\/preview\//, to: '/preview.html' }
                     ]
+                },
+                client: {
+                    overlay: false
                 }
             },
             optimization: {

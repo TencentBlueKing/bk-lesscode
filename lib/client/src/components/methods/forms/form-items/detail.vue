@@ -102,6 +102,20 @@
                     @change="(withToken) => updateValue({ withToken })"
                 >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
             </lc-form-item>
+            <lc-form-item
+                property="apiHeader"
+                error-display-type="normal"
+                class="func-form-item"
+                :label="$t('form_请求头')"
+            >
+                <header-params
+                    class="mt38"
+                    :query="form.apiHeader"
+                    :disabled="disabled"
+                    :variable-list="variableList"
+                    @change="(apiHeader) => updateValue({ apiHeader })"
+                />
+            </lc-form-item>
             <bk-button
                 class="get-remote-response bk-form-item func-form-item"
                 size="small"
@@ -112,7 +126,7 @@
             <lc-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
                 :label="$t('form_请求参数')"
-                property="remoteParams"
+                property="apiQuery"
                 error-display-type="normal"
                 class="func-form-item">
                 <query-params
@@ -128,7 +142,7 @@
             <lc-form-item
                 v-else
                 :label="$t('form_请求参数')"
-                property="remoteParams"
+                property="apiBody"
                 error-display-type="normal"
                 class="func-form-item">
                 <body-params
@@ -176,6 +190,7 @@
     import { mapGetters } from 'vuex'
     import mixins from './form-item-mixins'
     import DynamicTag from '@/components/dynamic-tag.vue'
+    import HeaderParams from './children/header-params.vue'
     import QueryParams from './children/query-params.vue'
     import BodyParams from './children/body-params.vue'
     import Monaco from '@/components/monaco'
@@ -199,6 +214,7 @@
     export default {
         components: {
             DynamicTag,
+            HeaderParams,
             QueryParams,
             BodyParams,
             Monaco,
@@ -376,11 +392,20 @@
                         let apiData = {}
                         if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
                             this.form.apiQuery.forEach((queryItem) => {
-                                apiData[queryItem.name] = parseScheme2Value(queryItem, LCGetParamsVal(this.variableList))
+                                if (queryItem.name) {
+                                    apiData[queryItem.name] = parseScheme2Value(queryItem, LCGetParamsVal(this.variableList))
+                                }
                             })
                         } else {
                             apiData = parseScheme2Value(this.form.apiBody, LCGetParamsVal(this.variableList))
                         }
+                        // http header
+                        const header = this.form.apiHeader?.reduce?.((acc, cur) => {
+                            if (cur.name) {
+                                acc[cur.name] = parseScheme2Value(cur, LCGetParamsVal(this.variableList))
+                            }
+                            return acc
+                        }, {}) || {}
                         const url = replaceFuncParam(this.form.funcApiUrl, (variableCode) => {
                             const variable = this.variableList.find((variable) => (variable.variableCode === variableCode))
                             if (variable) {
@@ -393,6 +418,7 @@
                             url,
                             type: this.form.funcMethod,
                             apiData,
+                            header,
                             withToken: this.form.withToken,
                             projectId: this.form.projectId
                         }
