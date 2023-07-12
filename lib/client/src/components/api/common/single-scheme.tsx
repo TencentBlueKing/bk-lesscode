@@ -51,7 +51,7 @@ const SingleSchemeComponent = defineComponent({
             validator (val) {
                 return val.length <= 0 || /^[a-zA-Z][a-zA-Z0-9_]*$/.test(val)
             },
-            message: window.i18n.t('参数名开头只能是大小写字母，后面可以是大小写字母、数字和下划线'),
+            message: window.i18n.t('参数名由大小写字母、数字和下划线组成，以大小写字母开头'),
             trigger: 'blur'
         }
         // 切换是否展示子节点
