@@ -364,7 +364,7 @@
                     margin-top: 14px;
 
                     .template-container-wrapper{
-                        width: calc(100% - 20px);
+                        /* width: calc(100% - 20px); */
                         height: 100%;
                         overflow-y: auto;
                         @mixin scroller #dcdee5 2px;
