@@ -7,14 +7,14 @@
                     :value="localVal.tableName"
                     :clearable="false"
                     :searchable="true"
-                    :disabled="formListLoading"
-                    :loading="formListLoading"
+                    :disabled="tableLoading"
+                    :loading="tableLoading"
                     @selected="handleSelectForm">
                     <bk-option
-                        v-for="item in formList"
+                        v-for="item in tableList"
                         :key="item.tableName"
                         :id="item.tableName"
-                        :name="`${item.formName}(${item.tableName})`">
+                        :name="`${item.formName || item.tableName}(${item.tableName})`">
                     </bk-option>
                 </bk-select>
             </bk-form-item>
@@ -145,8 +145,8 @@
         data () {
             return {
                 localVal: cloneDeep(this.value),
-                formList: [],
-                formListLoading: false,
+                tableLoading: false,
+                tableList: [], // 数据表列表
                 fieldList: [],
                 fieldListLoading: false,
                 relationList: [],
@@ -178,12 +178,12 @@
             value (val, oldVal) {
                 this.localVal = cloneDeep(val)
                 if (val.id !== oldVal.id) {
-                    this.getFormList()
+                    this.getTableList()
                 }
             }
         },
-        async  created () {
-            await this.getFormList()
+        async created () {
+            await this.getTableList()
             if (this.value.tableName) {
                 this.getFieldList(this.value.tableName)
             }
@@ -192,22 +192,45 @@
             }
         },
         methods: {
-            async getFormList () {
+            async getTableList () {
                 try {
-                    this.formListLoading = true
-                    const params = {
-                        projectId: this.$route.params.projectId,
-                        versionId: this.versionId
-                    }
-                    const res = await this.$store.dispatch('nocode/formSetting/getFormList', params)
-                    this.formList = res
-                    this.formListLoading = false
+                    this.tableLoading = true
+                    const projectId = this.$route.params.projectId
+                    const [forms, tablesRes] = await Promise.all([
+                        this.$store.dispatch('nocode/formSetting/getFormList', { projectId, versionId: this.versionId }),
+                        this.$store.dispatch('dataSource/list', { projectId})
+                    ])
+                    const tableList = []
+                    tablesRes.list.forEach(table => {
+                        if (table.source === 'nocode') {
+                            const form = forms.find(item => item.tableName === table.tableName)
+                            if (form) {
+                                const { formName, tableName, content } = form
+                                const fields = JSON.parse(content).map(item => {
+                                    const { key, name, type } = item
+                                    return { key, name, type }
+                                })
+                                tableList.push({ formName, tableName, fields })
+                            }
+                        } else {
+                            const { tableName, columns } = table
+                            const fields = columns.map(item => {
+                                const { columnId, name } = item
+                                // 自定义数据表字段没有表单类型，统一设置为customTable类型
+                                return { key: columnId, name, type: 'customTable' }
+                            })
+                            tableList.push({ formName: tableName, tableName, fields })
+                        }
+                    })
+                    this.tableList = tableList
+                    this.tableLoading = false
                 } catch (e) {
                     console.error(e)
                 }
             },
             getFieldList (tableName) {
-                this.fieldList = JSON.parse(this.formList.find(item => item.tableName === tableName).content)
+                const table = this.tableList.find(table => table.tableName === tableName)
+                this.fieldList = table ? table.fields : []
             },
             getRelationList () {
                 // try {
@@ -255,11 +278,11 @@
             },
             // 选择表单，清空已选数据
             handleSelectForm (val) {
-                const form = this.formList.find(item => item.tableName === val)
-                this.localVal.tableName = form.tableName
+                this.getFieldList(val)
+                const table = this.tableList.find(item => item.tableName === val)
+                this.localVal.tableName = table.tableName
                 this.localVal.conditions.expressions = []
                 this.localVal.field = ''
-                this.fieldList = JSON.parse(form.content)
                 this.update()
             },
             // 选择筛选条件字段

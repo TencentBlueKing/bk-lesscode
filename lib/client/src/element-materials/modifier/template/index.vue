@@ -25,6 +25,7 @@
     import RenderComplexSide from './complex-side'
     import RenderMobileBottomMenu from './mobile-tab-bar'
     import store from '@/store'
+    import LC from '@/element-materials/core'
 
     const panelComMap = {
         info: RenderInfo,
@@ -65,6 +66,9 @@
         },
         methods: {
             handleChange (field, value) {
+                // 画布中导航template修改，标记画布中的资源被更新
+                LC.triggerEventListener('updateCanvas', true)
+
                 bus.$emit('on-template-change', {
                     ...this.templateData,
                     [field]: value

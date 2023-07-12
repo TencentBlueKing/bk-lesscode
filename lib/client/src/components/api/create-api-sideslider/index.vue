@@ -17,6 +17,13 @@
                 :form-data="formData"
                 @update="handleUpdate"
             />
+            <h3 class="api-form-title">{{ $t('默认请求头') }}</h3>
+            <render-header
+                class="api-form"
+                ref="headerRef"
+                :form-data="formData"
+                @update="handleUpdate"
+            />
             <h3 class="api-form-title">{{ $t('默认请求参数') }}</h3>
             <render-param
                 class="api-form"
@@ -61,6 +68,7 @@
 
 <script>
     import RenderBasic from './basic.vue'
+    import RenderHeader from './header.vue'
     import RenderParam from './param.vue'
     import RenderResponse from './response.vue'
     import {
@@ -86,6 +94,7 @@
     export default defineComponent({
         components: {
             RenderBasic,
+            RenderHeader,
             RenderParam,
             RenderResponse
         },
@@ -113,6 +122,7 @@
             const formData = ref({})
             const response = ref()
             const basicRef = ref(null)
+            const headerRef = ref(null)
             const paramRef = ref(null)
             const responseRef = ref(null)
             // use data
@@ -144,6 +154,7 @@
                     Promise
                         .all([
                             basicRef.value?.validate(),
+                            headerRef.value?.validate(),
                             paramRef.value?.validate(),
                             responseRef.value?.validate()
                         ])
@@ -162,12 +173,14 @@
                 validate()
                     .then(([
                         basicData,
+                        headerData,
                         paramData,
                         responseData
                     ]) => {
                         const form = {
                             projectId: route.params.projectId,
                             ...basicData,
+                            ...headerData,
                             ...paramData,
                             ...responseData
                         }
@@ -215,21 +228,33 @@
                 validate()
                     .then(([
                         basicData,
+                        headerData,
                         paramData
                     ]) => {
+                        // http data
                         let apiData = {}
                         if (paramKey.value === 'query') {
                             paramData.query.forEach((queryItem) => {
-                                apiData[queryItem.name] = parseScheme2Value(queryItem)
+                                if (queryItem.name) {
+                                    apiData[queryItem.name] = parseScheme2Value(queryItem)
+                                }
                             })
                         } else {
                             apiData = parseScheme2Value(paramData.body)
                         }
+                        // http header
+                        const header = headerData.header?.reduce?.((acc, cur) => {
+                            if (cur.name) {
+                                acc[cur.name] = parseScheme2Value(cur)
+                            }
+                            return acc
+                        }, {}) || {}
                         const httpData = {
                             url: basicData.url,
                             type: basicData.method,
                             apiData,
-                            withToken: basicData.withToken
+                            withToken: basicData.withToken,
+                            header
                         }
                         isLoadingResponse.value = true
                         return store
@@ -262,6 +287,7 @@
                 formData,
                 response,
                 basicRef,
+                headerRef,
                 paramRef,
                 responseRef,
                 paramKey,

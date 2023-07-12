@@ -1,5 +1,5 @@
 <template>
-    <use-get-scheme
+    <use-header-scheme
         ref="paramRef"
         :params="renderQuery"
         :disabled="disabled"
@@ -20,12 +20,12 @@
         LCGetParamsVal,
         getDefaultApiUseScheme
     } from 'shared/api'
-    import UseGetScheme from '@/components/api/use-scheme/get'
+    import UseHeaderScheme from '@/components/api/use-scheme/header'
     import RenderParamSlot from './render-param-slot'
 
     export default defineComponent({
         components: {
-            UseGetScheme
+            UseHeaderScheme
         },
 
         props: {
@@ -41,10 +41,10 @@
 
             const handleUpdate = (row, val) => {
                 Object.assign(row, val)
-                triggleChange()
+                triggerChange()
             }
 
-            const triggleChange = () => {
+            const triggerChange = () => {
                 emit('change', renderQuery.value)
             }
 

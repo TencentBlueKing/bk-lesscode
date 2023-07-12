@@ -1,11 +1,12 @@
 <template>
     <lc-sideslider
         :is-show="isShow"
-        @update:isShow="close"
         :quick-close="true"
         :width="796"
         :transfer="true"
-        :title="isAdd ? $t('新增变量') : $t('编辑变量')">
+        :title="isAdd ? $t('新增变量') : $t('编辑变量')"
+        @update:isShow="close"
+    >
         <section slot="content" class="variable-form-main">
             <lc-form form-type="vertical" :label-width="200" :model="copyForm" ref="variableForm">
                 <lc-form-item :label="$t('form_变量名称')" :required="true" :rules="[requireRule($t('form_变量名称')), nameRule]" property="variableName" error-display-type="normal">
@@ -49,6 +50,7 @@
                     </bk-radio-group> -->
                     <component
                         ref="defaultValue"
+                        :key="copyForm.valueType"
                         :is="renderComponent"
                         :value.sync="copyForm.defaultValue"
                         :type="copyForm.defaultValueType"
@@ -338,8 +340,12 @@
                     const confirmMethod = this.isAdd ? this.addVariable : this.editVariable
                     this.copyForm.pageCode = this.copyForm.effectiveRange === 0 ? '' : this.pageDetail.pageCode
                     this.isSaving = true
-                    this.$refs.variableForm
-                        .validate().then(() => {
+                    Promise
+                        .all([
+                            this.$refs.variableForm.validate(),
+                            this.$refs.defaultValue?.validate?.()
+                        ])
+                        .then(() => {
                             return confirmMethod(this.copyForm)
                                 .then(() => {
                                     this.$bkMessage({ theme: 'success', message: this.isAdd ? this.$t('新增变量成功') : this.$t('编辑变量成功') })

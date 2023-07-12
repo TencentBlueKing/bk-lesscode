@@ -81,7 +81,7 @@
                     formId,
                     pageCode: pageCode + 'manage',
                     pageName: pageName + '_' + this.$t('表单数据管理页'),
-                    content: JSON.stringify({ filters: [], tableConfig: ['createUser', 'createTime'] })
+                    content: JSON.stringify({ filters: [], tableColsExclude: ['updateUser', 'updateTime'] })
                 }
             }
         },

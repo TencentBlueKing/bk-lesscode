@@ -334,8 +334,44 @@
     @import "@/css/mixins/scroller";
 
     .select-project-dropdown {
+        border: 1px solid #2F3847;
+        background: #0E1525;
+        font-size: 12px;
+        color: #C4C6CC;
         .bk-select-search-input {
             padding: 0 10px 0 30px;
+            background: #0E1525;
+            border-bottom: 1px solid #2F3847;
+            &::placeholder {
+                color: #747E94;
+            }
+        }
+        .bk-options-wrapper {
+            ::-webkit-scrollbar-thumb {
+                background-color:#3F4B5E;
+            }
+            .bk-option {
+                &.is-selected {
+                    color: #7FAEF5;
+                    background: #253B5F !important;
+                }
+                .bk-option-content:hover {
+                    color: #f0f1f5;
+                    background: #2d3542;
+                }
+            }
+        }
+            .bk-select-extension {
+                border-top: 1px solid #2F3847;
+                background: #28354D;
+                padding: 0;
+                .page-row {
+                    padding: 0 16px;
+                    font-size: 12px;
+                    &:hover {
+                        background: #324260;
+                    }
+                }
         }
     }
 
@@ -350,6 +386,10 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+        /deep/ .app-com-version {
+            color: #979BA5;
+        }
+        
     }
 
     .project-layout {

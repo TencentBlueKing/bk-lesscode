@@ -1,5 +1,6 @@
 <template>
     <use-post-scheme
+        ref="paramRef"
         :params="renderBody"
         :disabled="disabled"
         :name-options="nameOptions"
@@ -37,6 +38,7 @@
 
         setup (props, { emit }) {
             const renderBody = ref({})
+            const paramRef = ref()
 
             const handleUpdate = (row, val) => {
                 Object.assign(row, val)
@@ -52,6 +54,10 @@
             }
 
             const getParamVal = LCGetParamsVal(props.variableList)
+
+            const validate = () => {
+                return paramRef.value.validate()
+            }
 
             watch(
                 () => props.body,
@@ -73,9 +79,11 @@
 
             return {
                 renderBody,
+                paramRef,
                 renderSlot,
                 handleUpdate,
-                getParamVal
+                getParamVal,
+                validate
             }
         }
     })

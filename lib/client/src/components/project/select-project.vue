@@ -15,7 +15,7 @@
                 :name="option.projectName">
                 <span class="project-name">
                     <span v-bk-overflow-tips>{{option.projectName}}</span>
-                    <framework-tag :framework="option.framework" />
+                    <framework-tag :framework="option.framework" bg-color="#28354D" />
                 </span>
             </bk-option>
             <div slot="extension" class="extension">

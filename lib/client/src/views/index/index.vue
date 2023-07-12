@@ -16,7 +16,7 @@
             isLoading: isContentLoading || isCustomComponentLoading
         }">
         <div v-if="!isContentLoading && !isCustomComponentLoading" class="lesscode-editor-page-header">
-            <page-list />
+            <page-list :is-canvas-updated="isCanvasUpdated" />
             <div
                 id="toolActionBox"
                 class="function-and-tool">
@@ -71,7 +71,8 @@
                 pageHasChange: false,
                 isContentLoading: true,
                 isCustomComponentLoading: true,
-                operationType: 'edit'
+                operationType: 'edit',
+                isCanvasUpdated: false
             }
         },
         computed: {
@@ -105,18 +106,22 @@
             variableList () {
                 // 变量发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             },
             funcGroups () {
                 // 函数发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             },
             'pageDetail.lifeCycle' () {
                 // 生命周期发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             },
             'pageDetail.styleSetting' () {
                 // 页面样式发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             }
         },
         async created () {
@@ -125,6 +130,7 @@
 
             this.$nextTick(() => {
                 LC.addEventListener('update', this.handleUpdatePreviewContent)
+                LC.addEventListener('updateCanvas', this.handleIsCanvasUpdated)
                 // 更新预览区域数据
                 LC.addEventListener('ready', this.initPerviewData)
             })
@@ -156,14 +162,18 @@
             LC.platform = 'PC'
         },
         beforeRouteLeave (to, from, next) {
-            this.$bkInfo({
-                title: window.i18n.t('确认离开'),
-                okText: window.i18n.t('离开'),
-                subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
-                confirmFn: async () => {
-                    next()
-                }
-            })
+            if (this.isCanvasUpdated) {
+                this.$bkInfo({
+                    title: window.i18n.t('确认离开'),
+                    okText: window.i18n.t('离开'),
+                    subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
+                    confirmFn: async () => {
+                        next()
+                    }
+                })
+            } else {
+                next()
+            }
         },
         methods: {
             ...mapActions(['updatePreview']),
@@ -310,6 +320,9 @@
                     types: ['reload']
                 }
                 this.updatePreview(Object.assign(defaultSetting, setting))
+            },
+            handleIsCanvasUpdated (isUpdate) {
+                this.isCanvasUpdated = isUpdate
             }
         }
     }
