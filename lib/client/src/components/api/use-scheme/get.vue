@@ -74,20 +74,20 @@
 
             const handlePlusBrotherNode = (index) => {
                 renderQueryParams.value.splice(index + 1, 0, getDefaultApiUseScheme())
-                triggleChange()
+                triggerChange()
             }
 
             const handleMinusNode = (index) => {
                 renderQueryParams.value.splice(index, 1)
-                triggleChange()
+                triggerChange()
             }
 
             const handleUpdate = (index, param) => {
                 renderQueryParams.value[index] = param
-                triggleChange()
+                triggerChange()
             }
 
-            const triggleChange = () => {
+            const triggerChange = () => {
                 emit('change', renderQueryParams.value)
             }
 

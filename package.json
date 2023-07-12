@@ -69,7 +69,7 @@
     "@babel/plugin-proposal-decorators": "^7.19.3",
     "@babel/plugin-proposal-private-methods": "^7.18.6",
     "@babel/register": "^7.18.9",
-    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.31",
+    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.32",
     "@blueking/babel-preset-bk": "^2.1.0-beta.9",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
     "@blueking/bkui-vue-complex": "0.0.8",

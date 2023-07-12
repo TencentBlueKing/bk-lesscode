@@ -39,7 +39,7 @@
     import Monaco from '@/components/monaco'
     import {
         getDefaultApiEditScheme,
-        parseQueryScheme2QueryString
+        parseHeaderScheme2HeaderString
     } from 'shared/api'
 
     export default defineComponent({
@@ -57,13 +57,13 @@
 
         setup (props, { emit }) {
             const tabs = [
-                { name: 'edit', label: 'query' },
+                { name: 'edit', label: 'header' },
                 { name: 'preview', label: window.i18n.t('预览') }
             ]
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')
             const renderQueryParams = ref([])
-            const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value))
+            const queryString = computed(() => parseHeaderScheme2HeaderString(renderQueryParams.value))
 
             const handlePlusBrotherNode = () => {
                 renderQueryParams.value.push(getDefaultApiEditScheme())

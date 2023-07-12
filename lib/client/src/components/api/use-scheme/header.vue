@@ -7,15 +7,19 @@
             <scheme-header />
             <single-scheme
                 ref="singleSchemeRef"
-                v-for="(renderQueryParam, index) in renderQueryParams"
+                v-for="(renderParam, index) in renderParams"
                 :key="index"
                 :type-disable="true"
-                :scheme="renderQueryParam"
-                :minus-disable="renderQueryParams.length <= 1"
-                @plusBrotherNode="handlePlusBrotherNode"
-                @minusNode="handleMinusNode"
+                :scheme="renderParam"
+                :minus-disable="renderParams.length <= 1"
+                :render-slot="renderSlot"
+                :disable="disabled"
+                :name-options="nameOptions"
+                @plusBrotherNode="handlePlusBrotherNode(index)"
+                @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
-            />
+            >
+            </single-scheme>
         </section>
         <monaco
             v-else
@@ -38,8 +42,8 @@
     import SingleScheme from '../common/single-scheme'
     import Monaco from '@/components/monaco'
     import {
-        getDefaultApiEditScheme,
-        parseQueryScheme2QueryString
+        getDefaultApiUseScheme,
+        parseHeaderScheme2HeaderString
     } from 'shared/api'
 
     export default defineComponent({
@@ -52,36 +56,39 @@
 
         props: {
             params: Array,
-            getParamVal: Function
+            renderSlot: Function,
+            getParamVal: Function,
+            disabled: Boolean,
+            nameOptions: Array
         },
 
         setup (props, { emit }) {
             const tabs = [
-                { name: 'edit', label: 'query' },
+                { name: 'edit', label: 'header' },
                 { name: 'preview', label: window.i18n.t('预览') }
             ]
             const currentInstance = getCurrentInstance()
             const activeTab = ref('edit')
-            const renderQueryParams = ref([])
-            const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value))
+            const renderParams = ref([])
+            const queryString = computed(() => parseHeaderScheme2HeaderString(renderParams.value, props.getParamVal))
 
-            const handlePlusBrotherNode = () => {
-                renderQueryParams.value.push(getDefaultApiEditScheme())
+            const handlePlusBrotherNode = (index) => {
+                renderParams.value.splice(index + 1, 0, getDefaultApiUseScheme())
                 triggerChange()
             }
 
             const handleMinusNode = (index) => {
-                renderQueryParams.value.splice(index, 1)
+                renderParams.value.splice(index, 1)
                 triggerChange()
             }
 
             const handleUpdate = (index, param) => {
-                renderQueryParams.value[index] = param
+                renderParams.value[index] = param
                 triggerChange()
             }
 
             const triggerChange = () => {
-                emit('change', renderQueryParams.value)
+                emit('change', renderParams.value)
             }
 
             const validate = () => {
@@ -89,14 +96,14 @@
                 return Promise
                     .all(singleSchemeRefs.map(ref => ref.validate()))
                     .then(() => {
-                        return renderQueryParams.value
+                        return renderParams.value
                     })
             }
 
             watch(
                 () => props.params,
                 () => {
-                    renderQueryParams.value = props.params
+                    renderParams.value = props.params
                 },
                 {
                     immediate: true
@@ -105,7 +112,7 @@
             return {
                 tabs,
                 activeTab,
-                renderQueryParams,
+                renderParams,
                 queryString,
                 handlePlusBrotherNode,
                 handleMinusNode,
