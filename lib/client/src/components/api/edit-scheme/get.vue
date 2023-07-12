@@ -12,8 +12,9 @@
                 :type-disable="true"
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
-                @plusBrotherNode="handlePlusBrotherNode"
-                @minusNode="handleMinusNode"
+                :brothers="renderQueryParams"
+                @plusBrotherNode="handlePlusBrotherNode(index)"
+                @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
             />
         </section>
@@ -65,8 +66,8 @@
             const renderQueryParams = ref([])
             const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value))
 
-            const handlePlusBrotherNode = () => {
-                renderQueryParams.value.push(getDefaultApiEditScheme())
+            const handlePlusBrotherNode = (index) => {
+                renderQueryParams.value.splice(index + 1, 0, getDefaultApiEditScheme())
                 triggerChange()
             }
 

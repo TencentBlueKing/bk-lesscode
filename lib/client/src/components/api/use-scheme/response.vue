@@ -7,6 +7,7 @@
             :render-slot="renderSlot"
             :minus-disable="true"
             :hide-required="true"
+            :brothers="renderResponseParam.children"
             @update="handleUpdate"
         />
     </section>

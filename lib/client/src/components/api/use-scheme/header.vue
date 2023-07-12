@@ -15,6 +15,7 @@
                 :render-slot="renderSlot"
                 :disable="disabled"
                 :name-options="nameOptions"
+                :brothers="renderParams"
                 @plusBrotherNode="handlePlusBrotherNode(index)"
                 @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
