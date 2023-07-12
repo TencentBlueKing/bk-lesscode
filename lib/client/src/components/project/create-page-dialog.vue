@@ -7,36 +7,22 @@
             :position="{ top: 80 }"
             :mask-close="false"
             :auto-close="false"
+            :close-icon="false"
             @value-change="handleDialogToggle">
-            <div slot="header">
-                <div class="header">
-                    <div class="dialog-title">
-                        <span class="platform-icon">
-                            <i v-if="platform === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
-                            <i v-else class="bk-drag-icon bk-drag-pc"> </i>
-                        </span>
-                        <span class="main-title">{{pageTitle}}</span>
-                    </div>
-                    <div class="bk-button-group origin-type" v-if="!nocodeType">
-                        <bk-button
-                            :ext-cls="'type-button'"
-                            @click="changeCreateFrom('EMPTY')"
-                            :class="pageFrom !== 'TEMPLATE' ? 'is-selected' : ''">
-                            {{ $t('新建空白页面') }} </bk-button>
-                        <bk-button
-                            :ext-cls="'type-button'"
-                            @click="changeCreateFrom('TEMPLATE')"
-                            :class="pageFrom === 'TEMPLATE' ? 'is-selected' : ''">
-                            {{ $t('从模板新建') }} </bk-button>
-                    </div>
-                </div>
-            </div>
 
             <page-from-template :platform="platform" :create-from-template="createFromTemplate" :template-change="changeTemplate" :nocode-type="nocodeType">
-                <bk-form ref="templateForm" :label-width="300" :rules="formRules" :model="formData" form-type="vertical">
-                    <bk-form-item :label="$t('form_当前已选模板')" property="templateName" error-display-type="normal" v-if="createFromTemplate">
+                <div class="dialog-title">
+                    <span class="platform-icon">
+                        <i v-if="platform === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
+                        <i v-else class="bk-drag-icon bk-drag-pc"> </i>
+                    </span>
+                    <span class="main-title">{{pageTitle}}</span>
+                </div>
+                <bk-form ref="templateForm" :label-width="300" :rules="formRules" :model="formData" form-type="vertical" class="create-page-form new-ui-form">
+                    <bk-form-item v-if="createFromTemplate" :label="$t('form_当前已选模板')" property="templateName" 
+                        error-display-type="normal" :desc="$t('如需模板请从右侧选择，不选则默认创建空白页面')">
                         <bk-input readonly v-model.trim="selectTemplate.templateName"
-                            :placeholder="$t('模板名称')">
+                            :placeholder="$t('如需模板请从右侧选择，不选则默认创建空白页面')">
                         </bk-input>
                     </bk-form-item>
                     <bk-form-item :label="$t('form_页面名称')" required property="pageName" error-display-type="normal">
@@ -51,11 +37,21 @@
                             :placeholder="pageCodePlaceholder">
                         </bk-input>
                     </bk-form-item>
-                    <bk-form-item :label="$t('form_导航布局')" error-display-type="normal">
-                        <layout-thumb-list :toolkit="['select']" :list="showLayoutList" @change-checked="handleLayoutChecked" />
-                        <bk-link theme="primary" class="jump-link" icon="bk-drag-icon bk-drag-jump-link" @click="handleCreateLayout">{{ $t('跳转新建') }}</bk-link>
+                    <bk-form-item error-display-type="normal">
+                        <div style="display: flex; justify-content: space-between; height: 24px">
+                            <label class="bk-label"><span class="bk-label-text">{{ $t('form_导航布局') }}</span></label>
+                            <bk-link theme="primary" class="jump-link" icon="bk-drag-icon bk-drag-jump-link" @click="handleCreateLayout">{{ $t('跳转新建') }}</bk-link>
+                        </div>
+                        <div>
+                            <layout-thumb-list
+                                :toolkit="['select']"
+                                :list="showLayoutList"
+                                :from-project="!nocodeType"
+                                @change-checked="handleLayoutChecked" />
+                        </div>
                     </bk-form-item>
                     <bk-form-item :label="$t('form_页面路由')" required property="pageRoute"
+                        style="margin-top: 14px"
                         error-display-type="normal">
                         <bk-input maxlength="60" v-model.trim="formData.pageRoute"
                             :placeholder="$t('由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')">
@@ -119,7 +115,6 @@
             return {
                 isShow: false,
                 loading: false,
-                pageFrom: 'EMPTY',
                 formData: {},
                 formRules: {
                     pageName: [
@@ -190,7 +185,7 @@
                 return this.$route.params.projectId
             },
             createFromTemplate () {
-                return !this.nocodeType && this.pageFrom === 'TEMPLATE'
+                return !this.nocodeType
             },
             pageTitle () {
                 const platformType = this.platform === 'MOBILE' ? 'Mobile' : 'PC'
@@ -217,9 +212,6 @@
             }
         },
         methods: {
-            changeCreateFrom (from = 'EMPTY') {
-                this.pageFrom = from
-            },
             changeTemplate (template = {}) {
                 this.selectTemplate = template
             },
@@ -279,16 +271,8 @@
                     await this.$refs.templateForm.validate()
 
                     let templateFormData = {}
-                    // nocodeType为空，且this.pageFrom为'TEMPLATE'
-                    if (this.createFromTemplate) {
-                        const template = this.selectTemplate
-                        if (!template?.id) {
-                            this.$bkMessage({
-                                theme: 'error',
-                                message: this.$t('未选择模板')
-                            })
-                            return
-                        }
+                    const template = this.selectTemplate
+                    if (template?.id) {
                         const content = []
                         content.push(JSON.parse(template.content))
                         templateFormData = { previewImg: template.previewImg, content: JSON.stringify(content) }
@@ -298,17 +282,6 @@
                         pageName: this.formData.pageName,
                         pageCode: this.formData.pageCode
                     }
-                    // 将表单数据提交，
-                    const nameExist = await this.$store.dispatch('page/checkName', {
-                        data: {
-                            ...formData,
-                            projectId: this.projectId,
-                            versionId: this.versionId,
-                            from: 'create'
-                        }
-                    })
-                    // 判断页面名称是否存在
-                    if (nameExist) return
                     
                     const payload = {
                         data: {
@@ -355,7 +328,6 @@
             },
             handleDialogToggle () {
                 if (this.isShow) {
-                    this.pageFrom = 'EMPTY'
                     this.formData = {
                         pageType: this.platform || 'PC',
                         pageName: '',
@@ -392,36 +364,27 @@
 </script>
 
 <style lang="postcss">
+    @import "@/css/mixins/scroller";
+    
     .new-page-from-template-dialog {
         .bk-dialog-tool{
             display: none;
         }
-        .bk-dialog-header{
-            padding: 0 24px;
-            .header {
-                .dialog-title {
-                    display: flex;
-                    text-align: left;
-                    margin: 18px 0 14px;
-                    .platform-icon {
-                        font-size: 16px;
-                        margin-right: 8px;
-                        padding: 2px 3px;
-                        color: #979ba5;
-                        border-radius: 2px;
-                        background: #f0f1f5;
-                    }
-                    .main-title {
-                        font-size: 20px;
-                        color: #313238;
-                    }
-                }
-                .origin-type {
-                    margin-bottom: 10px;
-                }
+        .dialog-title {
+            display: flex;
+            text-align: left;
+            margin-bottom: 24px;
+            .platform-icon {
+                font-size: 16px;
+                margin-right: 8px;
+                padding: 2px 3px;
+                color: #979ba5;
+                border-radius: 2px;
+                background: #f0f1f5;
             }
-            .type-button {
-                width: 350px;
+            .main-title {
+                font-size: 20px;
+                color: #313238;
             }
         }
         .bk-dialog-body{
@@ -430,6 +393,18 @@
             min-height: 400px;
             display:flex;
             font-size:12px;
+            .create-page-form {
+                height: calc(100% - 72px);
+
+                overflow-y: auto;
+                @mixin scroller #dcdee5, 2px;
+                padding-right: 16px;
+            }
+            .jump-link {
+                i, .bk-link-text {
+                    font-size: 12px;
+                }
+            }
         }
 
         .bk-dialog-footer {
