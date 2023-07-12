@@ -110,6 +110,7 @@
             >
                 <header-params
                     class="mt38"
+                    ref="headerParams"
                     :query="form.apiHeader"
                     :disabled="disabled"
                     :variable-list="variableList"
@@ -132,6 +133,7 @@
                 <query-params
                     v-bkloading="{ isLoading: isLoadingOptions }"
                     class="mt38"
+                    ref="queryParams"
                     :query="form.apiQuery"
                     :disabled="disabled"
                     :variable-list="variableList"
@@ -148,6 +150,7 @@
                 <body-params
                     v-bkloading="{ isLoading: isLoadingOptions }"
                     class="mt38"
+                    ref="bodyParams"
                     :body="form.apiBody"
                     :disabled="disabled"
                     :variable-list="variableList"
@@ -383,10 +386,7 @@
             },
 
             getRemoteResponse () {
-                this
-                    .$refs
-                    .funcForm
-                    .validate()
+                this.validate()
                     .then(() => {
                         this.isLoadingResponse = true
                         let apiData = {}
@@ -447,6 +447,15 @@
                     message: this.$t('{0}由大小写英文字母组成', [label]),
                     trigger: 'blur'
                 }
+            },
+
+            validate () {
+                return Promise.all([
+                    this.$refs.funcForm.validate(),
+                    this.$refs.headerParams.validate(),
+                    this.$refs.queryParams?.validate?.(),
+                    this.$refs.bodyParams?.validate?.()
+                ])
             }
         }
     }
