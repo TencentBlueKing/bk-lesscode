@@ -88,7 +88,7 @@
                 try {
                     const pageData = await this.$refs.createPageDialog.save()
                     if (pageData.id) {
-                        this.$store.commit('nocode/flow/setFlowConfig', { managePageIds: pageData.id })
+                        this.$store.commit('nocode/flow/setFlowConfig', { managePageIds: pageData.id, managePageNames: pageData.pageName })
                         await Promise.all([
                             this.updateDataManageId(pageData.id),
                             this.$store.dispatch('route/getProjectPageRoute', { projectId: this.projectId, versionId: this.versionId })
@@ -97,13 +97,7 @@
                             theme: 'success',
                             message: window.i18n.t('新建页面成功')
                         })
-                        this.$router.push({
-                            name: 'editNocode',
-                            params: {
-                                projectId: this.projectId,
-                                pageId: pageData.id
-                            }
-                        })
+                        this.$refs.createPageDialog.handleDialogCancel()
                     }
                 } catch (e) {
                     messageError(e.message || e)
