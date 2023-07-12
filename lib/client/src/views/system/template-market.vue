@@ -36,9 +36,6 @@
                                         </div>
                                     </template>
                                     <div class="operate-btns">
-                                        <!-- <bk-button style="margin-left: 7px;width: 106px" theme="primary" @click="handleApply(project)">创建为新应用</bk-button>
-                                        <bk-button style="margin-left: 10px;width: 76px" @click="handlePreviewProject(project.id)">预览</bk-button>
-                                        <bk-button style="margin-left: 10px;width: 76px" @click="handleDownloadProject(project)">下载源码</bk-button> -->
                                         <auth-button
                                             theme="primary"
                                             auth="create_app_with_template"
@@ -148,46 +145,7 @@
 
         <download-dialog ref="downloadDialog"></download-dialog>
 
-        <bk-dialog v-model="dialog.project.visible"
-            render-directive="if"
-            theme="primary"
-            :title="$t('应用模板')"
-            width="750"
-            :position="{ top: 100 }"
-            :mask-close="false"
-            :auto-close="false"
-            header-position="left"
-            ext-cls="project-create-dialog"
-            @value-change="handleProjectDialogToggle">
-            <div class="selected-project">{{ $t('已选模板：{0}', [dialog.project.templateName]) }}</div>
-            <bk-form ref="createForm" :label-width="200" form-type="vertical" :rules="dialog.project.formRules" :model="dialog.project.formData">
-                <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
-                    <bk-input maxlength="60" v-model.trim="dialog.project.formData.projectName"
-                        :placeholder="$t('请输入应用名称，60个字符以内')">
-                    </bk-input>
-                </bk-form-item>
-                <bk-form-item :label="$t('应用ID')" required property="projectCode" error-display-type="normal">
-                    <bk-input maxlength="60" v-model.trim="dialog.project.formData.projectCode"
-                        :placeholder="$t('只能由小写字母组成，该ID将作为自定义组件前缀，创建后不可更改')">
-                    </bk-input>
-                </bk-form-item>
-                <bk-form-item :label="$t('form_应用简介')" required property="projectDesc" error-display-type="normal">
-                    <bk-input
-                        v-model.trim="dialog.project.formData.projectDesc"
-                        :type="'textarea'"
-                        :rows="3"
-                        :maxlength="100">
-                    </bk-input>
-                </bk-form-item>
-            </bk-form>
-            <div class="dialog-footer" slot="footer">
-                <bk-button
-                    theme="primary"
-                    :loading="dialog.project.loading"
-                    @click="handleCreateConfirm">{{ $t('确定') }}</bk-button>
-                <bk-button @click="handleCreateCancel" :disabled="dialog.project.loading">{{ $t('取消') }}</bk-button>
-            </div>
-        </bk-dialog>
+        <create-empty-project-dialog ref="createDialog" />
 
         <bk-dialog v-model="dialog.page.visible"
             render-directive="if"
@@ -256,6 +214,7 @@
 
     import preivewErrImg from '@/images/preview-error.png'
     import DownloadDialog from './components/download-dialog'
+    import CreateEmptyProjectDialog from '@/views/system/components/create-empty-project-dialog'
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import { PROJECT_TEMPLATE_TYPE, PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import { parseFuncAndVar } from '@/common/parse-function-var'
@@ -267,17 +226,11 @@
 
     const PROJECT_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
     const PAGE_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PAGE_TEMPLATE_TYPE)
-    const defaultCreateFormData = {
-        projectName: '',
-        projectCode: '',
-        projectDesc: '',
-        framework: '',
-        copyFrom: null
-    }
 
     export default {
         name: 'template-market',
         components: {
+            CreateEmptyProjectDialog,
             DownloadDialog,
             PagePreviewThumb,
             frameworkTag
@@ -301,40 +254,6 @@
                 projectList: [],
                 pageList: [],
                 dialog: {
-                    project: {
-                        visible: false,
-                        loading: false,
-                        templateName: '',
-                        formData: { ...defaultCreateFormData },
-                        formRules: {
-                            projectName: [
-                                {
-                                    required: true,
-                                    message: window.i18n.t('必填项'),
-                                    trigger: 'blur'
-                                }
-                            ],
-                            projectCode: [
-                                {
-                                    required: true,
-                                    message: window.i18n.t('必填项'),
-                                    trigger: 'blur'
-                                },
-                                {
-                                    regex: /^[a-z]+$/,
-                                    message: window.i18n.t('只能由小写字母组成'),
-                                    trigger: 'blur'
-                                }
-                            ],
-                            projectDesc: [
-                                {
-                                    required: true,
-                                    message: window.i18n.t('必填项'),
-                                    trigger: 'blur'
-                                }
-                            ]
-                        }
-                    },
                     page: {
                         visible: false,
                         loading: false,
@@ -398,26 +317,6 @@
                     console.error(e)
                 } finally {
                     this.pageLoading = false
-                }
-            },
-            async handleCreateConfirm () {
-                try {
-                    await this.$refs.createForm.validate()
-                    const data = this.dialog.project.formData
-
-                    this.dialog.project.loading = true
-                    const projectId = await this.$store.dispatch('project/create', { data })
-
-                    this.messageSuccess(window.i18n.t('应用创建成功'))
-                    this.dialog.project.visible = false
-
-                    setTimeout(() => {
-                        this.toPage(projectId)
-                    }, 300)
-                } catch (e) {
-                    console.error(e)
-                } finally {
-                    this.dialog.project.loading = false
                 }
             },
             async getProjectList () {
@@ -515,27 +414,21 @@
                 return preivewErrImg
             },
             handleApply (project) {
-                defaultCreateFormData.copyFrom = project.id
-                defaultCreateFormData.framework = project.framework
-                defaultCreateFormData.projectName = ''
-                this.dialog.project.templateName = project.projectName
-                this.dialog.project.visible = true
+                this.$refs.createDialog.projectType = 'applyTemplate'
+                this.$refs.createDialog.formData.copyFrom = project.id
+                this.$refs.createDialog.formData.framework = project.framework || 'vue2'
+                this.$refs.createDialog.selectTemplateName = project.projectName
+                this.$refs.createDialog.visible = true
             },
             handleAddToProject (page) {
                 this.dialog.page.curPage = page
                 this.dialog.page.visible = true
-            },
-            handleProjectDialogToggle () {
-                this.dialog.project.formData = { ...defaultCreateFormData }
             },
             handlePageDialogToggle (val) {
                 if (val) {
                     this.getProjectList()
                     this.handleSelectClear()
                 }
-            },
-            handleCreateCancel () {
-                this.dialog.project.visible = false
             },
             handlePageCancel () {
                 this.dialog.page.visible = false
@@ -613,14 +506,6 @@
                         }
                     })
                 }
-            },
-            toPage (projectId) {
-                this.$router.push({
-                    name: 'pageList',
-                    params: {
-                        projectId
-                    }
-                })
             },
             handlePreviewProject (id) {
                 window.open(`/preview/project/${id}/`, '_blank')

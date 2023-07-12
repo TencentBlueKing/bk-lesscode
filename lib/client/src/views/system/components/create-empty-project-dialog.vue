@@ -15,6 +15,7 @@
                 v-bk-tooltips.top="{ content: $t('创建Lesscode应用时，会同步在PaaS平台-开发者中心创建应用的default模块'), maxWidth: 400 }">
             </i>
         </span>
+        <div v-if="selectTemplateName && projectType ==='applyTemplate'" class="selected-project">{{ $t('已选模板：{0}', [selectTemplateName]) }}</div>
         <!-- 表单组件，根据projectType来判断是创建空白应用还是导入应用，还是从已有模板选择 -->
         <project-form
             ref="projectForm"
@@ -46,13 +47,25 @@
                 loading: false,
                 projectType: 'newProject',
                 formData: {},
+                selectTemplateName: '',
                 defaultLayoutList: [],
                 layoutFullList: []
             }
         },
         computed: {
             createDialogTitle () {
-                return this.projectType === 'copyProject' ? window.i18n.t('复制应用') : (this.projectType === 'importProject') ? window.i18n.t('导入应用') : window.i18n.t('新建应用')
+                const { projectType } = this
+                let title = ''
+                if (projectType === 'copyProject') {
+                    title = window.i18n.t('复制应用')
+                } else if (projectType === 'importProject') {
+                    title = window.i18n.t('导入应用')
+                } else if (projectType === 'applyTemplate') {
+                    title = window.i18n.t('应用模板')
+                } else {
+                    title = window.i18n.t('新建应用')
+                }
+                return title
             }
         },
         created () {
@@ -144,6 +157,11 @@
     .project-create-dialog {
         .bk-dialog-header {
             padding-bottom: 10px;
+        }
+        .selected-project{
+            font-size: 14px;
+            color: #63656e;
+            margin-bottom: 14px;
         }
     }
 </style>

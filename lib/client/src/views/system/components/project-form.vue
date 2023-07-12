@@ -1,7 +1,7 @@
 <template>
-    <bk-form ref="infoForm" :label-width="300" form-type="vertical" :rules="formRules" :model="formData">
-        <bk-form-item v-if="type === 'templateProject'" :label="$t('form_当前已选模板')" :label-width="200">
-            <bk-input readonly v-model.trim="templateName" :placeholder="$t('请先选择模板')">
+    <bk-form ref="infoForm" :label-width="300" form-type="vertical" :rules="formRules" :model="formData" class="new-ui-form">
+        <bk-form-item v-if="type === 'templateProject' || type === 'newProject'" :label="$t('form_当前已选模板')" :desc="$t('如需模板请从右侧选择，不选则默认创建空白应用')">
+            <bk-input readonly v-model.trim="templateName" :placeholder="$t('如需模板请从右侧选择，不选则默认创建空白应用')">
             </bk-input>
         </bk-form-item>
         <bk-form-item v-if="type === 'importProject'" :label="$t('form_应用JSON文件')" required error-display-type="normal">
@@ -32,10 +32,18 @@
             <bk-input v-model.trim="formData.projectDesc" :type="'textarea'" :rows="3" :maxlength="100">
             </bk-input>
         </bk-form-item>
-        <bk-form-item :label="$t('form_导航布局')" style="margin-top: 10px" v-if="type === 'newProject'"
+        <bk-form-item v-if="type === 'newProject'"
             error-display-type="normal">
-            <p class="layout-desc">{{ $t('可多选，作为创建应用页面时可供选择的导航布局，便于在应用中统一配置导航') }}</p>
-            <layout-thumb-list :list="formLayoutList" @change-checked="handleLayoutChecked"
+            <div class="layout-label">
+                <label class="bk-label" v-bk-tooltips="$t('作为创建页面时可供选择的导航布局')">
+                    <span class="bk-label-text">{{ $t('form_导航布局') }} </span>
+                    <span class="bk-label-text" style="font-size: 12px;color: #979BA5">({{$t('可多选')}})</span>
+                </label>
+            </div>
+            <layout-thumb-list
+                :list="formLayoutList"
+                :from-project="true"
+                @change-checked="handleLayoutChecked"
                 @set-default="handleLayoutDefault" />
         </bk-form-item>
     </bk-form>
@@ -187,6 +195,18 @@
     }
 </script>
 
+<style>
+    .new-ui-form {
+        .bk-label {
+            line-height: 20px;
+            min-height: 20px;
+            margin-bottom: 4px;
+        }
+    }
+    .new-ui-form.bk-form-vertical .bk-form-item+.bk-form-item {
+        margin-top: 24px;
+    }
+</style>
 <style lang="postcss" scoped>
     .bk-button-group {
         width: 100%;
@@ -195,6 +215,18 @@
         .bk-button {
             flex: 1;
             height: 32px;
+        }
+    }
+
+    .layout-label {
+        display: flex;
+        height: 24px;
+        .bk-label {
+            padding-right: 0;
+            span {
+                border-bottom: 1px dashed #979ba5;
+                cursor: pointer;
+            }
         }
     }
 

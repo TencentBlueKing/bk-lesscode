@@ -1,26 +1,31 @@
 <template>
     <ul class="layout-thumb-list">
         <li v-for="layout in list" :key="layout.id"
-            :class="['list-item', { 'is-empty': layout.type === 'empty', checked: layout.checked, disabled: layout.disabled }]"
+            :class="['list-item', { 'from-project': fromProject, checked: layout.checked, disabled: layout.disabled }]"
             @click="handleClickItem(layout)">
             <span v-if="layout.isDefault" class="default-tag checked">{{ $t('默认') }}</span>
-            <span v-else-if="toolkit.includes('setdefault')" class="default-tag setting" @click.stop="handleSetDefault(layout)">{{ $t('设为默认') }}</span>
+            <span v-else-if="toolkit.includes('setdefault') && layout.layoutType !== 'MOBILE'" class="default-tag setting" @click.stop="handleSetDefault(layout)">{{ $t('设为默认') }}</span>
             <div class="checkbox">
                 <i class="bk-icon icon-check-1 checked-icon"></i>
             </div>
-            <div class="layout-img" v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty'">
-                <img :src="getPreviewImg(layout)" />
+            <div class="layout-img">
+                <img :src="getPreviewImg(layout)" v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty'" />
+                <div class="empty-navigation-img"></div>
             </div>
-            <div class="layout-label" v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty' && layout.projectId">
-                <div class="layout-name" :title="layout.defaultName">
+            <div class="layout-footer">
+                <div class="layout-label" v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty' && layout.projectId">
+                    <div class="layout-name" :title="layout.defaultName">
+                        {{ $t(layout.defaultName) }}
+                    </div>
+                    <div class="layout-preview" @click.prevent.stop="handlePreview(layout)">
+                        {{ $t('预览') }}
+                    </div>
+                </div>
+                <div v-else class="layout-empty-name" :title="$t(layout.defaultName)">
                     {{ $t(layout.defaultName) }}
                 </div>
-                <div class="layout-preview" @click.prevent.stop="handlePreview(layout)">
-                    {{ $t('预览') }} </div>
             </div>
-            <div v-else class="layout-empty-name" :title="$t(layout.defaultName)">
-                {{ $t(layout.defaultName) }}
-            </div>
+            
         </li>
     </ul>
 </template>
@@ -33,6 +38,10 @@
             list: {
                 type: Array,
                 default: () => ([])
+            },
+            fromProject: {
+                type: Boolean,
+                default: false
             },
             toolkit: {
                 type: Array,
@@ -72,7 +81,7 @@
     .layout-thumb-list {
         display: flex;
         flex-wrap: wrap;
-
+    
         .list-item {
             position: relative;
             flex: none;
@@ -80,32 +89,34 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 148px;
+            width: 174px;
             height: 120px;
-            background: #ffffff;
+            background: #F5F7FA;
             border-radius: 2px;
             cursor: pointer;
-            border: 1px solid #dcdee5;
-            margin-right: 8px;
-            margin-bottom: 8px;
-
-            &:nth-of-type(4n) {
-                margin-right: 0;
-            }
+            margin-right: 6px;
+            margin-bottom: 10px;
 
             &:hover {
-                border-color: #3a84ff;
+                background: #F0F5FF;
 
                 .layout-preview {
                     display: block;
                 }
+                .layout-footer {
+                    background-color: #E1ECFF;
+                }
             }
 
             &.checked {
-                border-color: #3a84ff;
-                background: #e1ecff;
+                background: #F0F5FF;
                 .checkbox {
                     display: block;
+                }
+
+                .layout-footer {
+                    background-color: #E1ECFF;
+                    color: #3A84FF;
                 }
 
                 &:hover {
@@ -122,14 +133,14 @@
             }
 
             &.disabled {
-                border-color: #C4C6CC;
-                background: #fff;
+                background: #F5F7FA;
                 cursor: not-allowed;
-                .layout-name {
-                    color: #979BA5;
-                }
                 .checkbox {
                     border-color: transparent transparent #C4C6CC transparent;
+                }
+                .layout-footer {
+                    background-color: #EAEBF0;
+                    color: #979BA5;;
                 }
             }
 
@@ -172,20 +183,36 @@
 
             .layout-img {
                 margin: 6px 6px 0;
-                width: 136px;
-                height: 82px;
+                width: 160px;
+                height: 84px;
                 img {
                     width: 100%;
                     height: 100%;
                 }
+                .empty-navigation-img {
+                    width: 100%;
+                    height: 100%;
+                    background-color: #fff;
+                }
+            }
+
+            .layout-footer {
+                width: 100%;
+                font-size: 12px;
+                color: #979BA5;
+                line-height: 24px;
+                margin-top: 6px;
+                background: #EAEBF0;
+                color: #979BA5;
             }
 
             .layout-empty-name {
-                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 padding: 0 6px;
-                font-size: 14px;
-                color: #63656e;
-                @mixin ellipsis 100%, block;
+                font-size: 12px;
+                line-height: 24px;
             }
 
             .layout-label {
@@ -193,19 +220,23 @@
                 padding: 0 6px;
                 display: flex;
                 justify-content: space-between;
-                font-size: 14px;
-            }
-            .layout-name {
-                width: 110px;
-                color: #63656e;
-                @mixin ellipsis 100%, block;
-            }
-
-            .layout-preview {
                 font-size: 12px;
-                color: #3a84ff;
-                cursor: pointer;
-                display: none;
+                .layout-name {
+                    width: 110px;
+                    @mixin ellipsis 100%, block;
+                }
+
+                .layout-preview {
+                    font-size: 12px;
+                    color: #3a84ff;
+                    cursor: pointer;
+                    display: none;
+                }
+            }
+        }
+        .list-item.from-project {
+            &:nth-of-type(2n) {
+                margin-right: 0;
             }
         }
     }

@@ -4,7 +4,7 @@
             render-directive="if"
             theme="primary"
             :title="title"
-            width="750"
+            width="800"
             :mask-close="false"
             :auto-close="false"
             header-position="left"
