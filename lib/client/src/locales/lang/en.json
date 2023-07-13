@@ -1159,6 +1159,7 @@
   "table_初始类型": "Initial type",
   "form_初始类型": "Initial type",
   "变量标识": "Variable code",
+  "可以使用 {{变量标识}} 来使用应用级别变量": "You can write {{variableCode}} to use App-level variable", 
   "变量标识不能是 JavaScript 保留字": "Variable code cannot be JavaScript reserved words",
   "table_变量说明": "Variable description",
   "form_变量说明": "Variable description",
