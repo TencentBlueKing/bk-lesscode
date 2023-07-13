@@ -11,8 +11,8 @@
 
 <template>
     <section class="project-and-template">
-        <div class="project-list-card">
-            <template v-if="projectList.length">
+        <div v-if="projectList.length" class="project-list-card">
+            <template>
                 <div :class="['project-item', { favorite: project.favorite }]" v-for="project in projectList"
                     :key="project.id">
                     <div class="item-bd">
@@ -116,9 +116,9 @@
                     <frameworkTag :framework="project.framework"></frameworkTag>
                 </div>
             </template>
-            <div class="empty" v-else>
-                <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status> 
-            </div>
+        </div>
+        <div class="empty empty-project" v-else>
+            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status> 
         </div>
         <show-project-template />
     </section>
@@ -454,6 +454,13 @@
         height: 100%;
         overflow-y: auto;
         @mixin scroller #dcdee5, 2px;
+
+        .empty-project {
+            width: 100%;
+            .empty-type {
+                width: 100%;
+            }
+        }
     }
 
     @media screen and (max-width: 1336px) {
