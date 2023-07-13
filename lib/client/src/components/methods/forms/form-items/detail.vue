@@ -452,7 +452,7 @@
             validate () {
                 return Promise.all([
                     this.$refs.funcForm.validate(),
-                    this.$refs.headerParams.validate(),
+                    this.$refs.headerParams?.validate?.(),
                     this.$refs.queryParams?.validate?.(),
                     this.$refs.bodyParams?.validate?.()
                 ])
