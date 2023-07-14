@@ -66,7 +66,7 @@
 
 #### 安装依赖包
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 
 #### 与登录主域名相同的host，如
