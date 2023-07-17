@@ -13,6 +13,9 @@
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
                 :brothers="renderQueryParams"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @plusBrotherNode="handlePlusBrotherNode(index)"
                 @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
@@ -53,7 +56,10 @@
 
         props: {
             params: Array,
-            getParamVal: Function
+            getParamVal: Function,
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {

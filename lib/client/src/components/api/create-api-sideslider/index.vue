@@ -22,6 +22,9 @@
                 class="api-form"
                 ref="headerRef"
                 :form-data="formData"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @update="handleUpdate"
             />
             <h3 class="api-form-title">{{ $t('默认请求参数') }}</h3>
@@ -29,6 +32,9 @@
                 class="api-form"
                 ref="paramRef"
                 :form-data="formData"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @update="handleUpdate"
             />
             <h3 class="api-form-title">
@@ -46,6 +52,9 @@
                 ref="responseRef"
                 :form-data="formData"
                 :response="response"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @update="handleUpdate"
             />
         </section>
@@ -90,6 +99,7 @@
     import {
         leaveConfirm
     } from '@/common/leave-confirm'
+    // import useResource from '@/hooks/use-resource'
 
     export default defineComponent({
         components: {
@@ -116,15 +126,24 @@
         },
 
         setup (props, { emit }) {
+            // const {
+            //     getApiList,
+            //     getFunctionList,
+            //     getProjectVariableList
+            // } = useResource()
             // 状态
             const isSubmitting = ref(false)
             const isLoadingResponse = ref(false)
+            const variableList = ref([])
+            const functionList = ref([])
+            const apiList = ref([])
             const formData = ref({})
             const response = ref()
             const basicRef = ref(null)
             const headerRef = ref(null)
             const paramRef = ref(null)
             const responseRef = ref(null)
+            
             // use data
             const store = useStore()
             const route = useRoute()
@@ -281,9 +300,24 @@
                 }
             )
 
+            // onBeforeMount(() => {
+            //     Promise.all([
+            //         getApiList(),
+            //         getFunctionList(),
+            //         getProjectVariableList()
+            //     ]).then(([api, fun, vars]) => {
+            //         apiList.value = api
+            //         functionList.value = fun
+            //         variableList.value = vars
+            //     })
+            // })
+
             return {
                 isSubmitting,
                 isLoadingResponse,
+                variableList,
+                functionList,
+                apiList,
                 formData,
                 response,
                 basicRef,

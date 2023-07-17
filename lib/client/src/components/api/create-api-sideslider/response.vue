@@ -3,6 +3,9 @@
         ref="editObjectRef"
         :params="formData.response"
         :response="response"
+        :variable-list="variableList"
+        :function-list="functionList"
+        :api-list="apiList"
         @change="handleResponseChange"
     />
 </template>
@@ -21,7 +24,10 @@
 
         props: {
             formData: Object,
-            response: [Object, Array, String, Number]
+            response: [Object, Array, String, Number],
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {

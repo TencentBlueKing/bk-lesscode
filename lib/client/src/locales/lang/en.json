@@ -4207,5 +4207,8 @@
   "默认请求头": "Default request header",
   "form_请求头": "Request header",
   "参数名不能和同级参数名重复": "Parameter names cannot be duplicated with sibling parameter names",
-  "参数名由大小写字母、数字和下划线组成，以大小写字母开头": "Parameter names consist of upper- and lower-case letters, numbers, and underscores, starting with an upper- and lower-case letter"
+  "参数名由大小写字母、数字和下划线组成，以大小写字母开头": "Parameter names consist of upper- and lower-case letters, numbers, and underscores, starting with an upper- and lower-case letter",
+  "自定义校验": "Custom validation",
+  "添加参数自定义规则": "Add parameter custom rules.",
+  "参数值不符合自定义校验": "Parameter values do not match custom rules"
 }

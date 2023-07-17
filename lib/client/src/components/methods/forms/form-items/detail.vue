@@ -114,6 +114,8 @@
                     :query="form.apiHeader"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     @change="(apiHeader) => updateValue({ apiHeader })"
                 />
             </lc-form-item>
@@ -137,6 +139,8 @@
                     :query="form.apiQuery"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     :name-options="nameOptions"
                     @change="(apiQuery) => updateValue({ apiQuery })"
                 ></query-params>
@@ -154,6 +158,8 @@
                     :body="form.apiBody"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     :name-options="nameOptions"
                     @change="(apiBody) => updateValue({ apiBody })"
                 >
@@ -232,6 +238,14 @@
                 default: false
             },
             variableList: {
+                type: Array,
+                default: () => ([])
+            },
+            functionList: {
+                type: Array,
+                default: () => ([])
+            },
+            apiList: {
                 type: Array,
                 default: () => ([])
             },

@@ -14,6 +14,9 @@
                 :render-slot="renderSlot"
                 :name-options="nameOptions"
                 :brothers="renderBodyParam.children"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @minusNode="handleMinusNode"
                 @update="handleUpdate"
             />
@@ -55,7 +58,10 @@
             renderSlot: Function,
             getParamVal: Function,
             disabled: Boolean,
-            nameOptions: Array
+            nameOptions: Array,
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {
