@@ -199,6 +199,7 @@
     "vue-fullscreen": "^2.6.1",
     "vue-i18n": "^8.15.0",
     "vue-json-viewer": "^2.2.22",
+    "vue-jsonp": "^2.0.0",
     "vue-markdown-loader": "~2.4.1",
     "vue-property-decorator": "^9.0.0",
     "vue-router": "~3.1.3",
