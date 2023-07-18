@@ -155,8 +155,8 @@
                     this.groupComponentMap = Object.freeze(groupComponentMap)
                     this.renderGroupComponentMap = Object.freeze({
                         '我的收藏': this.favoriteComponentList,
-                        ...this.publicComponentMap,
-                        ...this.groupComponentMap
+                        ...this.groupComponentMap,
+                        ...this.publicComponentMap
                     })
                     this.searchList = Object.freeze(searchList)
                 } finally {
@@ -186,8 +186,8 @@
                     this.isSearch = false
                     this.renderGroupComponentMap = Object.freeze({
                         '我的收藏': this.favoriteComponentList,
-                        ...this.publicComponentMap,
-                        ...this.groupComponentMap
+                        ...this.groupComponentMap,
+                        ...this.publicComponentMap
                     })
                     return
                 }
