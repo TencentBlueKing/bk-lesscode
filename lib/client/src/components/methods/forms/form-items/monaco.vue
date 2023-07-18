@@ -499,6 +499,7 @@
                         {
                             $store: this.$store,
                             $http: this.$http,
+                            $bkMessage: this.$bkMessage,
                             console: {
                                 log (...args) {
                                     console.log(...args)

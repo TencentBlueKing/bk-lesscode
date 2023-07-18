@@ -156,7 +156,8 @@
                         apiList,
                         {
                             $store: this.$store,
-                            $http: this.$http
+                            $http: this.$http,
+                            $bkMessage: this.$bkMessage
                         }
                     )
                     let message = this.remoteValidate(result)

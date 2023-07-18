@@ -37,16 +37,7 @@
                 :api-list="apiList"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">
-                {{ $t('默认请求响应') }}
-                <bk-button
-                    class="api-response-button"
-                    size="small"
-                    :loading="isLoadingResponse"
-                    v-bk-tooltips="{ content: $t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑'), maxWidth: 400 }"
-                    @click="getApiResponse"
-                >{{ $t('获取请求响应') }}</bk-button>
-            </h3>
+            <h3 class="api-form-title">{{ $t('默认请求响应') }}</h3>
             <render-response
                 class="api-form"
                 ref="responseRef"
@@ -56,7 +47,15 @@
                 :function-list="functionList"
                 :api-list="apiList"
                 @update="handleUpdate"
-            />
+            >
+                <bk-button
+                    class="mt10 mr10"
+                    size="small"
+                    :loading="isLoadingResponse"
+                    v-bk-tooltips="{ content: $t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑'), maxWidth: 400 }"
+                    @click="getApiResponse"
+                >{{ $t('获取请求响应') }}</bk-button>
+            </render-response>
         </section>
         <section
             class="api-footer"
@@ -356,8 +355,5 @@
     }
     .api-footer {
         padding-left: 30px;
-    }
-    .api-response-button {
-        font-weight: normal;
     }
 </style>

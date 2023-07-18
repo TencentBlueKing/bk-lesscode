@@ -9,7 +9,11 @@
         :api-list="apiList"
         :render-slot="renderSlot"
         :get-param-val="getParamVal"
-    />
+    >
+        <template slot="tool">
+            <slot></slot>
+        </template>
+    </use-post-scheme>
 </template>
 
 <script>

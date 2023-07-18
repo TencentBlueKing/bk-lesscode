@@ -3,6 +3,9 @@
         :tabs="tabs"
         :active.sync="activeTab"
     >
+        <template slot="tool">
+            <slot name="tool"></slot>
+        </template>
         <section v-if="activeTab === 'edit'">
             <scheme-header />
             <single-scheme

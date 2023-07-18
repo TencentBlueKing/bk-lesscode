@@ -7,7 +7,11 @@
         :function-list="functionList"
         :api-list="apiList"
         @change="handleResponseChange"
-    />
+    >
+        <template slot="tool">
+            <slot></slot>
+        </template>
+    </edit-response-scheme>
 </template>
 
 <script>
