@@ -7,6 +7,9 @@
             :label-height="42"
             @tab-change="handleTabChange"
         >
+            <template slot="setting">
+                <slot name="tool"></slot>
+            </template>
             <bk-tab-panel
                 v-for="(panel, index) in tabs"
                 v-bind="panel"
@@ -48,7 +51,6 @@
         padding-bottom: 20px;
     }
     .tab-main {
-        width: 400px;
         /deep/ .bk-tab-section {
             padding: 0;
         }

@@ -3,6 +3,9 @@
         :tabs="tabs"
         :active.sync="activeTab"
     >
+        <template slot="tool">
+            <slot name="tool"></slot>
+        </template>
         <section v-if="activeTab === 'edit'">
             <scheme-header />
             <single-scheme
@@ -13,6 +16,9 @@
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
                 :brothers="renderQueryParams"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @plusBrotherNode="handlePlusBrotherNode(index)"
                 @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
@@ -53,7 +59,10 @@
 
         props: {
             params: Array,
-            getParamVal: Function
+            getParamVal: Function,
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {

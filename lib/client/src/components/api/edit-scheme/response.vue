@@ -3,6 +3,9 @@
         :tabs="tabs"
         :active.sync="activeTab"
     >
+        <template slot="tool">
+            <slot name="tool"></slot>
+        </template>
         <section v-show="activeTab === 'edit'">
             <scheme-header />
             <single-scheme
@@ -10,6 +13,9 @@
                 :scheme="renderResponseParam"
                 :minus-disable="true"
                 :brothers="renderResponseParam.children"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @update="handleUpdate"
             />
         </section>
@@ -50,7 +56,10 @@
 
         props: {
             params: Object,
-            response: [Object, Array, String, Number]
+            response: [Object, Array, String, Number],
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {

@@ -114,16 +114,11 @@
                     :query="form.apiHeader"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     @change="(apiHeader) => updateValue({ apiHeader })"
                 />
             </lc-form-item>
-            <bk-button
-                class="get-remote-response bk-form-item func-form-item"
-                size="small"
-                :loading="isLoadingResponse"
-                @click="getRemoteResponse"
-                v-enStyle="'left: 140px'"
-            >{{ $t('获取接口返回数据') }}</bk-button>
             <lc-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
                 :label="$t('form_请求参数')"
@@ -137,9 +132,19 @@
                     :query="form.apiQuery"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     :name-options="nameOptions"
                     @change="(apiQuery) => updateValue({ apiQuery })"
-                ></query-params>
+                >
+                    <bk-button
+                        class="mt10 mr10"
+                        size="small"
+                        :loading="isLoadingResponse"
+                        @click="getRemoteResponse"
+                        v-enStyle="'left: 140px'"
+                    >{{ $t('获取接口返回数据') }}</bk-button>
+                </query-params>
             </lc-form-item>
             <lc-form-item
                 v-else
@@ -154,9 +159,18 @@
                     :body="form.apiBody"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     :name-options="nameOptions"
                     @change="(apiBody) => updateValue({ apiBody })"
                 >
+                    <bk-button
+                        class="mt10 mr10"
+                        size="small"
+                        :loading="isLoadingResponse"
+                        @click="getRemoteResponse"
+                        v-enStyle="'left: 140px'"
+                    >{{ $t('获取接口返回数据') }}</bk-button>
                 </body-params>
             </lc-form-item>
             <lc-form-item
@@ -232,6 +246,14 @@
                 default: false
             },
             variableList: {
+                type: Array,
+                default: () => ([])
+            },
+            functionList: {
+                type: Array,
+                default: () => ([])
+            },
+            apiList: {
                 type: Array,
                 default: () => ([])
             },
@@ -475,12 +497,6 @@
         /deep/ .bk-radio-button-input:disabled+.bk-radio-button-text {
             border-left: 1px solid #dcdee5;
         }
-    }
-    .get-remote-response {
-        position: absolute;
-        left: 60px;
-        z-index: 2;
-        margin-top: 10px !important;
     }
     .add-api-link {
         /deep/ .bk-link-text {

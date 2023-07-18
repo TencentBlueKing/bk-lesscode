@@ -4,9 +4,16 @@
         :params="renderBody"
         :disabled="disabled"
         :name-options="nameOptions"
+        :variable-list="variableList"
+        :function-list="functionList"
+        :api-list="apiList"
         :render-slot="renderSlot"
         :get-param-val="getParamVal"
-    />
+    >
+        <template slot="tool">
+            <slot></slot>
+        </template>
+    </use-post-scheme>
 </template>
 
 <script>
@@ -32,8 +39,10 @@
         props: {
             body: Object,
             disabled: Boolean,
+            nameOptions: Array,
             variableList: Array,
-            nameOptions: Array
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {
