@@ -36,7 +36,7 @@
                                             </span>
                                             <ul class="bk-dropdown-list more-dropdown-list" slot="dropdown-content" @click="hideDropdownMenu(layout.id)">
                                                 <li class="action-item"><a href="javascript:;" @click="handleUpdate(layout)">{{ $t('编辑') }}</a></li>
-                                                <li v-if="layout.layoutType !== 'MOBILE'" v-bk-tooltips.bottom="{ content: $t('导航布局已被使用，不可删除'), disabled: !layoutPageMap[layout.id] }"
+                                                <li v-if="layout.type !== 'empty' && layout.type !== 'mobile-empty'" v-bk-tooltips.bottom="{ content: $t('导航布局已被使用，不可删除'), disabled: !layoutPageMap[layout.id] }"
                                                     :class="['action-item', { disabled: layoutPageMap[layout.id] }]">
                                                     <a href="javascript:;" @click="handleDelete(layout)">{{ $t('删除') }}</a>
                                                 </li>
