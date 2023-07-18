@@ -15,6 +15,7 @@ const SingleSchemeComponent = defineComponent({
     props: {
         scheme: Object,
         parent: Object,
+        brothers: Array,
         disable: Boolean,
         typeDisable: Boolean,
         minusDisable: Boolean,
@@ -39,10 +40,24 @@ const SingleSchemeComponent = defineComponent({
             message: window.i18n.t('参数名是必填项，请修改后重试'),
             trigger: 'blur'
         }
+        const sameNameRule = {
+            validator (val) {
+                return val.length <= 0 || props.brothers?.filter?.((brother: any) => brother.name === val).length <= 1
+            },
+            message: window.i18n.t('参数名不能和同级参数名重复'),
+            trigger: 'blur'
+        }
+        const nameRule = {
+            validator (val) {
+                return val.length <= 0 || /^[a-zA-Z][a-zA-Z0-9_]*$/.test(val)
+            },
+            message: window.i18n.t('参数名由大小写字母、数字和下划线组成，以大小写字母开头'),
+            trigger: 'blur'
+        }
         // 切换是否展示子节点
         const toggleShowProperty = () => {
             copyScheme.value.showChildren = !copyScheme.value.showChildren
-            triggleChange()
+            triggerChange()
         }
         // 增加子节点
         const plusChildProperty = () => {
@@ -51,7 +66,7 @@ const SingleSchemeComponent = defineComponent({
             } else {
                 copyScheme.value.children.push(getDefaultApiEditScheme())
             }
-            triggleChange()
+            triggerChange()
         }
         // 增加兄弟节点
         const handlePlusBrotherProperty = () => {
@@ -64,7 +79,7 @@ const SingleSchemeComponent = defineComponent({
         }
         const minusProperty = (index) => {
             copyScheme.value?.children?.splice(index, 1)
-            triggleChange()
+            triggerChange()
         }
         // 更新类型
         const updateType = (type) => {
@@ -78,15 +93,15 @@ const SingleSchemeComponent = defineComponent({
                     copyScheme.value.value = paramType.DEFAULT
                 }
             })
-            triggleChange()
+            triggerChange()
         }
         // 更新值
         const update = (val) => {
             Object.assign(copyScheme.value, val)
-            triggleChange()
+            triggerChange()
         }
         // 触发值更新
-        const triggleChange = () => {
+        const triggerChange = () => {
             emit('update', copyScheme.value)
         }
         // 校验
@@ -103,6 +118,8 @@ const SingleSchemeComponent = defineComponent({
 
         return {
             requireRule,
+            sameNameRule,
+            nameRule,
             copyScheme,
             finalDisable,
             finalTypeDisable,
@@ -115,7 +132,7 @@ const SingleSchemeComponent = defineComponent({
             minusProperty,
             updateType,
             update,
-            triggleChange,
+            triggerChange,
             validate
         }
     },
@@ -153,7 +170,7 @@ const SingleSchemeComponent = defineComponent({
                         }
                     >
                         <bk-form-item
-                            rules={[this.requireRule]}
+                            rules={[this.requireRule, this.sameNameRule, this.nameRule]}
                             property="name"
                             error-display-type="tooltips"
                         >
@@ -179,7 +196,7 @@ const SingleSchemeComponent = defineComponent({
                                         }
                                     </bk-select>
                                     : <bk-input
-                                        placeholder={this.$t('请输入字段名')}
+                                        placeholder={this.$t('请输入参数名')}
                                         value={this.copyScheme.name}
                                         disabled={this.finalDisable || this.parent?.type === API_PARAM_TYPES.ARRAY.VAL}
                                         onInput={(name) => this.update({ name })}
@@ -230,7 +247,7 @@ const SingleSchemeComponent = defineComponent({
                                     >
                                     </bk-checkbox>
                                     : <bk-input
-                                        placeholder={this.$t('请输入字段值')}
+                                        placeholder={this.$t('请输入参数值')}
                                         value={this.copyScheme.value}
                                         disabled={this.finalDisable || [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)}
                                         onChange={(val) => this.update({ value: this.copyScheme.type === API_PARAM_TYPES.NUMBER.VAL && !isNaN(+val) ? +val : val })}
@@ -339,7 +356,8 @@ const SingleSchemeComponent = defineComponent({
                                 hideRequired={this.hideRequired}
                                 renderSlot={this.renderSlot}
                                 nameOptions={this.nameOptions}
-                                onUpdate={this.triggleChange}
+                                brothers={this.copyScheme.children}
+                                onUpdate={this.triggerChange}
                                 onPlusBrotherNode={this.plusChildProperty}
                                 onMinusNode={() => this.minusProperty(index)}
                             >

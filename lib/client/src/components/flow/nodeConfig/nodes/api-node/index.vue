@@ -48,7 +48,7 @@
                         <div id="request-url-tips">
                             <p>{{`1.${$t('非蓝鲸网关API，请先接入')}【${$t('蓝鲸网关')}】`}}</p>
                             <p>{{`2.${$t('确保选择的蓝鲸网关API给蓝鲸应用ID')}【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】${$t('已授权并设置了用户免认证策略')}`}}</p>
-                            <p><span v-pre>{{`3.${$t('请求地址可使用{{变量名}}引用流程上下文变量，比如')}http://host/${id}`}}</span>
+                            <p>{{`3.${$t('请求地址可使用\{\{变量名\}\}引用流程上下文变量，比如')}http://host/\$\{id\}`}}
                                 <bk-button
                                     style="padding: 0; height: initial; line-height: 14px;"
                                     size="small"

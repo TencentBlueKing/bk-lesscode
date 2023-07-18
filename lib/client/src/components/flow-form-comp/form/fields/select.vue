@@ -6,7 +6,8 @@
             :disabled="disabled"
             :loading="sourceDataLoading"
             :placeholder="field.placeholder"
-            @change="change">
+            @change="change"
+            @toggle="handleToggle">
             <bk-option v-for="option in sourceData" :key="option.key" :id="option.key" :name="option.name"> </bk-option>
         </bk-select>
     </div>
@@ -47,6 +48,11 @@
         methods: {
             change (val) {
                 this.$emit('change', val)
+            },
+            handleToggle (val) {
+                if (val) {
+                    this.setSourceData()
+                }
             }
         }
     }

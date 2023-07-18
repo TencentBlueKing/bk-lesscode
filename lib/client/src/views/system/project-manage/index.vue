@@ -10,7 +10,7 @@
 -->
 <!-- 应用开发页面 -->
 <template>
-    <main class="projects page-content">
+    <main class="projects page-content" style="padding-top: 0px">
         <div class="page-head">
             <!-- 新建按钮 -->
             <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
@@ -21,14 +21,8 @@
                     <template v-if="iamEnable">
                         <li>
                             <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">{{ $t('空白应用') }}</a>
-                                <a href="javascript:;" slot="allow" @click="handleCreate('newProject')">{{ $t('空白应用') }}</a>
-                            </auth-component>
-                        </li>
-                        <li>
-                            <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">{{ $t('从模板新建') }}</a>
-                                <a href="javascript:;" slot="allow" @click="handleTempCreate">{{ $t('从模板新建') }}</a>
+                                <a href="javascript:;" slot="forbid">{{ $t('新建应用') }}</a>
+                                <a href="javascript:;" slot="allow" @click="handleTempCreate">{{ $t('新建应用') }}</a>
                             </auth-component>
                         </li>
                         <li>
@@ -39,8 +33,7 @@
                         </li>
                     </template>
                     <template v-else>
-                        <li><a href="javascript:;" @click="handleCreate('newProject')">{{ $t('空白应用') }}</a></li>
-                        <li><a href="javascript:;" @click="handleTempCreate">{{ $t('从模板新建') }}</a></li>
+                        <li><a href="javascript:;" @click="handleTempCreate">{{ $t('新建应用') }}</a></li>
                         <li><a href="javascript:;" @click="handleCreate('importProject')">{{ $t('导入应用') }}</a></li>
                     </template>
                 </ul>
@@ -559,6 +552,7 @@
     .projects {
         max-width: 1680px;
         margin: 0 auto;
+        padding: 0 0 16px;
     }
 
     .create-dropdown {
@@ -568,7 +562,13 @@
     }
 
     .page-head {
-        margin-bottom: 8px;
+        height: 52px;
+        padding: 10px 24px;
+        display: flex;
+        align-items: center;
+        background: #FFFFFF;
+        box-shadow: 0 2px 4px 0 #1919290d;
+        /* margin-bottom: 8px; */
 
         .extra {
             display: flex;
@@ -588,9 +588,10 @@
     }
 
     .page-body {
+        padding: 0 24px;
         display: flex;
         flex: 1;
-        height: calc(100% - 40px);
+        height: calc(100% - 60px);
 
         .page-body-inner {
             overflow: hidden;

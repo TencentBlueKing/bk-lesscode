@@ -236,7 +236,7 @@
                 currentPageId.value = id
                 currentPage.value = renderList.value.find(item => item.pageId === id)
                 const url = getPreviewUrl(currentPage.value)
-                iframeUrl.value = url
+                iframeUrl.value = location.origin + url
             }
 
             function toggleDialog (isShow, payload = {}) {

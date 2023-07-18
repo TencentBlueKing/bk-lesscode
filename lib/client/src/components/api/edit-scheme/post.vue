@@ -10,6 +10,7 @@
                 :scheme="renderBodyParam"
                 :minus-disable="true"
                 :plus-brother-disable="true"
+                :brothers="renderBodyParam.children"
                 @update="handleUpdate"
             />
         </section>

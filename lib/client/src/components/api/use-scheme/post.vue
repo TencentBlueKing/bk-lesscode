@@ -13,6 +13,7 @@
                 :disable="disabled"
                 :render-slot="renderSlot"
                 :name-options="nameOptions"
+                :brothers="renderBodyParam.children"
                 @minusNode="handleMinusNode"
                 @update="handleUpdate"
             />

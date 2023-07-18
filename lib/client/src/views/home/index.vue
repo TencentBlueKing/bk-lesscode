@@ -12,8 +12,13 @@
                         >{{ $t('立即体验') }}</bk-button>
                         <bk-button
                             class="mt10 banner-btn help-btn"
+                            @click="handlerRouter('templateMarket')"
+                            v-enStyle="'width:180px'"
+                        >{{ $t('应用模板') }}</bk-button>
+                        <bk-button
+                            class="mt10 banner-btn help-btn"
                             @click="handlerRouter('intro')"
-                            v-enStyle="'width:220px'"
+                            v-enStyle="'width:180px'"
                         >{{ $t('帮助文档') }}</bk-button>
                     </div>
                 </div>
@@ -294,7 +299,7 @@
                     left: 15%;
                     top: 56%;
                     .banner-btn{
-                        width: 190px;
+                        width: 160px;
                         height: 50px;
                         border-radius: 25px;
                         font-size: 18px;

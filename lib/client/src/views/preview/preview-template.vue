@@ -35,6 +35,7 @@
     import widgetBkTable from '@/components/render/pc/widget/table/table'
     import widgetElTable from '@/components/patch/widget-el-table/index.vue'
     import widgetTableColumn from '@/components/render/pc/widget/table/table-column'
+    import '@vant/touch-emulator' // PC端模拟移动端事件 用于预览
 
     window.swiperAni = swiperAni
     window.previewCustomCompontensPlugin = []

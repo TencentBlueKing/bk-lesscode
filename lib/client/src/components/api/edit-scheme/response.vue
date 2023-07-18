@@ -9,6 +9,7 @@
                 ref="singleSchemeRef"
                 :scheme="renderResponseParam"
                 :minus-disable="true"
+                :brothers="renderResponseParam.children"
                 @update="handleUpdate"
             />
         </section>
