@@ -19,6 +19,7 @@
             v-model="isShow"
             width="700"
             header-position="left"
+            :auto-close="false"
             @confirm="triggerUpdate"
         >
             <template #header>
@@ -27,7 +28,10 @@
             <bk-form
                 v-for="renderRule, index in copyValidate.rules"
                 :key="index"
+                :model="renderRule"
+                :rules="getRules(renderRule)"
                 class="validate-item"
+                ref="formRef"
                 form-type="vertical"
             >
                 <i class="bk-drag-icon bk-drag-delet validate-delete" @click="handleMinus(index)"></i>
@@ -37,6 +41,7 @@
                     property="type"
                 >
                     <bk-select
+                        :clearable="false"
                         :value="renderRule.type"
                         @change="(type) => handleTypeChange(type, index)"
                     >
@@ -94,6 +99,9 @@
     import {
         API_VALIDATE_TYPES
     } from 'shared/api'
+    import {
+        messageError
+    } from '@/common/bkmagic'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
 
     export default {
@@ -114,6 +122,7 @@
             }
             const isShow = ref(false)
             const copyValidate = ref(defaultValidate)
+            const formRef = ref()
             const types = [
                 {
                     id: API_VALIDATE_TYPES.REQUIRE,
@@ -145,6 +154,32 @@
                 //     message: window.i18n.t('字段值未通过函数校验')
                 // }
             ]
+
+            const getRules = (renderRule) => {
+                return {
+                    type: [
+                        {
+                            required: true,
+                            message: window.i18n.t('{0}不能为空', [window.i18n.t('校验方式')]),
+                            trigger: 'blur'
+                        }
+                    ],
+                    value: [
+                        {
+                            required: true,
+                            message: window.i18n.t('{0}不能为空', [getLabel(renderRule.type)]),
+                            trigger: 'blur'
+                        }
+                    ],
+                    message: [
+                        {
+                            required: true,
+                            message: window.i18n.t('{0}不能为空', [window.i18n.t('报错提示信息')]),
+                            trigger: 'blur'
+                        }
+                    ]
+                }
+            }
 
             const handleClick = () => {
                 isShow.value = true
@@ -190,7 +225,14 @@
             }
 
             const triggerUpdate = () => {
-                emit('change', copyValidate.value)
+                Promise.all(
+                    formRef.value.map(item => item.validate())
+                ).then(() => {
+                    isShow.value = false
+                    emit('change', copyValidate.value)
+                }).catch(({ content }) => {
+                    messageError(content)
+                })
             }
 
             return {
@@ -198,6 +240,8 @@
                 isShow,
                 types,
                 copyValidate,
+                formRef,
+                getRules,
                 handleClick,
                 getLabel,
                 handlePlus,
