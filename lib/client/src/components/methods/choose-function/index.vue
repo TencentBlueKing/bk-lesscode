@@ -219,7 +219,6 @@
                 searchFunctionName: '',
                 functionType: 'functionList',
                 marketFunctionList: [],
-                funcGroups: [],
                 isLoading: false,
                 isShowEditFunctionDialog: false,
                 selectFuncCode: '',
@@ -229,6 +228,7 @@
         },
 
         computed: {
+            ...mapGetters('functions', ['funcGroups']),
             ...mapGetters('projectVersion', ['currentVersionId']),
 
             computedFunctionData () {
@@ -300,24 +300,14 @@
 
         methods: {
             ...mapActions('functionMarket', ['getFunctionList']),
-            ...mapActions('functions', ['getAllGroupAndFunction']),
 
             getFunctionListFromApi () {
                 this.isLoading = true
-                Promise
-                    .all([
-                        this.getFunctionList(),
-                        this.getAllGroupAndFunction({
-                            projectId: this.$route.params.projectId,
-                            versionId: this.currentVersionId
-                        })
-                    ])
-                    .then(([functionList, funcGroups]) => {
-                        this.marketFunctionList = functionList
-                        this.funcGroups = funcGroups
-                    }).finally(() => {
-                        this.isLoading = false
-                    })
+                this.getFunctionList().then((functionList) => {
+                    this.marketFunctionList = functionList
+                }).finally(() => {
+                    this.isLoading = false
+                })
             },
 
             triggleUpdate () {
