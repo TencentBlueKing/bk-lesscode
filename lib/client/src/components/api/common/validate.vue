@@ -19,11 +19,13 @@
             v-model="isShow"
             width="700"
             header-position="left"
+            ext-cls="param-validate"
             :auto-close="false"
             @confirm="triggerUpdate"
         >
             <template #header>
                 {{ $t('添加参数自定义规则') }}
+                <span class="scheme-name" v-if="scheme.name">{{ scheme.name }}</span>
             </template>
             <bk-form
                 v-for="renderRule, index in copyValidate.rules"
@@ -229,6 +231,9 @@
                     formRef.value.map(item => item.validate())
                 ).then(() => {
                     isShow.value = false
+                    if ((!props.scheme?.validate?.rules || props.scheme?.validate?.rules?.length <= 0) && copyValidate.value?.rules?.length > 0) {
+                        copyValidate.value.enable = true
+                    }
                     emit('change', copyValidate.value)
                 }).catch(({ content }) => {
                     messageError(content)
@@ -306,4 +311,25 @@
             background: #fff;
         }
     }
+    .scheme-name {
+        background: #F0F1F5;
+        line-height: 22px;
+        font-size: 12px;
+        color: #63656E;
+        padding: 0 10px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+</style>
+<style lang="postcss">
+@import "@/css/mixins/scroller";
+
+.param-validate {
+    .bk-dialog-body {
+        max-height: 60vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        @mixin scroller;
+    }
+}
 </style>
