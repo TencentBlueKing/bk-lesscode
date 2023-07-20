@@ -180,6 +180,9 @@
                 background: #F0F5FF;
                 border-radius: 2px;
                 transform: scale(.83);
+                &:hover{
+                    background: #e1e8f7;
+                }
             }
         }
 

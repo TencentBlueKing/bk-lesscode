@@ -3,6 +3,9 @@
         :tabs="tabs"
         :active.sync="activeTab"
     >
+        <template slot="tool">
+            <slot name="tool"></slot>
+        </template>
         <section v-if="activeTab === 'edit'">
             <scheme-header />
             <single-scheme
@@ -12,8 +15,12 @@
                 :type-disable="true"
                 :scheme="renderQueryParam"
                 :minus-disable="renderQueryParams.length <= 1"
-                @plusBrotherNode="handlePlusBrotherNode"
-                @minusNode="handleMinusNode"
+                :brothers="renderQueryParams"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
+                @plusBrotherNode="handlePlusBrotherNode(index)"
+                @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
             />
         </section>
@@ -52,7 +59,10 @@
 
         props: {
             params: Array,
-            getParamVal: Function
+            getParamVal: Function,
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {
@@ -65,22 +75,22 @@
             const renderQueryParams = ref([])
             const queryString = computed(() => parseQueryScheme2QueryString(renderQueryParams.value))
 
-            const handlePlusBrotherNode = () => {
-                renderQueryParams.value.push(getDefaultApiEditScheme())
-                triggleChange()
+            const handlePlusBrotherNode = (index) => {
+                renderQueryParams.value.splice(index + 1, 0, getDefaultApiEditScheme())
+                triggerChange()
             }
 
             const handleMinusNode = (index) => {
                 renderQueryParams.value.splice(index, 1)
-                triggleChange()
+                triggerChange()
             }
 
             const handleUpdate = (index, param) => {
                 renderQueryParams.value[index] = param
-                triggleChange()
+                triggerChange()
             }
 
-            const triggleChange = () => {
+            const triggerChange = () => {
                 emit('change', renderQueryParams.value)
             }
 

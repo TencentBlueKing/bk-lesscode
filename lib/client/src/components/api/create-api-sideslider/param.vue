@@ -3,6 +3,9 @@
         ref="editObjectRef"
         :params="renderParams"
         :is="renderComponent"
+        :variable-list="variableList"
+        :function-list="functionList"
+        :api-list="apiList"
         @change="handleParamsChange"
     />
 </template>
@@ -30,7 +33,10 @@
         },
 
         props: {
-            formData: Object
+            formData: Object,
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {

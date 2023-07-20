@@ -42,20 +42,23 @@
                             @on-favorite="handleFavorite" />
                     </group-box>
                 </template>
-                <group-box
-                    :list="publicComponentList"
-                    :group-name="$t('其他应用公开的组件')"
-                    key="publice">
-                    <render-custom-component
-                        v-for="component in publicComponentList"
-                        :key="component.name"
-                        public-group
-                        :data="component"
-                        @on-favorite="handleFavorite" />
-                    <div slot="tag" class="group-tag">
-                        {{ $t('公共') }}
-                    </div>
-                </group-box>
+                <template v-for="(componentList, groupName, index) in publicComponentMap">
+                    <group-box
+                        v-if="componentList.length > 0"
+                        :key="`${groupName}_${index}`"
+                        :list="componentList"
+                        :group-name="groupName">
+                        <render-custom-component
+                            v-for="component in componentList"
+                            :key="component.name"
+                            public-group
+                            :data="component"
+                            @on-favorite="handleFavorite" />
+                        <div slot="tag" class="group-tag" v-bk-tooltips="$t('其他项目公开的组件')">
+                            {{ $t('公共') }}
+                        </div>
+                    </group-box>
+                </template>
             </template>
         </div>
         <div class="fixed-opts">
@@ -73,6 +76,7 @@
     import GroupBox from '../../common/group-box'
     import SearchBox from '../../common/search-box'
     import RenderCustomComponent from '../../common/group-box/render-custom-component'
+    import { CUSTOM_COMPS_TYPE } from '@/common/constant'
 
     export default {
         name: '',
@@ -85,7 +89,7 @@
             return {
                 isLoading: false,
                 favoriteComponentList: [],
-                publicComponentList: [],
+                publicComponentMap: {},
                 groupComponentMap: {},
                 renderGroupComponentMap: {},
                 searchList: [],
@@ -112,9 +116,10 @@
                         return result
                     }, {})
                     const favoriteComponentList = []
-                    const publicComponentList = []
+                    const publicComponentMap = {}
                     const groupComponentMap = {}
                     const searchList = []
+                    const customCompsType = CUSTOM_COMPS_TYPE
                     window.customCompontensPlugin.forEach(registerCallback => {
                         const [
                             config,,
@@ -133,7 +138,11 @@
                             return
                         }
                         if (baseInfo.isPublic) {
-                            publicComponentList.push(realConfig)
+                            const type = customCompsType.find(item => item.id === baseInfo.publicType)
+                            if (!publicComponentMap[type?.name]) {
+                                publicComponentMap[type?.name] = []
+                            }
+                            publicComponentMap[type.name].push(realConfig)
                             return
                         }
                         if (!groupComponentMap[baseInfo.category]) {
@@ -142,12 +151,12 @@
                         groupComponentMap[baseInfo.category].push(realConfig)
                     })
                     this.favoriteComponentList = Object.freeze(favoriteComponentList)
-                    this.publicComponentList = Object.freeze(publicComponentList)
+                    this.publicComponentMap = Object.freeze(publicComponentMap)
                     this.groupComponentMap = Object.freeze(groupComponentMap)
                     this.renderGroupComponentMap = Object.freeze({
                         '我的收藏': this.favoriteComponentList,
-                        '其他应用公开的组件': this.publicComponentList,
-                        ...this.groupComponentMap
+                        ...this.groupComponentMap,
+                        ...this.publicComponentMap
                     })
                     this.searchList = Object.freeze(searchList)
                 } finally {
@@ -177,8 +186,8 @@
                     this.isSearch = false
                     this.renderGroupComponentMap = Object.freeze({
                         '我的收藏': this.favoriteComponentList,
-                        '其他应用公开的组件': this.publicComponentList,
-                        ...this.groupComponentMap
+                        ...this.groupComponentMap,
+                        ...this.publicComponentMap
                     })
                     return
                 }

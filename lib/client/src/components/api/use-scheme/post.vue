@@ -3,6 +3,9 @@
         :tabs="tabs"
         :active.sync="activeTab"
     >
+        <template slot="tool">
+            <slot name="tool"></slot>
+        </template>
         <section v-if="activeTab === 'edit'">
             <scheme-header />
             <single-scheme
@@ -13,6 +16,10 @@
                 :disable="disabled"
                 :render-slot="renderSlot"
                 :name-options="nameOptions"
+                :brothers="renderBodyParam.children"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @minusNode="handleMinusNode"
                 @update="handleUpdate"
             />
@@ -54,7 +61,10 @@
             renderSlot: Function,
             getParamVal: Function,
             disabled: Boolean,
-            nameOptions: Array
+            nameOptions: Array,
+            variableList: Array,
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {

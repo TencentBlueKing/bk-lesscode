@@ -17,7 +17,7 @@ export default (row, handleUpdate) => {
                     value={row.valueType}
                     clearable={false}
                     disabled={disabled}
-                    onChange={(valueType) => handleUpdate(row, { valueType })}
+                    onChange={(valueType) => handleUpdate(row, { valueType, code: '', value: '' })}
                 >
                     <bk-option id="value" name={window.i18n.t('值')}></bk-option>
                     <bk-option id="variable" name={window.i18n.t('变量')}></bk-option>
@@ -29,7 +29,7 @@ export default (row, handleUpdate) => {
                             remoteConfig={{}}
                             options={{ valueTypeInclude: [row.type] }}
                             formData={{ code: row.code }}
-                            onOn-change={({ code }) => handleUpdate(row, { code })}
+                            onOn-change={({ code, renderValue }) => handleUpdate(row, { code, value: renderValue })}
                         >
                         </ChooseVariable>
                         : row.type === 'boolean'

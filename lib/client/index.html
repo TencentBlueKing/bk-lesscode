@@ -29,6 +29,8 @@
         <script>
             var BK_STATIC_URL = '<%= process.env.BK_STATIC_URL %>'
             var BKPAAS_ENVIRONMENT = '<%= process.env.BK_PAAS_ENVIRONMENT %>'
+            var BK_COMPONENT_API_URL = '<%= process.env.BK_COMPONENT_API_URL  %>'
+            var BKPAAS_BK_DOMAIN = '<%= process.env.BKPAAS_BK_DOMAIN  %>'
             var BK_API_URL_TMPL = '{{ BK_API_URL_TMPL }}'
             var BKPAAS_ENGINE_REGION = '<%= process.env.BK_PAAS_ENGINE_REGION %>'
             var BK_APP_APIGW_PREFIX = '<%= process.env.BK_API_GATEWAY_ORIGIN.replace('{api_name}', 'bk-lesscode') + '/' + process.env.BK_LESSCODE_ENVIRONMENT || '' %>'

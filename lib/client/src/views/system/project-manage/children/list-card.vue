@@ -10,137 +10,132 @@
 -->
 
 <template>
-    <div class="list-card">
-        <template v-if="projectList.length">
-            <div :class="['project-item', { favorite: project.favorite }]" v-for="project in projectList"
-                :key="project.id">
-                <div class="item-bd">
-                    <template v-if="pageMap[project.id] && pageMap[project.id].length > 0">
-                        <div class="preview">
-                            <page-preview-thumb :alt="$t('应用缩略预览')" :project-id="project.id"
-                                :img-src="project.templateImg" />
+    <section class="project-and-template">
+        <div v-if="projectList.length" class="project-list-card">
+            <template>
+                <div :class="['project-item', { favorite: project.favorite }]" v-for="project in projectList"
+                    :key="project.id">
+                    <div class="item-bd">
+                        <template v-if="pageMap[project.id] && pageMap[project.id].length > 0">
+                            <div class="preview">
+                                <page-preview-thumb :alt="$t('应用缩略预览')" :project-id="project.id"
+                                    :img-src="project.templateImg" />
+                            </div>
+                        </template>
+                        <div class="empty" v-else>
+                            {{ $t('暂无页面') }} </div>
+                        <div class="operate-btns">
+                            <!-- <bk-button class="edit-btn" theme="primary" @click="handleGotoPage(project.id)">开发应用</bk-button>
+                            <bk-button class="preview-btn" @click="handlePreview(project.id)">预览</bk-button> -->
+                            <auth-button :permission="project.canDevelop" auth="develop_app" :resource-id="project.id"
+                                class="edit-btn" theme="primary" @click="handleGotoPage(project.id)">
+                                {{ $t('开发') }} </auth-button>
+                            <auth-button :permission="project.canDevelop" auth="develop_app" :resource-id="project.id"
+                                class="preview-btn" @click.stop="handlePreview(project.id)">
+                                {{ $t('预览') }} </auth-button>
+                            <auth-button :permission="project.canDeploy" auth="deploy_app" :resource-id="project.id"
+                                class="preview-btn" @click.stop="handleRelease(project.id)">
+                                {{ $t('部署') }} </auth-button>
                         </div>
-                    </template>
-                    <div class="empty" v-else>
-                        {{ $t('暂无页面') }} </div>
-                    <div class="operate-btns">
-                        <!-- <bk-button class="edit-btn" theme="primary" @click="handleGotoPage(project.id)">开发应用</bk-button>
-                        <bk-button class="preview-btn" @click="handlePreview(project.id)">预览</bk-button> -->
-                        <auth-button :permission="project.canDevelop" auth="develop_app" :resource-id="project.id"
-                            class="edit-btn" theme="primary" @click="handleGotoPage(project.id)">
-                            {{ $t('开发') }} </auth-button>
-                        <auth-button :permission="project.canDevelop" auth="develop_app" :resource-id="project.id"
-                            class="preview-btn" @click.stop="handlePreview(project.id)">
-                            {{ $t('预览') }} </auth-button>
-                        <auth-button :permission="project.canDeploy" auth="deploy_app" :resource-id="project.id"
-                            class="preview-btn" @click.stop="handleRelease(project.id)">
-                            {{ $t('部署') }} </auth-button>
                     </div>
+                    <div class="item-ft">
+                        <div class="col">
+                            <h3 class="name" v-bk-tooltips="{
+                                content: project.projectName,
+                                disabled: !(project.projectName && project.projectName.length > 20) }">
+                                {{project.projectName}}</h3>
+                            <div class="stat">{{getUpdateInfoMessage(project)}}</div>
+                        </div>
+                        <div class="col">
+                            <bk-dropdown-menu :ref="`moreActionDropdown${project.id}`">
+                                <span slot="dropdown-trigger" class="more-menu-trigger">
+                                    <i class="bk-drag-icon bk-drag-more-dot"></i>
+                                </span>
+                                <ul class="bk-dropdown-list card-operation-list" slot="dropdown-content"
+                                    @click="hideDropdownMenu(project.id)">
+                                    <li>
+                                        <auth-component :permission="project.canDevelop" auth="develop_app"
+                                            :resource-id="project.id">
+                                            <a href="javascript:;" slot="forbid">{{ $t('下载源码') }}</a>
+                                            <a href="javascript:;" slot="allow" @click="handleDownloadSource(project)">{{
+                                                $t('下载源码') }}</a>
+                                        </auth-component>
+                                    </li>
+                                    <li>
+                                        <auth-component :permission="project.canDevelop" auth="develop_app"
+                                            :resource-id="project.id">
+                                            <a href="javascript:;" slot="forbid">{{ $t('abbr_页面管理') }}</a>
+                                            <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">{{
+                                                $t('abbr_页面管理') }}</a>
+                                        </auth-component>
+                                    </li>
+                                    <li>
+                                        <auth-component :permission="project.canDevelop" auth="develop_app"
+                                            :resource-id="project.id">
+                                            <a href="javascript:;" slot="forbid">{{ $t('重命名') }}</a>
+                                            <a href="javascript:;" slot="allow" @click="handleRename(project)">{{ $t('重命名')
+                                                }}</a>
+                                        </auth-component>
+                                    </li>
+                                    <li>
+                                        <auth-component :permission="project.canDevelop" auth="develop_app"
+                                            :resource-id="project.id">
+                                            <a href="javascript:;" slot="forbid">{{ $t('复制') }}</a>
+                                            <a href="javascript:;" slot="allow" @click="handleCopy(project)">{{ $t('复制')
+                                                }}</a>
+                                        </auth-component>
+                                    </li>
+                                    <li>
+                                        <auth-component :permission="project.canDevelop" auth="develop_app"
+                                            :resource-id="project.id">
+                                            <a href="javascript:;" slot="forbid">{{ $t('导出') }}</a>
+                                            <a href="javascript:;" slot="allow" @click="handleExport(project)">{{ $t('导出')
+                                                }}</a>
+                                        </auth-component>
+                                    </li>
+                                    <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
+                                        <a href="javascript:;" @click="handleSetTemplate(project)">{{ $t('设为模板') }}</a>
+                                    </li>
+                                </ul>
+                            </bk-dropdown-menu>
+                        </div>
+                    </div>
+                    <span class="favorite-btn">
+                        <i class="bk-icon icon-info-circle"
+                            v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false, maxWidth: 400, disabled: !project.projectDesc }"></i>
+                        <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
+                            <i slot="forbid" custom-forbid-container-cls="forbid-container-cls"
+                                :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
+                                v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"></i>
+                            <i slot="allow" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
+                                v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"
+                                @click.stop="handleClickFavorite(project)"></i>
+                        </auth-component>
+                    </span>
+                    <span v-if="project.isOffcial" class="default-tag">{{ $t('应用模板') }}</span>
+                    <frameworkTag :framework="project.framework"></frameworkTag>
                 </div>
-                <div class="item-ft">
-                    <div class="col">
-                        <h3 class="name" v-bk-tooltips="{
-                            content: project.projectName,
-                            disabled: !(project.projectName && project.projectName.length > 20) }">
-                            {{project.projectName}}</h3>
-                        <div class="stat">{{getUpdateInfoMessage(project)}}</div>
-                    </div>
-                    <div class="col">
-                        <bk-dropdown-menu :ref="`moreActionDropdown${project.id}`">
-                            <span slot="dropdown-trigger" class="more-menu-trigger">
-                                <i class="bk-drag-icon bk-drag-more-dot"></i>
-                            </span>
-                            <ul class="bk-dropdown-list card-operation-list" slot="dropdown-content"
-                                @click="hideDropdownMenu(project.id)">
-                                <!-- <li><a href="javascript:;" @click="handleDownloadSource(project)">下载源码</a></li> -->
-                                <!-- <li><a href="javascript:;" @click="handleGotoPage(project.id)">页面管理</a></li> -->
-                                <!-- <li><a href="javascript:;" @click="handleRename(project)">重命名</a></li> -->
-                                <!-- <li><a href="javascript:;" @click="handleRelease(project.id)">部署</a></li> -->
-                                <!-- <li><a href="javascript:;" @click="handleCopy(project)">复制</a></li> -->
-                                <!-- <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]"><a href="javascript:;" @click="handleSetTemplate(project)">设为模板</a></li> -->
-                                <li>
-                                    <auth-component :permission="project.canDevelop" auth="develop_app"
-                                        :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">{{ $t('下载源码') }}</a>
-                                        <a href="javascript:;" slot="allow" @click="handleDownloadSource(project)">{{
-                                            $t('下载源码') }}</a>
-                                    </auth-component>
-                                </li>
-                                <li>
-                                    <auth-component :permission="project.canDevelop" auth="develop_app"
-                                        :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">{{ $t('abbr_页面管理') }}</a>
-                                        <a href="javascript:;" slot="allow" @click="handleGotoPage(project.id)">{{
-                                            $t('abbr_页面管理') }}</a>
-                                    </auth-component>
-                                </li>
-                                <li>
-                                    <auth-component :permission="project.canDevelop" auth="develop_app"
-                                        :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">{{ $t('重命名') }}</a>
-                                        <a href="javascript:;" slot="allow" @click="handleRename(project)">{{ $t('重命名')
-                                            }}</a>
-                                    </auth-component>
-                                </li>
-                                <li>
-                                    <auth-component :permission="project.canDevelop" auth="develop_app"
-                                        :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">{{ $t('复制') }}</a>
-                                        <a href="javascript:;" slot="allow" @click="handleCopy(project)">{{ $t('复制')
-                                            }}</a>
-                                    </auth-component>
-                                </li>
-                                <li>
-                                    <auth-component :permission="project.canDevelop" auth="develop_app"
-                                        :resource-id="project.id">
-                                        <a href="javascript:;" slot="forbid">{{ $t('导出') }}</a>
-                                        <a href="javascript:;" slot="allow" @click="handleExport(project)">{{ $t('导出')
-                                            }}</a>
-                                    </auth-component>
-                                </li>
-                                <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
-                                    <a href="javascript:;" @click="handleSetTemplate(project)">{{ $t('设为模板') }}</a>
-                                </li>
-                            </ul>
-                        </bk-dropdown-menu>
-                    </div>
-                </div>
-                <span class="favorite-btn">
-                    <i class="bk-icon icon-info-circle"
-                        v-bk-tooltips.top="{ content: project.projectDesc, allowHTML: false, maxWidth: 400, disabled: !project.projectDesc }"></i>
-                    <!-- <i :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                        v-bk-tooltips.top="{ content: project.favorite ? '取消收藏' : '添加收藏' }"
-                        @click.stop="handleClickFavorite(project)"
-                    ></i> -->
-                    <auth-component :permission="project.canDevelop" auth="develop_app" :resource-id="project.id">
-                        <i slot="forbid" custom-forbid-container-cls="forbid-container-cls"
-                            :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                            v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"></i>
-                        <i slot="allow" :class="['bk-drag-icon', `bk-drag-favorite${project.favorite ? '' : '-o' }`]"
-                            v-bk-tooltips.top="{ content: project.favorite ? $t('取消收藏') : $t('添加收藏') }"
-                            @click.stop="handleClickFavorite(project)"></i>
-                    </auth-component>
-                </span>
-                <span v-if="project.isOffcial" class="default-tag">{{ $t('应用模板') }}</span>
-                <frameworkTag :framework="project.framework"></frameworkTag>
-            </div>
-        </template>
-        <div class="empty" v-else>
-            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
+            </template>
         </div>
-    </div>
+        <div class="empty empty-project" v-else>
+            <empty-status :type="emptyType" @clearSearch="handlerClearSearch"></empty-status> 
+        </div>
+        <show-project-template />
+    </section>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
     import pagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import frameworkTag from '@/components/framework-tag.vue'
+    import showProjectTemplate from './show-project-template'
 
     export default {
         name: 'project-list-card',
         components: {
             pagePreviewThumb,
-            frameworkTag
+            frameworkTag,
+            showProjectTemplate
         },
         props: {
             projectList: {
@@ -205,11 +200,11 @@
     }
 </script>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
     @import "@/css/mixins/ellipsis";
     @import "@/css/mixins/scroller";
 
-    .list-card {
+    .project-list-card {
         display: grid;
         gap: 26px 12px;
         grid-template-columns: repeat(auto-fill, minmax(312px, 1fr));
@@ -222,6 +217,7 @@
         @mixin scroller;
 
         .project-item {
+            max-width: 404px;
             position: relative;
             height: 260px;
             margin: 0;
@@ -230,6 +226,10 @@
             border-radius: 0px 6px 6px 6px;
             box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.11);
             cursor: pointer;
+
+            &.project-template-item {
+                height: 236px;
+            }
 
             &::before {
                 content: "";
@@ -375,6 +375,20 @@
                 align-items: center;
                 justify-content: space-between;
                 margin: 16px 10px 0 10px;
+                .name {
+                    margin: 0;
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: #63656E;
+                    @mixin ellipsis 240px,
+                    block;
+                }
+
+                .stat {
+                    font-size: 12px;
+                    color: #979BA5;
+                    padding: 4px 0;
+                }
             }
 
             .preview {
@@ -409,6 +423,9 @@
             }
 
             .empty {
+                height: 250px;
+                background-color: #fff;
+                margin-top: -18px;
                 display: flex;
                 position: relative;
                 align-items: center;
@@ -421,30 +438,33 @@
                 border-radius: 4px 4px 0px 0px;
             }
 
-            .name {
-                margin: 0;
-                font-size: 12px;
-                font-weight: 700;
-                color: #63656E;
-                @mixin ellipsis 240px,
-                block;
-            }
-
-            .stat {
-                font-size: 12px;
-                color: #979BA5;
-                padding: 4px 0;
-            }
 
         }
 
         .empty {
+            height: 250px;
+            background-color: #fff;
+            margin-top: -18px;
             justify-content: center;
         }
     }
 
+    .project-and-template {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        @mixin scroller #dcdee5, 2px;
+
+        .empty-project {
+            width: 100%;
+            .empty-type {
+                width: 100%;
+            }
+        }
+    }
+
     @media screen and (max-width: 1336px) {
-        .list-card {
+        .project-list-card {
             grid-template-columns: repeat(3, minmax(304px, 1fr));
         }
     }

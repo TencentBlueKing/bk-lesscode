@@ -50,7 +50,6 @@
             @cancel="localVal = ''">
             <field-item
                 :field="field"
-                :use-fixed-data-source="true"
                 :value="localVal"
                 :disabled="disabled"
                 :show-label="false"

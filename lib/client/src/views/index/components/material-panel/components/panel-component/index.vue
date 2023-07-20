@@ -11,7 +11,7 @@
                 class="tab-item"
                 :class="{ active: tab === 'customComponent' }"
                 @click="handleChangeTab('customComponent')">
-                <span class="tab-item-label" :title="$store.state.Language === 'en' ? $t('自定义组件') : ''">{{ $t('自定义组件') }}</span>
+                <span class="tab-item-label">{{ $t('自定义组件') }}</span>
             </div>
         </div>
         <div class="drag-component-list">
@@ -106,9 +106,9 @@
                     @mixin ellipsis 110px;
                 }
                 .toggle-icon {
-                    line-height: 42px;
                     overflow: hidden;
                     display: inline-block;
+                    padding-top: 1px;
                 }
             }
         }

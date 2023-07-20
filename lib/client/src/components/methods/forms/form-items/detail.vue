@@ -102,44 +102,75 @@
                     @change="(withToken) => updateValue({ withToken })"
                 >{{ $t('蓝鲸应用认证') }}</bk-checkbox>
             </lc-form-item>
-            <bk-button
-                class="get-remote-response bk-form-item func-form-item"
-                size="small"
-                :loading="isLoadingResponse"
-                @click="getRemoteResponse"
-                v-enStyle="'left: 140px'"
-            >{{ $t('获取接口返回数据') }}</bk-button>
+            <lc-form-item
+                property="apiHeader"
+                error-display-type="normal"
+                class="func-form-item"
+                :label="$t('form_请求头')"
+            >
+                <header-params
+                    class="mt38"
+                    ref="headerParams"
+                    :query="form.apiHeader"
+                    :disabled="disabled"
+                    :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
+                    @change="(apiHeader) => updateValue({ apiHeader })"
+                />
+            </lc-form-item>
             <lc-form-item
                 v-if="METHODS_WITHOUT_DATA.includes(form.funcMethod)"
                 :label="$t('form_请求参数')"
-                property="remoteParams"
+                property="apiQuery"
                 error-display-type="normal"
                 class="func-form-item">
                 <query-params
                     v-bkloading="{ isLoading: isLoadingOptions }"
                     class="mt38"
+                    ref="queryParams"
                     :query="form.apiQuery"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     :name-options="nameOptions"
                     @change="(apiQuery) => updateValue({ apiQuery })"
-                ></query-params>
+                >
+                    <bk-button
+                        class="mt10 mr10"
+                        size="small"
+                        :loading="isLoadingResponse"
+                        @click="getRemoteResponse"
+                        v-enStyle="'left: 140px'"
+                    >{{ $t('获取接口返回数据') }}</bk-button>
+                </query-params>
             </lc-form-item>
             <lc-form-item
                 v-else
                 :label="$t('form_请求参数')"
-                property="remoteParams"
+                property="apiBody"
                 error-display-type="normal"
                 class="func-form-item">
                 <body-params
                     v-bkloading="{ isLoading: isLoadingOptions }"
                     class="mt38"
+                    ref="bodyParams"
                     :body="form.apiBody"
                     :disabled="disabled"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     :name-options="nameOptions"
                     @change="(apiBody) => updateValue({ apiBody })"
                 >
+                    <bk-button
+                        class="mt10 mr10"
+                        size="small"
+                        :loading="isLoadingResponse"
+                        @click="getRemoteResponse"
+                        v-enStyle="'left: 140px'"
+                    >{{ $t('获取接口返回数据') }}</bk-button>
                 </body-params>
             </lc-form-item>
             <lc-form-item
@@ -176,6 +207,7 @@
     import { mapGetters } from 'vuex'
     import mixins from './form-item-mixins'
     import DynamicTag from '@/components/dynamic-tag.vue'
+    import HeaderParams from './children/header-params.vue'
     import QueryParams from './children/query-params.vue'
     import BodyParams from './children/body-params.vue'
     import Monaco from '@/components/monaco'
@@ -199,6 +231,7 @@
     export default {
         components: {
             DynamicTag,
+            HeaderParams,
             QueryParams,
             BodyParams,
             Monaco,
@@ -213,6 +246,14 @@
                 default: false
             },
             variableList: {
+                type: Array,
+                default: () => ([])
+            },
+            functionList: {
+                type: Array,
+                default: () => ([])
+            },
+            apiList: {
                 type: Array,
                 default: () => ([])
             },
@@ -367,20 +408,26 @@
             },
 
             getRemoteResponse () {
-                this
-                    .$refs
-                    .funcForm
-                    .validate()
+                this.validate()
                     .then(() => {
                         this.isLoadingResponse = true
                         let apiData = {}
                         if (METHODS_WITHOUT_DATA.includes(this.form.funcMethod)) {
                             this.form.apiQuery.forEach((queryItem) => {
-                                apiData[queryItem.name] = parseScheme2Value(queryItem, LCGetParamsVal(this.variableList))
+                                if (queryItem.name) {
+                                    apiData[queryItem.name] = parseScheme2Value(queryItem, LCGetParamsVal(this.variableList))
+                                }
                             })
                         } else {
                             apiData = parseScheme2Value(this.form.apiBody, LCGetParamsVal(this.variableList))
                         }
+                        // http header
+                        const header = this.form.apiHeader?.reduce?.((acc, cur) => {
+                            if (cur.name) {
+                                acc[cur.name] = parseScheme2Value(cur, LCGetParamsVal(this.variableList))
+                            }
+                            return acc
+                        }, {}) || {}
                         const url = replaceFuncParam(this.form.funcApiUrl, (variableCode) => {
                             const variable = this.variableList.find((variable) => (variable.variableCode === variableCode))
                             if (variable) {
@@ -393,6 +440,7 @@
                             url,
                             type: this.form.funcMethod,
                             apiData,
+                            header,
                             withToken: this.form.withToken,
                             projectId: this.form.projectId
                         }
@@ -421,6 +469,15 @@
                     message: this.$t('{0}由大小写英文字母组成', [label]),
                     trigger: 'blur'
                 }
+            },
+
+            validate () {
+                return Promise.all([
+                    this.$refs.funcForm.validate(),
+                    this.$refs.headerParams?.validate?.(),
+                    this.$refs.queryParams?.validate?.(),
+                    this.$refs.bodyParams?.validate?.()
+                ])
             }
         }
     }
@@ -440,12 +497,6 @@
         /deep/ .bk-radio-button-input:disabled+.bk-radio-button-text {
             border-left: 1px solid #dcdee5;
         }
-    }
-    .get-remote-response {
-        position: absolute;
-        left: 60px;
-        z-index: 2;
-        margin-top: 10px !important;
     }
     .add-api-link {
         /deep/ .bk-link-text {

@@ -10,20 +10,36 @@ import {
     ref,
     getCurrentInstance
 } from '@vue/composition-api'
+import useCustomValidate from '@/hooks/use-custom-validate'
 
-const SingleSchemeComponent = defineComponent({
+export default defineComponent({
+    name: 'single-scheme',
+
+    components: {
+        RenderValidate: () => import('./validate.vue')
+    },
+
     props: {
         scheme: Object,
+        parent: Object,
+        brothers: Array,
         disable: Boolean,
         typeDisable: Boolean,
         minusDisable: Boolean,
         plusBrotherDisable: Boolean,
         renderSlot: Function,
         hideRequired: Boolean,
-        nameOptions: Array
+        nameOptions: Array,
+        variableList: Array,
+        functionList: Array,
+        apiList: Array
     },
 
     setup (props, { emit }) {
+        const {
+            customValidate
+        } = useCustomValidate()
+
         const copyScheme = toRef(props, 'scheme')
         const finalDisable = props.disable || copyScheme.value.disable
         const finalTypeDisable = props.typeDisable || finalDisable
@@ -33,15 +49,36 @@ const SingleSchemeComponent = defineComponent({
         // 校验规则
         const requireRule = {
             validator (val) {
-                return val.length >= 1 || props.minusDisable
+                return val.length >= 1 || props.minusDisable || props.parent?.type === API_PARAM_TYPES.ARRAY.VAL
             },
             message: window.i18n.t('参数名是必填项，请修改后重试'),
+            trigger: 'blur'
+        }
+        const sameNameRule = {
+            validator (val) {
+                return val.length <= 0 || props.brothers?.filter?.((brother: any) => brother.name === val).length <= 1
+            },
+            message: window.i18n.t('参数名不能和同级参数名重复'),
+            trigger: 'blur'
+        }
+        const nameRule = {
+            validator (val) {
+                return val.length <= 0 || /^[a-zA-Z][a-zA-Z0-9_]*$/.test(val)
+            },
+            message: window.i18n.t('参数名由大小写字母、数字和下划线组成，以大小写字母开头'),
+            trigger: 'blur'
+        }
+        const customValidateRule = {
+            validator (val) {
+                return customValidate(val, copyScheme.value.validate, props.variableList, props.functionList, props.apiList)
+            },
+            message: window.i18n.t('参数值不符合自定义校验'),
             trigger: 'blur'
         }
         // 切换是否展示子节点
         const toggleShowProperty = () => {
             copyScheme.value.showChildren = !copyScheme.value.showChildren
-            triggleChange()
+            triggerChange()
         }
         // 增加子节点
         const plusChildProperty = () => {
@@ -50,7 +87,7 @@ const SingleSchemeComponent = defineComponent({
             } else {
                 copyScheme.value.children.push(getDefaultApiEditScheme())
             }
-            triggleChange()
+            triggerChange()
         }
         // 增加兄弟节点
         const handlePlusBrotherProperty = () => {
@@ -63,7 +100,7 @@ const SingleSchemeComponent = defineComponent({
         }
         const minusProperty = (index) => {
             copyScheme.value?.children?.splice(index, 1)
-            triggleChange()
+            triggerChange()
         }
         // 更新类型
         const updateType = (type) => {
@@ -77,15 +114,15 @@ const SingleSchemeComponent = defineComponent({
                     copyScheme.value.value = paramType.DEFAULT
                 }
             })
-            triggleChange()
+            triggerChange()
         }
         // 更新值
         const update = (val) => {
             Object.assign(copyScheme.value, val)
-            triggleChange()
+            triggerChange()
         }
         // 触发值更新
-        const triggleChange = () => {
+        const triggerChange = () => {
             emit('update', copyScheme.value)
         }
         // 校验
@@ -102,6 +139,9 @@ const SingleSchemeComponent = defineComponent({
 
         return {
             requireRule,
+            sameNameRule,
+            nameRule,
+            customValidateRule,
             copyScheme,
             finalDisable,
             finalTypeDisable,
@@ -114,7 +154,7 @@ const SingleSchemeComponent = defineComponent({
             minusProperty,
             updateType,
             update,
-            triggleChange,
+            triggerChange,
             validate
         }
     },
@@ -152,7 +192,7 @@ const SingleSchemeComponent = defineComponent({
                         }
                     >
                         <bk-form-item
-                            rules={[this.requireRule]}
+                            rules={[this.requireRule, this.sameNameRule, this.nameRule]}
                             property="name"
                             error-display-type="tooltips"
                         >
@@ -178,25 +218,15 @@ const SingleSchemeComponent = defineComponent({
                                         }
                                     </bk-select>
                                     : <bk-input
+                                        placeholder={this.$t('请输入参数名')}
                                         value={this.copyScheme.name}
-                                        disabled={this.finalDisable}
+                                        disabled={this.finalDisable || this.parent?.type === API_PARAM_TYPES.ARRAY.VAL}
                                         onInput={(name) => this.update({ name })}
                                     >
                                     </bk-input>
                             }
                         </bk-form-item>
                     </bk-form>
-                    {
-                        this.hideRequired
-                            ? ''
-                            : <bk-checkbox
-                                class="layout-small"
-                                value={this.copyScheme.required}
-                                disabled={this.finalDisable}
-                                onChange={(required) => this.update({ required })}
-                            >
-                            </bk-checkbox>
-                    }
                     <bk-select
                         class="layout-middle"
                         value={this.copyScheme.type}
@@ -214,28 +244,53 @@ const SingleSchemeComponent = defineComponent({
                             ))
                         }
                     </bk-select>
-                    <section
+                    <bk-form
                         class="layout-item layout-flex-center"
-                    >
+                        ref="valueFormRef"
                         {
-                            this.renderSlot
-                                ? this.renderSlot(this.copyScheme)
-                                : this.copyScheme.type === API_PARAM_TYPES.BOOLEAN.VAL
-                                    ? <bk-checkbox
-                                        value={this.copyScheme.value}
-                                        disabled={this.finalDisable}
-                                        onChange={(val) => this.update({ value: val })}
-                                    >
-                                    </bk-checkbox>
-                                    : <bk-input
-                                        value={this.copyScheme.value}
-                                        disabled={this.finalDisable}
-                                        onChange={(val) => this.update({ value: this.copyScheme.type === API_PARAM_TYPES.NUMBER.VAL && !isNaN(+val) ? +val : val })}
-                                    >
-                                    </bk-input>
-                        
+                            ...{
+                                props: {
+                                    labelWidth: 0,
+                                    model: this.copyScheme
+                                }
+                            }
                         }
-                    </section>
+                    >
+                        <bk-form-item
+                            rules={[this.customValidateRule]}
+                            property="value"
+                            error-display-type="tooltips"
+                        >
+                            {
+                                this.renderSlot
+                                    ? this.renderSlot(this.copyScheme)
+                                    : this.copyScheme.type === API_PARAM_TYPES.BOOLEAN.VAL
+                                        ? <bk-checkbox
+                                            value={this.copyScheme.value}
+                                            disabled={this.finalDisable}
+                                            onChange={(val) => this.update({ value: val })}
+                                        >
+                                        </bk-checkbox>
+                                        : <bk-input
+                                            placeholder={this.$t('请输入参数值')}
+                                            value={this.copyScheme.value}
+                                            disabled={this.finalDisable || [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)}
+                                            onChange={(val) => this.update({ value: this.copyScheme.type === API_PARAM_TYPES.NUMBER.VAL && !isNaN(+val) ? +val : val })}
+                                        >
+                                        </bk-input>
+                        
+                            }
+                        </bk-form-item>
+                    </bk-form>
+                    {
+                        [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)
+                            ? <span class="layout-middle">--</span>
+                            : <render-validate
+                                class="layout-middle"
+                                scheme={this.copyScheme}
+                                onChange={(validate) => this.update({ validate })}
+                            />
+                    }
                     <bk-input
                         class="layout-middle"
                         v-bk-tooltips={{ content: this.copyScheme.description, disabled: !this.copyScheme.description, maxWidth: 400 }}
@@ -327,19 +382,24 @@ const SingleSchemeComponent = defineComponent({
                 {
                     this.copyScheme.showChildren
                         ? this.copyScheme.children.map((property, index) =>
-                            <SingleSchemeComponent
+                            <single-scheme
                                 class="pl20"
                                 key={property.id}
                                 ref={'childComponentRef' + index}
                                 scheme={property}
+                                parent={this.copyScheme}
                                 hideRequired={this.hideRequired}
                                 renderSlot={this.renderSlot}
                                 nameOptions={this.nameOptions}
-                                onUpdate={this.triggleChange}
+                                brothers={this.copyScheme.children}
+                                variableList={this.variableList}
+                                functionList={this.functionList}
+                                apiList={this.apiList}
+                                onUpdate={this.triggerChange}
                                 onPlusBrotherNode={this.plusChildProperty}
                                 onMinusNode={() => this.minusProperty(index)}
                             >
-                            </SingleSchemeComponent>
+                            </single-scheme>
                         )
                         : ''
                 }
@@ -347,5 +407,3 @@ const SingleSchemeComponent = defineComponent({
         )
     }
 })
-
-export default SingleSchemeComponent

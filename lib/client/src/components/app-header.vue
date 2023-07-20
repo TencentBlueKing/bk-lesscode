@@ -107,6 +107,7 @@
     import { useStore } from '@/store'
     import { useRouter } from '@/router'
     import { IAM_ACTION } from 'shared/constant'
+    import { jsonp } from 'vue-jsonp'
     import changelog from '@/components/changelog-version'
     import jsCookie from 'js-cookie'
 
@@ -123,7 +124,7 @@
         setup () {
             const languageList = [
                 {
-                    id: 'zhCN',
+                    id: 'zh-cn',
                     name: '中文',
                     icon: 'chinese'
                 },
@@ -190,6 +191,15 @@
 
             /** 语言切换 */
             const handleLanguageChange = (lang) => {
+                // 写到用户管理
+                const url = `${window.BK_COMPONENT_API_URL}/api/c/compapi/v2/usermanage/fe_update_user_language`
+                console.log(url, 'component api url')
+                jsonp(url, {
+                    language: lang.id
+                }).then(res => {
+                    console.log(url, 'changelangres:', res)
+                })
+
                 const domainList = location.hostname.split('.')
 
                 // 本项目开发环境因为需要配置了 host 域名比联调环境多 1 级
@@ -197,17 +207,25 @@
                     domainList.splice(0, 1)
                 }
 
-                // handle duplicate cookie names
+                // 删除已有cookie
                 for (let i = 0; i < domainList.length - 1; i++) {
                     jsCookie.remove('blueking_language', {
                         domain: domainList.slice(i).join('.')
                     })
                 }
 
+                // 优先使用环境变量中的bk_domain
+                let domain = window.BKPAAS_BK_DOMAIN
+                if (!domain) {
+                    domain = domainList.length > 2 ? domainList.slice(1).join('.') : domainList.join('.')
+                }
+                console.log(domain, 'bk_domain:', window.BKPAAS_BK_DOMAIN)
+
+
                 jsCookie.set('blueking_language', lang.id, {
                     expires: 30,
                     // 和平台保持一致，cookie 种在上级域名
-                    domain: domainList.length > 2 ? domainList.slice(1).join('.') : domainList.join('.')
+                    domain
                 })
 
                 window.location.reload()

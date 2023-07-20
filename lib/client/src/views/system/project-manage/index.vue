@@ -10,158 +10,155 @@
 -->
 <!-- 应用开发页面 -->
 <template>
-    <main class="projects page-content">
-        <div class="page-head">
-            <!-- 新建按钮 -->
-            <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
-                <div class="dropdown-trigger-btn" slot="dropdown-trigger">
-                    <bk-button theme="primary" icon-right="icon-angle-down">{{ $t('新建') }}</bk-button>
-                </div>
-                <ul class="bk-dropdown-list" slot="dropdown-content">
-                    <template v-if="iamEnable">
-                        <li>
-                            <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">{{ $t('空白应用') }}</a>
-                                <a href="javascript:;" slot="allow" @click="handleCreate('newProject')">{{ $t('空白应用') }}</a>
-                            </auth-component>
-                        </li>
-                        <li>
-                            <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">{{ $t('从模板新建') }}</a>
-                                <a href="javascript:;" slot="allow" @click="handleTempCreate">{{ $t('从模板新建') }}</a>
-                            </auth-component>
-                        </li>
-                        <li>
-                            <auth-component auth="create_app">
-                                <a href="javascript:;" slot="forbid">{{ $t('导入应用') }}</a>
-                                <a href="javascript:;" slot="allow" @click="handleCreate('importProject')">{{ $t('导入应用') }}</a>
-                            </auth-component>
-                        </li>
-                    </template>
-                    <template v-else>
-                        <li><a href="javascript:;" @click="handleCreate('newProject')">{{ $t('空白应用') }}</a></li>
-                        <li><a href="javascript:;" @click="handleTempCreate">{{ $t('从模板新建') }}</a></li>
-                        <li><a href="javascript:;" @click="handleCreate('importProject')">{{ $t('导入应用') }}</a></li>
-                    </template>
+    <main class="project-page-container">
+        <div class="page-head-wrapper">
+            <div class="page-head">
+                <!-- 新建按钮 -->
+                <bk-dropdown-menu trigger="click" :align="'center'" :ext-cls="'create-dropdown'">
+                    <div class="dropdown-trigger-btn" slot="dropdown-trigger">
+                        <bk-button theme="primary" icon-right="icon-angle-down">{{ $t('新建') }}</bk-button>
+                    </div>
+                    <ul class="bk-dropdown-list" slot="dropdown-content">
+                        <template v-if="iamEnable">
+                            <li>
+                                <auth-component auth="create_app">
+                                    <a href="javascript:;" slot="forbid">{{ $t('新建应用') }}</a>
+                                    <a href="javascript:;" slot="allow" @click="handleTempCreate">{{ $t('新建应用') }}</a>
+                                </auth-component>
+                            </li>
+                            <li>
+                                <auth-component auth="create_app">
+                                    <a href="javascript:;" slot="forbid">{{ $t('导入应用') }}</a>
+                                    <a href="javascript:;" slot="allow" @click="handleCreate('importProject')">{{ $t('导入应用') }}</a>
+                                </auth-component>
+                            </li>
+                        </template>
+                        <template v-else>
+                            <li><a href="javascript:;" @click="handleTempCreate">{{ $t('新建应用') }}</a></li>
+                            <li><a href="javascript:;" @click="handleCreate('importProject')">{{ $t('导入应用') }}</a></li>
+                        </template>
+                    </ul>
+                </bk-dropdown-menu>
+                <ul class="filter-links">
+                    <li
+                        v-for="(link, index) in filterLinks"
+                        :key="index"
+                        :class="['link-item', { 'active': filter === link.value }]"
+                        @click="handleClickFilter(link.value)">
+                        {{link.name}}
+                    </li>
                 </ul>
-            </bk-dropdown-menu>
-            <ul class="filter-links">
-                <li
-                    v-for="(link, index) in filterLinks"
-                    :key="index"
-                    :class="['link-item', { 'active': filter === link.value }]"
-                    @click="handleClickFilter(link.value)">
-                    {{link.name}}
-                </li>
-            </ul>
-            <div class="extra">
-                <span class="total" v-show="projectList.length">{{ $t('共') }}<em class="count">{{projectList.length}}</em>{{ $t('个应用') }}</span>
-                <bk-input
-                    style="width: 260px"
-                    :placeholder="$t('请输入应用名称或描述')"
-                    :clearable="true"
-                    :right-icon="'bk-icon icon-search'"
-                    v-model="keyword"
-                    @clear="handleSearchClear"
-                    @enter="handleSearchEnter">
-                </bk-input>
-                <icon-button-toggle
-                    :icons="displayTypeIcons"
-                    @toggle="handleToggleDisplayType"
-                />
-                <sort-select v-model="sort" :has-default="false" @change="handleSortChange" />
-            </div>
-        </div>
-        <!-- 应用列表 -->
-        <div :class="['page-body', { 'is-empty': !projectList.length }]" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
-            <div class="page-body-inner" v-show="!pageLoading">
-                <component
-                    :is="listComponent"
-                    :project-list="projectList"
-                    :page-map="pageMap"
-                    :empty-type="emptyType"
-                    :filter="filter"
-                    @create="handleCreate"
-                    @preview="handlePreview"
-                    @to-page="handleGotoPage"
-                    @copy="handleCopy"
-                    @export="handleExport"
-                    @rename="handleRename"
-                    @download="handleDownloadSource"
-                    @set-template="handleSetTemplate"
-                    @collect="handleCollect"
-                    @release="handleRelease"
-                    @clearSearch="handlerClearSearch"
-                />
-            </div>
-        </div>
-        
-        <!-- 应用重命名弹窗 -->
-        <bk-dialog v-model="dialog.rename.visible"
-            theme="primary"
-            :title="$t('重命名')"
-            width="600"
-            :mask-close="false"
-            :auto-close="false"
-            header-position="left"
-            @after-leave="handleRenameDialogAfterLeave">
-            <bk-form ref="renameForm" class="rename-form" :label-width="90" :rules="dialog.rename.formRules" :model="dialog.rename.formData">
-                <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
-                    <bk-input ref="projectRenameInput"
-                        maxlength="60"
-                        v-model="dialog.rename.formData.projectName"
-                        :placeholder="$t('由汉字，英文字母，数字组成，20个字符以内')">
-                    </bk-input>
-                </bk-form-item>
-            </bk-form>
-            <div class="dialog-footer" slot="footer">
-                <bk-button
-                    theme="primary"
-                    :disabled="activatedProject.projectName === dialog.rename.formData.projectName"
-                    :loading="dialog.rename.loading"
-                    @click="handleRenameConfirm">{{ $t('确定') }}</bk-button>
-                <bk-button @click="handleCancel('rename')" :disabled="dialog.rename.loading">{{ $t('取消') }}</bk-button>
-            </div>
-        </bk-dialog>
-        <!-- 删除应用确认弹窗 -->
-        <bk-dialog v-model="dialog.delete.visible"
-            render-directive="if"
-            theme="primary"
-            ext-cls="delete-dialog-wrapper"
-            :title="$t('确认删除该应用？')"
-            width="500"
-            footer-position="center"
-            :mask-close="false"
-            :auto-close="false"
-            @value-change="handleDeleteDialogToggle">
-            <bk-form ref="deleteForm" class="delete-form" :label-width="0" :rules="dialog.delete.formRules" :model="dialog.delete.formData">
-                <p class="confirm-name">{{ $t('请输入') }}<em :title="$t('复制名称')">“{{activatedProject.projectName}}”</em>{{ $t('确认') }}</p>
-                <bk-form-item property="projectName" error-display-type="normal">
+                <div class="extra">
+                    <span class="total" v-show="projectList.length">{{ $t('共') }}<em class="count">{{projectList.length}}</em>{{ $t('个应用') }}</span>
                     <bk-input
-                        maxlength="60"
-                        v-model="dialog.delete.formData.projectName"
-                        :placeholder="$t('请输入应用名称')">
+                        style="width: 260px"
+                        :placeholder="$t('请输入应用名称或描述')"
+                        :clearable="true"
+                        :right-icon="'bk-icon icon-search'"
+                        v-model="keyword"
+                        @clear="handleSearchClear"
+                        @enter="handleSearchEnter">
                     </bk-input>
-                </bk-form-item>
-            </bk-form>
-            <div class="dialog-footer" slot="footer">
-                <bk-button
-                    theme="danger"
-                    :loading="dialog.delete.loading"
-                    @click="handleDeleteConfirm">{{ $t('删除') }}</bk-button>
-                <bk-button @click="handleCancel('delete')" :disabled="dialog.delete.loading">{{ $t('取消') }}</bk-button>
+                    <icon-button-toggle
+                        :icons="displayTypeIcons"
+                        @toggle="handleToggleDisplayType"
+                    />
+                    <sort-select v-model="sort" :has-default="false" @change="handleSortChange" />
+                </div>
             </div>
-        </bk-dialog>
+        </div>
+        <div class="page-content projects">
+            <!-- 应用列表 -->
+            <div :class="['page-body', { 'is-empty': !projectList.length }]" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
+                <div class="page-body-inner" v-show="!pageLoading">
+                    <component
+                        :is="listComponent"
+                        :project-list="projectList"
+                        :page-map="pageMap"
+                        :empty-type="emptyType"
+                        :filter="filter"
+                        @create="handleCreate"
+                        @preview="handlePreview"
+                        @to-page="handleGotoPage"
+                        @copy="handleCopy"
+                        @export="handleExport"
+                        @rename="handleRename"
+                        @download="handleDownloadSource"
+                        @set-template="handleSetTemplate"
+                        @collect="handleCollect"
+                        @release="handleRelease"
+                        @clearSearch="handlerClearSearch"
+                    />
+                </div>
+            </div>
+            
+            <!-- 应用重命名弹窗 -->
+            <bk-dialog v-model="dialog.rename.visible"
+                theme="primary"
+                :title="$t('重命名')"
+                width="600"
+                :mask-close="false"
+                :auto-close="false"
+                header-position="left"
+                @after-leave="handleRenameDialogAfterLeave">
+                <bk-form ref="renameForm" class="rename-form" :label-width="90" :rules="dialog.rename.formRules" :model="dialog.rename.formData">
+                    <bk-form-item :label="$t('form_应用名称')" required property="projectName" error-display-type="normal">
+                        <bk-input ref="projectRenameInput"
+                            maxlength="60"
+                            v-model="dialog.rename.formData.projectName"
+                            :placeholder="$t('由汉字，英文字母，数字组成，20个字符以内')">
+                        </bk-input>
+                    </bk-form-item>
+                </bk-form>
+                <div class="dialog-footer" slot="footer">
+                    <bk-button
+                        theme="primary"
+                        :disabled="activatedProject.projectName === dialog.rename.formData.projectName"
+                        :loading="dialog.rename.loading"
+                        @click="handleRenameConfirm">{{ $t('确定') }}</bk-button>
+                    <bk-button @click="handleCancel('rename')" :disabled="dialog.rename.loading">{{ $t('取消') }}</bk-button>
+                </div>
+            </bk-dialog>
+            <!-- 删除应用确认弹窗 -->
+            <bk-dialog v-model="dialog.delete.visible"
+                render-directive="if"
+                theme="primary"
+                ext-cls="delete-dialog-wrapper"
+                :title="$t('确认删除该应用？')"
+                width="500"
+                footer-position="center"
+                :mask-close="false"
+                :auto-close="false"
+                @value-change="handleDeleteDialogToggle">
+                <bk-form ref="deleteForm" class="delete-form" :label-width="0" :rules="dialog.delete.formRules" :model="dialog.delete.formData">
+                    <p class="confirm-name">{{ $t('请输入') }}<em :title="$t('复制名称')">“{{activatedProject.projectName}}”</em>{{ $t('确认') }}</p>
+                    <bk-form-item property="projectName" error-display-type="normal">
+                        <bk-input
+                            maxlength="60"
+                            v-model="dialog.delete.formData.projectName"
+                            :placeholder="$t('请输入应用名称')">
+                        </bk-input>
+                    </bk-form-item>
+                </bk-form>
+                <div class="dialog-footer" slot="footer">
+                    <bk-button
+                        theme="danger"
+                        :loading="dialog.delete.loading"
+                        @click="handleDeleteConfirm">{{ $t('删除') }}</bk-button>
+                    <bk-button @click="handleCancel('delete')" :disabled="dialog.delete.loading">{{ $t('取消') }}</bk-button>
+                </div>
+            </bk-dialog>
 
-        <create-empty-project-dialog ref="createDialog" />
+            <create-empty-project-dialog ref="createDialog" />
 
-        <template-dialog ref="templateDialog" @preview="handlePreview"></template-dialog>
+            <template-dialog ref="templateDialog" @preview="handlePreview"></template-dialog>
 
-        <download-dialog ref="downloadDialog"></download-dialog>
+            <download-dialog ref="downloadDialog"></download-dialog>
 
-        <export-dialog ref="exportDialog"></export-dialog>
+            <export-dialog ref="exportDialog"></export-dialog>
 
-        <set-template-dialog ref="setTemplateDialog" :refresh-list="getProjectList"></set-template-dialog>
+            <set-template-dialog ref="setTemplateDialog" :refresh-list="getProjectList"></set-template-dialog>
+        </div>
     </main>
 </template>
 
@@ -556,10 +553,6 @@
 </style>
 
 <style lang="postcss" scoped>
-    .projects {
-        max-width: 1680px;
-        margin: 0 auto;
-    }
 
     .create-dropdown {
         /deep/ .bk-dropdown-trigger .bk-button {
@@ -567,30 +560,56 @@
         }
     }
 
-    .page-head {
-        margin-bottom: 8px;
+    .project-page-container {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+        background-color: #FAFBFD;
+    }
 
-        .extra {
+    .page-head-wrapper {
+        background: #FFFFFF;
+        box-shadow: 0 2px 4px 0 #1919290d;
+        
+        .page-head {
+            max-width: 1680px;
+            margin: 0 auto;
+            height: 52px;
+            padding: 10px 24px;
             display: flex;
             align-items: center;
-            flex: none;
-            margin-left: auto;
-        }
+            /* margin-bottom: 8px; */
 
-        .total {
-            font-size: 12px;
-            margin-right: 8px;
-            .count {
-                font-style: normal;
-                margin: 0 .1em;
+            .extra {
+                display: flex;
+                align-items: center;
+                flex: none;
+                margin-left: auto;
+            }
+
+            .total {
+                font-size: 12px;
+                margin-right: 8px;
+                .count {
+                    font-style: normal;
+                    margin: 0 .1em;
+                }
             }
         }
     }
 
+    .projects {
+        max-width: 1680px;
+        margin: 16px auto;
+        padding: 0 0 16px;
+        height: calc(100% - 52px);
+    }
+
     .page-body {
+        padding: 0 24px;
         display: flex;
         flex: 1;
-        height: calc(100% - 40px);
+        height: calc(100% - 60px);
 
         .page-body-inner {
             overflow: hidden;

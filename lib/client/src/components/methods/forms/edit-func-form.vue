@@ -34,6 +34,8 @@
                 <form-detail
                     :form.sync="form"
                     :variable-list="variableList"
+                    :function-list="functionList"
+                    :api-list="apiList"
                     :show-token="true"
                     ref="detail"
                     form-type="vertical">
@@ -96,7 +98,8 @@
 
         data () {
             return {
-                isSubmitting: false
+                isSubmitting: false,
+                apiList: []
             }
         },
 
@@ -110,12 +113,22 @@
             }
         },
 
+        // created () {
+        //     this.getApiList({
+        //         projectId: this.projectId,
+        //         versionId: this.currentVersionId
+        //     }).then((res) => {
+        //         this.apiList = res
+        //     })
+        // },
+
         methods: {
             ...mapActions('functions', [
                 'editFunction',
                 'createFunction',
                 'getAllGroupAndFunction'
             ]),
+            ...mapActions('api', ['getApiList']),
 
             handleClose () {
                 const confirmFn = () => {
