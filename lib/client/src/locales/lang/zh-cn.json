@@ -4112,7 +4112,7 @@
   "请先安装 bk-charts 相关依赖": "请先安装 bk-charts 相关依赖",
   "更多使用请参考": "更多使用请参考",
   "请在项目 store 里存入用户相关信息": "请在项目 store 里存入用户相关信息",
-  "请在项目 common 里完善退出登陆相关方法": "请在项目 common 里完善退出登陆相关方法",
+  "请在项目 common 里完善退出登录相关方法": "请在项目 common 里完善退出登录相关方法",
   "设置 .bk-form-control 组件宽度为 auto": "设置 .bk-form-control 组件宽度为 auto",
   "bk-magic-vue 组件库": "bk-magic-vue 组件库",
   "请先安装 echarts 相关依赖": "请先安装 echarts 相关依赖",

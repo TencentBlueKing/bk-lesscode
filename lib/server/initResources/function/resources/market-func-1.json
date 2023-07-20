@@ -131,7 +131,7 @@
     "funcName": "logout",
     "funcParams": [],
     "funcBody": "const environment = window.BKPAAS_ENVIRONMENT\r\nconst self = environment === 'preview' ? window.parent : window\r\nconst cUrl = encodeURIComponent(self.location.href)\r\nconst loginUrl = `{LOGIN_URL}/?app_code=&c_url=${cUrl}`\r\nself.location.href = loginUrl\r\n",
-    "funcSummary": "退出登陆，并跳转到登陆页面",
+    "funcSummary": "退出登录，并跳转到登录页面",
     "funcType": 0,
     "funcMethod": "get",
     "withToken": 0,

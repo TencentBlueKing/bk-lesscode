@@ -28,7 +28,7 @@
   "表格模板": "Form template",
   "表格自定义展示列": "Table custom display column",
   "表格自定义操作列": "Table custom action column",
-  "退出登陆，并跳转到登陆页面": "Log out and jump to the login page",
+  "退出登录，并跳转到登录页面": "Log out and jump to the login page",
   "选项卡使用样例": "Tab usage example",
   "通过前端获取远程接口数据示例。可以替换代码中的接口地址来调用其它接口，在回调中进行业务处理": "Fetch remote interface data example via frontend. \nYou can replace the interface address in the code to call other interfaces, and perform business processing in the callback.",
   "通过远程函数动态设置表格的表头内容": "Dynamically set the header content of the table through a remote function",

@@ -4105,7 +4105,7 @@
   "更多使用请参考": "For more usage, please refer to",
   "请先安装 bk-charts 相关依赖": "Please install bk-charts related dependencies first",
   "请先安装 echarts 相关依赖": "Please install echarts related dependencies first",
-  "请在项目 common 里完善退出登陆相关方法": "Please improve the exit and login related methods in the project common",
+  "请在项目 common 里完善退出登录相关方法": "Please improve the exit and login related methods in the project common",
   "请在项目 store 里存入用户相关信息": "Please store user related information in the project store",
   "设置 .bk-form-control 组件宽度为 auto": "Set the width of the .bk-form-control component to auto",
   "bk-magic-vue 组件库": "bk-magic-vue component library",
