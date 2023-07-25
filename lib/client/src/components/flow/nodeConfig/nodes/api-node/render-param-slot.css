@@ -1,0 +1,9 @@
+.render-param-form {
+  width: 100%;
+}
+.render-param-type {
+  width: 72px !important;
+}
+.render-param-val {
+  width: calc(100% - 72px) !important;
+}

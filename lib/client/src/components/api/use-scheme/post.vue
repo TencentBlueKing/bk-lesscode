@@ -7,7 +7,7 @@
             <slot name="tool"></slot>
         </template>
         <section v-if="activeTab === 'edit'">
-            <scheme-header />
+            <scheme-header :show-rule="showRule" />
             <single-scheme
                 ref="singleSchemeRef"
                 :scheme="renderBodyParam"
@@ -20,6 +20,7 @@
                 :variable-list="variableList"
                 :function-list="functionList"
                 :api-list="apiList"
+                :show-rule="showRule"
                 @minusNode="handleMinusNode"
                 @update="handleUpdate"
             />
@@ -64,7 +65,11 @@
             nameOptions: Array,
             variableList: Array,
             functionList: Array,
-            apiList: Array
+            apiList: Array,
+            showRule: {
+                type: Boolean,
+                default: true
+            }
         },
 
         setup (props, { emit }) {
