@@ -32,7 +32,11 @@ export default defineComponent({
         nameOptions: Array,
         variableList: Array,
         functionList: Array,
-        apiList: Array
+        apiList: Array,
+        showRule: {
+            type: Boolean,
+            default: true
+        }
     },
 
     setup (props, { emit }) {
@@ -70,7 +74,8 @@ export default defineComponent({
         }
         const customValidateRule = {
             validator (val) {
-                return customValidate(val, copyScheme.value.validate, props.variableList, props.functionList, props.apiList)
+                const value = copyScheme.value.valueType === 'variable' ? copyScheme.value.code : val
+                return customValidate(value, copyScheme.value.validate, props.variableList, props.functionList, props.apiList)
             },
             message: window.i18n.t('参数值不符合自定义校验'),
             trigger: 'blur'
@@ -283,6 +288,7 @@ export default defineComponent({
                         </bk-form-item>
                     </bk-form>
                     {
+                        this.showRule ?
                         [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)
                             ? <span class="layout-middle">--</span>
                             : <render-validate
@@ -290,6 +296,8 @@ export default defineComponent({
                                 scheme={this.copyScheme}
                                 onChange={(validate) => this.update({ validate })}
                             />
+                        :
+                        ''
                     }
                     <bk-input
                         class="layout-middle"
@@ -395,6 +403,7 @@ export default defineComponent({
                                 variableList={this.variableList}
                                 functionList={this.functionList}
                                 apiList={this.apiList}
+                                showRule={this.showRule}
                                 onUpdate={this.triggerChange}
                                 onPlusBrotherNode={this.plusChildProperty}
                                 onMinusNode={() => this.minusProperty(index)}
