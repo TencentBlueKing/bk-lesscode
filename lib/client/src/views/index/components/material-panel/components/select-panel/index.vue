@@ -9,12 +9,15 @@
                 v-bk-tooltips.right="panel.tips"
                 :role="`${panel.key}-panel-tab`"
                 @click="handleChange(panel.key)">
-                <i :class="panel.icon" />
+                <i :class="panel.icon" v-if="panel.icon" />
+                <img :src="panel.img" class="tab-img" v-else>
             </div>
         </template>
     </div>
 </template>
 <script>
+    import aiImg from '../../../../../../images/ai-logo.png'
+
     export default {
         props: {
             value: String
@@ -41,6 +44,11 @@
                         key: 'tree',
                         tips: window.i18n.t('页面组件树'),
                         icon: 'bk-drag-icon bk-drag-level-down'
+                    },
+                    {
+                        key: 'BK-GPT',
+                        tips: window.i18n.t('小鲸（BK-GPT）'),
+                        img: aiImg
                     }
                 ]
             }
@@ -76,6 +84,10 @@
             &.active{
                 background-color: #e1ecff;
                 color: #3a84ff;
+            }
+            .tab-img {
+                width: 14px;
+                height: 14px;
             }
         }
     }

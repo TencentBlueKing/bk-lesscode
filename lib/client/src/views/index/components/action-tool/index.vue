@@ -7,7 +7,6 @@
         <show-variable />
         <quick-operation />
         <canvas-guide />
-        <ai v-if="isAiAvailable" />
     </div>
 </template>
 <script>
@@ -20,7 +19,6 @@
     import ShowVariable from './components/show-variable'
     import QuickOperation from './components/quick-operation'
     import CanvasGuide from './components/canvas-guide'
-    import Ai from './components/ai.vue'
 
     export default {
         components: {
@@ -30,12 +28,10 @@
             ShowFunction,
             ShowVariable,
             QuickOperation,
-            CanvasGuide,
-            Ai
+            CanvasGuide
         },
         computed: {
-            ...mapGetters(['iamNoResourcesPerm']),
-            ...mapGetters('ai', ['isAiAvailable'])
+            ...mapGetters(['iamNoResourcesPerm'])
         }
     }
 </script>

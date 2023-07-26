@@ -3,20 +3,27 @@
         id="editPageLeftSideBar"
         class="draw-page-material-panel">
         <select-panel
-            v-model="activePanel"
+            :value="activePanel"
             class="panel-list"
-            @on-change="handlePanelChange" />
+            @change="handlePanelChange"
+        />
         <div class="panel-content">
             <component :is="panelCom" />
+            <panel-ai
+                v-show="isAiAvailable && isShowAi"
+                @close="handleCloseAi"
+            />
         </div>
     </div>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
     import SelectPanel from './components/select-panel'
     import PanelComponent from './components/panel-component'
     import PanelTemplate from './components/panel-template'
     import PanelIcon from './components/panel-icon'
     import PanelTree from './components/panel-tree'
+    import PanelAi from './components/panel-ai'
 
     export default {
         name: '',
@@ -25,15 +32,19 @@
             PanelComponent,
             PanelTemplate,
             PanelIcon,
-            PanelTree
+            PanelTree,
+            PanelAi
         },
         data () {
             return {
                 isCollapse: false,
+                isShowAi: false,
                 activePanel: 'component'
             }
         },
         computed: {
+            ...mapGetters('ai', ['isAiAvailable']),
+
             panelCom () {
                 const comMap = {
                     component: PanelComponent,
@@ -50,7 +61,15 @@
              * @param { String } panel
              */
             handlePanelChange (panel) {
-                this.activePanel = panel
+                if (panel === 'BK-GPT') {
+                    this.isShowAi = !this.isShowAi
+                } else {
+                    this.activePanel = panel
+                }
+            },
+
+            handleCloseAi () {
+                this.isShowAi = false
             }
         }
     }
