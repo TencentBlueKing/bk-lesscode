@@ -8,7 +8,7 @@
 
 <img src="../../../images/help/free-layout1.png" alt="grid" width="80%" class="help-img">
 
-### 初次从左侧面板拖入组件到自由布局中，默认放置在自由布局的左上角
+### 初次拖入组件到自由布局中，默认放置在自由布局的左上角
 
 <img src="../../../images/help/free-layout2.png" alt="grid" width="80%" class="help-img">
 
