@@ -37,11 +37,26 @@
     </section>
 </template>
 <script>
-    import { useStore } from '@/store'
-    import { ref, onBeforeMount } from '@vue/composition-api'
+    import {
+        ref,
+        onBeforeMount,
+        nextTick
+    } from '@vue/composition-api'
     import LC from '@/element-materials/core'
-    import { isEmpty } from 'shared/util'
+    import {
+        isEmpty
+    } from 'shared/util'
+    import {
+        getDefaultFunction
+    } from 'shared/function'
     import RenderMessage from './message.vue'
+    import systemPrompt from './system-prompt.txt'
+    import {
+        Ai
+    } from '@/common/ai'
+    import store from '@/store'
+    import vue2Materials from '@/element-materials/materials/vue2'
+    import vue3Materials from '@/element-materials/materials/vue3'
 
     export default {
         components: {
@@ -49,11 +64,18 @@
         },
 
         setup () {
-            const store = useStore()
-
+            let currentMessage = ref({})
+            let cmdMessage = ''
             const messages = ref([])
             const content = ref('')
             const isLoading = ref(false)
+
+            const scrollToBottom = () => {
+                nextTick(() => {
+                    const container = document.querySelector('.ai-messages')
+                    container.scrollTop = container.scrollHeight
+                })
+            }
 
             const pushMessage = (type, content, status) => {
                 const message = {
@@ -62,50 +84,77 @@
                     status
                 }
                 messages.value.push(message)
+                scrollToBottom()
                 return message
             }
 
             // 获取当前操作的节点
-            const getNode = (data) => {
-                return isEmpty(data.target) ? LC.getRoot() : LC.getNodeById(data.target)
+            const getNode = (id) => {
+                return isEmpty(id) ? LC.getRoot() : LC.getNodeById(id)
             }
 
-            // 新增子节点
-            const handleCreateNode = (data) => {
-                const parentNode = getNode(data)
-                // 补齐 bk-
-                if (!data.content.type.startsWith('bk-')) {
-                    data.content.type = 'bk-' + data.content.type
+            // 处理 ai 消息
+            const handleMessage = (message, content) => {
+                currentMessage.content = message
+                scrollToBottom()
+            }
+
+            // 开始处理 ai 消息
+            const handlerStart = () => {
+                currentMessage.content = ''
+                cmdMessage = ''
+            }
+            
+            // 结束 ai 消息处理
+            const handleEnd = () => {
+                isLoading.value = false
+                currentMessage.status = 'success'
+                if (cmdMessage) {
+                    currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
+                    aiHelper.chat(cmdMessage)
                 }
-                const node = LC.createNodeFromData(data.content)
-                parentNode.appendChild(node)
-                return node
+            }
+            
+            // 执行 ai 指令
+            const handleCmd = (cmdName, cmdString) => {
+                console.log(cmdString, 'cmd')
+                try {
+                    const context = {
+                        cmdName,
+                        ...cmd
+                    }
+
+                    Function.constructor(
+                        'context',
+                        `
+                            with (context) {
+                                return (function() {
+                                    "use strict"
+                                    ${cmdString}
+                                })()
+                            }
+                        `
+                    )(context)
+                } catch (error) {
+                    cmdMessage += [
+                        '',
+                        '# cmd',
+                        `It looks like the execution of the ${cmdString} commands failed, please rethink and issue commands`
+                    ].join('\n')
+                    console.log(error)
+                }
             }
 
-            // 编辑节点
-            const handleEditNode = (data) => {
-                const node = getNode(data)
-                LC.editNode(node, data.content)
+            // 异常处理
+            const handleError = (message) => {
+                currentMessage.content = message
+                currentMessage.status = 'error'
+                isLoading.value = false
             }
 
-            // 删除节点
-            const handleDeleteNode = (data) => {
-                const node = getNode(data)
-                node.parentNode.removeChild(node)
-            }
-
-            // 在前面插入节点
-            const handleInsertBefore = (data) => {
-                const referenceNode = getNode(data)
-                const node = LC.createNodeFromData(data.content)
-                referenceNode.parentNode.insertBefore(node, referenceNode)
-            }
-
-            // 在后面插入节点
-            const handleInsertAfter = (data) => {
-                const referenceNode = getNode(data)
-                const node = LC.createNodeFromData(data.content)
-                referenceNode.parentNode.insertAfter(node, referenceNode)
+            const clearMessage = () => {
+                messages.value = []
+                pushMessage('ai', 'Hi，我是小鲸，我可以帮你实现添加组件，函数生成等复杂功能，你可以尝试说帮我新增一个表格')
             }
 
             const handleUserInput = () => {
@@ -114,72 +163,210 @@
                 pushMessage('user', userInput)
                 // 清除input
                 content.value = ''
-                // 调用接口
-                isLoading.value = true
                 // 返回loading message
-                const message = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
-                store
-                    .dispatch(
-                        'ai/generatePage',
-                        {
-                            content: userInput
-                        }
-                    )
-                    .then((res) => {
-                        try {
-                            const datas = JSON.parse(res)
-                            message.content = ''
-                            datas.forEach((data) => {
-                                switch (data.type) {
-                                    case 'create':
-                                        const node = handleCreateNode(data)
-                                        message.content = `已为您新增 id 为【${node.componentId}】的【${data.content.type}】组件`
-                                        message.status = 'success'
-                                        break
-                                    case 'edit':
-                                        handleEditNode(data)
-                                        message.content = `已为您修改【${data.target}】组件`
-                                        message.status = 'success'
-                                        break
-                                    case 'delete':
-                                        handleDeleteNode(data)
-                                        message.content = `已为您删除【${data.target}】组件`
-                                        message.status = 'success'
-                                        break
-                                    case 'insert-before':
-                                        handleInsertBefore(data)
-                                        message.content = `已为您在组件【${data.target}】前插入【${data.content.type}】组件`
-                                        message.status = 'success'
-                                        break
-                                    case 'insert-after':
-                                        handleInsertAfter(data)
-                                        message.content = `已为您在组件【${data.target}】后插入【${data.content.type}】组件`
-                                        message.status = 'success'
-                                        break
-                                    default:
-                                        throw new Error()
-                                }
-                            })
-                        } catch (error) {
-                            message.content = '非常抱歉执行失败，我不太明白你描述的是什么，你可以尝试通过以下方式修改描述：\n  1. 请帮我添加一个名称为“新建”的按钮\n  2. 为组件“class_01”添加背景色“#ffffff”\n更多的详情，可以查看“使用文档”'
-                            message.status = 'error'
-                        }
-                    })
-                    .catch((error) => {
-                        message.content = error.message
-                        message.status = 'error'
-                    })
-                    .finally(() => {
-                        isLoading.value = false
-                    })
+                currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
+                // 输入框loading状态
+                isLoading.value = true
+                aiHelper.chat(`help me solve this task:\n ${userInput}`)
             }
 
-            const clearMessage = () => {
-                messages.value = []
+            // ai 指令
+            const handleSetProp = (componentId, prop, value) => {
+                const node = getNode(componentId)
+                node.setRenderProps({
+                    ...node.renderProps,
+                    [prop]: {
+                        ...node.renderProps[prop],
+                        code: value,
+                        renderValue: value
+                    }
+                })
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    'The prop has been successfully set.',
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                ].join('\n')
             }
+            const handleSetStyle = (componentId, style, value) => {
+                const node = getNode(componentId)
+                node.setRenderStyles({
+                    ...node.renderStyles,
+                    [style]: value
+                })
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    'The style has been successfully set.',
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                ].join('\n')
+            }
+            const handleSetEvent = (componentId, event, funcName, funcBody) => {
+                // 生成函数
+                if (funcBody && funcName) {
+                    const firstFunction = store.getters['functions/functionList'][0]
+                    const functionData = getDefaultFunction({
+                        funcName,
+                        funcCode: funcName,
+                        funcBody,
+                        projectId: firstFunction.projectId,
+                        funcGroupId: firstFunction.funcGroupId
+                    })
+                    store.dispatch('functions/fixFunByEslint', functionData).then((code) => {
+                        store.dispatch('functions/createFunction', {
+                            ...functionData,
+                            funcCode: code || funcBody
+                        })
+                    })
+                }
+
+                if (funcName) {
+                    // 修改event
+                    const node = getNode(componentId)
+                    node.setRenderEvents({
+                        ...node.renderEvents,
+                        [event]: {
+                            enable: true,
+                            methodCode: funcName,
+                            params: []
+                        }
+                    })
+                    cmdMessage += [
+                        '',
+                        '# cmd',
+                        'The event has been successfully set.',
+                        'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                    ].join('\n')
+                }
+            }
+            const handleDelete = (componentId) => {
+                const node = getNode(componentId)
+                node.parentNode.removeChild(node)
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    `deleted ${componentId}`,
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                ].join('\n')
+            }
+            const handleInsert = (type, componentId) => {
+                const parentNode = getNode()
+                const node = LC.createNodeFromData({ type, componentId })
+                parentNode.appendChild(node)
+                cmdMessage += [
+                    '# cmd',
+                    `inserted ${componentId}`,
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                ].join('\n')
+            }
+            const handleSelect = (componentId) => {
+                setTimeout(() => {
+                    const node = getNode(componentId)
+                    node.active()
+                    cmdMessage += [
+                        '',
+                        '# cmd',
+                        `selected ${componentId}`,
+                        'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                    ].join('\n')
+                }, 10)
+            }
+            const handleGetAll = () => {
+                const framework = LC.getFramework()
+                const components = framework === 'vue3' ? vue3Materials.bk : vue2Materials.bk
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    'You can use these component type:',
+                    ...components.map(component => `- ${component.type} (${component.displayName})`),
+                    'Note: before inserting or updating a component, use `component.get("<componentType>")` to learn how to write configuration.'
+                ].join('\n')
+            }
+            const handleGet = (componentType) => {
+                const framework = LC.getFramework()
+                const components = framework === 'vue3' ? vue3Materials.bk : vue2Materials.bk
+                const component = components.find(component => component.type === componentType)
+                const getPropType = (prop) => {
+                    if (prop.options) {
+                        return prop.options.join('|')
+                    }
+                    if (Array.isArray(prop.type)) {
+                        return prop.type.join('|')
+                    }
+                    return prop.type
+                }
+                const propString = Object.keys(component.props).map(prop => `${prop}: ${getPropType(component.props[prop])}, //${component.props[prop].tips || ''}`).join('\n')
+                const eventString = component.events.map(event => `${event.name}, //${event.tips || ''}`).join('\n')
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    `The complete configuration of the ${componentType} component is as follows:`,
+                    `type: \'${componentType}\'`,
+                    `props: { ${propString} }`,
+                    `event: { ${eventString} }`,
+                    `Note: you can use 'component.insert("<componentType>", "<componentId>")' to insert ${componentType} component.`
+                ].join('\n')
+            }
+            const handleConnect = (componentId, tableName) => {
+                const node = getNode(componentId)
+                node.setRenderProps({
+                    ...node.renderProps,
+                    data: {
+                        format: 'value',
+                        code: [],
+                        renderValue: [],
+                        valueType: 'table-data-source',
+                        payload: {
+                            sourceData: {
+                                tableName,
+                                dataSourceType: 'preview',
+                                showOperationColumn: true
+                            }
+                        }
+                    }
+                })
+                // 选中并触发更新表头
+                handleSelect(componentId)
+                setTimeout(() => {
+                    const btn = document.querySelector('.prop-operation')
+                    btn.click()
+                }, 10)
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    'Successfully connecting component and table',
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                ].join('\n')
+            }
+            const handleDone = () => {
+                aiHelper.clearPrompt()
+            }
+            const cmd = {
+                component: {
+                    setProp: handleSetProp,
+                    setStyle: handleSetStyle,
+                    setEvent: handleSetEvent,
+                    delete: handleDelete,
+                    insert: handleInsert,
+                    select: handleSelect,
+                    all: handleGetAll,
+                    get: handleGet,
+                    connect: handleConnect
+                },
+                done: handleDone
+            }
+
+            const aiHelper = new Ai({
+                handlerStart,
+                handleEnd,
+                handleCmd,
+                handleMessage,
+                handleError,
+                systemPrompt
+            })
 
             onBeforeMount(() => {
-                pushMessage('ai', 'Hi，我是小鲸，我可以帮你实现添加组件，函数生成等复杂功能，你可以尝试说帮我先增一个按钮')
+                pushMessage('ai', 'Hi，我是小鲸，我可以帮你实现添加组件，函数生成等复杂功能，你可以尝试说帮我新增一个表格')
             })
 
             return {

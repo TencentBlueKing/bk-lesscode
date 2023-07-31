@@ -11,7 +11,7 @@
         <header class="ai-modal-header" @mousedown.stop="handleMoveStart">
             <span>
                 <i class="bk-drag-icon bk-drag-ai" />
-                {{ $t('小鲸（BK-GPT）') }}
+                {{ $t('小鲸') }}
             </span>
 
             <span>
@@ -78,10 +78,10 @@
             }
             // 模块位置
             const modalPosition = ref({
-                top: windowSize.height - sizeLimit.height,
+                top: windowSize.height - sizeLimit.height - 200,
                 bottom: 0,
                 left: 102,
-                right: windowSize.width - sizeLimit.width - 102
+                right: windowSize.width - sizeLimit.width - 270
             })
 
             const isFullTopBottom = computed(() => {
