@@ -17,14 +17,17 @@
 </template>
 <script>
     import aiImg from '../../../../../../images/ai-logo.png'
+    import { mapGetters } from 'vuex'
 
     export default {
         props: {
             value: String
         },
-        data () {
-            return {
-                panelList: [
+        computed: {
+            ...mapGetters('ai', ['isAiAvailable']),
+
+            panelList () {
+                const list = [
                     {
                         key: 'component',
                         tips: window.i18n.t('组件库'),
@@ -44,13 +47,18 @@
                         key: 'tree',
                         tips: window.i18n.t('页面组件树'),
                         icon: 'bk-drag-icon bk-drag-level-down'
-                    },
-                    {
-                        key: 'BK-GPT',
-                        tips: window.i18n.t('小鲸（BK-GPT）'),
-                        img: aiImg
                     }
                 ]
+
+                if (this.isAiAvailable) {
+                    list.push({
+                        key: 'BK-GPT',
+                        tips: window.i18n.t('AI开发助手小鲸'),
+                        img: aiImg
+                    })
+                }
+
+                return list
             }
         },
         methods: {
