@@ -140,6 +140,10 @@ module.exports = {
             .loader(require.resolve('vue-markdown-loader/lib/markdown-compiler'))
             .options(mdLoaderOption)
 
+        config.module.rule('txt')
+            .test(/\.txt/)
+            .set('type', 'asset/source')
+
         config.plugin('Buffer')
             .use(
                 webpack.ProvidePlugin,
