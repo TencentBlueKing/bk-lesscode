@@ -27,7 +27,7 @@
                 ></i>
                 
                 <i
-                    class="ai-header-tool bk-drag-icon bk-drag-delet"
+                    class="ai-header-tool bk-drag-icon bk-drag-saoba"
                     @click="handleClear"
                 ></i>
                 <i
@@ -78,7 +78,7 @@
             }
             // 模块位置
             const modalPosition = ref({
-                top: windowSize.height - sizeLimit.height - 200,
+                top: windowSize.height - sizeLimit.height - 100,
                 bottom: 0,
                 left: 102,
                 right: windowSize.width - sizeLimit.width - 270
@@ -181,6 +181,20 @@
                 target.clientY = event.clientY
             }
 
+            // 屏幕大小发生变化
+            const handleResize = () => {
+                // 重置数据
+                windowSize.height = window.innerHeight
+                windowSize.width = window.innerWidth
+                // 重置位置
+                modalPosition.value = {
+                    top: windowSize.height - sizeLimit.height - 100,
+                    bottom: 0,
+                    left: 102,
+                    right: windowSize.width - sizeLimit.width - 270
+                }
+            }
+
             // 工具方法
             const handleFullTopBottom = () => {
                 modalPosition.value.top = minLimit.top
@@ -203,11 +217,13 @@
             onBeforeMount(() => {
                 window.addEventListener('mousemove', handleMouseMove, true)
                 window.addEventListener('mouseup', handleMouseUp)
+                window.addEventListener('resize', handleResize)
             })
 
             onBeforeUnmount(() => {
                 window.removeEventListener('mousemove', handleMouseMove, true)
                 window.removeEventListener('mouseup', handleMouseUp)
+                window.removeEventListener('resize', handleResize)
             })
 
             return {

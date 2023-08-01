@@ -66,6 +66,7 @@
         setup () {
             let currentMessage = ref({})
             let cmdMessage = ''
+            let errorTime = 0
             const messages = ref([])
             const content = ref('')
             const isLoading = ref(false)
@@ -118,42 +119,55 @@
             // 执行 ai 指令
             const handleCmd = (cmdName, cmdString) => {
                 console.log(cmdString, 'cmd')
-                try {
-                    const context = {
-                        cmdName,
-                        ...cmd
-                    }
-
-                    Function.constructor(
-                        'context',
-                        `
-                            with (context) {
-                                return (function() {
-                                    "use strict"
-                                    ${cmdString}
-                                })()
-                            }
-                        `
-                    )(context)
-                } catch (error) {
-                    cmdMessage += [
-                        '',
-                        '# cmd',
-                        `It looks like the execution of the ${cmdString} commands failed, please rethink and issue commands`
-                    ].join('\n')
-                    console.log(error)
+                const context = {
+                    cmdName,
+                    ...cmd
                 }
+
+                Function.constructor(
+                    'context',
+                    `
+                        with (context) {
+                            return (function() {
+                                "use strict"
+                                ${cmdString}
+                            })()
+                        }
+                    `
+                )(context)
             }
 
             // 异常处理
-            const handleError = (message) => {
+            const handleApiError = (message) => {
                 currentMessage.content = message
                 currentMessage.status = 'error'
                 isLoading.value = false
+                aiHelper.clearPrompt()
+            }
+
+            const handleCmdError = (errorCmd) => {
+                currentMessage.status = 'error'
+                isLoading.value = false
+                errorTime += 1
+                if (errorTime >= 2) {
+                    pushMessage('ai', 'AI 多次执行任务失败，请重新发布任务', 'error')
+                    aiHelper.clearPrompt()
+                    errorTime = 0
+                    return
+                }
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    `It looks like the execution of the ${errorCmd} commands failed, please rethink and issue commands`
+                ].join('\n')
+                currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
+                aiHelper.chat(cmdMessage)
             }
 
             const clearMessage = () => {
                 messages.value = []
+                isLoading.value = false
+                aiHelper.clearPrompt()
                 pushMessage('ai', 'Hi，我是小鲸，我可以帮你实现添加组件，函数生成等复杂功能，你可以尝试说帮我新增一个表格')
             }
 
@@ -215,7 +229,14 @@
                     store.dispatch('functions/fixFunByEslint', functionData).then((code) => {
                         store.dispatch('functions/createFunction', {
                             ...functionData,
-                            funcCode: code || funcBody
+                            funcBody: code || funcBody
+                        }).then(() => {
+                            store.dispatch('functions/getAllGroupAndFunction', {
+                                projectId: firstFunction.projectId,
+                                versionId: firstFunction.versionId
+                            }).then((functionData) => {
+                                store.commit('functions/setFunctionData', functionData)
+                            })
                         })
                     })
                 }
@@ -250,14 +271,22 @@
                 ].join('\n')
             }
             const handleInsert = (type, componentId) => {
-                const parentNode = getNode()
-                const node = LC.createNodeFromData({ type, componentId })
-                parentNode.appendChild(node)
-                cmdMessage += [
-                    '# cmd',
-                    `inserted ${componentId}`,
-                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
-                ].join('\n')
+                const isExist = getNode(componentId)
+                if (isExist) {
+                    cmdMessage += [
+                        '# cmd',
+                        `insert failed! the componentId ${componentId} already exists! Please generate a new componentId and reissue the command.`
+                    ].join('\n')
+                } else {
+                    const parentNode = getNode()
+                    const node = LC.createNodeFromData({ type, componentId })
+                    parentNode.appendChild(node)
+                    cmdMessage += [
+                        '# cmd',
+                        `inserted ${componentId}`,
+                        'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                    ].join('\n')
+                }
             }
             const handleSelect = (componentId) => {
                 setTimeout(() => {
@@ -307,6 +336,19 @@
                     `Note: you can use 'component.insert("<componentType>", "<componentId>")' to insert ${componentType} component.`
                 ].join('\n')
             }
+            const handleGetInfo = (componentId) => {
+                const node = getNode(componentId)
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    `The complete configuration of the ${componentId} component is as follows:`,
+                    `type: \'${node.componentId}\'`,
+                    `${node.toJSON()}`,
+                    'Note: you can use "component.setProp("<componentId>", "<prop key>", "<value>")" to change prop',
+                    'Note: you can use "component.setStyle("<componentId>", "<css property key>", "<value>")" to change style',
+                    'Note: you can use "component.setEvent("<componentId>", "<event name>", "<functionName>",  "<functionBody>")" to change event'
+                ].join('\n')
+            }
             const handleConnect = (componentId, tableName) => {
                 const node = getNode(componentId)
                 node.setRenderProps({
@@ -340,6 +382,7 @@
             }
             const handleDone = () => {
                 aiHelper.clearPrompt()
+                errorTime = 0
             }
             const cmd = {
                 component: {
@@ -351,6 +394,7 @@
                     select: handleSelect,
                     all: handleGetAll,
                     get: handleGet,
+                    getInfo: handleGetInfo,
                     connect: handleConnect
                 },
                 done: handleDone
@@ -361,7 +405,8 @@
                 handleEnd,
                 handleCmd,
                 handleMessage,
-                handleError,
+                handleApiError,
+                handleCmdError,
                 systemPrompt
             })
 
