@@ -68,6 +68,7 @@
         },
         data () {
             return {
+                customNav: {},
                 pageHasChange: false,
                 isContentLoading: true,
                 isCustomComponentLoading: true,
@@ -309,6 +310,13 @@
                     types: ['reload', 'update_style']
                 }
                 this.debounceUpdatePreview(Object.assign(defaultSetting, setting))
+
+                // 导航拖拽区域更新，需要触发导航修改
+                if (JSON.stringify(this.customNav) !== JSON.stringify(LC.getNavCustomCon())) {
+                    console.log('drag menu change', LC.getNavCustomCon())
+                    this.customNav = JSON.parse(JSON.stringify(LC.getNavCustomCon()))
+                    this.handleUpdateNavPerview()
+                }
             },
             handleUpdateNavPerview (setting = {}) {
                 const defaultSetting = {

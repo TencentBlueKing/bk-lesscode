@@ -124,7 +124,7 @@
 
             // 默认有选中的节点
             const activeNode = LC.getActiveNode()
-            if (activeNode && activeNode.parentNode) {
+            if (activeNode) {
                 activeCallback({ target: activeNode })
             }
 

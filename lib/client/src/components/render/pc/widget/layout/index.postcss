@@ -27,6 +27,22 @@
     .header-right{
         overflow: hidden;
     }
+    .nav-custom-area {
+        margin-right: 10px;
+        min-width: 200px;
+        max-height: 52px;
+        overflow: hidden;
+        position: relative;
+        div[role="component-root"] {
+            &:hover{
+                border: 1px dashed #3a84ff;
+            }
+            &.cur-selected{
+                border: 1px solid #3a84ff;
+            }
+        }
+        
+    }
     .navigation-header{
         position: relative;
         display: flex;
