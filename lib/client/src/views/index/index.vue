@@ -325,7 +325,7 @@
                     framework: LC.getFramework(),
                     curTemplateData: this.curTemplateData,
                     storageKey: 'ONLINE_PREVIEW_NAV',
-                    types: ['reload']
+                    types: ['reload', 'update_style']
                 }
                 this.updatePreview(Object.assign(defaultSetting, setting))
             },
