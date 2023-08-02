@@ -1,5 +1,11 @@
 <template>
-    <response :params="responseData" :render-slot="renderSlot" @change="update"></response>
+    <response
+        ref="responseObjRef"
+        :show-rule="false"
+        :params="responseData"
+        :render-slot="renderSlot"
+        @change="update">
+    </response>
 </template>
 <script>
     import Response from '@/components/api/use-scheme/response.vue'
@@ -55,6 +61,9 @@
             update (val) {
                 this.responseData = val
                 this.$emit('update', this.responseData)
+            },
+            validate () {
+                return this.$refs.responseObjRef.validate().then(() => { return true })
             }
         }
     }

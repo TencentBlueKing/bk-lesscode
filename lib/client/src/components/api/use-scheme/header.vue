@@ -7,7 +7,7 @@
             <slot name="tool"></slot>
         </template>
         <section v-if="activeTab === 'edit'">
-            <scheme-header />
+            <scheme-header :show-rule="showRule" />
             <single-scheme
                 ref="singleSchemeRef"
                 v-for="(renderParam, index) in renderParams"
@@ -22,6 +22,7 @@
                 :variable-list="variableList"
                 :function-list="functionList"
                 :api-list="apiList"
+                :show-rule="showRule"
                 @plusBrotherNode="handlePlusBrotherNode(index)"
                 @minusNode="handleMinusNode(index)"
                 @update="(param) => handleUpdate(index, param)"
@@ -69,7 +70,11 @@
             nameOptions: Array,
             variableList: Array,
             functionList: Array,
-            apiList: Array
+            apiList: Array,
+            showRule: {
+                type: Boolean,
+                default: true
+            }
         },
 
         setup (props, { emit }) {

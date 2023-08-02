@@ -25,6 +25,7 @@
     import StyleItem from '@/element-materials/modifier/component/styles/layout/item'
     import PageRouterSelect from '@/components/project/page-router-select'
     import { mapGetters } from 'vuex'
+    import emitter from 'tiny-emitter/instance'
 
     export default {
         components: {
@@ -164,6 +165,8 @@
                     await this.$store.dispatch('route/updatePageRoute', { data })
                 
                     await this.fetchData()
+
+                    emitter.emit('update-preview-src')
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',

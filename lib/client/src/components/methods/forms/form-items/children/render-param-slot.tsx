@@ -41,6 +41,7 @@ export default (row, handleUpdate) => {
                             ></bk-checkbox>
                             : <bk-input
                                 class="render-param-val"
+                                v-bk-tooltips={{ content: window.i18n.t('可以使用 ${函数参数} 获取函数参数值'), trigger: 'click', theme: 'light' }}
                                 placeholder={window.i18n.t('请输入参数值')}
                                 value={row.value}
                                 disabled={disabled}

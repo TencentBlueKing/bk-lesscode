@@ -1,5 +1,7 @@
 <template>
     <use-post-scheme
+        ref="bodyObjRef"
+        :show-rule="false"
         :params="bodyData"
         :render-slot="renderSlot"
         :get-param-val="LCGetParamsVal(variableList)"
@@ -53,6 +55,9 @@
             handleParamsUpdate (row, val) {
                 Object.assign(row, val)
                 this.$emit('update', this.bodyData)
+            },
+            validate () {
+                return this.$refs.bodyObjRef.validate().then(() => { return true })
             }
         }
     }

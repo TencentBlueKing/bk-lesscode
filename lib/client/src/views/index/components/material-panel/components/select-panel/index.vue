@@ -9,19 +9,25 @@
                 v-bk-tooltips.right="panel.tips"
                 :role="`${panel.key}-panel-tab`"
                 @click="handleChange(panel.key)">
-                <i :class="panel.icon" />
+                <i :class="panel.icon" v-if="panel.icon" />
+                <img :src="panel.img" class="tab-img" v-else>
             </div>
         </template>
     </div>
 </template>
 <script>
+    import aiImg from '../../../../../../images/ai-logo.png'
+    import { mapGetters } from 'vuex'
+
     export default {
         props: {
             value: String
         },
-        data () {
-            return {
-                panelList: [
+        computed: {
+            ...mapGetters('ai', ['isAiAvailable']),
+
+            panelList () {
+                const list = [
                     {
                         key: 'component',
                         tips: window.i18n.t('组件库'),
@@ -43,6 +49,16 @@
                         icon: 'bk-drag-icon bk-drag-level-down'
                     }
                 ]
+
+                if (this.isAiAvailable) {
+                    list.push({
+                        key: 'BK-GPT',
+                        tips: window.i18n.t('AI开发助手小鲸'),
+                        img: aiImg
+                    })
+                }
+
+                return list
             }
         },
         methods: {
@@ -76,6 +92,10 @@
             &.active{
                 background-color: #e1ecff;
                 color: #3a84ff;
+            }
+            .tab-img {
+                width: 14px;
+                height: 14px;
             }
         }
     }

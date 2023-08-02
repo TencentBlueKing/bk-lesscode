@@ -222,7 +222,8 @@
                     themeConfig = {},
                     menuList = [],
                     topMenuList = [],
-                    renderProps = {}
+                    renderProps = {},
+                    customMenuCon = []
                 } = this.curTemplateData
 
                 const templateData = layoutType === 'empty' ? {} : {
@@ -232,7 +233,8 @@
                     themeConfig,
                     menuList,
                     topMenuList,
-                    renderProps
+                    renderProps,
+                    customMenuCon
                 }
                 layoutType !== 'empty' && this.$store.dispatch('layout/update', {
                     data: {
