@@ -27,7 +27,7 @@
                 size="large"
                 theme="primary"
                 class="ai-operation-button"
-                :disabled="isLoading"
+                :disabled="isLoading || !content"
                 @click="handleUserInput"
             >
                 <i class="bk-drag-icon bk-drag-fasong"></i>
@@ -302,7 +302,9 @@
             }
             const handleGetAll = () => {
                 const framework = LC.getFramework()
-                const components = framework === 'vue3' ? vue3Materials.bk : vue2Materials.bk
+                const components = framework === 'vue3'
+                    ? LC.platform === 'MOBILE' ? vue3Materials.vant : vue3Materials.bk
+                    : LC.platform === 'MOBILE' ? vue2Materials.vant : vue2Materials.bk
                 cmdMessage += [
                     '',
                     '# cmd',
@@ -313,7 +315,9 @@
             }
             const handleGet = (componentType) => {
                 const framework = LC.getFramework()
-                const components = framework === 'vue3' ? vue3Materials.bk : vue2Materials.bk
+                const components = framework === 'vue3'
+                    ? LC.platform === 'MOBILE' ? vue3Materials.vant : vue3Materials.bk
+                    : LC.platform === 'MOBILE' ? vue2Materials.vant : vue2Materials.bk
                 const component = components.find(component => component.type === componentType)
                 const getPropType = (prop) => {
                     if (prop.options) {

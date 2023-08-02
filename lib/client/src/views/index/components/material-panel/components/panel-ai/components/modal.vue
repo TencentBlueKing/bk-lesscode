@@ -248,7 +248,7 @@
         position: fixed;
         display: flex;
         flex-direction: column;
-        z-index: 999;
+        z-index: 999999;
         background: #F5F7FA;
         box-shadow: 0 2px 30px 8px #0000001a;
         border-radius: 8px 8px 2px 2px;
