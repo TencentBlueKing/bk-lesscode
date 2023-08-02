@@ -181,11 +181,11 @@
             /**
              * @desc 注册自定义组件
              */
-            registerCustomComponent () {
+            registerCustomComponent (platform) {
                 this.isCustomComponentLoading = true
                 return new Promise((resolve, reject) => {
                     const script = document.createElement('script')
-                    script.src = `/${this.projectId}/${this.pageId}/component/register.js`
+                    script.src = `/${this.projectId}/${this.pageId}/component/register.js?platform=${platform}`
                     script.onload = () => {
                         window.customCompontensPlugin.forEach((callback) => {
                             const [
@@ -248,7 +248,7 @@
                     LC.setFramework(projectDetail.framework)
                     init(projectDetail.framework)
 
-                    await this.registerCustomComponent()
+                    await this.registerCustomComponent(pageDetail.pageType || 'PC')
 
                     await this.$store.dispatch('page/getPageSetting', {
                         pageId: this.pageId,
