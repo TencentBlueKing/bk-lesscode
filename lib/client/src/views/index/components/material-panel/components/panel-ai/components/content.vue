@@ -158,7 +158,7 @@
                 cmdMessage += [
                     '',
                     '# cmd',
-                    `It looks like the execution of the ${errorCmd} commands failed, please rethink and issue commands`
+                    `It looks like the execution of the ${errorCmd} commands failed. Please rethink and issue commands`
                 ].join('\n')
                 currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
                 aiHelper.chat(cmdMessage)
@@ -187,10 +187,19 @@
             // ai 指令
             const handleSetProp = (componentId, prop, value) => {
                 const node = getNode(componentId)
+                if (!node.renderProps[prop]) {
+                    cmdMessage += [
+                        '',
+                        '# cmd',
+                        `Updating the ${prop} prop of the component failed. The component "${componentId}" does not have ${prop} attribute. please rethink and issue commands`
+                    ].join('\n')
+                    return
+                }
                 node.setRenderProps({
                     ...node.renderProps,
                     [prop]: {
                         ...node.renderProps[prop],
+                        format: 'value',
                         code: value,
                         renderValue: value
                     }
