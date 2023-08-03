@@ -158,7 +158,7 @@
                 cmdMessage += [
                     '',
                     '# cmd',
-                    `It looks like the execution of the ${errorCmd} commands failed, please rethink and issue commands`
+                    `It looks like the execution of the ${errorCmd} commands failed. Please rethink and issue commands`
                 ].join('\n')
                 currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
                 aiHelper.chat(cmdMessage)
@@ -187,10 +187,20 @@
             // ai 指令
             const handleSetProp = (componentId, prop, value) => {
                 const node = getNode(componentId)
+                if (!node.renderProps[prop]) {
+                    cmdMessage += [
+                        '',
+                        '# cmd',
+                        `Updating the ${prop} prop of the component failed. The component "${componentId}" does not have ${prop} attribute. please rethink and issue commands`,
+                        'Note: you can use `component.getInfo("<componentId>")` to get the configuration information of a component.'
+                    ].join('\n')
+                    return
+                }
                 node.setRenderProps({
                     ...node.renderProps,
                     [prop]: {
                         ...node.renderProps[prop],
+                        format: 'value',
                         code: value,
                         renderValue: value
                     }
@@ -313,12 +323,7 @@
                     'Note: before inserting or updating a component, use `component.get("<componentType>")` to learn how to write configuration.'
                 ].join('\n')
             }
-            const handleGet = (componentType) => {
-                const framework = LC.getFramework()
-                const components = framework === 'vue3'
-                    ? LC.platform === 'MOBILE' ? vue3Materials.vant : vue3Materials.bk
-                    : LC.platform === 'MOBILE' ? vue2Materials.vant : vue2Materials.bk
-                const component = components.find(component => component.type === componentType)
+            const getComponentConfig = (component) => {
                 const getPropType = (prop) => {
                     if (prop.options) {
                         return prop.options.join('|')
@@ -330,13 +335,23 @@
                 }
                 const propString = Object.keys(component.props).map(prop => `${prop}: ${getPropType(component.props[prop])}, //${component.props[prop].tips || ''}`).join('\n')
                 const eventString = component.events.map(event => `${event.name}, //${event.tips || ''}`).join('\n')
+                return [
+                    `type: \'${component.type}\'`,
+                    `props: { ${propString} }`,
+                    `event: { ${eventString} }`
+                ].join('\n')
+            }
+            const handleGet = (componentType) => {
+                const framework = LC.getFramework()
+                const components = framework === 'vue3'
+                    ? LC.platform === 'MOBILE' ? vue3Materials.vant : vue3Materials.bk
+                    : LC.platform === 'MOBILE' ? vue2Materials.vant : vue2Materials.bk
+                const component = components.find(component => component.type === componentType)
                 cmdMessage += [
                     '',
                     '# cmd',
                     `The complete configuration of the ${componentType} component is as follows:`,
-                    `type: \'${componentType}\'`,
-                    `props: { ${propString} }`,
-                    `event: { ${eventString} }`,
+                    getComponentConfig(component),
                     `Note: you can use 'component.insert("<componentType>", "<componentId>")' to insert ${componentType} component.`
                 ].join('\n')
             }
@@ -346,8 +361,7 @@
                     '',
                     '# cmd',
                     `The complete configuration of the ${componentId} component is as follows:`,
-                    `type: \'${node.componentId}\'`,
-                    `${node.toJSON()}`,
+                    getComponentConfig(node.material),
                     'Note: you can use "component.setProp("<componentId>", "<prop key>", "<value>")" to change prop',
                     'Note: you can use "component.setStyle("<componentId>", "<css property key>", "<value>")" to change style',
                     'Note: you can use "component.setEvent("<componentId>", "<event name>", "<functionName>",  "<functionBody>")" to change event'
