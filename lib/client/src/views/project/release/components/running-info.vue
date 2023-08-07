@@ -1,85 +1,99 @@
 <template>
-    <section>
-        <bk-sideslider
-            :is-show.sync="isShow"
-            :quick-close="true"
-            :width="896"
-            :before-close="handleClose"
-        >
-            <div slot="header">
-                <svg v-if="status === 'running'" aria-hidden="true" width="16" height="16" class="loading-rotate">
+    <section class="deploy" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
+        <div v-show="!isLoading" :class="['deploy-status',{ 'deploy-running': deployStatus === 'running','deploy-success': deployStatus === 'successful','deploy-error': deployStatus === 'failed' }]">
+            <span class="svg-icon">
+                <svg v-if="deployStatus === 'running'" aria-hidden="true" width="18" style="fill: #3A84FF;" height="18" class="loading-rotate">
                     <use xlink:href="#bk-drag-loading-2"></use>
                 </svg>
-                {{ isTitle }}
+                <i v-if="deployStatus === 'successful'" class="bk-drag-icon bk-drag-check-circle-fill icon-successful"></i>
+                <i v-if="deployStatus === 'failed'" class="bk-drag-icon bk-drag-close-circle-fill icon-failed"></i>
+            </span>
+            <div class="deploy-about-operate">
+                <div :class="['deploy-type-info', { 'deploy-type-line': deployStatus !== 'running' }]">
+                    <p>
+                        <span v-html="getInfoTips(latestInfo, 'running')"></span>
+                    </p>
+                    <p>
+                        <span>{{$t('已耗时:')}}</span>
+                        <span>{{ totalTime}}</span>
+                    </p>
+                    <p>
+                        <span>{{$t('操作人:')}}</span>
+                        <span>{{createUser}}</span>
+                    </p>
+                </div>
+                <bk-button size="small" v-if="deployStatus === 'successful' || deployStatus === 'failed'" @click="$emit('checkCom', '')">{{$t('返回部署页')}}</bk-button>
             </div>
-            <div class="log-content" slot="content" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
-                <div class="deploy-view" :style="{ 'margin-top': `${isScrollFixed ? '104px' : '0'}` }">
-                    <div id="deploy-timeline-box" style="width: 230px">
-                        <deploy-timeline
-                            ref="deployTimelineRef"
-                            :list="timeLineList"
-                            :stage="curDeployStage"
-                            :key="timelineComKey"
-                            :disabled="true"
-                            @select="handleTimelineSelect">
-                        </deploy-timeline>
-                    </div>
-                    <deploy-log
-                        ref="deployLogRef"
-                        :is-running="true"
-                        :build-list="streamLogs"
-                        :ready-list="readyLogs"
-                        :process-list="allProcesses"
-                        :state-process="appearDeployState"
-                        :process-loading="processLoading"
-                        :current-app-info="currentAppInfo"
-                        :environment="environment"
-                        v-if="isWatchDeploying || isDeploySuccess || isDeployFail || isDeployInterrupted || isDeployInterrupting">
-                    </deploy-log>
-                    <div class="pre-deploy-detail" v-else-if="curTimeline">
-                        <div class="metadata-card" v-for="metadata of curTimeline.displayBlocks" :key="metadata.key">
-                            <strong class="card-title">
-                                {{metadata.name}}
-                                <router-link
-                                    class="card-edit"
-                                    v-bk-tooltips="metadata.name === $t('访问地址') ? $t('查看') : $t('配置')"
-                                    v-if="metadata.routerName "
-                                    :to="{ name: metadata.routerName, params: { id: appCode, moduleId: curModuleId } }">
-                                </router-link>
-                            </strong>
-                            <ul class="card-list">
-                                <li class="card-item" v-for="(item, index) of metadata.infos" :key="index">
-                                    <template v-if="metadata.type === 'key-value'">
-                                        <div class="card-key">{{item.text}}：</div>
-                                        <template v-if="Array.isArray(item.value)">
-                                            <div class="card-value" v-if="item.value.length">
-                                                <span class="card-value-item mr5" v-for="(subItem, subIndex) of item.value" :key="subIndex">
-                                                    <router-link :to="subItem.route">
-                                                        {{subItem.name}}
-                                                    </router-link>
-                                                </span>
-                                            </div>
-                                            <div class="card-value" v-else>{{ $t('无') }}</div>
-                                        </template>
-                                        <template v-else>
-                                            <div class="card-value">
-                                                {{item.value || $t('无')}}
-                                                <span v-if="item.value && item.href"><a target="_blank" :href="item.href" style="color: #3a84ff">{{item.hrefText}}</a></span>
-                                                <a class="ml5" href="javascript: void(0);" v-if="item.downloadBtn" @click="item.downloadBtn">{{item.downloadBtnText}}</a>
-                                            </div>
-                                    
-                                        </template>
+        </div>
+        <div class="log-content" v-bkloading="{ isLoading: isLoading, opacity: 0 }">
+            <div class="deploy-view" :style="{ 'margin-top': `${isScrollFixed ? '104px' : '0'}` }" v-show="!isLoading">
+                <div id="deploy-timeline-box" style="width: 300px;background: #F5F7FA;padding: 26px 16px">
+                    <deploy-timeline
+                        ref="deployTimelineRef"
+                        :list="timeLineList"
+                        :stage="curDeployStage"
+                        :key="timelineComKey"
+                        :disabled="true"
+                        ext-cls="deploy-timeline-reset"
+                        @select="handleTimelineSelect">
+                    </deploy-timeline>
+                </div>
+                <deploy-log
+                    ref="deployLogRef"
+                    :build-list="streamLogs"
+                    :ready-list="readyLogs"
+                    :process-list="allProcesses"
+                    :state-process="appearDeployState"
+                    :process-loading="processLoading"
+                    :current-app-info="currentAppInfo"
+                    :environment="environment"
+                    :list="timeLineList"
+                    :latest-info="latestInfo"
+                    v-if="isWatchDeploying || isDeploySuccess || isDeployFail || isDeployInterrupted || isDeployInterrupting">
+                </deploy-log>
+                <div class="pre-deploy-detail" v-else-if="!curTimeline">
+                    <div class="metadata-card" v-for="metadata of curTimeline.displayBlocks" :key="metadata.key">
+                        <strong class="card-title">
+                            {{metadata.name}}
+                            <router-link
+                                class="card-edit"
+                                v-bk-tooltips="metadata.name === $t('访问地址') ? $t('查看') : $t('配置')"
+                                v-if="metadata.routerName "
+                                :to="{ name: metadata.routerName, params: { id: appCode, moduleId: curModuleId } }">
+                            </router-link>
+                        </strong>
+                        <ul class="card-list">
+                            <li class="card-item" v-for="(item, index) of metadata.infos" :key="index">
+                                <template v-if="metadata.type === 'key-value'">
+                                    <div class="card-key">{{item.text}}：</div>
+                                    <template v-if="Array.isArray(item.value)">
+                                        <div class="card-value" v-if="item.value.length">
+                                            <span class="card-value-item mr5" v-for="(subItem, subIndex) of item.value" :key="subIndex">
+                                                <router-link :to="subItem.route">
+                                                    {{subItem.name}}
+                                                </router-link>
+                                            </span>
+                                        </div>
+                                        <div class="card-value" v-else>{{ $t('无') }}</div>
                                     </template>
                                     <template v-else>
-                                        <a :href="item.value" target="_blank">{{item.text}}</a>
+                                        <div class="card-value">
+                                            {{item.value || $t('无')}}
+                                            <span v-if="item.value && item.href"><a target="_blank" :href="item.href" style="color: #3a84ff">{{item.hrefText}}</a></span>
+                                            <a class="ml5" href="javascript: void(0);" v-if="item.downloadBtn" @click="item.downloadBtn">{{item.downloadBtnText}}</a>
+                                        </div>
+                                    
                                     </template>
-                                </li>
-                            </ul>
-                        </div>
+                                </template>
+                                <template v-else>
+                                    <a :href="item.value" target="_blank">{{item.text}}</a>
+                                </template>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </bk-sideslider>
+        </div>
     </section>
 </template>
 
@@ -87,21 +101,19 @@
     import deployTimeline from './deploy-timeline'
     import deployLog from './deploy-log'
     import moment from 'moment'
+    import publishMixin from '../publish-mixin'
     export default {
         components: {
             deployTimeline,
             deployLog
         },
+        mixins: [publishMixin],
         props: {
             isShow: {
                 type: Boolean,
                 default: false
             },
             deployId: {
-                type: String,
-                default: ''
-            },
-            title: {
                 type: String,
                 default: ''
             },
@@ -114,12 +126,26 @@
             env: {
                 type: String,
                 default: 'stag'
+            },
+            deployStatus: {
+                type: String,
+                default: 'running'
+            },
+            createUser: {
+                type: String,
+                default: 'admin'
+            },
+            latestInfo: {
+                type: Object,
+                default: () => {
+                    return {}
+                }
             }
         },
         data () {
             return {
                 logs: [],
-                isLoading: false,
+                isLoading: true,
                 status: 'running',
                 content: '',
                 timer: null,
@@ -152,7 +178,7 @@
                 serverProcessEvent: null,
                 link: '',
                 processLoadingLocal: false,
-                isTitle: this.title || window.i18n.t('部署中日志')
+                totalTime: ''
             }
         },
         computed: {
@@ -230,8 +256,8 @@
                         deployId: this.deployId
                     })
                     this.logs = res.logs || []
-                    this.status = res.status
                     this.$emit('handleReleaseStatus', this.status)
+                    this.status = res.status
                     this.logs.forEach(logItem => {
                         if (logItem.event === 'msg') {
                             const data = JSON.parse(logItem.data)
@@ -239,6 +265,7 @@
                                 this.appearDeployState.push('preparation')
                                 this.$nextTick(() => {
                                     this.$refs.deployTimelineRef && this.$refs.deployTimelineRef.editNodeStatus('preparation', 'pending', '')
+                                    this.$refs.deployLogRef && this.$refs.deployLogRef.inProgressStatus('preparation', 'pending', this.status)
                                     this.readyLogs.push(this.ansiUp.ansi_to_html(data.line))
                                 })
                             } else {
@@ -266,6 +293,7 @@
                             
                             if (data.name === 'release' && ['failed', 'successful'].includes(data.status)) {
                                 content = this.computedDeployTime(data.start_time, data.complete_time)
+                                this.totalTime = this.computedDeployTime(this.deployStartTimeQueue[0], data.complete_time)
                             }
 
                             if (data.name === 'release' && data.status === 'successful') {
@@ -286,6 +314,7 @@
                             }
                             this.$nextTick(() => {
                                 this.$refs.deployTimelineRef && this.$refs.deployTimelineRef.editNodeStatus(data.name, data.status, content)
+                                this.$refs.deployLogRef && this.$refs.deployLogRef.inProgressStatus(data.name, data.status, this.status)
                             })
                         }
 
@@ -303,9 +332,11 @@
 
                             if (['failed', 'successful'].includes(data.status)) {
                                 content = this.computedDeployTime(data.start_time, data.complete_time)
+                                this.totalTime = this.computedDeployTime(this.deployStartTimeQueue[0], data.complete_time)
                             }
 
                             this.$refs.deployTimelineRef && this.$refs.deployTimelineRef.editNodeStatus(data.name, data.status, content)
+                            this.$refs.deployLogRef && this.$refs.deployLogRef.inProgressStatus(data.name, data.status, this.status)
                         }
                     })
                     if (res.status === 'end') {
@@ -402,11 +433,6 @@
                     allProcesses.push(process)
                 })
                 this.allProcesses = JSON.parse(JSON.stringify(allProcesses))
-            },
-
-            handleClose () {
-                this.processLoadingLocal = false
-                this.$emit('closeLog')
             },
 
             clearPrevDeployData () {
@@ -717,6 +743,62 @@
 </script>
 
 <style lang="postcss" scoped>
+    .deploy{
+
+        .deploy-status  {
+            display: flex;
+            align-items: center;
+            height: 42px;
+            margin-bottom: 16px;
+            padding-left: 18px;
+            border-radius: 2px;
+            font-size: 12px;
+            .svg-icon {
+                height: 18px;
+                width: 18px;
+                margin-right: 9px;
+                font-size: 18px;
+                line-height: 18px;
+                .icon-successful {
+                    color: #2dcb56;
+                }
+                .icon-failed {
+                    color: #ea3636;
+                }
+            }
+        }
+        .deploy-running {
+            background: #EAEBF0;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            padding: 0 17px;
+        
+        }
+        .deploy-success {
+            background: #F2FFF4;
+            border: 1px solid #2DCB56;
+        }
+        .deploy-error {
+            background: #FFEEEE;
+            border: 1px solid #EA3636;
+        }
+        .deploy-about-operate{
+            display: flex;
+            align-items: center;
+            .deploy-type-info {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 480px;
+                margin-right: 20px;
+                padding-right: 20px;
+        }
+        .deploy-type-line  {
+            border-right: 1px solid #C4C6CC;
+        }
+    
+  }
     .log-content {
         height: 100%;
         min-height: 500px;
@@ -737,7 +819,6 @@
         .deploy-view {
             display: flex;
             height: 100%;
-            margin: 0 0px 20px 20px;
             align-items: stretch;
             font-size: 14px;
 
@@ -745,9 +826,9 @@
                 flex: 1;
                 background: #f5f6fa;
                 border-radius: 2px;
-                padding: 30px;
+                /* padding: 30px; */
                 margin-left: 20px;
-                max-width: 1050px;
+                /* max-width: 1050px; */
             }
 
             .metadata-card {
@@ -810,7 +891,13 @@
                     }
                 }
             }
+            .lesscode-timeline-icon {
+                background: #F5F7FA;
+                border-top: 2px solid #F5F7FA;
+                border-bottom: 2px solid #F5F7FA;
         }
+        }
+    }
     }
     .loading-rotate {
         animation: icon-loading 1.5s linear infinite;
