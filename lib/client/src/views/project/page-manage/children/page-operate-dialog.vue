@@ -101,6 +101,7 @@
                 this.currentName = page.pageName
                 this.$refs.pageDialog.layoutId = null
                 this.$refs.pageDialog.dialog.formData.pageName = page.pageName
+                this.$refs.pageDialog.dialog.formData.pageCode = ''
                 this.$refs.pageDialog.dialog.formData.id = page.id
 
                 this.$refs.pageDialog.dialog.visible = true

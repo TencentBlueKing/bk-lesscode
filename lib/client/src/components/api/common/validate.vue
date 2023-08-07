@@ -19,15 +19,21 @@
             v-model="isShow"
             width="700"
             header-position="left"
+            ext-cls="param-validate"
+            :auto-close="false"
             @confirm="triggerUpdate"
         >
             <template #header>
                 {{ $t('添加参数自定义规则') }}
+                <span class="scheme-name" v-if="scheme.name">{{ scheme.name }}</span>
             </template>
             <bk-form
                 v-for="renderRule, index in copyValidate.rules"
                 :key="index"
+                :model="renderRule"
+                :rules="getRules(renderRule)"
                 class="validate-item"
+                ref="formRef"
                 form-type="vertical"
             >
                 <i class="bk-drag-icon bk-drag-delet validate-delete" @click="handleMinus(index)"></i>
@@ -37,6 +43,7 @@
                     property="type"
                 >
                     <bk-select
+                        :clearable="false"
                         :value="renderRule.type"
                         @change="(type) => handleTypeChange(type, index)"
                     >
@@ -94,6 +101,9 @@
     import {
         API_VALIDATE_TYPES
     } from 'shared/api'
+    import {
+        messageError
+    } from '@/common/bkmagic'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
 
     export default {
@@ -114,6 +124,7 @@
             }
             const isShow = ref(false)
             const copyValidate = ref(defaultValidate)
+            const formRef = ref()
             const types = [
                 {
                     id: API_VALIDATE_TYPES.REQUIRE,
@@ -145,6 +156,32 @@
                 //     message: window.i18n.t('字段值未通过函数校验')
                 // }
             ]
+
+            const getRules = (renderRule) => {
+                return {
+                    type: [
+                        {
+                            required: true,
+                            message: window.i18n.t('{0}不能为空', [window.i18n.t('校验方式')]),
+                            trigger: 'blur'
+                        }
+                    ],
+                    value: [
+                        {
+                            required: true,
+                            message: window.i18n.t('{0}不能为空', [getLabel(renderRule.type)]),
+                            trigger: 'blur'
+                        }
+                    ],
+                    message: [
+                        {
+                            required: true,
+                            message: window.i18n.t('{0}不能为空', [window.i18n.t('报错提示信息')]),
+                            trigger: 'blur'
+                        }
+                    ]
+                }
+            }
 
             const handleClick = () => {
                 isShow.value = true
@@ -190,7 +227,17 @@
             }
 
             const triggerUpdate = () => {
-                emit('change', copyValidate.value)
+                Promise.all(
+                    formRef.value.map(item => item.validate())
+                ).then(() => {
+                    isShow.value = false
+                    if ((!props.scheme?.validate?.rules || props.scheme?.validate?.rules?.length <= 0) && copyValidate.value?.rules?.length > 0) {
+                        copyValidate.value.enable = true
+                    }
+                    emit('change', copyValidate.value)
+                }).catch(({ content }) => {
+                    messageError(content)
+                })
             }
 
             return {
@@ -198,6 +245,8 @@
                 isShow,
                 types,
                 copyValidate,
+                formRef,
+                getRules,
                 handleClick,
                 getLabel,
                 handlePlus,
@@ -262,4 +311,25 @@
             background: #fff;
         }
     }
+    .scheme-name {
+        background: #F0F1F5;
+        line-height: 22px;
+        font-size: 12px;
+        color: #63656E;
+        padding: 0 10px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+</style>
+<style lang="postcss">
+@import "@/css/mixins/scroller";
+
+.param-validate {
+    .bk-dialog-body {
+        max-height: 60vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        @mixin scroller;
+    }
+}
 </style>

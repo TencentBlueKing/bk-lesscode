@@ -1,42 +1,21 @@
 ## 如何开发一个表格查询页面
-### 第一步：拖拽“查询选择”、“表格”组件到画布
+### 第一步：拖拽“输入框”、“表格”组件到画布
 
 <img src="../../../images/help/case-table1.png" alt="grid" width="640" class="help-img">
 
 ### 第二步：配置组件属性和指令
 
-- 设置表格数据来源：新建变量“tableData”，配置“表格”组件属性“data”，绑定变量“tableData”
+- 设置表格数据来源：新建变量 “tableData”，配置 “表格” 组件属性 “data”，绑定自定义变量 “tableData”
 
-- 获取查询输入关键字：新建变量“keyWords”，配置“查询选择”组件属性指令"v-model"绑定变量“keyWords”
-- 设置表格分页：新建变量“
-pagination”，变量默认值为：
-```js
-{
-    "current": 1,
-    "count": 3,
-    "limit": 10,
-    "limitList": [
-        10,
-        20,
-        50,
-        100
-    ],
-    "showLimit": false
-}
-```
-- 配置“表格”组件属性“
-pagination”绑定变量“
-pagination”
+- 获取输入框关键字：新建变量 “keyWords”，“输入框”组件属性指令 “v-model” 绑定变量 “keyWords”
+- 设置表格分页：属性 pagination 选择“远程分页”
+    
+    1. 新建变量 “count”，分页 ”count“ 属性绑定变量 “count”
+    2. 新建变量 “pageSize”，分页 ”limit“ 属性绑定变量 “pageSize”
 
-
-### 第三步：“表格”组件 “data” 属性及事件配置
-
-1、 配置表格“data”属性数据初始值来源为函数，并绑定函数 “getTableData”
+### 第三步：新建函数 “getTableData” 查询并获取表格数据
 
 <img src="../../../images/help/case-table2.png" alt="grid" width="640" class="help-img">
-
-2、 根据“data”属性数据返回字段刷新和调整表头配置
-
 
 **注意：**
 
@@ -48,21 +27,23 @@ pagination”
 
 <img src="../../../images/help/case-table3.png" alt="grid" width="640" class="help-img">
 
-### 第四步：查询 “按钮”组件事件配置
+### 第四步：“表格”组件 “data” 属性及事件配置
 
-1、查询函数
+1、 配置表格 “data” 属性数据初始值来源为函数，并绑定函数 “getTableData”
 
-<img src="../../../images/help/case-table6.png" alt="grid" width="640" class="help-img">
+2、 点击”刷新表头“
 
-2、查询按钮绑定事件
+### 第五步：输入框 “enter” 事件绑定表格查询函数 “getTableData”
 
 <img src="../../../images/help/case-table5.png" alt="grid" width="640" class="help-img">
 
-### 第五步：表格分页事件配置
+### 第六步：表格分页事件绑定事件函数
+
+分别给 “page-change” 和 “page-limit-change” 事件绑定表格查询函数 “getTableData”，并配置对应函数调用参数。
 
 <img src="../../../images/help/case-table7.png" alt="grid" width="640" class="help-img">
 
 
-### 第六步：预览效果
+### 第七步：预览效果
 
 <img src="../../../images/help/case-table9.png" alt="grid" width="640" class="help-img">

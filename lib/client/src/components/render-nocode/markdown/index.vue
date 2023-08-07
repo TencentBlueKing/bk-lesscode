@@ -1,11 +1,12 @@
 <template>
     <draw-layout>
-        <section class="nocode-center-content-wrapper" ref="root" :style="centerRenderStyle"></section>
+        <section class="nocode-center-content-wrapper" ref="root" :style="centerRenderStyle">
             <layout>
                 <div class="markdown-page-wrapper">
                     <mavon-editor style="height: 100%" v-model="localValue" ref="md" @imgAdd="uploadImg" :tool-bars="toolbarsSetting" />
                 </div>
             </layout>
+        </section>
         <div class="markdown-setting-wrapper" slot="right">
             <layout-setting v-if="curTemplateData.panelActive" :template-data="curTemplateData" />
             <page-setting v-else />
@@ -17,6 +18,7 @@
     import Layout from '@/components/render-nocode/components/layout'
     import PageSetting from '@/element-materials/modifier/page'
     import LayoutSetting from '@/element-materials/modifier/template'
+    import contentWidthMixin from '../content-width-mixin'
     import { mapGetters } from 'vuex'
 
     export default {
@@ -27,6 +29,7 @@
             PageSetting,
             LayoutSetting
         },
+        mixins: [contentWidthMixin],
         data () {
             return {
                 localValue: '',

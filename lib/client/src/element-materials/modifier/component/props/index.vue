@@ -47,7 +47,7 @@
             hasMaterialConfig () {
                 let count = 0
                 Object.keys(this.propsConfig).forEach(propName => {
-                    if (this.propsConfig[propName].type !== 'hidden') {
+                    if (this.propsConfig[propName]?.type !== 'hidden') {
                         count++
                     }
                 })

@@ -4103,7 +4103,7 @@
   "更多使用请参考": "For more usage, please refer to",
   "请先安装 bk-charts 相关依赖": "Please install bk-charts related dependencies first",
   "请先安装 echarts 相关依赖": "Please install echarts related dependencies first",
-  "请在项目 common 里完善退出登陆相关方法": "Please improve the exit and login related methods in the project common",
+  "请在项目 common 里完善退出登录相关方法": "Please improve the exit and login related methods in the project common",
   "请在项目 store 里存入用户相关信息": "Please store user related information in the project store",
   "设置 .bk-form-control 组件宽度为 auto": "Set the width of the .bk-form-control component to auto",
   "bk-magic-vue 组件库": "bk-magic-vue component library",
@@ -4225,5 +4225,10 @@
   "正在": "is",
   "版本": "Version",
   "生产": "Production",
-  "返回部署页": "Return to deployment page"
+  "返回部署页": "Return to deployment page",
+  "{0}不能为空": "{0} can not be empty",
+  "小鲸（BK-GPT）": "Small Whale (BK-GPT)",
+  "发送": "Send",
+  "内容正在执行中，请执行完成后再输入": "The content is being executed, please enter after execution",
+  "可以使用 ${函数参数} 获取函数参数值": "You can use ${function parameter} to get the value of a function parameter."
 }

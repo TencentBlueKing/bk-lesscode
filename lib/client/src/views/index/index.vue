@@ -68,6 +68,7 @@
         },
         data () {
             return {
+                customNav: {},
                 pageHasChange: false,
                 isContentLoading: true,
                 isCustomComponentLoading: true,
@@ -180,11 +181,11 @@
             /**
              * @desc 注册自定义组件
              */
-            registerCustomComponent () {
+            registerCustomComponent (platform) {
                 this.isCustomComponentLoading = true
                 return new Promise((resolve, reject) => {
                     const script = document.createElement('script')
-                    script.src = `/${this.projectId}/${this.pageId}/component/register.js`
+                    script.src = `/${this.projectId}/${this.pageId}/component/register.js?platform=${platform}`
                     script.onload = () => {
                         window.customCompontensPlugin.forEach((callback) => {
                             const [
@@ -247,7 +248,7 @@
                     LC.setFramework(projectDetail.framework)
                     init(projectDetail.framework)
 
-                    await this.registerCustomComponent()
+                    await this.registerCustomComponent(pageDetail.pageType || 'PC')
 
                     await this.$store.dispatch('page/getPageSetting', {
                         pageId: this.pageId,
@@ -309,6 +310,13 @@
                     types: ['reload', 'update_style']
                 }
                 this.debounceUpdatePreview(Object.assign(defaultSetting, setting))
+
+                // 导航拖拽区域更新，需要触发导航修改
+                if (JSON.stringify(this.customNav) !== JSON.stringify(LC.getNavCustomCon())) {
+                    console.log('drag menu change', LC.getNavCustomCon())
+                    this.customNav = JSON.parse(JSON.stringify(LC.getNavCustomCon()))
+                    this.handleUpdateNavPerview()
+                }
             },
             handleUpdateNavPerview (setting = {}) {
                 const defaultSetting = {
@@ -317,7 +325,7 @@
                     framework: LC.getFramework(),
                     curTemplateData: this.curTemplateData,
                     storageKey: 'ONLINE_PREVIEW_NAV',
-                    types: ['reload']
+                    types: ['reload', 'update_style']
                 }
                 this.updatePreview(Object.assign(defaultSetting, setting))
             },
