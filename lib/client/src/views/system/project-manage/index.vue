@@ -60,10 +60,14 @@
                         @enter="handleSearchEnter">
                     </bk-input>
                     <icon-button-toggle
+                        v-if="filter !== 'archive'"
                         :icons="displayTypeIcons"
                         @toggle="handleToggleDisplayType"
                     />
                     <sort-select v-model="sort" :has-default="false" @change="handleSortChange" />
+                    <div class="archived-icon" :class="{ 'is-selected': filter === 'archive' }" @click="handleClickFilter('archive')">
+                        <i class="bk-drag-icon bk-drag-countdown" v-bk-tooltips="$t('已归档应用')"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,7 +76,7 @@
             <div :class="['page-body', { 'is-empty': !projectList.length }]" v-bkloading="{ isLoading: pageLoading, opacity: 1 }">
                 <div class="page-body-inner" v-show="!pageLoading">
                     <component
-                        :is="listComponent"
+                        :is="renderComponent"
                         :project-list="projectList"
                         :page-map="pageMap"
                         :empty-type="emptyType"
@@ -82,6 +86,8 @@
                         @to-page="handleGotoPage"
                         @copy="handleCopy"
                         @export="handleExport"
+                        @archive="handleArchive"
+                        @reset="handleReset"
                         @rename="handleRename"
                         @download="handleDownloadSource"
                         @set-template="handleSetTemplate"
@@ -269,6 +275,13 @@
                     return 'search'
                 }
                 return 'noData'
+            },
+            renderComponent () {
+                if (this.filter === 'archive') {
+                    return ListTable.name
+                } else {
+                    return this.listComponent
+                }
             }
         },
         watch: {
@@ -440,6 +453,42 @@
                 this.$refs.exportDialog.projectCode = project.projectCode
                 this.$refs.exportDialog.projectName = project.projectName
             },
+            async handleArchive (projectId) {
+                this.projectItemId = projectId
+                this.$bkInfo({
+                    title: this.$t('确认归档该应用？'),
+                    subTitle: this.$t('归档后该应用将无法正常使用，可以在归档应用列表恢复应用'),
+                    confirmFn: async () => {
+                        await this.toggleArchive(this.projectItemId, 1)
+                    }
+                })
+            },
+            async handleReset (projectId) {
+                await  this.toggleArchive(projectId, 0)
+            },
+            async toggleArchive (projectId, isArchive) {
+                const action = isArchive === 1 ? '归档' : '恢复'
+                try {
+                    const res = await this.$store.dispatch('project/update', {
+                        data: {
+                            id: projectId,
+                            fields: {
+                                archiveFlag: isArchive
+                            }
+                        }
+                    })
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: this.$t(`${action}成功`)
+                    })
+                    this.getProjectList()
+                } catch (err) {
+                    this.$bkMessage({
+                        theme: 'error',
+                        message: err.message || this.$t(`${action}失败`)
+                    })
+                }
+            },
             handleDownloadSource (project) {
                 this.$refs.downloadDialog.isShow = true
                 this.$refs.downloadDialog.projectId = project.id
@@ -484,7 +533,7 @@
                 this.updateRoute({ query })
             },
             updateRoute (location) {
-                this.$router.push(location).catch(e => e)
+                this.$router.push(location)?.catch(e => e)
             },
             handleGotoPage (projectId) {
                 // 开发应用和页面管理时调用跳到@/views/project/page-manage
@@ -593,6 +642,29 @@
                 .count {
                     font-style: normal;
                     margin: 0 .1em;
+                }
+            }
+
+            .archived-icon {
+                margin-left: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 30px;
+                height: 30px;
+                background: #ffffff;
+                border: 1px solid #c4c6cc;
+                border-radius: 2px;
+                cursor: pointer;
+                &.is-selected, &:hover {
+                    i {
+                        color: #3a84ff;
+                    }
+                }
+                i {
+                    font-size: 14px;
+                    transform: rotateY(180deg);
+                    color: #63656e;
                 }
             }
         }
