@@ -17,7 +17,7 @@ export default (row, handleUpdate) => {
                     value={row.valueType}
                     clearable={false}
                     disabled={disabled}
-                    onChange={(valueType) => handleUpdate(row, { valueType })}
+                    onChange={(valueType) => handleUpdate(row, { valueType, code: '', value: '' })}
                 >
                     <bk-option id="value" name={window.i18n.t('值')}></bk-option>
                     <bk-option id="variable" name={window.i18n.t('变量')}></bk-option>
@@ -29,7 +29,7 @@ export default (row, handleUpdate) => {
                             remoteConfig={{}}
                             options={{ valueTypeInclude: [row.type] }}
                             formData={{ code: row.code }}
-                            onOn-change={({ code }) => handleUpdate(row, { code })}
+                            onOn-change={({ code, renderValue }) => handleUpdate(row, { code, value: renderValue })}
                         >
                         </ChooseVariable>
                         : row.type === 'boolean'
@@ -41,6 +41,7 @@ export default (row, handleUpdate) => {
                             ></bk-checkbox>
                             : <bk-input
                                 class="render-param-val"
+                                v-bk-tooltips={{ content: window.i18n.t('可以使用 ${函数参数} 获取函数参数值'), trigger: 'click', theme: 'light' }}
                                 placeholder={window.i18n.t('请输入参数值')}
                                 value={row.value}
                                 disabled={disabled}

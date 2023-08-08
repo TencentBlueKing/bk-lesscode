@@ -67,6 +67,9 @@ module.exports = {
                         { from: /^\/$/, to: '/index.html' },
                         { from: /^\/preview\//, to: '/preview.html' }
                     ]
+                },
+                client: {
+                    overlay: false
                 }
             },
             optimization: {
@@ -136,6 +139,10 @@ module.exports = {
             .use('md-loader')
             .loader(require.resolve('vue-markdown-loader/lib/markdown-compiler'))
             .options(mdLoaderOption)
+
+        config.module.rule('txt')
+            .test(/\.txt/)
+            .set('type', 'asset/source')
 
         config.plugin('Buffer')
             .use(

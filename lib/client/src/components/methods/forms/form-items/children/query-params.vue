@@ -1,11 +1,19 @@
 <template>
     <use-get-scheme
+        ref="paramRef"
         :params="renderQuery"
         :disabled="disabled"
         :name-options="nameOptions"
+        :variable-list="variableList"
+        :function-list="functionList"
+        :api-list="apiList"
         :render-slot="renderSlot"
         :get-param-val="getParamVal"
-    />
+    >
+        <template slot="tool">
+            <slot></slot>
+        </template>
+    </use-get-scheme>
 </template>
 
 <script>
@@ -30,12 +38,15 @@
         props: {
             query: Array,
             disabled: Boolean,
+            nameOptions: Array,
             variableList: Array,
-            nameOptions: Array
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {
             const renderQuery = ref([])
+            const paramRef = ref()
 
             const handleUpdate = (row, val) => {
                 Object.assign(row, val)
@@ -52,6 +63,10 @@
 
             const getParamVal = LCGetParamsVal(props.variableList)
 
+            const validate = () => {
+                return paramRef.value.validate()
+            }
+
             watch(
                 () => props.query,
                 () => {
@@ -67,9 +82,11 @@
 
             return {
                 renderQuery,
+                paramRef,
                 handleUpdate,
                 renderSlot,
-                getParamVal
+                getParamVal,
+                validate
             }
         }
     })

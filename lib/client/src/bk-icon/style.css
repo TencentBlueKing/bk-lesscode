@@ -26,6 +26,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-assembly-line:before {
 	content: "\e240";
 }
+.bk-drag-feature-conversion:before {
+	content: "\e28c";
+}
 .bk-drag-home:before {
 	content: "\e15d";
 }
@@ -592,6 +595,12 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-drag-small:before {
 	content: "\e1b1";
+}
+.bk-drag-dianzan-tianchong:before {
+	content: "\e28e";
+}
+.bk-drag-dianzan:before {
+	content: "\e28d";
 }
 .bk-drag-select-value:before {
 	content: "\e1b2";
@@ -1168,4 +1177,19 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-shanchu-2:before {
 	content: "\e286";
+}
+.bk-drag-tag-3:before {
+	content: "\e28f";
+}
+.bk-drag-liaotianchuang:before {
+	content: "\e290";
+}
+.bk-drag-yinyongchuangjian:before {
+	content: "\e291";
+}
+.bk-drag-yinyong-2:before {
+	content: "\e292";
+}
+.bk-drag-saoba:before {
+	content: "\e294";
 }

@@ -14,7 +14,7 @@
                 steps: [
                     {
                         title: window.i18n.t('安装依赖包'),
-                        desc: 'npm install'
+                        desc: 'npm install --legacy-peer-deps'
                     },
                     {
                         title: window.i18n.t('配置与登录域名同主域的host'),

@@ -15,19 +15,14 @@
                 :name="option.projectName">
                 <span class="project-name">
                     <span v-bk-overflow-tips>{{option.projectName}}</span>
-                    <framework-tag :framework="option.framework" />
+                    <framework-tag :framework="option.framework" bg-color="#28354D" />
                 </span>
             </bk-option>
             <div slot="extension" class="extension">
                 <div
                     class="page-row"
-                    @click="handleCreate('newProject')">
-                    <i class="bk-icon icon-plus-circle" /> {{ $t('abbr_新建空白应用') }}
-                </div>
-                <div
-                    class="page-row"
                     @click="handleTempCreate">
-                    <i class="bk-icon icon-plus-circle" /> {{ $t('abbr_从模板新建应用') }}
+                    <i class="bk-icon icon-plus-circle" /> {{ $t('新建应用') }}
                 </div>
             </div>
         </bk-select>

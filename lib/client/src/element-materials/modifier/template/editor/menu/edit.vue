@@ -29,11 +29,14 @@
                         :name="page.pageName" />
                 </bk-select>
                 <div class="menu-page-query">
-                    <bk-input
-                        v-if="isShowPageQuery"
-                        :value="baseInfo.query"
-                        placeholder="name=zhangsan&age=18"
-                        @change="handlePageQueryChange" />
+                    <section v-if="isShowPageQuery" class="route-params">
+                        <i class="bk-drag-icon bk-drag-info-tips params-tips" v-bk-tooltips="$t('可以使用 {{变量标识}} 来使用应用级别变量')"></i>
+                        <bk-input
+                            :value="baseInfo.query"
+                            :placeholder="paramsPlaceholder"
+                            @change="handlePageQueryChange" />   
+                    </section>
+                    
                     <bk-button
                         v-else
                         class="add-query"
@@ -151,6 +154,7 @@
                 },
                 searchValue: '',
                 searchList: [],
+                paramsPlaceholder: 'name=lisi&age={{age}}',
                 isIconListRender: false
             }
         },
@@ -411,6 +415,14 @@
                 }
                 .bk-button-text.bk-primary:hover {
                     color: #1964E1;
+                }
+                .route-params {
+                    display: flex;
+                    align-items: center;
+                    .params-tips {
+                        position: absolute;
+                        left: -20px;
+                    }
                 }
             }
         }

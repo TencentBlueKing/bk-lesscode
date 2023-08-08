@@ -374,6 +374,8 @@
                     funcBody: FUNCTION_TIPS()[FUNCTION_TYPE.REMOTE] + 'return res\n',
                     funcApiUrl: row.url,
                     funcMethod: row.method,
+                    validate: row.validate,
+                    apiHeader: row.header.map?.(parseScheme2UseScheme),
                     apiQuery: row.query.map(parseScheme2UseScheme),
                     apiBody: parseScheme2UseScheme(row.body)
                 })

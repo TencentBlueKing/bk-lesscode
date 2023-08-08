@@ -229,6 +229,7 @@
 
         computed: {
             ...mapGetters('functions', ['funcGroups']),
+            ...mapGetters('projectVersion', ['currentVersionId']),
 
             computedFunctionData () {
                 let functionData

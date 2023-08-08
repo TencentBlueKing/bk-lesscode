@@ -1,11 +1,19 @@
 <template>
     <use-post-scheme
+        ref="paramRef"
         :params="renderBody"
         :disabled="disabled"
         :name-options="nameOptions"
+        :variable-list="variableList"
+        :function-list="functionList"
+        :api-list="apiList"
         :render-slot="renderSlot"
         :get-param-val="getParamVal"
-    />
+    >
+        <template slot="tool">
+            <slot></slot>
+        </template>
+    </use-post-scheme>
 </template>
 
 <script>
@@ -31,12 +39,15 @@
         props: {
             body: Object,
             disabled: Boolean,
+            nameOptions: Array,
             variableList: Array,
-            nameOptions: Array
+            functionList: Array,
+            apiList: Array
         },
 
         setup (props, { emit }) {
             const renderBody = ref({})
+            const paramRef = ref()
 
             const handleUpdate = (row, val) => {
                 Object.assign(row, val)
@@ -52,6 +63,10 @@
             }
 
             const getParamVal = LCGetParamsVal(props.variableList)
+
+            const validate = () => {
+                return paramRef.value.validate()
+            }
 
             watch(
                 () => props.body,
@@ -73,9 +88,11 @@
 
             return {
                 renderBody,
+                paramRef,
                 renderSlot,
                 handleUpdate,
-                getParamVal
+                getParamVal,
+                validate
             }
         }
     })

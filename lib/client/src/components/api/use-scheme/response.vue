@@ -1,12 +1,17 @@
 <template>
     <section>
-        <scheme-header :slot-label="$t('设置为全局变量')" :hide-required="true" />
+        <scheme-header :slot-label="$t('设置为全局变量')" :hide-required="true" :show-rule="showRule" />
         <single-scheme
             ref="singleSchemeRef"
             :scheme="renderResponseParam"
             :render-slot="renderSlot"
             :minus-disable="true"
             :hide-required="true"
+            :brothers="renderResponseParam.children"
+            :variable-list="variableList"
+            :function-list="functionList"
+            :api-list="apiList"
+            :show-rule="showRule"
             @update="handleUpdate"
         />
     </section>
@@ -37,7 +42,14 @@
         props: {
             params: Object,
             response: [Object, Array, String, Number],
-            renderSlot: Function
+            renderSlot: Function,
+            variableList: Array,
+            functionList: Array,
+            apiList: Array,
+            showRule: {
+                type: Boolean,
+                default: true
+            }
         },
 
         setup (props, { emit }) {

@@ -16,7 +16,7 @@
             isLoading: isContentLoading || isCustomComponentLoading
         }">
         <div v-if="!isContentLoading && !isCustomComponentLoading" class="lesscode-editor-page-header">
-            <page-list />
+            <page-list :is-canvas-updated="isCanvasUpdated" />
             <div
                 id="toolActionBox"
                 class="function-and-tool">
@@ -68,10 +68,12 @@
         },
         data () {
             return {
+                customNav: {},
                 pageHasChange: false,
                 isContentLoading: true,
                 isCustomComponentLoading: true,
-                operationType: 'edit'
+                operationType: 'edit',
+                isCanvasUpdated: false
             }
         },
         computed: {
@@ -105,18 +107,22 @@
             variableList () {
                 // 变量发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             },
             funcGroups () {
                 // 函数发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             },
             'pageDetail.lifeCycle' () {
                 // 生命周期发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             },
             'pageDetail.styleSetting' () {
                 // 页面样式发生变化的时候  reload
                 this.handleUpdatePreviewContent()
+                this.isCanvasUpdated = true
             }
         },
         async created () {
@@ -125,6 +131,7 @@
 
             this.$nextTick(() => {
                 LC.addEventListener('update', this.handleUpdatePreviewContent)
+                LC.addEventListener('updateCanvas', this.handleIsCanvasUpdated)
                 // 更新预览区域数据
                 LC.addEventListener('ready', this.initPerviewData)
             })
@@ -156,25 +163,29 @@
             LC.platform = 'PC'
         },
         beforeRouteLeave (to, from, next) {
-            this.$bkInfo({
-                title: window.i18n.t('确认离开'),
-                okText: window.i18n.t('离开'),
-                subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
-                confirmFn: async () => {
-                    next()
-                }
-            })
+            if (this.isCanvasUpdated) {
+                this.$bkInfo({
+                    title: window.i18n.t('确认离开'),
+                    okText: window.i18n.t('离开'),
+                    subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
+                    confirmFn: async () => {
+                        next()
+                    }
+                })
+            } else {
+                next()
+            }
         },
         methods: {
             ...mapActions(['updatePreview']),
             /**
              * @desc 注册自定义组件
              */
-            registerCustomComponent () {
+            registerCustomComponent (platform) {
                 this.isCustomComponentLoading = true
                 return new Promise((resolve, reject) => {
                     const script = document.createElement('script')
-                    script.src = `/${this.projectId}/${this.pageId}/component/register.js`
+                    script.src = `/${this.projectId}/${this.pageId}/component/register.js?platform=${platform}`
                     script.onload = () => {
                         window.customCompontensPlugin.forEach((callback) => {
                             const [
@@ -237,7 +248,7 @@
                     LC.setFramework(projectDetail.framework)
                     init(projectDetail.framework)
 
-                    await this.registerCustomComponent()
+                    await this.registerCustomComponent(pageDetail.pageType || 'PC')
 
                     await this.$store.dispatch('page/getPageSetting', {
                         pageId: this.pageId,
@@ -299,6 +310,13 @@
                     types: ['reload', 'update_style']
                 }
                 this.debounceUpdatePreview(Object.assign(defaultSetting, setting))
+
+                // 导航拖拽区域更新，需要触发导航修改
+                if (JSON.stringify(this.customNav) !== JSON.stringify(LC.getNavCustomCon())) {
+                    console.log('drag menu change', LC.getNavCustomCon())
+                    this.customNav = JSON.parse(JSON.stringify(LC.getNavCustomCon()))
+                    this.handleUpdateNavPerview()
+                }
             },
             handleUpdateNavPerview (setting = {}) {
                 const defaultSetting = {
@@ -307,9 +325,12 @@
                     framework: LC.getFramework(),
                     curTemplateData: this.curTemplateData,
                     storageKey: 'ONLINE_PREVIEW_NAV',
-                    types: ['reload']
+                    types: ['reload', 'update_style']
                 }
                 this.updatePreview(Object.assign(defaultSetting, setting))
+            },
+            handleIsCanvasUpdated (isUpdate) {
+                this.isCanvasUpdated = isUpdate
             }
         }
     }

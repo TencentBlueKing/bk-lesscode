@@ -12,6 +12,10 @@
     .layout-flex-center {
         display: flex;
         align-items: center;
+        .bk-form-item {
+            width: 100%;
+            height: 32px;
+        }
     }
     .layout-middle {
         width: 95px;

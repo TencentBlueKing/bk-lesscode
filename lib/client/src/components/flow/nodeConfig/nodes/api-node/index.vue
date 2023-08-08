@@ -48,7 +48,7 @@
                         <div id="request-url-tips">
                             <p>{{`1.${$t('非蓝鲸网关API，请先接入')}【${$t('蓝鲸网关')}】`}}</p>
                             <p>{{`2.${$t('确保选择的蓝鲸网关API给蓝鲸应用ID')}【${BKPAAS_ENGINE_REGION === 'default' ? 'bk-itsm' : 'bkc-itsm'}】${$t('已授权并设置了用户免认证策略')}`}}</p>
-                            <p><span v-pre>{{`3.${$t('请求地址可使用{{变量名}}引用流程上下文变量，比如')}http://host/${id}`}}</span>
+                            <p>{{`3.${$t('请求地址可使用\{\{变量名\}\}引用流程上下文变量，比如')}http://host/\$\{id\}`}}
                                 <bk-button
                                     style="padding: 0; height: initial; line-height: 14px;"
                                     size="small"
@@ -79,6 +79,14 @@
             </bk-form>
         </form-section>
         <form-section
+            :title="$t('请求头')"
+            class="no-content-padding"
+            style="margin-top: 16px;">
+            <div class="headers-data" style="width: 83%; margin-top: 22px;">
+                <headers-config ref="headerRef" :headers="apiHeaders" @update="handleParamsChange('apiHeaders', $event)"></headers-config>
+            </div>
+        </form-section>
+        <form-section
             :title="$t('请求参数')"
             :desc="`（${$t('调用该API需要传递的参数信息')}）`"
             class="no-content-padding"
@@ -87,16 +95,17 @@
             <div class="api-data" style="width: 83%; margin-top: 22px;">
                 <query-params
                     v-if="METHODS_WITHOUT_DATA.includes(formData.method)" :variable-list="variableList"
+                    ref="queryRef"
                     :query="apiQuery"
                     @update="handleParamsChange('apiQuery', $event)">
                 </query-params>
                 <body-params
                     v-else
+                    ref="bodyRef"
                     :variable-list="variableList"
                     :body="apiBody"
                     @update="handleParamsChange('apiBody', $event)">
                 </body-params>
-                <headers-config :headers="apiHeaders" @update="handleParamsChange('apiHeaders', $event)"></headers-config>
             </div>
         </form-section>
         <!-- 返回数据 -->
@@ -107,6 +116,7 @@
             style="margin-top: 16px;">
             <div class="response-data" style="width: 83%; margin-top: 22px;">
                 <response-variable
+                    ref="responseRef"
                     :response="apiResponse"
                     @update="handleParamsChange('apiResponse', $event)">
                 </response-variable>
@@ -126,6 +136,7 @@
     import BodyParams from './body-params.vue'
     import ResponseVariable from './response-variable.vue'
     import { API_METHOD, METHODS_WITHOUT_DATA, parseScheme2UseScheme } from 'shared/api'
+    import { transformItsmHeader2Scheme } from 'shared/no-code'
     import { messageError } from '@/common/bkmagic'
 
     export default {
@@ -222,7 +233,7 @@
             if (apiInfo.url) {
                 const { selectedApi, url, method, headers, query, body, response } = apiInfo
                 this.formData = { ...this.formData, selectedApi, url, method }
-                this.apiHeaders = headers || []
+                this.apiHeaders = this.transOldHeaderData(headers || [])
                 this.apiQuery = query
                 this.apiBody = body
                 this.apiResponse = response
@@ -271,6 +282,14 @@
                     this.lesscodeApiUrlToUpdate = apiData.url
                 }
             },
+            // 兼容旧数据
+            // 旧版本header配置未使用统一组件，数据以itsm格式保存
+            transOldHeaderData (headers) {
+                if (headers.length > 0 && headers[0].hasOwnProperty('key') && !headers[0].hasOwnProperty('id')) {
+                    return transformItsmHeader2Scheme(headers)
+                }
+                return headers
+            },
             handleNameChange (val) {
                 this.$store.commit('nocode/nodeConfig/setNodeName', val)
             },
@@ -304,12 +323,18 @@
                 this.handleParamsChange('apiResponse', scheme)
             },
             validate () {
+                const paramsRef = METHODS_WITHOUT_DATA.includes(this.formData.method) ? this.$refs.queryRef : this.$refs.bodyRef
                 return Promise.all([
                     this.$refs.basicForm.validate(),
-                    this.$refs.processorsForm.validate()
+                    this.$refs.processorsForm.validate(),
+                    this.$refs.headerRef.validate(),
+                    paramsRef.validate(),
+                    this.$refs.responseRef.validate()
                 ]).then((result) => {
+                    console.log('validate result: ', result)
                     return result.every(item => item === true)
                 }).catch((e) => {
+                    console.log('validate error: ', e)
                     return false
                 })
             },

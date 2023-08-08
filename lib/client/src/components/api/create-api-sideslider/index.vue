@@ -17,30 +17,45 @@
                 :form-data="formData"
                 @update="handleUpdate"
             />
+            <h3 class="api-form-title">{{ $t('默认请求头') }}</h3>
+            <render-header
+                class="api-form"
+                ref="headerRef"
+                :form-data="formData"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
+                @update="handleUpdate"
+            />
             <h3 class="api-form-title">{{ $t('默认请求参数') }}</h3>
             <render-param
                 class="api-form"
                 ref="paramRef"
                 :form-data="formData"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">
-                {{ $t('默认请求响应') }}
-                <bk-button
-                    class="api-response-button"
-                    size="small"
-                    :loading="isLoadingResponse"
-                    v-bk-tooltips="{ content: $t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑'), maxWidth: 400 }"
-                    @click="getApiResponse"
-                >{{ $t('获取请求响应') }}</bk-button>
-            </h3>
+            <h3 class="api-form-title">{{ $t('默认请求响应') }}</h3>
             <render-response
                 class="api-form"
                 ref="responseRef"
                 :form-data="formData"
                 :response="response"
+                :variable-list="variableList"
+                :function-list="functionList"
+                :api-list="apiList"
                 @update="handleUpdate"
-            />
+            >
+                <bk-button
+                    class="mt10 mr10"
+                    size="small"
+                    :loading="isLoadingResponse"
+                    v-bk-tooltips="{ content: $t('立即发送请求来获取请求响应，响应示例去除了数组中重复的部分，可以在响应结果字段提取中进行二次编辑'), maxWidth: 400 }"
+                    @click="getApiResponse"
+                >{{ $t('获取请求响应') }}</bk-button>
+            </render-response>
         </section>
         <section
             class="api-footer"
@@ -61,6 +76,7 @@
 
 <script>
     import RenderBasic from './basic.vue'
+    import RenderHeader from './header.vue'
     import RenderParam from './param.vue'
     import RenderResponse from './response.vue'
     import {
@@ -82,10 +98,12 @@
     import {
         leaveConfirm
     } from '@/common/leave-confirm'
+    // import useResource from '@/hooks/use-resource'
 
     export default defineComponent({
         components: {
             RenderBasic,
+            RenderHeader,
             RenderParam,
             RenderResponse
         },
@@ -107,14 +125,24 @@
         },
 
         setup (props, { emit }) {
+            // const {
+            //     getApiList,
+            //     getFunctionList,
+            //     getProjectVariableList
+            // } = useResource()
             // 状态
             const isSubmitting = ref(false)
             const isLoadingResponse = ref(false)
+            const variableList = ref([])
+            const functionList = ref([])
+            const apiList = ref([])
             const formData = ref({})
             const response = ref()
             const basicRef = ref(null)
+            const headerRef = ref(null)
             const paramRef = ref(null)
             const responseRef = ref(null)
+            
             // use data
             const store = useStore()
             const route = useRoute()
@@ -144,6 +172,7 @@
                     Promise
                         .all([
                             basicRef.value?.validate(),
+                            headerRef.value?.validate(),
                             paramRef.value?.validate(),
                             responseRef.value?.validate()
                         ])
@@ -162,12 +191,14 @@
                 validate()
                     .then(([
                         basicData,
+                        headerData,
                         paramData,
                         responseData
                     ]) => {
                         const form = {
                             projectId: route.params.projectId,
                             ...basicData,
+                            ...headerData,
                             ...paramData,
                             ...responseData
                         }
@@ -215,21 +246,33 @@
                 validate()
                     .then(([
                         basicData,
+                        headerData,
                         paramData
                     ]) => {
+                        // http data
                         let apiData = {}
                         if (paramKey.value === 'query') {
                             paramData.query.forEach((queryItem) => {
-                                apiData[queryItem.name] = parseScheme2Value(queryItem)
+                                if (queryItem.name) {
+                                    apiData[queryItem.name] = parseScheme2Value(queryItem)
+                                }
                             })
                         } else {
                             apiData = parseScheme2Value(paramData.body)
                         }
+                        // http header
+                        const header = headerData.header?.reduce?.((acc, cur) => {
+                            if (cur.name) {
+                                acc[cur.name] = parseScheme2Value(cur)
+                            }
+                            return acc
+                        }, {}) || {}
                         const httpData = {
                             url: basicData.url,
                             type: basicData.method,
                             apiData,
-                            withToken: basicData.withToken
+                            withToken: basicData.withToken,
+                            header
                         }
                         isLoadingResponse.value = true
                         return store
@@ -256,12 +299,28 @@
                 }
             )
 
+            // onBeforeMount(() => {
+            //     Promise.all([
+            //         getApiList(),
+            //         getFunctionList(),
+            //         getProjectVariableList()
+            //     ]).then(([api, fun, vars]) => {
+            //         apiList.value = api
+            //         functionList.value = fun
+            //         variableList.value = vars
+            //     })
+            // })
+
             return {
                 isSubmitting,
                 isLoadingResponse,
+                variableList,
+                functionList,
+                apiList,
                 formData,
                 response,
                 basicRef,
+                headerRef,
                 paramRef,
                 responseRef,
                 paramKey,
@@ -296,8 +355,5 @@
     }
     .api-footer {
         padding-left: 30px;
-    }
-    .api-response-button {
-        font-weight: normal;
     }
 </style>

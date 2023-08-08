@@ -16,7 +16,6 @@
                 show-overflow-tooltip
                 :key="field.key"
                 :label="field.name"
-                :width="getColumn(field)"
                 :prop="field.key">
                 <template slot-scope="{ row }">
                     <table-cell-value
@@ -168,26 +167,15 @@
             }
         },
         watch: {
-            fields: {
+            tableConfig: {
                 handler (val) {
-                    const selectedFieldKeys = []
-                    this.tableConfig.forEach(key => {
-                        if (
-                            this.systemFields.find(field => field.key === key)
-                            || val.find(field => field.key === key)
-                        ) {
-                            selectedFieldKeys.push(key)
-                        }
-                    })
-                    this.selectedFieldKeys = selectedFieldKeys
+                    this.cols = val.slice()
+                    this.selectedFieldKeys = val.slice()
+                    this.pagination.current = 1
+                    this.pagination.count = 0
+                    this.getTableData()
                 },
                 immediate: true
-            },
-            tableConfig (val) {
-                this.cols = val.slice()
-                this.pagination.current = 1
-                this.pagination.count = 0
-                this.getTableData()
             },
             filtersData () {
                 this.pagination.current = 1
@@ -228,14 +216,14 @@
                 })
                 return query
             },
-            getColumn (field) {
-                const { type } = field
-                if (['MULTISELECT', 'CHECKBOX'].includes(type)) {
-                    return '170'
-                } else if (['SELECT', 'RADIO', 'INPUTSELECT'].includes(type)) {
-                    return '100'
-                }
-            },
+            // getColumn (field) {
+            //     const { type } = field
+            //     if (['MULTISELECT', 'CHECKBOX'].includes(type)) {
+            //         return '170'
+            //     } else if (['SELECT', 'RADIO', 'INPUTSELECT'].includes(type)) {
+            //         return '100'
+            //     }
+            // },
             // 查看详情
             handleViewDetail (id) {
                 this.cellDetailId = id
@@ -278,7 +266,7 @@
                 }
             },
             handleSelectConfirm () {
-                this.cols = [...this.selectedFieldKeys]
+                this.cols = this.selectedFieldKeys.slice()
                 this.getTableData()
                 this.$refs.settingCol.handleCancel()
             },

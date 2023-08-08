@@ -80,6 +80,12 @@
             PageDialog,
             CreatePageEntry
         },
+        props: {
+            isCanvasUpdated: {
+                type: Boolean,
+                require: true
+            }
+        },
         data () {
             return {
                 NOCODE_TYPE_MAP,
@@ -171,7 +177,7 @@
                 // 如果是离开routeName, 本身已经存在一次离开弹窗
                 const currentRouteName = this.$route.name
                 const toRouteName = NOCODE_TYPE_MAP?.toRouteName[page.nocodeType] || 'new'
-                if (currentRouteName === toRouteName) {
+                if (currentRouteName === toRouteName && this.isCanvasUpdated) {
                     this.$bkInfo({
                         title: window.i18n.t('确认离开'),
                         okText: window.i18n.t('离开'),

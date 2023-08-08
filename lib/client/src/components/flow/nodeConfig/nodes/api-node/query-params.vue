@@ -1,6 +1,8 @@
 <template>
     <div class="get-params-wrapper">
         <use-get-scheme
+            ref="getObjRef"
+            :show-rule="false"
             :params="queryData"
             :render-slot="renderSlot"
             :get-param-val="LCGetParamsVal(variableList)">
@@ -10,7 +12,7 @@
 <script>
     import UseGetScheme from '@/components/api/use-scheme/get'
     import { getDefaultApiUseScheme, LCGetParamsVal } from 'shared/api'
-    import RenderParamSlot from '@/components/methods/forms/form-items/children/render-param-slot'
+    import RenderParamSlot from './render-param-slot'
 
     export default {
         name: 'GetParams',
@@ -51,6 +53,9 @@
             handleGetParamsUpdate (row, val) {
                 Object.assign(row, val)
                 this.$emit('update', this.queryData)
+            },
+            validate () {
+                return this.$refs.getObjRef.validate().then(() => { return true })
             }
         }
     }
