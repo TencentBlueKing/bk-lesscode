@@ -12,6 +12,7 @@
 <script lang="ts">
     import { mapGetters } from 'vuex'
     import { defineComponent } from '@vue/composition-api'
+    import dayjs from '@/common/dayjs'
 
     export default defineComponent({
         name: 'project-list-table',
@@ -77,6 +78,9 @@
             const handlerClearSearch = (searchName) => {
                 emit('clearSearch', searchName)
             }
+            const getFormatTime = (time) => {
+                return window.i18n.t('{0}更新', [dayjs(time).fromNow()])
+            }
 
             return {
                 handleCreate,
@@ -91,7 +95,8 @@
                 handleSetTemplate,
                 handleClickFavorite,
                 handleRelease,
-                handlerClearSearch
+                handlerClearSearch,
+                getFormatTime
             }
         }
     })
@@ -135,16 +140,30 @@
                     {{ row.framework || 'vue2' }}
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
-                <template v-slot="{ row }">
-                    {{getUpdateInfo(row).updateUser}}
-                </template>
-            </bk-table-column>
-            <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
-                <template v-slot="{ row }">
-                    {{getUpdateInfo(row).updateTimeFromNow}}
-                </template>
-            </bk-table-column>
+            <template v-if="filter !== 'archive'">
+                <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
+                    <template v-slot="{ row }">
+                        {{getUpdateInfo(row).updateUser}}
+                    </template>
+                </bk-table-column>
+                <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
+                    <template v-slot="{ row }">
+                        {{getUpdateInfo(row).updateTimeFromNow}}
+                    </template>
+                </bk-table-column>
+            </template>
+            <template v-else>
+                <bk-table-column :label="$t('归档人')" prop="updateUser" min-width="90" show-overflow-tooltip>
+                    <template v-slot="{ row }">
+                        {{ row.updateUser }}
+                    </template>
+                </bk-table-column>
+                <bk-table-column :label="$t('归档时间')" prop="updateTime" min-width="200" show-overflow-tooltip>
+                    <template v-slot="{ row }">
+                        {{ getFormatTime(row.updateTime) }}
+                    </template>
+                </bk-table-column>
+            </template>
             <bk-table-column :label="$t('操作')" min-width="150">
                 <template v-slot="{ row }">
                     <template v-if="filter !== 'archive'">
@@ -216,7 +235,7 @@
                                 <li>
                                     <auth-component :permission="row.canDevelop" auth="develop_app" :resource-id="row.id">
                                         <a href="javascript:;" slot="forbid">{{ $t('归档') }}</a>
-                                        <a href="javascript:;" slot="allow" @click="handleArchive(row)">{{ $t('归档') }}</a>
+                                        <a href="javascript:;" slot="allow" @click="handleArchive(row.id)">{{ $t('归档') }}</a>
                                     </auth-component>
                                 </li>
                                 <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
@@ -234,7 +253,7 @@
                             :disabled="row.isExecuteDisable"
                             class="edit-btn"
                             @click="handleReset(row.id)">
-                            {{ $t('恢复应用') }} </auth-button>
+                            {{ $t('恢复') }} </auth-button>
                     </template>
                 </template>
             </bk-table-column>
