@@ -1,54 +1,70 @@
 <template>
-    <section>
-        <bk-sideslider
-            :is-show.sync="isShow"
-            :quick-close="true"
-            :title="$t('部署日志')"
-            :width="920"
-            :before-close="handleClose"
-        >
-            <div slot="header">
-                <i v-if="status === 'successful'" class="bk-drag-icon bk-drag-check-circle-fill icon-successful"></i>
-                <i v-if="status === 'failed'" class="bk-drag-icon bk-drag-close-circle-fill icon-failed"></i>
-                {{ logTitle }}
-            </div>
-            <div class="log-content" slot="content" v-bkloading="{ isLoading: isLoading, opacity: 1 }">
-                <div class="deploy-view">
-                    <div id="deploy-timeline-box" style="width: 250px; margin-right: 10px;"
-                        v-bkloading="{ isLoading: isTimelineLoading, opacity: 1 }">
-                        <deploy-timeline
-                            :list="timeLineList"
-                            :disabled="true"
-                            class="mt20 ml15 mr15"
-                            style="min-width: 230px;"
-                            v-if="timeLineList.length">
-                        </deploy-timeline>
-                    </div>
-                    <div class="deploy-container" v-if="content">
-                        <bk-alert style="margin: 0px; border-radius: 0;" type="warning" :title="$t('仅展示准备阶段、构建阶段日志')"></bk-alert>
-                        <pre class="log-detail" v-html="content"></pre>
-                    </div>
-                <!-- <pre v-if="content" class="log-detail" v-html="content"></pre> -->
+    <section v-bkloading="{ isLoading: isLoading, opacity: 1 }">
+        <div v-show="!isLoading" :class="['deploy-status',{ 'deploy-success': deployStatus === 'successful','deploy-error': deployStatus === 'failed' }]">
+            <i v-if="deployStatus === 'successful'" class="bk-drag-icon bk-drag-check-circle-fill icon-successful"></i>
+            <i v-if="deployStatus === 'failed'" class="bk-drag-icon bk-drag-close-circle-fill icon-failed"></i>
+            <div class="deploy-about-operate">
+                <div class="deploy-type-info">
+                    <p>
+                        <span v-html="getInfoTips(latestInfo,'running')"></span>
+                    </p>
+                    <p>
+                        <span>{{ $t('已耗时:') }}</span>
+                        <span>{{totalTime}}</span>
+                    </p>
+                    <p>
+                        <span>{{ $t('操作人:') }}</span>
+                        <span>{{createUser}}</span>
+                    </p>
                 </div>
+                <bk-button size="small" @click="$emit('checkCom', '')">{{ $t('返回部署页') }}</bk-button>
             </div>
-        </bk-sideslider>
+        </div>
+        <div class="log-content">
+            <div class="deploy-view">
+                <div id="deploy-timeline-box" style="width: 300px; margin-right: 18px;background: #F5F7FA;"
+                    v-bkloading="{ isLoading: isTimelineLoading, opacity: 1 }">
+                    <deploy-timeline
+                        :list="timeLineList"
+                        :disabled="true"
+                        class="deploy-timeline"
+                        ext-cls="deploy-timeline-reset"
+                        style="min-width: 268px;"
+                        :width="268"
+                        v-if="timeLineList.length">
+                    </deploy-timeline>
+                </div>
+                <div class="deploy-container" v-if="content">
+                    <deploying-type :deploying-info="lastStepSateInfo" :content="content" screenfull-class-name=".log-detail"></deploying-type>
+                    <pre class="log-detail" v-html="content"></pre>
+                    <div class="deploy-error-tips" v-if="latestInfo.errorMsg">
+                        <p class="error-title">
+                            <i class="bk-drag-icon bk-drag-close-circle-fill icon-error"></i>
+                            <span>{{ $t('失败原因一') }}</span>
+                        </p>
+                        <p class="error-info">{{latestInfo.errorMsg}}</p>
+                    </div>
+                </div>
+                <!-- <pre v-if="content" class="log-detail" v-html="content"></pre> -->
+            </div>
+        </div>
     </section>
 </template>
 
 <script>
     import deployTimeline from './deploy-timeline'
+    import deployingType from './deploying-type.vue'
+    import publishMixin from '../publish-mixin'
     export default {
         components: {
-            deployTimeline
+            deployTimeline,
+            deployingType
         },
+        mixins: [publishMixin],
         props: {
-            status: {
+            deployStatus: {
                 type: String,
                 default: ''
-            },
-            isShow: {
-                type: Boolean,
-                default: false
             },
             deployId: {
                 type: String,
@@ -67,23 +83,28 @@
             env: {
                 type: String,
                 default: 'stag'
+            },
+            createUser: {
+                type: String,
+                default: 'admin'
+            },
+            latestInfo: {
+                type: Object
             }
         },
         data () {
             return {
-                isLoading: false,
+                isLoading: true,
                 isTimelineLoading: false,
                 content: '',
-                timeLineList: []
+                timeLineList: [],
+                totalTime: '',
+                lastStepSateInfo: {}
             }
         },
         computed: {
             projectId () {
                 return this.$route.params.projectId
-            },
-            logTitle () {
-                const envName = this.env === 'stag' ? window.i18n.t('预发布') : window.i18n.t('生产')
-                return this.status === 'successful' ? envName + window.i18n.t('环境部署成功') : (this.status === 'failed' ? envName + window.i18n.t('环境部署失败') : window.i18n.t('部署日志'))
             }
         },
         watch: {
@@ -116,6 +137,7 @@
                 this.getLogs()
             } else {
                 this.content = this.defaultContent
+                this.isLoading = false
             }
         },
         methods: {
@@ -134,6 +156,8 @@
                         deployId: this.deployId || ''
                     })
                     const timeLineList = []
+                    let lastTime = ''
+                    let lastStepState = {}
                     res.forEach(stageItem => {
                         timeLineList.push({
                             name: stageItem.type,
@@ -151,8 +175,16 @@
                                 status: stepItem.status || 'default',
                                 parentStage: stageItem.type
                             })
+                            if (stepItem.complete_time) {
+                                lastTime = stepItem.complete_time
+                            }
+                            if (['successful', 'failed'].includes(stepItem.status)) {
+                                lastStepState = stepItem
+                            }
                         })
                     })
+                    this.lastStepSateInfo = lastStepState
+                    this.totalTime = this.computedDeployTimelineTime(res[0].start_time, lastTime)
                     this.timeLineList = timeLineList
                 } catch (e) {
                     this.timeLineList = []
@@ -167,16 +199,13 @@
                         projectId: this.projectId,
                         deployId: this.deployId
                     })
-                    this.content = res.logs || window.i18n.t('v3部署日志为空')
+                    this.content = res.logs || window.i18n.t(window.i18n.t('v3部署日志为空'))
                 } catch (err) {
                     this.content = window.i18n.t('日志加载异常\n')
                     this.content += err.message || err
                 } finally {
                     this.isLoading = false
                 }
-            },
-            handleClose () {
-                this.$emit('closeLog')
             },
 
             computedDeployTimelineTime (startTime, endTime) {
@@ -232,12 +261,54 @@
 </script>
 
 <style lang="postcss" scoped>
+
+        .deploy-status  {
+            display: flex;
+            align-items: center;
+            height: 42px;
+            padding-left: 18px;
+            border-radius: 2px;
+            font-size: 12px;
                 .icon-successful {
+                    font-size: 18px;
                     color: #2dcb56;
                 }
                 .icon-failed {
+                    font-size: 18px;
                     color: #ea3636;
                 }
+        }
+        .deploy-running {
+            background: #EAEBF0;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            padding: 0 17px;
+        
+        }
+        .deploy-success {
+            background: #F2FFF4;
+            border: 1px solid #2DCB56;
+        }
+        .deploy-error {
+            background: #FFEEEE;
+            border: 1px solid #EA3636;
+        }
+        .deploy-about-operate{
+            display: flex;
+            align-items: center;
+            margin-left: 9px;
+            .deploy-type-info {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 480px;
+                border-right: 1px solid #C4C6CC;
+                margin-right: 20px;
+                padding-right: 20px;
+        }
+        }
+    
     .log-content {
         height: 100%;
         min-height: 500px;
@@ -251,19 +322,53 @@
         }
         .deploy-container{
             flex: 1;
-            
             color: #fff;
             font-size: 12px;
-            overflow-y: scroll;
-            height: calc(100vh - 105px);
+            .deploy-error-tips {
+                width: 100%;
+                min-height: 68px;
+                background: #2E2E2E;
+                border-radius: 0 0 2px 2px;
+                bottom: 0;
+                left: 0;
+                color: #DCDEE5;
+                font-size: 12px;
+                line-height: 22px;
+                padding:8px 0 8px 15px;
+                border-top:2px transparent solid;
+                border-left: 4px solid #B34747;
+            .error-title {
+                .icon-error {
+                    font-size: 12px;
+                    color: #B34747;
+                    margin-right: 6px;
+                }
+            }
+            .error-info {
+                margin-left: 20px;
+            }
+            
+         }
         }
         .log-detail {
             padding: 0 20px 20px 20px;
             line-height: 20px;
+            overflow-y: scroll;
             word-wrap:break-word;
-            background: #2a2b2f;
-            margin-top: 0;
-            min-height: 96%;
+            background: #242424;
+            margin: 0;
+            height: calc(100vh - 336px);
+            &::-webkit-scrollbar {
+                width: 14px;
+                background: #2E2E2E;
+                border-left: 1px solid #3D3D3D;
+            }
+            &::-webkit-scrollbar-thumb {
+                width: 100%;
+                background: #3B3C42;
+                border: 1px solid #63656E;
+                border-radius: 1px;
+            }
         }
 
         .deploy-view {
@@ -272,6 +377,9 @@
             margin: 0;
             align-items: stretch;
             font-size: 14px;
+            .deploy-timeline {
+                margin: 16px;
+            }
 
             .pre-deploy-detail {
                 flex: 1;
