@@ -249,7 +249,7 @@
                 :is-show.sync="isShowReleaseSql"
                 :quick-close="true"
                 :width="960"
-                :title="`${$t('数据库变更详情')}【${newVersionInfo.env === 'stag' ? $t('预发布环境') : $t('生产环境')} 】`">
+                :title="`${$t('数据库变更详情')}【${versionForm.env === 'stag' ? $t('预发布环境') : $t('生产环境')} 】`">
                 <div slot="content">
                     <monaco
                         read-only

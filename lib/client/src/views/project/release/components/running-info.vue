@@ -730,7 +730,7 @@
                     result = `${theTime}s`
                 }
                 if (middle > 0) {
-                    result = `${middle}m${result}s`
+                    result = `${middle}m${result}`
                 }
                 if (hour > 0) {
                     result = `${hour}h${result}`
