@@ -59,7 +59,7 @@
                     </span>
                     
                     <div :class="[$style['operation'],{ [$style['seperate-line']]: currentAppInfo.appCode && currentAppInfo.moduleCode }]">
-                        <span :class="$style['offline-operate']" v-show="!(stagInfo.version && !stagInfo.isOffline) || (prodInfo.version && !prodInfo.isOffline)">
+                        <span :class="$style['offline-operate']" v-show="(stagInfo.version && !stagInfo.isOffline) || (prodInfo.version && !prodInfo.isOffline)">
                             <bk-button size="small" :disabled="latestInfo.status === 'running'" :class="$style['offline-btn']" @click="toggleOffline(true)">
                                 <i class="bk-drag-icon bk-drag-off-shelf"></i>
                                 <span>{{ $t('下架') }}</span>
