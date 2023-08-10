@@ -1,5 +1,5 @@
 <template>
-    <div class="render-icon">
+    <div class="render-project-icon">
         <template v-if="!iconList.length">
             <bk-exception
                 class="project-icon-empty"
@@ -13,16 +13,18 @@
                 :placeholder="$t('图标名称')"
                 :list="searchList"
                 @on-change="handleSearchChange" />
-            <group-box
-                v-for="(componentList, groupName) in renderGroupIconMap"
-                :key="groupName"
-                :list="componentList"
-                :group-name="groupName">
-                <render-icon
-                    v-for="component in componentList"
-                    :key="component.name"
-                    :data="component" />
-            </group-box>
+            <div class="render-icon-list">
+                <group-box
+                    v-for="(componentList, groupName) in renderGroupIconMap"
+                    :key="groupName"
+                    :list="componentList"
+                    :group-name="groupName">
+                    <render-icon
+                        v-for="component in componentList"
+                        :key="component.name"
+                        :data="component" />
+                </group-box>
+            </div>
         </template>
     </div>
 </template>
@@ -130,6 +132,8 @@
     }
 </script>
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
     .project-icon-empty {
         font-size: 12px;
         .to-icon-link {
@@ -137,4 +141,13 @@
             color: #3A84FF;
         }
     }
+    .render-project-icon {
+        height: 100%;
+        .render-icon-list {
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            @mixin scroller;
+        }
+    }
+    
 </style>

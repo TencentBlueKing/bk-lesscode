@@ -1,19 +1,21 @@
 <template>
-    <div class="render-icon">
+    <div class="render-official-icon">
         <search-box
             :placeholder="$t('图标名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
-        <group-box
-            v-for="(componentList, groupName) in renderGroupIconMap"
-            :key="groupName"
-            :list="componentList"
-            :group-name="groupName">
-            <render-icon
-                v-for="component in componentList"
-                :key="component.name"
-                :data="component" />
-        </group-box>
+        <div class="render-icon-list">
+            <group-box
+                v-for="(componentList, groupName) in renderGroupIconMap"
+                :key="groupName"
+                :list="componentList"
+                :group-name="groupName">
+                <render-icon
+                    v-for="component in componentList"
+                    :key="component.name"
+                    :data="component" />
+            </group-box>
+        </div>
     </div>
 </template>
 <script>
@@ -84,6 +86,14 @@
     }
 </script>
 <style lang="postcss" scoped>
-    .render-icon{
+    @import "@/css/mixins/scroller";
+
+    .render-official-icon {
+        height: 100%;
+        .render-icon-list {
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            @mixin scroller;
+        }
     }
 </style>

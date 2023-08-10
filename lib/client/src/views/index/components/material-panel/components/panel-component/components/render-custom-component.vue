@@ -4,7 +4,7 @@
             :placeholder="$t('自定义组件名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
-        <div>
+        <div class="custom-component-list">
             <template v-if="isSearch">
                 <group-box
                     v-for="(comList, groupName) in renderGroupComponentMap"
@@ -210,7 +210,16 @@
     }
 </script>
 <style lang="postcss">
+ @import "@/css/mixins/scroller";
+
     .render-custom-component{
+        height: 100%;
+        .custom-component-list {
+            height: calc(100% - 52px);
+            overflow-y: auto;
+            @mixin scroller;
+
+        }
         .fixed-opts{
             position: fixed;
             bottom: 0;

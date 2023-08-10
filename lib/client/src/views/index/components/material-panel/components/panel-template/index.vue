@@ -22,42 +22,44 @@
                 :list="renderTemplateList"
                 :placeholder="$t('模板名称')"
                 @on-change="handleSearchChange" />
-            <group-box
-                v-for="(group) in renderGroupTemplateList"
-                :list="group.list"
-                :group-name="group.categoryName"
-                group="layout"
-                :create-fallback="createFallback"
-                :key="group.id">
-                <div
-                    v-for="(template, templateIndex) in group.list"
-                    class="template-item"
-                    :class="{
-                        'uninstall': type === 'market' && !template.hasInstall
-                    }"
-                    :key="templateIndex">
-                    <div class="item-img">
-                        <img :src="template.previewImg" />
-                        <div
-                            v-if="type === 'market' && !template.hasInstall"
-                            class="mask">
-                            <bk-button
-                                class="apply-btn"
-                                theme="primary"
-                                size="small"
-                                @click.stop="handleApply(template)">
-                                {{ $t('添加到应用') }} </bk-button>
+            <div class="template-group-box">
+                <group-box
+                    v-for="(group) in renderGroupTemplateList"
+                    :list="group.list"
+                    :group-name="group.categoryName"
+                    group="layout"
+                    :create-fallback="createFallback"
+                    :key="group.id">
+                    <div
+                        v-for="(template, templateIndex) in group.list"
+                        class="template-item"
+                        :class="{
+                            'uninstall': type === 'market' && !template.hasInstall
+                        }"
+                        :key="templateIndex">
+                        <div class="item-img">
+                            <img :src="template.previewImg" />
+                            <div
+                                v-if="type === 'market' && !template.hasInstall"
+                                class="mask">
+                                <bk-button
+                                    class="apply-btn"
+                                    theme="primary"
+                                    size="small"
+                                    @click.stop="handleApply(template)">
+                                    {{ $t('添加到应用') }} </bk-button>
+                            </div>
+                        </div>
+                        <div class="item-info">
+                            <span class="item-name" v-bk-tooltips="template.templateName">{{ template.templateName }}</span>
+                            <span
+                                class="preview"
+                                @click="handlePreview(template)">
+                                {{ $t('预览') }} </span>
                         </div>
                     </div>
-                    <div class="item-info">
-                        <span class="item-name" v-bk-tooltips="template.templateName">{{ template.templateName }}</span>
-                        <span
-                            class="preview"
-                            @click="handlePreview(template)">
-                            {{ $t('预览') }} </span>
-                    </div>
-                </div>
-            </group-box>
+                </group-box>
+            </div>
         </div>
         <template-edit-dialog
             ref="templateApplyDialog"
@@ -296,8 +298,12 @@
         .template-list{
             height: calc(100% - 46px);
             padding-bottom: 10px;
-            overflow-y: auto;
-            @mixin scroller;
+           
+            .template-group-box {
+                height: calc(100% - 44px);
+                overflow-y: auto;
+                @mixin scroller;
+            }
         }
         .template-item {
             margin: 0 8px 16px 0;
