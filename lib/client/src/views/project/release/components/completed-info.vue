@@ -5,14 +5,14 @@
             <i v-if="deployStatus === 'failed'" class="bk-drag-icon bk-drag-close-circle-fill icon-failed"></i>
             <div class="deploy-about-operate">
                 <div class="deploy-type-info">
-                    <p>
+                    <p class="mr20">
                         <span v-html="getInfoTips(latestInfo,'running')"></span>
                     </p>
-                    <p>
+                    <p class="mr20">
                         <span>{{ $t('已耗时:') }}</span>
                         <span>{{totalTime}}</span>
                     </p>
-                    <p>
+                    <p class="mr20">
                         <span>{{ $t('操作人:') }}</span>
                         <span>{{createUser}}</span>
                     </p>
@@ -247,10 +247,10 @@
                     result = `${theTime}s`
                 }
                 if (middle > 0) {
-                    result = `${middle}m${result}s`
+                    result = `${middle}m${result}`
                 }
                 if (hour > 0) {
-                    result = `${hour}h${result}m`
+                    result = `${hour}h${result}`
                 }
 
                 return result
@@ -302,10 +302,13 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                width: 480px;
+                min-width: 480px;
                 border-right: 1px solid #C4C6CC;
                 margin-right: 20px;
                 padding-right: 20px;
+                .mr20 {
+                    margin-right: 20px;
+                }
         }
         }
     
