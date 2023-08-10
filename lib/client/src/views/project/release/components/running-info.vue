@@ -10,14 +10,14 @@
             </span>
             <div class="deploy-about-operate">
                 <div :class="['deploy-type-info', { 'deploy-type-line': deployStatus !== 'running' }]">
-                    <p>
+                    <p class="mr20">
                         <span v-html="getInfoTips(latestInfo, 'running')"></span>
                     </p>
-                    <p>
+                    <p class="mr20">
                         <span>{{$t('已耗时:')}}</span>
                         <span>{{ totalTime}}</span>
                     </p>
-                    <p>
+                    <p class="mr20">
                         <span>{{$t('操作人:')}}</span>
                         <span>{{createUser}}</span>
                     </p>
@@ -51,7 +51,7 @@
                     :latest-info="latestInfo"
                     v-if="isWatchDeploying || isDeploySuccess || isDeployFail || isDeployInterrupted || isDeployInterrupting">
                 </deploy-log>
-                <div class="pre-deploy-detail" v-else-if="!curTimeline">
+                <div class="pre-deploy-detail" v-else-if="curTimeline">
                     <div class="metadata-card" v-for="metadata of curTimeline.displayBlocks" :key="metadata.key">
                         <strong class="card-title">
                             {{metadata.name}}
@@ -256,8 +256,8 @@
                         deployId: this.deployId
                     })
                     this.logs = res.logs || []
-                    this.$emit('handleReleaseStatus', this.status)
                     this.status = res.status
+                    this.$emit('handleReleaseStatus', this.status)
                     this.logs.forEach(logItem => {
                         if (logItem.event === 'msg') {
                             const data = JSON.parse(logItem.data)
@@ -790,15 +790,16 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                width: 480px;
+                min-width: 480px;
                 margin-right: 20px;
-                padding-right: 20px;
+                .mr20 {
+                    margin-right: 20px;
+                }
+             }
+            .deploy-type-line  {
+                border-right: 1px solid #C4C6CC;
+            }
         }
-        .deploy-type-line  {
-            border-right: 1px solid #C4C6CC;
-        }
-    
-  }
     .log-content {
         height: 100%;
         min-height: 500px;
@@ -826,9 +827,7 @@
                 flex: 1;
                 background: #f5f6fa;
                 border-radius: 2px;
-                /* padding: 30px; */
                 margin-left: 20px;
-                /* max-width: 1050px; */
             }
 
             .metadata-card {

@@ -4239,5 +4239,7 @@
   "小鲸（BK-GPT）": "Small Whale (BK-GPT)",
   "发送": "Send",
   "内容正在执行中，请执行完成后再输入": "The content is being executed, please enter after execution",
-  "可以使用 ${函数参数} 获取函数参数值": "You can use ${function parameter} to get the value of a function parameter."
+  "可以使用 ${函数参数} 获取函数参数值": "You can use ${function parameter} to get the value of a function parameter.",
+  "{0}部署执行日志": "{0} deployment execution log",
+  "中": "middle"
 }

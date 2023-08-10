@@ -11,14 +11,18 @@
         <div class="deploy-view-operate">
             <i v-if="content" v-bk-tooltips="{ boundary: 'window', content: $t('复制') }" class="bk-drag-icon bk-drag-copy icon icon-copy"
                 @click="handleCodeCopy"></i>
-            <i v-bk-tooltips="{ boundary: 'window', content: $t('全屏') }" class="bk-drag-icon bk-drag-full-screen icon"
+            <i v-bk-tooltips="{ boundary: 'window', content: $t('全屏') }" class="bk-icon icon-full-screen icon"
                 @click="handleScreenfull"></i>
         </div>
     </div>
 </template>
 <script>
     import screenfull from 'screenfull'
+    import roundLoading from './deploy-timeline/round-loading'
     export default {
+        components: {
+            roundLoading
+        },
         props: {
             extCls: {
                 type: String,
@@ -95,7 +99,8 @@
                 color: #979BA5
                 }
             .icon-copy {
-                margin-right: 16px;
+                font-size: 14px;
+                margin-right: 14px;
                 }
             .deploy-timeline-loading {
                 line-height: 28px;
