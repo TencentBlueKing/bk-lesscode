@@ -7,11 +7,11 @@
             <div :class="$style['release-summary']">
                 <div :class="$style['title']">{{ $t('部署信息') }}</div>
                 <div :class="$style['release-info']">
-                    <span :class="$style['setting']">
+                    <span :class="$style['setting']" v-enClass="$style['en-setting']">
                         <span :class="$style['label']" v-bk-tooltips="bindInfoTips">{{ $t('绑定蓝鲸应用模块') }}</span>
                         <app-module-select ref="appModuleSelect" :class="$style['detail']"></app-module-select>
                     </span>
-                    <span :class="[$style['latest-info']]">
+                    <span :class="[$style['latest-info']]" v-enClass="$style['en-latest-info']">
                         <span :class="$style['label']">{{ $t('当前生产环境部署版本') }}</span>
                         <span v-if="prodInfo.version && !prodInfo.isOffline" :class="$style['detail']">
                             <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="{ content: getInfoTips(prodInfo), maxWidth: 400 }">
@@ -36,7 +36,7 @@
                             <span>{{ $t('未部署') }}</span>
                         </span>
                     </span>
-                    <span :class="[$style['latest-info']]">
+                    <span :class="[$style['latest-info']]" v-enClass="$style['en-latest-info']">
                         <span :class="$style['label']">{{ $t('当前预发布环境部署版本') }}</span>
                         <span v-if="stagInfo.version && !stagInfo.isOffline" :class="$style['detail']">
                             <span v-if="stagInfo.accessUrl" :class="$style['link-detail']">
@@ -59,8 +59,8 @@
                     </span>
                     
                     <div :class="[$style['operation'],{ [$style['seperate-line']]: currentAppInfo.appCode && currentAppInfo.moduleCode }]">
-                        <span :class="$style['offline-operate']" v-show="(stagInfo.version && !stagInfo.isOffline) || (prodInfo.version && !prodInfo.isOffline)">
-                            <bk-button :disabled="latestInfo.status === 'running'" :class="$style['offline-btn']" @click="toggleOffline(true)">
+                        <span :class="$style['offline-operate']" v-show="!(stagInfo.version && !stagInfo.isOffline) || (prodInfo.version && !prodInfo.isOffline)">
+                            <bk-button size="small" :disabled="latestInfo.status === 'running'" :class="$style['offline-btn']" @click="toggleOffline(true)">
                                 <i class="bk-drag-icon bk-drag-off-shelf"></i>
                                 <span>{{ $t('下架') }}</span>
                             </bk-button>
@@ -87,7 +87,7 @@
             <div :class="$style['release-content']">
                 <div :class="$style['title']">{{ $t('部署新版本') }}</div>
                 <section :class="$style['release-form-info']" v-if="!publishCom">
-                    <bk-alert :type="latestInfo.status === 'successful' ? 'success' : (latestInfo.status === 'failed' ? 'error' : 'info')" :class="$style['last-version-tips']" v-if="latestInfo.id">
+                    <bk-alert v-if="latestInfo.id" :type="latestInfo.status === 'successful' ? 'success' : (latestInfo.status === 'failed' ? 'error' : 'info')" :class="$style['last-version-tips']">
                         <div slot="title">
                             <span :class="$style['tips-content']">{{ $t('最近{0}版本：', [typeMap[latestInfo.isOffline]]) }}<span v-html="getInfoTips(latestInfo, 'last')"></span></span>
                             <span v-if="!latestInfo.isOffline" :class="$style['latest-log-link']" @click="showLog(latestInfo)">，{{ latestInfo.status === 'successful' ? $t('查看成功日志') : (latestInfo.status === 'failed' ? $t('查看失败日志') : $t('查看日志'))}}</span>
@@ -415,6 +415,7 @@
                 handler: function (val) {
                     if (val === 'running') {
                         this.checkDeployResult()
+                        this.publish = 'runningInfo'
                     } else {
                         this.timer && clearInterval(this.timer)
                     }
@@ -701,40 +702,48 @@
             box-shadow: 0 2px 4px 0 #1919290d;
             border-radius: 2px;
             padding: 24px;
-            .release-info{
+            .release-info {
                 display: flex;
                 align-items: center;
                 margin-top: 17px;
                 .label {
-                margin-right: 4px;
-                height: 26px;
-                font-size: 12px;
-                color: #979BA5;
-                line-height: 26px;
-            }
-            .info-tips {
-                color: orange;
-            }
-
-            .setting {
-                display: flex;
-                flex-direction: column;
-                margin-right: 80px;
-                color: #313238;
-            }
-            .latest-info {
-                display: flex;
-                flex-direction: column;
-                margin: 0 70px 0 40px;
-                max-width: 358px;
-                .link-detail a {
-                    margin-right: 6px;
-                    cursor: pointer;
-                    color: #3a84ff;
-                    &:hover {
-                    border-bottom: solid 1px #3a84ff
+                    margin-right: 4px;
+                    height: 26px;
+                    font-size: 12px;
+                    color: #979BA5;
+                    line-height: 26px;
+                    white-space: nowrap;
+                }
+                .info-tips {
+                    color: orange;
+                }
+                .setting {
+                        display: flex;
+                        flex-direction: column;
+                        margin-right: 80px;
+                        color: #313238;
                     }
+                .en-setting {
+                    margin-right: 0;
+                    width: 260px;
+                }
+                .latest-info {
+                    display: flex;
+                    flex-direction: column;
+                    margin: 0 70px 0 40px;
+                    max-width: 358px;
+                        .link-detail a {
+                            margin-right: 6px;
+                            cursor: pointer;
+                            color: #3a84ff;
+                            &:hover {
+                                 border-bottom: solid 1px #3a84ff
+                        }
                     }
+                }
+                .en-latest-info {
+                    margin:0;
+                    width: 370px;
                 }
             .operation{
                 display: flex;
@@ -756,6 +765,7 @@
                 border-radius: 2px;
                 padding: 0 8px 0 12px;
                 color: #63656E;
+                white-space: nowrap;
                 .icon-size {
                     font-size: 18px;
                     margin-left: 4px;
@@ -767,6 +777,7 @@
             .offline-operate {
                 .offline-btn {
                     margin-right: 20px;
+                    height: 28px;
                 }
             }
             .detail {
@@ -787,9 +798,10 @@
             .release-form-info  {
                 .last-version-tips {
                     margin-bottom: 16px;
-                    width: 700px;
                     min-height: 32px;
                     font-size: 12px;
+                    min-width: 700px;
+                    width: fit-content;
                     .tips-icon {
                         color: #3a84ff;
                         margin: 0 10px;
