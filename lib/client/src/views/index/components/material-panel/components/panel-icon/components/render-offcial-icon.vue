@@ -1,10 +1,10 @@
 <template>
-    <div class="render-official-icon">
+    <div class="lesscode-materials-panel-content">
         <search-box
             :placeholder="$t('图标名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
-        <div class="render-icon-list">
+        <div class="materials-group-box-list">
             <group-box
                 v-for="(componentList, groupName) in renderGroupIconMap"
                 :key="groupName"
@@ -85,15 +85,3 @@
         }
     }
 </script>
-<style lang="postcss" scoped>
-    @import "@/css/mixins/scroller";
-
-    .render-official-icon {
-        height: 100%;
-        .render-icon-list {
-            height: calc(100% - 44px);
-            overflow-y: auto;
-            @mixin scroller;
-        }
-    }
-</style>

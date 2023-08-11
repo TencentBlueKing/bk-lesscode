@@ -1,10 +1,10 @@
 <template>
-    <div class="render-base-component">
+    <div class="lesscode-materials-panel-content">
         <search-box
             :placeholder="$t('组件名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
-        <div class="base-component-list">
+        <div class="materials-group-box-list">
             <group-box
                 v-for="(comList, groupName) in renderGroupComponentMap"
                 :key="groupName"
@@ -133,15 +133,3 @@
         }
     }
 </script>
-<style lang="postcss" scoped>
-    @import "@/css/mixins/scroller";
-
-    .render-base-component {
-        height: 100%;
-        .base-component-list {
-            height: calc(100% - 44px);
-            overflow-y: auto;
-            @mixin scroller;
-        }
-    }
-</style>

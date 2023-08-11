@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <section class="panel-template" v-bkloading="{ isLoading }">
+    <section class="lesscode-materials-panel-content panel-template" v-bkloading="{ isLoading }">
         <select-tab
             :tab-list="tabList"
             :current="tab"
@@ -22,7 +22,7 @@
                 :list="renderTemplateList"
                 :placeholder="$t('模板名称')"
                 @on-change="handleSearchChange" />
-            <div class="template-group-box">
+            <div class="materials-group-box-list">
                 <group-box
                     v-for="(group) in renderGroupTemplateList"
                     :list="group.list"
@@ -287,11 +287,9 @@
     }
 </script>
 <style lang="postcss" scoped>
-    @import "@/css/mixins/scroller";
 
     .panel-template{
         min-height: 100%;
-        height: 100%;
         .search-box {
             padding: 6px 12px;
         }
@@ -299,11 +297,6 @@
             height: calc(100% - 46px);
             padding-bottom: 10px;
            
-            .template-group-box {
-                height: calc(100% - 44px);
-                overflow-y: auto;
-                @mixin scroller;
-            }
         }
         .template-item {
             margin: 0 8px 16px 0;

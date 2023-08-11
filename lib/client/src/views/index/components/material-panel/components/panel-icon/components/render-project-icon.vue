@@ -1,5 +1,5 @@
 <template>
-    <div class="render-project-icon">
+    <div class="lesscode-materials-panel-content">
         <template v-if="!iconList.length">
             <bk-exception
                 class="project-icon-empty"
@@ -13,7 +13,7 @@
                 :placeholder="$t('图标名称')"
                 :list="searchList"
                 @on-change="handleSearchChange" />
-            <div class="render-icon-list">
+            <div class="materials-group-box-list">
                 <group-box
                     v-for="(componentList, groupName) in renderGroupIconMap"
                     :key="groupName"
@@ -132,7 +132,6 @@
     }
 </script>
 <style lang="postcss" scoped>
-    @import "@/css/mixins/scroller";
 
     .project-icon-empty {
         font-size: 12px;
@@ -141,13 +140,5 @@
             color: #3A84FF;
         }
     }
-    .render-project-icon {
-        height: 100%;
-        .render-icon-list {
-            height: calc(100% - 44px);
-            overflow-y: auto;
-            @mixin scroller;
-        }
-    }
-    
+
 </style>
