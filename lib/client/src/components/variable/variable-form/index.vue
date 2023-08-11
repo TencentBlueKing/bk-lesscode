@@ -59,7 +59,7 @@
                 </lc-form-item>
                 <lc-form-item :label="$t('form_生效范围')" :required="true" property="effectiveRange" error-display-type="normal">
                     <bk-radio-group v-model="copyForm.effectiveRange">
-                        <bk-radio :value="0" class="range-radio" :disabled="copyForm.valueType === 6">{{$t('本应用')}}</bk-radio>
+                        <bk-radio :value="0" class="range-radio" :disabled="copyForm.valueType === 6 || !pageId">{{$t('本应用')}}</bk-radio>
                         <bk-radio :value="1" v-if="pageId">{{$t('本页面')}}</bk-radio>
                     </bk-radio-group>
                 </lc-form-item>
