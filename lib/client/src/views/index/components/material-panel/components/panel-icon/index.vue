@@ -7,7 +7,7 @@
             :change-tab="handleChangeTab"
         >
         </select-tab>
-        <div class="drag-component-list">
+        <div :class="isExternal ? 'only-official-icon' : 'drag-component-list' ">
             <component :is="com" :icon-type="tab" />
         </div>
     </div>
@@ -63,18 +63,18 @@
 </script>
 <style lang="postcss" scoped>
     @import "@/css/mixins/ellipsis";
-    @import "@/css/mixins/scroller";
 
-    .panel-component{
+    .panel-component {
         height: 100%;
-        .search-box{
+        .search-box {
             padding: 6px 12px;
         }
-        .drag-component-list{
+        .drag-component-list {
             height: calc(100% - 42px);
             padding-bottom: 10px;
-            overflow-y: auto;
-            @mixin scroller;
+        }
+        .only-official-icon {
+            height: 100%;
         }
     }
 </style>

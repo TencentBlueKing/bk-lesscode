@@ -1,5 +1,5 @@
 <template>
-    <div class="render-icon">
+    <div class="lesscode-materials-panel-content">
         <template v-if="!iconList.length">
             <bk-exception
                 class="project-icon-empty"
@@ -13,16 +13,18 @@
                 :placeholder="$t('图标名称')"
                 :list="searchList"
                 @on-change="handleSearchChange" />
-            <group-box
-                v-for="(componentList, groupName) in renderGroupIconMap"
-                :key="groupName"
-                :list="componentList"
-                :group-name="groupName">
-                <render-icon
-                    v-for="component in componentList"
-                    :key="component.name"
-                    :data="component" />
-            </group-box>
+            <div class="materials-group-box-list">
+                <group-box
+                    v-for="(componentList, groupName) in renderGroupIconMap"
+                    :key="groupName"
+                    :list="componentList"
+                    :group-name="groupName">
+                    <render-icon
+                        v-for="component in componentList"
+                        :key="component.name"
+                        :data="component" />
+                </group-box>
+            </div>
         </template>
     </div>
 </template>
@@ -130,6 +132,7 @@
     }
 </script>
 <style lang="postcss" scoped>
+
     .project-icon-empty {
         font-size: 12px;
         .to-icon-link {
@@ -137,4 +140,5 @@
             color: #3A84FF;
         }
     }
+
 </style>

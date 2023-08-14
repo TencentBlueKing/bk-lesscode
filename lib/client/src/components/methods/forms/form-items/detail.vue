@@ -486,6 +486,9 @@
 <style lang="postcss" scoped>
     .func-detail {
         position: relative;
+        /deep/ .bk-checkbox-text {
+            font-size: 12px;
+        }
     }
     .func-temp {
         width: 140px;
