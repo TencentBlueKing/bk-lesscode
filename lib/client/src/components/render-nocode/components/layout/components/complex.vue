@@ -36,7 +36,7 @@
                             'theme-item': !isDefaultTopTheme,
                             'item-active': topMemu.pageCode === navActive
                         }"
-                        :style="getActiveItemStyle(topMemu.pageCode)"
+                        :style="getActiveItemStyle(topMemu)"
                         @click.stop="handleTopMenuSelect(topMemu)">
                         {{topMemu.name}}
                     </div>
@@ -369,15 +369,20 @@
                     panelActive: 'base'
                 })
             },
-            getActiveItemStyle (code) {
+            getActiveItemStyle (menu) {
                 const defaultColor = this.isDefaultTopTheme
                     ? TOP_DEFAULT_COLOR : this.isWhiteTopTheme
                         ? SIDE_DEFAULT_NORMAL_COLOR : SIDE_NORMAL_DEFAULT_COLOR
+                const isActive = this.checkMenuActive(menu)
                 return {
-                    '--color': code === this.navActive ? this.topActiveTheme : defaultColor,
-                    '--hover-color': code === this.navActive ? this.topActiveTheme : this.defaultHoverTheme,
+                    '--color': isActive ? this.topActiveTheme : defaultColor,
+                    '--hover-color': isActive ? this.topActiveTheme : this.defaultHoverTheme,
                     opacity: 1
                 }
+            },
+            checkMenuActive (item) {
+                const childCodes = (item.children || []).map(child => child.pageCode)
+                return item.pageCode === this.navActive || childCodes.indexOf(this.navActive) !== -1
             }
         }
     }
