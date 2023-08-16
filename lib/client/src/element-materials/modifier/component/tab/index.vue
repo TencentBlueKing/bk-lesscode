@@ -1,5 +1,5 @@
 <template>
-    <section v-if="isShow" class="modifier-tab">
+    <section v-if="isShow && isSearch" class="modifier-tab">
         <div class="slot-title">{{ $t('tab选项配置：') }}</div>
         <vue-draggable
             class="group-list"
@@ -54,7 +54,14 @@
 
 <script>
     import LC from '@/element-materials/core'
+    import { encodeRegexp } from '../../component/utils'
     export default {
+        props: {
+            keyword: {
+                type: String,
+                default: ''
+            }
+        },
         data () {
             return {
                 isShow: false,
@@ -75,6 +82,12 @@
                         name: 'tab3'
                     }
                 ]
+            }
+        },
+        computed: {
+            isSearch () {
+                const res = new RegExp(encodeRegexp(this.keyword), 'i')
+                return res.test(window.i18n.t('tab选项配置：'))
             }
         },
         created () {
