@@ -20,6 +20,8 @@
     import html2canvas from 'html2canvas'
     import { checkAccuracy } from '@/components/flow-form-comp/form/util/index.js'
 
+    import useCanvaseLock from '@/views/index/components/header-operate/common/use-canvas-lock'
+
     import { bus } from '@/common/bus'
     export default {
         props: {
@@ -31,7 +33,8 @@
         data () {
             return {
                 loading: false,
-                isLocked: false,
+                // bknotify返回实例
+                notifyInst: null,
                 item: {
                     icon: 'bk-drag-icon bk-drag-save',
                     text: window.i18n.t('保存'),
@@ -54,6 +57,41 @@
             isLoading () {
                 return this.customLoading || this.loading
             }
+        },
+        created () {
+            const {
+                check: canvasLockCheck,
+                notify: canvasLockNotify,
+                update: canvaseLockUpdate
+            } = useCanvaseLock()
+            
+            // 检测页面的可编辑状态
+            canvasLockCheck()
+                .then(data => {
+                    if (data.isLock) {
+                        this.notifyInst = canvasLockNotify({
+                            type: 'lock',
+                            render: this.$createElement,
+                            ...data
+                        })
+                    } else {
+                        canvaseLockUpdate()
+                    }
+                })
+        },
+        mounted () {
+            const {
+                relase: canvasLockRelase
+            } = useCanvaseLock()
+            window.addEventListener('unload', canvasLockRelase)
+        },
+        beforeDestroy () {
+            const {
+                relase: canvasLockRelase
+            } = useCanvaseLock()
+            canvasLockRelase()
+            this.notifyInst && this.notifyInst.close()
+            this.notifyInst = null
         },
         methods: {
             async handleSubmit () {
