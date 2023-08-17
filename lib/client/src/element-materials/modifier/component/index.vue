@@ -23,7 +23,7 @@
                 <bk-input
                     ext-cls="props-search-input"
                     right-icon="bk-icon icon-search"
-                    placeholder="请输入关键属性"
+                    :placeholder="$t('请输入属性名称')"
                     v-model="keyword"
                     :clearable="true" />
             </div>
