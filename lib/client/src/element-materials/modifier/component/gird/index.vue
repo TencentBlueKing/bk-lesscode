@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isShow" class="modifier-grid">
+    <div v-if="isShow && isSearch" class="modifier-grid">
         <style-layout :title="$t('列宽度配置')"
             :tips="`<p>${$t('每一列栅格宽度占比为')}</p><p>${$t('该列配置值占总列配置值的百分比')}</p><p>${$t('如总共有3列，值分别为1，2，1')}</p><p>${$t('则这三列的宽度分别为整行宽度的1/4，1/2，1/4')}</p>`">
             <div class="column-list">
@@ -40,11 +40,18 @@
     import LC from '@/element-materials/core'
     import StyleLayout from '@/element-materials/modifier/component/styles/layout/index'
     import { accAdd, accSub } from '@/common/util'
+    import { encodeRegexp } from '../../component/utils'
 
     export default {
         name: '',
         components: {
             StyleLayout
+        },
+        props: {
+            keyword: {
+                type: String,
+                default: ''
+            }
         },
         data () {
             return {
@@ -62,6 +69,12 @@
                     96, 97, 98, 99, 100, 101, 102, 103, 104, 105, // 小键盘0-9
                     109, 110 // 小键盘 - .
                 ]
+            }
+        },
+        computed: {
+            isSearch () {
+                const res = new RegExp(encodeRegexp(this.keyword), 'i')
+                return res.test(window.i18n.t('列宽度配置'))
             }
         },
         created () {

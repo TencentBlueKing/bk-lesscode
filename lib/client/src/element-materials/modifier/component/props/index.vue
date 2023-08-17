@@ -11,7 +11,7 @@
 
 <template>
     <div v-if="hasMaterialConfig">
-        <template v-for="(item, key) in propsConfig">
+        <template v-for="(item, key) in filterPropsConfig">
             <render-prop
                 v-if="item.type !== 'hidden'"
                 :component-type="componentType"
@@ -20,7 +20,7 @@
                 :last-value="lastProps[key]"
                 :name="key"
                 :key="key"
-                :syncSlot="syncSlot"
+                :sync-slot="syncSlot"
                 @on-change="handleChange" />
         </template>
     </div>
@@ -31,11 +31,38 @@
     import LC from '@/element-materials/core'
     import RenderProp from './components/render-prop'
     import useDatasource from '@/hooks/use-datasource'
+    import { encodeRegexp } from '../../component/utils'
+
+    // 属性类型转为该变量接受的值类型
+    const getPropValueType = (type) => {
+        const valueMap = {
+            'size': 'string',
+            'text': 'string',
+            'paragraph': 'string',
+            'html': 'string',
+            'json': 'object',
+            'icon': 'string',
+            'van-icon': 'string',
+            'float': 'number',
+            'src': 'string',
+            'srcset': 'array',
+            // 老数据存在 type = 'hidden' 但是值是 object 的情况
+            'hidden': 'object',
+            'pagination': 'object'
+        }
+        return valueMap[type] || type
+    }
 
     export default {
         name: 'modifier-prop',
         components: {
             RenderProp
+        },
+        props: {
+            keyword: {
+                type: String,
+                default: ''
+            }
         },
         data () {
             return {
@@ -46,12 +73,21 @@
         computed: {
             hasMaterialConfig () {
                 let count = 0
-                Object.keys(this.propsConfig).forEach(propName => {
-                    if (this.propsConfig[propName]?.type !== 'hidden') {
+                Object.keys(this.filterPropsConfig).forEach(propName => {
+                    if (this.filterPropsConfig[propName]?.type !== 'hidden') {
                         count++
                     }
                 })
                 return count > 0
+            },
+            filterPropsConfig () {
+                const reg = new RegExp(encodeRegexp(this.keyword), 'i')
+                return Object.keys(this.propsConfig).filter(propName => {
+                    return reg.test(propName + (typeof this.propsConfig[propName].type === 'string' ? `(${getPropValueType(this.propsConfig[propName].type)})` : ''))
+                }).reduce((result, key) => {
+                    result[key] = this.propsConfig[key]
+                    return result
+                }, {})
             }
         },
         created () {
