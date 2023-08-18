@@ -3,7 +3,7 @@
         <div class="left-panel">
             <menu-header :has-mobile-page="hasMobilePage"></menu-header>
             <div class="menu-container">
-                <div class="platform" v-if="hasMobilePage">
+                <div class="platform">
                     <div class="platform-tab">
                         <select-tab :tab-list="platformList" :active-item="platformActive" :item-change="handleSelectPlatform" active-color="#3a84ff" />
                     </div>
@@ -16,7 +16,7 @@
                         :list="renderList"
                         :reset-keyword-on-change-list="false"
                         @on-change="handleSearch" />
-                    <create-page-entry :framework="projectDetail.framework"/>
+                    <create-page-entry :framework="projectDetail.framework" />
                 </div>
             </div>
             <div class="menu-content">

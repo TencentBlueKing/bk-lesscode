@@ -456,7 +456,6 @@
             position: relative;
             width: var(--aside-width);
             height: 100%;
-            border-right: 1px solid #DCDEE5;
             background: #0E1525;
             float: left;
             z-index: 1;
