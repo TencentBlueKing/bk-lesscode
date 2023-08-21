@@ -2,7 +2,7 @@
     <section class="sql-query">
         <monaco
             language="sql"
-            height="500"
+            height="530"
             class="sql-editor"
             :value="sql"
             @change="handleSqlChange"
