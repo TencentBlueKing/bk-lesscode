@@ -3871,5 +3871,6 @@
   "可以使用 ${函数参数} 获取函数参数值": "You can use ${function parameter} to get the value of a function parameter.",
   "{0}部署执行日志": "{0} deployment execution log",
   "中": "middle",
-  "请输入属性名称": "Please enter a property name"
+  "请输入属性名称": "Please enter a property name",
+  "移动端侧边导航配置": "Mobile Side Navigation Configuration"
 }

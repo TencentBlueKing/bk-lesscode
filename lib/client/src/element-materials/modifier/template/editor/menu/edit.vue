@@ -34,7 +34,7 @@
                         <bk-input
                             :value="baseInfo.query"
                             :placeholder="paramsPlaceholder"
-                            @change="handlePageQueryChange" />   
+                            @change="handlePageQueryChange" />
                     </section>
                     
                     <bk-button
@@ -273,9 +273,20 @@
                 this.triggerChange()
             },
             handlePageCodeChange (pageCode) {
-                const { fullPath } = this.pageRouteList.find(item => item.pageCode === pageCode)
+                if (!pageCode) { // 如果清空表单，路由重置
+                    this.resetBaseInfo()
+                    return
+                }
+                const { fullPath, pageId } = this.pageRouteList.find(item => item.pageCode === pageCode)
                 this.baseInfo.pageCode = pageCode
+                this.baseInfo.pageId = pageId
                 this.baseInfo.fullPath = fullPath
+                this.triggerChange()
+            },
+            resetBaseInfo () {
+                this.baseInfo.pageCode = ''
+                this.baseInfo.fullPath = ''
+                this.baseInfo.pageId = ''
                 this.triggerChange()
             },
             handleShowEditPageQuery () {
