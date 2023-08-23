@@ -11,28 +11,33 @@
 
 import { defineComponent } from '@vue/composition-api'
 import { VNode } from 'vue'
-import mobileBaseTemplate from './mobile-base-template'
+import menuLayout from '../top-menu/base-menu-template'
 
 export default defineComponent({
     components: {
-        mobileBaseTemplate
+        menuLayout
     },
     props: {
-        menuList: Array
+        menuList: Array,
+        showIcon: Boolean,
+        title: String
     },
     setup (props, { emit }) {
         const changeHandler = (key, value) => {
-            emit('on-change', key, value)
+            emit('change', key, value)
         }
         return { changeHandler }
     },
     render (): VNode {
         return (
-            <mobileBaseTemplate
-                onChange={this.changeHandler}
+            <menuLayout
                 menuList={this.menuList}
-                title={window.i18n.t('移动端导航配置')}
-                show-icon={true}></mobileBaseTemplate>
+                menuKey="menuList"
+                show-icon={this.showIcon}
+                has-child={false}
+                platform="MOBILE"
+                headerTitle={this.title}
+                onChange={this.changeHandler}></menuLayout>
         )
     }
 })
