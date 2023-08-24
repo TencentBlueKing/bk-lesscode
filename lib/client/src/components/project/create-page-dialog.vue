@@ -19,7 +19,7 @@
                     <span class="main-title">{{pageTitle}}</span>
                 </div>
                 <bk-form ref="templateForm" :label-width="300" :rules="formRules" :model="formData" form-type="vertical" class="create-page-form new-ui-form">
-                    <bk-form-item v-if="createFromTemplate" :label="$t('form_当前已选模板')" property="templateName" 
+                    <bk-form-item v-if="createFromTemplate" :label="$t('form_当前已选模板')" property="templateName"
                         error-display-type="normal" :desc="$t('如需模板请从右侧选择，不选则默认创建空白页面')">
                         <bk-input readonly v-model.trim="selectTemplate.templateName"
                             :placeholder="$t('如需模板请从右侧选择，不选则默认创建空白页面')">

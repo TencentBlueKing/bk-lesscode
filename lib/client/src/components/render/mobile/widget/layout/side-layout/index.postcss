@@ -1,15 +1,11 @@
-.mobile-tabbar-layout-wrapper {
+.mobile-sidebar-layout-wrapper {
     height: 100%;
+    display: flex;
     :global(.lesscode-editor-layout) {
         min-height: auto;
     }
-    .van-tabbar {
-        position: absolute;
-    }
-    .tabbar-item-wrapper {
+    .sidebar-item-wrapper {
         width: 100%;
-        display: flex;
-        box-sizing: content-box;
         border: 1px  solid transparent;
         z-index: 2;
         cursor: pointer;
@@ -18,10 +14,15 @@
         }
         &:global(.selected) {
             border: 1px solid #3a84ff;
+        } {
+            border: 1px solid #3a84ff;
         }
-        .van-tabbar-item {
+        .van-sidebar-item {
             pointer-events: none;
         }
+    }
+    .sidebar-edit-area-wrapper {
+        flex: 1;
     }
 }
 
