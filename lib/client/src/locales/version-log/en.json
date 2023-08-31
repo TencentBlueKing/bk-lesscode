@@ -399,5 +399,12 @@
   "预览: 修复移动端模板预览未在手机背景中预览问题": "Preview: fix the problem that the template preview on the mobile terminal is not previewed in the background of the mobile phone.",
   "预览: 图标大小预览时不生效问题、exception组件预览时不居中问题": "Preview: fhe problem that the icon size does not take effect when previewing, and the problem that the exception component is not centered when previewing.",
   "流程 & 表单：流程管理页区分预览、i节点增加调用调试功能预发布、生产环境流程记录": "Flow & form: flow management page differentiated preview, i-node added call debugging function Staging, Production Env flow record.",
-  "画布: 新增": "Canvas: new"
+  "画布: 新增": "Canvas: new",
+  "应用: 应用支持归档": "APP: APP supports archiving",
+  "应用: 发布部署模块页面重构": "APP: refactor deployment module page",
+  "移动端: 新增侧边导航": "Mobile: add side navigation",
+  "画布: 页面内置边距回显到页面样式的padding属性": "Canvas: page built-in padding echoes to page style padding property",
+  "画布: 组件属性面板支持搜索": "Canvas: component property panel supports search",
+  "画布: 当页面模板中含有tab组件时，应用页面模板失败": "Canvas: APP page template fails when there are tab components in the page template",
+  "应用: 国际化相关样式修复": "APP: fix internationalization-related styles"
 }
