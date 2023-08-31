@@ -163,7 +163,6 @@
     "md5": "^2.3.0",
     "moment": "^2.29.1",
     "mysql2": "~2.3.3",
-    "neat-csv": "^7.0.0",
     "node-request-context": "~1.0.5",
     "node-sql-parser": "^4.5.1",
     "nodemon": "~1.19.3",
