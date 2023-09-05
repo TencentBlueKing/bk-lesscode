@@ -25,6 +25,7 @@
     import RenderComplexTop from './complex-top'
     import RenderComplexSide from './complex-side'
     import RenderMobileBottomMenu from './mobile-tab-bar'
+    import RenderMobileSideMenu from './mobile-side-menu'
     import store from '@/store'
     import LC from '@/element-materials/core'
 
@@ -35,7 +36,8 @@
         helpMenu: RenderHelpMenu,
         complexTop: RenderComplexTop,
         complexSide: RenderComplexSide,
-        mobileBottomMenu: RenderMobileBottomMenu
+        mobileBottomMenu: RenderMobileBottomMenu,
+        mobileSideMenu: RenderMobileSideMenu
     }
 
     export default {
@@ -60,7 +62,7 @@
                 return this.templateData.panelActive === 'complexSide'
             },
             isMobileLayout () {
-                return this.templateData.panelActive === 'mobileBottomMenu'
+                return ['mobileBottomMenu', 'mobileSideMenu'].includes(this.templateData.panelActive)
             },
             isVue3 () {
                 return store.getters['project/currentProject']?.framework === 'vue3'

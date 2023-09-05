@@ -11,7 +11,7 @@
 
 import { defineComponent } from '@vue/composition-api'
 import { VNode } from 'vue'
-import mobileBaseTemplate from './mobile-base-template'
+import mobileBaseTemplate from '../mobile-tab-bar/mobile-base-template'
 
 export default defineComponent({
     components: {
@@ -31,8 +31,8 @@ export default defineComponent({
             <mobileBaseTemplate
                 onChange={this.changeHandler}
                 menuList={this.menuList}
-                title={window.i18n.t('移动端导航配置')}
-                show-icon={true}></mobileBaseTemplate>
+                title={window.i18n.t('移动端侧边导航配置')}
+                show-icon={false}></mobileBaseTemplate>
         )
     }
 })

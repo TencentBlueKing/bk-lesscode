@@ -3875,5 +3875,6 @@
   "是否打开新窗口": "Whether to open a new window",
   "窗口": "window",
   "默认菜单": "default menu",
-  "帮助菜单配置": "Help menu configuration"
+  "帮助菜单配置": "Help menu configuration",
+  "移动端侧边导航配置": "Mobile Side Navigation Configuration"
 }
