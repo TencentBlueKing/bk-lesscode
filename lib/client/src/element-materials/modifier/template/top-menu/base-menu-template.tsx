@@ -12,7 +12,7 @@
 import { defineComponent, ref, watch } from '@vue/composition-api'
 import { VNode } from 'vue'
 import MenuItem from '../editor/menu/index.vue'
-import { generatorMenu } from '../../../../../../shared/util'
+import { generatorMenu, generatorHelpMenu } from '../../../../../../shared/util'
 import './base-menu-template.css'
 
 export default defineComponent({
@@ -35,6 +35,14 @@ export default defineComponent({
         draggableName: {
             type: String,
             default: 'top-col'
+        },
+        titleName: {
+            type: String,
+            default: window.i18n.t('导航菜单')
+        },
+        hasBlank: {
+            type: Boolean,
+            default: false
         }
     },
   
@@ -59,7 +67,11 @@ export default defineComponent({
         }
         
         const handleAdd = () => {
-            localMenuList.value.push(props.platform === 'PC' ? generatorMenu() : generatorMenu('apps-o'))
+            if (props.menuKey === 'topMenuList') {
+                localMenuList.value.push(props.platform === 'PC' ? generatorMenu() : generatorMenu('apps-o'))
+            } else if (props.menuKey === 'helpMenuList') {
+                localMenuList.value.push(generatorHelpMenu())
+            }
             triggerChange()
         }
       
@@ -97,7 +109,7 @@ export default defineComponent({
                             close: !this.showContent
                         }}
                     ></i>
-                    <span>{ this.$t('导航菜单') }</span>
+                    <span> { this.titleName }</span>
                 </div>
                 {this.showContent && <div>
                     <div class="menu-wrapper">
@@ -117,6 +129,7 @@ export default defineComponent({
                                     onOn-change={(value) => this.handleChange(value, index)}
                                     show-icon={this.showIcon}
                                     has-child={this.hasChild}
+                                    has-blank={this.hasBlank}
                                     platform={this.platform}>
                                 </menu-item>))}
                             </transition-group>

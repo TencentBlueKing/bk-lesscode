@@ -21,6 +21,7 @@
     import RenderInfo from './info'
     import RenderMenu from './side-menu/index.tsx'
     import RenderTopMenu from './top-menu/index.tsx'
+    import RenderHelpMenu from './help-menu/index.tsx'
     import RenderComplexTop from './complex-top'
     import RenderComplexSide from './complex-side'
     import RenderMobileBottomMenu from './mobile-tab-bar'
@@ -31,6 +32,7 @@
         info: RenderInfo,
         menu: RenderMenu,
         topMenu: RenderTopMenu,
+        helpMenu: RenderHelpMenu,
         complexTop: RenderComplexTop,
         complexSide: RenderComplexSide,
         mobileBottomMenu: RenderMobileBottomMenu
