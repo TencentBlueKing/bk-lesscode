@@ -20,6 +20,7 @@
     import LayoutSetting from '@/element-materials/modifier/template'
     import contentWidthMixin from '../content-width-mixin'
     import { mapGetters } from 'vuex'
+    import { uuid } from '@/common/util'
 
     export default {
         name: 'markdown',
@@ -86,10 +87,11 @@
         },
         methods: {
             uploadImg (pos, $file) {
+                const extension = $file._name?.split('.')?.pop()
                 // 将图片上传到服务器
                 const data = {
                     fileObj: {
-                        name: $file._name,
+                        name: uuid() + '.' + extension,
                         content: $file.miniurl
                     },
                     projectId: this.$route.params.projectId

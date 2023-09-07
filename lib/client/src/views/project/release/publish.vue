@@ -5,204 +5,219 @@
         </bk-alert>
         <section v-show="!isLoading" :class="$style['release-container']">
             <div :class="$style['release-summary']">
-                <span :class="$style['setting']">
-                    <span :class="$style['label']"><span v-bk-tooltips="{ content: bindInfoTips, maxWidth: 400 }" :class="$style['bind-label']">{{ $t('绑定蓝鲸应用模块') }}</span>：</span>
-                    <app-module-select ref="appModuleSelect"></app-module-select>
-                </span>
-                <span :class="[$style['latest-info']]">
-                    <span :class="$style['label']">{{ $t('当前生产环境部署版本：') }}</span>
-                    <span v-if="prodInfo.version && !prodInfo.isOffline">
-                        <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="{ content: getInfoTips(prodInfo), maxWidth: 400 }">
-                            <a target="_blank" :href="prodInfo.accessUrl">
+                <div :class="$style['title']">{{ $t('部署信息') }}</div>
+                <div :class="$style['release-info']">
+                    <span :class="$style['setting']" v-enClass="$style['en-setting']">
+                        <span :class="$style['label']" v-bk-tooltips="bindInfoTips">{{ $t('绑定蓝鲸应用模块') }}</span>
+                        <app-module-select ref="appModuleSelect" :class="$style['detail']"></app-module-select>
+                    </span>
+                    <span :class="[$style['latest-info']]" v-enClass="$style['en-latest-info']">
+                        <span :class="$style['label']">{{ $t('当前生产环境部署版本') }}</span>
+                        <span v-if="prodInfo.version && !prodInfo.isOffline" :class="$style['detail']">
+                            <span v-if="prodInfo.accessUrl" :class="$style['link-detail']" v-bk-tooltips.top="{ content: getInfoTips(prodInfo), maxWidth: 400 }">
+                                <a target="_blank" :href="prodInfo.accessUrl">
+                                    {{ prodInfo.version }}
+                                    <i class="bk-drag-icon bk-drag-jump-link"></i>
+                                </a>
+                                <a v-if="prodInfo.mobileUrl" href="javascript:;" @click="copy(prodInfo.accessUrl + prodInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
+                                    <i class="bk-drag-icon bk-drag-mobilephone"> </i>
+                                </a>
+                            </span>
+                            <span v-else>
                                 {{ prodInfo.version }}
-                                <i class="bk-drag-icon bk-drag-jump-link"></i>
-                            </a>
-                            <a v-if="prodInfo.mobileUrl" href="javascript:;" @click="copy(prodInfo.accessUrl + prodInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
-                                <i class="bk-drag-icon bk-drag-mobilephone"> </i>
-                            </a>
+                            </span>
+                            <span v-if="prodInfo.isDefault">,
+                                <span v-if="prodInfo.marketPublished">{{ $t('已发布至市场') }}</span>
+                                <span v-else>{{ $t('未发布至市场,') }}<a :href="`${createLinkUrl}/apps/${currentAppInfo.appCode}/market`" target="_blank" style="cursor: pointer;color: #3a84ff">{{ $t('去设置') }}</a></span>
+                            </span>
                         </span>
-                        <span v-else>
-                            {{ prodInfo.version }}
-                        </span>
-                        <span v-if="prodInfo.isDefault">,
-                            <span v-if="prodInfo.marketPublished">{{ $t('已发布至市场') }}</span>
-                            <span v-else>{{ $t('未发布至市场,') }}<a :href="`${createLinkUrl}/apps/${currentAppInfo.appCode}/market`" target="_blank" style="cursor: pointer;color: #3a84ff">{{ $t('去设置') }}</a></span>
+                        <span v-else :class="$style['detail']">
+                            <i :class="$style['info-tips']" class="bk-drag-icon bk-drag-info-tips"></i>
+                            <span>{{ $t('未部署') }}</span>
                         </span>
                     </span>
-                    <span v-else>
-                        <i :class="$style['info-tips']" class="bk-drag-icon bk-drag-info-tips"></i>
-                        <span>{{ $t('未部署') }}</span>
-                    </span>
-                </span>
-
-                <span :class="[$style['latest-info']]">
-                    <span :class="$style['label']">{{ $t('当前预发布环境部署版本：') }}</span>
-                    <span v-if="stagInfo.version && !stagInfo.isOffline">
-                        <span v-if="stagInfo.accessUrl" :class="$style['link-detail']">
-                            <a target="_blank" :href="stagInfo.accessUrl" v-bk-tooltips.top="getInfoTips(stagInfo)">
+                    <span :class="[$style['latest-info']]" v-enClass="$style['en-latest-info']">
+                        <span :class="$style['label']">{{ $t('当前预发布环境部署版本') }}</span>
+                        <span v-if="stagInfo.version && !stagInfo.isOffline" :class="$style['detail']">
+                            <span v-if="stagInfo.accessUrl" :class="$style['link-detail']">
+                                <a target="_blank" :href="stagInfo.accessUrl" v-bk-tooltips.top="getInfoTips(stagInfo)">
+                                    {{ stagInfo.version }}
+                                    <i class="bk-drag-icon bk-drag-jump-link"></i>
+                                </a>
+                                <a v-if="stagInfo.mobileUrl" href="javascript:;" @click="copy(stagInfo.accessUrl + stagInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
+                                    <i class="bk-drag-icon bk-drag-mobilephone"> </i>
+                                </a>
+                            </span>
+                            <span v-else>
                                 {{ stagInfo.version }}
-                                <i class="bk-drag-icon bk-drag-jump-link"></i>
-                            </a>
-                            <a v-if="stagInfo.mobileUrl" href="javascript:;" @click="copy(stagInfo.accessUrl + stagInfo.mobileUrl)" v-bk-tooltips.top="{ content: $t('本次部署版本含有移动端页面，在对本域名申请移动端网关后可在移动端访问该链接，点击可复制链接'), maxWidth: 400 }">
-                                <i class="bk-drag-icon bk-drag-mobilephone"> </i>
-                            </a>
+                            </span>
                         </span>
-                        <span v-else>
-                            {{ stagInfo.version }}
+                        <span v-else :class="$style['detail']">
+                            <i :class="$style['info-tips']" class="bk-drag-icon bk-drag-info-tips"></i>
+                            <span>{{ $t('未部署') }}</span>
                         </span>
                     </span>
-                    <span v-else>
-                        <i :class="$style['info-tips']" class="bk-drag-icon bk-drag-info-tips"></i>
-                        <span>{{ $t('未部署') }}</span>
-                    </span>
-                </span>
-
-                <span v-show="currentAppInfo.appCode && currentAppInfo.moduleCode" :class="$style['seperate-line']">|</span>
-
-                <span :class="$style['offline-operate']" v-show="(stagInfo.version && !stagInfo.isOffline) || (prodInfo.version && !prodInfo.isOffline)">
-                    <bk-button :disabled="latestInfo.status === 'running'" :class="$style['offline-btn']" @click="toggleOffline(true)">
-                        <i class="bk-drag-icon bk-drag-off-shelf"></i>
-                        <span>{{ $t('下架') }}</span>
-                    </bk-button>
-                </span>
-
-                <bk-dropdown-menu v-show="currentAppInfo.appCode && currentAppInfo.moduleCode" @show="() => isDropdownShow = true " @hide="isDropdownShow = false" ref="dropdown">
-                    <div class="dropdown-trigger-btn" style="padding-left: 19px;" slot="dropdown-trigger">
-                        <span>{{ $t('更多操作') }}</span>
-                        <i :class="['bk-icon icon-angle-down', { 'icon-flip': isDropdownShow }]"></i>
+                    
+                    <div :class="[$style['operation'],{ [$style['seperate-line']]: currentAppInfo.appCode && currentAppInfo.moduleCode }]">
+                        <span :class="$style['offline-operate']" v-show="(stagInfo.version && !stagInfo.isOffline) || (prodInfo.version && !prodInfo.isOffline)">
+                            <bk-button size="small" :disabled="latestInfo.status === 'running'" :class="$style['offline-btn']" @click="toggleOffline(true)">
+                                <i class="bk-drag-icon bk-drag-off-shelf"></i>
+                                <span>{{ $t('下架') }}</span>
+                            </bk-button>
+                        </span>
+                        <bk-dropdown-menu v-show="currentAppInfo.appCode && currentAppInfo.moduleCode" @show="() => isDropdownShow = true " @hide="isDropdownShow = false" ref="dropdown">
+                            <div :class="$style['dropdown-trigger-btn']" slot="dropdown-trigger">
+                                <span>{{ $t('更多操作') }}</span>
+                                <i :class="[$style['icon-size'],'bk-icon icon-angle-down', { 'icon-flip': isDropdownShow }]"></i>
+                            </div>
+                            <ul class="bk-dropdown-list" style="max-height: 194px" slot="dropdown-content">
+                                <li><a href="javascript:;" @click="toManagePage('deploy')">{{ $t('部署管理') }}</a></li>
+                                <li><a href="javascript:;" @click="toManagePage('process')">{{ $t('进程管理') }}</a></li>
+                                <li><a href="javascript:;" @click="toManagePage('log?tab=structured')">{{ $t('日志查询') }}</a></li>
+                                <li><a href="javascript:;" @click="toManagePage('environment_variable')">{{ $t('环境配置') }}</a></li>
+                                <li><a href="javascript:;" @click="toManagePage('app_entry_config')">{{ $t('访问入口') }}</a></li>
+                                <li><a href="javascript:;" @click="toManagePage('base-info', false)">{{ $t('基本信息') }}</a></li>
+                            </ul>
+                        </bk-dropdown-menu>
                     </div>
-                    <ul class="bk-dropdown-list" style="max-height: 194px" slot="dropdown-content">
-                        <li><a href="javascript:;" @click="toManagePage('deploy')">{{ $t('部署管理') }}</a></li>
-                        <li><a href="javascript:;" @click="toManagePage('process')">{{ $t('进程管理') }}</a></li>
-                        <li><a href="javascript:;" @click="toManagePage('log?tab=structured')">{{ $t('日志查询') }}</a></li>
-                        <li><a href="javascript:;" @click="toManagePage('environment_variable')">{{ $t('环境配置') }}</a></li>
-                        <li><a href="javascript:;" @click="toManagePage('app_entry_config')">{{ $t('访问入口') }}</a></li>
-                        <li><a href="javascript:;" @click="toManagePage('base-info', false)">{{ $t('基本信息') }}</a></li>
-                    </ul>
-                </bk-dropdown-menu>
+                </div>
+                
             </div>
 
             <div :class="$style['release-content']">
                 <div :class="$style['title']">{{ $t('部署新版本') }}</div>
-                <div :class="$style['last-version-tips']" v-if="latestInfo.id">
-                    <i :class="$style['tips-icon']" class="bk-drag-icon bk-drag-info-tips"></i>
-                    <span :class="$style['tips-content']">{{ $t('最近{0}版本：', [typeMap[latestInfo.isOffline]]) }}<span v-html="getInfoTips(latestInfo, 'last')"></span></span>
-                    <span v-if="!latestInfo.isOffline" :class="$style['latest-log-link']" @click="showLog(latestInfo)">，{{ $t('查看日志') }}</span>
-                </div>
-                <div :class="$style['release-form']">
-                    <div :class="$style['type']">
-                        <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('form_部署环境') }}</span>
-                        <bk-radio-group v-model="versionForm.env" :class="$style['version-type']" @change="getReleaseSql">
-                            <bk-radio style="width: 120px" value="stag">{{ $t('预发布环境') }}</bk-radio>
-                            <bk-radio value="prod" style="margin-left: 50px">{{ $t('生产环境') }}</bk-radio>
-                        </bk-radio-group>
-                    </div>
-                    <div :class="[$style['type'], $style['is-source']]">
-                        <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('form_源码包') }}</span>
-                        <div>
-                            <bk-radio-group v-model="versionForm.releaseType" :class="$style['version-type']" @change="getReleaseSql">
-                                <bk-radio style="width: 120px" value="PROJECT_VERSION">{{ $t('应用版本') }}
-                                    <i :class="['bk-icon', 'icon-info', $style['icon']]"
-                                        v-bk-tooltips="{
-                                            content: $t('基于应用“默认”或未归档的版本'),
-                                            width: 220
-                                        }"
-                                    ></i>
-                                </bk-radio>
-                                <bk-radio value="HISTORY_VERSION" style="margin-left: 50px">{{ $t('历史部署包') }}
-                                    <i :class="['bk-icon', 'icon-info', $style['icon']]"
-                                        v-bk-tooltips="{
-                                            content: $t('已部署成功过的的源码包')
-                                        }"
-                                    ></i>
-                                </bk-radio>
+                <section :class="$style['release-form-info']" v-if="!publishCom">
+                    <bk-alert v-if="latestInfo.id" :type="latestInfo.status === 'successful' ? 'success' : (latestInfo.status === 'failed' ? 'error' : 'info')" :class="$style['last-version-tips']">
+                        <div slot="title">
+                            <span :class="$style['tips-content']">{{ $t('最近{0}版本：', [typeMap[latestInfo.isOffline]]) }}<span v-html="getInfoTips(latestInfo, 'last')"></span></span>
+                            <span v-if="!latestInfo.isOffline" :class="$style['latest-log-link']" @click="showLog(latestInfo)">，{{ latestInfo.status === 'successful' ? $t('查看成功日志') : (latestInfo.status === 'failed' ? $t('查看失败日志') : $t('查看日志'))}}</span>
+                        </div>
+                    </bk-alert>
+                    <div :class="$style['release-form']">
+                        <div :class="$style['type']">
+                            <span :class="[$style['version-label'],$style['required']]">{{ $t('form_部署环境') }}</span>
+                            <bk-radio-group v-model="versionForm.env" class="version-type" @change="getReleaseSql">
+                                <bk-radio-button value="stag">{{ $t('预发布环境') }}</bk-radio-button>
+                                <bk-radio-button value="prod">{{ $t('生产环境') }}</bk-radio-button>
                             </bk-radio-group>
-                            <div :class="$style['source-from']" v-if="isProjVersion">
-                                <bk-select :placeholder="$t('请选择要部署的应用版本')" style="width: 400px"
-                                    :clearable="false"
-                                    v-model="versionForm.projVersionSelect" :loading="projVersionLoading" @toggle="toggleProjVersionList"
-                                    @change="changeProjVersionList">
-                                    <bk-option v-for="option in projVersionList"
-                                        :key="option.id"
-                                        :id="option.id"
-                                        :name="option.version">
-                                    </bk-option>
-                                </bk-select>
+                        </div>
+                        <div :class="[$style['type'], $style['is-source']]">
+                            <span :class="[$style['version-label'],$style['required']]">{{ $t('form_源码包') }}</span>
+                            <div>
+                                <bk-radio-group v-model="versionForm.releaseType" class="version-type" @change="getReleaseSql">
+                                    <bk-radio-button value="PROJECT_VERSION">{{ $t('应用版本') }}
+                                        <i :class="['bk-icon', 'icon-info', $style['icon']]"
+                                            v-bk-tooltips="{
+                                                content: $t('基于应用“默认”或未归档的版本'),
+                                                width: 220
+                                            }"
+                                        ></i>
+                                    </bk-radio-button>
+                                    <bk-radio-button value="HISTORY_VERSION">{{ $t('历史部署包') }}
+                                        <i :class="['bk-icon', 'icon-info', $style['icon']]"
+                                            v-bk-tooltips="{
+                                                content: $t('已部署成功过的的源码包')
+                                            }"
+                                        ></i>
+                                    </bk-radio-button>
+                                </bk-radio-group>
+                                <div :class="$style['source-from']" v-if="isProjVersion">
+                                    <bk-select :placeholder="$t('请选择要部署的应用版本')" style="width: 700px"
+                                        :clearable="false"
+                                        v-model="versionForm.projVersionSelect" :loading="projVersionLoading" @toggle="toggleProjVersionList"
+                                        @change="changeProjVersionList">
+                                        <bk-option v-for="option in projVersionList"
+                                            :key="option.id"
+                                            :id="option.id"
+                                            :name="option.version">
+                                        </bk-option>
+                                    </bk-select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div
-                        :class="[$style['last-version-tips'], $style['version-table']]"
-                        v-enClass="$style['en-m-left']"
-                        v-if="showReleaseTips"
-                        v-bkloading="{ isLoading: isLoadingReleaseSql || flowListLoading }">
-                        <i :class="$style['table-icon']" class="bk-drag-icon bk-drag-info-tips"></i>
-                        <div class="release-tips-content">
-                            <p v-if="releaseSqls.length">
-                                <span :class="$style['tips-content']">{{ $t('部署后数据库将会有变更，请确认后操作，点击查看') }}</span>
-                                <span :class="$style['table-link']" @click="showSql">{{ $t('变更详情') }}</span>
+                        <div
+                            :class="[$style['last-version-tips'], $style['version-table']]"
+                            v-if="showReleaseTips"
+                            v-bkloading="{ isLoading: isLoadingReleaseSql || flowListLoading }">
+                            <i :class="$style['table-icon']" class="bk-drag-icon bk-drag-info-tips"></i>
+                            <div class="release-tips-content">
+                                <p v-if="releaseSqls.length">
+                                    <span :class="$style['tips-content']">{{ $t('部署后数据库将会有变更，请确认后操作，点击查看') }}</span>
+                                    <span :class="$style['table-link']" @click="showSql">{{ $t('变更详情') }}</span>
+                                </p>
+                                <p v-if="notDeployedFlowList.length">
+                                    {{ $t('检测到流程') }} <template v-for="(flow, index) in notDeployedFlowList">
+                                        {{ index === 0 ? '' : '、' }}
+                                        <span
+                                            :key="flow.id"
+                                            :class="$style['table-link']">
+                                            【{{ flow.flowName }}】
+                                        </span>
+                                    </template>
+                                    {{ $t('有更新，未在预览环境部署验证，建议先验证流程再发布应用') }} </p>
+                            </div>
+                        </div>
+                        <div :class="$style['form-item']">
+                            <p :class="$style['form-label']">
+                                <span :class="[$style['version-label'], $style['required']]">{{ $t('form_部署版本号') }}</span>
+                                <span :class="$style['version-tips']" v-show="newVersionInfo.version">{{newVersionInfo.version ? $t('上次部署版本号为：{0}', [newVersionInfo.version]) : ''}}</span>
                             </p>
-                            <p v-if="notDeployedFlowList.length">
-                                {{ $t('检测到流程') }} <template v-for="(flow, index) in notDeployedFlowList">
-                                    {{ index === 0 ? '' : '、' }}
-                                    <span
-                                        :key="flow.id"
-                                        :class="$style['table-link']">
-                                        【{{ flow.flowName }}】
-                                    </span>
-                                </template>
-                                {{ $t('有更新，未在预览环境部署验证，建议先验证流程再发布应用') }} </p>
+                            <div v-if="isProjVersion">
+                                <bk-input
+                                    :placeholder="$t('请输入部署版本号，仅支持英文、数字、下划线、中划线和英文句号')"
+                                    maxlength="30"
+                                    style="width: 700px"
+                                    v-model="versionForm.releaseVersion">
+                                </bk-input>
+                                <p :class="$style['version-err-tips']" v-show="versionErrTips">{{versionErrTips}}</p>
+                            </div>
+                            <bk-select v-else-if="isSucVersion" :placeholder="$t('请选择要部署的历史版本')" style="width: 700px"
+                                :clearable="false"
+                                v-model="versionForm.sucVersionSelect" :loading="sucVersionLoading" @toggle="toggleSucVersionList">
+                                <bk-option v-for="option in sucVersionList"
+                                    :key="option.version"
+                                    :id="option.version"
+                                    :name="option.version">
+                                </bk-option>
+                            </bk-select>
+                        </div>
+                        <div :class="$style['form-item']" v-if="isProjVersion">
+                            <span :class="[$style['version-label'],$style['required']]">{{ $t('form_创建应用版本') }}</span>
+                            <bk-radio-group v-model="versionForm.isCreateProjVersion" class="version-type">
+                                <bk-radio :value="0">{{ $t('不创建') }}</bk-radio>
+                                <bk-radio :value="1" style="margin-left: 50px">{{ $t('创建，部署成功后创建应用版本并归档') }}</bk-radio>
+                            </bk-radio-group>
+                        </div>
+                        <div :class="[$style['form-item'], 'version-publish-log']"
+                            v-show="isProjVersion && versionForm.projVersionSelect && versionForm.isCreateProjVersion">
+                            <span :class="[$style['version-label'],$style['required']]">{{ $t('版本日志') }}</span>
+                            <mavon-editor
+                                :external-link="false"
+                                v-model="versionForm.versionLog"
+                                default-open="edit"
+                                :placeholder="versionLogPlaceholder" />
+                            <p :class="$style['version-err-tips']" v-show="versionLogErrTips">{{versionLogErrTips}}</p>
+                        </div>
+                        <div :class="$style['release-btn']">
+                            <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release">
+                                {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? $t('部署中...') : $t('部署')}}
+                            </bk-button>
+                            <span :class="$style['release-tips']">{{ $t('由PaaS平台-开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理') }}</span>
                         </div>
                     </div>
-                    <div :class="[$style['form-item']]">
-                        <span :class="[$style['version-label'], $style['required']]" v-enClass="$style['en-version-label']">{{ $t('form_部署版本号') }}</span>
-                        <div v-if="isProjVersion">
-                            <bk-input
-                                :placeholder="$t('请输入部署版本号，仅支持英文、数字、下划线、中划线和英文句号')"
-                                maxlength="30"
-                                style="width: 400px"
-                                v-model="versionForm.releaseVersion">
-                            </bk-input>
-                            <p :class="$style['version-err-tips']" v-enStyle="'left:220px'" v-show="versionErrTips">{{versionErrTips}}</p>
-                        </div>
-                        <bk-select v-else-if="isSucVersion" :placeholder="$t('请选择要部署的历史版本')" style="width: 400px"
-                            :clearable="false"
-                            v-model="versionForm.sucVersionSelect" :loading="sucVersionLoading" @toggle="toggleSucVersionList">
-                            <bk-option v-for="option in sucVersionList"
-                                :key="option.version"
-                                :id="option.version"
-                                :name="option.version">
-                            </bk-option>
-                        </bk-select>
-                    </div>
-                    <div :class="$style['form-item']" v-if="isProjVersion">
-                        <span :class="$style['version-label']" v-enClass="$style['en-version-label']">{{ $t('form_创建应用版本') }}</span>
-                        <bk-radio-group v-model="versionForm.isCreateProjVersion" :class="$style['version-type']">
-                            <bk-radio style="width: 120px" :value="0">{{ $t('否') }}</bk-radio>
-                            <bk-radio :value="1" style="margin-left: 50px">{{ $t('是，部署成功后创建应用版本并归档') }}</bk-radio>
-                        </bk-radio-group>
-                    </div>
-                    <div :class="[$style['form-item'], 'version-publish-log']"
-                        v-show="isProjVersion && versionForm.projVersionSelect && versionForm.isCreateProjVersion">
-                        <span :class="[$style['version-label']]" v-enClass="$style['en-version-label']">{{ $t('版本日志') }}</span>
-                        <mavon-editor
-                            :external-link="false"
-                            v-model="versionForm.versionLog"
-                            default-open="edit"
-                            :placeholder="versionLogPlaceholder" />
-                        <p :class="$style['version-err-tips']" v-show="versionLogErrTips">{{versionLogErrTips}}</p>
-                    </div>
-
-                    <div :class="[$style['release-btn'], $style['m-left']]" v-enClass="$style['en-m-left']">
-                        <bk-button theme="primary" :disabled="releaseBtnDisabled" @click="release" v-enStyle="'width: 150px'">
-                            {{((latestInfo.status === 'running' && !latestInfo.isOffline) || disabledRelease) ? $t('部署中...') : $t('部署')}}
-                        </bk-button>
-                        <span :class="$style['release-tips']">{{ $t('由PaaS平台-开发者中心提供部署支持，部署成功后，应用进程等信息可以在蓝鲸开发者中心管理') }}</span>
-                    </div>
-                </div>
+                </section>
+                <component
+                    v-if="publishCom"
+                    :is="publishCom"
+                    :current-app-info="currentAppInfo"
+                    :env="versionForm.env"
+                    :deploy-id="latestInfo.deployId"
+                    :latest-info="latestInfo"
+                    :default-content="defaultContent"
+                    :deploy-status="latestInfo.status"
+                    :create-user="latestInfo.createUser"
+                    @checkCom="checkCom"></component>
             </div>
-            <completed-log v-if="showCompletedLog" :is-show="showCompletedLog" :current-app-info="currentAppInfo" :env="versionForm.env" :deploy-id="latestInfo.deployId" :default-content="defaultContent" :status="latestInfo.status" @closeLog="closeLog"></completed-log>
-            <running-log v-if="showRunningLog" :is-show="showRunningLog" :current-app-info="currentAppInfo" :env="versionForm.env" :deploy-id="latestInfo.deployId" @closeLog="closeLog" :title="$t('{0}部署执行日志',[envMap[latestInfo.env]])"></running-log>
             <bk-dialog v-model="showOffline"
                 render-directive="if"
                 :title="$t('下架版本')"
@@ -240,8 +255,8 @@
                         read-only
                         height="calc(100vh - 90px)"
                         :value="releaseSqls.reduce((acc, cur) => (acc = (cur.sql + acc), acc), '')"
-                        :options="{ language: 'sql' }"
-                    ></monaco>
+                        :options="{ language: 'sql' }">
+                    </monaco>
                 </div>
             </bk-sideslider>
         </section>
@@ -250,10 +265,11 @@
 
 <script>
     import dayjs from 'dayjs'
-    import completedLog from './components/completed-log'
+    import completedInfo from './components/completed-info'
     import appModuleSelect from '@/components/project/app-module-select'
-    import runningLog from './components/running-log'
+    import runningInfo from './components/running-info'
     import monaco from '@/components/monaco.vue'
+    import publishMixin from './publish-mixin'
     import { execCopy } from '@/common/util'
 
     const defaultVersionFormData = () => ({
@@ -265,14 +281,15 @@
         versionLog: undefined,
         isCreateProjVersion: 0
     })
-
+    
     export default {
         components: {
-            completedLog,
-            runningLog,
+            completedInfo,
+            runningInfo,
             monaco,
             appModuleSelect
         },
+        mixins: [publishMixin],
         data () {
             return {
                 isLoading: true,
@@ -297,15 +314,7 @@
                     prod: window.i18n.t('生产环境'),
                     stag: window.i18n.t('预发布环境')
                 },
-                typeMap: [window.i18n.t('部署'), window.i18n.t('下架')],
-                statusMap: {
-                    successful: window.i18n.t('成功'),
-                    failed: window.i18n.t('失败'),
-                    running: window.i18n.t('中')
-                },
                 defaultContent: '',
-                showCompletedLog: false,
-                showRunningLog: false,
                 timer: null,
                 showOffline: false,
                 offlineEnv: '',
@@ -315,10 +324,18 @@
                 releaseSqls: [],
                 notDeployedFlowList: [],
                 flowListLoading: true,
+                publish: '',
                 versionLogPlaceholder: window.i18n.t('eg: 新增 XXX 功能\n    优化 XXX 功能\n    修复 XXX 功能\n')
             }
         },
         computed: {
+            publishCom () {
+                const comMap = {
+                    'runningInfo': runningInfo,
+                    'completedInfo': completedInfo
+                }
+                return comMap[this.publish]
+            },
             projectId () {
                 return this.$route.params.projectId
             },
@@ -369,7 +386,6 @@
                 const version = this.versionForm.releaseVersion
                 if (!version) {
                     tips = window.i18n.t('部署版本号必填')
-                    tips += this.newVersionInfo?.version ? '，' + window.i18n.t('上一次部署版本号为：{0}', [this.newVersionInfo?.version]) : ''
                 } else if (!/^[A-za-z0-9\-\.\_]{1,40}$/.test(version)) {
                     tips = window.i18n.t('仅支持英文、数字、下划线、中划线和英文句号')
                 }
@@ -399,6 +415,7 @@
                 handler: function (val) {
                     if (val === 'running') {
                         this.checkDeployResult()
+                        this.publish = 'runningInfo'
                     } else {
                         this.timer && clearInterval(this.timer)
                     }
@@ -512,7 +529,7 @@
                         })
                         await this.resetData()
                         // 显示部署日志
-                        this.showRunningLog = true
+                        this.publish = 'runningInfo'
                     }
                 } catch (err) {
                     await this.resetData()
@@ -521,39 +538,13 @@
                 }
             },
 
-            getInfoTips (info, type = '') {
-                let time = info.createTime ? dayjs(info.createTime).format('YYYY-MM-DD HH:mm:ss') : '--'
-                let createUser = info.createUser
-                if (info.releaseType === 'FROM_V3') {
-                    const paasInfo = info.fromPaasInfo ? JSON.parse(info.fromPaasInfo) : {}
-                    time = paasInfo.createTime || time
-                    createUser = paasInfo.createUser || createUser
-                }
-
-                const status = this.typeMap[info.isOffline] + this.statusMap[info.status]
-                const env = info.env === 'stag' ? window.i18n.t('预发布环境') : window.i18n.t('正式环境')
-                const statusColor = info.status === 'successful' ? '#2dcb56' : (info.status === 'failed' ? '#ea3636' : '')
-                const loadingIcon = info.status === 'running' ? ` <svg aria-hidden="true" width="12" height="12" class="${this.$style['loading-rotate']}"><use xlink:href="#bk-drag-loading-2"></use></svg>` : ''
-
-                if (type === 'last') {
-                    return window.i18n.t('{0}，版本{1}，由 {2} 于 {3}', [env, info.version, createUser, time]) + `<span style="color: ${statusColor}"> ${status}${loadingIcon}</span>`
-                } else {
-                    return window.i18n.t('由 {0} 于 {1} {2}', [createUser, time, status])
-                }
-            },
-
             showLog (row) {
                 if (row.status !== 'running') {
                     this.defaultContent = row.errorMsg || window.i18n.t('日志为空')
-                    this.showCompletedLog = true
+                    this.publish = 'completedInfo'
                 } else {
-                    this.showRunningLog = true
+                    this.publish = 'runningInfo'
                 }
-            },
-            closeLog () {
-                this.showCompletedLog = false
-                this.showRunningLog = false
-                this.defaultContent = ''
             },
             checkDeployResult () {
                 this.timer && clearInterval(this.timer)
@@ -681,6 +672,9 @@
             },
             showSql () {
                 this.isShowReleaseSql = true
+            },
+            checkCom (comName) {
+                this.publish = comName
             }
         }
     }
@@ -689,143 +683,183 @@
 <style lang="postcss" module>
     .release-wrapper {
         min-height: 500px;
-    }
+    
     .release-container {
+        .title {
+                font-weight: 700;
+                font-size: 14px;
+                color: #313238;
+                font-weight: bold;
+                margin-bottom: 17px;
+            }
         .release-summary {
             min-width: 1030px;
             width: calc(100% - 52px);
-            height: 70px;
-            background-color: #fff;
-            margin: 16px 26px;
-            display: flex;
-            align-items: center;
+            height: 140px;
+            margin: 20px 24px;
             font-size: 12px;
-            box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
-
-            .label {
-                margin-right: 4px;
-                font-weight: bold;
-            }
-            .bind-label {
-                width: 112px;
-                cursor: default;
-                padding-bottom: 3px;
-                border-bottom: 1px dashed #979797;
-            }
-            .info-tips {
-                color: orange;
-            }
-
-            .setting {
+            background: #FFFFFF;
+            box-shadow: 0 2px 4px 0 #1919290d;
+            border-radius: 2px;
+            padding: 24px;
+            .release-info {
                 display: flex;
                 align-items: center;
-                margin-left: 30px;
-                /* min-width: 300px; */
-            }
-            .latest-info {
-                margin-left: 40px;
-                max-width: 358px;
-                .link-detail a {
-                    margin-right: 6px;
-                    cursor: pointer;
-                    color: #3a84ff;
-                    &:hover {
-                        border-bottom: solid 1px #3a84ff
+                margin-top: 17px;
+                .label {
+                    margin-right: 4px;
+                    height: 26px;
+                    font-size: 12px;
+                    color: #979BA5;
+                    line-height: 26px;
+                    white-space: nowrap;
+                }
+                .info-tips {
+                    color: orange;
+                }
+                .setting {
+                        display: flex;
+                        flex-direction: column;
+                        margin-right: 80px;
+                        color: #313238;
+                    }
+                .en-setting {
+                    margin-right: 0;
+                    width: 260px;
+                }
+                .latest-info {
+                    display: flex;
+                    flex-direction: column;
+                    margin: 0 70px 0 40px;
+                    max-width: 358px;
+                        .link-detail a {
+                            margin-right: 6px;
+                            cursor: pointer;
+                            color: #3a84ff;
+                            &:hover {
+                                 border-bottom: solid 1px #3a84ff
+                        }
                     }
                 }
+                .en-latest-info {
+                    margin:0;
+                    width: 370px;
+                }
+            .operation{
+                display: flex;
+                align-items: center;
+                height: 30px;
             }
-
             .seperate-line {
-                margin-left: 24px;
-                width: 1px;
-                height: 20px;
-                color: #dcdee5;
+                border-left: 1px solid #DCDEE5;
+                padding-left: 40px;
+            }
+            }
+            .dropdown-trigger-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #c4c6cc;
+                height: 28px;
+                min-width: 68px;
+                border-radius: 2px;
+                padding: 0 8px 0 12px;
+                color: #63656E;
+                white-space: nowrap;
+                .icon-size {
+                    font-size: 18px;
+                    margin-left: 4px;
+                    
+                }
+                }
             }
 
             .offline-operate {
                 .offline-btn {
-                    margin-left: 24px;
+                    margin-right: 20px;
+                    height: 28px;
                 }
             }
-            /* .s-margin {
-                margin-left: 30px !important;
-            } */
+            .detail {
+                line-height: 26px;
+                height: 26px;
+            }
         }
 
         .release-content {
-            margin: 40px 56px;
-            .title {
-                font-size: 14px;
-                font-weight: bold;
-                margin-bottom: 14px;
-            }
-            .last-version-tips {
-                display: flex;
-                align-items: center;
-                margin-bottom: 30px;
-                padding: 8px 0;
-                width: 800px;
-                min-height: 32px;
-                background: #f0f8ff;
-                border: 1px solid #c5daff;
-                border-radius: 2px;
-                font-size: 12px;
-                .tips-icon {
-                    color: #3a84ff;
-                    margin: 0 10px;
-                }
-                .tips-content {
-                    .status-successful {
-                        color: #2dcb56;
-                    }
-                    .status-failed {
-                        color: #ea3636;
-                    }
-                }
-                .latest-log-link {
-                    color: #3a84ff;
-                    cursor: pointer;
-                }
-            }
-            .release-form {
-                .m-left {
-                    margin-left: 110px;
-                }
-
-                .en-m-left {
-                    margin-left: 220px !important;
-                }
-                .release-tips {
-                    color: #979ba5;
-                    font-size: 12px;
-                    margin-left: 18px;
-                }
-                & > div {
-                    margin-bottom: 24px;
-                }
+            min-width: 1030px;
+            width: calc(100% - 52px);
+            margin: 20px 24px;
+            font-size: 12px;
+            background: #FFFFFF;
+            box-shadow: 0 2px 4px 0 #1919290d;
+            border-radius: 2px;
+            padding: 24px;
+            .release-form-info  {
                 .last-version-tips {
-                    margin-top: -20px;
+                    margin-bottom: 16px;
+                    min-height: 32px;
+                    font-size: 12px;
+                    min-width: 700px;
+                    width: fit-content;
+                    .tips-icon {
+                        color: #3a84ff;
+                        margin: 0 10px;
+                    }
+                    .tips-content {
+                        .status-successful {
+                            color: #2dcb56;
+                        }
+                        .status-failed {
+                            color: #ea3636;
+                        }
+                    }
+                    .latest-log-link {
+                        color: #3a84ff;
+                        cursor: pointer;
+                    }
                 }
-                .type,
-                .form-item {
-                    display: flex;
-                    align-items: center;
-                    .version-label {
-                        flex: none;
-                        width: 110px;
+                .release-form {
+            
+                    .release-tips {
+                        color: #979ba5;
+                        font-size: 12px;
+                        margin-left: 18px;
                     }
-                    .en-version-label{
-                        flex: none;
-                        width: 220px;
+                    & > div {
+                        margin-bottom: 24px;
                     }
-                    .version-type {
-                        display: inline;
+                    .last-version-tips {
+                        margin-top: -20px;
+                        display: flex;
+                        align-items: center;
+                        padding: 8px 0;
+                    }
+                    .type,
+                    .form-item {
+                        .form-label{
+                            display: flex;
+                            justify-content: space-between;
+                            width: 700px;
+                        }
+                        .version-label {
+                            line-height: 20px;
+                            flex: none;
+                            position: relative;
+                            display:inline-block;
+                            margin-bottom: 6px;
+                        }
+                    }
+                
+                        .version-type {
+
                         .icon {
                             font-size: 16px;
                         }
                     }
+                    
                     .source-from {
-                        margin-top: 16px;
+                        margin-top: 24px;
                     }
 
                     &.is-source {
@@ -848,15 +882,12 @@
                     transform: translate(3px, -50%);
                 }
                 .form-item {
-                    position: relative;
                     .version-label {
                         &.is-proj-history {
                             font-weight: 700;
                         }
                     }
                     .version-err-tips {
-                        position: absolute;
-                        left: 110px;
                         top: 100%;
                         font-size: 12px;
                         color: red;
@@ -866,7 +897,6 @@
                 .version-table {
                     border-color: #ffdfac;
                     background-color: #fff4e2;
-                    margin-left: 110px;
                     width: 700px;
                     .table-icon {
                         color: #ff9c01;
@@ -878,10 +908,10 @@
                         margin-left: 3px;
                     }
                 }
+   
             }
         }
-    }
-    .selector-create-item {
+     .selector-create-item {
         cursor: pointer;
         height: 38px;
         line-height: 38px;
@@ -969,6 +999,20 @@
         }
         .failed-box{
             background: #ffecec;
+        }
+        .version-type {
+                .bk-form-radio{
+                    margin-top: 2px;
+                    font-size: 12px;
+                }
+                .bk-radio-button-text {
+                        width: 350px;
+                        font-size: 12px;
+                }
+                .icon {
+                        font-size: 16px;
+                    }
+                }
         }
     }
 </style>

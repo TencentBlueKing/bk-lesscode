@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <section class="panel-template" v-bkloading="{ isLoading }">
+    <section class="lesscode-materials-panel-content panel-template" v-bkloading="{ isLoading }">
         <select-tab
             :tab-list="tabList"
             :current="tab"
@@ -22,42 +22,44 @@
                 :list="renderTemplateList"
                 :placeholder="$t('模板名称')"
                 @on-change="handleSearchChange" />
-            <group-box
-                v-for="(group) in renderGroupTemplateList"
-                :list="group.list"
-                :group-name="group.categoryName"
-                group="layout"
-                :create-fallback="createFallback"
-                :key="group.id">
-                <div
-                    v-for="(template, templateIndex) in group.list"
-                    class="template-item"
-                    :class="{
-                        'uninstall': type === 'market' && !template.hasInstall
-                    }"
-                    :key="templateIndex">
-                    <div class="item-img">
-                        <img :src="template.previewImg" />
-                        <div
-                            v-if="type === 'market' && !template.hasInstall"
-                            class="mask">
-                            <bk-button
-                                class="apply-btn"
-                                theme="primary"
-                                size="small"
-                                @click.stop="handleApply(template)">
-                                {{ $t('添加到应用') }} </bk-button>
+            <div class="materials-group-box-list">
+                <group-box
+                    v-for="(group) in renderGroupTemplateList"
+                    :list="group.list"
+                    :group-name="group.categoryName"
+                    group="layout"
+                    :create-fallback="createFallback"
+                    :key="group.id">
+                    <div
+                        v-for="(template, templateIndex) in group.list"
+                        class="template-item"
+                        :class="{
+                            'uninstall': type === 'market' && !template.hasInstall
+                        }"
+                        :key="templateIndex">
+                        <div class="item-img">
+                            <img :src="template.previewImg" />
+                            <div
+                                v-if="type === 'market' && !template.hasInstall"
+                                class="mask">
+                                <bk-button
+                                    class="apply-btn"
+                                    theme="primary"
+                                    size="small"
+                                    @click.stop="handleApply(template)">
+                                    {{ $t('添加到应用') }} </bk-button>
+                            </div>
+                        </div>
+                        <div class="item-info">
+                            <span class="item-name" v-bk-tooltips="template.templateName">{{ template.templateName }}</span>
+                            <span
+                                class="preview"
+                                @click="handlePreview(template)">
+                                {{ $t('预览') }} </span>
                         </div>
                     </div>
-                    <div class="item-info">
-                        <span class="item-name" v-bk-tooltips="template.templateName">{{ template.templateName }}</span>
-                        <span
-                            class="preview"
-                            @click="handlePreview(template)">
-                            {{ $t('预览') }} </span>
-                    </div>
-                </div>
-            </group-box>
+                </group-box>
+            </div>
         </div>
         <template-edit-dialog
             ref="templateApplyDialog"
@@ -285,19 +287,16 @@
     }
 </script>
 <style lang="postcss" scoped>
-    @import "@/css/mixins/scroller";
 
     .panel-template{
         min-height: 100%;
-        height: 100%;
         .search-box {
             padding: 6px 12px;
         }
         .template-list{
             height: calc(100% - 46px);
             padding-bottom: 10px;
-            overflow-y: auto;
-            @mixin scroller;
+           
         }
         .template-item {
             margin: 0 8px 16px 0;

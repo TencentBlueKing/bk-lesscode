@@ -28,7 +28,7 @@
                         <bk-alert style="margin: 0px; border-radius: 0;" type="warning" :title="$t('仅展示准备阶段、构建阶段日志')"></bk-alert>
                         <pre class="log-detail" v-html="content"></pre>
                     </div>
-                    <!-- <pre v-if="content" class="log-detail" v-html="content"></pre> -->
+                <!-- <pre v-if="content" class="log-detail" v-html="content"></pre> -->
                 </div>
             </div>
         </bk-sideslider>
@@ -82,7 +82,7 @@
                 return this.$route.params.projectId
             },
             logTitle () {
-                const envName = this.env === 'stag' ? window.i18n.t('预发布') : window.i18n.t('生产环境')
+                const envName = this.env === 'stag' ? window.i18n.t('预发布') : window.i18n.t('生产')
                 return this.status === 'successful' ? envName + window.i18n.t('环境部署成功') : (this.status === 'failed' ? envName + window.i18n.t('环境部署失败') : window.i18n.t('部署日志'))
             }
         },
@@ -189,7 +189,7 @@
                 const interval = Math.ceil(end - start)
 
                 if (!interval) {
-                    return '<' + window.i18n.t('1秒')
+                    return '< 1s'
                 }
 
                 return this.getDisplayTime(interval)
@@ -198,7 +198,7 @@
             getDisplayTime (payload) {
                 let theTime = payload
                 if (theTime < 1) {
-                    return '<' + window.i18n.t('1秒')
+                    return '< 1s'
                 }
                 let middle = 0
                 let hour = 0
@@ -215,13 +215,13 @@
                 let result = ''
 
                 if (theTime > 0) {
-                    result = window.i18n.t('{0}秒', [theTime])
+                    result = `${theTime}s`
                 }
                 if (middle > 0) {
-                    result = window.i18n.t('{0}分{1}', [middle, result])
+                    result = `${middle}m${result}`
                 }
                 if (hour > 0) {
-                    result = window.i18n.t('{0}时{1}', [hour, result])
+                    result = `${hour}h${result}`
                 }
 
                 return result
@@ -232,12 +232,12 @@
 </script>
 
 <style lang="postcss" scoped>
-    .icon-successful {
-        color: #2dcb56;
-    }
-    .icon-failed {
-        color: #ea3636;
-    }
+                .icon-successful {
+                    color: #2dcb56;
+                }
+                .icon-failed {
+                    color: #ea3636;
+                }
     .log-content {
         height: 100%;
         min-height: 500px;

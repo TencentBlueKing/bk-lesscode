@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class="lesscode-materials-panel-content">
         <search-box
             :placeholder="$t('组件名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
-        <div>
+        <div class="materials-group-box-list">
             <group-box
                 v-for="(comList, groupName) in renderGroupComponentMap"
                 :key="groupName"

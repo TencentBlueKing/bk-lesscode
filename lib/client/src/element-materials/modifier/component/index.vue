@@ -19,13 +19,23 @@
                     :item-change="handleModifier">
                 </select-tab>
             </div>
+            <div class="props-search" v-if="tabPanelActive === 'props' && !isModifierEmpty">
+                <bk-input
+                    ext-cls="props-search-input"
+                    right-icon="bk-icon icon-search"
+                    :placeholder="$t('请输入属性名称')"
+                    v-model="keyword"
+                    :clearable="true" />
+            </div>
+            <empty-status type="search" v-if="tabPanelActive === 'props' && isSearchEmpty && keyword" @clearSearch="handlerClear"></empty-status>
             <div
                 ref="container"
                 class="material-modifier-container">
                 <template v-for="(com, index) in modifierComList">
                     <component
                         :is="com"
-                        :key="`${renderKey}_${index}`" />
+                        :key="`${renderKey}_${index}`"
+                        :keyword="keyword" />
                 </template>
                 <div
                     v-if="isModifierEmpty"
@@ -54,11 +64,12 @@
     import ModifierAlign from './align'
     import H5Page from './h5-page'
     import ModifierPerms from './perms'
-
+    import emptyStatus from '@/components/project/empty-status.vue'
     export default {
         id: '',
         components: {
-            SelectTab
+            SelectTab,
+            emptyStatus
         },
         inheritAttrs: false,
         data () {
@@ -72,7 +83,9 @@
                 tabPanelActive: 'props',
                 currentTabPanelType: 'unborder-card',
                 renderKey: '',
-                isModifierEmpty: false
+                isModifierEmpty: false,
+                keyword: '',
+                isSearchEmpty: false
             }
         },
         computed: {
@@ -88,15 +101,26 @@
                 return comMap[this.tabPanelActive]
             }
         },
-
+        watch: {
+            keyword: {
+                handler (val) {
+                    setTimeout(() => {
+                        if (this.$refs.container) {
+                            this.isSearchEmpty = this.$refs.container.children.length < 1
+                        }
+                    })
+                }
+            }
+        },
         created () {
             this.activeComponentNode = null
+           
             const activeCallback = ({ target }) => {
                 this.tabPanelActive = target.tabPanelActive || 'props'
                 this.renderKey = target.renderKey
                 this.activeComponentNode = target
                 this.checkChildrenComponentInstance()
-
+                this.keyword = ''
                 // 目前只有 button 按钮有权限面板
                 if (target.type === 'bk-button') {
                     this.tabPanels.splice(0, this.tabPanels.length, ...[
@@ -150,6 +174,10 @@
                     this.activeComponentNode.setProperty('tabPanelActive', tabPanelActive)
                 }
                 this.checkChildrenComponentInstance()
+                this.handlerClear()
+            },
+            handlerClear () {
+                this.keyword = ''
             }
         }
     }
@@ -229,4 +257,16 @@
             margin: 10px 5px 5px 14px;
         }
     }
+    .props-search {
+        padding: 8px 12px;
+        .props-search-input input {
+            background-color: #F5F7FA;
+            border-radius: 2px;
+            border: 1px solid #fff;
+        &:focus {
+            border: 1px solid #3a84ff;
+        }
+    }
+    }
+    
 </style>

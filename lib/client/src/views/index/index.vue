@@ -336,6 +336,7 @@
     }
 </script>
 <style lang="postcss">
+    @import "@/css/mixins/scroller";
     $headerHeight: 52px;
     $pageHeaderHeight: 52px;
 
@@ -371,5 +372,13 @@
     }
     .lesscode-editor-page-content{
         height: calc(100vh - $headerHeight - $pageHeaderHeight);
+    }
+    .lesscode-materials-panel-content {
+        height: 100%;
+        .materials-group-box-list {
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            @mixin scroller;
+        }
     }
 </style>

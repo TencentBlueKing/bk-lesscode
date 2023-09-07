@@ -1,10 +1,10 @@
 <template>
-    <div class="render-custom-component" v-bkloading="{ isLoading }">
+    <div class="lesscode-materials-panel-content" v-bkloading="{ isLoading }">
         <search-box
             :placeholder="$t('自定义组件名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
-        <div>
+        <div class="materials-group-box-list custom-component-list">
             <template v-if="isSearch">
                 <group-box
                     v-for="(comList, groupName) in renderGroupComponentMap"
@@ -210,7 +210,9 @@
     }
 </script>
 <style lang="postcss">
-    .render-custom-component{
+        .custom-component-list {
+            height: calc(100% - 52px) !important;
+        }
         .fixed-opts{
             position: fixed;
             bottom: 0;
@@ -221,5 +223,4 @@
                 font-size: 12px;
             }
         }
-    }
 </style>

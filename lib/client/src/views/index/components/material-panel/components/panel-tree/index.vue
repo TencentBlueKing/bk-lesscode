@@ -333,6 +333,14 @@
                 }
                 &.is-root {
                     padding-left: 12px;
+                        .tree-node-item {
+                            margin-left: 4px;
+                        }
+                        &.is-leaf {
+                            .tree-node-item {
+                                margin-left: 6px;
+                        }
+                        }
                 }
                 &.is-selected .node-icon {
                     color: #3a84ff;

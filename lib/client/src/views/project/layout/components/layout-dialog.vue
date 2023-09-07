@@ -12,7 +12,7 @@
         >
             <bk-form ref="dialogForm" class="dialog-form" :label-width="200" form-type="vertical" :rules="dialog.formRules" :model="dialog.formData">
                 <bk-form-item :label="$t('导航类型')" required property="showName" error-display-type="normal">
-                    <bk-radio-group v-model="dialog.formData.layoutType">
+                    <bk-radio-group v-model="dialog.formData.layoutType" class="nav-type-radio">
                         <bk-radio-button value="PC" :disabled="action !== 'create' && dialog.formData.layoutType !== 'PC'">
                             PC
                         </bk-radio-button>
@@ -316,6 +316,11 @@
         overflow-y: overlay;
         padding: 0 16px;
         @mixin scroller;
+        .nav-type-radio {
+            /deep/.bk-radio-button-text {
+                width:125px;
+            }
+        }
    }
 </style>
 <style lang="postcss">
