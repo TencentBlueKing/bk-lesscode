@@ -43,6 +43,10 @@ export default defineComponent({
         hasBlank: {
             type: Boolean,
             default: false
+        },
+        lastFew: {
+            type: Number,
+            default: 1
         }
     },
   
@@ -124,7 +128,7 @@ export default defineComponent({
                                 {this.localMenuList.map((menu, index) => (<menu-item
                                     data={menu}
                                     key={menu.id}
-                                    last-one={this.localMenuList.length === 1}
+                                    last-one={this.localMenuList.length === this.lastFew}
                                     onOn-delete={() => this.handleRemove(index)}
                                     onOn-change={(value) => this.handleChange(value, index)}
                                     show-icon={this.showIcon}
@@ -136,7 +140,10 @@ export default defineComponent({
                         </vue-draggable>
                     </div>
                     <div class="footer">
-                        <bk-button size="small" text onClick={this.handleAdd}>{ this.$t('继续添加') }</bk-button>
+                        {this.localMenuList.length <= 0 ? <div class="add-help-menu">
+                            <bk-button size="small" icon="plus-circle" text onClick={this.handleAdd}>{ this.$t('添加帮助菜单项') }</bk-button>
+                        </div> : <bk-button size="small" text onClick={this.handleAdd}>{ this.$t('继续添加') }</bk-button>
+                        }
                     </div>
                 </div>}
             </div>

@@ -7,7 +7,10 @@ export default defineComponent({
         menuLayout
     },
     props: {
-        helpMenuList: Array
+        helpMenuList: {
+            type: Array,
+            default: () => []
+        }
     },
     setup (props, { emit }) {
         const changeHandler = (key, value) => {
@@ -23,6 +26,7 @@ export default defineComponent({
                 titleName= { this.$t('帮助菜单配置')}
                 hasChild={false}
                 hasBlank={true}
+                lastFew={0}
                 onChange={this.changeHandler}></menuLayout>
         )
     }
