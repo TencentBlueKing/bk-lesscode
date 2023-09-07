@@ -3876,5 +3876,6 @@
   "窗口": "window",
   "默认菜单": "default menu",
   "帮助菜单配置": "Help menu configuration",
-  "移动端侧边导航配置": "Mobile Side Navigation Configuration"
+  "移动端侧边导航配置": "Mobile Side Navigation Configuration",
+  "添加帮助菜单项": "Add help menu item"
 }
