@@ -48,18 +48,24 @@
                         v-if="isShowPageQuery"
                         class="query-remove"
                         v-bk-tooltips.top-start="$t('删除路由参数')"
+                        :style="styles"
                         @click="handleRemovePageQuery">
                         <i class="bk-icon icon-minus-circle" />
                     </div>
                 </div>
             </div>
-            <bk-input
-                v-else
-                class="menu-link"
-                :placeholder="$t('请输入链接')"
-                :value="baseInfo.link"
-                clearable
-                @change="handleLinkChange" />
+            <div v-else class="link-type">
+                <bk-input
+                    class="menu-link"
+                    :placeholder="$t('请输入链接')"
+                    :value="baseInfo.link"
+                    clearable
+                    @change="handleLinkChange" />
+                <div class="menu-link-isblank" v-if="hasBlank">
+                    <span class="text" v-bk-tooltips="$t('是否打开新窗口')">{{$t('窗口')}}</span>
+                    <bk-switcher theme="primary" size="small" :value="baseInfo.isBlank" @change="handleIsBlankChange" />
+                </div>
+            </div>
             <div
                 class="menu-type"
                 v-bk-tooltips.top-start="isPageCode ? $t('点击切换链接模式') : $t('点击切换路由模式')"
@@ -138,6 +144,14 @@
             platform: {
                 type: String,
                 default: 'PC'
+            },
+            hasBlank: {
+                type: Boolean,
+                default: false
+            },
+            hasChild: {
+                type: Boolean,
+                default: true
             }
         },
         data () {
@@ -196,6 +210,16 @@
 
                 pageRouteList.sort((p1, p2) => p1.disabled - p2.disabled)
                 return pageRouteList
+            },
+            styles () {
+                if (!this.hasChild) {
+                    return {
+                        right: '-18px'
+                    }
+                }
+                return {
+                    right: '-27.5px'
+                }
             }
         },
         mounted () {
@@ -310,6 +334,10 @@
                 this.baseInfo.link = ''
                 this.baseInfo.query = ''
                 this.isPageCode = !this.isPageCode
+            },
+            handleIsBlankChange (isBlank) {
+                this.baseInfo.isBlank = isBlank
+                this.triggerChange()
             }
         }
     }
@@ -410,15 +438,27 @@
                     transform: scale(.8333);
                 }
             }
+            .link-type {
+                display: flex;
+                .menu-link-isblank {
+                    align-content: center;
+                    flex-shrink:0;
+                    overflow: auto;
+                    margin-top:8px;
+                    font-size: 12px;
+                    color: #3A84FF;
+                    line-height: 1;
+                    transform: scale(.8333);
+            }
+            }
+            
             .menu-page-query{
                 position: relative;
                 top: 8px;
                 margin-bottom: 8px;
                 .query-remove{
                     position: absolute;
-                    top: 0;
                     top: 10px;
-                    right: -27.5px;
                     display: flex;
                     font-size: 16px;
                     color: #979BA5;

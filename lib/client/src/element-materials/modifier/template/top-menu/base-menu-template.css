@@ -28,5 +28,11 @@
     }
     .footer {
         padding-bottom: 20px;
+        .add-help-menu {
+            text-align: center;
+            .bk-icon {
+                top: 0;
+            }
+        }
     }
 }
