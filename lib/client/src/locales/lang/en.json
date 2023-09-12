@@ -3873,7 +3873,7 @@
   "中": "middle",
   "请输入属性名称": "Please enter a property name",
   "是否打开新窗口": "Whether to open a new window",
-  "窗口": "window",
+  "新窗口": "_blank",
   "默认菜单": "default menu",
   "帮助菜单配置": "Help menu configuration",
   "移动端侧边导航配置": "Mobile Side Navigation Configuration",
