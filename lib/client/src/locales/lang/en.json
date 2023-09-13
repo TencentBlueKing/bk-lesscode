@@ -3877,5 +3877,9 @@
   "默认菜单": "default menu",
   "帮助菜单配置": "Help menu configuration",
   "移动端侧边导航配置": "Mobile Side Navigation Configuration",
-  "添加帮助菜单项": "Add help menu item"
+  "添加帮助菜单项": "Add help menu item",
+  "向上扩展": "Expand upward",
+  "向下收缩": "Shrink downward",
+  "清空聊天记录": "Clear chat history",
+  "聊天记录清空成功": "Chat history cleared successfully"
 }
