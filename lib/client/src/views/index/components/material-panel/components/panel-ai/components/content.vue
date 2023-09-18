@@ -112,7 +112,7 @@
                 currentMessage.status = 'success'
                 if (cmdMessage) {
                     currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
-                    aiHelper.chat(cmdMessage)
+                    aiHelper.chatStream(cmdMessage)
                 }
             }
             
@@ -161,7 +161,7 @@
                     `It looks like the execution of the ${errorCmd} commands failed. Please rethink and issue commands`
                 ].join('\n')
                 currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
-                aiHelper.chat(cmdMessage)
+                aiHelper.chatStream(cmdMessage)
             }
 
             const clearMessage = () => {
@@ -181,7 +181,7 @@
                 currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
                 // 输入框loading状态
                 isLoading.value = true
-                aiHelper.chat(`help me solve this task:\n ${userInput}`)
+                aiHelper.chatStream(`help me solve this task:\n ${userInput}`)
             }
 
             // ai 指令
@@ -425,7 +425,8 @@
                 handleMessage,
                 handleApiError,
                 handleCmdError,
-                systemPrompt
+                systemPrompt,
+                type: 'layout'
             })
 
             onBeforeMount(() => {
