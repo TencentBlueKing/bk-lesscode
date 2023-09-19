@@ -200,3 +200,53 @@
 .empty-padding.lesscode-bk-popover.lesscode-bk-pop2-content {
     padding: 0 !important;
 }
+
+.header-help {
+    color: #768197;
+    font-size:16px;
+    position:relative;
+    height:32px;
+    width:32px;
+    display:flex;   
+    align-items:center;
+    justify-content:center;
+    margin-right:8px;
+    flex-shrink:0;
+    &:hover {
+        background: linear-gradient(270deg,rgba(37, 48, 71, 1) 0%,rgba(38, 50, 71, 1) 100%);
+        border: 1px dashed #3a84ff;
+        border-radius: 100%;
+        color: #D3D9E4;
+        cursor:pointer;
+    }
+}
+
+.white-theme-help-icon {
+    &:hover {
+        color:#3A84FF;
+        background:#F0F1F5;
+    }
+}
+ .tippy-popper .tippy-tooltip.navigation-message-theme {
+        padding:0;
+        border-radius:0;
+        -webkit-box-shadow:none;
+        box-shadow:none;
+    }
+ .help-link-item {
+        display: block;
+        padding: 8px 12px;
+        font-size: 12px;
+        color: #63656E;
+        cursor: pointer;
+        &:hover,
+        &.active {
+            color:#3A84FF;
+            background: #F0F1F5;
+        }
+     }
+    .date-empty-theme {
+        .bk-tooltip-content{
+            border: 0px !important;
+        }
+     }

@@ -18,6 +18,7 @@
             :data="baseInfo"
             :show-menu="showMenu"
             v-bind="$attrs"
+            :has-child="hasChild"
             @on-change="handleChange" />
         <div v-if="hasChild && isShowChild && showMenu" class="children-wraper">
             <div
@@ -101,10 +102,7 @@
         },
         methods: {
             triggerChange () {
-                this.$emit('on-change', {
-                    ...this.baseInfo,
-                    children: this.childList
-                })
+                this.hasChild ? this.$emit('on-change', { ...this.baseInfo, children: this.childList }) : this.$emit('on-change', { ...this.baseInfo })
             },
             handleChange (value) {
                 this.baseInfo = value

@@ -20,13 +20,13 @@
                         {{ $t('PC表单页面') }}
                     </a>
                 </li>
-                <li v-if="framework !== 'vue3'">
+                <!-- <li v-if="framework !== 'vue3'">
                     <a href="javascript:;" @click="handleCreate('PC', 'MARKDOWN')">
                         <i :style="{ color: NOCODE_TYPE_MAP['color']['MARKDOWN'] }"
                             class="bk-drag-icon bk-drag-markdown"> </i>
                         {{ $t('Markdown文档') }}
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a href="javascript:;" @click="handleCreate('MOBILE', '')">
                         <i :style="{ color: NOCODE_TYPE_MAP['color'][''] }" class="bk-drag-icon bk-drag-mobilephone">

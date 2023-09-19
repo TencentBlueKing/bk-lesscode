@@ -1572,7 +1572,7 @@
   "新建Mobile自定义页面": "Create a new Mobile custom page",
   "PC自定义页面": "PC Custom Page",
   "PC表单页面": "PC Form Page",
-  "Markdown文档": "Markdown Page",
+  "Markdown文档": "Markdown",
   "Mobile自定义页面": "Mobile Custom Page",
   "新建PC自定义页面": "Create a new PC custom page",
   "新建PC表单页面": "Create a new PC form page",
@@ -3890,5 +3890,14 @@
   "没有找到 functionCode 为{0}的函数，生成函数事件行为失败": "Failed to generate function event behavior if functionCode {0} was not found.",
   "没有找到 pageName 为{0}的页面，生成跳转事件行为失败": "No page with pageName {0} found, failed to generate jump event behavior",
   "可以使用 ${args[0]} 的形式获取获取事件参数值": "You can use ${args[0]} to get the value of the event parameter.",
-  "AI 没有理解你的意思，请按照提示重新生成事件行为": "AI didn't understand what you meant, please follow the instructions to regenerate the event behavior"
+  "AI 没有理解你的意思，请按照提示重新生成事件行为": "AI didn't understand what you meant, please follow the instructions to regenerate the event behavior",
+  "是否打开新窗口": "Whether to open a new window",
+  "新窗口": "_blank",
+  "默认菜单": "default menu",
+  "帮助菜单配置": "Help menu configuration",
+  "添加帮助菜单项": "Add help menu item",
+  "向上扩展": "Expand upward",
+  "向下收缩": "Shrink downward",
+  "清空聊天记录": "Clear chat history",
+  "聊天记录清空成功": "Chat history cleared successfully"
 }
