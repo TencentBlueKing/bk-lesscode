@@ -18,6 +18,8 @@
         >
             <bk-input
                 size="large"
+                ref="inputRef"
+                :native-attributes="{ autofocus: 'autofocus' }"
                 class="ai-operation-input"
                 :disabled="isLoading"
                 v-model="content"
@@ -40,7 +42,8 @@
     import {
         ref,
         onBeforeMount,
-        nextTick
+        nextTick,
+        watch
     } from '@vue/composition-api'
     import LC from '@/element-materials/core'
     import {
@@ -57,19 +60,21 @@
     import store from '@/store'
     import vue2Materials from '@/element-materials/materials/vue2'
     import vue3Materials from '@/element-materials/materials/vue3'
+    import { bkMessage } from 'bk-magic-vue'
 
     export default {
         components: {
             RenderMessage
         },
-
-        setup () {
+        props: { isShowAi: Boolean },
+        setup (props) {
             let currentMessage = ref({})
             let cmdMessage = ''
             let errorTime = 0
             const messages = ref([])
             const content = ref('')
             const isLoading = ref(false)
+            const inputRef = ref(null)
 
             const scrollToBottom = () => {
                 nextTick(() => {
@@ -112,7 +117,7 @@
                 currentMessage.status = 'success'
                 if (cmdMessage) {
                     currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
-                    aiHelper.chat(cmdMessage)
+                    aiHelper.chatStream(cmdMessage)
                 }
             }
             
@@ -161,13 +166,14 @@
                     `It looks like the execution of the ${errorCmd} commands failed. Please rethink and issue commands`
                 ].join('\n')
                 currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
-                aiHelper.chat(cmdMessage)
+                aiHelper.chatStream(cmdMessage)
             }
 
             const clearMessage = () => {
                 messages.value = []
                 isLoading.value = false
                 aiHelper.clearPrompt()
+                bkMessage({ theme: 'success', message: window.i18n.t('聊天记录清空成功'), limit: 1 })
                 pushMessage('ai', 'Hi，我是小鲸，我可以帮你实现添加组件，函数生成等复杂功能，你可以尝试说帮我新增一个表格')
             }
 
@@ -181,7 +187,7 @@
                 currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
                 // 输入框loading状态
                 isLoading.value = true
-                aiHelper.chat(`help me solve this task:\n ${userInput}`)
+                aiHelper.chatStream(`help me solve this task:\n ${userInput}`)
             }
 
             // ai 指令
@@ -425,17 +431,27 @@
                 handleMessage,
                 handleApiError,
                 handleCmdError,
-                systemPrompt
+                systemPrompt,
+                type: 'layout'
             })
 
             onBeforeMount(() => {
                 pushMessage('ai', 'Hi，我是小鲸，我可以帮你实现添加组件，函数生成等复杂功能，你可以尝试说帮我新增一个表格')
             })
-
+            watch(
+                () => props.isShowAi,
+                () => {
+                    if (props.isShowAi) {
+                        const $autoFocusItem = inputRef.value.$el.querySelector('[autofocus="autofocus"]')
+                        $autoFocusItem && $autoFocusItem.focus()
+                    }
+                }
+            )
             return {
                 messages,
                 content,
                 isLoading,
+                inputRef,
                 handleUserInput,
                 clearMessage
             }
@@ -476,5 +492,6 @@
     .ai-operation-button {
         padding: 0 3px 0 0 !important;
         min-width: 84px;
+        font-size: 14px;
     }
 </style>

@@ -11,6 +11,7 @@
             <component :is="panelCom" />
             <panel-ai
                 v-show="isAiAvailable && isShowAi"
+                :is-show-ai="isShowAi"
                 @close="handleCloseAi"
             />
         </div>
