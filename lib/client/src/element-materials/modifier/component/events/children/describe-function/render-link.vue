@@ -53,9 +53,9 @@
 <style lang="postcss" scoped>
 .link-address {
     width: 165px;
-    height: 31px;
-    >>> input {
-        height: 31px;
+    height: 32px;
+    >>> .bk-input-text, input {
+        height: 100%;
     }
 }
 </style>

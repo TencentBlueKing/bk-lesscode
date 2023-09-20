@@ -71,9 +71,6 @@
 <style lang="postcss" scoped>
 .variable-select {
     width: 165px;
-    >>>input {
-        height: 31px;
-    }
 }
 .variable-value {
     display: flex;
