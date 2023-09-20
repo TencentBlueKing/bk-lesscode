@@ -4,7 +4,7 @@
         <span class="describe-title">
             {{ $t('事件行为') }}
             <span class="describe-sub-title">
-                （{{ $t('可根据生成结果进行调整') }}）
+                （{{ $t('可根据生成效果继续编辑，行为将按顺序执行') }}）
             </span>
         </span>
         <component
@@ -111,6 +111,7 @@
     .describe-title {
         font-size: 12px;
         color: #313238;
+        display: block;
         .describe-sub-title {
             color: #979BA5;
         }
