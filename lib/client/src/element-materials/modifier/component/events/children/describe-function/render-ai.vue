@@ -7,16 +7,23 @@
             :rows="7"
             @change="handleChange"
         />
-        <bk-button
+        <section
             class="ai-button"
-            theme="primary"
-            size="small"
-            :disabled="!prompt.trim()"
-            :loading="loading"
-            @click="handleGenerateByAi"
+            v-bk-tooltips="{
+                content: $t('灰度中，暂未全量开放'),
+                disabled: isAiAvailable
+            }"
         >
-            {{ $t('生成事件行为') }}
-        </bk-button>
+            <bk-button
+                theme="primary"
+                size="small"
+                :disabled="!prompt.trim() || !isAiAvailable"
+                :loading="loading"
+                @click="handleGenerateByAi"
+            >
+                {{ $t('生成事件行为') }}
+            </bk-button>
+        </section>
         <bk-alert
             v-if="errorMessage"
             class="ai-tips"
@@ -31,7 +38,8 @@
         Ai
     } from '@/common/ai'
     import {
-        ref
+        ref,
+        computed
     } from '@vue/composition-api'
     import {
         messageError
@@ -39,6 +47,9 @@
     import {
         EVENT_ACTION_TYPE
     } from 'shared/function/constant'
+    import {
+        cssProperties
+    } from '@/common/util'
     import store from '@/store/index'
     import LC from '@/element-materials/core'
 
@@ -61,7 +72,7 @@
     const systemPrompt = [
         'You are a event generator using a interactive command terminal to edit event.',
         '## Commands',
-        'setComponentStyle("<componentId>", [{ key: "<prop key>", value: "<value>" }]) // change component style, You can pass CSS properties to the prop key.Multiple component styles can be modified at once.',
+        `setComponentStyle("<componentId>", [{ key: "<prop key>", value: "<value>" }]) // change component style, You can only pass (${cssProperties.join('|')}) to the prop key. Multiple component styles can be modified at once.`,
         'setVariableValue("<variableCode>", "<value>") // change variable value',
         'executeFunction("<functionCode>", [{ value: "<param1>", value: "<param2>" }]) // execute function, pass all parameters at the end.',
         'jumpByAddress("<address>") // jump to address',
@@ -85,6 +96,8 @@
             const prompt = ref('')
             const errorMessage = ref('')
             const loading = ref(false)
+
+            const isAiAvailable = computed(() => store.getters['ai/isAiAvailable'])
 
             const setComponentStyle = (componentId, value) => {
                 if (!hasComponent(LC.getRoot().children, componentId)) {
@@ -224,6 +237,7 @@
                 prompt,
                 errorMessage,
                 loading,
+                isAiAvailable,
                 handleGenerateByAi,
                 handleChange
             }
@@ -233,6 +247,7 @@
 
 <style lang="postcss" scoped>
   .ai-button {
+    display: inline-block;
     margin: 9px 0 24px;
   }
   .ai-tips {
