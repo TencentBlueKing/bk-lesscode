@@ -3,8 +3,9 @@
         <bk-input
             v-model="prompt"
             type="textarea"
-            :placeholder="$t('请输入当事件被触发时，期望达成什么效果。示例：\n修改组件 button-a2dsb 的高度为500px，宽度为400px\n修改变量 pageIndex 为事件第一个参数\n执行函数 getTable，参数为1，10\n跳转至 home 页面')"
+            :placeholder="$t('请描述当该事件被触发时，期望达成的效果。示例：\n1. 修改组件 button-xxx 的高度为 50px，宽度为 80px\n2. 执行函数 getData，参数为1，20\n3. 跳转至 home 页面')"
             :rows="7"
+            @change="handleChange"
         />
         <bk-button
             class="ai-button"
@@ -16,6 +17,12 @@
         >
             {{ $t('生成事件行为') }}
         </bk-button>
+        <bk-alert
+            v-if="errorMessage"
+            class="ai-tips"
+            theme="error"
+            :title="errorMessage"
+        />
     </section>
 </template>
 
@@ -76,6 +83,7 @@
 
         setup (_, { emit }) {
             const prompt = ref('')
+            const errorMessage = ref('')
             const loading = ref(false)
 
             const setComponentStyle = (componentId, value) => {
@@ -152,11 +160,16 @@
                 }
             }
 
+            const handlerStart = () => {
+                errorMessage.value = ''
+            }
+
             const handleMessage = (aiMessage, content) => {
                 if (!/(cmd(?:\d)?): (?:<)?([^>\n]+)(?:>)?/gmi.test(content)) {
-                    messageError(window.i18n.t('AI 没有理解你的意思，请按照提示重新生成事件行为'))
+                    errorMessage.value = window.i18n.t('生成失败，请优化你的提示词')
+                } else {
+                    prompt.value = ''
                 }
-                prompt.value = ''
                 loading.value = false
             }
 
@@ -194,8 +207,13 @@
                 aiHelper.chat(prompt.value)
             }
 
+            const handleChange = () => {
+                errorMessage.value = ''
+            }
+
             const aiHelper = new Ai({
                 handleCmd,
+                handlerStart,
                 handleMessage,
                 handleApiError,
                 systemPrompt,
@@ -204,8 +222,10 @@
 
             return {
                 prompt,
+                errorMessage,
                 loading,
-                handleGenerateByAi
+                handleGenerateByAi,
+                handleChange
             }
         }
     }
@@ -214,5 +234,13 @@
 <style lang="postcss" scoped>
   .ai-button {
     margin: 9px 0 24px;
+  }
+  .ai-tips {
+    margin: -15px 0 24px;
+    background-color: #ffeded;
+    border-color: #ffd2d2;
+    >>>.icon-info {
+        color: #ea3636 !important;
+    }
   }
 </style>

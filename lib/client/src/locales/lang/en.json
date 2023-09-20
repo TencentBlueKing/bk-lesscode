@@ -3882,7 +3882,7 @@
   "可根据生成结果进行调整": "Adjustments can be made based on the results generated",
   "添加事件行为": "Adding Event Behavior",
   "跳转": "Jump",
-  "请输入当事件被触发时，期望达成什么效果。示例：\n修改组件 button-a2dsb 的高度为500px，宽度为400px\n修改变量 pageIndex 为事件第一个参数\n执行函数 getTable，参数为1，10\n跳转至 home 页面": "Please enter what is expected to be achieved when the event is triggered. Example: \n Modify the height of the component button-a2dsb to 500px and the width to 400px \n Modify the variable pageIndex to be the first parameter of the event \n Execute the function getTable with parameter 1, 10 \n Jump to the home page",
+  "请描述当该事件被触发时，期望达成的效果。示例：\n1. 修改组件 button-xxx 的高度为 50px，宽度为 80px\n2. 执行函数 getData，参数为1，20\n3. 跳转至 home 页面: ": "Describe the desired effect when this event is triggered. Example: \n1. change the height of the component button-xxx to 50px and the width to 80px \n2. execute the function getData with parameters 1, 20 \n3. jump to the home page",
   "生成事件行为": "Generating Event Behavior",
   "使用了不存在的函数": "Used a non-existent function",
   "没有找到 componentId 为{0}的组件，生成组件事件行为失败": "Failed to generate component event behavior if componentId is {0}.",
@@ -3899,5 +3899,6 @@
   "向上扩展": "Expand upward",
   "向下收缩": "Shrink downward",
   "清空聊天记录": "Clear chat history",
-  "聊天记录清空成功": "Chat history cleared successfully"
+  "聊天记录清空成功": "Chat history cleared successfully",
+  "生成失败，请优化你的提示词": "Failed to generate, please optimize your cue word"
 }

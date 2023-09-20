@@ -6,7 +6,7 @@
         >
             <bk-select
                 ref="select"
-                style="width: 165px"
+                style="width: 165px;height: 32px"
                 :value="action.id"
                 :clearable="false"
                 @toggle="handleGetComponents"

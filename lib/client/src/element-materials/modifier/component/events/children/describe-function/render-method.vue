@@ -83,11 +83,6 @@
 </style>
 
 <style lang="postcss" scoped>
-.choose-function {
-    >>>input {
-        height: 31.5px;
-    }
-}
 .render-type {
     width: 75px;
     margin-right: -1px;

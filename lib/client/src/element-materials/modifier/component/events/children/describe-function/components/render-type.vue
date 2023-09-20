@@ -59,6 +59,7 @@
     margin-right: -1px;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
+    height: 32px;
     &.is-focus {
         z-index: 10;
     }

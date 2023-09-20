@@ -19,7 +19,7 @@
 .render-wrapper {
     background: #FFFFFF;
     position: relative;
-    padding: 12px;
+    padding: 16px 12px;
     &:hover {
       box-shadow: 0 2px 4px 0 #0000001a;
       .panel-minus {
@@ -30,8 +30,8 @@
 .panel-minus {
     position: absolute;
     cursor: pointer;
-    right: 3px;
-    top: 3px;
+    right: 2px;
+    top: 2px;
     font-size: 12px;
     display: none;
     scale: 0.8333;
