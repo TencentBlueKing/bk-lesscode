@@ -21,6 +21,7 @@
                 :name="key"
                 :key="key"
                 :sync-slot="syncSlot"
+                :last-data-origin="lastProps[item.dataOrigin]"
                 @on-change="handleChange" />
         </template>
     </div>
@@ -265,7 +266,7 @@
                     ...this.lastProps,
                     [propName]: propData
                 })
-
+                
                 /** 兼容bkcharts的精细化配置升级，去除了remoteOptions，当修改了options，将remoteOptions置空 */
                 const updateBkChartsRemoteOptions = (this.componentNode.type === 'bk-charts' && propName === 'options') ? {
                     remoteOptions: LC.utils.genPropFormatValue({
