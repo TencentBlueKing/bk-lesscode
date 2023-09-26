@@ -1763,6 +1763,8 @@
   "数据源 :": "Data Source :",
   "新增函数": "New Function",
   "查看 SQL": "View SQL",
+  "请输入自然语言描述，AI会自动生成相应的SQL": "Please enter natural language description and AI will generate the corresponding SQL.",
+  "生成SQL": "Generate SQL",
   "查询历史": "Query History",
   "查询结果": "Search Result",
   "正在加载 BkBase 结果表": "Loading BkBase results table",
