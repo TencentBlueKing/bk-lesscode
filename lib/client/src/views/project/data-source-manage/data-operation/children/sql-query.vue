@@ -1,56 +1,60 @@
 <template>
-    <section class="sql-query">
-        <monaco
-            language="sql"
-            height="530"
-            class="sql-editor"
-            :value="sql"
-            @change="handleSqlChange"
-        >
-            <span
-                slot="title"
-                class="sql-title"
-            >{{ $t('SQL 编辑器（仅支持 SELECT 查询语句）') }}</span>
-        </monaco>
-        <section class="db-tree">
-            <bk-big-tree
-                ref="bigTreeRef"
-                class="tree-select"
-                :data="apiData"
-                :lazy-method="getRemoteApi"
+    <section>
+        <ai-sql-input :table-data="tableData" :generate-sql="generateAiSql" />
+        <bk-divider></bk-divider>
+        <section class="sql-query">
+            <monaco
+                language="sql"
+                height="530"
+                class="sql-editor"
+                :value="sql"
+                @change="handleSqlChange"
             >
-                <div
-                    slot-scope="{ data }"
-                    :class="{
-                        'display-option': true,
-                        'disabled': data.disabled
-                    }"
+                <span
+                    slot="title"
+                    class="sql-title"
+                >{{ $t('SQL 编辑器（仅支持 SELECT 查询语句）') }}</span>
+            </monaco>
+            <section class="db-tree">
+                <bk-big-tree
+                    ref="bigTreeRef"
+                    class="tree-select"
+                    :data="apiData"
+                    :lazy-method="getRemoteApi"
                 >
-                    <i
-                        v-if="data.isTable"
-                        class="bk-drag-icon bk-drag-data-table"
-                    ></i>
-                    <span
-                        v-bk-overflow-tips
-                        class="display-name"
+                    <div
+                        slot-scope="{ data }"
+                        :class="{
+                            'display-option': true,
+                            'disabled': data.disabled
+                        }"
                     >
-                        {{data.name}}
-                    </span>
-                    <i
-                        v-if="data.isTable"
-                        v-bk-tooltips="{ content: $t('点击生成查询该表SQL') }"
-                        class="bk-drag-icon bk-drag-sql"
-                        @click.stop="handleAddQuerySql(data)"
-                    ></i>
-                </div>
-            </bk-big-tree>
-            <bk-exception
-                v-if="apiData.length <= 0"
-                class="exception-part"
-                type="empty"
-                scene="part">
-                <span>{{ $t('暂无数据') }}</span>
-            </bk-exception>
+                        <i
+                            v-if="data.isTable"
+                            class="bk-drag-icon bk-drag-data-table"
+                        ></i>
+                        <span
+                            v-bk-overflow-tips
+                            class="display-name"
+                        >
+                            {{data.name}}
+                        </span>
+                        <i
+                            v-if="data.isTable"
+                            v-bk-tooltips="{ content: $t('点击生成查询该表SQL') }"
+                            class="bk-drag-icon bk-drag-sql"
+                            @click.stop="handleAddQuerySql(data)"
+                        ></i>
+                    </div>
+                </bk-big-tree>
+                <bk-exception
+                    v-if="apiData.length <= 0"
+                    class="exception-part"
+                    type="empty"
+                    scene="part">
+                    <span>{{ $t('暂无数据') }}</span>
+                </bk-exception>
+            </section>
         </section>
     </section>
 </template>
@@ -59,9 +63,11 @@
     import {
         defineComponent,
         ref,
-        watch
+        watch,
+        computed
     } from '@vue/composition-api'
     import Monaco from '@/components/monaco.vue'
+    import AiSqlInput from './ai-sql-input'
     import {
         isEmpty,
         uuid
@@ -73,7 +79,8 @@
 
     export default defineComponent({
         components: {
-            Monaco
+            Monaco,
+            AiSqlInput
         },
 
         props: {
@@ -167,6 +174,14 @@
                 handleSqlChange(sql)
             }
 
+            const generateAiSql = (sql) => {
+                handleSqlChange(sql)
+            }
+
+            const tableData = computed(() => {
+                return (props.dataSourceType === 'bk-base' ? props.bkBaseBizList : props.tableList) || []
+            })
+
             watch(
                 [
                     () => props.dataSourceType,
@@ -196,11 +211,13 @@
             )
 
             return {
+                tableData,
                 apiData,
                 handleSqlChange,
                 validate,
                 getRemoteApi,
-                handleAddQuerySql
+                handleAddQuerySql,
+                generateAiSql
             }
         }
     })
