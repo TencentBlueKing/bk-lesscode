@@ -28,7 +28,7 @@
   "不在有效运行时间内，已退出": "Exited out of valid running time",
   "修改操作失败：: {{n}}": "Modify operation failed:: {{n}}",
   "出现错误的pageId：{{n}}": "Wrong pageId: {{n}}",
-  "函数名称由大小写英文字母组成，开头和结尾还可以是下划线。函数名称【{{n}}】不符合规则，请修改后再试": "The function name consists of uppercase and lowercase English letters, and an underscore can also be used at the beginning and end. \nThe function name [{{n}}] does not conform to the rules, please modify it and try again",
+  "函数名称由大小写英文字母数字组成，开头和结尾还可以是下划线。函数名称【{{n}}】不符合规则，请修改后再试": "The function name consists of uppercase and lowercase English letters and number, and an underscore can also be used at the beginning and end. \nThe function name [{{n}}] does not conform to the rules, please modify it and try again",
   "分类ID：{{n}}": "Category ID: {{n}}",
   "分类【ID：{{n}}】下已存在函数，无法删除，请修改后再试": "A function already exists under the category [ID: {{n}}] and cannot be deleted. Please modify it and try again",
   "分类【{{n}}】已存在，请修改后再试": "The category [{{n}}] already exists, please modify it and try again",

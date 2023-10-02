@@ -32,6 +32,7 @@
     import RenderProp from './components/render-prop'
     import useDatasource from '@/hooks/use-datasource'
     import { encodeRegexp } from '../../component/utils'
+    import { framework } from 'bk-lesscode-render'
 
     // 属性类型转为该变量接受的值类型
     const getPropValueType = (type) => {
@@ -152,40 +153,30 @@
                     })
                 }
             },
-            syncOtherProp (propName) {
-                if (['bk-charts', 'chart'].includes(this.componentNode.type)
-                    && ['options', 'remoteOptions'].includes(propName)) {
-                    // bk-charts, chart 组件的 remoteOptions 需要和 options 同步
-                    // remoteOptions 覆盖 options 的配置
-                    const propOfOptionsData = this.lastProps['options']
-                    const propOfRemoteOptionsData = this.lastProps['remoteOptions']
-
-                    console.log(this.lastProps['options'], this.lastProps['remoteOptions'], 'last')
-
-                    const realOptionValue = Object.assign(
-                        {},
-                        _.cloneDeep(propOfOptionsData.renderValue),
-                        _.cloneDeep(propOfRemoteOptionsData.renderValue)
-                    )
-
-                    console.log(realOptionValue, 'real')
-
-                    if (propOfOptionsData.format === 'value') {
-                        // format 为 value 替换所有配置
-                        this.componentNode.setProp('options', LC.utils.genPropFormatValue({
-                            ...propOfOptionsData,
-                            format: 'value',
-                            code: realOptionValue,
-                            renderValue: realOptionValue
-                        }))
-                    } else if (propOfOptionsData.format === 'variable') {
-                        // format 为 variable 类型只替换 renderValue
-                        this.componentNode.setProp('options', LC.utils.genPropFormatValue({
-                            ...propOfOptionsData,
-                            format: 'variable',
-                            renderValue: realOptionValue
-                        }))
-                    }
+            syncOtherProp (propName, propData) {
+                // 兼容组件报错
+                if (this.componentNode.type === 'bk-date-picker' && propName === 'type') {
+                    const propKey = framework === 'vue2' ? 'value' : 'model-value'
+                    const valuePropData = this.lastProps[propKey]
+                    const value = ['datetimerange', 'daterange'].includes(propData.renderValue) ? [] : ''
+                    this.componentNode.setProp(propKey, LC.utils.genPropFormatValue({
+                        ...valuePropData,
+                        format: 'value',
+                        code: value,
+                        renderValue: value
+                    }))
+                }
+                // 兼容组件报错
+                if (this.componentNode.type === 'bk-time-picker' && propName === 'type') {
+                    const propKey = framework === 'vue2' ? 'value' : 'model-value'
+                    const valuePropData = this.lastProps[propKey]
+                    const value = ['timerange'].includes(propData.renderValue) ? [] : ''
+                    this.componentNode.setProp(propKey, LC.utils.genPropFormatValue({
+                        ...valuePropData,
+                        format: 'value',
+                        code: value,
+                        renderValue: value
+                    }))
                 }
             },
             /**
@@ -281,7 +272,7 @@
                     [propName]: propData,
                     ...updateBkChartsRemoteOptions
                 })
-                // this.syncOtherProp(propName)
+                this.syncOtherProp(propName, propData)
             }, 60)
         }
     }

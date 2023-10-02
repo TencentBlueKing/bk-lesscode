@@ -292,25 +292,30 @@
             }
         },
 
-        created () {
-            this.renderChoosenFunction = {
-                methodCode: this.choosenFunction?.methodCode || '',
-                params: [...this.choosenFunction?.params || []]
-            }
+        watch: {
+            choosenFunction: {
+                handler () {
+                    this.renderChoosenFunction = {
+                        methodCode: this.choosenFunction?.methodCode || '',
+                        params: [...this.choosenFunction?.params || []]
+                    }
 
-            // 如果有选择函数，需要查找到对应的 params
-            if (this.renderChoosenFunction.methodCode) {
-                this.renderChoosenFunction.params = this.computedParamKeys.map((paramKey, index) => {
-                    let param = {
-                        value: '',
-                        code: '',
-                        format: this.defaultVariableFormat
+                    // 如果有选择函数，需要查找到对应的 params
+                    if (this.renderChoosenFunction.methodCode) {
+                        this.renderChoosenFunction.params = this.computedParamKeys.map((paramKey, index) => {
+                            let param = {
+                                value: '',
+                                code: '',
+                                format: this.defaultVariableFormat
+                            }
+                            if (this.choosenFunction?.params?.[index]) {
+                                param = this.choosenFunction.params[index]
+                            }
+                            return param
+                        })
                     }
-                    if (this.choosenFunction?.params?.[index]) {
-                        param = this.choosenFunction.params[index]
-                    }
-                    return param
-                })
+                },
+                immediate: true
             }
         },
 

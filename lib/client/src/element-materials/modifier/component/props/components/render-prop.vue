@@ -332,6 +332,14 @@
                 if (typeof config.type === 'string') {
                     realType = [config.type]
                 }
+                if (typeof config.type === 'function') {
+                    const componentNode = LC.getActiveNode()
+                    const calcType = config.type(componentNode.renderProps)
+                    realType = Array.isArray(calcType) ? calcType : [calcType]
+                    if (!realType.includes(this.selectValueType)) {
+                        this.handleValueTypeChange(realType[0])
+                    }
+                }
 
                 return realType.reduce((res, propType) => {
                     if (typeMap.hasOwnProperty(propType)) {
@@ -465,7 +473,16 @@
                 val
             } = this.describe
             // 属性各个交互类型可以接受的值类型
-            const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
+            let realType = type
+            if (typeof type === 'string') {
+                realType = [type]
+            }
+            if (typeof type === 'function') {
+                const componentNode = LC.getActiveNode()
+                const calcType = type(componentNode.renderProps)
+                realType = Array.isArray(calcType) ? calcType : [calcType]
+            }
+            const valueTypes = realType.map(getPropValueType)
             // 该属性的默认值
             const defaultValue = val !== undefined ? val : getDefaultValueByType(valueTypes[0])
             this.defaultValue = _.cloneDeep(defaultValue)
@@ -605,7 +622,7 @@
                     let code = null
                     let renderValue = this.formData.renderValue
 
-                    let val = getRealValue(type, value)
+                    const val = getRealValue(type, value)
 
                     if (this.formData.valueType === 'remote') {
                         // 配置的是远程函数、数据源

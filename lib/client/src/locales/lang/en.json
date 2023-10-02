@@ -3901,5 +3901,9 @@
   "清空聊天记录": "Clear chat history",
   "聊天记录清空成功": "Chat history cleared successfully",
   "生成失败，请优化你的提示词": "Failed to generate, please optimize your cue word",
-  "灰度中，暂未全量开放": "In gray scale, not yet fully open"
+  "灰度中，暂未全量开放": "In gray scale, not yet fully open",
+  "布尔值": "Boolean",
+  "您可以键入 “/” 查看更多Prompt": "You can type “/” to see more prompts",
+  "小鲸": "Little Whale",
+  "AI开发助手小鲸": "AI Development Assistant Little Whale"
 }

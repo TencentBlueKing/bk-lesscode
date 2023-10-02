@@ -42,11 +42,13 @@
             :value="renderCode"
             :height="height"
             :proposals="proposals"
+            :inline-proposals="inlineProposals"
             :model-markers="problems"
             :full-screen-ele="$el"
+            :options="{ quickSuggestions }"
             ref="monaco"
             slot="main"
-            @change="change">
+            @change="handleMonacoChange">
             <span
                 slot="title"
                 class="monaco-title"
@@ -87,6 +89,9 @@
         debounce,
         isEmpty
     } from 'shared/util'
+    import {
+        Ai
+    } from '@/common/ai'
 
     export default {
         components: {
@@ -141,13 +146,20 @@
                     ...(FUNCTION_TIPS())
                 },
                 proposals: [],
+                inlineProposals: [],
                 renderCode: '',
                 renderDebug: 'DebugOutput',
                 outputs: [],
                 problems: [],
                 params: [],
                 showDebugPanel: false,
-                isDebuging: false
+                isDebuging: false,
+                aiHelper: {},
+                quickSuggestions: {
+                    'other': true,
+                    'comments': true,
+                    'strings': true
+                }
             }
         },
 
@@ -216,6 +228,10 @@
             this.initMultVal()
             this.initProposals()
             this.debounceCheckEslint = debounce(this.checkEslint, 500)
+            this.debounceCodeAI = debounce(this.codeAI, 300)
+            this.aiHelper = new Ai({
+                handleMessage: this.handleMessage
+            })
         },
 
         methods: {
@@ -422,6 +438,100 @@
                     })
             },
 
+            handleMonacoChange (funcBody) {
+                // 立即清空上一次的 code ai
+                this.inlineProposals = []
+                // 先改变值
+                this.change(funcBody)
+                // 修改提示方式
+                const lastWord = funcBody.split(/\s/g).at(-1)
+                if (lastWord.startsWith('les')) {
+                    this.quickSuggestions = {
+                        'other': true,
+                        'comments': true,
+                        'strings': true
+                    }
+                } else {
+                    this.quickSuggestions = {
+                        'other': 'inline',
+                        'comments': 'inline',
+                        'strings': 'inline'
+                    }
+                }
+                // code ai
+                this.aiHelper.stop()
+                this.debounceCodeAI(funcBody)
+            },
+
+            getCode () {
+                let blinkBefore = ''
+                // // 生成函数和变量上下文
+                // blinkBefore += '// You need to write the content of the function at the bottom.\n'
+                // blinkBefore += '// You can use other functions in the form of lesscode[\'${func:functionName}\']()\n'
+                // blinkBefore += '// You can use other variables in the form of lesscode[\'${prop:variableName}\'].\n'
+
+                // const functionContentMap = this.functionList.reduce((acc, cur) => {
+                //     acc[`\${func:${cur.funcCode}}`] = getMethodBody(cur).replace(/\/\*[\s\S]*?\*\/(\r\n)?/, '')
+                //     return acc
+                // }, {})
+
+                // const variableContentMap = this.variableList.reduce((acc, cur) => {
+                //     acc[`\${prop:${cur.variableCode}}`] = getVariableValue(cur)
+                //     return acc
+                // }, {})
+
+                // blinkBefore += `const lesscode = ${JSON.stringify({ ...functionContentMap, ...variableContentMap }, null, 2)}`
+
+                // 构造当前函数上下文
+                // blinkBefore += `const ${this.form.funcName} = (${(this.form.funcParams || []).join(', ')}) = {\n`
+                // 获取编辑器上下文
+                const editorRef = this.$refs.monaco.getMonaco()
+                const position = editorRef.getPosition()
+                const model = editorRef.getModel()
+                for (let index = 1; index < position.lineNumber; index++) {
+                    blinkBefore += (model.getLineContent(index) + '\r\n')
+                }
+                blinkBefore += model.getLineContent(position.lineNumber).slice(0, position.column)
+                const blinkAfter = this.renderCode.slice(blinkBefore.length)
+                return {
+                    blinkBefore,
+                    blinkAfter
+                }
+            },
+
+            codeAI () {
+                if (!this.renderCode) return
+
+                const { blinkBefore, blinkAfter } = this.getCode()
+                this.aiHelper.code(blinkBefore, blinkAfter, 'javascript')
+            },
+
+            handleMessage (aiMessage, content) {
+                // 保留完整行
+                const splitContents = content.split(/\r?\n/gm)
+                if (splitContents.length > 1) {
+                    splitContents.splice(splitContents.length - 1, 1)
+                }
+                const completeContent = splitContents.join('\n')
+                // 设置数据
+                const editorRef = this.$refs.monaco.getMonaco()
+                const position = editorRef.getPosition()
+                const lineContent = editorRef.getModel().getLineContent(position.lineNumber)
+                const filterText = lineContent.slice(0, position.column).split(/\s/g).at(-1)
+                let insertText = filterText + completeContent
+                while (/^[\[\]\<\>\.\{\}\@\#\;\*\+\-\/\%\^\&\(\)\'\"\?\,\`\~\!]/.test(insertText)
+                    && /^[\[\]\<\>\.\{\}\@\#\;\*\+\-\/\%\^\&\(\)\'\"\?\,\`\~\!]/.test(filterText)) {
+                    insertText = insertText.slice(1)
+                }
+                this.inlineProposals.splice(0, this.inlineProposals.length, {
+                    filterText,
+                    insertText
+                })
+                this.$nextTick(() => {
+                    editorRef.trigger('inlineSuggest.trigger', 'editor.action.inlineSuggest.trigger')
+                })
+            },
+
             change (funcBody) {
                 this.multVal[this.form.funcType] = funcBody
                 this.renderCode = funcBody
@@ -517,7 +627,8 @@
                                     collectOutput('error', args)
                                 }
                             }
-                        }
+                        },
+                        true
                     )
                     // 收集返回值
                     collectOutput('output', [content || 'undefined'])
