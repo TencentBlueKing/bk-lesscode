@@ -96,8 +96,10 @@
             }, 100)
 
             LC.addEventListener('mergeRenderEvents', updateCallback)
+            LC.addEventListener('setRenderEvents', updateCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('mergeRenderEvents', updateCallback)
+                LC.removeEventListener('setRenderEvents', updateCallback)
             })
         },
 

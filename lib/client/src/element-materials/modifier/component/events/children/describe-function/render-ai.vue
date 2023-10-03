@@ -230,7 +230,8 @@
                 handleMessage,
                 handleApiError,
                 systemPrompt,
-                type: 'event'
+                type: 'event',
+                needCmd: true
             })
 
             return {

@@ -111,3 +111,7 @@
         font-size: 12px;
     }
 }
+
+.bk-card-head.collapse {
+    width: 100%;
+}
