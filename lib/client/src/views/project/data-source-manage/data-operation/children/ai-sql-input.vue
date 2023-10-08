@@ -5,10 +5,10 @@
             v-model="content"
             :clearable="true"
             :show-clear-only-hover="true"
-            :placeholder="$t('请输入自然语言描述，AI会自动生成相应的SQL')"
+            :placeholder="$t('请描述查询需求，比如：查询school表的id, name字段数据')"
             @enter="handleUserInput"
         />
-        <bk-button theme="primary" :disabled="isLoading || !content" @click="handleUserInput">{{$t('生成SQL')}}</bk-button>
+        <bk-button theme="primary" :disabled="!content" :loading="isLoading" @click="handleUserInput">{{$t('生成SQL')}}</bk-button>
         <p class="error-tips" v-if="currentMessage.status === 'error'">{{currentMessage.content}}</p>
     </section>
 </template>
