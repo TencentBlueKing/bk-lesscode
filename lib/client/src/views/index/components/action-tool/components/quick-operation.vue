@@ -185,7 +185,9 @@
                             LC.execCommand('cut')
                         }
                     } else if ([8, 46].includes(event.keyCode)) {
-                        LC.execCommand('remove')
+                        if (!event.target.classList.contains('input')) {
+                            LC.execCommand('remove')
+                        }
                     }
                 }
 
