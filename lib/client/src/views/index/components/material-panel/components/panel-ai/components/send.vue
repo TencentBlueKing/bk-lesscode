@@ -3,6 +3,7 @@
         ref="popover"
         placement="bottom"
         theme="light"
+        ext-cls="g-popover-empty-padding"
         :on-show="handleShow"
         :tippy-options="{
             trigger: 'manual',
@@ -44,7 +45,7 @@
                 >
                     <span
                         v-bk-tooltips="{
-                            content: prompt.content,
+                            content: prompt.prompt,
                             placement: 'right',
                             theme: 'light',
                             width: 300,
@@ -52,25 +53,15 @@
                             extCls: 'prompt-tips'
                         }"
                         v-for="prompt in prompts"
-                        :key="prompt.prompt_id"
+                        :key="prompt.id"
                         class="group-prompt g-flex-row"
-                        @click="handleChoosePrompt(prompt.content)"
+                        @click="handleChoosePrompt(prompt.prompt)"
                     >
                         <span
                             class="prompt-content g-ellipsis"
-                        >{{ prompt.prompt_name }}</span>
-                        <span class="g-flex-row">
-                            <span
-                                v-for="tag in prompt.tags.slice(0, 4)"
-                                :key="tag"
-                                class="prompt-tag"
-                            >{{ tag }}</span>
-                            <span
-                                v-if="prompt.tags.length > 4"
-                                class="prompt-tag"
-                            >+{{ prompt.tags.length - 4 }}</span>
-                        </span>
+                        >{{ prompt.prompt }}</span>
                     </span>
+                    <bk-exception class="exception-wrap-item exception-part" type="search-empty" scene="part" v-if="!prompts.length"> </bk-exception>
                 </section>
             </section>
         </div>
@@ -93,7 +84,7 @@
                 isLoading: false,
                 prompts: [],
                 search: '',
-                textHeight: 48
+                textHeight: 38
             }
         },
 
@@ -105,6 +96,9 @@
             },
             value () {
                 this.handleChangeTextHeight()
+            },
+            search () {
+                this.handleShow()
             }
         },
 
@@ -120,7 +114,7 @@
 
             handleChangeTextHeight () {
                 const lines = this.value.split(/\r?\n/)
-                let height = 32 + lines.length * 16
+                let height = 22 + lines.length * 16
                 if (height >= 200) {
                     height = 200
                 }
@@ -130,16 +124,13 @@
             handleChoosePrompt (content) {
                 this.$emit('input', content)
                 this.hidePrompts()
+                this.autoFocus()
             },
 
             handleShow () {
                 this.isLoading = true
                 this.getPrompts({
-                    page: 1,
-                    limit: 10000,
-                    mine: false,
-                    fuzzy: this.search,
-                    tags: 'lesscode'
+                    search: this.search
                 }).then(res => {
                     this.prompts = res.list
                 }).finally(() => {
@@ -183,6 +174,10 @@
 >>> .bk-tooltip-ref {
     width: 100%;
 }
+.input-search {
+    margin: 4px 12px 0;
+    width: calc(100% - 24px);
+}
 .send-prompt {
   width: 100%;
   flex-direction: row;
@@ -192,9 +187,9 @@
   >>> textarea {
     font-size: 14px;
     line-height: 16px;
-    height: 48px;
-    min-height: 48px;
-    padding: 16px 38px 16px 10px;
+    height: 38px;
+    min-height: 38px;
+    padding: 11px 38px 10px 11px;
     resize: none !important;
     background: #f5f7fa;
     border-color: transparent;
@@ -216,7 +211,7 @@
   }
   &.control-active >>> textarea {
     height: var(--text-height);
-    padding: 15px 38px 15px 10px;
+    padding: 10px 38px 10px 10px;
     border: 1px solid #3A84FF;
   }
 }
