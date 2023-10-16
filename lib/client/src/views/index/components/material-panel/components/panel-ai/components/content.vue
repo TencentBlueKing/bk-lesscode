@@ -187,11 +187,26 @@
                 pushMessage('user', userInput)
                 // 清除input
                 content.value = ''
-                // 返回loading message
-                currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
-                // 输入框loading状态
-                isLoading.value = true
-                aiHelper.chatStream(`help me solve this task:\n ${userInput}`)
+
+                if (/\{\{.+\}\}/.test(userInput)) {
+                    // 包含变量就引导一下
+                    const reg = /{{\s*([^}]*)\s*}}/g
+                    const result = []
+                    let match
+                    while ((match = reg.exec(userInput)) !== null) {
+                        result.push(match[1])
+                    }
+                    pushMessage('ai', `请输入变量：${result.join('、')}`, '')
+                    // 上下文携带完整对话
+                    aiHelper.pushPrompt(userInput, 'user')
+                    aiHelper.pushPrompt(`请输入变量：${result.join('、')}`, 'system')
+                } else {
+                    // 返回loading message
+                    currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
+                    // 输入框loading状态
+                    isLoading.value = true
+                    aiHelper.chatStream(`help me solve this task:\n ${userInput}`)
+                }
             }
 
             const handleComponentNotExist = (infoPrefix, componentId) => {
@@ -727,6 +742,5 @@
         padding: 0 3px 0 0 !important;
         min-width: 84px;
         font-size: 14px;
-        margin-top: 5px;
     }
 </style>

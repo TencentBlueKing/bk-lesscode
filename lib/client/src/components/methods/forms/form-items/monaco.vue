@@ -45,10 +45,12 @@
             :inline-proposals="inlineProposals"
             :model-markers="problems"
             :full-screen-ele="$el"
-            :options="{ quickSuggestions }"
+            :options="{ quickSuggestions, tabSize: 4 }"
             ref="monaco"
             slot="main"
-            @change="handleMonacoChange">
+            @change="handleMonacoChange"
+            @enter="handleMonacoEnter"
+        >
             <span
                 slot="title"
                 class="monaco-title"
@@ -443,8 +445,14 @@
                 this.inlineProposals = []
                 // 先改变值
                 this.change(funcBody)
+
+                const editorRef = this.$refs.monaco.getMonaco()
+                const position = editorRef.getPosition()
+                const model = editorRef.getModel()
+                const currentLine = model.getLineContent(position.lineNumber).slice(0, position.column)
+
                 // 修改提示方式
-                const lastWord = funcBody.split(/\s/g).at(-1)
+                const lastWord = currentLine.split(/\s/g).at(-1)
                 if (lastWord.startsWith('les')) {
                     this.quickSuggestions = {
                         'other': true,
@@ -460,7 +468,12 @@
                 }
                 // code ai
                 this.aiHelper.stop()
-                this.debounceCodeAI(funcBody)
+            },
+
+            handleMonacoEnter () {
+                // code ai
+                this.aiHelper.stop()
+                this.debounceCodeAI(this.form.funcBody)
             },
 
             getCode () {
