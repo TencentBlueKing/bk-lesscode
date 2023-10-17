@@ -184,6 +184,8 @@
             // 处理移动modal，缩放modal
             const handleMouseMove = (event) => {
                 if (!target.isMove) return
+                // 拖拽禁止选中文字
+                event.preventDefault()
                 // 赋值
                 const x = event.clientX - target.clientX
                 const y = event.clientY - target.clientY
@@ -194,8 +196,6 @@
                 // 更新 target
                 target.clientX = event.clientX
                 target.clientY = event.clientY
-                // 拖拽禁止选中文字
-                event.preventDefault()
             }
 
             // 屏幕大小发生变化
