@@ -30,9 +30,12 @@
                     引用已有表
                 </span>
                 <bk-select
-                    :value="localVal.relatedId"
                     size="small"
+                    :value="localVal.relatedId"
+                    :loading="formListLoading"
+                    :clearable="false"
                     @selected="handleSeletedRelatedForm">
+                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName" />
                 </bk-select>
             </section>
             <section v-else>
@@ -40,13 +43,17 @@
                 <bk-select
                     :value="localVal.relatedId"
                     size="small"
+                    :loading="formListLoading"
+                    :clearable="false"
                     @selected="handleSeletedRelatedForm">
+                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName" />
                 </bk-select>
             </section>
         </div>
     </prop-group>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import propGroup from './prop-group.vue'
 
 export default {
@@ -68,30 +75,52 @@ export default {
     },
     data () {
         return {
-            localVal: { ...this.value }
+            localVal: { ...this.value },
+            formListLoading: false,
+            formList: []
         }
+    },
+    computed: {
+        ...mapGetters('projectVersion', ['currentVersionId'])
     },
     watch: {
         value (val) {
             this.localVal = { ...val }
         }
     },
+    mounted () {
+        this.getFormList()
+    },
     methods: {
+        async getFormList () {
+            this.formListLoading = true
+            const params = {
+                projectId: this.$route.params.projectId,
+                versionId: this.currentVersionId
+            }
+            const res = await this.$store.dispatch('nocode/form/getNewFormList', params)
+            this.formList = res.filter(item => item.id !== this.localVal.id)
+            this.formListLoading = false
+        },
         handleTypeChange (val) {
-            if (this.localVal.type !== val && val === 'USE_FORM') {
+            if (this.localVal.type === val || val === 'USE_FORM') {
                 return
             }
             this.localVal.type = val
-            this.localVal.relatedId = 0
+            this.localVal.relatedId = ''
+            this.$emit('updateFields', [])
             this.change()
         },
         handleReuseconfirm () {
             this.localVal.type = 'USE_FORM'
-            this.localVal.relatedId = 0
+            this.localVal.relatedId = ''
+            this.$emit('updateFields', [])
             this.change()
         },
         handleSeletedRelatedForm (val) {
             this.localVal.relatedId = val
+            const fields = JSON.parse(this.formList.find(item => item.id === val).content)
+            this.$emit('updateFields', fields)
             this.change()
         },
         change () {

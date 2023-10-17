@@ -78,7 +78,7 @@
             changePanel () {
                 if (this.curTemplateData.panelActive) {
                     this.panel = 'template'
-                } else if (this.activeNode?.componentId) {
+                } else if (LC.getActiveNode()?.componentId) {
                     this.panel = 'component'
                 } else {
                     this.panel = 'page'
