@@ -215,6 +215,12 @@
                     }
                 })
 
+                this.editor.onKeyDown((event) => {
+                    if (event.keyCode === 13 || event.code === 'Enter') {
+                        this.$emit('enter')
+                    }
+                })
+
                 this.$nextTick(() => {
                     this.editor.setValue(this.value)
                     this.editor.getAction('editor.action.formatDocument').run()
