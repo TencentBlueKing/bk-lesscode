@@ -196,10 +196,10 @@
                     while ((match = reg.exec(userInput)) !== null) {
                         result.push(match[1])
                     }
-                    pushMessage('ai', `请输入变量：${result.join('、')}`, '')
+                    pushMessage('ai', `请提供以下信息：${result.join('、')}`, '')
                     // 上下文携带完整对话
                     aiHelper.pushPrompt(userInput, 'user')
-                    aiHelper.pushPrompt(`请输入变量：${result.join('、')}`, 'system')
+                    aiHelper.pushPrompt(`请提供以下信息：${result.join('、')}`, 'system')
                 } else {
                     // 返回loading message
                     currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
