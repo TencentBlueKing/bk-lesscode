@@ -30,7 +30,7 @@
                     }
                 ]"
                 v-for="(childItem, index) in childList"
-                :key="index">
+                :key="childItem.id || index">
                 <menu-edit
                     :data="childItem"
                     @on-change="value => handleChildrenChange(value, index)"
