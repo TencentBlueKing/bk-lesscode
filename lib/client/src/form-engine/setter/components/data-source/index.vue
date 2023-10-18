@@ -54,6 +54,7 @@
 
     export default {
         name: 'setter-data-source',
+        inheritAttrs: false,
         components: {
             setterFormItem,
             functionData,
@@ -64,6 +65,7 @@
                 type: Object,
                 default: () => ({})
             },
+            disabled: Boolean,
             value: {
                 type: Object,
                 default: () => ({

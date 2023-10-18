@@ -1,6 +1,6 @@
 <template>
     <setter-form-item title="placeholder">
-        <bk-input :value="value" @change="$emit('change', $event)" />
+        <bk-input :disabled="disabled" :value="value" @change="$emit('change', $event)" />
     </setter-form-item>
 </template>
 <script>
@@ -8,10 +8,12 @@
 
     export default {
         name: 'setter-placeholder',
+        inheritAttrs: false,
         components: {
             setterFormItem
         },
         props: {
+            disabled: Boolean,
             value: {
                 type: String,
                 default: ''

@@ -1,6 +1,6 @@
 <template>
     <setter-form-item title="默认值">
-        <default-value :key="field.id" :field="field" :value="value" @change="$emit('change', $event)" />
+        <default-value :key="field.id" :field="field" :disabled="disabled" :value="value" @change="$emit('change', $event)" />
     </setter-form-item>
 </template>
 <script>
@@ -9,6 +9,7 @@
 
     export default {
         name: 'setter-value',
+        inheritAttrs: false,
         components: {
             setterFormItem,
             defaultValue
@@ -18,6 +19,7 @@
                 type: Object,
                 default: () => ({})
             },
+            disabled: Boolean,
             value: [String, Array, Number, Object]
         }
     }

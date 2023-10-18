@@ -1,10 +1,11 @@
 <template>
     <section>
         <setter-form-item title="展示文字">
-            <bk-input :value="value.text" @change="handleChange('text', $event)" />
+            <bk-input :disabled="disabled" :value="value.text" @change="handleChange('text', $event)" />
         </setter-form-item>
         <setter-form-item title="文字位置">
             <bk-select
+                :disabled="disabled"
                 :value="value.align"
                 :clearable="false"
                 @selected="handleChange('align', $event)">
@@ -15,6 +16,7 @@
             <bk-color-picker
                 transfer
                 size="small" 
+                :disabled="disabled"
                 :value="value.color"
                 @change="handleChange('color', $event)" />
         </setter-form-item>
@@ -25,10 +27,12 @@
 
     export default {
         name: 'setter-divider-config',
+        inheritAttrs: false,
         components: {
             setterFormItem
         },
         props: {
+            disabled: Boolean,
             value: {
                 type: Object,
                 default: () => ({

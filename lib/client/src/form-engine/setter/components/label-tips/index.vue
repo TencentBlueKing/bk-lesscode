@@ -1,6 +1,6 @@
 <template>
     <setter-form-item title="填写说明">
-        <bk-input type="textarea" :value="value" @change="$emit('change', $event)" />
+        <bk-input type="textarea" :disabled="disabled" :value="value" @change="$emit('change', $event)" />
     </setter-form-item>
 </template>
 <script>
@@ -8,10 +8,12 @@
 
     export default {
         name: 'setter-label-tips',
+        inheritAttrs: false,
         components: {
             setterFormItem
         },
         props: {
+            disabled: Boolean,
             value: {
                 type: String,
                 default: ''

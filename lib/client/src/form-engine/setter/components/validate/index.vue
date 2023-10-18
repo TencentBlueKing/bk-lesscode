@@ -5,6 +5,7 @@
                 :value="value"
                 :clearable="false"
                 :searchable="true"
+                :disabled="disabled"
                 @selected="handleChange">
                 <bk-option
                     v-for="option in regexList"
@@ -22,6 +23,7 @@
 
     export default {
         name: 'setter-validate',
+        inheritAttrs: false,
         components: {
             setterFormItem
         },

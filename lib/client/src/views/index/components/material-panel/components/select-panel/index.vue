@@ -31,12 +31,12 @@
                 const list = [
                     {
                         key: 'component',
-                        tips: window.i18n.t('页面编辑器'),
+                        tips: window.i18n.t('页面设计器'),
                         icon: 'bk-drag-icon bk-drag-custom-comp-default'
                     },
                     {
                         key: 'formEngine',
-                        tips: window.i18n.t('表单编辑器'),
+                        tips: window.i18n.t('表单设计器'),
                         icon: 'bk-drag-icon bk-drag-biaodan'
                     },
                     {

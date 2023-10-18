@@ -8,6 +8,7 @@
         </bk-button>
         <linkage-rules
             :show.sync="isLinkageDialogShow"
+            :disabled="disabled"
             :field="field"
             :value="value"
             @change="handleLinkageChange">
@@ -21,6 +22,7 @@
 
     export default {
         name: 'setter-val-linkage-rules',
+        inheritAttrs: false,
         components: {
             setterFormItem,
             linkageRules
@@ -30,6 +32,7 @@
                 type: Object,
                 default: () => ({})
             },
+            disabled: Boolean,
             value: {
                 type: Object
             }

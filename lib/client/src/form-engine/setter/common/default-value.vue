@@ -3,21 +3,25 @@
         <bk-input
             v-if="['textarea', 'description'].includes(field.type)"
             type="textarea"
+            :disabled="disabled"
             :value="value"
             @change="handleChange" />
         <bk-input
             v-else-if="field.type === 'int'"
             type="number"
+            :disabled="disabled"
             :value="value"
             @change="handleChange" />
         <bk-date-picker
             v-else-if="['date', 'datetime'].includes(field.type)"
             :type="field.type"
+            :disabled="disabled"
             :value="value"
             @change="handleChange"/>
         <bk-select
             v-else-if="['select', 'multiple-select', 'radio', 'checkbox'].includes(field.type)"
             :multiple="['multiple-select', 'checkbox'].includes(field.type)"
+            :disabled="disabled"
             :value="value"
             @change="handleChange">
             <bk-option
@@ -27,16 +31,18 @@
                 :name="item.label">
             </bk-option>
         </bk-select>
-        <bk-rate v-else-if="field.type === 'rate'" :rate="value" @score="handleChange" />
+        <bk-rate v-else-if="field.type === 'rate'" :rate="value" :edit="!disabled" @score="handleChange" />
         <bk-user-selector
             v-else-if="['member', 'members'].includes(field.type)"
             :api="`${host}/api/c/compapi/v2/usermanage/fs_list_users/`"
             :multiple="field.type === 'members'"
+            :disabled="disabled"
             :value="value"
             @change="handleChange" />
         <bk-input
             v-else
             placeholder="默认值"
+            :disabled="disabled"
             :value="value"
             @change="handleChange">
         </bk-input>
@@ -55,6 +61,7 @@ export default {
             type: Object,
             default: () => ({})
         },
+        disabled: Boolean,
         value: [String, Array, Number, Object]
     },
     data () {

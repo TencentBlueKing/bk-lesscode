@@ -1,12 +1,13 @@
 <template>
     <section class="setter-hidden">
-        <bk-checkbox :value="value.enable" @change="handleChange('enable', $event)">隐藏</bk-checkbox>
+        <bk-checkbox :value="value.enable" :disabled="disabled" @change="handleChange('enable', $event)">隐藏</bk-checkbox>
         <bk-button v-if="value.enable" text size="small" theme="primary" @click="isConditionDialogShow = true">条件编辑</bk-button>
-        <conditionEdit
+        <condition-edit
             :show.sync="isConditionDialogShow"
             :title="`【${field.configure.name}】隐藏条件设置`"
             :field="field"
             :config="value.config"
+            :disabled="disabled"
             @change="handleChange('condition', $event)" />
     </section>
 </template>
@@ -15,6 +16,7 @@
 
     export default {
         name: 'setter-hidden',
+        inheritAttrs: false,
         components: {
             conditionEdit
         },
@@ -23,6 +25,7 @@
                 type: Object,
                 default: () => ({})
             },
+            disabled: Boolean,
             value: {
                 type: Object,
                 default: () => {

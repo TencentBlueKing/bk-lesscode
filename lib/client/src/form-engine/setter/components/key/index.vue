@@ -1,6 +1,9 @@
 <template>
     <setter-form-item title="唯一标识">
-        <bk-input :value="value" @change="$emit('change', $event)" />
+        <bk-input
+            :value="value"
+            :disabled="disabled || hasCreatedForm"
+            @change="$emit('change', $event)" />
     </setter-form-item>
 </template>
 <script>
@@ -8,10 +11,13 @@
 
     export default {
         name: 'setter-key',
+        inheritAttrs: false,
         components: {
             setterFormItem
         },
         props: {
+            hasCreatedForm: Boolean,
+            disabled: Boolean,
             value: {
                 type: String,
                 default: ''

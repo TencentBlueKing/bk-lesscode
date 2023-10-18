@@ -8,7 +8,7 @@
             </div>
         </section>
         <div class="panel-content">
-            <Setter :field="fieldData" @change="handleChange" />
+            <Setter :field="fieldData" :data-source="dataSource" @change="handleChange" />
         </div>
     </section>
 </template>
@@ -25,7 +25,8 @@
         },
         data () {
             return {
-                fieldData: {}
+                fieldData: {},
+                dataSource: {}
             }
         },
         mounted () {
@@ -38,7 +39,10 @@
         methods: {
             updateCallBack () {
                 const activeElement = LC.getActiveElement()
-                this.fieldData = activeElement ? activeElement.elementData : {}
+                if (activeElement) {
+                    this.fieldData = activeElement.elementData
+                    this.dataSource = activeElement.componentData.renderProps.dataSource.code
+                }
             },
             handleCopyId () {
                 execCopy(this.fieldData.id)

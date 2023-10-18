@@ -1,6 +1,6 @@
 <template>
     <setter-form-item title="字段名称">
-        <bk-input v-model="locVal" @change="$emit('change', $event)" @blur="handleBlur" />
+        <bk-input v-model="locVal" :disabled="disabled" @change="$emit('change', $event)" @blur="handleBlur" />
     </setter-form-item>
 </template>
 <script>
@@ -8,10 +8,12 @@
 
     export default {
         name: 'setter-name',
+        inheritAttrs: false,
         components: {
             setterFormItem
         },
         props: {
+            disabled: Boolean,
             value: {
                 type: String,
                 default: ''

@@ -1,6 +1,6 @@
 <template>
     <section class="setter-required">
-        <bk-checkbox :value="value.enable" @change="handleChange('enable', $event)">必填</bk-checkbox>
+        <bk-checkbox :value="value.enable" :disabled="disabled" @change="handleChange('enable', $event)">必填</bk-checkbox>
         <bk-button v-if="value.enable" text size="small" theme="primary" @click="isConditionDialogShow = true">条件编辑</bk-button>
         <conditionEdit
             :show.sync="isConditionDialogShow"
@@ -15,6 +15,7 @@
 
     export default {
         name: 'setter-required',
+        inheritAttrs: false,
         components: {
             conditionEdit
         },
@@ -23,6 +24,7 @@
                 type: Object,
                 default: () => ({})
             },
+            disabled: Boolean,
             value: {
                 type: Object,
                 default: () => {

@@ -12,6 +12,8 @@
                             :is="property"
                             :field="field"
                             :value="field.configure[property]"
+                            :has-created-form="hasCreatedForm"
+                            :disabled="isReuseForm"
                             @change="$emit('change', property, $event)" />
                     </div>
                 </div>
@@ -37,6 +39,14 @@
                         name: '',
                         key: ''
                     }
+                })
+            },
+            dataSource: {
+                type: Object,
+                default: () => ({
+                    type: 'NEW_FORM',
+                    id: '',
+                    relatedId: ''
                 })
             }
         },
@@ -70,6 +80,16 @@
                         this.groups[1].children.push(item)
                     }
                 })
+            }
+        },
+        computed: {
+            // 表单容器是否已经生成数据表
+            hasCreatedForm () {
+                return !!this.dataSource.id
+            },
+            // 表单容器数据源是否为复用数据表
+            isReuseForm () {
+                return this.dataSource.type === 'USE_FORM'
             }
         },
         beforeCreate () {

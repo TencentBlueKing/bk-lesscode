@@ -1,17 +1,31 @@
 <template>
     <section class="computed-config">
-        <div class="bkform-engine-setter-title">计算公式</div>
-        <div class="bkform-engine-setter-content">
+        <setter-form-item title="计算公式">
             <bk-select></bk-select>
-        </div>
-        <div class="bkform-engine-setter-title">计算字段</div>
-        <div class="bkform-engine-setter-content">
+        </setter-form-item>
+        <setter-form-item title="计算字段">
             <bk-select></bk-select>
-        </div>
+        </setter-form-item>
     </section>
 </template>
 <script>
+    import setterFormItem from '../../common/setter-form-item.vue'
+
     export default {
-        name: 'computed-config'
+        name: 'computed-config',
+        inheritAttrs: false,
+        components: {
+            setterFormItem
+        },
+        props: {
+            field: {
+                type: Object,
+                default: () => ({})
+            },
+            disabled: Boolean,
+            value: {
+                type: Object
+            }
+        },
     }
 </script>
