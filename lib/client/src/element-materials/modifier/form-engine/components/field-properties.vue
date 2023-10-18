@@ -65,6 +65,8 @@
     }
 </script>
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
     .field-properties-panel {
         height: 100%;
     }
@@ -96,5 +98,6 @@
     .panel-content {
         height: calc(100% - 42px);
         overflow: auto;
+        @mixin scroller;
     }
 </style>

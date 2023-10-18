@@ -69,9 +69,17 @@
     }
 </script>
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
     .panel-form-engine {
+        height: 100%;
         .search-box {
             padding: 6px 12px;
+        }
+        .materials-container {
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            @mixin scroller;
         }
     }
 </style>
