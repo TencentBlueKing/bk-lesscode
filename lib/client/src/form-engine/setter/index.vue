@@ -11,6 +11,7 @@
                         <component
                             :is="property"
                             :field="field"
+                            :list="list"
                             :value="field.configure[property]"
                             :has-created-form="hasCreatedForm"
                             :disabled="isReuseForm"
@@ -48,6 +49,10 @@
                     id: '',
                     relatedId: ''
                 })
+            },
+            list: {
+                type: Array,
+                default: () => []
             }
         },
         data () {

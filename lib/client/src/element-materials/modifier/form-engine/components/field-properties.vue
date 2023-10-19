@@ -8,7 +8,7 @@
             </div>
         </section>
         <div class="panel-content">
-            <Setter :field="fieldData" :data-source="dataSource" @change="handleChange" />
+            <Setter :field="fieldData" :data-source="dataSource" :list="fields" @change="handleChange" />
         </div>
     </section>
 </template>
@@ -26,7 +26,8 @@
         data () {
             return {
                 fieldData: {},
-                dataSource: {}
+                dataSource: {},
+                fields: []
             }
         },
         mounted () {
@@ -42,6 +43,7 @@
                 if (activeElement) {
                     this.fieldData = activeElement.elementData
                     this.dataSource = activeElement.componentData.renderProps.dataSource.code
+                    this.fields = activeElement.componentData.renderProps.fields.code
                 }
             },
             handleCopyId () {

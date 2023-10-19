@@ -8,49 +8,46 @@
         :auto-close="false"
         :close-icon="false"
         @confirm="handleConfirm"
-        @cancel="handleClose">
+        @cancel="close">
         <div class="condition-edit-dialog">
             <div class="logic-rule">
                 <label>{{$t('字段间关系')}}</label>
                 <bk-radio-group v-model="localVal.logic">
-                    <bk-radio value="AND" :disabled="disabled">{{$t('且')}}</bk-radio>
-                    <bk-radio value="OR" :disabled="disabled">{{ $t('或')}}</bk-radio>
+                    <bk-radio value="and" :disabled="disabled">{{$t('且')}}</bk-radio>
+                    <bk-radio value="or" :disabled="disabled">{{ $t('或')}}</bk-radio>
                 </bk-radio-group>
             </div>
             <div class="condition-list">
-                <div v-for="(conditionItem, index) in localVal.conditions" class="condition-item" :key="index">
+                <div v-for="(condition, index) in localVal.conditions" class="condition-item" :key="index">
                     <div class="condition-content">
                         <!-- 选择字段 -->
                         <bk-select
-                            :value="conditionItem.key"
+                            v-model="condition.key"
                             style="width: 30%; margin-right: 8px"
                             :clearable="false"
-                            :loading="fieldsLoading"
                             :disabled="disabled"
-                            @selected="handleSelectField(conditionItem, $event)">
-                            <bk-option v-for="field in fields" :key="field.key" :id="field.key" :name="field.name"></bk-option>
+                            @change="handleFieldChange(condition)">
+                            <bk-option v-for="field in fieldList" :key="field.key" :id="field.key" :name="field.name"></bk-option>
                         </bk-select>
                         <!-- 选择逻辑关系 -->
                         <bk-select
-                            :value="conditionItem.condition"
+                            v-model="condition.logic"
                             style="width: 30%; margin-right: 8px"
                             :clearable="false"
-                            :disabled="disabled"
-                            @selected="handleSelectCondition">
+                            :disabled="disabled">
                             <bk-option
-                                v-for="field in getConditionOptions(conditionItem.key)"
+                                v-for="field in getConditionOptions(condition.key)"
                                 :key="field.id"
                                 :id="field.id"
                                 :name="field.name">
                             </bk-option>
                         </bk-select>
                         <!-- 条件值 -->
-                        <default-value
+                        <field-value
                             style="width: 40%"
-                            :field="field"
-s                           :value="conditionItem.value"
-                            @change="handleValChange(conditionItem, $event)">
-                        </default-value>
+                            :field="getField(condition.key)"
+                            :value="condition.value"
+                            @change="condition.value = $event" />
                     </div>
                     <div class="operate-btns">
                         <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAdd(index)"></i>
@@ -66,22 +63,26 @@ s                           :value="conditionItem.value"
 </template>
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import defaultValue from './default-value.vue'
+    import fieldValue from './default-value.vue'
 
     export default {
         name: 'condition-edit',
         components: {
-            defaultValue
+            fieldValue
         },
         props: {
             show: Boolean,
             title: String,
             disabled: Boolean,
+            list: {
+                type: Array,
+                default: () => []
+            },
             field: Object,
             config: {
                 type: Object,
                 default: () => ({
-                    logic: 'AND',
+                    logic: 'and',
                     conditions: []
                 })
             }
@@ -89,24 +90,27 @@ s                           :value="conditionItem.value"
         data () {
             return {
                 localVal: {
-                    logic: 'AND',
+                    logic: 'and',
                     conditions: []
                 },
-                fieldsLoading: false,
-                fields: []
+                fieldList: []
             }
         },
         watch: {
             show (val) {
                 if (val) {
-                    this.localVal = this.config.conditions.length > 0 ? cloneDeep(this.config) : { logic: 'AND', conditions: [{ key: '', condition: '', value: '' }] }
+                    this.localVal = this.config.conditions.length > 0 ? cloneDeep(this.config) : { logic: 'and', conditions: [{ key: '', logic: '', value: '' }] }
+                    this.fieldList = this.list.filter(item => item.id !== this.field.id).map(item => {
+                        const { key, name } = item.configure
+                        return { key, name: name || key, type: item.type }
+                    })
                 }
             }
         },
         methods: {
             getConditionOptions (key) {
                 if (key) {
-                    const field = this.fields.find(i => i.key === key)
+                    const field = this.fieldList.find(i => i.key === key)
                     return field ? this.getFieldConditions(field.type) : []
                 }
                 return []
@@ -126,41 +130,70 @@ s                           :value="conditionItem.value"
                     { id: '<=', name: window.i18n.t('小于等于') }
                 ]
             },
-            handleSelectField () {},
-            handleSelectCondition () {},
-            handleValChange () {},
+            getField (key) {
+                if (key) {
+                    const field = this.list.find(item => item.configure.key === key)
+                    if (field) {
+                        return field
+                    }
+                }
+                return {}
+            },
+            handleFieldChange (condition) {
+                condition.logic = ''
+                condition.value = ''
+            },
             handleAdd (index) {
-                console.log(index)
-                this.localVal.conditions.splice(index, 0, { key: '', condition: '', value: '' })
+                this.localVal.conditions.splice(index + 1, 0, { key: '', logic: '', value: '' })
             },
             handleDel (index) {
                 if (this.localVal.conditions.length > 1) {
                     this.localVal.conditions.splice(index, 1)
                 }
             },
-            validate () {},
-            handleConfirm () {},
-            handleClose () {
+            handleConfirm () {
+                this.$emit('change', this.localVal)
+                this.close()
+            },
+            close () {
                 this.$emit('update:show', false)
             }
         }
     }
 </script>
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
+    .condition-edit-dialog {
+        position: relative;
+        padding: 16px 0;
+        background: #fafbfd;
+        border: 1px solid #dcdee5;
+    }
     .logic-rule {
         display: flex;
         align-items: center;
+        padding: 0 16px;
         height: 20px;
         & > label {
             position: relative;
             margin-right: 30px;
             color: #63656e;
-            font-size: 14px;
+            font-size: 12px;
             white-space: nowrap;
+        }
+        /deep/ {
+            .bk-radio-text {
+                font-size: 12px;
+            }
         }
     }
     .condition-list {
-        margin-top: 20px;
+        margin-top: 12px;
+        padding: 0 16px;
+        max-height: 330px;
+        overflow: auto;
+        @mixin scroller;
     }
     .condition-item {
         position: relative;
@@ -191,7 +224,12 @@ s                           :value="conditionItem.value"
             }
         }
     }
-    /deep/ .bk-form-radio {
-        margin-right: 24px;
+    /deep/ {
+        .bk-form-radio {
+            margin-right: 24px;
+        }
+        .bk-select {
+            background: #ffffff;
+        }
     }
 </style>

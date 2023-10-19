@@ -6,9 +6,10 @@
             :show.sync="isConditionDialogShow"
             :title="`【${field.configure.name}】隐藏条件设置`"
             :field="field"
+            :list="list"
             :config="value.config"
             :disabled="disabled"
-            @change="handleChange('condition', $event)" />
+            @change="handleChange('config', $event)" />
     </section>
 </template>
 <script>
@@ -25,6 +26,7 @@
                 type: Object,
                 default: () => ({})
             },
+            list: Array,
             disabled: Boolean,
             value: {
                 type: Object,
@@ -32,7 +34,7 @@
                     return {
                         enable: false,
                         config: {
-                            logic: 'AND',
+                            logic: 'and',
                             conditions: []
                         }
                     }

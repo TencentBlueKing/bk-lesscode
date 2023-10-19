@@ -6,8 +6,9 @@
             :show.sync="isConditionDialogShow"
             :title="`【${field.configure.name}】只读条件设置`"
             :field="field"
+            :list="list"
             :config="value.config"
-            @change="handleChange('condition', $event)" />
+            @change="handleChange('config', $event)" />
     </section>
 </template>
 <script>
@@ -24,6 +25,7 @@
                 type: Object,
                 default: () => ({})
             },
+            list: Array,
             disabled: Boolean,
             value: {
                 type: Object,
@@ -31,7 +33,7 @@
                     return {
                         enable: false,
                         config: {
-                            logic: 'AND',
+                            logic: 'and',
                             conditions: []
                         }
                     }
@@ -47,6 +49,7 @@
             handleChange (key, val) {
                 const localVal = { ...this.value }
                 localVal[key] = val
+                debugger
                 this.$emit('change', localVal)
             }
         }

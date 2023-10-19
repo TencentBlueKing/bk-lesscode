@@ -6,8 +6,9 @@
             :show.sync="isConditionDialogShow"
             :title="`【${field.configure.name}】必填条件设置`"
             :field="field"
+            :list="list"
             :config="value.config"
-            @change="handleChange('condition', $event)" />
+            @change="handleChange('config', $event)" />
     </section>
 </template>
 <script>
@@ -24,6 +25,7 @@
                 type: Object,
                 default: () => ({})
             },
+            list: Array,
             disabled: Boolean,
             value: {
                 type: Object,
