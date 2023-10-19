@@ -6,33 +6,37 @@
         </div>
         <bk-form :label-width="270" form-type="vertical">
             <bk-form-item :label="$t('form_列名称')">
-                <bk-input v-model="localVal.name" @change="change"></bk-input>
+                <bk-input v-model="localVal.label" size="small" @change="change"></bk-input>
             </bk-form-item>
             <bk-form-item :label="$t('form_列字段类型')">
                 <bk-select
                     v-model="localVal.type"
-                    @selected="change">
+                    size="small"
+                    :clearable="false"
+                    @change="handleTypeChange">
                     <bk-option v-for="option in typeList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
                 </bk-select>
             </bk-form-item>
-            <bk-form-item :label="$t('form_数据源配置')" v-if="['select','multi-select'].includes(localVal.type)">
-                <div class="data-source-setting" v-for="(option,index) in localVal.dataSource" :key="option.id">
+            <bk-form-item :label="$t('form_数据源配置')" v-if="hasDataSource">
+                <div class="data-source-setting" v-for="(option, index) in localVal.dataSource" :key="option.id">
                     <bk-input
-                        v-model="option.name"
+                        v-model="option.label"
                         class="option-item"
+                        size="small"
                         :placeholder="$t('选项名')">
                       </bk-input>
                     <bk-input
-                        class="option-item"
-                        :placeholder="$t('选项ID')"
                         v-model="option.id"
+                        class="option-item"
+                        size="small"
+                        :placeholder="$t('选项ID')"
                         @change="change">
                     </bk-input>
                     <div class="btn-area">
-                        <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAddItem(index)"></i>
+                        <i class="bk-drag-icon bk-drag-add-fill" @click="handleAddDataSource(index)"></i>
                         <i
-                            :class="['icon', 'bk-drag-icon', 'bk-drag-reduce-fill', { disabled: localVal.dataSource.length < 2 }]"
-                            @click="handleDeleteItem(index)"></i>
+                            :class="['bk-drag-icon', 'bk-drag-reduce-fill', { disabled: localVal.dataSource.length < 2 }]"
+                            @click="handleDelDataSource(index)"></i>
                     </div>
                 </div>
             </bk-form-item>
@@ -43,7 +47,6 @@
 
 <script>
     import cloneDeep from 'lodash.clonedeep'
-    import { uuid } from '../../../../utils/index'
 
     export default {
         name: 'headerConfigItem',
@@ -52,7 +55,7 @@
                 type: Object,
                 default: () => ({
                     key: '',
-                    name: '',
+                    label: '',
                     type: '',
                     required: false,
                     dataSource: []
@@ -65,44 +68,53 @@
                 typeList: [
                     { id: 'input', name: this.$t('输入框') },
                     { id: 'select', name: this.$t('单选框') },
-                    { id: 'multi-select', name: this.$t('多选框') },
+                    { id: 'multiple-select', name: this.$t('多选框') },
                     { id: 'datetime', name: this.$t('时间') },
                     { id: 'date', name: this.$t('日期') }
                 ]
             }
         },
+        computed: {
+            hasDataSource () {
+                return ['select','multiple-select'].includes(this.localVal.type)
+            }
+        },
         methods: {
-            change () {
-                const key = uuid()
-                this.localVal.key = key
-                if (['select', 'multiselect'].includes(this.localVal.type)) {
-                    this.$set(this.localVal, 'dataSource', [
-                        { name: this.$t('选项1'), id: 'XUAN_XIANG_1' },
-                        { name: this.$t('选项2'), id: 'XUAN_XIANG_2' }
-                    ])
+            getDefaultDataSource () {
+                return [
+                    { id: 'xuanxiang1', label: '选项1' },
+                    { id: 'xuanxiang2', label: '选项2' }
+                ]
+            },
+            handleTypeChange () {
+                if (this.hasDataSource) {
+                    this.localVal.dataSource = this.getDefaultDataSource()
+                } else {
+                    this.localVal.dataSource = []
                 }
-                this.$emit('change', this.localVal)
+                this.change()
             },
-            handleAddItem (index) {
-                const dataItem = { name: '', key: '' }
-                this.localVal.dataSource.splice(index + 1, 0, dataItem)
-                this.$emit('change', this.localVal)
+            handleAddDataSource (index) {
+                this.localVal.dataSource.splice(index + 1, 0, { id: '', label: '' })
+                this.change()
             },
-            handleDeleteItem (index) {
+            handleDelDataSource (index) {
                 if (this.localVal.dataSource.length < 2) {
                     return
                 }
                 this.localVal.dataSource.splice(index, 1)
+                this.change()
+            },
+            change () {
                 this.$emit('change', this.localVal)
             }
-
         }
     }
 </script>
 <style lang='postcss' scoped>
     .header-config-item {
         width: 276px;
-        padding: 16px;
+        padding: 12px;
         position: relative;
         background: #f0f1f5;
         border-radius: 2px;
@@ -114,32 +126,37 @@
         .operate-area {
             position: absolute;
             right: 0;
+            top: 6px;
+            display: flex;
+            align-items: center;
             color: #979BA5;
-            font-size: 20px;
-            margin-top: -3px;
             z-index: 10;
-            .item-remove {
-                cursor: pointer;
-            }
             .item-drag {
+                font-size: 24px;
                 cursor: move;
-                padding-left: 220px;
-                margin-right: -8px;
+                &:hover {
+                    color: #3a84ff;
+                }
+            }
+            .item-remove {
+                font-size: 20px;
+                cursor: pointer;
+                &:hover {
+                    color: #3a84ff;
+                }
             }
         }
     }
     .data-source-setting {
-        display:flex ;
+        display: flex;
         align-items: center;
-        .option-item{
-            width: 94px;
-            margin: 8px 8px 0 0;
+        justify-content: space-between;
+        .option-item {
+            width: 100px;
         }
     }
-    .required-checkbox {
-
-    }
     .btn-area {
+        width: 40px;
         user-select: none;
         .bk-drag-add-fill,
         .bk-drag-reduce-fill {
