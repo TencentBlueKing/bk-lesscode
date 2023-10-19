@@ -20,21 +20,23 @@
             theme="primary"
             size="small"
             :title="$t('配置')"
-            @click="dataSourceDialogShow = true">
+            @click="handleOpenDialog">
             {{ $t('配置数据源') }}
         </bk-button>
-        <data-source-dialog
-            :show.sync="dataSourceDialogShow"
-            :source-type="value.type"
-            :field-type="field.type"
-            :value="value.config"
-            @confirm="handleDataSourceChange">
-        </data-source-dialog>
+        <!-- 自定义数据 -->
+        <custom-data
+            v-if="value.type === 'CUSTOM'"
+            :show.sync="customDataDialogShow"
+            :list="value.data"
+            :disabled="disabled"
+            @update="handleUpdateData">
+        </custom-data>
     </setter-form-item>
 </template>
 <script>
     import setterFormItem from '../../common/setter-form-item.vue'
     import functionData from './components/function-data.vue'
+    import customData from './components/custom-data.vue'
     import dataSourceDialog from './components/data-source-dialog.vue'
 
     const FIELDS_SOURCE_TYPE = [
@@ -58,6 +60,7 @@
         components: {
             setterFormItem,
             functionData,
+            customData,
             dataSourceDialog
         },
         props: {
@@ -81,7 +84,8 @@
         data () {
             return {
                 locVal: this.value,
-                dataSourceDialogShow: false
+                customDataDialogShow: false,
+                formDataDialogShow: false
             }
         },
         computed: {
@@ -94,8 +98,19 @@
         },
         methods: {
             handleSourceTypeChange () {},
+            handleOpenDialog () {
+                if (this.locVal.type === 'CUSTOM') {
+                    this.customDataDialogShow = true
+                } else {
+                    this.formDataDialogShow = true
+                }
+            },
             handleDataSourceChange () {},
-            handleFunctionDataSourceChange () {}
+            handleFunctionDataSourceChange () {},
+            handleUpdateData (data) {
+                const config = { ...this.value, data }
+                this.$emit('change', config)
+            }
         }
     }
 </script>

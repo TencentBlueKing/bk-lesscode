@@ -78,14 +78,6 @@
                 type: Boolean,
                 default: false
             },
-            apiDetail: {
-                type: Object,
-                default: () => ({})
-            },
-            resArrayTreeData: {
-                type: Array,
-                default: () => ([])
-            },
             isDisplayTag: {
                 type: Boolean,
                 default: false
