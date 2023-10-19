@@ -1,6 +1,9 @@
 <template>
     <setter-form-item title="字段名称">
-        <bk-radio-group class="g-prop-radio-group" :value="value.type" @change="handleSourceTypeChange">
+        <bk-radio-group
+            class="g-prop-radio-group"
+            :value="localVal.type"
+            @change="handleSourceTypeChange">
             <bk-radio-button
                 v-for="item in sourceTypeList"
                 :key="item.id"
@@ -8,14 +11,8 @@
                 {{ item.name }}
             </bk-radio-button>
         </bk-radio-group>
-        <function-data
-            v-if="value.type === 'FUNCTION'"
-            :key="field.key"
-            :config="value.config"
-            @change="handleFunctionDataSourceChange">
-        </function-data>
         <bk-button
-            v-else
+            v-if="value.type !== 'FUNCTION'"
             style="margin-top: 8px;"
             theme="primary"
             size="small"
@@ -23,21 +20,32 @@
             @click="handleOpenDialog">
             {{ $t('配置数据源') }}
         </bk-button>
+        <function-data
+            v-if="value.type === 'FUNCTION'"
+            :key="field.key"
+            :config="value.config"
+            @update="updateValue('config', $event)">
+        </function-data>
         <!-- 自定义数据 -->
         <custom-data
-            v-if="value.type === 'CUSTOM'"
             :show.sync="customDataDialogShow"
             :list="value.data"
             :disabled="disabled"
-            @update="handleUpdateData">
+            @update="updateValue('data', $event)">
         </custom-data>
+        <worksheet-data
+            :show.sync="worksheetDataDialogShow"
+            :config="value.config"
+            :disabled="disabled"
+            @update="updateValue('config', $event)">
+        </worksheet-data>
     </setter-form-item>
 </template>
 <script>
     import setterFormItem from '../../common/setter-form-item.vue'
     import functionData from './components/function-data.vue'
     import customData from './components/custom-data.vue'
-    import dataSourceDialog from './components/data-source-dialog.vue'
+    import worksheetData from './components/worksheet-data.vue'
 
     const FIELDS_SOURCE_TYPE = [
         {
@@ -61,7 +69,7 @@
             setterFormItem,
             functionData,
             customData,
-            dataSourceDialog
+            worksheetData,
         },
         props: {
             field: {
@@ -83,9 +91,9 @@
         },
         data () {
             return {
-                locVal: this.value,
+                localVal: this.value,
                 customDataDialogShow: false,
-                formDataDialogShow: false
+                worksheetDataDialogShow: false
             }
         },
         computed: {
@@ -97,20 +105,51 @@
             },
         },
         methods: {
-            handleSourceTypeChange () {},
+            handleSourceTypeChange (val) {
+                this.localVal.type = val
+                if (val === 'FUNCTION') {
+                    this.localVal.config = {
+                        payload: {
+                            methodData: {
+                                methodCode: '',
+                                params: []
+                            }
+                        },
+                        returnedValue: [],
+                        keys: {}
+                    }
+                    this.localVal.data = []
+                } else if (val === 'CUSTOM') {
+                    this.localVal.data = [
+                        { id: 'xuanxiang1', label: '选项1' },
+                        { id: 'xuanxiang2', label: '选项2' }
+                    ]
+                    this.localVal.config = {}
+                } else if (val === 'WORKSHEET') {
+                    this.localVal.config = {
+                        tableName: '',
+                        fieldKey: '',
+                        logic: 'and',
+                        conditions: []
+                    }
+                    this.localVal.data = []
+                }
+                this.change()
+            },
             handleOpenDialog () {
-                if (this.locVal.type === 'CUSTOM') {
+                if (this.localVal.type === 'CUSTOM') {
                     this.customDataDialogShow = true
                 } else {
-                    this.formDataDialogShow = true
+                    this.worksheetDataDialogShow = true
                 }
             },
-            handleDataSourceChange () {},
-            handleFunctionDataSourceChange () {},
-            handleUpdateData (data) {
-                const config = { ...this.value, data }
-                this.$emit('change', config)
-            }
+            updateValue (key, val) {
+                this.localVal[key] = val
+                this.change()
+            },
+            change () {
+                this.$emit('change', { ...this.localVal })
+            },
         }
     }
 </script>

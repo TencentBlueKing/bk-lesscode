@@ -25,7 +25,7 @@
             :value="value"
             @change="handleChange">
             <bk-option
-                v-for="item in field.configure.dataSource.data"
+                v-for="item in dataSourceList"
                 :key="item.id"
                 :id="item.id"
                 :name="item.label">
@@ -50,6 +50,7 @@
 </template>
 <script>
 import bkUserSelector from '@blueking/user-selector'
+import { transDataSourceValue } from '../../utils/data-source'
 
 export default {
     name: 'defaultValue',
@@ -66,7 +67,27 @@ export default {
     },
     data () {
         return {
-            host: process.env.BK_USER_MANAGE_HOST || ''
+            host: process.env.BK_USER_MANAGE_HOST || '',
+            dataSourceList: [],
+            dataSourceListLoding: false
+        }
+    },
+    computed: {
+        dataSource () {
+            return this.field.configure?.dataSource || null
+        }
+    },
+    watch: {
+        'dataSource': {
+            handler: async function (config) {
+                if (config) {
+                    this.dataSourceList = []
+                    this.dataSourceListLoding = true
+                    this.dataSourceList = await transDataSourceValue(config, this)
+                    this.dataSourceListLoding = false
+                }
+            },
+            immediate: true
         }
     },
     methods: {

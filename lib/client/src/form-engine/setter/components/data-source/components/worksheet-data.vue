@@ -1,57 +1,42 @@
 <template>
-    <div class="worksheet-data-wrapper">
-        <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="localVal" :rules="sourceRules">
-            <bk-form-item :label="$t('数据表')" property="tableName" :required="true" error-display-type="normal">
-                <bk-select
-                    :placeholder="$t('请选择数据表')"
-                    :value="localVal.tableName"
-                    :clearable="false"
-                    :searchable="true"
-                    :disabled="tableLoading"
-                    :loading="tableLoading"
-                    @selected="handleSelectForm">
-                    <bk-option
-                        v-for="item in tableList"
-                        :key="item.tableName"
-                        :id="item.tableName"
-                        :name="`${item.formName || item.tableName}(${item.tableName})`">
-                    </bk-option>
-                </bk-select>
-            </bk-form-item>
-            <bk-form-item :label="$t('字段')" property="field" :required="true" error-display-type="normal">
-                <bk-select
-                    v-model="localVal.field"
-                    :placeholder="$t('请选择字段')"
-                    :clearable="false"
-                    :searchable="true"
-                    :disabled="fieldListLoading"
-                    :loading="fieldListLoading"
-                    @selected="update">
-                    <bk-option
-                        v-for="item in fieldList"
-                        :key="item.key"
-                        :id="item.key"
-                        :name="`${item.name}(${item.key})`">
-                    </bk-option>
-                </bk-select>
-            </bk-form-item>
-        </bk-form>
-        <div class="filter-rules-wrapper">
-            <div class="connector-rule">
-                <label>{{ $t('筛选条件') }}</label>
-                <bk-radio-group v-model="localVal.conditions.connector" @change="update">
-                    <bk-radio value="and">{{ $t('且') }}</bk-radio>
-                    <bk-radio value="or">{{ $t('或') }}</bk-radio>
-                </bk-radio-group>
-            </div>
-            <div v-if="localVal.conditions.expressions && localVal.conditions.expressions.length > 0" class="condition-list">
-                <div class="condition-item" v-for="(expression, index) in localVal.conditions.expressions" :key="index">
+    <bk-dialog
+        header-position="left"
+        ext-cls="data-source-dialog"
+        title="配置表单数据源"
+        :mask-close="false"
+        :auto-close="false"
+        :width="720"
+        :show-type-select="false"
+        :value="show"
+        @confirm="onConfirm"
+        @cancel="close">
+        <div class="worksheet-data-wrapper">
+            <bk-form ref="sourceForm" class="select-worksheet" form-type="vertical" :model="localVal" :rules="sourceRules">
+                <bk-form-item :label="$t('数据表')" property="tableName" :required="true" error-display-type="normal">
                     <bk-select
-                        v-model="expression.key"
-                        :placeholder="$t('字段')"
-                        style="width: 250px; margin-right: 8px"
+                        :placeholder="$t('请选择数据表')"
+                        :value="localVal.tableName"
                         :clearable="false"
-                        @selected="handleSelectField(expression)">
+                        :searchable="true"
+                        :disabled="tableLoading"
+                        :loading="tableLoading"
+                        @selected="handleSelectForm">
+                        <bk-option
+                            v-for="item in tableList"
+                            :key="item.tableName"
+                            :id="item.tableName"
+                            :name="`${item.formName || item.tableName}(${item.tableName})`">
+                        </bk-option>
+                    </bk-select>
+                </bk-form-item>
+                <bk-form-item :label="$t('字段')" property="fieldKey" :required="true" error-display-type="normal">
+                    <bk-select
+                        v-model="localVal.fieldKey"
+                        :placeholder="$t('请选择字段')"
+                        :clearable="false"
+                        :searchable="true"
+                        :disabled="fieldListLoading"
+                        :loading="fieldListLoading">
                         <bk-option
                             v-for="item in fieldList"
                             :key="item.key"
@@ -59,89 +44,116 @@
                             :name="`${item.name}(${item.key})`">
                         </bk-option>
                     </bk-select>
-                    <bk-select
-                        v-model="expression.condition"
-                        :placeholder="$t('逻辑')"
-                        style="width: 100px; margin-right: 8px"
-                        :clearable="false"
-                        @selected="update">
-                        <bk-option
-                            v-for="item in getConditionOptions(expression.key)"
-                            :key="item.id"
-                            :id="item.id"
-                            :name="item.name">
-                        </bk-option>
-                    </bk-select>
-                    <bk-select
-                        v-if="useVariable"
-                        v-model="expression.type"
-                        :placeholder="$t('值类型')"
-                        style="width: 100px; margin-right: 8px"
-                        :clearable="false"
-                        @selected="handleSelectType(expression)">
-                        <bk-option id="const" :name="$t('值')"></bk-option>
-                        <bk-option id="field" :name="$t('引用变量')"></bk-option>
-                    </bk-select>
-                    <bk-select
-                        v-if="expression.type === 'field'"
-                        v-model="expression.value"
-                        :placeholder="$t('选择变量')"
-                        style="width: 140px"
-                        :clearable="false"
-                        :loading="relationListLoading"
-                        :disabled="relationListLoading"
-                        @selected="update">
-                        <bk-option
-                            v-for="item in relationList"
-                            :key="item.key"
-                            :id="item.key"
-                            :name="`${item.name}(${item.key})`">
-                        </bk-option>
-                    </bk-select>
-                    <field-value
-                        v-else
-                        :style="{ width: useVariable ? '216px' : '320px' }"
-                        :field="getField(expression.key)"
-                        :value="expression.value"
-                        @change="handleValChange(expression, $event)">
-                    </field-value>
-                    <div class="operate-btns" style="margin-left: 8px">
-                        <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAddExpression(index)"></i>
-                        <i class="icon bk-drag-icon bk-drag-reduce-fill" @click="handleDeleteExpression(index)">
-                        </i>
+                </bk-form-item>
+            </bk-form>
+            <div class="filter-rules-wrapper">
+                <div class="connector-rule">
+                    <label>{{ $t('筛选条件') }}</label>
+                    <bk-radio-group v-model="localVal.logic">
+                        <bk-radio value="and">{{ $t('且') }}</bk-radio>
+                        <bk-radio value="or">{{ $t('或') }}</bk-radio>
+                    </bk-radio-group>
+                </div>
+                <div v-if="localVal.conditions.length > 0" class="condition-list">
+                    <div class="condition-item" v-for="(condition, index) in localVal.conditions" :key="index">
+                        <bk-select
+                            v-model="condition.key"
+                            :placeholder="$t('字段')"
+                            style="width: 250px; margin-right: 8px"
+                            :clearable="false"
+                            @selected="condition = { ...condition, logic: '', type: '', value: '' }">
+                            <bk-option
+                                v-for="item in fieldList"
+                                :key="item.key"
+                                :id="item.key"
+                                :name="`${item.name}(${item.key})`">
+                            </bk-option>
+                        </bk-select>
+                        <bk-select
+                            v-model="condition.logic"
+                            :placeholder="$t('逻辑')"
+                            style="width: 100px; margin-right: 8px"
+                            :clearable="false">
+                            <bk-option
+                                v-for="item in getLogicOptions(condition.key)"
+                                :key="item.id"
+                                :id="item.id"
+                                :name="item.name">
+                            </bk-option>
+                        </bk-select>
+                        <bk-select
+                            v-model="condition.type"
+                            :placeholder="$t('值类型')"
+                            style="width: 100px; margin-right: 8px"
+                            :clearable="false"
+                            @selected="condition.value = ''">
+                            <bk-option id="const" :name="$t('值')"></bk-option>
+                            <bk-option id="field" :name="$t('引用变量')"></bk-option>
+                        </bk-select>
+                        <bk-select
+                            v-if="condition.type === 'field'"
+                            v-model="condition.value"
+                            :placeholder="$t('选择变量')"
+                            style="width: 140px"
+                            :clearable="false"
+                            :loading="relationListLoading"
+                            :disabled="relationListLoading">
+                            <bk-option
+                                v-for="item in relationList"
+                                :key="item.key"
+                                :id="item.key"
+                                :name="`${item.name}(${item.key})`">
+                            </bk-option>
+                        </bk-select>
+                        <field-value
+                            v-else
+                            :style="{ width: '216px' }"
+                            :field="getField(condition.key)"
+                            :value="condition.value"
+                            @change="condition.value = $event">
+                        </field-value>
+                        <div class="operate-btns" style="margin-left: 8px">
+                            <i class="icon bk-drag-icon bk-drag-add-fill" @click="handleAddCondition(index)"></i>
+                            <i class="icon bk-drag-icon bk-drag-reduce-fill" @click="handleDeleteCondition(index)">
+                            </i>
+                        </div>
                     </div>
                 </div>
-                <!--        <p v-if="errorTips" class="common-error-tips">请检查筛选条件</p>-->
+                <div v-else class="data-empty" @click="handleAddCondition(0)">{{ $t('点击添加') }}</div>
             </div>
-            <div v-else class="data-empty" @click="handleAddExpression(0)">{{ $t('点击添加') }}</div>
         </div>
-    </div>
+    </bk-dialog>
 </template>
 <script>
-    import { mapGetters, mapState } from 'vuex'
+    import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
-    import FieldValue from '../../../common/default-value.vue'
+    import fieldValue from '../../../common/default-value.vue'
 
     export default {
         name: 'WorksheetData',
         components: {
-            FieldValue
+            fieldValue
         },
         props: {
-            useVariable: {
-                // 参数值是否支持引用变量
-                type: Boolean,
-                default: false
-            },
-            sourceTypeList: {
-                type: Array,
-                default: () => []
-            },
-            value: Object
+            show: Boolean,
+            config: {
+                type: Object,
+                default: () => ({
+                    tableName: '',
+                    fieldKey: '',
+                    logic: 'and',
+                    conditions: []
+                })
+            }
         },
         data () {
             return {
-                localVal: cloneDeep(this.value),
+                localVal: {
+                    tableName: '',
+                    fieldKey: '',
+                    logic: 'and',
+                    conditions: []
+                },
                 tableLoading: false,
                 tableList: [], // 数据表列表
                 fieldList: [],
@@ -157,7 +169,7 @@
                             trigger: 'blur'
                         }
                     ],
-                    field: [
+                    fieldKey: [
                         {
                             required: true,
                             trigger: 'blur',
@@ -168,24 +180,18 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapState('nocode/formSetting', ['fieldsList'])
+            ...mapGetters('projectVersion', { versionId: 'currentVersionId' })
         },
         watch: {
-            value (val, oldVal) {
-                this.localVal = cloneDeep(val)
-                if (val.id !== oldVal.id) {
-                    this.getTableList()
+            async show (val) {
+                if (val) {
+                    this.localVal = cloneDeep(this.config)
+                    await this.getTableList()
+                    if (this.config.tableName) {
+                        this.getFieldList(this.config.tableName)
+                    }
+                    this.getRelationList()
                 }
-            }
-        },
-        async created () {
-            await this.getTableList()
-            if (this.value.tableName) {
-                this.getFieldList(this.value.tableName)
-            }
-            if (this.useVariable) {
-                this.getRelationList()
             }
         },
         methods: {
@@ -194,7 +200,7 @@
                     this.tableLoading = true
                     const projectId = this.$route.params.projectId
                     const [forms, tablesRes] = await Promise.all([
-                        this.$store.dispatch('nocode/formSetting/getFormList', { projectId, versionId: this.versionId }),
+                        this.$store.dispatch('nocode/form/getNewFormList', { projectId, versionId: this.versionId }),
                         this.$store.dispatch('dataSource/list', { projectId})
                     ])
                     const tableList = []
@@ -204,8 +210,8 @@
                             if (form) {
                                 const { formName, tableName, content } = form
                                 const fields = JSON.parse(content).map(item => {
-                                    const { key, name, type } = item
-                                    return { key, name, type }
+                                    const { key, name } = item.configure
+                                    return { key, name: name || key, type: item.type }
                                 })
                                 tableList.push({ formName, tableName, fields })
                             }
@@ -232,8 +238,8 @@
             getRelationList () {
                 // 引用本表的下拉框和单选框字段
                 const data = []
-                this.fieldsList.forEach(item => {
-                    if (['SELECT', 'RADIO'].includes(item.type)) {
+                this.fieldList.forEach(item => {
+                    if (['select', 'radio'].includes(item.type)) {
                         data.push({
                             key: item.key,
                             name: item.name
@@ -242,8 +248,8 @@
                 })
                 this.relationList = data
             },
-            getFieldConditions (type) {
-                if (['input', 'textarea', 'date', 'inputselect', 'select', 'multiselect', 'member', 'members', 'richtext', 'desc', 'link'].includes(type)) {
+            getFieldLogics (type) {
+                if (['input', 'textarea', 'date', 'select', 'multiple-select', 'member', 'members', 'rich-text', 'desc', 'link'].includes(type)) {
                     return [
                         { id: '==', name: '等于' },
                         { id: 'in', name: '包含' }
@@ -258,10 +264,10 @@
                 ]
             },
             // 筛选条件字段逻辑选项，不同类型的字段有不同的逻辑关系
-            getConditionOptions (key) {
+            getLogicOptions (key) {
                 if (key) {
                     const field = this.fieldList.find(i => i.key === key)
-                    return field ? getFieldConditions(field.type) : []
+                    return field ? getFieldLogics(field.type) : []
                 }
                 return []
             },
@@ -277,56 +283,39 @@
                 this.getFieldList(val)
                 const table = this.tableList.find(item => item.tableName === val)
                 this.localVal.tableName = table.tableName
-                this.localVal.conditions.expressions = []
+                this.localVal.conditions = []
                 this.localVal.field = ''
-                this.update()
-            },
-            // 选择筛选条件字段
-            handleSelectField (expression) {
-                expression.condition = ''
-                expression.type = this.useVariable ? '' : 'const'
-                expression.value = ''
-                this.update()
-            },
-            // 选择字段值类型
-            handleSelectType (expression) {
-                expression.value = ''
-                this.update()
-            },
-            // 选择引用变量
-            handleSelectRelation () {
-                this.update()
-            },
-            handleValChange (expression, val) {
-                expression.value = val
-                this.update()
             },
             // 增加筛选条件
-            handleAddExpression (index) {
-                this.localVal.conditions.expressions.splice(index + 1, 0, {
+            handleAddCondition (index) {
+                this.localVal.conditions.splice(index + 1, 0, {
                     key: '',
-                    condition: '',
-                    type: this.useVariable ? '' : 'const',
+                    logic: '',
+                    type: '',
                     value: ''
                 })
             },
             // 删除筛选条件
-            handleDeleteExpression (index) {
-                this.localVal.conditions.expressions.splice(index, 1)
+            handleDeleteCondition (index) {
+                this.localVal.conditions.splice(index, 1)
             },
             update () {
                 this.$emit('update', cloneDeep(this.localVal))
             },
             validate () {
                 this.$refs.sourceForm.validate()
-                const sourceFormValid = this.localVal.tableName && this.localVal.field
-                // const filterRuleValid = this.localVal.conditions.expressions.every((exp) => {
-                //   const { key, condition, type, value } = exp;
-                //   return key !== '' && condition !== '' && type !== '' && value !== '';
-                // });
-                // this.errorTips = !filterRuleValid;
-                // return sourceFormValid && filterRuleValid;
+                const sourceFormValid = this.localVal.tableName && this.localVal.fieldKey
                 return sourceFormValid
+            },
+            onConfirm () {
+                if (!this.validate()) {
+                    return
+                }
+                this.$emit('update', cloneDeep(this.localVal))
+                this.close()
+            },
+            close () {
+                this.$emit('update:show', false)
             }
         }
     }
@@ -335,16 +324,21 @@
 .worksheet-data-wrapper {
   .select-worksheet {
     display: flex;
-    //align-items: center;
+    align-items: top;
 
     .bk-form-item {
       margin-top: 0;
-      flex: 1;
-      /deep/ .bk-form-content{
-        line-height: unset;
+      width: calc(50% - 10px);
+      /deep/ {
+        .bk-form-content{
+            line-height: unset;
+        }
+        .bk-label {
+            font-size: 12px;
+        }
       }
       &:not(:last-of-type) {
-        margin-right: 10px;
+        margin-right: 20px;
       }
     }
   }
@@ -362,8 +356,16 @@
       position: relative;
       margin-right: 30px;
       color: #63656e;
-      font-size: 14px;
+      font-size: 12px;
       white-space: nowrap;
+    }
+    /deep/ {
+        .bk-form-radio {
+            margin-right: 24px;
+        }
+        .bk-radio-text {
+            font-size: 12px;
+        }
     }
   }
 

@@ -62,7 +62,7 @@
             }
 
             const updateConfig = () => {
-                emit('change', formData.value)
+                emit('update', formData.value)
             }
 
             return { describe, formData, validate, handleSelectFunction, handleKeyValChange }

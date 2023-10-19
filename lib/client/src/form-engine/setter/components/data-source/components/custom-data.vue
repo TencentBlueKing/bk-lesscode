@@ -122,7 +122,6 @@
                 if (!this.validate()) {
                     return
                 }
-                debugger
                 this.$emit('update', this.localVal)
                 this.close()
             },
