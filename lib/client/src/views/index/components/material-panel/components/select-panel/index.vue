@@ -18,6 +18,7 @@
 <script>
     import aiImg from '../../../../../../images/ai-logo.png'
     import { mapGetters } from 'vuex'
+    import LC from '@/element-materials/core'
 
     export default {
         props: {
@@ -30,8 +31,13 @@
                 const list = [
                     {
                         key: 'component',
-                        tips: window.i18n.t('组件库'),
+                        tips: window.i18n.t('页面设计器'),
                         icon: 'bk-drag-icon bk-drag-custom-comp-default'
+                    },
+                    {
+                        key: 'formEngine',
+                        tips: window.i18n.t('表单设计器'),
+                        icon: 'bk-drag-icon bk-drag-biaodan'
                     },
                     {
                         key: 'template',
@@ -61,7 +67,21 @@
                 return list
             }
         },
+        mounted () {
+            LC.addEventListener('active', this.handleActiveNodeChange)
+        },
+        beforeDestroy () {
+            LC.removeEventListener('active', this.handleActiveNodeChange)
+        },
         methods: {
+            handleActiveNodeChange () {
+                const activeNode = LC.getActiveNode()
+                if (activeNode.type === 'widget-form-container') {
+                    this.handleChange('formEngine')
+                } else {
+                    this.handleChange('component')
+                }
+            },
             handleChange (value) {
                 this.$emit('input', value)
                 this.$emit('change', value)

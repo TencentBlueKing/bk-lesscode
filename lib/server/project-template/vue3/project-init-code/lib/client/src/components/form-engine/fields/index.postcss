@@ -1,0 +1,25 @@
+.bkform-engine-field-widget {
+    .widget-label {
+        margin-bottom: 6px;
+        .label-text {
+            position: relative;
+            line-height: 20px;
+            font-size: 12px;
+            color: #63656e;
+            &.has-tips {
+                border-bottom: 1px dashed #979ba5;
+            }
+            &.required::after {
+                position: absolute;
+                top: 0;
+                width: 14px;
+                color: #ea3636;
+                text-align: center;
+                content: "*";
+            }
+        }
+    }
+    .date-picker-widget{
+        width: 100%;
+    }
+}
