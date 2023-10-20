@@ -44,6 +44,9 @@
     import LC from '@/element-materials/core'
     import PlusEvent from './children/plus-event.vue'
     import RenderEvent from './children/render-event.vue'
+    import {
+        EVENT_TYPE
+    } from 'shared/function/constant'
 
     export default {
         name: 'modifier-events',
@@ -75,7 +78,9 @@
                     this.renderEvents[key] = {
                         enable: true,
                         methodCode: renderEvent,
-                        params: []
+                        type: EVENT_TYPE.METHOD,
+                        params: [],
+                        actions: []
                     }
                 } else {
                     this.renderEvents[key] = renderEvent
@@ -91,8 +96,10 @@
             }, 100)
 
             LC.addEventListener('mergeRenderEvents', updateCallback)
+            LC.addEventListener('setRenderEvents', updateCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('mergeRenderEvents', updateCallback)
+                LC.removeEventListener('setRenderEvents', updateCallback)
             })
         },
 
@@ -107,7 +114,9 @@
                     [event.name]: {
                         enable: true,
                         methodCode: '',
-                        params: []
+                        type: EVENT_TYPE.METHOD,
+                        params: [],
+                        actions: []
                     }
                 }
                 this.updateTargetData()

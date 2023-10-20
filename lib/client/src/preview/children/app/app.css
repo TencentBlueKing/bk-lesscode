@@ -73,3 +73,7 @@ td,th {
 .lesscode-bk-table-body-content .cell.none {
     display: block !important;
 }
+
+.tippy-tooltip.navigation-message-theme.empty-padding-theme{
+    padding: 0 !important;
+}

@@ -12,12 +12,15 @@
             :tippy-options="{ arrow: false }"
             :on-show="getFunctionListFromApi"
         >
-            <bk-input
-                class="choose-input"
-                :placeholder="$t('请选择函数')"
-                :value="renderChoosenFunction.methodCode"
-                readonly
-            />
+            <section class="choose-function-trigger">
+                <slot name="trigger-prefix"></slot>
+                <bk-input
+                    class="choose-input"
+                    :placeholder="$t('请选择函数')"
+                    :value="renderChoosenFunction.methodCode"
+                    readonly
+                />
+            </section>
             <i
                 :class="[
                     'choose-icon bk-icon icon-angle-down',
@@ -149,15 +152,21 @@
                             4. ${$t('参数还可以选择手动输入值、使用变量值或表达式')}`,
                             width: '350px',
                             placements: ['left'],
-                            boundary: 'window'
+                            boundary: 'window',
+                            disabled: !showParamTips
                         }"
                         class="param-title"
                         slot="title"
                     >
-                        <span class="title">{{$t('参数（{0}）',[computedParamKeys[index]])}}</span>
+                        <span :class="{ title: showParamTips }">{{$t('参数（{0}）',[computedParamKeys[index]])}}</span>
                     </span>
                     <bk-input
                         :value="panel.value"
+                        v-bk-tooltips="{
+                            content: paramTips,
+                            boundary: 'window',
+                            disabled: !paramTips
+                        }"
                         @change="value => handleInputParam(index, { value })"
                         @blur="triggleUpdate"
                     />
@@ -206,6 +215,13 @@
             defaultVariableFormat: {
                 type: String,
                 default: 'value'
+            },
+            showParamTips: {
+                type: Boolean,
+                default: true
+            },
+            paramTips: {
+                type: String
             }
         },
 
@@ -276,25 +292,30 @@
             }
         },
 
-        created () {
-            this.renderChoosenFunction = {
-                methodCode: this.choosenFunction?.methodCode || '',
-                params: [...this.choosenFunction?.params || []]
-            }
+        watch: {
+            choosenFunction: {
+                handler () {
+                    this.renderChoosenFunction = {
+                        methodCode: this.choosenFunction?.methodCode || '',
+                        params: [...this.choosenFunction?.params || []]
+                    }
 
-            // 如果有选择函数，需要查找到对应的 params
-            if (this.renderChoosenFunction.methodCode) {
-                this.renderChoosenFunction.params = this.computedParamKeys.map((paramKey, index) => {
-                    let param = {
-                        value: '',
-                        code: '',
-                        format: this.defaultVariableFormat
+                    // 如果有选择函数，需要查找到对应的 params
+                    if (this.renderChoosenFunction.methodCode) {
+                        this.renderChoosenFunction.params = this.computedParamKeys.map((paramKey, index) => {
+                            let param = {
+                                value: '',
+                                code: '',
+                                format: this.defaultVariableFormat
+                            }
+                            if (this.choosenFunction?.params?.[index]) {
+                                param = this.choosenFunction.params[index]
+                            }
+                            return param
+                        })
                     }
-                    if (this.choosenFunction?.params?.[index]) {
-                        param = this.choosenFunction.params[index]
-                    }
-                    return param
-                })
+                },
+                immediate: true
             }
         },
 
@@ -451,8 +472,12 @@
             font-size: 14px;
         }
     }
-    .choose-input {
+    .choose-function-trigger {
+        display: flex;
         width: 100%;
+    }
+    .choose-input {
+        flex: 1;
         cursor: pointer;
         ::v-deep .bk-form-input[readonly] {
             background-color: #ffffff !important;

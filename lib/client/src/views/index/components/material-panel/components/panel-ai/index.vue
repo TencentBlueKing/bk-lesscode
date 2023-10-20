@@ -3,7 +3,7 @@
         @clear="handleClear"
         @close="handlerClose"
     >
-        <render-content ref="content" />
+        <render-content ref="content" :is-show-ai="isShowAi" />
     </render-modal>
 </template>
 <script>
@@ -18,7 +18,7 @@
         },
 
         emits: ['close'],
-
+        props: { isShowAi: Boolean },
         setup (_, { emit }) {
             const content = ref(null)
 

@@ -123,6 +123,9 @@
         },
         created () {
             this.remoteData = Object.assign({}, this.remoteData, this.payload)
+            if (this.autoGetData && this.remoteData.methodCode) {
+                this.getApiData()
+            }
         },
         methods: {
             changeFunc (val) {
