@@ -2,6 +2,7 @@
     <section>
         <setter-form-item title="校验方式">
             <bk-select
+                size="small"
                 :value="value"
                 :clearable="false"
                 :searchable="true"
