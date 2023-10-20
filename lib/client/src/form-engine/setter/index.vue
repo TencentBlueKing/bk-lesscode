@@ -7,7 +7,7 @@
                     <span class="group-name-text">{{ group.name }}</span>
                 </div>
                 <div v-show="group.open" class="group-content">
-                    <div v-for="property in group.children" class="property-item" :key="property">
+                    <div v-for="property in group.children" class="property-item" :key="`${field.id}_${property}`">
                         <component
                             :is="property"
                             :field="field"

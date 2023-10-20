@@ -25,6 +25,7 @@
 
     export default {
         name: 'setter-table-config',
+        inheritAttrs: false,
         components: {
             headerConfigItem
         },
