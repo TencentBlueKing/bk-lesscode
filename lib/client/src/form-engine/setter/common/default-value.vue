@@ -102,4 +102,7 @@ export default {
     .bk-date-picker {
         width: 100%;
     }
+    .bk-select {
+        background: #ffffff;
+    }
 </style>
