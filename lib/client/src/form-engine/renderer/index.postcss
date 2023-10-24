@@ -1,0 +1,29 @@
+.bkform-engine-renderer {
+    position: relative;
+    background: #ffffff;
+}
+.bkform-engine-renderer-fields {
+    position: relative;
+    padding: 24px 32px;
+    &.half-row-layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        .bkform-engine-field-widget {
+            width: calc(50% - 5px);
+        }
+    }
+    .user-selector {
+        width: 100%;
+    }
+}
+.bkform-engine-field-widget {
+    margin-bottom: 24px;
+}
+.bkform-engine-renderer-actions {
+    padding: 12px 32px;
+    .bk-button {
+        margin-right: 8px;
+    }
+}

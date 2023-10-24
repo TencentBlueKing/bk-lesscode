@@ -8,13 +8,15 @@
         getCurrentInstance
     } from '@vue/composition-api'
     import useSave from './common/use-save'
+    import useSaveFormContainer from './common/use-save-form-container' // 表单容器数据源为新建表时需要，创建或更新form表
     import usePreviewImg from './common/use-preview-img'
     import useCanvaseLock from './common/use-canvas-lock'
 
     export default {
         setup () {
             const currentInstance = getCurrentInstance()
-            const [isLoading, handleSave] = useSave()
+            const { isFormContainerPending, saveFormContainers } = useSaveFormContainer()
+            const [isSavePending, handleSave] = useSave()
             const [, handleUpdatePreiviewImg] = usePreviewImg()
             const {
                 check: canvasLockCheck,
@@ -55,6 +57,7 @@
                     })
                     return
                 }
+                await saveFormContainers()
                 await handleSave()
                 await handleUpdatePreiviewImg()
             }
@@ -67,7 +70,7 @@
             })
             
             return {
-                isLoading,
+                isLoading: isFormContainerPending || isSavePending,
                 isLocked,
                 handleSubmit
             }
