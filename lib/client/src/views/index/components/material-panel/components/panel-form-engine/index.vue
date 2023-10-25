@@ -5,7 +5,7 @@
             :list="searchList"
             @on-change="handleSearch" />
         <section class="materials-container">
-            <group-box v-show="widgetList.length !== 1" group-name="设计容器" :list="containerMaterials">
+            <group-box v-show="widgetList.length !== 1" group-name="容器" :list="containerMaterials">
                 <render-component :data="containerMaterials[0]" />
             </group-box>
             <formEngineMaterial :list="widgetList" />
@@ -19,10 +19,10 @@
     import formEngineMaterial from '@/form-engine/material/index.vue'
     import materials from '@/form-engine/material/materials'
 
-    // 保持formEngine独立性，另单独引入设计容器类
+    // 保持formEngine独立性，另单独引入容器类
     const CONTAINER_MATERIALS = [
         {
-            group: '设计容器',
+            group: '容器',
             icon: 'bk-drag-icon bk-drag-xing-2',
             name: 'form-container',
             type: 'widget-form-container',
