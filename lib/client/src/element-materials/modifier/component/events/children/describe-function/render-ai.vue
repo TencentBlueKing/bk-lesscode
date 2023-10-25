@@ -9,15 +9,11 @@
         />
         <section
             class="ai-button"
-            v-bk-tooltips="{
-                content: $t('灰度中，暂未全量开放'),
-                disabled: isAiAvailable
-            }"
         >
             <bk-button
                 theme="primary"
                 size="small"
-                :disabled="!prompt.trim() || !isAiAvailable"
+                :disabled="!prompt.trim()"
                 :loading="loading"
                 @click="handleGenerateByAi"
             >
@@ -38,8 +34,7 @@
         Ai
     } from '@/common/ai'
     import {
-        ref,
-        computed
+        ref
     } from '@vue/composition-api'
     import {
         messageError
@@ -96,8 +91,6 @@
             const prompt = ref('')
             const errorMessage = ref('')
             const loading = ref(false)
-
-            const isAiAvailable = computed(() => store.getters['ai/isAiAvailable'])
 
             const setComponentStyle = (componentId, value) => {
                 if (!hasComponent(LC.getRoot().children, componentId)) {
@@ -230,14 +223,14 @@
                 handleMessage,
                 handleApiError,
                 systemPrompt,
-                type: 'event'
+                type: 'event',
+                needCmd: true
             })
 
             return {
                 prompt,
                 errorMessage,
                 loading,
-                isAiAvailable,
                 handleGenerateByAi,
                 handleChange
             }

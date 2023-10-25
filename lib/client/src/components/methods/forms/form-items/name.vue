@@ -40,8 +40,8 @@
                     trigger: 'blur'
                 },
                 groupNameRule: {
-                    validator: val => /^[A-Za-z_][A-Za-z]*[A-Za-z_]?$/.test(val),
-                    message: this.$t('由大小写英文字母组成，开头和结尾还可以是下划线，且必须符合驼峰命名规范'),
+                    validator: val => /^[A-Za-z_][A-Za-z0-9]*[A-Za-z_]?$/.test(val),
+                    message: this.$t('由大小写英文字母、数字组成，开头和结尾还可以是下划线，且必须符合驼峰命名规范'),
                     trigger: 'blur'
                 }
             }

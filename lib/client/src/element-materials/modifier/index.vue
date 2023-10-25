@@ -9,11 +9,13 @@
     import ComponentModifier from './component'
     import TemplateModifier from './template'
     import PageModifier from './page'
+    import FormEngineModifier from './form-engine'
 
     const comMap = {
         template: TemplateModifier,
         component: ComponentModifier,
-        page: PageModifier
+        page: PageModifier,
+        formEngine: FormEngineModifier
     }
 
     export default {
@@ -51,20 +53,32 @@
             const activeClearCallback = () => {
                 this.changePanel()
             }
+            const activeElementUpdateCallback = () => {
+                const activeElement = LC.getActiveElement()
+                if (activeElement) {
+                    this.panel = 'formEngine'
+                } else {
+                    this.changePanel()
+                }
+            }
             LC.addEventListener('active', activeCallback)
             LC.addEventListener('activeClear', activeClearCallback)
+            LC.addEventListener('activeElementUpdate', activeElementUpdateCallback)
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('active', activeCallback)
             })
             this.$once('hook:beforeDestroy', () => {
                 LC.removeEventListener('activeClear', activeClearCallback)
             })
+            this.$once('hook:beforeDestroy', () => {
+                LC.removeEventListener('activeElementUpdate', activeElementUpdateCallback)
+            })
         },
         methods: {
             changePanel () {
                 if (this.curTemplateData.panelActive) {
                     this.panel = 'template'
-                } else if (this.aciveNode?.componentId) {
+                } else if (LC.getActiveNode()?.componentId) {
                     this.panel = 'component'
                 } else {
                     this.panel = 'page'

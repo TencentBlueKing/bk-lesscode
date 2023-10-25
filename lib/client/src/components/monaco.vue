@@ -53,6 +53,10 @@
                 type: Array,
                 default: () => ([])
             },
+            inlineProposals: {
+                type: Array,
+                default: () => ([])
+            },
             // 编辑器代码异常信息
             modelMarkers: {
                 type: Array,
@@ -71,22 +75,27 @@
                 renderHeight: this.height,
                 isFull: false,
                 editor: {},
-                proposalsRef: {}
+                proposalsRef: {},
+                inlineProposalsRef: {}
             }
         },
 
         watch: {
-            options (options) {
-                if (this.editor) {
-                    this.editor.updateOptions(options)
-                    this.editor.layout()
-                }
+            options: {
+                handler (options) {
+                    if (this.editor) {
+                        this.editor.updateOptions(options)
+                        this.editor.layout()
+                    }
+                },
+                deep: true
             },
             // 语言切换后，.layout方法更新无效， 销毁重新渲染
             language (val) {
                 if (this.editor) {
                     this.editor?.dispose?.()
                     this.proposalsRef?.dispose?.()
+                    this.inlineProposalsRef?.dispose?.()
                     this.initMonaco()
                 }
             },
@@ -147,6 +156,7 @@
                 setTimeout(() => {
                     this.editor?.dispose?.()
                     this.proposalsRef?.dispose?.()
+                    this.inlineProposalsRef?.dispose?.()
                 }, 200)
             })
         },
@@ -168,6 +178,11 @@
                     fixedOverflowWidgets: true,
                     automaticLayout: true,
                     readOnly: this.readOnly,
+                    quickSuggestions: {
+                        'other': true,
+                        'comments': true,
+                        'strings': true
+                    },
                     minimap: {
                         enabled: false // 关闭小地图
                     },
@@ -187,7 +202,8 @@
                         store () {},
                         remove () {},
                         onWillSaveState () {},
-                        onDidChangeStorage () {}
+                        onDidChangeStorage () {},
+                        onDidChangeValue: () => () => {}
                     }
                 })
 
@@ -196,6 +212,12 @@
                     if (this.value !== value) {
                         this.$emit('update:value', value)
                         this.$emit('change', value)
+                    }
+                })
+
+                this.editor.onKeyDown((event) => {
+                    if (event.keyCode === 13 || event.code === 'Enter') {
+                        this.$emit('enter')
                     }
                 })
 
@@ -211,21 +233,46 @@
 
             createDependencyProposals () {
                 const self = this
+                const getRange = (model, position) => {
+                    const word = model.getWordUntilPosition(position)
+                    const range = {
+                        startLineNumber: position.lineNumber,
+                        endLineNumber: position.lineNumber,
+                        startColumn: word.startColumn,
+                        endColumn: word.endColumn
+                    }
+                    return range
+                }
+                // 清除自带的提示
+                monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+                    noSemanticValidation: true,
+                    noSyntaxValidation: true
+                })
+                monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+                    noLib: true,
+                    allowNonTsExtensions: true
+                })
                 this.proposalsRef = monaco.languages.registerCompletionItemProvider('javascript', {
                     provideCompletionItems (model, position) {
-                        const word = model.getWordUntilPosition(position)
-                        const range = {
-                            startLineNumber: position.lineNumber,
-                            endLineNumber: position.lineNumber,
-                            startColumn: word.startColumn,
-                            endColumn: word.endColumn
-                        }
+                        const range = getRange(model, position)
                         const suggestions = self.proposals.map((proposal) => ({
                             range,
                             ...proposal
                         }))
                         return {
                             suggestions
+                        }
+                    }
+                })
+                this.inlineProposalsRef = monaco.languages.registerInlineCompletionsProvider('javascript', {
+                    freeInlineCompletions () {},
+                    provideInlineCompletions (model, position) {
+                        const range = getRange(model, position)
+                        return {
+                            items: self.inlineProposals.map(proposal => ({
+                                range,
+                                ...proposal
+                            }))
                         }
                     }
                 })

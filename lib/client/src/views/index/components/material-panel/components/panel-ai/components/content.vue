@@ -16,15 +16,12 @@
                 disabled: !isLoading
             }"
         >
-            <bk-input
-                size="large"
-                ref="inputRef"
-                :native-attributes="{ autofocus: 'autofocus' }"
-                class="ai-operation-input"
-                :disabled="isLoading"
+            <send
                 v-model="content"
+                :is-show-ai="isShowAi"
+                class="ai-send"
                 @enter="handleUserInput"
-            ></bk-input>
+            />
             <bk-button
                 size="large"
                 theme="primary"
@@ -42,8 +39,7 @@
     import {
         ref,
         onBeforeMount,
-        nextTick,
-        watch
+        nextTick
     } from '@vue/composition-api'
     import LC from '@/element-materials/core'
     import {
@@ -61,20 +57,24 @@
     import vue2Materials from '@/element-materials/materials/vue2'
     import vue3Materials from '@/element-materials/materials/vue3'
     import { bkMessage } from 'bk-magic-vue'
+    import Send from './send.vue'
+    import * as createHacker from '../../common/group-box/hacker.js'
 
     export default {
         components: {
-            RenderMessage
+            RenderMessage,
+            Send
         },
-        props: { isShowAi: Boolean },
-        setup (props) {
+        props: {
+            isShowAi: Boolean
+        },
+        setup () {
             let currentMessage = ref({})
             let cmdMessage = ''
             let errorTime = 0
             const messages = ref([])
             const content = ref('')
             const isLoading = ref(false)
-            const inputRef = ref(null)
 
             const scrollToBottom = () => {
                 nextTick(() => {
@@ -113,8 +113,10 @@
             
             // 结束 ai 消息处理
             const handleEnd = () => {
+                if (currentMessage.status === 'loading') {
+                    currentMessage.status = ''
+                }
                 isLoading.value = false
-                currentMessage.status = 'success'
                 if (cmdMessage) {
                     currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
                     aiHelper.chatStream(cmdMessage)
@@ -128,14 +130,14 @@
                     cmdName,
                     ...cmd
                 }
-
-                Function.constructor(
+                const Fn = Function
+                return new Fn('return Object.getPrototypeOf(async function(){}).constructor')()(
                     'context',
                     `
                         with (context) {
                             return (function() {
                                 "use strict"
-                                ${cmdString}
+                                return ${cmdString}
                             })()
                         }
                     `
@@ -178,22 +180,54 @@
             }
 
             const handleUserInput = () => {
+                if (isLoading.value) return
+
                 // 记录输入的数据
                 const userInput = content.value
                 pushMessage('user', userInput)
                 // 清除input
                 content.value = ''
-                // 返回loading message
-                currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
-                // 输入框loading状态
-                isLoading.value = true
-                aiHelper.chatStream(`help me solve this task:\n ${userInput}`)
+
+                if (/\{\{.+\}\}/.test(userInput)) {
+                    // 包含变量就引导一下
+                    const reg = /{{\s*([^}]*)\s*}}/g
+                    const result = []
+                    let match
+                    while ((match = reg.exec(userInput)) !== null) {
+                        result.push(match[1])
+                    }
+                    pushMessage('ai', `请提供以下信息：${result.join('、')}`, '')
+                    // 上下文携带完整对话
+                    aiHelper.pushPrompt(userInput, 'user')
+                    aiHelper.pushPrompt(`请提供以下信息：${result.join('、')}`, 'system')
+                } else {
+                    // 返回loading message
+                    currentMessage = pushMessage('ai', '正在努力生成中，请稍等', 'loading')
+                    // 输入框loading状态
+                    isLoading.value = true
+                    aiHelper.chatStream(`help me solve this task:\n ${userInput}`)
+                }
+            }
+
+            const handleComponentNotExist = (infoPrefix, componentId) => {
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    `${infoPrefix}. The component "${componentId}" does not exist. please rethink and issue commands`
+                ].join('\n')
             }
 
             // ai 指令
             const handleSetProp = (componentId, prop, value) => {
                 const node = getNode(componentId)
-                if (!node.renderProps[prop]) {
+                if (!node) {
+                    handleComponentNotExist(
+                        `Updating the ${prop} prop of the component failed`,
+                        componentId
+                    )
+                    return
+                }
+                if (!node.material?.props?.[prop]) {
                     cmdMessage += [
                         '',
                         '# cmd',
@@ -202,24 +236,37 @@
                     ].join('\n')
                     return
                 }
-                node.setRenderProps({
-                    ...node.renderProps,
+                if (!value.code) {
+                    value.code = value.renderValue
+                }
+                if (!value.renderValue) {
+                    value.renderValue = value.code
+                }
+                node.setProp({
                     [prop]: {
+                        payload: {},
+                        valueType: Array.isArray(node.material.props[prop].type) ? node.material.props[prop].type[0] : node.material.props[prop].type,
                         ...node.renderProps[prop],
                         format: 'value',
-                        code: value,
-                        renderValue: value
+                        ...value
                     }
                 })
                 cmdMessage += [
                     '',
                     '# cmd',
                     'The prop has been successfully set.',
-                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
                 ].join('\n')
             }
             const handleSetStyle = (componentId, style, value) => {
                 const node = getNode(componentId)
+                if (!node) {
+                    handleComponentNotExist(
+                        `Updating the ${style} style of the component failed`,
+                        componentId
+                    )
+                    return
+                }
                 node.setRenderStyles({
                     ...node.renderStyles,
                     [style]: value
@@ -228,62 +275,84 @@
                     '',
                     '# cmd',
                     'The style has been successfully set.',
-                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
                 ].join('\n')
             }
-            const handleSetEvent = (componentId, event, funcName, funcBody) => {
-                // 生成函数
-                if (funcBody && funcName) {
-                    const firstFunction = store.getters['functions/functionList'][0]
-                    const functionData = getDefaultFunction({
-                        funcName,
-                        funcCode: funcName,
-                        funcBody,
-                        projectId: firstFunction.projectId,
-                        funcGroupId: firstFunction.funcGroupId
-                    })
-                    store.dispatch('functions/fixFunByEslint', functionData).then((code) => {
-                        store.dispatch('functions/createFunction', {
-                            ...functionData,
-                            funcBody: code || funcBody
-                        }).then(() => {
-                            store.dispatch('functions/getAllGroupAndFunction', {
-                                projectId: firstFunction.projectId,
-                                versionId: firstFunction.versionId
-                            }).then((functionData) => {
-                                store.commit('functions/setFunctionData', functionData)
-                            })
-                        })
-                    })
-                }
-
-                if (funcName) {
-                    // 修改event
-                    const node = getNode(componentId)
-                    node.setRenderEvents({
-                        ...node.renderEvents,
-                        [event]: {
-                            enable: true,
-                            methodCode: funcName,
-                            params: []
-                        }
-                    })
+            const handleSetEvent = (componentId, event, functionCode) => {
+                const item = store.getters['functions/functionList'].find(x => x.funcCode === functionCode)
+                if (!item) {
                     cmdMessage += [
                         '',
                         '# cmd',
-                        'The event has been successfully set.',
-                        'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                        `Updating the ${event} event of the component failed. The function "${functionCode}" does not exist. please rethink and issue commands`
                     ].join('\n')
+                    return
                 }
+                // 修改event
+                const node = getNode(componentId)
+                if (!node) {
+                    handleComponentNotExist(
+                        `Updating the ${event} event of the component failed`,
+                        componentId
+                    )
+                    return
+                }
+                node.setRenderEvents({
+                    ...node.renderEvents,
+                    [event]: {
+                        enable: true,
+                        methodCode: functionCode,
+                        params: []
+                    }
+                })
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    'The event has been successfully set.',
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
+                ].join('\n')
+            }
+            const handleSetSlot = (componentId, slot, value) => {
+                const node = getNode(componentId)
+                if (!node) {
+                    handleComponentNotExist(
+                        `Updating the ${slot} slot of the component failed`,
+                        componentId
+                    )
+                    return
+                }
+                if (!value.code) {
+                    value.code = value.renderValue
+                }
+                if (!value.renderValue) {
+                    value.renderValue = value.code
+                }
+                node.setSlot(slot, {
+                    ...node.renderSlots[slot],
+                    ...value
+                })
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    'The slot has been successfully set.',
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
+                ].join('\n')
             }
             const handleDelete = (componentId) => {
                 const node = getNode(componentId)
+                if (!node) {
+                    handleComponentNotExist(
+                        `Delete the ${componentId} component failed`,
+                        componentId
+                    )
+                    return
+                }
                 node.parentNode.removeChild(node)
                 cmdMessage += [
                     '',
                     '# cmd',
                     `deleted ${componentId}`,
-                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
                 ].join('\n')
             }
             const handleInsert = (type, componentId) => {
@@ -295,24 +364,33 @@
                     ].join('\n')
                 } else {
                     const parentNode = getNode()
-                    const node = LC.createNodeFromData({ type, componentId })
+                    const node = LC.createNode(type)
+                    node.componentId = componentId
+                    Object.values(createHacker).forEach(task => task(node, node.material))
                     parentNode.appendChild(node)
                     cmdMessage += [
                         '# cmd',
                         `inserted ${componentId}`,
-                        'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                        'Have you finished the task? If so, call `done()`. Otherwise please continue.'
                     ].join('\n')
                 }
             }
             const handleSelect = (componentId) => {
                 setTimeout(() => {
                     const node = getNode(componentId)
+                    if (!node) {
+                        handleComponentNotExist(
+                            `Select the ${componentId} component failed`,
+                            componentId
+                        )
+                        return
+                    }
                     node.active()
                     cmdMessage += [
                         '',
                         '# cmd',
                         `selected ${componentId}`,
-                        'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                        'Have you finished the task? If so, call `done()`. Otherwise please continue.'
                     ].join('\n')
                 }, 10)
             }
@@ -325,8 +403,7 @@
                     '',
                     '# cmd',
                     'You can use these component type:',
-                    ...components.map(component => `- ${component.type} (${component.displayName})`),
-                    'Note: before inserting or updating a component, use `component.get("<componentType>")` to learn how to write configuration.'
+                    ...components.map(component => `- ${component.type} (${component.displayName})`)
                 ].join('\n')
             }
             const getComponentConfig = (component) => {
@@ -357,71 +434,258 @@
                     '',
                     '# cmd',
                     `The complete configuration of the ${componentType} component is as follows:`,
-                    getComponentConfig(component),
-                    `Note: you can use 'component.insert("<componentType>", "<componentId>")' to insert ${componentType} component.`
+                    getComponentConfig(component)
                 ].join('\n')
             }
             const handleGetInfo = (componentId) => {
                 const node = getNode(componentId)
+                if (!node) {
+                    handleComponentNotExist(
+                        `Get configuration of ${componentId} component failed`,
+                        componentId
+                    )
+                    return
+                }
+                // 减少重复无意义 token
+                const nodeJson = node.toJSON()
+                Object.keys(nodeJson.renderProps).forEach((key) => {
+                    const renderProp = nodeJson.renderProps[key]
+                    if (Array.isArray(renderProp.code)) {
+                        renderProp.code = renderProp.code.slice(0, 1)
+                    }
+                    if (Array.isArray(renderProp.renderValue)) {
+                        renderProp.renderValue = renderProp.renderValue.slice(0, 1)
+                    }
+                })
                 cmdMessage += [
                     '',
                     '# cmd',
                     `The complete configuration of the ${componentId} component is as follows:`,
-                    getComponentConfig(node.material),
-                    'Note: you can use "component.setProp("<componentId>", "<prop key>", "<value>")" to change prop',
-                    'Note: you can use "component.setStyle("<componentId>", "<css property key>", "<value>")" to change style',
-                    'Note: you can use "component.setEvent("<componentId>", "<event name>", "<functionName>",  "<functionBody>")" to change event'
+                    JSON.stringify(nodeJson)
                 ].join('\n')
             }
-            const handleConnect = (componentId, tableName) => {
-                const node = getNode(componentId)
-                node.setRenderProps({
-                    ...node.renderProps,
-                    data: {
-                        format: 'value',
-                        code: [],
-                        renderValue: [],
-                        valueType: 'table-data-source',
-                        payload: {
-                            sourceData: {
-                                tableName,
-                                dataSourceType: 'preview',
-                                showOperationColumn: true
-                            }
-                        }
-                    }
+            const handleCreateOrUpdateFunction = async (funcName, funcBody) => {
+                if (!funcName || !funcBody) {
+                    cmdMessage += [
+                        '',
+                        '# cmd',
+                        'Create or update function fail. The funcName or funcBody is empty. please rethink and issue commands'
+                    ].join('\n')
+                    return
+                }
+                let functionItem = store.getters['functions/functionList'].find(item => item.funcCode === funcName)
+                
+                if (functionItem) {
+                    // 更新函数
+                    functionItem.funcBody = funcBody
+                    const code = await store.dispatch('functions/fixFunByEslint', functionItem)
+                    await store.dispatch('functions/editFunction', {
+                        ...functionItem,
+                        funcBody: code || funcBody
+                    })
+                } else {
+                    // 生成函数
+                    functionItem = store.getters['functions/functionList'][0]
+                    const functionData = getDefaultFunction({
+                        funcName,
+                        funcCode: funcName,
+                        funcBody,
+                        projectId: functionItem.projectId,
+                        funcGroupId: functionItem.funcGroupId
+                    })
+                    const code = await store.dispatch('functions/fixFunByEslint', functionData)
+                    await store.dispatch('functions/createFunction', {
+                        ...functionData,
+                        funcBody: code || funcBody
+                    })
+                }
+
+                // 更新函数列表
+                return store.dispatch('functions/getAllGroupAndFunction', {
+                    projectId: functionItem.projectId,
+                    versionId: functionItem.versionId
+                }).then((functionData) => {
+                    store.commit('functions/setFunctionData', functionData)
                 })
-                // 选中并触发更新表头
-                handleSelect(componentId)
-                setTimeout(() => {
-                    const btn = document.querySelector('.prop-operation')
-                    btn.click()
-                }, 10)
+            }
+            const handleGetFunctions = () => {
+                const functionList = store.getters['functions/functionList']
                 cmdMessage += [
                     '',
                     '# cmd',
-                    'Successfully connecting component and table',
-                    'Have you finished the task? If so, call `done()`. Otherwise please continue."'
+                    'You can use these functions:',
+                    ...functionList.map(item => `- ${item.funcName} (${item.funcCode})`)
+                ].join('\n')
+            }
+            const handleDataSourceTable = (componentId, tableName) => {
+                const node = getNode(componentId)
+                if (!node) {
+                    handleComponentNotExist(
+                        `Setting ${componentId} component to display data from the ${tableName} table failed`,
+                        componentId
+                    )
+                    return
+                }
+                const common = {
+                    format: 'value',
+                    code: [],
+                    renderValue: [],
+                    payload: {
+                        sourceData: {
+                            tableName,
+                            dataSourceType: 'preview',
+                            showOperationColumn: true
+                        }
+                    }
+                }
+                if (node.type === 'widget-bk-table') {
+                    node.setRenderProps({
+                        ...node.renderProps,
+                        data: {
+                            ...common,
+                            valueType: 'table-data-source'
+                        }
+                    })
+                    // 选中并触发更新表头
+                    handleSelect(componentId)
+                    setTimeout(() => {
+                        const btn = document.querySelector('.prop-operation')
+                        btn.click()
+                    }, 10)
+                } else if (node.type === 'bk-select') {
+                    node.setSlot('default', {
+                        ...node.renderSlots.default,
+                        ...common,
+                        valueType: 'select-data-source'
+                    })
+                } else if (node.type === 'bk-transfer') {
+                    node.setProp({
+                        'source-list': {
+                            ...node.renderProps['source-list'],
+                            ...common,
+                            valueType: 'data-source'
+                        }
+                    })
+                }
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    `Successfully set ${componentId} component to display data from the ${tableName} table`,
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
+                ].join('\n')
+            }
+            const handleDataSourceMethod = (componentId, functionCode) => {
+                const item = store.getters['functions/functionList'].find(x => x.funcCode === functionCode)
+                if (!item) {
+                    cmdMessage += [
+                        '',
+                        '# cmd',
+                        `Setting ${componentId} component to display data from the ${functionCode} function failed. The function "${functionCode}" does not exist. please rethink and issue commands`
+                    ].join('\n')
+                    return
+                }
+                const node = getNode(componentId)
+                if (!node) {
+                    handleComponentNotExist(
+                        `Setting ${componentId} component to display data from the ${functionCode} function failed`,
+                        componentId
+                    )
+                    return
+                }
+
+                const material = node.material
+                let propHasRemote = false
+                Object.keys(material.props || {}).forEach((key) => {
+                    const prop = material.props[key]
+                    const valueType = prop.type?.find?.(item => item.includes('remote'))
+                    if (valueType) {
+                        propHasRemote = true
+                        node.setProp({
+                            [key]: {
+                                ...node.renderProps[key],
+                                valueType,
+                                payload: {
+                                    methodCode: functionCode,
+                                    params: []
+                                }
+                            }
+                        })
+                    }
+                })
+                if (node.type === 'widget-bk-table') {
+                    // 选中并触发更新表头
+                    handleSelect(componentId)
+                    setTimeout(() => {
+                        const btn = document.querySelector('.prop-operation')
+                        btn.click()
+                    }, 10)
+                }
+                if (!propHasRemote) {
+                    Object.keys(material.slots || {}).forEach((key) => {
+                        const slot = material.slots[key]
+                        const valueType = slot.type?.find?.(item => item.includes('remote'))
+                        if (valueType) {
+                            node.setSlot(key, {
+                                ...node.renderSlots[key],
+                                valueType,
+                                payload: {
+                                    methodData: {
+                                        methodCode: functionCode,
+                                        params: []
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    `Successfully set ${componentId} component to display data from the ${functionCode} function`,
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
                 ].join('\n')
             }
             const handleDone = () => {
+                currentMessage.status = 'success'
                 aiHelper.clearPrompt()
                 errorTime = 0
+            }
+            const handleClear = () => {
+                const root = LC.getRoot()
+                root.children.forEach(children => {
+                    root.removeChild(children)
+                })
+                LC.triggerEventListener('reset')
+                cmdMessage += [
+                    '',
+                    '# cmd',
+                    'Successfully clear.',
+                    'Have you finished the task? If so, call `done()`. Otherwise please continue.'
+                ].join('\n')
             }
             const cmd = {
                 component: {
                     setProp: handleSetProp,
                     setStyle: handleSetStyle,
                     setEvent: handleSetEvent,
+                    setSlot: handleSetSlot,
                     delete: handleDelete,
                     insert: handleInsert,
                     select: handleSelect,
                     all: handleGetAll,
                     get: handleGet,
-                    getInfo: handleGetInfo,
-                    connect: handleConnect
+                    getInfo: handleGetInfo
                 },
-                done: handleDone
+                dataSource: {
+                    table: handleDataSourceTable,
+                    method: handleDataSourceMethod
+                },
+                method: {
+                    createOrUpdate: handleCreateOrUpdateFunction,
+                    get: handleGetFunctions
+                },
+                done: handleDone,
+                clear: handleClear
             }
 
             const aiHelper = new Ai({
@@ -432,26 +696,18 @@
                 handleApiError,
                 handleCmdError,
                 systemPrompt,
+                needCmd: true,
                 type: 'layout'
             })
 
             onBeforeMount(() => {
                 pushMessage('ai', 'Hi，我是小鲸，我可以帮你实现添加组件，函数生成等复杂功能，你可以尝试说帮我新增一个表格')
             })
-            watch(
-                () => props.isShowAi,
-                () => {
-                    if (props.isShowAi) {
-                        const $autoFocusItem = inputRef.value.$el.querySelector('[autofocus="autofocus"]')
-                        $autoFocusItem && $autoFocusItem.focus()
-                    }
-                }
-            )
+
             return {
                 messages,
                 content,
                 isLoading,
-                inputRef,
                 handleUserInput,
                 clearMessage
             }
@@ -475,19 +731,12 @@
     }
     .ai-operation {
         background: #FFFFFF;
-        height: 64px;
         padding: 12px;
         display: flex;
-        align-items: center;
     }
-    .ai-operation-input {
+    .ai-send {
         margin-right: 7px;
-        /deep/ .bk-form-input {
-            border-color: transparent;
-            background: #F5F7FA;
-            border-radius: 2px;
-            color: #63656E;
-        }
+        width: calc(100% - 108px);
     }
     .ai-operation-button {
         padding: 0 3px 0 0 !important;

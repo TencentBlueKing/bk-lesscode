@@ -406,5 +406,14 @@
   "画布: 页面内置边距回显到页面样式的padding属性": "Canvas: page built-in padding echoes to page style padding property",
   "画布: 组件属性面板支持搜索": "Canvas: component property panel supports search",
   "画布: 当页面模板中含有tab组件时，应用页面模板失败": "Canvas: APP page template fails when there are tab components in the page template",
-  "应用: 国际化相关样式修复": "APP: fix internationalization-related styles"
+  "应用: 国际化相关样式修复": "APP: fix internationalization-related styles",
+  "应用: markdown类型页面以组件形式整合到自定义页面": "APP: Markdown type pages integrated into custom pages as components",
+  "函数: 代码编辑器支持代码提示跟代码生成": "Function: Code editor supports code autocomplete and code generation",
+  "数据源: 数据管理模块支持自然语言描述生成SQL": "Data source: Data management module supports generating SQL from natural language descriptions",
+  "移动端: 新增宫格布局": "Mobile: Add grid layout",
+  "移动端: 新增简易tab组件": "Mobile: Add simple tab component",
+  "画布: transfer, cascade, process, big-tree等组件可配置对应的实际使用字段跟展示字段": "Canvas: Components like transfer, cascade, process, big-tree, etc. can be configured with corresponding actual usage fields and display fields",
+  "画布: ai对话框增加常用提示模板": "Canvas: AI dialog box adds commonly used prompt templates",
+  "画布: 支持事件行为跟自然语言描述生成事件": "Canvas: Support event behavior and generate events through natural language descriptions",
+  "画布: 可切换类型的组件 value值设置及校验需要和类型一致": "Canvas: Value setting and validation of switchable components need to be consistent with the type"
 }

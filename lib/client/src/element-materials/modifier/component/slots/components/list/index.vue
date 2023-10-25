@@ -69,7 +69,7 @@
     import {
         defineComponent,
         ref,
-        // watch,
+        watch,
         computed
     } from '@vue/composition-api'
     import Icon from '@/components/modifier/icon-select.vue'
@@ -146,6 +146,13 @@
                 optionList.value.push(currentConfig.value.generateFunc(optionList.value.length + 1))
                 trigger()
             }
+
+            watch(
+                () => props.slotVal.val,
+                () => {
+                    optionList.value = props.slotVal.val
+                }
+            )
 
             return {
                 optionList,

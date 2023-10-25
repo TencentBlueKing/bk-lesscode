@@ -57,6 +57,8 @@
     import ModifierSlots from './slots'
     import ModifierGird from './gird'
     import ModifierForm from './form'
+    import ModifierFormContainer from './form-container'
+    import ModifierDataManageContainer from './data-manage-container'
     import ModifierTab from './tab'
     import ModifierProps from './props'
     import ModifierEvents from './events'
@@ -93,7 +95,7 @@
                 // 当前属性面板的编辑组件
                 const comMap = {
                     styles: [ModifierAlign, ModifierStyles],
-                    props: [ModifierGird, H5Page, ModifierForm, ModifierTab, ModifierSlots, ModifierProps],
+                    props: [ModifierGird, H5Page, ModifierForm, ModifierFormContainer, ModifierDataManageContainer, ModifierTab, ModifierSlots, ModifierProps],
                     events: [ModifierEvents],
                     directives: [ModifierDirectives],
                     perms: [ModifierPerms]

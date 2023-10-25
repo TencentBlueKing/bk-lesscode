@@ -255,7 +255,7 @@
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  width: 38px;
+  width: 40px;
   i {
     margin-right: 4px;
     color: #c4c6cc;

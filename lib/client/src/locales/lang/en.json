@@ -758,7 +758,7 @@
   "配置表单数据": "Configure form data",
   "隐藏": "Hide",
   "form_列字段类型": "Column field type",
-  "form_列表头名称": "List header name",
+  "form_列名称": "List header name",
   "Icon Cool图标": "Icon cool",
   "蓝鲸官方图标": "Bk Icon",
   "基础控件": "Basics",
@@ -1763,6 +1763,8 @@
   "数据源 :": "Data Source :",
   "新增函数": "New Function",
   "查看 SQL": "View SQL",
+  "请描述查询需求，比如：查询school表的id, name字段数据": "Please describe the query requirements, for example: query the id and name field data of the school table",
+  "生成SQL": "Generate SQL",
   "查询历史": "Query History",
   "查询结果": "Search Result",
   "正在加载 BkBase 结果表": "Loading BkBase results table",
@@ -3901,5 +3903,9 @@
   "清空聊天记录": "Clear chat history",
   "聊天记录清空成功": "Chat history cleared successfully",
   "生成失败，请优化你的提示词": "Failed to generate, please optimize your cue word",
-  "灰度中，暂未全量开放": "In gray scale, not yet fully open"
+  "灰度中，暂未全量开放": "In gray scale, not yet fully open",
+  "布尔值": "Boolean",
+  "您可以键入 “/” 查看更多Prompt": "You can type “/” to see more prompts",
+  "小鲸": "Little Whale",
+  "AI开发助手小鲸": "AI Development Assistant Little Whale"
 }
