@@ -90,7 +90,7 @@
         },
         methods: {
             trigger (value) {
-                this.change(this.name, value, this.type, this.payload)
+                this.change(this.name, JSON.parse(JSON.stringify(value)), this.type, this.payload)
             },
             changeParams (val, key) {
                 this.trigger({

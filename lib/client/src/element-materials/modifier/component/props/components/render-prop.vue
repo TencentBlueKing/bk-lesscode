@@ -78,7 +78,7 @@
                             :name="name"
                             :type="renderCom.type"
                             :describe="describe"
-                            :default-value="propTypeValueMemo[selectValueType].val"
+                            :default-value="(propTypeValueMemo[selectValueType] || {}).val"
                             :payload="formData.payload"
                             :remote-validate="describe.remoteValidate"
                             :key="`${renderCom.type}_${index}`"
@@ -89,6 +89,17 @@
                     </template>
                 </template>
             </div>
+            <select-key
+                v-if="showInnerVariable && isShowValueKeys"
+                :name="name"
+                :keys="describe.keys"
+                :value="propsVal.val"
+                :value-keys="formData.valueKeys"
+                :value-type="formData.valueType"
+                @saveValueKeys="updateCacheValueHandle"
+                @changeVal="handleValChange"
+                @change="handleCodeChange">
+            </select-key>
             <template v-if="showUpdateColumn">
                 <div
                     v-bk-tooltips="{
@@ -162,6 +173,7 @@
     import TypeRequestSelect from './strategy/request-select.vue'
     import TypeValueKeyOption from './strategy/value-key-option.vue'
     import TypeValueKeyItem from './strategy/value-key-item.vue'
+    import selectKey from './common/select-key.vue'
 
     const getRealValue = (type, target) => {
         if (type === 'object') {
@@ -197,7 +209,8 @@
         name: 'render-prop-modifier',
         components: {
             variableSelect,
-            chooseBuildInVariable
+            chooseBuildInVariable,
+            selectKey: selectKey
         },
         filters: {
             valueTypeTextFormat (valueType) {
@@ -248,7 +261,8 @@
                 formData: {},
                 isRenderValueCom: false,
                 isShowProp: true,
-                isSyncing: false
+                isSyncing: false,
+                isUpdateCacheValue: true
             }
         },
         computed: {
@@ -435,6 +449,20 @@
                     'widget-bk-table',
                     'widget-el-table'
                 ].includes(this.componentType)
+            },
+            /**
+             * props 类型组件需要完整的props值
+             */
+            propsVal () {
+                return {
+                    val: (this.propTypeValueMemo[this.formData.valueType] || {}).val
+                }
+            },
+            /**
+             * 是否展示 valueKey
+             */
+            isShowValueKeys () {
+                return this.describe?.keys?.length
             }
         },
         watch: {
@@ -457,10 +485,14 @@
                                 valueType: getPropValueType(lastValueType),
                                 buildInVariableType: lastValue.buildInVariableType,
                                 payload: lastValue.payload || {},
-                                renderValue: lastValue.renderValue
+                                renderValue: lastValue.renderValue,
+                                valueKeys: lastValue.valueKeys || {},
+                                valueKeysMemo: lastValue.valueKeysMemo || {}
                             })
-                            this.propTypeValueMemo[this.formData.valueType] = {
-                                val: lastValue.renderValue
+                            if (this.isUpdateCacheValue) {
+                                this.propTypeValueMemo[this.formData.valueType] = {
+                                    val: (this.formData.valueKeysMemo[this.formData.valueType] || {}).val || lastValue.renderValue
+                                }
                             }
                         }
                         this.selectValueType = this.formData.valueType
@@ -499,6 +531,8 @@
                 valueType: valueTypes[0],
                 renderValue: defaultValue,
                 buildInVariableType: '',
+                valueKeys: {},
+                valueKeysMemo: {},
                 payload: this.lastValue.payload || {}
             })
 
@@ -517,8 +551,10 @@
             triggerChange (formData = this.formData) {
                 this.isInnerChange = true
                 // 缓存用户本地编辑值
-                this.propTypeValueMemo[formData.valueType] = {
-                    val: formData.renderValue
+                if (this.isUpdateCacheValue) {
+                    this.propTypeValueMemo[this.formData.valueType] = {
+                        val: (this.formData.valueKeysMemo[this.formData.valueType] || {}).val || this.formData.renderValue
+                    }
                 }
 
                 const props = {
@@ -610,23 +646,23 @@
              * @param { String } type
              * @param { Object } payload prop 配置附带的额外信息(eq: type 为 remote 时接口函数相关的配置)
              */
-            handleCodeChange (name, value, type, payload = {}) {
+            handleCodeChange (name, value, type, payload = {}, isUpdate = true) {
                 // 快速切换的情况下，如果type对不上，就不更新
                 if (this.formData.valueType !== getPropValueType(type)) return
                 try {
                     let code = null
+                    this.isUpdateCacheValue = isUpdate
                     let renderValue = this.formData.renderValue
 
                     let val = getRealValue(type, value)
-
                     if (this.formData.valueType === 'remote') {
                         // 配置的是远程函数、数据源
                         // code 此时无效，设置为 null
                         // api 返回数据不为空时在画布编辑区才应用 api 数据
-                        if (!isEmpty(val)) {
-                            renderValue = val
-                            code = val
-                        }
+                        // if (!isEmpty(val)) {
+                        renderValue = val
+                        code = val
+                        // }
                     } else {
                         code = val
                         renderValue = val
@@ -638,6 +674,12 @@
                         payload: Object.assign(this.formData.payload, payload),
                         renderValue
                     })
+                    if (isUpdate) {
+                        this.propTypeValueMemo[this.formData.valueType] = {
+                            val: this.formData.renderValue
+                        }
+                    }
+                    this.updateCacheValueHandle()
                     this.triggerChange()
                     this.triggerUpdateVariable()
                 } catch {
@@ -699,8 +741,20 @@
                 this.syncSlot(this.name).finally(() => {
                     this.isSyncing = false
                 })
+            },
+            handleValChange (key, val) {
+                this.formData = Object.freeze({
+                    ...this.formData,
+                    [key]: val
+                })
+                this.triggerChange()
+            },
+            updateCacheValueHandle  () {
+                const valueKeysMemo = JSON.parse(JSON.stringify(this.propTypeValueMemo))
+                this.handleValChange('valueKeysMemo', valueKeysMemo)
             }
         }
+       
     }
 </script>
 <style lang="postcss">
