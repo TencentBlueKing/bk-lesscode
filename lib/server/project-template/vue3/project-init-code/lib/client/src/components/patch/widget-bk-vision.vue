@@ -41,7 +41,7 @@
             return {
                 // app: {},
                 apiPrefix: `${process.env.BK_AJAX_URL_PREFIX}/bkvision/`,
-                cdnPrefix: 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/latest/'
+                cdnPrefix: 'https://staticfile.qq.com/bkvision/p32d056de9c1f4304af45611eb7019b35/latest/'
             }
         },
         created () {
@@ -58,7 +58,7 @@
         methods: {
             async loadSdk () {
                 const link = document.createElement('link')
-                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/latest/main.css'
+                link.href = 'https://staticfile.qq.com/bkvision/p32d056de9c1f4304af45611eb7019b35/latest/main.css'
                 link.rel = 'stylesheet'
                 document.body.append(link)
                 await this.loadScript('chunk-vendors.js')
