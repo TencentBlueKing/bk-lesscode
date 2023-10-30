@@ -31,12 +31,12 @@
                 const list = [
                     {
                         key: 'component',
-                        tips: window.i18n.t('页面设计器'),
+                        tips: window.i18n.t('页面编辑器'),
                         icon: 'bk-drag-icon bk-drag-custom-comp-default'
                     },
                     {
                         key: 'formEngine',
-                        tips: window.i18n.t('表单设计器'),
+                        tips: window.i18n.t('表单编辑器'),
                         icon: 'bk-drag-icon bk-drag-biaodan'
                     },
                     {
@@ -68,15 +68,21 @@
             }
         },
         mounted () {
-            LC.addEventListener('active', this.handleActiveNodeChange)
+            LC.addEventListener('active', this.changePanelCallBack)
+            LC.addEventListener('activeClear', this.changePanelCallBack)
+            LC.addEventListener('activeElementUpdate', this.changePanelCallBack)
         },
         beforeDestroy () {
-            LC.removeEventListener('active', this.handleActiveNodeChange)
+            LC.removeEventListener('active', this.changePanelCallBack)
+            LC.removeEventListener('activeClear', this.changePanelCallBack)
+            LC.addEventListener('activeElementUpdate', this.changePanelCallBack)
         },
         methods: {
-            handleActiveNodeChange () {
+            changePanelCallBack () {
                 const activeNode = LC.getActiveNode()
-                if (activeNode.type === 'widget-form-container') {
+                const activeElement = LC.getActiveElement()
+
+                if (activeNode?.type === 'widget-form-container' || activeElement) {
                     this.handleChange('formEngine')
                 } else {
                     this.handleChange('component')
