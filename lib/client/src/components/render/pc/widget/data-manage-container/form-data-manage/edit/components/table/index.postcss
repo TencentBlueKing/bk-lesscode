@@ -1,0 +1,72 @@
+.form-data-table {
+    margin-top: 16px;
+    .bk-table {
+        pointer-events: auto !important;
+        overflow: visible;
+        & * {
+            pointer-events: auto !important;
+        }
+        &:before {
+            background-color: #f0f1f5;
+        }
+        .bk-table-body-wrapper {
+            overflow: visible;
+            .cell {
+                overflow: visible;
+            }
+        }
+        .bk-table-body {
+            td {
+                background: #ffffff !important;
+            }
+        }
+    }
+    .table-col-setting {
+        color: #979ba5;
+        pointer-events: auto !important;
+        & * {
+            pointer-events: auto !important;
+        }
+        &:hover {
+            color: #63656e;
+        }
+        .setting-icon {
+            display: inline-block;
+            vertical-align: middle;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    }
+}
+
+.table-col-actions-edit {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    .action-btn {
+        padding: 0 8px;
+        pointer-events: auto !important;
+        .bk-button-text {
+            &:first-of-type {
+                margin-left: 0;
+            }
+            &:hover {
+                background: #f5f7fa;
+                border-radius: 2px;
+            }
+        }
+    }
+    .add-btn {
+        margin-left: 4px;
+        font-size: 18px;
+        color: #3a84ff;
+        cursor: pointer;
+        pointer-events: auto !important;
+        &:hover {
+            color: #1768ef;
+        }
+    }
+}
