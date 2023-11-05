@@ -153,8 +153,8 @@
     padding: 0 24px;
     margin: 0;
     line-height: 28px;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: normal;
     color: #313238;
   }
   .field-content-wrapper {
