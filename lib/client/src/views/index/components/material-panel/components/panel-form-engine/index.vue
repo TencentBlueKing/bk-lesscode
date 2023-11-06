@@ -5,8 +5,9 @@
             :list="searchList"
             @on-change="handleSearch" />
         <section class="materials-container">
-            <group-box v-show="widgetList.length !== 1" group-name="容器" :list="containerMaterials">
+            <group-box v-show="widgetList.length > 0" group-name="容器" :list="containerMaterials">
                 <render-component :data="containerMaterials[0]" />
+                <render-component :data="containerMaterials[1]" />
             </group-box>
             <formEngineMaterial :list="widgetList" />
         </section>
@@ -23,7 +24,7 @@
     const CONTAINER_MATERIALS = [
         {
             group: '容器',
-            icon: 'bk-drag-icon bk-drag-xing-2',
+            icon: 'bk-drag-icon bk-drag-biaodan',
             name: 'form-container',
             type: 'widget-form-container',
             displayName: '表单容器',
@@ -33,10 +34,22 @@
                 'size',
                 'margin'
             ],
-            renderStyles: {
-                height: '100%',
-                background: '#ffffff'
-            },
+            renderStyles: {},
+            props: {}
+        },
+        {
+            group: '容器',
+            icon: 'bk-drag-icon bk-drag-zidingyibiaoge',
+            name: 'form-container',
+            type: 'widget-data-manage-container',
+            displayName: '数据管理容器',
+            order: 1,
+            events: [],
+            styles: [
+                'size',
+                'margin'
+            ],
+            renderStyles: {},
             props: {}
         }
     ]
