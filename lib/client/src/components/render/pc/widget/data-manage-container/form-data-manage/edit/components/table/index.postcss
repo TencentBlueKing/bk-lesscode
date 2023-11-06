@@ -1,6 +1,7 @@
 .form-data-table {
     margin-top: 16px;
-    .bk-table {
+    .bk-table,
+    .lesscode-bk-table {
         pointer-events: auto !important;
         overflow: visible;
         & * {
@@ -15,10 +16,20 @@
                 overflow: visible;
             }
         }
-        .bk-table-body {
+        .bk-table-body,
+        .lesscode-bk-table-body {
             td {
                 background: #ffffff !important;
             }
+        }
+    }
+    /* v3 table 样式 */
+    .lesscode-bk-table {
+        .lesscode-bk-table-body table tbody tr td .cell {
+            overflow: visible;
+        }
+        .lesscode-bk-table-fixed {
+            pointer-events: none !important;
         }
     }
     .table-col-setting {
@@ -46,8 +57,10 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    height: 100%;
     .action-btn {
         padding: 0 8px;
+        line-height: 1;
         pointer-events: auto !important;
         .bk-button-text {
             &:first-of-type {

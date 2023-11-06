@@ -11,14 +11,12 @@
     align-items: center;
     flex-wrap: wrap;
     pointer-events: auto !important;
-    * {
-        pointer-events: auto !important;
-    }
     .filter-item-form {
         position: relative;
         padding: 8px;
         width: 320px;
         border: 1px dashed transparent;
+        pointer-events: auto !important;
         &:hover {
             background: #f0f5ff;
             border-color: #3a84ff;
@@ -26,6 +24,7 @@
                 display: block;
             }
         }
+        & + .tooltips-trigger,
         & + .bk-tooltip {
             margin: 9px 0 9px 8px;
             align-self: flex-end;
