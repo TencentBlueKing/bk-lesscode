@@ -175,3 +175,8 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.toastui-editor-defaultUI,
+.toastui-editor-contents {
+    font-family: inherit !important;
+}

@@ -39,6 +39,7 @@
             :disabled="disabled"
             :value="value"
             @change="handleChange" />
+        <rich-text-value-editor v-if="field.type === 'rich-text'" :value="value" :disabled="disabled" @change="handleChange" />
         <bk-input
             v-else
             placeholder="默认值"
@@ -51,11 +52,13 @@
 <script>
 import bkUserSelector from '@blueking/user-selector'
 import { transDataSourceValue } from '../../utils/data-source'
+import richTextValueEditor from './rich-text-value-editor'
 
 export default {
     name: 'defaultValue',
     components: {
-        bkUserSelector
+        bkUserSelector,
+        richTextValueEditor
     },
     props: {
         field: {
