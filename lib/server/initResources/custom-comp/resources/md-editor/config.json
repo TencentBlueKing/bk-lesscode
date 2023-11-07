@@ -1,0 +1,207 @@
+{
+    "name": "md-editor",
+    "type": "md-editor",
+    "displayName": "markdown编辑器",
+    "styles": ["size", "margin"],
+    "renderStyles": {
+        "width": "700px",
+        "height": "300px"
+    },
+    "events": [
+        {
+            "name": "save",
+            "tips": "编辑区发生变化时调用该事件函数，暂无"
+        },
+        {
+            "name": "change",
+            "tips": "保存时调用该事件函数，事件回调参数（value: String, render: String）"
+        },
+        {
+            "name": "fullScreen",
+            "tips": "切换全屏编辑时调用该事件函数，事件回调参数（status: Boolean, value: String）"
+        },
+        {
+            "name": "readModel",
+            "tips": "切换沉浸式阅读时调用该事件函数，事件回调参数（status: Boolean, value: String）"
+        },
+        {
+            "name": "htmlCode",
+            "tips": "查看html源码时调用该事件函数，事件回调参数（status: Boolean, value: String）"
+        },
+        {
+            "name": "subfieldToggle",
+            "tips": "切换单双栏编辑时调用该事件函数，事件回调参数（status: Boolean, value: String）"
+        },
+        {
+            "name": "previewToggle",
+            "tips": "切换预览编辑时调用该事件函数，事件回调参数（status: Boolean, value: String）"
+        },
+        {
+            "name": "helpToggle",
+            "tips": "查看帮助时调用该事件函数，事件回调参数（status: Boolean, value: String）"
+        },
+        {
+            "name": "navigationToggle",
+            "tips": "切换导航目录时调用该事件函数，事件回调参数（status: Boolean, value: String）"
+        },
+        {
+            "name": "imgAdd",
+            "tips": "添加图片文件时调用该事件函数，事件回调参数（filename: String, File: Object）"
+        },
+        {
+            "name": "imgDel",
+            "tips": "删除图片文件时调用该事件函数，事件回调参数（filename: String）"
+        }
+    ],
+    "props": {
+        "value": {
+            "type": "string",
+            "val": "",
+            "tips": "初始值"
+        },
+        "language": {
+            "type": "string",
+            "val": "zh-CN",
+            "options": [
+                "zh-CN",
+                "zh-TW",
+                "en",
+                "fr",
+                "pt-BR",
+                "ru",
+                "de",
+                "ja"
+            ],
+            "tips": "语言选择，暂支持:\n zh-CN: 简体中文,\n zh-TW: 正体中文,\n en: 英文,\n fr: 法语,\n pt-BR: 葡萄牙语,\n ru: 俄语,\n de: 德语,\n ja: 日语"
+        },
+        "font-size": {
+            "type": "number",
+            "val": 14,
+            "tips":"编辑区域文字大小"
+        },
+        "scroll-style": {
+            "type": "boolean",
+            "val": true,
+            "tips":"开启滚动条样式（暂时仅支持chrome）"
+        },
+        "box-shadow": {
+            "type": "boolean",
+            "val": true,
+            "tips":"开启边框阴影"
+        },
+        "box-shadow-style": {
+            "type": "string",
+            "val": "0 2px 12px 0 rgba(0, 0, 0, 0.1)",
+            "tips":"边框阴影样式"
+        },
+        "transition": {
+            "type": "boolean",
+            "val": true,
+            "tips":"是否开启过渡动画"
+        },
+        "toolbars-background": {
+            "type": "string",
+            "val": "#ffffff",
+            "tips":"工具栏背景颜色"
+        },
+        "preview-background": {
+            "type": "string",
+            "val": "#fbfbfb",
+            "tips":"预览框背景颜色"
+        },
+        "subfield": {
+            "type": "boolean",
+            "val": true,
+            "tips":"true： 双栏（编辑预览同屏）， false： 单栏（编辑预览分屏）"
+        },
+        "val-open": {
+            "type": "string",
+            "tips":"edit： 默认展示编辑区域 ， preview： 默认展示预览区域 , 其他 = edit"
+        },
+        "placeholder": {
+            "type": "string",
+            "val": "开始编辑...",
+            "tips":"输入框为空时默认提示文本"
+        },
+        "editable": {
+            "type": "boolean",
+            "val": true,
+            "tips":"是否允许编辑"
+        },
+        "code-style": {
+            "type": "string",
+            "val": "github",
+            "tips":"markdown样式： 默认github, 可选配色方案（https://github.com/hinesboy/mavonEditor/blob/HEAD/src/lib/core/hljs/lang.hljs.css.js）"
+        },
+        "toolbars-flag": {
+            "type": "boolean",
+            "val": true,
+            "tips":"工具栏是否显示"
+        },
+        "navigation": {
+            "type": "boolean",
+            "val": false,
+            "tips":"默认展示目录"
+        },
+        "short-cut": {
+            "type": "boolean",
+            "val": true,
+            "tips":"是否启用快捷键"
+        },
+        "autofocus": {
+            "type": "boolean",
+            "val": true,
+            "tips":"自动聚焦到文本框"
+        },
+        "ishljs": {
+            "type": "boolean",
+            "val": true,
+            "tips":"代码高亮"
+        },
+        "tab-size": {
+            "type": "number",
+            "val": 1,
+            "tips":"tab转化为几个空格，默认为\t"
+        },
+        "xss-options": {
+            "type": "object",
+            "val": {},
+            "tips":"xss规则配置，参考 https://github.com/leizongmin/js-xss"
+        },
+        "toolbars": {
+            "type": "object",
+            "val": {
+                "bold": true,
+                "italic": true,
+                "header": true,
+                "underline": true,
+                "strikethrough": true,
+                "mark": true,
+                "superscript": true,
+                "subscript": true,
+                "quote": true,
+                "ol": true,
+                "ul": true,
+                "link": true,
+                "imagelink": true,
+                "code": true,
+                "table": true,
+                "fullscreen": true,
+                "readmodel": true,
+                "htmlcode": true,
+                "help": true,
+                "undo": true,
+                "redo": true,
+                "trash": true,
+                "save": true,
+                "navigation": true,
+                "alignleft": true,
+                "aligncenter": true,
+                "alignright": true,
+                "subfield": true,
+                "preview": true
+            },
+            "tips": "工具栏配置，\nbold:粗体；\nitalic:斜体；\nheader:标题；\nunderline:下划线；\nstrikethrough:中划线；\nmark:标记；\nsuperscript:上角标；\nsubscript:下角标；\nquote:引用；\nol:有序列表；\nul:无序列表；\nlink:链接；\nimagelink:图片链接；\ncode:code；\ntable:表格；\nfullscreen:全屏编辑；\nreadmodel:沉浸式阅读；\nhtmlcode:展示html源码；\nhelp:帮助；\nundo:上一步；\nredo:下一步；\ntrash:清空；\nsave:保存（触发events中的save事件）；\nnavigation:导航目录；\nalignleft:左对齐；\naligncenter:居中；\nalignright:右对齐；\nsubfield:单双栏模式；\npreview:预览"
+        }
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "name": "info-form",
+    "type": "info-form",
+    "displayName": "信息展示",
+    "styles": [
+        "size",
+        "padding",
+        "margin",
+        "font",
+        "backgroundColor"
+    ],
+    "directives": [
+        {
+            "type": "v-bind",
+            "prop": "data",
+            "val": "",
+            "defaultVal": [
+                [
+                    {
+                        "name": "优先级",
+                        "value": "高",
+                        "style": {
+                            "color": "red",
+                            "background-color": "gray"
+                        }
+                    },
+                    {
+                        "name": "html示例",
+                        "value": "<a href=\"http://www.qq.com\" style=\"color:#3A84FF\">qq</a>"
+                    }
+                ],
+                [
+                    {
+                        "name": "发生时间",
+                        "value": "2021-03-14"
+                    },
+                    {
+                        "name": "处理人",
+                        "value": "admin"
+                    },
+                    {
+                        "name": "耗时",
+                        "value": "2h"
+                    }
+                ]
+            ]
+        }
+    ],
+    "props": {
+        "data": {
+            "type": ["array", "remote"],
+            "val": [
+                [
+                    {
+                        "name": "优先级",
+                        "value": "高",
+                        "style": {
+                            "color": "red",
+                            "background-color": "gray"
+                        }
+                    },
+                    {
+                        "name": "html示例",
+                        "value": "<a href=\"http://www.qq.com\" style=\"color:#3A84FF\">qq</a>"
+                    }
+                ],
+                [
+                    {
+                        "name": "发生时间",
+                        "value": "2021-03-14"
+                    },
+                    {
+                        "name": "处理人",
+                        "value": "admin"
+                    },
+                    {
+                        "name": "耗时",
+                        "value": "2h"
+                    }
+                ]
+            ]
+        },
+        "head-width": {
+            "type": "number",
+            "val": 200
+        }
+    }
+}

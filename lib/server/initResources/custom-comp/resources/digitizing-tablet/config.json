@@ -1,0 +1,38 @@
+{
+    "type": "digitizing-tablet", 
+    "name": "digitizing-tablet", 
+    "displayName": "数字展示面板", 
+    "styles": [
+        "size", 
+        "padding", 
+        "margin", 
+        "font", 
+        "border", 
+        "background"
+    ], 
+    "props": {
+        "up-label": {
+            "type": "string", 
+            "val": "we have", 
+            "tips": "上标签"
+        }, 
+        "down-label": {
+            "type": "string", 
+            "val": "followers", 
+            "tips": "下标签"
+        }, 
+        "number": {
+            "type": "string", 
+            "val": "260", 
+            "tips": "展示数字"
+        }, 
+        "bg-clr": {
+            "type": "color", 
+            "val": "#4a9bff", 
+            "tips": "展示面板的背景颜色"
+        },
+        "icon-type": {
+            "type": "icon"
+        }
+    }
+}
