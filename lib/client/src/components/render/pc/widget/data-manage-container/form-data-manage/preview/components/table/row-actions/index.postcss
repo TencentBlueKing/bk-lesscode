@@ -1,0 +1,20 @@
+@import "@/css/mixins/scroller";
+
+.table-row-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 100%;
+    .action-btn {
+        margin-right: 8px;
+    }
+}
+.table-row-detail {
+    padding: 24px;
+    height: calc(100vh - 60px);
+    overflow: auto;
+    @mixin scroller;
+    .bk-label {
+        font-size: 12px;
+    }
+}

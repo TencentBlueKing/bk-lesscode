@@ -9,13 +9,13 @@
     import ComponentModifier from './component'
     import TemplateModifier from './template'
     import PageModifier from './page'
-    import FormEngineModifier from './form-engine'
+    import FormEditorContainerModifier from './form-editor-container' // 表单编辑器分类下，容器中元素的属性配置，目前包括表单容器和数据管理容器
 
     const comMap = {
         template: TemplateModifier,
         component: ComponentModifier,
         page: PageModifier,
-        formEngine: FormEngineModifier
+        FormEditorContainer: FormEditorContainerModifier
     }
 
     export default {
@@ -56,7 +56,7 @@
             const activeElementUpdateCallback = () => {
                 const activeElement = LC.getActiveElement()
                 if (activeElement) {
-                    this.panel = 'formEngine'
+                    this.panel = 'FormEditorContainer'
                 } else {
                     this.changePanel()
                 }
