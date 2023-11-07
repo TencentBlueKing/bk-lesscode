@@ -1,0 +1,61 @@
+{
+    "type": "publicity-page-graphic", 
+    "name": "publicity-page-graphic", 
+    "displayName": "宣传页图文", 
+    "styles": [
+        "size", 
+        "padding", 
+        "margin", 
+        "font", 
+        "border", 
+        "background"
+    ], 
+    "props": {
+        "location":{
+            "type":"string",
+            "options":["left","right"],
+            "val":"left",
+            "tips":"左文字,右图片 或者 右文字,左图片"
+        },
+        "title": {
+            "type": "string", 
+            "val": "让界面实现更简单", 
+            "tips": "标题"
+        }, 
+        "title-clr": {
+            "type": "color", 
+            "val": "#333", 
+            "tips": "标题颜色"
+        }, 
+        "first-section": {
+            "type": "string", 
+            "val": "提供专业的UI界面搭建工具，使前端研发更高效", 
+            "tips": "第一个段落文字"
+        }, 
+        "second-section": {
+            "type": "string", 
+            "val": " 拥有多元化前端组件库、多样化页面套餐样例以及在线拖拽可视化开发服务", 
+            "tips": "第二个段落文字"
+        }, 
+        "third-section": {
+            "type": "string", 
+            "val": "您可以轻松搭建满足自己需求场景的网页", 
+            "tips": "第三个段落文字"
+        }, 
+        "section-clr": {
+            "type": "color", 
+            "val": "#67657e", 
+            "tips": "段落文字颜色"
+        }, 
+        "img-src": {
+            "type": "src", 
+            "val": "https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/file-manage/latest/vue-banner.png", 
+            "tips": "图片地址"
+        }, 
+        "alt": {
+            "type": "string", 
+            "val": "", 
+            "tips": "提示"
+        }
+    }
+}

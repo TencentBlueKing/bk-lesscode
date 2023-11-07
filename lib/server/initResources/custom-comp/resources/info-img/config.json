@@ -1,0 +1,45 @@
+{
+    "type": "info-img", 
+    "name": "info-img", 
+    "displayName": "信息图片展示", 
+    "styles": [
+        "size", 
+        "padding", 
+        "margin", 
+        "font", 
+        "border", 
+        "background"
+    ], 
+    "props": {
+        "title": {
+            "type": "string", 
+            "val": "可视化编排布局", 
+            "tips": "标题文本"
+        }, 
+        "title-clr": {
+            "type": "color", 
+            "val": "#313238", 
+            "tips": "标题字体颜色"
+        }, 
+        "sub-title": {
+            "type": "string", 
+            "val": "拖拽布局,所见及所得,简单易上手", 
+            "tips": "副标题文本"
+        }, 
+        "sub-title-clr": {
+            "type": "color", 
+            "val": "#63656e", 
+            "tips": "副标题字体颜色"
+        }, 
+        "src": {
+            "type": "src", 
+            "val": "https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/file-manage/latest/info-img.png", 
+            "tips": "图片路径"
+        }, 
+        "alt": {
+            "type": "string", 
+            "val": "", 
+            "tips": "提示"
+        }
+    }
+}
