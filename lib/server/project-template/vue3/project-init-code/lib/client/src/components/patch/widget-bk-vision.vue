@@ -98,11 +98,3 @@
     }
 </script>
 
-<style lang="postcss">
-    .lesscode-bk-vision-container {
-        pointer-events: all !important;
-        * {
-            pointer-events: all !important;
-        }
-    }
-</style>
