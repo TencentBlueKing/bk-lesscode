@@ -1,54 +1,42 @@
 .form-data-table {
     margin-top: 16px;
-    .bk-table,
+
+    /* v3 table 样式 */
     .lesscode-bk-table {
-        pointer-events: auto !important;
-        overflow: visible;
-        & * {
-            pointer-events: auto !important;
+        .lesscode-bk-table-head table th.column_fixed {
+            background: inherit;
         }
-        &:before {
-            background-color: #f0f1f5;
+        .lesscode-bk-table-body {
+            overflow: visible;
         }
-        .bk-table-body-wrapper {
+        .column_fixed_right .cell {
+            pointer-events: none !important;
+            overflow: visible;
+            .tool-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .lesscode-bk-button {
+                height: 22px;
+            }
+        }
+    }
+
+    .bk-table-fixed-right {
+        .bk-table-fixed-header-wrapper {
+            .bk-table-column-setting {
+                pointer-events: auto !important;
+                * {
+                    pointer-events: auto !important;
+                }
+            }
+        }
+        .bk-table-fixed-body-wrapper {
             overflow: visible;
             .cell {
                 overflow: visible;
             }
-        }
-        .bk-table-body,
-        .lesscode-bk-table-body {
-            td {
-                background: #ffffff !important;
-            }
-        }
-    }
-    /* v3 table 样式 */
-    .lesscode-bk-table {
-        .lesscode-bk-table-body table tbody tr td .cell {
-            overflow: visible;
-        }
-        .lesscode-bk-table-fixed {
-            pointer-events: none !important;
-        }
-    }
-    .table-col-setting {
-        color: #979ba5;
-        pointer-events: auto !important;
-        & * {
-            pointer-events: auto !important;
-        }
-        &:hover {
-            color: #63656e;
-        }
-        .setting-icon {
-            display: inline-block;
-            vertical-align: middle;
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
-            font-size: 14px;
-            cursor: pointer;
         }
     }
 }
