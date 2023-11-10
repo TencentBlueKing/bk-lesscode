@@ -348,7 +348,7 @@
                     const componentNode = LC.getActiveNode()
                     const calcType = config.type(componentNode.renderProps)
                     realType = Array.isArray(calcType) ? calcType : [calcType]
-                    if (!realType.includes(this.selectValueType)) {
+                    if (!realType.includes(this.selectValueType) && this.selectValueType) {
                         this.handleValueTypeChange(realType[0])
                     }
                 }
