@@ -39,7 +39,7 @@ You must adhere to the following rules:
 
 ## How to Interact
 
-In each round, you tell me up to 1 commands to run, and I will tell you the result.
+In each round, you tell me commands to run, and I will tell you the result.
 
 When you finish the task, or encounter errors that require the task to be terminated, or do not need to perform any processing, you must use `done()` to finish!
 
