@@ -267,7 +267,7 @@
             getLogicOptions (key) {
                 if (key) {
                     const field = this.fieldList.find(i => i.key === key)
-                    return field ? getFieldLogics(field.type) : []
+                    return field ? this.getFieldLogics(field.type) : []
                 }
                 return []
             },
@@ -284,7 +284,7 @@
                 const table = this.tableList.find(item => item.tableName === val)
                 this.localVal.tableName = table.tableName
                 this.localVal.conditions = []
-                this.localVal.field = ''
+                this.localVal.fieldKey = ''
             },
             // 增加筛选条件
             handleAddCondition (index) {
