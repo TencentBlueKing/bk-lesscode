@@ -263,7 +263,7 @@
                                 this.deployStartTimeQueue.push(data.start_time)
                                 this.deployEndTimeQueue.push(data.complete_time)
                             }
-
+                            
                             if (data.name === 'release' && ['failed', 'successful'].includes(data.status)) {
                                 content = this.computedDeployTime(data.start_time, data.complete_time)
                             }
@@ -675,7 +675,7 @@
                 const interval = (end - start) / 1000
 
                 if (!interval) {
-                    return window.i18n.t('< 1秒')
+                    return '< 1s'
                 }
 
                 return this.getDisplayTime(interval)
@@ -684,7 +684,7 @@
             getDisplayTime (payload) {
                 let theTime = payload
                 if (theTime < 1) {
-                    return window.i18n.t('< 1秒')
+                    return '< 1s'
                 }
                 let middle = 0
                 let hour = 0
@@ -701,13 +701,13 @@
                 let result = ''
 
                 if (theTime > 0) {
-                    result = window.i18n.t('{0}秒', [theTime])
+                    result = `${theTime}s`
                 }
                 if (middle > 0) {
-                    result = window.i18n.t('{0}分{1}', [middle, result])
+                    result = `${middle}m${result}`
                 }
                 if (hour > 0) {
-                    result = window.i18n.t('{0}时{1}', [hour, result])
+                    result = `${hour}h${result}`
                 }
 
                 return result

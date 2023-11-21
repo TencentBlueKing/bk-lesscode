@@ -1,9 +1,9 @@
 <template>
     <div
-        v-if="isShow && Object.keys(config).length"
+        v-if="isShow && Object.keys(filerConfig).length"
         class="modifier-slot">
         <renderSlot
-            v-for="(slotConfig, slotName) in config"
+            v-for="(slotConfig, slotName) in filerConfig"
             :key="slotName"
             :name="slotName"
             :last-value="lastSlots[slotName]"
@@ -17,19 +17,34 @@
     import _ from 'lodash'
     import LC from '@/element-materials/core'
     import renderSlot from './render-slot.vue'
-
+    import { encodeRegexp } from '../../component/utils'
     export default {
         components: {
             renderSlot
         },
-
+        props: {
+            keyword: {
+                type: String,
+                default: ''
+            }
+        },
         data () {
             return {
                 isShow: true,
                 lastSlots: {}
             }
         },
-
+        computed: {
+            filerConfig () {
+                const reg = new RegExp(encodeRegexp(this.keyword), 'i')
+                return Object.keys(this.config).filter(configName => {
+                    return reg.test(window.i18n.t(this.config[configName]?.displayName) + `${this.config[configName].type.length <= 1 ? `(${this.config[configName]?.type[0]})` : ''}`)
+                }).reduce((result, key) => {
+                    result[key] = this.config[key]
+                    return result
+                }, {})
+            }
+        },
         created () {
             this.isInnerChange = false
             this.componentNode = LC.getActiveNode()

@@ -84,7 +84,8 @@
                             :key="`${renderCom.type}_${index}`"
                             :readonly="isReadOnly"
                             :change="handleCodeChange"
-                            v-bind="describe.bindProps" />
+                            v-bind="describe.bindProps"
+                            :last-data-origin="lastDataOrigin" />
                     </template>
                 </template>
             </div>
@@ -159,6 +160,8 @@
     import TypeRouteList from './strategy/route-list.vue'
     import TypeChartColor from './strategy/chart-color-set.vue'
     import TypeRequestSelect from './strategy/request-select.vue'
+    import TypeValueKeyOption from './strategy/value-key-option.vue'
+    import TypeValueKeyItem from './strategy/value-key-item.vue'
 
     const getRealValue = (type, target) => {
         if (type === 'object') {
@@ -183,7 +186,9 @@
             'srcset': 'array',
             // 老数据存在 type = 'hidden' 但是值是 object 的情况
             'hidden': 'object',
-            'pagination': 'object'
+            'pagination': 'object',
+            'value-key-item': 'string',
+            'value-key-options': 'object'
         }
         return valueMap[type] || type
     }
@@ -232,6 +237,9 @@
             },
             syncSlot: {
                 type: Function
+            },
+            lastDataOrigin: {
+                type: Object
             }
         },
         data () {
@@ -278,7 +286,9 @@
                     'pagination': TypePagination,
                     'route': TypeRouteList,
                     'chartColor': TypeChartColor,
-                    'request-select': TypeRequestSelect
+                    'request-select': TypeRequestSelect,
+                    'value-key-options': TypeValueKeyOption,
+                    'value-key-item': TypeValueKeyItem
                 }
 
                 const typeMap = {
@@ -324,13 +334,23 @@
                     'pagination': 'pagination',
                     'route': 'route',
                     'chartColor': 'chartColor',
-                    'request-select': 'request-select'
+                    'request-select': 'request-select',
+                    'value-key-options': 'value-key-options',
+                    'value-key-item': 'value-key-item'
                 }
 
                 let realType = config.type
                 // 属性type支持配置数组，内部逻辑全部按数组处理
                 if (typeof config.type === 'string') {
                     realType = [config.type]
+                }
+                if (typeof config.type === 'function') {
+                    const componentNode = LC.getActiveNode()
+                    const calcType = config.type(componentNode.renderProps)
+                    realType = Array.isArray(calcType) ? calcType : [calcType]
+                    if (!realType.includes(this.selectValueType) && this.selectValueType) {
+                        this.handleValueTypeChange(realType[0])
+                    }
                 }
 
                 return realType.reduce((res, propType) => {
@@ -465,7 +485,16 @@
                 val
             } = this.describe
             // 属性各个交互类型可以接受的值类型
-            const valueTypes = (Array.isArray(type) ? type : [type]).map(getPropValueType)
+            let realType = type
+            if (typeof type === 'string') {
+                realType = [type]
+            }
+            if (typeof type === 'function') {
+                const componentNode = LC.getActiveNode()
+                const calcType = type(componentNode.renderProps)
+                realType = Array.isArray(calcType) ? calcType : [calcType]
+            }
+            const valueTypes = realType.map(getPropValueType)
             // 该属性的默认值
             const defaultValue = val !== undefined ? val : getDefaultValueByType(valueTypes[0])
             this.defaultValue = _.cloneDeep(defaultValue)
@@ -605,7 +634,7 @@
                     let code = null
                     let renderValue = this.formData.renderValue
 
-                    let val = getRealValue(type, value)
+                    const val = getRealValue(type, value)
 
                     if (this.formData.valueType === 'remote') {
                         // 配置的是远程函数、数据源

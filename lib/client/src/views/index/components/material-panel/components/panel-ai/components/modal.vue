@@ -17,31 +17,35 @@
             <span>
                 <i
                     v-if="isFullTopBottom"
+                    v-bk-tooltips="{ content: $t('向下收缩'), distance: 20 }"
                     class="ai-header-tool bk-drag-icon bk-drag-shangxiajuhe"
                     @click="handleUnFullTopBottom"
                 ></i>
                 <i
                     v-else
+                    v-bk-tooltips="{ content: $t('向上扩展'), distance: 20 }"
                     class="ai-header-tool bk-drag-icon bk-drag-shangxialashen-2"
                     @click="handleFullTopBottom"
                 ></i>
                 
                 <i
+                    v-bk-tooltips="{ content: $t('清空聊天记录'), distance: 20 }"
                     class="ai-header-tool bk-drag-icon bk-drag-saoba"
                     @click="handleClear"
                 ></i>
                 <i
+                    v-bk-tooltips="{ content: $t('关闭'), distance: 20 }"
                     class="ai-header-tool bk-drag-icon bk-drag-shanchu-2"
                     @click="handleClose"
                 ></i>
             </span>
         </header>
         <slot></slot>
-
         <span class="drag-line left" @mousedown.stop="handleLeftDragStart"></span>
         <span class="drag-line right" @mousedown.stop="handleRightDragStart"></span>
         <span class="drag-line top" @mousedown.stop="handleTopDragStart"></span>
         <span class="drag-line bottom" @mousedown.stop="handleBottomDragStart"></span>
+        <span class="drag-line top-right-corner" @mousedown.stop="handleTopRightDragStart"></span>
     </section>
 </template>
 
@@ -55,7 +59,7 @@
 
     export default {
         emits: ['clear', 'close'],
-
+        
         setup (_, { emit }) {
             // window尺寸
             const windowSize = {
@@ -119,6 +123,13 @@
                 target.type = 'bottomDrag'
                 target.clientY = event.clientY
             }
+            
+            const handleTopRightDragStart = (event) => {
+                target.isMove = true
+                target.type = 'topRightDrag'
+                target.clientY = event.clientY
+                target.clientX = event.clientX
+            }
 
             // 结束
             const handleMouseUp = () => {
@@ -138,6 +149,10 @@
                 if (['move', 'bottomDrag'].includes(target.type)) {
                     modalPosition.value.bottom -= y
                 }
+                if (['topRightDrag'].includes(target.type)) {
+                    modalPosition.value.right -= x
+                    modalPosition.value.top += y
+                }
             }
 
             const processBoundary = (x, y) => {
@@ -152,12 +167,12 @@
                     if (['move', 'leftDrag'].includes(target.type)) {
                         modalPosition.value.left -= x
                     }
-                    if (['move', 'rightDrag'].includes(target.type)) {
+                    if (['move', 'rightDrag', 'topRightDrag'].includes(target.type)) {
                         modalPosition.value.right += x
                     }
                 }
                 if (windowSize.height - top - bottom < sizeLimit.height || top < minLimit.top || bottom < minLimit.bottom) {
-                    if (['move', 'topDrag'].includes(target.type)) {
+                    if (['move', 'topDrag', 'topRightDrag'].includes(target.type)) {
                         modalPosition.value.top -= y
                     }
                     if (['move', 'bottomDrag'].includes(target.type)) {
@@ -169,6 +184,8 @@
             // 处理移动modal，缩放modal
             const handleMouseMove = (event) => {
                 if (!target.isMove) return
+                // 拖拽禁止选中文字
+                event.preventDefault()
                 // 赋值
                 const x = event.clientX - target.clientX
                 const y = event.clientY - target.clientY
@@ -234,6 +251,7 @@
                 handleLeftDragStart,
                 handleTopDragStart,
                 handleBottomDragStart,
+                handleTopRightDragStart,
                 handleFullTopBottom,
                 handleUnFullTopBottom,
                 handleClear,
@@ -269,11 +287,19 @@
             margin-right: 2px;
         }
         .ai-header-tool {
-            font-size: 20px;
-            margin-right: 20px;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            font-size: 17px;
+            line-height: 24px;
+            margin-right: 10px;
             cursor: pointer;
             &:last-child {
                 margin-right: 0;
+            }
+            &:hover {
+                background-color: rgba(250,250,250,.2);
+                border-radius: 2px;
             }
         }
     }
@@ -291,6 +317,14 @@
             bottom: 0;
             right: 0;
             width: 5px;
+            
+        }
+        &.top-right-corner {
+            top: 0px;
+            right: 0px;
+            cursor: sw-resize;
+            width: 10px;
+            height: 10px;
         }
         &.top {
             top: 0;

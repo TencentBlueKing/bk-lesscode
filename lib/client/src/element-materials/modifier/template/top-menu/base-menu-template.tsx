@@ -12,7 +12,7 @@
 import { defineComponent, ref, watch } from '@vue/composition-api'
 import { VNode } from 'vue'
 import MenuItem from '../editor/menu/index.vue'
-import { generatorMenu } from '../../../../../../shared/util'
+import { generatorMenu, generatorHelpMenu } from '../../../../../../shared/util'
 import './base-menu-template.css'
 
 export default defineComponent({
@@ -35,6 +35,18 @@ export default defineComponent({
         draggableName: {
             type: String,
             default: 'top-col'
+        },
+        titleName: {
+            type: String,
+            default: window.i18n.t('导航菜单')
+        },
+        hasBlank: {
+            type: Boolean,
+            default: false
+        },
+        lastFew: {
+            type: Number,
+            default: 1
         }
     },
   
@@ -59,7 +71,11 @@ export default defineComponent({
         }
         
         const handleAdd = () => {
-            localMenuList.value.push(props.platform === 'PC' ? generatorMenu() : generatorMenu('apps-o'))
+            if (props.menuKey === 'topMenuList') {
+                localMenuList.value.push(props.platform === 'PC' ? generatorMenu() : generatorMenu('apps-o'))
+            } else if (props.menuKey === 'helpMenuList') {
+                localMenuList.value.push(generatorHelpMenu())
+            }
             triggerChange()
         }
       
@@ -97,7 +113,7 @@ export default defineComponent({
                             close: !this.showContent
                         }}
                     ></i>
-                    <span>{ this.$t('导航菜单') }</span>
+                    <span> { this.titleName }</span>
                 </div>
                 {this.showContent && <div>
                     <div class="menu-wrapper">
@@ -112,18 +128,22 @@ export default defineComponent({
                                 {this.localMenuList.map((menu, index) => (<menu-item
                                     data={menu}
                                     key={menu.id}
-                                    last-one={this.localMenuList.length === 1}
+                                    last-one={this.localMenuList.length === this.lastFew}
                                     onOn-delete={() => this.handleRemove(index)}
                                     onOn-change={(value) => this.handleChange(value, index)}
                                     show-icon={this.showIcon}
                                     has-child={this.hasChild}
+                                    has-blank={this.hasBlank}
                                     platform={this.platform}>
                                 </menu-item>))}
                             </transition-group>
                         </vue-draggable>
                     </div>
                     <div class="footer">
-                        <bk-button size="small" text onClick={this.handleAdd}>{ this.$t('继续添加') }</bk-button>
+                        {this.localMenuList.length <= 0 ? <div class="add-help-menu">
+                            <bk-button size="small" icon="plus-circle" text onClick={this.handleAdd}>{ this.$t('添加帮助菜单项') }</bk-button>
+                        </div> : <bk-button size="small" text onClick={this.handleAdd}>{ this.$t('继续添加') }</bk-button>
+                        }
                     </div>
                 </div>}
             </div>

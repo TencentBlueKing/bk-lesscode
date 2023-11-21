@@ -46,6 +46,33 @@
     }
 } */
 
+.g-scrollbar {
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        height: 5px;
+        border-radius: 3px;
+        background-color: #dcdee5;
+    }
+}
+
+.g-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.g-flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .g-page-tab{
     position: relative;
     z-index: 9;
@@ -147,4 +174,9 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.toastui-editor-defaultUI,
+.toastui-editor-contents {
+    font-family: inherit !important;
 }

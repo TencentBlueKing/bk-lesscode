@@ -169,7 +169,7 @@
                 }
 
                 // 输入框获得焦点画布不响应复制、粘贴、剪切操作
-                const isInputFocused = event.target.classList.contains('bk-form-input') || event.target.classList.contains('bk-form-textarea')
+                const isInputFocused = event.target.classList.contains('bk-form-input') || event.target.classList.contains('bk-form-textarea') || event.target.classList.contains('bk-select-search-input') || event.target.classList.contains('auto-textarea-input')
                 if (!isInputFocused) {
                     if (event.ctrlKey || event.metaKey) {
                         // 复制（Ctrl + C）
@@ -185,7 +185,9 @@
                             LC.execCommand('cut')
                         }
                     } else if ([8, 46].includes(event.keyCode)) {
-                        LC.execCommand('remove')
+                        if (!event.target.classList.contains('input')) {
+                            LC.execCommand('remove')
+                        }
                     }
                 }
 

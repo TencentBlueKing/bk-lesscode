@@ -10,53 +10,78 @@
 -->
 
 <template>
-    <choose-function
+    <section
         class="choose-event"
-        default-variable-format="event"
-        :format-include="['event', 'value', 'variable', 'expression']"
-        :choosen-function="eventValue"
-        :function-templates="eventConfig.functionTemplates || eventValue.eventTemplates"
-        @change="handleChangeEvent"
-        @clear="handleClearEvent"
     >
-        <template v-slot:header>
-            <h3 class="event-title">
-                <span
-                    class="label mr10"
-                    v-bk-tooltips="{
-                        content: $t(eventConfig.tips),
-                        disabled: !eventConfig.tips,
-                        placements: ['left-start'],
-                        width: 200,
-                        boundary: 'window'
-                    }"
-                >
-                    {{ eventName }}
-                </span>
-                <bk-switcher
-                    size="small"
-                    theme="primary"
-                    v-bk-tooltips="{
-                        content: $t('关闭后，该事件不生效'),
-                        boundary: 'window'
-                    }"
-                    :value="eventValue.enable === undefined || eventValue.enable"
-                    @change="handleEnableEvent"
-                ></bk-switcher>
-            </h3>
-            <i class="bk-icon icon-close-line panel-minus" @click="handleDeleteEvent"></i>
-        </template>
-    </choose-function>
+        <h3 class="event-title">
+            <span
+                class="label mr10"
+                v-bk-tooltips="{
+                    content: $t(eventConfig.tips),
+                    disabled: !eventConfig.tips,
+                    placements: ['left-start'],
+                    width: 200,
+                    boundary: 'window'
+                }"
+            >
+                {{ eventName }}
+            </span>
+            <bk-switcher
+                size="small"
+                theme="primary"
+                v-bk-tooltips="{
+                    content: $t('关闭后，该事件不生效'),
+                    boundary: 'window'
+                }"
+                :value="eventValue.enable === undefined || eventValue.enable"
+                @change="handleEnableEvent"
+            ></bk-switcher>
+        </h3>
+        <i class="bk-icon icon-close-line panel-minus" @click="handleDeleteEvent"></i>
+        <bk-radio-group
+            class="g-prop-radio-group mb12"
+            :value="eventValue.type || EVENT_TYPE.METHOD"
+            @change="handleChangeEventType"
+        >
+            <bk-radio-button
+                v-for="item in types"
+                :key="item.id"
+                :value="item.id"
+                class="prop-radio"
+            >
+                {{ item.name }}
+            </bk-radio-button>
+        </bk-radio-group>
+        <describe-function
+            v-if="eventValue.type === EVENT_TYPE.ACTION"
+            :event-value="eventValue"
+            @change="handleChangeEvent"
+        />
+        <choose-function
+            v-else
+            default-variable-format="event"
+            :format-include="['event', 'value', 'variable', 'expression']"
+            :choosen-function="eventValue"
+            :function-templates="eventConfig.functionTemplates || eventValue.eventTemplates"
+            @change="handleChangeEvent"
+            @clear="handleClearEvent"
+        />
+    </section>
 </template>
 
 <script>
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
+    import DescribeFunction from './describe-function/index.vue'
+    import {
+        EVENT_TYPE
+    } from 'shared/function/constant'
 
     export default {
         name: 'render-event',
 
         components: {
-            ChooseFunction
+            ChooseFunction,
+            DescribeFunction
         },
 
         props: {
@@ -65,12 +90,37 @@
             eventConfig: Object
         },
 
+        data () {
+            return {
+                EVENT_TYPE,
+                types: [
+                    {
+                        id: EVENT_TYPE.METHOD,
+                        name: this.$t('事件函数')
+                    },
+                    {
+                        id: EVENT_TYPE.ACTION,
+                        name: this.$t('事件行为描述')
+                    }
+                ]
+            }
+        },
+
         methods: {
             handleChangeEvent (eventValue) {
                 this.$emit('update', {
                     [this.eventName]: {
                         ...this.eventValue,
                         ...eventValue
+                    }
+                })
+            },
+
+            handleChangeEventType (type) {
+                this.$emit('update', {
+                    [this.eventName]: {
+                        ...this.eventValue,
+                        type
                     }
                 })
             },
@@ -120,6 +170,7 @@
         background: #f0f1f5;
         border-radius: 2px;
         padding: 8px;
+        position: relative;
         &:hover {
             box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 20%);
             .panel-minus {
@@ -130,9 +181,12 @@
     .panel-minus {
         position: absolute;
         cursor: pointer;
-        right: 10px;
-        top: 10px;
+        right: 6px;
+        top: 6px;
         font-size: 12px;
         display: none;
+    }
+    .prop-radio {
+        background-color: #fff;
     }
 </style>

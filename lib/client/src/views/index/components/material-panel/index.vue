@@ -11,6 +11,7 @@
             <component :is="panelCom" />
             <panel-ai
                 v-show="isAiAvailable && isShowAi"
+                :is-show-ai="isShowAi"
                 @close="handleCloseAi"
             />
         </div>
@@ -20,6 +21,7 @@
     import { mapGetters } from 'vuex'
     import SelectPanel from './components/select-panel'
     import PanelComponent from './components/panel-component'
+    import PanelFormEngine from './components/panel-form-engine'
     import PanelTemplate from './components/panel-template'
     import PanelIcon from './components/panel-icon'
     import PanelTree from './components/panel-tree'
@@ -30,6 +32,7 @@
         components: {
             SelectPanel,
             PanelComponent,
+            PanelFormEngine,
             PanelTemplate,
             PanelIcon,
             PanelTree,
@@ -49,6 +52,7 @@
                 const comMap = {
                     component: PanelComponent,
                     template: PanelTemplate,
+                    formEngine: PanelFormEngine,
                     icon: PanelIcon,
                     tree: PanelTree
                 }

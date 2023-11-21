@@ -1,19 +1,21 @@
 <template>
-    <div class="render-icon">
+    <div class="lesscode-materials-panel-content">
         <search-box
             :placeholder="$t('图标名称')"
             :list="searchList"
             @on-change="handleSearchChange" />
-        <group-box
-            v-for="(componentList, groupName) in renderGroupIconMap"
-            :key="groupName"
-            :list="componentList"
-            :group-name="groupName">
-            <render-icon
-                v-for="component in componentList"
-                :key="component.name"
-                :data="component" />
-        </group-box>
+        <div class="materials-group-box-list">
+            <group-box
+                v-for="(componentList, groupName) in renderGroupIconMap"
+                :key="groupName"
+                :list="componentList"
+                :group-name="groupName">
+                <render-icon
+                    v-for="component in componentList"
+                    :key="component.name"
+                    :data="component" />
+            </group-box>
+        </div>
     </div>
 </template>
 <script>
@@ -83,7 +85,3 @@
         }
     }
 </script>
-<style lang="postcss" scoped>
-    .render-icon{
-    }
-</style>

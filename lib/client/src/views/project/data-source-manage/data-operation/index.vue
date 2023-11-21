@@ -59,14 +59,14 @@
             <div class="g-page-tab">
                 <div
                     class="tab-item"
-                    :class="{ active: queryType === 'json-query' }"
-                    @click="toggleQueryType('json-query')"
-                >{{ $t('查询描述') }}</div>
-                <div
-                    class="tab-item"
                     :class="{ active: queryType === 'sql-query' }"
                     @click="toggleQueryType('sql-query')"
                 >SQL</div>
+                <div
+                    class="tab-item"
+                    :class="{ active: queryType === 'json-query' }"
+                    @click="toggleQueryType('json-query')"
+                >{{ $t('查询描述') }}</div>
             </div>
         </header>
         <main class="data-operation-home">
@@ -301,7 +301,7 @@
             const queryResultRef = ref()
             // tab 展示
             const dataSourceType = ref('preview')
-            const queryType = ref('json-query')
+            const queryType = ref('sql-query')
             const queryTab = ref('query-result')
             // 项目数据
             const projectInfo = ref({

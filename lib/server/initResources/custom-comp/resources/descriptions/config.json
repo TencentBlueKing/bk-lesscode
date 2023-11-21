@@ -1,0 +1,96 @@
+{
+    "name": "descriptions-container", 
+    "type": "descriptions", 
+    "displayName": "描述列表", 
+    "styles": [
+        "size", 
+        "padding", 
+        "margin", 
+        "font", 
+        "backgroundColor"
+    ], 
+    "props": {
+        "descriptions-data": {
+            "type": "array", 
+            "val": [
+                {
+                    "label": "内网IP", 
+                    "text": "127.0.0.1"
+                }, 
+                {
+                    "label": "内网IP", 
+                    "text": "0.0.0.0"
+                }, 
+                {
+                    "label": "云厂商", 
+                    "text": "中国电信"
+                }, 
+                {
+                    "label": "云厂商", 
+                    "text": "中国电信"
+                }, 
+                {
+                    "label": "云主机状态", 
+                    "text": "运行中"
+                }, 
+                {
+                    "label": "云主机状态", 
+                    "text": "运行中"
+                }, 
+                {
+                    "label": "当前状态", 
+                    "text": "运行中"
+                }, 
+                {
+                    "label": "当前状态", 
+                    "text": "运行中"
+                }, 
+                {
+                    "label": "SLA级别", 
+                    "text": "L3"
+                }, 
+                {
+                    "label": "云区域", 
+                    "text": "default.area"
+                }, 
+                {
+                    "label": "云区域", 
+                    "text": "default.area"
+                }, 
+                {
+                    "label": "设备编号", 
+                    "text": "SN98898"
+                }, 
+                {
+                    "label": "设备编号", 
+                    "text": "SN98898"
+                }, 
+                {
+                    "label": "外网交换机端口", 
+                    "text": "8000"
+                }, 
+                {
+                    "label": "外网交换机端口", 
+                    "text": "8000"
+                }, 
+                {
+                    "label": "内网交换机端口", 
+                    "text": "9090"
+                }, 
+                {
+                    "label": "内网交换机端口", 
+                    "text": "9090"
+                }, 
+                {
+                    "label": "设备SN", 
+                    "text": "ndddou"
+                }, 
+                {
+                    "label": "设备SN", 
+                    "text": "ndddou"
+                }
+            ], 
+            "tips": "描述列表展示的数据"
+        }
+    }
+}

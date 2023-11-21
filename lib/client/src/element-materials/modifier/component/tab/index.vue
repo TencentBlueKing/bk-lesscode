@@ -1,5 +1,5 @@
 <template>
-    <section v-if="isShow" class="modifier-tab">
+    <section v-if="isShow && isSearch" class="modifier-tab">
         <div class="slot-title">{{ $t('tab选项配置：') }}</div>
         <vue-draggable
             class="group-list"
@@ -20,14 +20,14 @@
                 <span
                     class="item-content"
                     v-bk-overflow-tips="{
-                        content: item.prop.label,
+                        content: item.prop[displayKey],
                         placement: 'left-start',
                         width: 200,
                         boundary: 'window'
                     }"
                 >
                     <i class="bk-drag-icon bk-drag-grag-fill" />
-                    {{ item.prop.label }}
+                    {{ item.prop[displayKey] }}
                 </span>
                 <i class="bk-icon icon-minus-circle" @click.stop="handleDelete(index)"></i>
                 <section slot="content">
@@ -54,32 +54,60 @@
 
 <script>
     import LC from '@/element-materials/core'
+    import { encodeRegexp } from '../../component/utils'
     export default {
+        props: {
+            keyword: {
+                type: String,
+                default: ''
+            }
+        },
         data () {
             return {
                 isShow: false,
                 componentNode: null,
-                panelItems: [],
-                panelPropsList: ['label', 'name'],
-                initOptionList: [
+                panelItems: []
+            }
+        },
+        computed: {
+            displayKey () {
+                return this.componentNode.type === 'widget-tab' ? 'label' : 'title'
+            },
+            panelPropsList () {
+                return this.componentNode.type === 'widget-tab' ? ['label', 'name'] : ['title', 'name']
+            },
+            initOptionList () {
+                const optionList = [
                     {
-                        label: 'Tab-1',
+                        title: 'Tab-1',
                         name: 'tab1'
                     },
                     {
-                        label: 'Tab-2',
+                        title: 'Tab-2',
                         name: 'tab2'
                     },
                     {
-                        label: 'Tab-3',
+                        title: 'Tab-3',
                         name: 'tab3'
                     }
                 ]
+
+                if (this.componentNode.type === 'widget-tab') {
+                    optionList.forEach(option => {
+                        option.label = option.title
+                        delete option.title
+                    })
+                }
+                return optionList
+            },
+            isSearch () {
+                const res = new RegExp(encodeRegexp(this.keyword), 'i')
+                return res.test(window.i18n.t('tab选项配置：'))
             }
         },
         created () {
             this.componentNode = LC.getActiveNode()
-            this.isShow = this.componentNode.type === 'widget-tab'
+            this.isShow = ['widget-tab', 'widget-van-tab'].includes(this.componentNode.type)
             if (!this.isShow) {
                 return
             }
@@ -103,7 +131,8 @@
         },
         methods: {
             createNewTabPanel (itemData) {
-                const node = LC.createNode('bk-tab-panel')
+                const nodeTag = this.componentNode.type === 'widget-tab' ? 'bk-tab-panel' : 'van-tab'
+                const node = LC.createNode(nodeTag)
             
                 const propsValue = {}
                 this.panelPropsList.forEach(propName => {
@@ -123,13 +152,16 @@
                     this.componentNode.appendChild(child, 'default')
                 })
                 this.panelItems = [...this.componentNode.children]
+
                 // 设置默认选中的tab
                 const props = {
                     format: 'value',
-                    code: 'tab1',
                     renderValue: 'tab1'
                 }
-                if (LC.getFramework() === 'vue3') {
+
+                props.code = this.componentNode.type === 'widget-tab' ? 'tab1' : 0
+                
+                if (LC.getFramework() === 'vue3' || this.componentNode.type === 'widget-van-tab') {
                     props.directive = 'v-model'
                 } else {
                     props.modifiers = ['sync']
@@ -139,10 +171,17 @@
                 })
             },
             handleAdd () {
-                const child = this.createNewTabPanel({
+                const isWidgetTab = this.componentNode.type === 'widget-tab'
+                const item = {
                     label: `Tab-${this.panelItems.length + 1}`,
                     name: `tab${this.panelItems.length + 1}`
-                })
+                }
+                if (!isWidgetTab) {
+                    item.title = item.label
+                    delete item.label
+                }
+                const child = this.createNewTabPanel(item)
+
                 this.componentNode.appendChild(child, 'default')
                 this.panelItems = [...this.componentNode.children]
             },

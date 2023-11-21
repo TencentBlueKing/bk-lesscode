@@ -22,3 +22,8 @@
     background-size: 12px 16px;
     background-image: url("../images/lock.svg");
 }
+
+.toastui-editor-defaultUI,
+.toastui-editor-contents {
+    font-family: inherit !important;
+}

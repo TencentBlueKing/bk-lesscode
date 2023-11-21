@@ -1,0 +1,45 @@
+{
+    "type": "banner-container", 
+    "name": "banner-container", 
+    "displayName": "banner图片容器", 
+    "styles": [
+        "size", 
+        "padding", 
+        "margin", 
+        "font", 
+        "border", 
+        "background"
+    ], 
+    "props": {
+        "src": {
+            "type": "src",
+            "val": "https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/file-manage/latest/vue-banner.png", 
+            "tips": "banner图的图片路径"
+        }, 
+        "alt": {
+            "type": "string", 
+            "val": "", 
+            "tips": "提示"
+        }, 
+        "title": {
+            "type": "string", 
+            "val": "立即体验", 
+            "tips": "左边按钮文案"
+        }, 
+        "title-href": {
+            "type": "string", 
+            "val": "home", 
+            "tips": "左边按钮路由跳转的路径"
+        }, 
+        "title-help": {
+            "type": "string", 
+            "val": "帮助文档", 
+            "tips": "右边按钮文案"
+        }, 
+        "title-help-href": {
+            "type": "string",
+            "val": "intr",
+            "tips": "右边按钮路由跳转的路径"
+        }
+    }
+}

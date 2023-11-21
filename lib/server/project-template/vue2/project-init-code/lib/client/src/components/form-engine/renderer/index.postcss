@@ -1,0 +1,42 @@
+@import "@/css/mixins/scroller";
+
+.bkform-engine-renderer {
+    position: relative;
+    height: 100%;
+    background: #ffffff;
+    overflow: auto;
+    @mixin scroller;
+    &.has-btns-area {
+        .bkform-engine-renderer-fields {
+            height: calc(100% - 56px);
+        }
+    }
+}
+.bkform-engine-renderer-fields {
+    position: relative;
+    padding: 24px 32px;
+    height: 100%;
+    overflow: auto;
+    @mixin scroller;
+    &.half-row-layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        justify-content: space-between;
+        .bkform-engine-field-widget {
+            width: calc(50% - 5px);
+        }
+    }
+    .user-selector {
+        width: 100%;
+    }
+}
+.bkform-engine-field-widget {
+    margin-bottom: 24px;
+}
+.bkform-engine-renderer-actions {
+    padding: 12px 32px;
+    .bk-button {
+        margin-right: 8px;
+    }
+}

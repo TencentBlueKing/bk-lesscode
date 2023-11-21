@@ -165,7 +165,7 @@
             computedIconColor ({ status }) {
                 const colorMap = {
                     'default': '#dcdee5',
-                    'successful': '#18C0A1',
+                    'successful': '#2DCB56',
                     'failed': '#ea3636',
                     'pending': '#3a84ff'
                 }
@@ -313,6 +313,7 @@
                 vertical-align: top;
                 &.is-weight {
                     font-weight: 700;
+                    color: #000000;
                 }
                 &.is-default {
                     color: #979ba5;
@@ -381,20 +382,20 @@
                 }
                 &.successful {
                     &::after {
-                        border-color: #18c0a1;
-                        background: #a0f5e3;
+                        border-color: #2DCB56;
+                        background: #F2FFF4;
                     }
                 }
                 &.failed {
                     &::after {
-                        border-color: #ea3636;
-                        background: #fd9c9c;
+                        border-color: #EA3636;
+                        background: #FFEEEE;
                     }
                 }
                 &.default {
                     &::after {
-                        border-color: #dcdee5;
-                        background: #f0f1f5;
+                        border-color: #C4C6CC;
+                        background: #EAEBF0;
                     }
                 }
             }
@@ -451,20 +452,38 @@
 
         .lesscode-timeline-item-successful {
             &::after {
-                border-color: #18c0a1;
+                border-color: #DCDEE5;
             }
         }
 
         .lesscode-timeline-item-pending {
             &::after {
-                border-color: #18c0a1;
+                border-color: #DCDEE5;
             }
         }
 
         .lesscode-timeline-item-failed {
             &::after {
-                border-color: #ea3636;
+                border-color: #DCDEE5;
             }
         }
+    }
+    .deploy-timeline-reset {
+        .lesscode-timeline-dot {
+                .lesscode-timeline-icon {
+                    background: #F5F7FA;
+                    border-top: 2px solid #F5F7FA;
+                    border-bottom: 2px solid #F5F7FA;
+                }
+                .lesscode-deploy-timeline-loading {
+                    background: #F5F7FA;
+                    border-top: 2px solid #F5F7FA;
+                    border-bottom: 2px solid #F5F7FA;
+                }
+                .lesscode-timeline-node-icon {
+                    border-top: 2px solid #F5F7FA;
+                    border-bottom: 2px solid #F5F7FA;
+                }
+            }
     }
 </style>

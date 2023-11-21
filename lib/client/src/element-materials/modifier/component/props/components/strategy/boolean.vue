@@ -42,6 +42,11 @@
                 renderValue: this.defaultValue
             }
         },
+        watch: {
+            defaultValue () {
+                this.renderValue = this.defaultValue
+            }
+        },
         methods: {
             handleChange (val) {
                 this.renderValue = !this.renderValue

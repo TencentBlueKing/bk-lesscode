@@ -5,7 +5,7 @@
             <i class="bk-icon icon-close item-remove" @click="$emit('remove')"></i>
         </div>
         <bk-form :label-width="270" form-type="vertical">
-            <bk-form-item :label="$t('form_列表头名称')">
+            <bk-form-item :label="$t('form_列名称')">
                 <bk-input v-model="localValue.name" @change="change"></bk-input>
             </bk-form-item>
             <bk-form-item :label="$t('form_列字段类型')">

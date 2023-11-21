@@ -1,0 +1,99 @@
+@import "@/css/mixins/scroller";
+
+.table-filters {
+    padding: 16px;
+    background: #f5f7fa;
+    border-radius: 2px;
+}
+
+.filters-list-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    pointer-events: auto !important;
+    .filter-item-form {
+        position: relative;
+        padding: 8px;
+        width: 320px;
+        border: 1px dashed transparent;
+        pointer-events: auto !important;
+        &:hover {
+            background: #f0f5ff;
+            border-color: #3a84ff;
+            .delete-icon {
+                display: block;
+            }
+        }
+        & + .tooltips-trigger,
+        & + .bk-tooltip {
+            margin: 9px 0 9px 8px;
+            align-self: flex-end;
+            & * {
+                pointer-events: auto !important;
+            }
+        }
+    }
+    .filter-label {
+        margin-bottom: 6px;
+        font-size: 12px;
+        line-height: 20px;
+        color: #63656e;
+    }
+    .delete-icon {
+        display: none;
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        font-size: 16px;
+        color: #3a84ff;
+        background: #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        pointer-events: auto !important;
+        &:hover {
+            color: #1768ef;
+        }
+    }
+}
+
+.add-filter-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+    color: #979ba5;
+    background: #ffffff;
+    border: 1px solid #c4c6cc;
+    border-radius: 2px;
+    cursor: pointer;
+    pointer-events: auto !important;
+    &:hover {
+        border-color: #3a84ff;
+        color: #3a84ff;
+    }
+}
+
+.field-options {
+    padding: 4px 0;
+    width: 120px;
+    max-height: 168px;
+    overflow: auto;
+    @mixin scroller;
+    .option-item {
+        padding: 0 12px;
+        height: 32px;
+        line-height: 32px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px;
+        color: #63656e;
+        cursor: pointer;
+        &:hover {
+            background: #e1ecff;
+            color: #3a84ff;
+        }
+    }
+}

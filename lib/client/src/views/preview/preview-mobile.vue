@@ -10,7 +10,7 @@
     import getHeaderHeight from '@/components/render/mobile/common/mobile-header-height'
     import {
         init,
-        render,
+        render
     } from 'bk-lesscode-render'
     import { i18nConfig } from '@/locales/i18n.js'
 
@@ -34,13 +34,14 @@
             const projectId = route.params.projectId
             const pagePath = route.query.pagePath || ''
             const versionId = route.query.version
+            const pageId = route.query.pageId || ''
 
             let pathStr = `${versionId ? `/version/${versionId}` : ''}`
             pathStr += '/platform/MOBILE'
 
             return {
                 pageSize,
-                source: `${location.origin}/preview/project/${projectId}${pathStr}${pagePath}`
+                source: `${location.origin}/preview/project/${projectId}${pathStr}${pagePath}?pageId=${pageId}`
             }
         },
 

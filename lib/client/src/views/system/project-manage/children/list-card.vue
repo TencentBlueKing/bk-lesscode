@@ -93,6 +93,14 @@
                                                 }}</a>
                                         </auth-component>
                                     </li>
+                                    <li>
+                                        <auth-component :permission="project.canDevelop" auth="develop_app"
+                                            :resource-id="project.id">
+                                            <a href="javascript:;" slot="forbid">{{ $t('归档') }}</a>
+                                            <a href="javascript:;" slot="allow" @click="handleArchive(project.id)">{{ $t('归档')
+                                                }}</a>
+                                        </auth-component>
+                                    </li>
                                     <li v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]">
                                         <a href="javascript:;" @click="handleSetTemplate(project)">{{ $t('设为模板') }}</a>
                                     </li>
@@ -183,6 +191,9 @@
             },
             handleExport(project) {
                 this.$emit('export', project)
+            },
+            handleArchive(projectId) {
+                this.$emit('archive', projectId)
             },
             handleSetTemplate(project) {
                 this.$emit('set-template', project)

@@ -1,0 +1,34 @@
+.mobile-sidebar-layout-wrapper {
+    height: 100%;
+    display: flex;
+    :global(.lesscode-editor-layout) {
+        min-height: auto;
+    }
+    .sidebar-item-wrapper {
+        width: 100%;
+        border: 1px  solid transparent;
+        z-index: 2;
+        cursor: pointer;
+        &:hover {
+            border: 1px dashed #3a84ff;
+        }
+        &:global(.selected) {
+            border: 1px solid #3a84ff;
+        } {
+            border: 1px solid #3a84ff;
+        }
+        .van-sidebar-item {
+            pointer-events: none;
+        }
+    }
+    .sidebar-edit-area-wrapper {
+        flex: 1;
+    }
+}
+
+.mobile-layout-wrapper {
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

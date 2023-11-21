@@ -1,0 +1,16 @@
+{
+    "name": "normal-iframe",
+    "type": "normal-iframe",
+    "displayName": "普通iframe",
+    "styles": ["size", "margin"],
+    "renderStyles": {
+        "height": "500px"
+    },
+    "props": {
+        "src": {
+            "type": "string",
+            "val": "https://bk.tencent.com/s-mart/community/question",
+            "tips": "iframe地址"
+        }
+    }
+}

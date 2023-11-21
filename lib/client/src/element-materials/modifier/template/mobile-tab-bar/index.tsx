@@ -11,11 +11,11 @@
 
 import { defineComponent } from '@vue/composition-api'
 import { VNode } from 'vue'
-import menuLayout from '../top-menu/base-menu-template'
+import mobileBaseTemplate from './mobile-base-template'
 
 export default defineComponent({
     components: {
-        menuLayout
+        mobileBaseTemplate
     },
     props: {
         menuList: Array
@@ -28,14 +28,11 @@ export default defineComponent({
     },
     render (): VNode {
         return (
-            <menuLayout
+            <mobileBaseTemplate
+                onChange={this.changeHandler}
                 menuList={this.menuList}
-                menuKey="menuList"
-                show-icon={true}
-                has-child={false}
-                platform="MOBILE"
-                headerTitle={window.i18n.t('移动端导航配置')}
-                onChange={this.changeHandler}></menuLayout>
+                title={window.i18n.t('移动端导航配置')}
+                show-icon={true}></mobileBaseTemplate>
         )
     }
 })

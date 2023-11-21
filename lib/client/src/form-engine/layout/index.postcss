@@ -1,0 +1,150 @@
+@import "@/css/mixins/scroller";
+
+.bkform-engine-layout {
+    position: relative;
+    height: 100%;
+    background: #ffffff;
+    border: 1px dashed #CCCCCC;
+    &.has-btns-area {
+        .bkform-engine-layout-fields {
+            height: calc(100% - 56px);
+        }
+    }
+}
+.bkform-engine-layout-fields {
+    position: relative;
+    padding: 24px 32px;
+    height: 100%;
+    pointer-events: auto !important;
+    overflow: auto;
+    @mixin scroller;
+    &.empty{
+        background: #F9F8FC;
+        border: 1px dashed #ADA4F5;
+        &::before{
+            content: attr(data-empty-content);
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: #63656E;
+            pointer-events: all;
+        }
+    }
+    &.half-row-layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        justify-content: space-between;
+        .bkform-engine-layout-drag-item {
+            width: calc(50% - 5px);
+            &.full-row {
+                width: 100%;
+            }
+        }
+    }
+}
+.drag-material-ghost {
+    &:after {
+        content: "放在这里";
+        display: block;
+        height: 24px;
+        padding: 0 5px;
+        font-size: 12px;
+        color: #fff;
+        text-align: center;
+        line-height: 24px;
+        background-color: #B3ABF0;
+    }
+    & > * {
+        display: none !important;
+    }
+}
+.bkform-engine-layout-drag-item {
+    position: relative;
+    margin-bottom: 24px;
+    border: 1px dashed transparent;
+    cursor: move;
+    pointer-events: auto !important;
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+    &:hover {
+        border-color: #B3ABF0;
+        .field-widget-key {
+            display: inline-block;
+        }
+    }
+    &.actived {
+        border: 1px solid #6C5CE8;
+        .actions-area {
+            .action-tag {
+                display: inline-block;
+                background: #6C5CE8;
+                &:hover {
+                    background: #2E19CA;
+                }
+            }
+        }
+    }
+    .drag-mask {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: transparent;
+        z-index: 1;
+    }
+    .user-selector {
+        width: 100%;
+    }
+}
+.actions-area {
+    position: absolute;
+    left: 0;
+    top: -22px;
+    display: inline-flex;
+    padding-bottom: 5px;
+    z-index: 999;
+    cursor: pointer;
+    .action-tag {
+        display: block;
+        text-align: center;
+        margin-right: 2px;
+        background: #B3ABF0;
+        color: #fff;
+        border-radius: 2px;
+        pointer-events: auto !important;
+        &:hover {
+            background: #2E19CA;
+        }
+    }
+    .field-widget-key {
+        display: none;
+        padding:0 4px ;
+        font-size: 12px;
+        line-height: 20px;
+        max-width: 300px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .field-widget-action-btn {
+        display: none;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+}
+.bkform-engine-layout-actions {
+    padding: 12px 32px;
+    .action-btn-item {
+        margin-right: 8px;
+    }
+}
