@@ -8,7 +8,7 @@
                     ref="icon"
                     class="group-text"
                     style="padding: 0 10px">
-                    <i :class="iconClass" />
+                    <i :class="iconClass" style="padding: 1px;" />
                 </div>
             </bk-input>
         </div>
