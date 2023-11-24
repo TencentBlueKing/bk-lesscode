@@ -2093,6 +2093,8 @@
   "必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块": "The \"Source Code Management\" mode must be bound to the BlueKing APP module of \"source code package provided by the BlueKing LessCode\".",
   "数据库变更详情": "Database Change Details",
   "日志查询": "Logging",
+  "模块配置": "Module Settings",
+  "应用配置": "App Settings",
   "是，部署成功后创建应用版本并归档": "Yes, create an APP version and archive it after successful deployment.",
   "更多操作": "More Operations",
   "最近{0}版本：": "Last {0} version:",
