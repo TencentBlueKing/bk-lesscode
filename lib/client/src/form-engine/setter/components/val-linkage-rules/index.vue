@@ -10,13 +10,14 @@
             :show.sync="isLinkageDialogShow"
             :disabled="disabled"
             :field="field"
+            :current-table-fields="currentTableFields"
+            :current-form-id="currentFormId"
             :value="value"
             @change="handleLinkageChange">
         </linkage-rules>
     </setter-form-item>
 </template>
 <script>
-    import cloneDeep from 'lodash.clonedeep'
     import setterFormItem from '../../common/setter-form-item.vue'
     import linkageRules from './components/linkage.vue'
 
@@ -32,6 +33,11 @@
                 type: Object,
                 default: () => ({})
             },
+            list: {
+                type: Array,
+                default: () => []
+            },
+            currentFormId: [Number, String],
             disabled: Boolean,
             value: {
                 type: Object
@@ -40,6 +46,11 @@
         data () {
             return {
                 isLinkageDialogShow: false
+            }
+        },
+        computed: {
+            currentTableFields () {
+                return this.list.filter(item => item.configure.key !== this.field.configure.key)
             }
         },
         methods: {

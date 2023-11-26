@@ -12,6 +12,7 @@
                             :is="property"
                             :field="field"
                             :list="list"
+                            :current-form-id="dataSource.type === 'NEW_FORM' ? dataSource.id : dataSource.relatedId"
                             :value="field.configure[property]"
                             :has-created-form="hasCreatedForm"
                             :disabled="isReuseForm"

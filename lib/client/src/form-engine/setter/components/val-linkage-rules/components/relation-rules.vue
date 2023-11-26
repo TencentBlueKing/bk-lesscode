@@ -12,9 +12,9 @@
                         </i>
                     </div>
                 </template>
-                <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ ($t('规则{0}'), [(groupIndex + 1)]) }}</p>
+                <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ $t('规则') }} [{{ groupIndex + 1 }}]</p>
                 <!-- 判断是不是评分组件 -->
-                <template v-if="field.type === 'RATE' && isCurrentTable">
+                <template v-if="field.type === 'rate' && isCurrentTable">
                     <rate-value-rule
                         :rule="rule"
                         :disabled="disabled"
@@ -33,21 +33,19 @@
                             {{ $t('当') }} <bk-select
                                 v-model="relation.field"
                                 style="width: 130px;"
-                                size="small"
                                 :placeholder="$t('表单字段')"
                                 :loading="!isCurrentTable && formListLoading"
                                 :disabled="disabled"
                                 @change="change">
                                 <bk-option
                                     v-for="item in getRelFieldList()"
-                                    :key="item.key"
-                                    :id="item.key"
-                                    :name="item.name">
+                                    :key="item.configure.key"
+                                    :id="item.configure.key"
+                                    :name="item.configure.name">
                                 </bk-option>
                             </bk-select>
                             {{ $t('等于') }} <bk-select
                                 style="width: 80px;"
-                                size="small"
                                 :clearable="false"
                                 :placeholder="$t('请选择')"
                                 :disabled="disabled"
@@ -60,21 +58,21 @@
                                 <bk-select
                                     v-if="relation.type === 'VAR'"
                                     v-model="relation.value"
-                                    size="small"
                                     :placeholder="$t('请选择')"
                                     :disabled="disabled"
                                     @change="change">
                                     <bk-option
                                         v-for="item in getRelValVarList(relation.field)"
-                                        :key="item.key"
-                                        :id="item.key"
-                                        :name="item.name">
+                                        :key="item.configure.key"
+                                        :id="item.configure.key"
+                                        :name="item.configure.name">
                                     </bk-option>
                                 </bk-select>
                                 <default-value
                                     v-else
                                     :field="getDeterminValField(relation)"
                                     :disabled="disabled"
+                                    :value="relation.value"
                                     @change="handleRelVarValChange(relation, $event)">
                                 </default-value>
                             </div>
@@ -90,7 +88,6 @@
                             v-if="isCurrentTable"
                             :value="rule.target.type"
                             style="margin-left: 8px; width: 80px;"
-                            size="small"
                             :placeholder="$t('请选择')"
                             :clearable="false"
                             :disabled="disabled"
@@ -102,22 +99,22 @@
                             <bk-select
                                 v-if="rule.target.type === 'VAR'"
                                 v-model="rule.target.value"
-                                size="small"
                                 :placeholder="isCurrentTable ? $t('请选择本表字段') : $t('请选择他表字段')"
                                 :loading="!isCurrentTable && formListLoading"
                                 :disabled="disabled"
                                 @change="change">
                                 <bk-option
                                     v-for="item in targetValVarList"
-                                    :key="item.id"
-                                    :id="item.key"
-                                    :name="item.name">
+                                    :key="item.configure.key"
+                                    :id="item.configure.key"
+                                    :name="item.configure.name">
                                 </bk-option>
                             </bk-select>
                             <default-value
                                 v-else
-                                :field="getFulfillRuleField(rule.target.value)"
+                                :field="field"
                                 :disabled="disabled"
+                                :value="rule.target.value"
                                 @change="handleTargetVarValChange(rule.target, $event)">
                             </default-value>
                         </div>
@@ -127,7 +124,6 @@
         </vue-draggable>
         <bk-button
             v-if="isCurrentTable"
-            size="small"
             :text="true"
             :disabled="disabled"
             @click="handleAddGroup()">
@@ -135,7 +131,6 @@
     </div>
 </template>
 <script>
-    import { mapGetters } from 'vuex'
     import cloneDeep from 'lodash.clonedeep'
     import DefaultValue from '../../../common/default-value.vue'
     import RateValueRule from './rate-value-rule.vue'
@@ -143,10 +138,10 @@
 
     // 可以比较值是否相等的字段类型
     const COMPARABLE_VALUE_TYPES = [
-        'input', 'textarea', 'int', 'date', 'datetime', 'link', 'select', 'multi-select', 'checkbox', 'radio', 'member', 'members', 'rate'
+        'input', 'textarea', 'int', 'date', 'datetime', 'link', 'select', 'multiple-select', 'checkbox', 'radio', 'member', 'members', 'rate'
     ]
 
-    const MULTIPLE_VALUE_TYPES = ['multi-select', 'checkbox', 'members', 'table']
+    const MULTIPLE_VALUE_TYPES = ['multiple-select', 'checkbox', 'members', 'table']
 
     export default {
         name: 'RelationRules',
@@ -183,6 +178,10 @@
                 type: Boolean,
                 default: true
             },
+            currentTableFields: { // 本表字段
+                type: Array,
+                default: () => []
+            },
             otherTableFields: { // 他表字段
                 type: Array,
                 default: () => []
@@ -194,13 +193,12 @@
             }
         },
         computed: {
-            ...mapGetters('nocode/formSetting', ['fieldsList']),
             // 满足规则的联动值类型为变量时，可选变量列表，变量分别根据当前选中的联动内容从本表字段或他表字段中取
             // 本字段为多值文本类型时，类型不限（不包括附件、图片、富文本等不可比较值的类型），为单值类型时不能选择多值类型
             // 本字段为数字时，只能选择数字、计算控件
             // 本字段为日期、时间、单选人员、多选人员时，只能选择对应的类型
             targetValVarList () {
-                const fields = this.isCurrentTable ? this.fieldsList.filter(item => item.key !== this.field.configure.key) : this.otherTableFields
+                const fields = this.isCurrentTable ? this.currentTableFields : this.otherTableFields
                 const type = this.field.type
                 if (['int', 'date', 'datetime', 'member', 'members', 'rate'].includes(type)) {
                     return fields.filter(item => item.type === type)
@@ -223,31 +221,24 @@
             },
             // 规则字段可选列表
             getRelFieldList () {
-                const relFieldList = this.isCurrentTable ? this.fieldsList.filter(item => {
-                    let optionBool = item.key !== this.field.configure.key
+                const fields = this.isCurrentTable ? this.currentTableFields : this.otherTableFields
+                const relFieldList = fields.filter(item => {
                     // 评分组件只能选择数字类型的字段
-                    if (optionBool && this.field.type === 'rate') {
-                        optionBool = item.type === 'int'
-                    }
-                    return optionBool
-                }) : this.otherTableFields
-                
+                    return this.field.type === 'rate' ? item.type === 'int' : true
+                })
                 return relFieldList
             },
             // 规则字段值为变量时只能选本表字段
             // 字段可选列表只能是可比较值类型的字段，并排除已选中字段
             getRelValVarList () {
-                return this.fieldsList.filter(item => {
-                    return item.key !== this.field.configure.key && COMPARABLE_VALUE_TYPES.includes(item.type)
+                return this.currentTableFields.filter(item => {
+                    return COMPARABLE_VALUE_TYPES.includes(item.type)
                 })
             },
             // 返回关联字段值类型为常量的字段配置
             getDeterminValField (relation) {
-                const field = this.fieldsList.find(item => item.key === relation.field)
-                if (field) {
-                    return { ...field, default: relation.value }
-                }
-                return {}
+                const field = this.currentTableFields.find(item => item.configure.key === relation.field)
+                return field || {}
             },
             // 返回满足规则的联动值类型为常量的字段配置
             getFulfillRuleField (val) {
@@ -296,8 +287,8 @@
             handleRelValTypeChange (relation, val) {
                 relation.type = val
                 if (relation.field) {
-                    const fields = this.isCurrentTable ? this.fieldsList : this.otherTableFields
-                    const field = fields.find(item => item.key === relation.field)
+                    const fields = this.isCurrentTable ? this.currentTableFields : this.otherTableFields
+                    const field = fields.find(item => item.configure.key === relation.field)
                     relation.value = (field && val === 'CONST') ? getFieldDefaultVal(field.type) : ''
                 } else {
                     relation.value = ''

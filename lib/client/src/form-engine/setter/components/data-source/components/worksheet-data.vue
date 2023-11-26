@@ -1,7 +1,7 @@
 <template>
     <bk-dialog
         header-position="left"
-        ext-cls="data-source-dialog"
+        ext-cls="data-source-worksheet-dialog"
         title="配置表单数据源"
         :mask-close="false"
         :auto-close="false"
@@ -57,11 +57,11 @@
                 <div v-if="localVal.conditions.length > 0" class="condition-list">
                     <div class="condition-item" v-for="(condition, index) in localVal.conditions" :key="index">
                         <bk-select
-                            v-model="condition.key"
+                            class="field-selector"
+                            :value="condition.key"
                             :placeholder="$t('字段')"
-                            style="width: 250px; margin-right: 8px"
                             :clearable="false"
-                            @selected="condition = { ...condition, logic: '', type: '', value: '' }">
+                            @selected="handleSelectField(index, $event)">
                             <bk-option
                                 v-for="item in fieldList"
                                 :key="item.key"
@@ -71,8 +71,8 @@
                         </bk-select>
                         <bk-select
                             v-model="condition.logic"
+                            class="logic-selector"
                             :placeholder="$t('逻辑')"
-                            style="width: 100px; margin-right: 8px"
                             :clearable="false">
                             <bk-option
                                 v-for="item in getLogicOptions(condition.key)"
@@ -83,8 +83,8 @@
                         </bk-select>
                         <bk-select
                             v-model="condition.type"
+                            class="type-selector"
                             :placeholder="$t('值类型')"
-                            style="width: 100px; margin-right: 8px"
                             :clearable="false"
                             @selected="condition.value = ''">
                             <bk-option id="const" :name="$t('值')"></bk-option>
@@ -93,8 +93,8 @@
                         <bk-select
                             v-if="condition.type === 'field'"
                             v-model="condition.value"
+                            class="var-selector"
                             :placeholder="$t('选择变量')"
-                            style="width: 140px"
                             :clearable="false"
                             :loading="relationListLoading"
                             :disabled="relationListLoading">
@@ -299,8 +299,12 @@
             handleDeleteCondition (index) {
                 this.localVal.conditions.splice(index, 1)
             },
-            update () {
-                this.$emit('update', cloneDeep(this.localVal))
+            handleSelectField (index, val) {
+                const condition = this.localVal.conditions[index]
+                condition.key = val
+                condition.logic = ''
+                condition.type = ''
+                condition.value = ''
             },
             validate () {
                 this.$refs.sourceForm.validate()
@@ -314,6 +318,9 @@
                 this.$emit('update', cloneDeep(this.localVal))
                 this.close()
             },
+            update () {
+                this.$emit('update', cloneDeep(this.localVal))
+            },
             close () {
                 this.$emit('update:show', false)
             }
@@ -321,88 +328,107 @@
     }
 </script>
 <style lang="postcss" scoped>
+@import "@/css/mixins/scroller";
 .worksheet-data-wrapper {
-  .select-worksheet {
-    display: flex;
-    align-items: top;
+    padding: 3px 24px 26px;
+    max-height: 384px;
+    overflow: auto;
+    @mixin scroller;
+    .select-worksheet {
+        display: flex;
+        align-items: top;
 
-    .bk-form-item {
-      margin-top: 0;
-      width: calc(50% - 10px);
-      /deep/ {
-        .bk-form-content{
-            line-height: unset;
+        .bk-form-item {
+        margin-top: 0;
+        width: calc(50% - 10px);
+        /deep/ {
+            .bk-form-content{
+                line-height: unset;
+            }
+            .bk-label {
+                font-size: 12px;
+            }
         }
-        .bk-label {
-            font-size: 12px;
+        &:not(:last-of-type) {
+            margin-right: 20px;
         }
-      }
-      &:not(:last-of-type) {
-        margin-right: 20px;
-      }
-    }
-  }
-
-  .filter-rules-wrapper {
-    margin-top: 24px;
-  }
-
-  .connector-rule {
-    display: flex;
-    align-items: center;
-    height: 20px;
-
-    & > label {
-      position: relative;
-      margin-right: 30px;
-      color: #63656e;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    /deep/ {
-        .bk-form-radio {
-            margin-right: 24px;
-        }
-        .bk-radio-text {
-            font-size: 12px;
         }
     }
-  }
+    .filter-rules-wrapper {
+        margin-top: 24px;
+    }
+    .connector-rule {
+        display: flex;
+        align-items: center;
+        height: 20px;
 
-  .condition-item {
-    display: flex;
-    align-items: center;
-    margin-top: 16px;
-
-    .operate-btns {
-      color: #c4c6cc;
-      cursor: pointer;
-      user-select: none;
-
-      .disabled {
+        & > label {
+        position: relative;
+        margin-right: 30px;
+        color: #63656e;
+        font-size: 12px;
+        white-space: nowrap;
+        }
+        /deep/ {
+            .bk-form-radio {
+                margin-right: 24px;
+            }
+            .bk-radio-text {
+                font-size: 12px;
+            }
+        }
+    }
+    .condition-item {
+        display: flex;
+        align-items: center;
+        margin-top: 16px;
+        .field-selector {
+            width: 250px;
+            margin-right: 8px;
+        }
+        .logic-selector {
+            width: 100px;
+            margin-right: 8px;
+        }
+        .type-selector {
+            width: 100px;
+            margin-right: 8px;
+        }
+        .var-selector {
+            width: 140px;
+        }
+        .operate-btns {
+        width: 44px;
+        color: #c4c6cc;
+        cursor: pointer;
+        user-select: none;
+            .disabled {
+                color: #dcdee5;
+                cursor: not-allowed;
+            }
+        }
+    }
+    .data-empty {
+        margin-top: 16px;
+        padding: 24px 0;
+        font-size: 12px;
+        text-align: center;
         color: #dcdee5;
+        border: 1px dashed #dcdee5;
+        cursor: pointer;
+
+        &:not(.disabled):hover {
+        border-color: #3a84ff;
+        color: #3a84ff;
+        }
+        &.disabled {
         cursor: not-allowed;
-      }
+        }
     }
-  }
-
-  .data-empty {
-    margin-top: 16px;
-    padding: 24px 0;
-    font-size: 12px;
-    text-align: center;
-    color: #dcdee5;
-    border: 1px dashed #dcdee5;
-    cursor: pointer;
-
-    &:not(.disabled):hover {
-      border-color: #3a84ff;
-      color: #3a84ff;
-    }
-
-    &.disabled {
-      cursor: not-allowed;
-    }
-  }
 }
+</style>
+<style lang="postcss">
+    .data-source-worksheet-dialog .bk-dialog-body {
+        padding: 0;
+    }
 </style>
