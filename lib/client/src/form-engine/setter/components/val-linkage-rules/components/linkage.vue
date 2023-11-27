@@ -18,17 +18,16 @@
                     <bk-radio value="currentTable" :disabled="disabled">{{ $t('本表字段') }}</bk-radio>
                     <bk-radio value="otherTable" :disabled="disabled">{{ $t('他表字段') }}</bk-radio>
                     <bk-radio
-                        v-if="['DATE', 'DATETIME'].includes(field.type)"
+                        v-if="['date', 'datetime'].includes(field.type)"
                         value="createTicketTime"
                         :disabled="disabled">
-                        {{$t('默认为提交')}}{{ `${field.type === 'DATE' ? $t('日期') : $t('时间')}` }}
+                        {{$t('默认为提交')}}{{ `${field.type === 'date' ? $t('日期') : $t('时间')}` }}
                     </bk-radio>
                 </bk-radio-group>
             </bk-form-item>
             <bk-form-item v-if="configData.type === 'otherTable'" :label="$t('form_联动数据表')">
                 <bk-select
                     style="width: 50%;"
-                    size="small"
                     v-model="configData.tableName"
                     :placeholder="$t('请选择')"
                     :loading="formListLoading"
@@ -50,6 +49,7 @@
                     :rules="configData.rules"
                     :field="field"
                     :form-list-loading="formListLoading"
+                    :current-table-fields="currentTableFields"
                     :other-table-fields="otherTableFields"
                     :is-current-table="configData.type === 'currentTable'"
                     @change="configData.rules = $event">
@@ -75,7 +75,9 @@
             field: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            currentFormId: [Number, String],
+            currentTableFields: Array
         },
         data () {
             return {
@@ -96,7 +98,6 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
-            ...mapGetters('nocode/formSetting', ['fieldsList']),
             otherTableFields () {
                 if (this.configData.tableName) {
                     const form = this.formList.find(item => item.tableName === this.configData.tableName)
@@ -125,8 +126,8 @@
                         projectId: this.$route.params.projectId,
                         versionId: this.versionId
                     }
-                    const res = await this.$store.dispatch('nocode/formSetting/getFormList', params)
-                    this.formList = res
+                    const res = await this.$store.dispatch('nocode/form/getNewFormList', params)
+                    this.formList = res.filter(item => item.id !== this.currentFormId)
                     this.formListLoading = false
                 } catch (e) {
                     console.error(e)
@@ -252,14 +253,14 @@
                 let looped = false
                 rules.some(rule => {
                     return rule.relations.some(relation => {
-                        const relField = this.fieldsList.find(item => item.key === relation.field)
+                        const relField = this.currentTableFields.find(item => item.configure.key === relation.field)
                         if (relField && relation.field === key) {
                             looped = true
                             return true
                         }
-                        const { type: relType, rules: relRules } = relField?.meta.default_val_config || {}
+                        const { type: relType, rules: relRules } = relField?.configure.valLinkageRules || {}
                         if (relType === 'currentTable' && Array.isArray(relRules)) {
-                            looped = this.checkLoopReference(relField.meta.default_val_config.rules, key)
+                            looped = this.checkLoopReference(relRules, key)
                         }
                     })
                 })

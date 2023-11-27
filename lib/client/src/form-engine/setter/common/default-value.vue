@@ -15,6 +15,7 @@
         <bk-date-picker
             v-else-if="['date', 'datetime'].includes(field.type)"
             :type="field.type"
+            :transfer="true"
             :disabled="disabled"
             :value="value"
             @change="handleChange"/>

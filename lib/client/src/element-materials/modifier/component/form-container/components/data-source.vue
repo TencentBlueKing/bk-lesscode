@@ -34,6 +34,7 @@
                     :value="localVal.relatedId"
                     :loading="formListLoading"
                     :clearable="false"
+                    @toggle="handleSelectOpen"
                     @selected="handleSeletedRelatedForm">
                     <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName" />
                 </bk-select>
@@ -116,6 +117,11 @@ export default {
             this.localVal.relatedId = ''
             this.$emit('updateFields', [])
             this.change()
+        },
+        handleSelectOpen (val) {
+            if (val) {
+                this.getFormList()
+            }
         },
         handleSeletedRelatedForm (val) {
             this.localVal.relatedId = val
