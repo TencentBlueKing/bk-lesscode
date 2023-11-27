@@ -1,5 +1,5 @@
 <template>
-    <setter-form-item title="值联动规则">
+    <setter-form-item :title="$t('form_值联动规则')">
         <bk-button
             size="small"
             theme="primary"

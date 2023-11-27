@@ -1,6 +1,6 @@
 <template>
     <section class="computed-config">
-        <setter-form-item title="计算类型">
+        <setter-form-item :title="$t('计算类型')">
             <bk-radio-group v-model="localVal.type" @change="handleTypeChange">
                 <bk-radio :value="'number'" :disabled="disabled">{{ $t('数值计算') }}</bk-radio>
                 <bk-radio :value="'dateTime'" :disabled="disabled">{{ $t('时间日期') }}</bk-radio>

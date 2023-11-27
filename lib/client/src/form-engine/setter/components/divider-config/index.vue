@@ -1,9 +1,9 @@
 <template>
     <section>
-        <setter-form-item title="展示文字">
+        <setter-form-item :title="$t('form_展示文字')">
             <bk-input :disabled="disabled" :value="value.text" @change="handleChange('text', $event)" />
         </setter-form-item>
-        <setter-form-item title="文字位置">
+        <setter-form-item :title="$t('form_文字位置')">
             <bk-select
                 :disabled="disabled"
                 :value="value.align"
@@ -12,7 +12,7 @@
                 <bk-option v-for="option in alignList" :key="option.id" :id="option.id" :name="option.name"></bk-option>
             </bk-select>
         </setter-form-item>
-        <setter-form-item title="线条颜色">
+        <setter-form-item :title="$t('form_线条颜色')">
             <bk-color-picker
                 transfer
                 size="small" 

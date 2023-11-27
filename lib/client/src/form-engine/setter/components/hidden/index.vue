@@ -1,10 +1,10 @@
 <template>
     <section class="setter-hidden">
-        <bk-checkbox :value="value.enable" :disabled="disabled" @change="handleChange('enable', $event)">隐藏</bk-checkbox>
-        <bk-button v-if="value.enable" text size="small" theme="primary" @click="isConditionDialogShow = true">条件编辑</bk-button>
+        <bk-checkbox :value="value.enable" :disabled="disabled" @change="handleChange('enable', $event)">{{ $t('隐藏') }}</bk-checkbox>
+        <bk-button v-if="value.enable" text size="small" theme="primary" @click="isConditionDialogShow = true">{{ $t('条件编辑') }}</bk-button>
         <condition-edit
             :show.sync="isConditionDialogShow"
-            :title="`【${field.configure.name}】隐藏条件设置`"
+            :title="`【${field.configure.name}】${$t('字段隐藏条件设置')}`"
             :field="field"
             :list="list"
             :config="value.config"

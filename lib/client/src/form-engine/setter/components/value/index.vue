@@ -1,5 +1,5 @@
 <template>
-    <setter-form-item title="默认值">
+    <setter-form-item :title="$t('默认值')">
         <default-value :key="field.id" :field="field" :disabled="disabled" :value="value" @change="$emit('change', $event)" />
     </setter-form-item>
 </template>

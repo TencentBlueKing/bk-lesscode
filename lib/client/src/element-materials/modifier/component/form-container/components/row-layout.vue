@@ -1,9 +1,9 @@
 <template>
-    <prop-group title="表单布局">
+    <prop-group :title="$t('表单布局')">
         <div class="row-layout-setting">
             <bk-radio-group :value="value" class="setting-radios" @change="$emit('change', $event)">
-              <bk-radio value="full">一行一排</bk-radio>
-              <bk-radio value="half">一行两排</bk-radio>
+              <bk-radio value="full">{{ $t('一行一排') }}</bk-radio>
+              <bk-radio value="half">{{ $t('一行两排') }}</bk-radio>
             </bk-radio-group>
         </div>
     </prop-group>
