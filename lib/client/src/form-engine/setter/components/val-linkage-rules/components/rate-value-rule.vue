@@ -15,17 +15,29 @@
                 @change="ruleChange">
                 <bk-option
                     v-for="item in relFieldList"
-                    :key="item.key"
-                    :id="item.key"
-                    :name="item.name">
+                    :key="item.configure.key"
+                    :id="item.configure.key"
+                    :name="item.configure.name">
                 </bk-option>
             </bk-select>
             <span>{{ $t('的值处于') }}</span>
         </div>
         <div class="interval-row" v-for="(item,intervalIndex) in rule.intervals " :key="intervalIndex">
-            <bk-input v-model="item.min" :disabled="disabled" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
+            <bk-input
+                v-model="item.min"
+                style="width: 120px;"
+                type="number"
+                size="small"
+                :disabled="disabled"
+                @change="changeTargetValue" />
             ~
-            <bk-input v-model="item.max" :disabled="disabled" @change="changeTargetValue" style="width: 120px;" type="number" size="small"></bk-input>
+            <bk-input
+                v-model="item.max"
+                style="width: 120px;"
+                type="number"
+                size="small"
+                :disabled="disabled"
+                @change="changeTargetValue" />
             <span>{{ $t('区间值为')}}</span>
             <bk-rate :rate="item.value" :disabled="disabled" :edit="false"></bk-rate>
         </div>
@@ -109,7 +121,7 @@
             },
             changeBindField () {
                 this.bindField = this.relFieldList.find((item, index) => {
-                    return item.key === this.rule.relations[0].field
+                    return item.configure.key === this.rule.relations[0].field
                 })
             },
             ruleChange () {

@@ -49,7 +49,6 @@
             handleChange (key, val) {
                 const localVal = { ...this.value }
                 localVal[key] = val
-                debugger
                 this.$emit('change', localVal)
             }
         }
