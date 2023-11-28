@@ -26,7 +26,7 @@
                 @choose="handleChoose($event)">
                 <div class="card-item" v-for="item in list" :key="item.type">
                     <i :class="['card-icon', item.icon]"></i>
-                    <span class="card-name">{{ item.name }}</span>
+                    <span class="card-name">{{ $t(item.name) }}</span>
                 </div>
             </vue-draggable>
         </div>
