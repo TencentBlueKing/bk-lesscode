@@ -18,6 +18,7 @@
 <script>
     import aiImg from '../../../../../../images/ai-logo.png'
     import { mapGetters } from 'vuex'
+    import LC from '@/element-materials/core'
 
     export default {
         props: {
@@ -30,8 +31,13 @@
                 const list = [
                     {
                         key: 'component',
-                        tips: window.i18n.t('组件库'),
+                        tips: window.i18n.t('页面编辑器'),
                         icon: 'bk-drag-icon bk-drag-custom-comp-default'
+                    },
+                    {
+                        key: 'formEngine',
+                        tips: window.i18n.t('表单编辑器'),
+                        icon: 'bk-drag-icon bk-drag-biaodan'
                     },
                     {
                         key: 'template',
@@ -61,7 +67,27 @@
                 return list
             }
         },
+        mounted () {
+            LC.addEventListener('active', this.changePanelCallBack)
+            LC.addEventListener('activeClear', this.changePanelCallBack)
+            LC.addEventListener('activeElementUpdate', this.changePanelCallBack)
+        },
+        beforeDestroy () {
+            LC.removeEventListener('active', this.changePanelCallBack)
+            LC.removeEventListener('activeClear', this.changePanelCallBack)
+            LC.addEventListener('activeElementUpdate', this.changePanelCallBack)
+        },
         methods: {
+            changePanelCallBack () {
+                const activeNode = LC.getActiveNode()
+                const activeElement = LC.getActiveElement()
+
+                if (activeNode?.type === 'widget-form-container' || activeElement) {
+                    this.handleChange('formEngine')
+                } else {
+                    this.handleChange('component')
+                }
+            },
             handleChange (value) {
                 this.$emit('input', value)
                 this.$emit('change', value)

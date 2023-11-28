@@ -12,7 +12,7 @@
                         </i>
                     </div>
                 </template>
-                <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ ($t('规则{0}'), [(groupIndex + 1)]) }}</p>
+                <p v-if="isCurrentTable" style="padding: 0 8px; font-size: 14px;">{{ $t('规则') }} [{{ groupIndex + 1 }}]</p>
                 <!-- 判断是不是评分组件 -->
                 <template v-if="field.type === 'RATE' && isCurrentTable">
                     <RateValueRule

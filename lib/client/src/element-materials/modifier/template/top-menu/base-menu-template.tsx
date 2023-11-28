@@ -71,10 +71,10 @@ export default defineComponent({
         }
         
         const handleAdd = () => {
-            if (props.menuKey === 'topMenuList') {
-                localMenuList.value.push(props.platform === 'PC' ? generatorMenu() : generatorMenu('apps-o'))
-            } else if (props.menuKey === 'helpMenuList') {
+            if (props.menuKey === 'helpMenuList') {
                 localMenuList.value.push(generatorHelpMenu())
+            } else {
+                localMenuList.value.push(props.platform === 'PC' ? generatorMenu() : generatorMenu('apps-o'))
             }
             triggerChange()
         }

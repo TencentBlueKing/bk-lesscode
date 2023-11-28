@@ -1,0 +1,43 @@
+.data-manage-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 32px;
+    .bk-button,
+    .lesscode-bk-button {
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+    .more-buttons-trigger {
+        margin-right: 8px;
+        padding: 0 8px 0 16px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 14px;
+        color: #63656e;
+        border: 1px solid #c4c6cc;
+        border-radius: 2px;
+        cursor: pointer;
+        .angle-icon {
+            display: inline-block;
+            font-size: 20px;
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            &.active {
+                transform: rotate(-180deg);
+            }
+        }
+    }
+    .more-btns-list {
+        .button-item {
+            padding: 0 16px;
+            height: 32px;
+            line-height: 32px;
+            font-size: 14px;
+            color: #63656e;
+            cursor: pointer;
+            &:hover {
+                color: #3a84ff;
+                background: #f0f1f5;
+            }
+        }
+    }
+}

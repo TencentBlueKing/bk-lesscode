@@ -1,0 +1,78 @@
+.form-data-table {
+    margin-top: 16px;
+
+    /* v3 table 样式 */
+    .lesscode-bk-table {
+        .lesscode-bk-table-head table th.column_fixed {
+            background: inherit;
+        }
+        .lesscode-bk-table-body {
+            overflow: visible;
+        }
+        .column_fixed_right .cell {
+            pointer-events: none !important;
+            overflow: visible;
+            .tool-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .lesscode-bk-button {
+                height: 22px;
+            }
+        }
+    }
+
+    .bk-table-fixed-right {
+        .bk-table-fixed-header-wrapper {
+            .bk-table-column-setting {
+                pointer-events: auto !important;
+                * {
+                    pointer-events: auto !important;
+                }
+            }
+        }
+        .bk-table-fixed-body-wrapper {
+            overflow: visible;
+            .cell {
+                overflow: visible;
+            }
+        }
+    }
+
+    .bk-table-scrollable-x .bk-table-body-wrapper {
+        &::-webkit-scrollbar {
+            pointer-events: auto !important;
+        }
+    }
+}
+
+.table-row-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 100%;
+    .action-btn {
+        padding: 0 8px;
+        line-height: 1;
+        pointer-events: auto !important;
+        .bk-button-text {
+            &:first-of-type {
+                margin-left: 0;
+            }
+            &:hover {
+                border-radius: 2px;
+            }
+        }
+    }
+    .add-btn {
+        margin-left: 4px;
+        font-size: 18px;
+        color: #3a84ff;
+        cursor: pointer;
+        pointer-events: auto !important;
+        &:hover {
+            color: #1768ef;
+        }
+    }
+}

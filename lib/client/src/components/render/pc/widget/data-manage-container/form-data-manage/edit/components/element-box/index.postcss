@@ -1,0 +1,50 @@
+.element-box {
+    position: relative;
+    pointer-events: auto !important;
+    &.selected {
+        .tools-wrapper {
+            display: flex;
+        }
+        .element-wrapper {
+            border-color: #6C5CE8;
+        }
+    }
+}
+.tools-wrapper {
+    display: none;
+    align-items: center;
+    z-index: 999;
+    > span{
+        display: block;
+        text-align: center;
+        margin-right: 2px;
+        background: #6C5CE8;
+        color: #fff;
+        border-radius: 2px;
+        &:hover {
+            background: #2E19CA;
+        }
+    }
+    .ele-id{
+        display: block;
+        padding:0 4px ;
+        font-size: 12px;
+        line-height: 20px;
+        max-width: 300px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        pointer-events: auto !important;
+    }
+    .tool-btn{
+        width: 20px;
+        height: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        pointer-events: auto !important;
+    }
+}
+.element-wrapper {
+    border: 1px solid transparent;
+    border-radius: 2px;
+}

@@ -350,7 +350,7 @@
     }
 </script>
 
-<style lang="postcss" >
+<style lang="postcss" scoped>
 .row-box {
     margin: 12px 0;
     font-size: 12px;

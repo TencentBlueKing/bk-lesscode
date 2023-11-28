@@ -13,7 +13,7 @@
     <header class="app-header">
         <div class="logo" @click="toProjectList">
             <img src="../images/logo.png" alt="logo">
-            {{ $t('蓝鲸可视化开发平台') }} </div>
+            {{ $t('蓝鲸运维开发平台') }} </div>
         <nav class="top-nav">
             <ul class="menu">
                 <router-link
