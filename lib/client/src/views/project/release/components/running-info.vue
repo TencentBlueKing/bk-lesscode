@@ -568,7 +568,7 @@
                     
                     sourceInfo.push({
                         text: window.i18n.t('源码管理'),
-                        value: window.i18n.t('蓝鲸可视化开发平台提供源码包')
+                        value: window.i18n.t('蓝鲸运维开发平台提供源码包')
                     })
 
                     switch (key) {

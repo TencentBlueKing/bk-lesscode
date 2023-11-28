@@ -412,7 +412,7 @@
                 return {
                     placement: 'top',
                     width: '284px',
-                    content: window.i18n.t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块')
+                    content: window.i18n.t('必须绑定“源码管理”方式为“蓝鲸运维开发平台提供源码包”的蓝鲸应用模块')
                 }
             },
             showReleaseTips () {
