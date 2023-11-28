@@ -64,7 +64,7 @@
   "函数: 支持函数在线调试": "Function: support function online debugging.",
   "函数: 远程函数API选择 及 API节点里API地址选择交互优化": "Function: interactive optimization of remote function API selection and API address selection in API nodes.",
   "函数编辑新增 eslint 检测，代码提示等等": "Function editing adds eslint detection, code hints, etc.",
-  "可视化开发平台（LessCode）初始版本": "LessCode Initial Version.",
+  "运维开发平台（LessCode）初始版本": "LessCode Initial Version.",
   "右侧组件属性、样式、事件说明": "Component properties, styles, and event descriptions on the right.",
   "增加复制、粘贴、撤销、恢复、删除等快捷操作": "Add shortcut operations such as copy, paste, undo, restore, delete, etc.",
   "增加清空 grid 操作": "Add empty grid operation.",

@@ -157,7 +157,7 @@
                 }
             },
             sourceFormatter (obj, con, val) {
-                return val === 'FROM_V3' ? window.i18n.t('PaaS平台') : window.i18n.t('可视化开发平台')
+                return val === 'FROM_V3' ? window.i18n.t('PaaS平台') : window.i18n.t('运维开发平台')
             },
             envFormatter (obj, con, val) {
                 return this.envMap[val] || val
