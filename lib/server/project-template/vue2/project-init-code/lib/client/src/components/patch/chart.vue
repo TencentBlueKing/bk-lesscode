@@ -10,12 +10,14 @@
 -->
 
 <template>
-    <div :style="computedStyle" :options="options" :ref="`echart${uuid}`" autoresize></div>
+    <div :style="computedStyle" :options="options" :ref="uuid" autoresize></div>
 </template>
 
 <script>
     import * as echarts from 'echarts'
-    import { uuid } from 'shared/util'
+    import { uuid, debounce } from 'shared/util'
+
+    let chartInst = null
 
     export default {
         name: 'chart',
@@ -36,7 +38,7 @@
         data () {
             return {
                 uuid: '',
-                chart: null
+                observer: null
             }
         },
         computed: {
@@ -53,17 +55,25 @@
             options: {
                 deep: true,
                 handler (val) {
-                    this.chart.setOption(val, true)
+                    chartInst.setOption(val, true)
                 }
             }
         },
         created () {
-            this.uuid = uuid()
+            this.uuid = `echart${uuid()}`
         },
         mounted () {
-            this.chart = echarts.init(this.$refs[`echart${this.uuid}`])
-            this.chart.setOption(this.options)
+            chartInst = echarts.init(this.$refs[this.uuid])
+            chartInst.setOption(this.options)
+            this.debounceResize = debounce(this.resizeChart, 500)
+            this.observer = new ResizeObserver(this.debounceResize)
+            this.observer.observe(this.$refs[this.uuid])
         },
+        methods: {
+            resizeChart () {
+                chartInst && chartInst.resize()
+            }
+        }
     }
 </script>
 
