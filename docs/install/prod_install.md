@@ -1,4 +1,4 @@
-# 蓝鲸智云可视化开发平台（LessCode）
+# 蓝鲸智云运维开发平台（LessCode）
 
 ## 生产环境搭建及部署
 
@@ -11,7 +11,7 @@
 > 假设在服务器上操作的目录是 `/data/`，服务器的 ip 是 `xxx.xxx.xxx.xxx`
 
 ```bash
-# 1. 把之前 fork 的仓库 clone 到服务器上。（ clone 之后，可视化开发平台的目录结构应该是 `/data/bk-lesscode`）
+# 1. 把之前 fork 的仓库 clone 到服务器上。（ clone 之后，运维开发平台的目录结构应该是 `/data/bk-lesscode`）
 cd /data/
 git clone https://github.com/{YOUR NAME}/bk-lesscode.git
 
