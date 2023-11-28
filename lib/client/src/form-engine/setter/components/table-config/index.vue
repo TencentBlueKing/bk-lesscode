@@ -15,7 +15,7 @@
                 </header-config-item>
             </transition-group>
         </vue-draggable>
-        <bk-button text class="add-btn" size="small" theme="primary" @click="handleAdd">添加</bk-button>
+        <bk-button text class="add-btn" size="small" theme="primary" @click="handleAdd">{{ $t('添加') }}</bk-button>
     </div>
 </template>
 

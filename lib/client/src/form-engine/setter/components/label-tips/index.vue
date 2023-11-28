@@ -1,5 +1,5 @@
 <template>
-    <setter-form-item title="填写说明">
+    <setter-form-item :title="$t('form_填写说明')">
         <bk-input type="textarea" :disabled="disabled" :value="value" @change="$emit('change', $event)" />
     </setter-form-item>
 </template>

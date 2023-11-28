@@ -1,15 +1,15 @@
 <template>
-    <prop-group title="表单数据">
+    <prop-group :title="$t('表单数据')">
         <div class="data-source-setting">
             <section class="bk-button-group">
                 <bk-button
                     :class="['type-btn-item', { 'is-selected': localVal.type === 'NEW_FORM' }]"
                     @click="handleTypeChange('NEW_FORM')">
-                    <span class="btn-text">新建表</span>
+                    <span class="btn-text">{{ $t('新建表') }}</span>
                 </bk-button>
                 <bk-popconfirm
-                    title="确认切换成复用？"
-                    content="切换后将会替换掉表单容器后的所有内容，且不支持更改，请谨慎操作！"
+                    :title="$t('确认切换成复用？')"
+                    :content="$t('切换后将会替换掉表单容器后的所有内容，且不支持更改，请谨慎操作！')"
                     width="288"
                     trigger="click"
                     placement="bottom-end"
@@ -19,15 +19,15 @@
                     <bk-button
                         :class="{ 'is-selected': localVal.type === 'USE_FORM' }"
                         @click="handleTypeChange('USE_FORM')">
-                        <span v-bk-tooltips.top="'可以通过“复用已有的表” 进行表单渲染以及数据存储'" class="btn-text subline">复用已有表</span>
+                        <span v-bk-tooltips.top="$t('可以通过“复用已有的表” 进行表单渲染以及数据存储')" class="btn-text subline">{{ $t('复用已有表') }}</span>
                     </bk-button>
                 </bk-popconfirm>
             </section>
             <section v-if="localVal.type === 'NEW_FORM'">
                 <span
-                    v-bk-tooltips.top="'仅引用已有表进行表单渲染，可任意更改，不会影响原表数据'"
+                    v-bk-tooltips.top="$t('仅引用已有表进行表单渲染，可任意更改，不会影响原表数据')"
                     class="g-prop-sub-title subline g-mt8 g-mb6">
-                    引用已有表
+                    {{ $t('引用已有表') }}
                 </span>
                 <bk-select
                     size="small"
@@ -40,7 +40,7 @@
                 </bk-select>
             </section>
             <section v-else>
-                <span class="g-prop-sub-title g-mt8 g-mb6">复用数据表</span>
+                <span class="g-prop-sub-title g-mt8 g-mb6">{{ $t('复用数据表') }}</span>
                 <bk-select
                     :value="localVal.relatedId"
                     size="small"

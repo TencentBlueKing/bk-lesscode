@@ -1,5 +1,5 @@
 <template>
-    <setter-form-item title="唯一标识">
+    <setter-form-item :title="$t('form_唯一标识')">
         <bk-input
             :value="value"
             :disabled="disabled || hasCreatedForm"

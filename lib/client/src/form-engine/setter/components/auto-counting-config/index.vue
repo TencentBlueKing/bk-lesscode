@@ -1,6 +1,6 @@
 <template>
     <div class="auto-counting-config">
-        <setter-form-item title="编号预览">
+        <setter-form-item :title="$t('编号预览')">
             <div class="preview-box">
                 <span class="text">{{ localVal.val }}</span>
                 <bk-button text class="open-dialog-btn" size="small" title="primary" @click="isRulesDialogShow = true">
@@ -8,12 +8,12 @@
                 </bk-button>
             </div>
         </setter-form-item>
-        <setter-form-item title="重置周期">
+        <setter-form-item :title="$t('重置周期')">
             <bk-select v-model="localVal.config.resetCycle" searchable :clearable="false" :disabled="disabled">
                 <bk-option v-for="option in resetCycles" :key="option.id" :id="option.id" :name="option.name" />
             </bk-select>
         </setter-form-item>
-        <setter-form-item title="初始值">
+        <setter-form-item :title="$t('初始值')">
             <bk-input v-model="localVal.config.initNumber" @change="handleInitNumChange" type="number" :min="1" :disabled="disabled" />
         </setter-form-item>
         <counting-rules-dialog
@@ -52,7 +52,7 @@
                                 type: 'serialNumber',
                                 configValue: 4,
                                 serialValue: '0001',
-                                name: '流水号'
+                                name: this.$t('流水号')
                             }
                         ]
                     },
@@ -105,7 +105,7 @@
                 if (initNumber.length > configValue) {
                     this.localVal.config.initNumber = 1
                     initNumber = '1'
-                    this.$bkMessage({ theme: 'warning', message: '初始值位数大于当前设置的流水号位数，已重置为1，请重新确认初始值' })
+                    this.$bkMessage({ theme: 'warning', message: this.$t('初始值位数大于当前设置的流水号位数，已重置为1，请重新确认初始值') })
                 }
                 serialRule.serialValue = initNumber.padStart(configValue, '0')
                 this.computeSerialNumber()

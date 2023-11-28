@@ -1,8 +1,8 @@
 <template>
-    <prop-group title="表单操作">
+    <prop-group :title="$t('表单操作')">
         <div class="operate-actions-setting">
-            <bk-checkbox :value="value.submit" @change="handleChange('submit', $event)">显示提交按钮</bk-checkbox>
-            <bk-checkbox :value="value.reset" @change="handleChange('reset', $event)">显示重置按钮</bk-checkbox>
+            <bk-checkbox :value="value.submit" @change="handleChange('submit', $event)">{{ $t('显示提交按钮') }}</bk-checkbox>
+            <bk-checkbox :value="value.reset" @change="handleChange('reset', $event)">{{ $t('显示重置按钮') }}</bk-checkbox>
         </div>
     </prop-group>
 </template>
