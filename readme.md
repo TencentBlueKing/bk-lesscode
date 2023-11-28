@@ -99,12 +99,12 @@
 > 安装 Node.js 参见[官方文档](https://nodejs.org/)。安装完成后，注意设置 node 到 PATH 中
 
 #### 服务依赖
-- 蓝鲸软件基础环境（必须）：可视化平台的登录及权限管理依赖于【蓝鲸软件基础环境】，请事先[下载搭建](https://bk.tencent.com/download/)
-- 蓝鲸网关（非必须）：如需使用可视化平台提供的API网关资源，请事先在【蓝鲸软件7.X环境】更新【蓝鲸网关（bk-apigateway）】的版本到【0.4.41】及以上
-- 蓝鲸制品库服务（非必须）： 若需要使用到可视化平台的自定义组件功能开发模块及文件库能力，请事先搭建 [蓝鲸制品库服务](https://github.com/Tencent/bk-ci/tree/master/src/backend/storage/core)， **搭建时并开启npm-registry**
-- 蓝鲸PaaS3.0（非必须）：可视化平台提供的一键部署能力依赖蓝鲸PaaS3.0平台能力，若需要请事先在【蓝鲸软件7.X环境】更新【蓝鲸PaaS3.0（bkpaas3）】的版本到【0.1.0-beta5】及以上
-- 流程服务（非必须）：若需可视化平台提供的流程类场景服务，请事先在【蓝鲸软件7.X环境】更新【流程服务（bk-itsm）】的版本到【2.6.1】及以上
-- 蓝鲸基础计算平台（非必须）：若需可视化平台提供的BKBase结果表作为数据源操作，请事先在【蓝鲸软件7.X环境】更新【蓝鲸基础计算平台（BKBase）】版本到【3.7】及以上
+- 蓝鲸软件基础环境（必须）：运维开发平台的登录及权限管理依赖于【蓝鲸软件基础环境】，请事先[下载搭建](https://bk.tencent.com/download/)
+- 蓝鲸网关（非必须）：如需使用运维开发平台提供的API网关资源，请事先在【蓝鲸软件7.X环境】更新【蓝鲸网关（bk-apigateway）】的版本到【0.4.41】及以上
+- 蓝鲸制品库服务（非必须）： 若需要使用到运维开发平台的自定义组件功能开发模块及文件库能力，请事先搭建 [蓝鲸制品库服务](https://github.com/Tencent/bk-ci/tree/master/src/backend/storage/core)， **搭建时并开启npm-registry**
+- 蓝鲸PaaS3.0（非必须）：运维开发平台提供的一键部署能力依赖蓝鲸PaaS3.0平台能力，若需要请事先在【蓝鲸软件7.X环境】更新【蓝鲸PaaS3.0（bkpaas3）】的版本到【0.1.0-beta5】及以上
+- 流程服务（非必须）：若需运维开发平台提供的流程类场景服务，请事先在【蓝鲸软件7.X环境】更新【流程服务（bk-itsm）】的版本到【2.6.1】及以上
+- 蓝鲸基础计算平台（非必须）：若需运维开发平台提供的BKBase结果表作为数据源操作，请事先在【蓝鲸软件7.X环境】更新【蓝鲸基础计算平台（BKBase）】版本到【3.7】及以上
 
 ## 分支说明
 运维开发平台使用 develop, master 两个分支进行迭代。其中 master 为稳定版分支，每次 release develop 为日常开发的分支，给运维开发平台贡献代码统一向主库 [bk-lesscode](https://github.com/TencentBlueKing/bk-lesscode/tree/master) 的  [develop](https://github.com/TencentBlueKing/bk-lesscode/tree/develop) 分支提 pr。
