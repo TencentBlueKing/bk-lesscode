@@ -69,6 +69,9 @@
             this.observer = new ResizeObserver(this.debounceResize)
             this.observer.observe(this.$refs[this.uuid])
         },
+        beforeDestroy () {
+            this.observer.unobserve(this.$refs[this.uuid])
+        },
         methods: {
             resizeChart () {
                 chartInst && chartInst.resize()
