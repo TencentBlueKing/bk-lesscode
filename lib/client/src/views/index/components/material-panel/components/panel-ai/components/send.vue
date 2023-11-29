@@ -96,6 +96,7 @@
             },
             value () {
                 this.handleChangeTextHeight()
+                this.handleShowPopover()
             },
             search () {
                 this.handleShow()
@@ -106,10 +107,15 @@
             ...mapActions('ai', ['getPrompts']),
 
             handleChangePrompt (val) {
-                if (val === '/' && !this.value.includes('/')) {
-                    this.showPrompts()
-                }
                 this.$emit('input', val)
+            },
+
+            handleShowPopover () {
+                if (this.value === '/') {
+                    this.showPrompts()
+                } else {
+                    this.hidePrompts()
+                }
             },
 
             handleChangeTextHeight () {
