@@ -1,8 +1,8 @@
-# 蓝鲸智云可视化开发平台（LessCode）
+# 蓝鲸智云运维开发平台（LessCode）
 
 ## 分支管理说明
 
-可视化开发平台使用 [develop](https://github.com/TencentBlueKing/bk-lesscode/tree/develop), [master](https://github.com/TencentBlueKing/bk-lesscode/tree/master) 两个分支进行迭代。其中 master 为稳定版分支，每次 release 都会基于这个分支；develop 为日常开发的分支，给可视化开发平台贡献代码统一向 develop 分支提 pr。
+运维开发平台使用 [develop](https://github.com/TencentBlueKing/bk-lesscode/tree/develop), [master](https://github.com/TencentBlueKing/bk-lesscode/tree/master) 两个分支进行迭代。其中 master 为稳定版分支，每次 release 都会基于这个分支；develop 为日常开发的分支，给运维开发平台贡献代码统一向 develop 分支提 pr。
 
 ## 本地开发环境搭建以及开发流程
 
@@ -64,4 +64,4 @@
     ```bash
     git push origin develop
     ```
-10. 推往自己 fork 仓库的 develop 分支后，可以向 bk-lesscode 主库的 develop 提 pr。 **（给可视化开发平台贡献代码，统一向 develop 分支提 pr）**
+10. 推往自己 fork 仓库的 develop 分支后，可以向 bk-lesscode 主库的 develop 提 pr。 **（给运维开发平台贡献代码，统一向 develop 分支提 pr）**

@@ -85,7 +85,7 @@
                 return {
                     placement: 'top',
                     width: '284px',
-                    content: this.$t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块，')`<a target="_blank" href="${this.createLinkUrl}" style="cursor: pointer;color: #3a84ff">` + this.$t('跳转创建') + '</a>'
+                    content: this.$t('必须绑定“源码管理”方式为“蓝鲸运维开发平台提供源码包”的蓝鲸应用模块，')`<a target="_blank" href="${this.createLinkUrl}" style="cursor: pointer;color: #3a84ff">` + this.$t('跳转创建') + '</a>'
                 }
             }
         },

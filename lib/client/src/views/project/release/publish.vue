@@ -71,12 +71,20 @@
                                 <i :class="[$style['icon-size'],'bk-icon icon-angle-down', { 'icon-flip': isDropdownShow }]"></i>
                             </div>
                             <ul class="bk-dropdown-list" style="max-height: 194px" slot="dropdown-content">
-                                <li><a href="javascript:;" @click="toManagePage('deploy')">{{ $t('部署管理') }}</a></li>
-                                <li><a href="javascript:;" @click="toManagePage('process')">{{ $t('进程管理') }}</a></li>
-                                <li><a href="javascript:;" @click="toManagePage('log?tab=structured')">{{ $t('日志查询') }}</a></li>
-                                <li><a href="javascript:;" @click="toManagePage('environment_variable')">{{ $t('环境配置') }}</a></li>
-                                <li><a href="javascript:;" @click="toManagePage('app_entry_config')">{{ $t('访问入口') }}</a></li>
-                                <li><a href="javascript:;" @click="toManagePage('base-info', false)">{{ $t('基本信息') }}</a></li>
+                                <template v-if="appDetail.type === 'cloud_native'">
+                                    <li><a href="javascript:;" @click="toManagePage('deployments/stag', false)">{{ $t('部署管理') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('logging')">{{ $t('日志查询') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('settings/modules')">{{ $t('模块配置') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('settings/application/', false)">{{ $t('应用配置') }}</a></li>
+                                </template>
+                                <template v-else>
+                                    <li><a href="javascript:;" @click="toManagePage('deploy')">{{ $t('部署管理') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('process')">{{ $t('进程管理') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('log?tab=structured')">{{ $t('日志查询') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('environment_variable')">{{ $t('环境配置') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('app_entry_config')">{{ $t('访问入口') }}</a></li>
+                                    <li><a href="javascript:;" @click="toManagePage('base-info', false)">{{ $t('基本信息') }}</a></li>
+                                </template>
                             </ul>
                         </bk-dropdown-menu>
                     </div>
@@ -298,6 +306,7 @@
                 projVersionList: [],
                 sucVersionList: [],
                 currentProject: {},
+                appDetail: {},
                 currentAppInfo: {
                     appCode: '',
                     moduleCode: ''
@@ -403,7 +412,7 @@
                 return {
                     placement: 'top',
                     width: '284px',
-                    content: window.i18n.t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块')
+                    content: window.i18n.t('必须绑定“源码管理”方式为“蓝鲸运维开发平台提供源码包”的蓝鲸应用模块')
                 }
             },
             showReleaseTips () {
@@ -429,6 +438,9 @@
             this.timer && clearInterval(this.timer)
         },
         methods: {
+            async getAppDetailInfo (appCode) {
+                this.appDetail = await this.$store.dispatch('release/getAppDetailInfo', appCode)
+            },
             async resetData () {
                 const res = await this.$store.dispatch('release/detailInfo', {
                     projectId: this.projectId,
@@ -450,6 +462,7 @@
                     this.currentAppInfo.appCode = appCode || ''
                     this.currentAppInfo.moduleCode = moduleCode || ''
                     await this.resetData()
+                    this.getAppDetailInfo(appCode)
                     this.getReleaseSql()
                     this.getUnDeployedFlows()
                 } catch (err) {

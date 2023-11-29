@@ -64,7 +64,7 @@
   "函数: 支持函数在线调试": "Function: support function online debugging.",
   "函数: 远程函数API选择 及 API节点里API地址选择交互优化": "Function: interactive optimization of remote function API selection and API address selection in API nodes.",
   "函数编辑新增 eslint 检测，代码提示等等": "Function editing adds eslint detection, code hints, etc.",
-  "可视化开发平台（LessCode）初始版本": "LessCode Initial Version.",
+  "运维开发平台（LessCode）初始版本": "LessCode Initial Version.",
   "右侧组件属性、样式、事件说明": "Component properties, styles, and event descriptions on the right.",
   "增加复制、粘贴、撤销、恢复、删除等快捷操作": "Add shortcut operations such as copy, paste, undo, restore, delete, etc.",
   "增加清空 grid 操作": "Add empty grid operation.",
@@ -415,5 +415,12 @@
   "画布: transfer, cascade, process, big-tree等组件可配置对应的实际使用字段跟展示字段": "Canvas: Components like transfer, cascade, process, big-tree, etc. can be configured with corresponding actual usage fields and display fields",
   "画布: ai对话框增加常用提示模板": "Canvas: AI dialog box adds commonly used prompt templates",
   "画布: 支持事件行为跟自然语言描述生成事件": "Canvas: Support event behavior and generate events through natural language descriptions",
-  "画布: 可切换类型的组件 value值设置及校验需要和类型一致": "Canvas: Value setting and validation of switchable components need to be consistent with the type"
+  "画布: 可切换类型的组件 value值设置及校验需要和类型一致": "Canvas: Value setting and validation of switchable components need to be consistent with the type",
+  "应用: vue2应用表单类型页面以表单容器组件形式整合到自定义页面": "APP: Vue2 APP form type pages integrated into custom pages as form container components",
+  "应用: vue2应用数据管理类型页面以数据管理容器组件形式整合到自定义页面": "APP: Vue2 APP data management type pages integrated into custom pages as data management container components",
+  "画布: vue3应用支持表单容器跟数据管理容器组件": "Canvas: Vue3 APP supports form container and data management container components",
+  "画布: AI小鲸支持页面需求描述 拆解任务 完成多个组件布局生成": "Canvas: AI Little Whale supports page requirement description, task breakdown, and completion of multiple component layouts",
+  "发布部署: 新建的应用部署后为开发者中心云原生类型类用，发布部署模块适配云原生类型应用": "Release Deployment: After deployment, the newly created APP will be used in the Developer Center for cloud-native type APPs. The release deployment module is compatible with cloud-native type APPs",
+  "画布: 修复echart图表无法自适应屏幕宽高变化问题": "Canvas: Fixed the issue of echart charts not adapting to changes in screen width and height",
+  "移动端: 修复vant样式冲突问题": "Mobile: Fixed the issue of style conflicts with Vant"
 }
