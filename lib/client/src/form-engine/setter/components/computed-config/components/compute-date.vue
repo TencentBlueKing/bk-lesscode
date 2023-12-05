@@ -74,7 +74,7 @@
             :title="$t('日期字段为选择精确到时间时，默认为')">
             <bk-time-picker
                 v-model="localConfig.defaultTime"
-                placeholder="选择时间"
+                :placeholder="$t('选择时间')"
                 :disabled="disabled"
                 @change="handleCalcDiff">
             </bk-time-picker>

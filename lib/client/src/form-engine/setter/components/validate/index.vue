@@ -1,6 +1,6 @@
 <template>
     <section>
-        <setter-form-item title="校验方式">
+        <setter-form-item :title="$t('form_校验方式')">
             <bk-select
                 :value="value"
                 :clearable="false"

@@ -2,7 +2,7 @@
     <section class="material-group-item">
         <div class="group-header" @click="open = !open">
             <i :class="['bk-icon icon-angle-down arrow-icon', { closed: !open }]"></i>
-            <span class="group-name-text">{{ name }}</span>
+            <span class="group-name-text">{{ $t(name) }}</span>
         </div>
         <div v-show="open" class="group-content">
             <bk-exception
@@ -26,7 +26,7 @@
                 @choose="handleChoose($event)">
                 <div class="card-item" v-for="item in list" :key="item.type">
                     <i :class="['card-icon', item.icon]"></i>
-                    <span class="card-name">{{ item.name }}</span>
+                    <span class="card-name">{{ $t(item.name) }}</span>
                 </div>
             </vue-draggable>
         </div>

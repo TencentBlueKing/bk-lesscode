@@ -60,12 +60,12 @@
             return {
                 groups: [
                     {
-                        name: '基础属性',
+                        name: window.i18n.t('基础属性'),
                         open: true,
                         children: []
                     },
                     {
-                        name: '填写属性',
+                        name: window.i18n.t('填写属性'),
                         open: true,
                         children: []
                     }

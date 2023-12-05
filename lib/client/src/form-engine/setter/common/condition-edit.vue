@@ -119,7 +119,7 @@
                 if (['input', 'textarea', 'date', 'datetime', 'select', 'multiple-select', 'member', 'members', 'rich-text', 'description', 'link'].includes(type)) {
                     return [
                         { id: '==', name: window.i18n.t('等于') },
-                        { id: 'in', name: '包含' }
+                        { id: 'in', name: window.i18n.t('包含') }
                     ]
                 }
                 return [

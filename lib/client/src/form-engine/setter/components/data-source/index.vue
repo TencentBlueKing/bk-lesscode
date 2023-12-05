@@ -1,5 +1,5 @@
 <template>
-    <setter-form-item title="字段名称">
+    <setter-form-item :title="$t('字段名称')">
         <bk-radio-group
             class="g-prop-radio-group"
             :value="localVal.type"
@@ -36,6 +36,8 @@
         <worksheet-data
             :show.sync="worksheetDataDialogShow"
             :config="value.config"
+            :field="field"
+            :list="list"
             :disabled="disabled"
             @update="updateValue('config', $event)">
         </worksheet-data>
@@ -77,14 +79,18 @@
                 default: () => ({})
             },
             disabled: Boolean,
+            list: {
+                type: Array,
+                default: () => []
+            },
             value: {
                 type: Object,
                 default: () => ({
                     type: 'CUSTOM', // 取值有：CUSTOM(自定义)、FUNCTION(函数)、WORKSHEET(数据表)
                     config: {},
                     data: [
-                        { id: 'xuanxiang1', label: '选项1' },
-                        { id: 'xuanxiang2', label: '选项2' }
+                        { id: 'xuanxiang1', label: this.$t('选项') + '1' },
+                        { id: 'xuanxiang2', label: this.$t('选项') + '2' }
                     ]
                 })
             }
@@ -121,8 +127,8 @@
                     this.localVal.data = []
                 } else if (val === 'CUSTOM') {
                     this.localVal.data = [
-                        { id: 'xuanxiang1', label: '选项1' },
-                        { id: 'xuanxiang2', label: '选项2' }
+                        { id: 'xuanxiang1', label: this.$t('选项') + '1' },
+                        { id: 'xuanxiang2', label: this.$t('选项') + '2' }
                     ]
                     this.localVal.config = {}
                 } else if (val === 'WORKSHEET') {

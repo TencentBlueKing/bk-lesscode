@@ -9,7 +9,7 @@
                 <bk-form-item :label="$t('应用ID：')">
                     {{projectDetail.projectCode}}
                 </bk-form-item>
-                <bk-form-item :label="$t('form_绑定蓝鲸应用模块：')" :desc="{ content: $t('必须绑定“源码管理”方式为“蓝鲸可视化开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改'), maxWidth: 400 }">
+                <bk-form-item :label="$t('form_绑定蓝鲸应用模块：')" :desc="{ content: $t('必须绑定“源码管理”方式为“蓝鲸运维开发平台提供源码包”的蓝鲸应用模块,绑定后不能修改'), maxWidth: 400 }">
                     <app-module-select :can-edit="true"></app-module-select>
                 </bk-form-item>
                 <bk-form-item :label="$t('form_应用简介：')">

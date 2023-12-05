@@ -1,8 +1,8 @@
 <template>
     <div v-if="show" class="data-manage-container-modifier">
-        <prop-group title="数据源">
+        <prop-group :title="$t('数据源')">
             <section class="data-source">
-                <span class="g-prop-sub-title g-mt8 g-mb6">数据表</span>
+                <span class="g-prop-sub-title g-mt8 g-mb6">{{ $t('数据表') }}</span>
                 <bk-select
                     v-model="formId"
                     size="small"

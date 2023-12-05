@@ -1,5 +1,5 @@
 <template>
-    <setter-form-item title="字段名称">
+    <setter-form-item :title="$t('form_字段名称')">
         <bk-input v-model="locVal" :disabled="disabled" @change="$emit('change', $event)" @blur="handleBlur" />
     </setter-form-item>
 </template>

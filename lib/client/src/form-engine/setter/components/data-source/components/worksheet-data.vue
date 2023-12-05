@@ -144,6 +144,14 @@
                     logic: 'and',
                     conditions: []
                 })
+            },
+            field: {
+                type: Object,
+                default: () => ({})
+            },
+            list: {
+                type: Array,
+                default: () => []
             }
         },
         data () {
@@ -156,7 +164,7 @@
                 },
                 tableLoading: false,
                 tableList: [], // 数据表列表
-                fieldList: [],
+                fieldList: [], // 所选择数据表字段
                 fieldListLoading: false,
                 relationList: [],
                 relationListLoading: false,
@@ -203,6 +211,7 @@
                         this.$store.dispatch('nocode/form/getNewFormList', { projectId, versionId: this.versionId }),
                         this.$store.dispatch('dataSource/list', { projectId})
                     ])
+                    console.log(forms)
                     const tableList = []
                     tablesRes.list.forEach(table => {
                         if (table.source === 'nocode') {
@@ -238,12 +247,14 @@
             getRelationList () {
                 // 引用本表的下拉框和单选框字段
                 const data = []
-                this.fieldList.forEach(item => {
-                    if (['select', 'radio'].includes(item.type)) {
-                        data.push({
-                            key: item.key,
-                            name: item.name
-                        })
+                this.list.forEach(item => {
+                    if (item.configure.key === this.field.configure.key) {
+                        return
+                    }
+
+                    if (!['description', 'divider', 'auto-counting'].includes(item.type)) {
+                        const { key, name } = item.configure
+                        data.push({ key, name })
                     }
                 })
                 this.relationList = data

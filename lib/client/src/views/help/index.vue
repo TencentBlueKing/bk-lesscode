@@ -100,6 +100,10 @@
                                 level: 1,
                                 id: 'variable'
                             }, {
+                                name: window.i18n.t('组件指令使用指引'),
+                                level: 1,
+                                id: 'directive'
+                            }, {
                                 name: window.i18n.t('交互式组件使用指引'),
                                 level: 1,
                                 id: 'interactive'
@@ -132,13 +136,6 @@
                         }, {
                             title: window.i18n.t('页面模板使用指引'),
                             name: 'template-page'
-                        }]
-                    }, {
-                        title: window.i18n.t('实战案例'),
-                        name: 'case',
-                        childs: [{
-                            title: window.i18n.t('课程实战文档和视频'),
-                            name: 'courses'
                         }]
                     }
                 ]

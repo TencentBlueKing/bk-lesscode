@@ -452,8 +452,7 @@
                 const currentLine = model.getLineContent(position.lineNumber).slice(0, position.column)
 
                 // 修改提示方式
-                const lastWord = currentLine.split(/\s/g).at(-1)
-                if (lastWord.startsWith('les')) {
+                if (currentLine !== '') {
                     this.quickSuggestions = {
                         'other': true,
                         'comments': true,

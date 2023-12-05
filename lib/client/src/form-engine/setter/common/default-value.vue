@@ -43,7 +43,7 @@
         <rich-text-value-editor v-else-if="field.type === 'rich-text'" :value="value" :disabled="disabled" @change="handleChange" />
         <bk-input
             v-else
-            placeholder="默认值"
+            :placeholder="$t('默认值')"
             :disabled="disabled"
             :value="value"
             @change="handleChange">
