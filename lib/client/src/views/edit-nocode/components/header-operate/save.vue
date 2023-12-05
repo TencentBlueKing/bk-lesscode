@@ -64,34 +64,40 @@
                 notify: canvasLockNotify,
                 update: canvaseLockUpdate
             } = useCanvaseLock()
-            
+
             // 检测页面的可编辑状态
-            canvasLockCheck()
-                .then(data => {
-                    if (data.isLock) {
-                        this.notifyInst = canvasLockNotify({
-                            type: 'lock',
-                            render: this.$createElement,
-                            ...data
-                        })
-                    } else {
-                        canvaseLockUpdate()
-                    }
-                })
+            if (this.pageDetail.id) {
+                canvasLockCheck()
+                    .then(data => {
+                        if (data.isLock) {
+                            this.notifyInst = canvasLockNotify({
+                                type: 'lock',
+                                render: this.$createElement,
+                                ...data
+                            })
+                        } else {
+                            canvaseLockUpdate()
+                        }
+                    })
+            }
         },
         mounted () {
-            const {
-                relase: canvasLockRelase
-            } = useCanvaseLock()
-            window.addEventListener('unload', canvasLockRelase)
+            if (this.pageDetail.id) {
+                const {
+                    relase: canvasLockRelase
+                } = useCanvaseLock()
+                window.addEventListener('unload', canvasLockRelase)
+            }
         },
         beforeDestroy () {
-            const {
-                relase: canvasLockRelase
-            } = useCanvaseLock()
-            canvasLockRelase()
-            this.notifyInst && this.notifyInst.close()
-            this.notifyInst = null
+            if (this.pageDetail.id) {
+                const {
+                    relase: canvasLockRelase
+                } = useCanvaseLock()
+                canvasLockRelase()
+                this.notifyInst && this.notifyInst.close()
+                this.notifyInst = null
+            }
         },
         methods: {
             async handleSubmit () {
