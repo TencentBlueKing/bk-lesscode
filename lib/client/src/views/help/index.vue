@@ -100,6 +100,10 @@
                                 level: 1,
                                 id: 'variable'
                             }, {
+                                name: window.i18n.t('组件指令使用指引'),
+                                level: 1,
+                                id: 'directive'
+                            }, {
                                 name: window.i18n.t('交互式组件使用指引'),
                                 level: 1,
                                 id: 'interactive'

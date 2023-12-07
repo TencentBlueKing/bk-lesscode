@@ -185,6 +185,18 @@
                         if (field.meta.data_config?.source_type === 'WORKSHEET') {
                             field.source_type = 'WORKSHEET'
                         }
+                        
+                        // 只读, 必填条件保存itsm后, 字段会被干掉, 需要补上
+                        const originField = content.find(item => item.columnId === field.columnId)
+                        if (originField) {
+                            if (originField.mandatory_conditions) {
+                                field.mandatory_conditions = originField.mandatory_conditions
+                            }
+                            if (originField.read_only_conditions) {
+                                field.read_only_conditions = originField.read_only_conditions
+                            }
+                        }
+
                         fields.push(field)
                     })
                     this.$store.commit('nocode/nodeConfig/setFormConfig', { content: fields })

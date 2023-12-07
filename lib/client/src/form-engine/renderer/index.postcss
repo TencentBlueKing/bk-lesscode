@@ -2,20 +2,13 @@
 
 .bkform-engine-renderer {
     position: relative;
-    height: 100%;
     background: #ffffff;
     overflow: auto;
     @mixin scroller;
-    &.has-btns-area {
-        .bkform-engine-renderer-fields {
-            height: calc(100% - 56px);
-        }
-    }
 }
 .bkform-engine-renderer-fields {
     position: relative;
     padding: 24px 32px;
-    height: 100%;
     overflow: auto;
     @mixin scroller;
     &.half-row-layout {

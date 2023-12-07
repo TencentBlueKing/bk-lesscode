@@ -40,7 +40,7 @@
 在应用页面画布中，选择相应的组件，在组件的配置面板 -> 选择`属性` -> 选择要绑定变量的属性 -> 属性值类型切换为变量，即可选择变量。也可以切换成值或表达式，表达式可以直接写变量标识来使用变量，编写最终是JS的表达式
 :::
 
-<img src="../../../images/help/variable-prop.png" alt="grid" width="1200" class="help-img" />
+<img src="../../../images/help/variable-prop.png" alt="grid" width="80%" class="help-img" />
 
 ### 变量与指令绑定
 ---
@@ -48,7 +48,7 @@
 在应用页面画布中，选择相应的组件，在组件的配置面板 -> 选择`指令` -> 选择要绑定变量的指令 -> 选择变量即可
 :::
 
-<img src="../../../images/help/variable-directive.png" alt="grid" width="1200" class="help-img" />
+<img src="../../../images/help/variable-directive.png" alt="grid" width="80%" class="help-img" />
 
 ### 变量与函数绑定
 ---
@@ -56,7 +56,7 @@
 远程函数的【请求地址】 和 【请求参数】可以使用变量：如图所示，可以使用`{变量标识}`在请求地址中使用变量
 :::
 
-<img src="../../../images/help/variable-method.png" alt="grid" width="1200" class="help-img" /><br>
+<img src="../../../images/help/variable-method.png" alt="grid" width="80%" class="help-img" /><br>
 
 ### 函数中操作变量
 ---
@@ -64,14 +64,14 @@
 在函数中，可以使用 `lesscode.变量标识` 关键字唤起快捷输入，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值，下面举例说明：
 :::
 
-<img src="../../../images/help/variable-in-method1.png" alt="grid" width="1200" class="help-img" /><br>
+<img src="../../../images/help/variable-in-method1.png" alt="grid" width="80%" class="help-img" /><br>
 #### 如上图所示：页面中添加一个输入框组件和一个基础按钮组件，并给输入框组件的`v-model`指令绑定一个变量
 
-<img src="../../../images/help/variable-in-method2.png" alt="grid" width="1200" class="help-img" /><br>
+<img src="../../../images/help/variable-in-method2.png" alt="grid" width="80%" class="help-img" /><br>
 #### 如上图所示：新增一个函数，函数里面可以通过 `lesscode.变量标识`关键字唤起快捷输入，根据提示可以找到想修改的变量，选择对应的变量后，就可以对变量进行操作了
 
-<img src="../../../images/help/variable-in-method3.png" alt="grid" width="1200" class="help-img" /><br>
+<img src="../../../images/help/variable-in-method3.png" alt="grid" width="80%" class="help-img" /><br>
 #### 如上图所示：函数编写的时候，我们先弹出输入框的值，然后修改输入框的值为`Hello Lesscode`
 
-<img src="../../../images/help/variable-in-method4.png" alt="grid" width="1200" class="help-img" /><br>
+<img src="../../../images/help/variable-in-method4.png" alt="grid" width="80%" class="help-img" /><br>
 #### 如上图所示：最后在基础按钮组件的`click`事件中，绑定刚刚写的函数。然后可以在预览中进行查看效果了
