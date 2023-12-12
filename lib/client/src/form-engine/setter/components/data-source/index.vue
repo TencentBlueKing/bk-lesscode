@@ -36,6 +36,8 @@
         <worksheet-data
             :show.sync="worksheetDataDialogShow"
             :config="value.config"
+            :field="field"
+            :list="list"
             :disabled="disabled"
             @update="updateValue('config', $event)">
         </worksheet-data>
@@ -77,6 +79,10 @@
                 default: () => ({})
             },
             disabled: Boolean,
+            list: {
+                type: Array,
+                default: () => []
+            },
             value: {
                 type: Object,
                 default: () => ({
