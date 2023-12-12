@@ -25,6 +25,7 @@
                         :has-child="menuItem.children && !!menuItem.children.length"
                         :id="menuItem.url"
                         @click="handleSelect">
+                        <bk-icon v-if="menuItem.bkicon" :type="menuItem.bkicon" style="margin-left: 2px"/>
                         <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
                         <template v-if="menuItem.iamAction">
                             <auth-component
