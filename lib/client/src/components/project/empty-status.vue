@@ -8,6 +8,11 @@
                 <bk-button text theme="primary" auth="create_app" @click="handlerClear" class="clear-text">{{ $t('清空筛选条件') }}</bk-button>
             </div>
         </bk-exception>
+        <bk-exception v-else-if="type === 'custom'" class="component-list-empty" type="empty" scene="part">
+            <div class="empty-text" >
+                <slot />
+            </div>
+        </bk-exception>
         <bk-exception v-else class="component-list-empty" type="empty" scene="part">
             <div class="empty-text">
                 {{ $t('暂无数据') }} </div>
@@ -65,7 +70,7 @@
     }
     .clear-text {
         font-size: 12px;
-        font-color: #3A84FF;
+        color: #3A84FF;
     }
     .tooltip-text{
         font-size: 12px;

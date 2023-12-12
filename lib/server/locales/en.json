@@ -408,5 +408,6 @@
   "基本信息（页面名称：{{0}}）": "Base info（page name：{{0}}）",
   "画布（页面ID：{{0}}）": "Canvas（pageID：{{0}}）",
   "基本信息（页面ID：{{0}}）": "Base info（pageID：{{0}}）",
-  "页面ID：{{0}}": "PageID：{{0}}"
+  "页面ID：{{0}}": "PageID：{{0}}",
+  "创建失败": "Create failed"
 }
