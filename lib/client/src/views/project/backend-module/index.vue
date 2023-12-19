@@ -18,7 +18,7 @@
 <script>
     import Layout from '@/components/ui/layout'
     import ModuleCategory from './children/category.vue'
-    import ModuleContent from './children/backend.vue'
+    import ModuleContent from './children/backend/index.vue'
 
     import { defineComponent, ref } from '@vue/composition-api'
     
@@ -43,7 +43,7 @@
                 handleModuleChange
             }
         }
-    })  
+    })
 </script>
 
 <style lang="postcss" scoped>
