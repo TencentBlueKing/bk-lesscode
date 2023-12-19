@@ -1,7 +1,7 @@
 <template>
     <div class="module-category-wrapper">
         <div style="margin: 0 16px 16px">
-            <bk-input v-model="searchStr" :right-icon="'bk-icon icon-search'" />
+            <bk-input v-model="searchStr" :right-icon="'bk-icon icon-search'" clearable />
         </div>
         <div class="module-list-container" v-bkloading="{ isLoading }" >
             <div v-for="item in renderList"
