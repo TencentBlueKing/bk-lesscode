@@ -124,8 +124,10 @@
                         isLoading.value = true
                         const param = {
                             projectId: projectDetail.value.id,
+                            createUser: projectDetail.value.createUser,
                             appCode: projectDetail.value?.appCode,
-                            moduleCode: formModel.value.moduleCode
+                            moduleCode: formModel.value.moduleCode,
+                            
                         }
                         const data = await store.dispatch('saasBackend/createModule', param)
                         if (data?.module) {
@@ -140,7 +142,7 @@
                     } catch (err) {
                         isLoading.value = false
                         editing.value = false
-                        console.err(err.message || err)
+                        console.error(err.message || err)
                     }
                 }
             }
