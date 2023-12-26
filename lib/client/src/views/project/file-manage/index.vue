@@ -148,7 +148,8 @@
             }
 
             function handleExport () {
-                window.open(`/api/file/export?projectId=${projectId.value}`, '_self')
+                const id = parseInt(projectId.value)
+                window.open(`/api/file/export?projectId=${id}`, '_self')
             }
 
             function handleClosePreviewViewer () {
