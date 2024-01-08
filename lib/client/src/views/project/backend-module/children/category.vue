@@ -7,8 +7,8 @@
             <div v-for="item in renderList"
                 :key="item.id"
                 class="flex-item module-item"
-                :class="{ 'active-item': currentModule === item.moduleCode }"
-                @click="changeModule(item.moduleCode)">
+                :class="{ 'active-item': currentModule.moduleCode === item.moduleCode }"
+                @click="changeModule(item)">
                 <i class="bk-drag-icon bk-drag-custom-comp-default"></i>
                 <span>{{item.moduleCode}}</span>
             </div>
@@ -42,7 +42,7 @@
 <script>
     import { defineComponent, ref, computed, getCurrentInstance, onBeforeMount, nextTick } from '@vue/composition-api'
     import { useStore } from '@/store'
-    import { useRoute } from '@/router'
+    import { useRoute, useRouter } from '@/router'
 
     export default defineComponent({
         props: {
@@ -55,10 +55,11 @@
             const currentInstance = getCurrentInstance()
             const store = useStore()
             const route = useRoute()
+            const router = useRouter()
 
             const editing = ref(false)
             const isLoading = ref(false)
-            const currentModule = ref('')
+            const currentModule = ref({})
             const searchStr = ref('')
 
             const dataList = ref([])
@@ -94,12 +95,13 @@
                 isLoading.value = false
                 dataList.value = data
                 // 如果没有选中， 选中路由或者第一个
-                if (data.length && !currentModule.value) {
+                if (data.length && !currentModule.value?.moduleCode) {
                     const queryModule = route.query?.module
-                    if (data.find(item => item.moduleCode === queryModule)) {
-                        changeModule(route.query?.module)
+                    const findItem = data.find(item => item.moduleCode === queryModule)
+                    if (findItem) {
+                        changeModule(findItem)
                     } else {
-                        changeModule(data[0]?.moduleCode)
+                        changeModule(data[0] || {})
                     }
                 }
             }
@@ -146,10 +148,14 @@
                     }
                 }
             }
-            const changeModule = (moduleCode) => {
-                currentModule.value = moduleCode
-                props.moduleChange(moduleCode)
-
+            const changeModule = (moduleItem) => {
+                currentModule.value = moduleItem
+                props.moduleChange(moduleItem)
+                if (route.query?.module !== moduleItem?.moduleCode) {
+                    router.push({  
+                        query: { module: moduleItem?.moduleCode }
+                    })
+                }
             }
 
             onBeforeMount(() => {

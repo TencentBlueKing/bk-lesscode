@@ -2,12 +2,21 @@
     <section class="parent-node">
         <span :class="['status-color', node.status]"></span>
         <span :class="['status-icon', node.status]">
-            <svg v-if="node.status === 'loading'" aria-hidden="true" width="16" height="16" class="loading-icon">
+            <svg v-if="node.status === 'running'" aria-hidden="true" width="16" height="16" class="loading-icon">
                 <use xlink:href="#bk-drag-loading-2"></use>
             </svg>
             <i v-else class="bk-drag-icon bk-drag-info status-i"></i>
         </span>
-        <span class="node-name">{{ node.name }}</span>
+        <span class="node-name"
+            v-bk-tooltips="{
+                content: node.name,
+                maxWidth: 300,
+                placements: ['top'],
+                delay: [100, 0]
+            }"
+        >
+            {{ node.name }}
+        </span>
         <i
             class="bk-drag-icon bk-drag-edit tail-icon"
             v-bk-tooltips="{
@@ -18,14 +27,14 @@
         ></i>
         <bk-dialog
             v-model="showEdit"
-            title=""
             :width="360"
             :show-footer="false"
+            :close-icon="false"
         >
-            <bk-input type="textarea"></bk-input>
+            <bk-input type="textarea" v-model="inputStr"></bk-input>
             <section class="dialog-footer">
-                <bk-button theme="primary">{{ confirmMessage }}</bk-button>
-                <bk-button>{{ cancelMessage }}</bk-button>
+                <bk-button theme="primary" :disabled="isExecuting" @click="handleEdit">{{ confirmMessage }}</bk-button>
+                <bk-button @click="showEdit = false">{{ cancelMessage }}</bk-button>
             </section>
         </bk-dialog>
     </section>
@@ -36,14 +45,21 @@
         inject: ['getNode'],
         data () {
             return {
-                content: window.i18n.t('编辑代码'),
+                inputStr: '',
+                content: window.i18n.t('编辑需求'),
                 confirmMessage: window.i18n.t('保存并执行'),
                 cancelMessage: window.i18n.t('取消'),
                 node: {
+                    id: '',
                     status: '',
                     name: ''
                 },
                 showEdit: false
+            }
+        },
+        computed: {
+            isExecuting () {
+                return this.$store.state.saasBackend?.isExecuting || false
             }
         },
         mounted () {
@@ -56,6 +72,22 @@
         methods: {
             showDialog () {
                 this.showEdit = true
+                this.inputStr = this.node?.name
+            },
+            async handleEdit () {
+                try {
+                    if (this.node?.type === 'story') {
+                        const data = {
+                            story: this.inputStr,
+                            uuid: this.node?.session_id
+                        }
+                        await this.$store.dispatch('saasBackend/patchModuleStory', data)
+                        this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
+                        this.showEdit = false
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
             }
         }
     }
@@ -82,7 +114,7 @@
     &.fail {
         background: #EA3636;
     }
-    &.loading {
+    &.running {
         background: #3A84FF;
     }
 }
@@ -101,7 +133,7 @@
         background: #FFEEEE;
         color: #EA3636;
     }
-    &.loading {
+    &.running {
         background: #F5F7FA;
         color: #3A84FF;
     }
@@ -114,7 +146,14 @@
     }
 }
 .node-name {
-    flex: 1;
+    /* flex: 1; */
+    width: 150px;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 这里是超出几行省略 */
+    overflow: hidden;
 }
 .tail-icon {
     margin-right: 18px;

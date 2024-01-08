@@ -1,6 +1,6 @@
 <template>
     <layout
-        class="api-manage"
+        class="saas-backend-manage"
         v-bkloading="{ isLoading }"
         :init-width="320"
     >
@@ -9,8 +9,7 @@
             ref="apiCategory"
             :module-change="handleModuleChange"
         />
-        <module-content :module-code="currentModule">
-            {{currentModule}}
+        <module-content :current-module="currentModule">
         </module-content>
     </layout>
 </template>
@@ -31,10 +30,10 @@
         setup () {
             const isLoading = ref(false)
 
-            const currentModule = ref('')
+            const currentModule = ref({})
 
-            const handleModuleChange = (moduleCode) => {
-                currentModule.value = moduleCode
+            const handleModuleChange = (moduleItem) => {
+                currentModule.value = moduleItem
             }
 
             return {
@@ -47,7 +46,7 @@
 </script>
 
 <style lang="postcss" scoped>
-    .api-manage {
-        height: calc(100vh - 120px);
+    .saas-backend-manage {
+        height: calc(100vh - 104px);
     }
 </style>

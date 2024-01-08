@@ -45,6 +45,6 @@
 
 <style lang="postcss" scoped>
     .function-manage-home {
-        height: calc(100vh - 120px);
+        height: calc(100vh - 104px);
     }
 </style>

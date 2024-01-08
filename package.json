@@ -132,6 +132,7 @@
     "file-type": "^16.5.3",
     "forever": "~2.0.0",
     "fs-extra": "~8.1.0",
+    "graphlib": "^2.1.8",
     "highlight.js": "~9.16.2",
     "html2canvas": "~1.0.0-rc.5",
     "http-errors": "^1.8.0",
