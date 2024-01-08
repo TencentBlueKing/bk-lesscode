@@ -1,18 +1,22 @@
 <template>
-    <section class="nodes-container"></section>
+    <section v-bkloading="{ isLoading }" style="width: 100%; height: 100%;">
+        <empty-status v-if="!storyList.length" type="custom" :part="false">
+            <div>
+                <span>{{$t('请先添加需求描述')}}</span>
+            </div>
+        </empty-status>
+        <section class="nodes-container">
+        </section>
+    </section>
 </template>
 
 <script>
-    import {
-        Graph
-    } from '@antv/x6'
-    import {
-        register
-    } from '../x6-render-vue/registry.js'
-    import {
-        onMounted,
-        defineComponent
-    } from '@vue/composition-api'
+    import { Graph } from '@antv/x6'
+    import { register } from '../x6-render-vue/registry.js'
+    import { ref, computed, watch, onMounted, defineComponent, nextTick } from '@vue/composition-api'
+    import { useStore } from '@/store'
+    import { debounce } from 'shared/util.js'
+    import { getGraphDefaultConfig, sortNodes, getLineColor, getStatusMap } from './common'
     import RenderParentNode from './render-parent-node.vue'
     import RenderChildNode from './render-child-node.vue'
 
@@ -31,7 +35,73 @@
     })
 
     export default defineComponent({
-        setup () {
+        props: {
+            moduleId: {
+                type: Number,
+                default: 0
+            }
+        },
+        setup (props) {
+            const store = useStore()
+            const isLoading = ref(false)
+
+            let socket
+            const storyList = ref([])
+            let runningStory = {}
+
+            const finalNodeTypes = ['MigrateProcessor', 'LaunchProcessor', 'PreviewProcessor']
+            const initRenderData = {
+                tasks: [],
+                others: [
+                    {
+                        id: 'MigrateProcessor',
+                        name: '集成框架',
+                        status: 'success',
+                        downloadUrl: ''
+                    },
+                    {
+                        id: 'LaunchProcessor',
+                        name: '开发环境启动',
+                        status: 'success'
+                    },
+                    {
+                        id: 'PreviewProcessor',
+                        name: '测试预览',
+                        url: 'api doc url',
+                        status: 'success'
+                    }
+                ]
+            }
+            let renderData = {}
+
+            const moduleId = computed(() => {
+                return props.moduleId
+            })
+
+            const needUpdate = computed(() => {
+                return store.getters['saasBackend/getNeedUpdate']
+            })
+
+            watch(
+                moduleId,
+                () => {
+                    socket && socket.close()
+                    fetchData()
+                }
+            )
+
+            watch(
+                needUpdate,
+                (val) => {
+                    if (val) {
+                        console.log('watch needupdate', val)
+                        socket && socket.close()
+                        fetchData()
+                        store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: false })
+                    }
+                }
+            )
+
             let graph
             const childNodeOffset = 40
             const childNodeHeight = 36
@@ -43,71 +113,60 @@
             const taskOffset = 45
             const smoothOffset = 20
 
-            const getLineColor = (status) => {
-                const colorMap = {
-                    success: '#1CAB88',
-                    fail: '#EA3636'
-                }
-                return colorMap[status] || '#979BA5'
+            const initGraph = () => {
+                const graphConfig = getGraphDefaultConfig()
+                graph = new Graph(graphConfig)
             }
 
-            const initGraph = () => {
-                graph = new Graph({
-                    container: document.querySelector('.nodes-container'),
-                    autoResize: true,
-                    interacting: false,
-                    panning: {
-                        enabled: true,
-                        eventTypes: ['leftMouseDown', 'mouseWheel']
-                    },
-                    mousewheel: {
-                        enabled: true,
-                        modifiers: 'ctrl',
-                        factor: 1.1,
-                        maxScale: 3,
-                        minScale: 0.5
-                    },
-                    highlighting: {
-                        magnetAdsorbed: {
-                            name: 'stroke',
-                            args: {
-                                attrs: {
-                                    fill: '#fff',
-                                    stroke: '#31d0c6',
-                                    strokeWidth: 4
-                                }
-                            }
-                        }
-                    },
-                    connecting: {
-                        snap: true,
-                        allowBlank: false,
-                        allowLoop: false,
-                        highlight: true,
-                        connectionPoint: 'anchor',
-                        anchor: 'center',
-                        validateMagnet () {
-                            return false
-                        },
-                        validateEdge () {
-                            return false
-                        }
+            // 找到当前builder在图中的index
+            const findTaskFromRenderData = (id) => {
+                const tasks = renderData.tasks
+                let taskIndex = undefined
+                tasks.forEach((task, index) => {
+                    if (task[0]?.id === id) {
+                        taskIndex = index
                     }
                 })
+                return taskIndex
+            }
+
+            const updateNodes = (builderItem) => {
+                if (builderItem?.session_id !== runningStory?.session_id) return
+                const story = {
+                    ...builderItem,
+                    id: builderItem.session_id,
+                    type: 'story',
+                    children: builderItem.nodes,
+                    nodes: undefined,
+                    status: getStatusMap(builderItem.status)
+                }
+                const task = getNodeFromStory(story)
+
+                const index = findTaskFromRenderData(builderItem.session_id)
+                if (index !== undefined) {
+                    renderData.tasks[index] = task
+                    graph.clearCells()
+                    nextTick(()=> initNodes(renderData))
+                }
             }
 
             // 初始化节点/边
             const initNodes = (data) => {
+                console.log(data)
+                // 找出当前running的节点， 批量删除
+                if (data?.tasks.length === 0) return
                 // 当前绘制的起始坐标
-                let x = 150
+                let x = 0
                 let y = 150
 
                 let maxX = 0
                 const finalTasks = []
 
                 data.tasks.forEach((task) => {
-                    x = 150
+                    x = 0
                     let maxTask = 0
+
+                    // 遍历的时候，判断是正在running的那一条需求， 重画， 否则直接return
 
                     task.forEach((item, index) => {
                         x += (parentNodeWidth + parentNodeOffset)
@@ -118,15 +177,17 @@
                         }
                         // parent node
                         graph.addNode({
+                            id: item.id,
                             x,
                             y,
                             shape: 'parent-node',
                             data: item
                         })
-                        item?.children.map((child, index) => {
+                        item?.children?.map((child, index) => {
                             const childX = x + childNodeOffset
                             const childY = y + parentNodeHeight + childNodeMarginTop + index * (childNodeHeight + childNodeMarginTop)
                             graph.addNode({
+                                id: child.id,
                                 x: childX,
                                 y: childY,
                                 shape: 'child-node',
@@ -211,7 +272,7 @@
                     })
                 })
 
-                data.others.forEach((other, index) => {
+                data?.others?.forEach((other, index) => {
                     const otherX = maxX + (index + 1) * (parentNodeWidth + parentNodeOffset)
                     const otherY = y / 2
                     graph.addNode({
@@ -240,207 +301,125 @@
                 })
             }
 
-            // 更新节点状态
-            // const updateNodes = (data) => {
-            //     const updateData = (item) => {
-            //         const node = graph.getCellById(item.id)
-            //         node.setData(item)
-            //     }
-            //     data.tasks.forEach((task) => {
-            //         task.forEach((item) => {
-            //             updateData(item)
-            //             item?.children.forEach(updateData)
-            //         })
-            //     })
-            //     data.others.forEach(updateData)
-            // }
-
-            const data = {
-                tasks: [
-                    [
-                        {
-                            id: 1,
-                            name: '需求一',
-                            status: 'success',
-                            children: [
-                                {
-                                    id: 2,
-                                    name: '生成文件api',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 3,
-                                    name: '生成文件js',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 4,
-                                    name: '生成文件ppt',
-                                    status: 'success'
-                                }
-                            ]
-                        },
-                        {
-                            id: 5,
-                            name: '任务一',
-                            status: 'loading',
-                            children: [
-                                {
-                                    id: 6,
-                                    name: '生成文件api',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 7,
-                                    name: '生成文件js',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 8,
-                                    name: '生成文件ppt',
-                                    status: 'loading'
-                                }
-                            ]
+            const fetchData = async function () {
+                isLoading.value = true
+                renderData = JSON.parse(JSON.stringify(initRenderData))
+                try {
+                    storyList.value = await store.dispatch('saasBackend/getStoryList', props.moduleId)
+                    const resData = await Promise.all(storyList.value.map((story) => store.dispatch('saasBackend/getSaasBuilderDetail', story.uuid)))
+                    storyList.value = storyList.value.map(item => {
+                        const builderItem = resData.find(builder => builder.session_id === item.uuid) || {}
+                        return {
+                            ...builderItem,
+                            id: builderItem.session_id,
+                            type: 'story',
+                            children: builderItem.nodes,
+                            nodes: undefined,
+                            status: getStatusMap(builderItem.status)
                         }
-                    ],
-                    [
-                        {
-                            id: 1,
-                            name: '需求二',
-                            status: 'fail',
-                            children: [
-                                {
-                                    id: 2,
-                                    name: '生成文件api',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 3,
-                                    name: '生成文件js',
-                                    status: 'fail'
-                                },
-                                {
-                                    id: 4,
-                                    name: '生成文件ppt',
-                                    status: 'success'
-                                }
-                            ]
-                        },
-                        {
-                            id: 5,
-                            name: '任务一',
-                            status: 'fail',
-                            children: [
-                                {
-                                    id: 6,
-                                    name: '生成文件api',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 7,
-                                    name: '生成文件js',
-                                    status: 'loading'
-                                },
-                                {
-                                    id: 8,
-                                    name: '生成文件ppt',
-                                    status: null
-                                }
-                            ]
-                        },
-                        {
-                            id: 5,
-                            name: '任务一',
-                            status: 'fail',
-                            children: [
-                                {
-                                    id: 6,
-                                    name: '生成文件api',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 7,
-                                    name: '生成文件js',
-                                    status: 'loading'
-                                },
-                                {
-                                    id: 8,
-                                    name: '生成文件ppt',
-                                    status: null
-                                }
-                            ]
-                        },
-                        {
-                            id: 5,
-                            name: '任务一',
-                            status: 'fail',
-                            children: [
-                                {
-                                    id: 6,
-                                    name: '生成文件api',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 7,
-                                    name: '生成文件js',
-                                    status: 'loading'
-                                },
-                                {
-                                    id: 8,
-                                    name: '生成文件ppt',
-                                    status: null
-                                }
-                            ]
-                        },
-                        {
-                            id: 5,
-                            name: '任务一',
-                            status: 'fail',
-                            children: [
-                                {
-                                    id: 6,
-                                    name: '生成文件api',
-                                    status: 'success'
-                                },
-                                {
-                                    id: 7,
-                                    name: '生成文件js',
-                                    status: 'loading'
-                                },
-                                {
-                                    id: 8,
-                                    name: '生成文件ppt',
-                                    status: null
-                                }
-                            ]
-                        }
-                    ]
-                ],
-                others: [
-                    {
-                        id: '456',
-                        name: '集成框架',
-                        status: 'success',
-                        downloadUrl: ''
-                    },
-                    {
-                        id: '422',
-                        name: '开发环境启动',
-                        status: 'success'
-                    },
-                    {
-                        id: '14124',
-                        name: '测试预览',
-                        url: 'api doc url',
-                        status: 'success'
+                    })
+                    transformBuilderData()
+                    runningStory = storyList.value.find(item => (item.status === 'running' || item.status === 'pending'))
+                    if (runningStory?.session_id) {
+                        console.log(runningStory, 'running builder')
+                        handleSocket(runningStory.session_id)
+                        store.commit('saasBackend/setStateProperty', { key: 'isExecuting', value: true })
+                    } else {
+                        store.commit('saasBackend/setStateProperty', { key: 'isExecuting', value: false })
                     }
-                ]
+                    graph?.clearCells()
+                    nextTick(() => initNodes(renderData))
+                } catch (err) {
+                    console.error(err, 'initdata')
+                } finally {
+                    isLoading.value = false
+                }
+            }
+
+            const handleSocket = function (sessionId) {
+                socket && socket.close()
+
+                const wsPrefix = location.protocol === 'https:' ? 'wss://' : 'ws://'
+                const wsUrl = `${wsPrefix}${process.env.BK_AIDEV_WEBSOCKET_HOST}/aidev/session/common/saas_builder_${sessionId}/?group_name=saas_building_events`
+                socket = new WebSocket(wsUrl);
+
+                socket.onopen = function(event) {
+                    // 设置请求的 header
+                    // socket.setRequestHeader('Authorization', 'Bearer myAuthToken');
+                    console.log('连接成功')
+                };
+
+                socket.onmessage = function(event) {
+                    // 处理收到的消息
+                    let resData
+                    try {
+                        resData = JSON.parse(event?.data)
+                    } catch (err) {
+                        console.log(err)
+                        resData = {}
+                    }
+                    if (resData?.result) {
+                        const builderItem = resData?.data?.data || {}
+                        if (builderItem?.session_id === runningStory?.session_id) {
+                            debounce(updateNodes(builderItem), 1000)
+                        }
+                        if (getStatusMap(builderItem.status) !== 'running' && getStatusMap(builderItem.status) !== 'pending') {
+                            store.commit('saasBackend/setStateProperty', { key: 'isExecuting', value: false })
+                            runningStory = {}
+                        }
+                    }  
+                }
+
+                socket.onclose = function(event) {
+                    // 连接关闭的处理
+                    console.log(event, 'error')
+                };
+            }
+
+            const getNodeFromStory = function (story) {
+                const task = []
+                let { children, ...storyItem } = story
+                task.push(storyItem)
+                children = sortNodes(children, story.edges)
+                const specialNodes = children.filter(item => finalNodeTypes.includes(item?.content?.type))
+                children?.map(node => {
+                    // 非最后三个公共节点， 才画到图里
+                    const nodeType = node?.content?.type
+                    if (finalNodeTypes.indexOf(nodeType) === -1) {
+                        node.type = 'node'
+                        node.id = node.node_id
+                        node.status = getStatusMap(node.status)
+                        node.children = node?.steps?.map(step => ({
+                            ...step,
+                            type: 'step',
+                            status: getStatusMap(step.status)
+                        }))
+                        task.push(node)
+                    }
+                })
+                return task
+            }
+
+            const transformBuilderData = function () {
+                const tasks = renderData.tasks
+                storyList.value.forEach(story => {
+                    sortNodes(story.children, story.edges)
+                    // 每一个需求， 需要把需求跟任务拼到一个数组
+                    const task = getNodeFromStory(story)
+                    tasks.push(task)
+                })
             }
 
             onMounted(() => {
                 initGraph()
-                initNodes(data)
+                fetchData()
             })
+
+            return {
+                needUpdate,
+                isLoading,
+                storyList
+            }
         }
     })
 </script>

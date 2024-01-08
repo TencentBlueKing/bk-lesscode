@@ -1,6 +1,6 @@
 <template>
     <section class="render-header">
-        <span class="header-title">{{ moduleCode }}</span>
+        <span class="header-title">{{ currentModule.moduleCode }}</span>
 
         <section class="header-input">
             <section
@@ -23,34 +23,39 @@
             </section>
             <bk-button
                 theme="primary"
-                :disabled="!userInput"
+                :disabled="!userInput || isExecuting"
                 :loading="isLoading"
                 @click="handleGenerate"
             >
-                {{ $t('立即生成') }}
+                {{ $t('添加需求') }}
             </bk-button>
         </section>
     </section>
 </template>
 
 <script>
-    import {
-        ref,
-        watch
-    } from '@vue/composition-api'
+    import { ref, computed, watch } from '@vue/composition-api'
+    import { useStore } from '@/store'
+    import { uuid } from 'shared/util'
 
     export default {
         props: {
-            moduleCode: {
-                type: String,
-                required: true
+            currentModule: {
+                type: Object,
+                default: () => ({})
             }
         },
 
-        setup () {
+        setup (props) {
+            const store = useStore()
+            
             const userInput = ref('')
             const textHeight = ref(54)
             const isLoading = ref(false)
+
+            const isExecuting = computed(() => {
+                return store.getters['saasBackend/getIsExecuting']
+            })
 
             const handleChangeTextHeight = () => {
                 const lines = userInput.value.split(/\r?\n/)
@@ -61,9 +66,27 @@
                 textHeight.value = height
             }
 
-            const handleGenerate = () => {
+            const handleGenerate = async () => {
                 isLoading.value = true
-                userInput.value = ''
+
+                try {
+                    const params = {
+                        moduleId: props.currentModule?.id,
+                        appCode: props.currentModule?.appCode,
+                        moduleCode: props.currentModule?.moduleCode,
+                        story: userInput.value,
+                        uuid: `${props.currentModule?.moduleCode}_${uuid(8)}`
+                    }
+                    const item = await store.dispatch('saasBackend/createModuleStory', params)
+                    if (item.id) {
+                        userInput.value = ''
+                        store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
+                    }
+                } catch (err) {
+                    console.err(err)
+                } finally {
+                    isLoading.value = false
+                }
             }
 
             watch(
@@ -75,6 +98,7 @@
                 userInput,
                 textHeight,
                 isLoading,
+                isExecuting,
                 handleGenerate
             }
         }
