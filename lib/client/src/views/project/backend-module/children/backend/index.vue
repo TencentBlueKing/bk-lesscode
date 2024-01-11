@@ -1,7 +1,9 @@
 <template>
     <article class="backend-home">
-        <render-header :module-code="moduleCode"></render-header>
-        <render-nodes></render-nodes>
+        <template v-if="currentModule.id">
+            <render-header :current-module="currentModule"></render-header>
+            <render-nodes ref="renderNodes" :module-id="currentModule.id"></render-nodes>
+        </template>
     </article>
 </template>
 
@@ -16,8 +18,8 @@
         },
 
         props: {
-            moduleCode: {
-                type: String,
+            currentModule: {
+                type: Object,
                 required: true
             }
         }

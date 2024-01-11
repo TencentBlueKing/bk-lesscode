@@ -1,10 +1,19 @@
 <template>
     <section class="child-node" @click="handleShowCode">
         <i class="bk-drag-icon bk-drag-yuanma"></i>
-        <span class="node-name">{{ node.name }}</span>
-        <i v-if="node.status === 'fail'" class="bk-icon icon-close-circle tail-icon"></i>
+        <span class="node-name"
+            v-bk-tooltips="{
+                content: node.name,
+                maxWidth: 300,
+                placements: ['top'],
+                delay: [100, 0]
+            }"
+        >
+            {{ node.name }}
+        </span>
+        <i v-if="node.status === 'failed'" class="bk-icon icon-close-circle tail-icon"></i>
         <i v-if="node.status === 'success'" class="bk-icon icon-check-circle tail-icon"></i>
-        <svg v-if="node.status === 'loading'" aria-hidden="true" width="14" height="14" class="loading-icon tail-icon">
+        <svg v-if="node.status === 'running'" aria-hidden="true" width="14" height="14" class="loading-icon tail-icon">
             <use xlink:href="#bk-drag-loading-2"></use>
         </svg>
         <bk-sideslider
@@ -55,7 +64,7 @@
         },
         methods: {
             handleShowCode () {
-                this.isShowCode = true
+                // this.isShowCode = true
             }
         }
     }
@@ -76,8 +85,12 @@
     margin: 0 13px 0 12px;
 }
 .node-name {
+    display: inline-block;
     font-size: 12px;
-    flex: 1;
+    width: 150px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .tail-icon {
     font-size: 14px;
