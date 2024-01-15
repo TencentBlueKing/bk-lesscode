@@ -175,9 +175,9 @@
                         other.status = getStatusMap(node.status)
                         other.saas_builder = node?.saas_builder
                         if (other.id === 'MigrateProcessor') {
-                            other.url = node?.content?.result?.edit_url
+                            other.url = node?.content?.result?.ide_url
                         }
-                        if (other.id === 'LaunchProcessor') {
+                        if (other.id === 'PreviewProcessor') {
                             other.url = node?.content?.result?.app_url
                         }
                     }
