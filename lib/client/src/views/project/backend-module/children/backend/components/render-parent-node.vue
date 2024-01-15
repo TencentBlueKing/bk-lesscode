@@ -19,6 +19,7 @@
         </span>
         <i
             class="bk-drag-icon bk-drag-edit tail-icon"
+            v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
             v-bk-tooltips="{
                 content,
                 placements: ['top']
@@ -41,10 +42,12 @@
 </template>
 
 <script>
+    import { finalNodeTypes } from './common'
     export default {
         inject: ['getNode'],
         data () {
             return {
+                finalNodeTypes,
                 inputStr: '',
                 content: window.i18n.t('编辑需求'),
                 confirmMessage: window.i18n.t('保存并执行'),
@@ -60,6 +63,9 @@
         computed: {
             isExecuting () {
                 return this.$store.state.saasBackend?.isExecuting || false
+            },
+            saasBuilderList () {
+                return this.$store.state.saasBackend?.saasBuilderList || []
             }
         },
         mounted () {
@@ -82,9 +88,29 @@
                             uuid: this.node?.session_id
                         }
                         await this.$store.dispatch('saasBackend/patchModuleStory', data)
-                        this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
-                        this.showEdit = false
+                    } else {
+                        const builderItem = this.saasBuilderList.find(item => item.session_id === this.node?.saas_builder)
+                        if (builderItem) {
+                            const nodes = builderItem.nodes
+                            const nodeItem = nodes.find(item => item.node_id === this.node?.id)
+                            const nodeIndex = nodes.findIndex(item => item.node_id === this.node?.id)
+                            const itemContent = Object.assign({}, nodeItem.content, {
+                                name: this.inputStr,
+                                son_requirement: this.inputStr
+                            })
+                            Object.assign(nodeItem, { status: 'modified', content: itemContent })
+                            nodes.splice(nodeIndex, 1, nodeItem)
+                            builderItem.status = 'modified'
+                            const data = {
+                                builderDetail: builderItem,
+                                uuid: builderItem.session_id,
+                                story: builderItem.name
+                            }
+                            await this.$store.dispatch('saasBackend/updateModuleStory', data)
+                        }
                     }
+                    this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
+                    this.showEdit = false
                 } catch (err) {
                     console.error(err)
                 }
