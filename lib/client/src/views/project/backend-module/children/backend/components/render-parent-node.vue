@@ -5,6 +5,7 @@
             <svg v-if="node.status === 'running'" aria-hidden="true" width="16" height="16" class="loading-icon">
                 <use xlink:href="#bk-drag-loading-2"></use>
             </svg>
+            <i v-else-if="node.type === 'story'" class="bk-drag-icon bk-drag-builder status-i"></i>
             <i v-else class="bk-drag-icon bk-drag-info status-i"></i>
         </span>
         <span class="node-name"
@@ -17,15 +18,33 @@
         >
             {{ node.name }}
         </span>
-        <i
-            class="bk-drag-icon bk-drag-edit tail-icon"
-            v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
-            v-bk-tooltips="{
-                content,
-                placements: ['top']
-            }"
-            @click="showDialog"
-        ></i>
+        <span class="node-icons">
+            <i
+                class="bk-drag-icon bk-drag-edit node-icon"
+                v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
+                v-bk-tooltips="{
+                    content: editontent,
+                    placements: ['top']
+                }"
+                @click="showDialog"
+            ></i>
+            <i
+                class="bk-drag-icon bk-drag-refresh-line node-icon"
+                style="font-size: 14px;margin-left: 4px;"
+                v-if="node.status === 'fail'"
+                v-bk-tooltips="{
+                    content: '重试',
+                    placements: ['top']
+                }"
+                @click="patchRetry"
+            ></i>
+            <i
+                class="bk-drag-icon bk-drag-jump-link node-icon"
+                style="font-size: 14px;margin-left: 4px;"
+                v-if="node.url"
+                @click="toLink(node.url)"
+            ></i>
+        </span>
         <bk-dialog
             v-model="showEdit"
             :width="360"
@@ -49,7 +68,7 @@
             return {
                 finalNodeTypes,
                 inputStr: '',
-                content: window.i18n.t('编辑需求'),
+                editontent: window.i18n.t('编辑'),
                 confirmMessage: window.i18n.t('保存并执行'),
                 cancelMessage: window.i18n.t('取消'),
                 node: {
@@ -77,6 +96,7 @@
         },
         methods: {
             showDialog () {
+                console.log(this.node)
                 this.showEdit = true
                 this.inputStr = this.node?.name
             },
@@ -85,7 +105,8 @@
                     if (this.node?.type === 'story') {
                         const data = {
                             story: this.inputStr,
-                            uuid: this.node?.session_id
+                            uuid: this.node?.session_id,
+                            app_name: this.node?.app_name,
                         }
                         await this.$store.dispatch('saasBackend/patchModuleStory', data)
                     } else {
@@ -114,6 +135,18 @@
                 } catch (err) {
                     console.error(err)
                 }
+            },
+            async patchRetry () {
+                const data = {
+                    app_name: this.node?.app_name,
+                    uuid: this.node?.session_id || this.node?.saas_builder,
+                    retry: true
+                }
+                await this.$store.dispatch('saasBackend/execModuleStory', data)
+                this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
+            },
+            toLink (url) {
+                window.open(url, '_blank')
             }
         }
     }
@@ -145,7 +178,7 @@
     }
 }
 .status-icon {
-    margin: 0 16px 0 12px;
+    margin: 0 12px;
     height: 36px;
     width: 36px;
     border-radius: 4px;
@@ -173,7 +206,7 @@
 }
 .node-name {
     /* flex: 1; */
-    width: 150px;
+    width: 160px;
     word-break: break-all;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -181,11 +214,21 @@
     -webkit-line-clamp: 2; /* 这里是超出几行省略 */
     overflow: hidden;
 }
-.tail-icon {
-    margin-right: 18px;
-    font-size: 20px;
-    cursor: pointer;
+.node-icons {
+    display: flex;
+    align-items: center;
+    justify-self: flex-end;
+    margin-right: 16px;
+    .node-icon {
+        font-size: 22px;
+        margin-left: 2px;
+        cursor: pointer;
+        &:hover {
+            color: #3A84FF;
+        }
+    }
 }
+
 .dialog-footer {
     width: 100%;
     display: flex;
