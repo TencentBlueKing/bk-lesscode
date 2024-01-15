@@ -16,7 +16,7 @@
     import { ref, computed, watch, onMounted, defineComponent, nextTick } from '@vue/composition-api'
     import { useStore } from '@/store'
     import { debounce } from 'shared/util.js'
-    import { getGraphDefaultConfig, sortNodes, getLineColor, getStatusMap } from './common'
+    import { finalNodeTypes, getGraphDefaultConfig, sortNodes, getLineColor, getStatusMap } from './common'
     import RenderParentNode from './render-parent-node.vue'
     import RenderChildNode from './render-child-node.vue'
 
@@ -47,28 +47,30 @@
 
             let socket
             const storyList = ref([])
+            let saasBuilderList = []
             let runningStory = {}
+            let latestStory =  {}
 
-            const finalNodeTypes = ['MigrateProcessor', 'LaunchProcessor', 'PreviewProcessor']
             const initRenderData = {
                 tasks: [],
                 others: [
                     {
                         id: 'MigrateProcessor',
                         name: '集成框架',
-                        status: 'success',
-                        downloadUrl: ''
+                        status: '',
+                        url: ''
                     },
                     {
                         id: 'LaunchProcessor',
                         name: '开发环境启动',
-                        status: 'success'
+                        status: '',
+                        url: ''
                     },
                     {
                         id: 'PreviewProcessor',
                         name: '测试预览',
-                        url: 'api doc url',
-                        status: 'success'
+                        url: '',
+                        status: ''
                     }
                 ]
             }
@@ -130,7 +132,12 @@
                 return taskIndex
             }
 
-            const updateNodes = (builderItem) => {
+            const debounceUpdateNodes = debounce((buildItem) => {
+                updateNodes(buildItem)
+            }, 1000)
+
+            const updateNodes = (wsBuilderItem) => {
+                const builderItem = JSON.parse(JSON.stringify(wsBuilderItem))
                 if (builderItem?.session_id !== runningStory?.session_id) return
                 const story = {
                     ...builderItem,
@@ -140,19 +147,42 @@
                     nodes: undefined,
                     status: getStatusMap(builderItem.status)
                 }
-                const task = getNodeFromStory(story)
+                const { task, finalNodes }= getNodeFromStory(story)
 
                 const index = findTaskFromRenderData(builderItem.session_id)
                 if (index !== undefined) {
                     renderData.tasks[index] = task
+                    updateOthersData(finalNodes)
                     graph.clearCells()
                     nextTick(()=> initNodes(renderData))
                 }
+                if (getStatusMap(builderItem.status) !== 'running') {
+                    store.commit('saasBackend/setStateProperty', { key: 'isExecuting', value: false })
+                    runningStory = {}
+                }
+                // 更新到store里面的saasbuilderList
+                const runningIndex = saasBuilderList.findIndex(builder => builder.status === 'running')
+                saasBuilderList.splice(runningIndex, 1, wsBuilderItem)
+                store.commit('saasBackend/setStateProperty', { key: 'saasBuilderList', value: saasBuilderList })    
+            }
+
+            const updateOthersData = (finalNodes) => {
+                const others = renderData.others
+                others.forEach(other => {
+                    const node = finalNodes.find(node => node?.content?.type === other.id)
+                    node && (other.status = getStatusMap(node.status))
+                    if (other.id === 'MigrateProcessor') {
+                        other.url = node?.content?.result?.edit_url
+                    }
+                    if (other.id === 'LaunchProcessor') {
+                        other.url = node?.content?.result?.app_url
+                    }
+                })
             }
 
             // 初始化节点/边
             const initNodes = (data) => {
-                console.log(data)
+                console.log(data, 'updateData')
                 // 找出当前running的节点， 批量删除
                 if (data?.tasks.length === 0) return
                 // 当前绘制的起始坐标
@@ -166,7 +196,7 @@
                     x = 0
                     let maxTask = 0
 
-                    // 遍历的时候，判断是正在running的那一条需求， 重画， 否则直接return
+                    // 遍历的时候，判断是正在running的那一条需求及其后面的， 重画， 否则直接return
 
                     task.forEach((item, index) => {
                         x += (parentNodeWidth + parentNodeOffset)
@@ -306,9 +336,10 @@
                 renderData = JSON.parse(JSON.stringify(initRenderData))
                 try {
                     storyList.value = await store.dispatch('saasBackend/getStoryList', props.moduleId)
-                    const resData = await Promise.all(storyList.value.map((story) => store.dispatch('saasBackend/getSaasBuilderDetail', story.uuid)))
+                    saasBuilderList = await Promise.all(storyList.value.map((story) => store.dispatch('saasBackend/getSaasBuilderDetail', story.uuid)))
+                    store.commit('saasBackend/setStateProperty', { key: 'saasBuilderList', value: saasBuilderList })
                     storyList.value = storyList.value.map(item => {
-                        const builderItem = resData.find(builder => builder.session_id === item.uuid) || {}
+                        const builderItem = JSON.parse(JSON.stringify(saasBuilderList.find(builder => builder.session_id === item.uuid))) || {}
                         return {
                             ...builderItem,
                             id: builderItem.session_id,
@@ -318,10 +349,12 @@
                             status: getStatusMap(builderItem.status)
                         }
                     })
+                    runningStory = storyList.value.find(item => (item.status === 'running'))
+                    latestStory = storyList.value.reduce((prev, current) => {
+                        return (new Date(prev.updated_at) > new Date(current.updated_at)) ? prev : current
+                    })
                     transformBuilderData()
-                    runningStory = storyList.value.find(item => (item.status === 'running' || item.status === 'pending'))
                     if (runningStory?.session_id) {
-                        console.log(runningStory, 'running builder')
                         handleSocket(runningStory.session_id)
                         store.commit('saasBackend/setStateProperty', { key: 'isExecuting', value: true })
                     } else {
@@ -361,11 +394,7 @@
                     if (resData?.result) {
                         const builderItem = resData?.data?.data || {}
                         if (builderItem?.session_id === runningStory?.session_id) {
-                            debounce(updateNodes(builderItem), 1000)
-                        }
-                        if (getStatusMap(builderItem.status) !== 'running' && getStatusMap(builderItem.status) !== 'pending') {
-                            store.commit('saasBackend/setStateProperty', { key: 'isExecuting', value: false })
-                            runningStory = {}
+                            debounceUpdateNodes(builderItem)
                         }
                     }  
                 }
@@ -381,7 +410,7 @@
                 let { children, ...storyItem } = story
                 task.push(storyItem)
                 children = sortNodes(children, story.edges)
-                const specialNodes = children.filter(item => finalNodeTypes.includes(item?.content?.type))
+                const finalNodes = children.filter(item => finalNodeTypes.includes(item?.content?.type))
                 children?.map(node => {
                     // 非最后三个公共节点， 才画到图里
                     const nodeType = node?.content?.type
@@ -397,7 +426,7 @@
                         task.push(node)
                     }
                 })
-                return task
+                return { task, finalNodes }
             }
 
             const transformBuilderData = function () {
@@ -405,8 +434,13 @@
                 storyList.value.forEach(story => {
                     sortNodes(story.children, story.edges)
                     // 每一个需求， 需要把需求跟任务拼到一个数组
-                    const task = getNodeFromStory(story)
+                    const { task, finalNodes } = getNodeFromStory(story)
                     tasks.push(task)
+                    if (story.session_id === runningStory?.session_id) {
+                        updateOthersData(finalNodes)
+                    } else if (!runningStory?.session_id && story.session_id === latestStory?.session_id) {
+                        updateOthersData(finalNodes)
+                    }
                 })
             }
 
