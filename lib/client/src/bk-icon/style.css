@@ -467,6 +467,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-router:before {
 	content: "\e187";
 }
+.bk-drag-sync-pending:before {
+	content: "\e297";
+}
 .bk-drag-paste:before {
 	content: "\e248";
 }
@@ -1192,4 +1195,10 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-saoba:before {
 	content: "\e294";
+}
+.bk-drag-quanquan:before {
+	content: "\e295";
+}
+.bk-drag-builder:before {
+	content: "\e298";
 }

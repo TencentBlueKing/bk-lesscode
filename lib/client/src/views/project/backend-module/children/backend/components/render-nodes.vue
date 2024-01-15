@@ -142,6 +142,7 @@
                 const story = {
                     ...builderItem,
                     id: builderItem.session_id,
+                    app_name: builderItem?.config?.app_name,
                     type: 'story',
                     children: builderItem.nodes,
                     nodes: undefined,
@@ -170,13 +171,17 @@
                 const others = renderData.others
                 others.forEach(other => {
                     const node = finalNodes.find(node => node?.content?.type === other.id)
-                    node && (other.status = getStatusMap(node.status))
-                    if (other.id === 'MigrateProcessor') {
-                        other.url = node?.content?.result?.edit_url
+                    if (node) {
+                        other.status = getStatusMap(node.status)
+                        other.saas_builder = node?.saas_builder
+                        if (other.id === 'MigrateProcessor') {
+                            other.url = node?.content?.result?.edit_url
+                        }
+                        if (other.id === 'LaunchProcessor') {
+                            other.url = node?.content?.result?.app_url
+                        }
                     }
-                    if (other.id === 'LaunchProcessor') {
-                        other.url = node?.content?.result?.app_url
-                    }
+                    
                 })
             }
 
@@ -344,6 +349,7 @@
                             ...builderItem,
                             id: builderItem.session_id,
                             type: 'story',
+                            app_name: builderItem?.config?.app_name,
                             children: builderItem.nodes,
                             nodes: undefined,
                             status: getStatusMap(builderItem.status)
@@ -352,7 +358,7 @@
                     runningStory = storyList.value.find(item => (item.status === 'running'))
                     latestStory = storyList.value.reduce((prev, current) => {
                         return (new Date(prev.updated_at) > new Date(current.updated_at)) ? prev : current
-                    })
+                    }, {})
                     transformBuilderData()
                     if (runningStory?.session_id) {
                         handleSocket(runningStory.session_id)
@@ -418,6 +424,7 @@
                         node.type = 'node'
                         node.id = node.node_id
                         node.status = getStatusMap(node.status)
+                        node.app_name = story.app_name
                         node.children = node?.steps?.map(step => ({
                             ...step,
                             type: 'step',

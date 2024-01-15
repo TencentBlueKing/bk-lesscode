@@ -74,6 +74,7 @@
                         moduleId: props.currentModule?.id,
                         appCode: props.currentModule?.appCode,
                         moduleCode: props.currentModule?.moduleCode,
+                        appName: `${props.currentModule?.appCode}_${props.currentModule?.moduleCode}`.replaceAll('-', '_'),
                         story: userInput.value,
                         uuid: `${props.currentModule?.moduleCode}_${uuid(8)}`
                     }
