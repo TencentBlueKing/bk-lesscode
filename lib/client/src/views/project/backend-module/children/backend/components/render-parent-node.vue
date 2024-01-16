@@ -26,7 +26,7 @@
                     content: editontent,
                     placements: ['top']
                 }"
-                @click="showDialog"
+                @click.stop="showDialog"
             ></i>
             <i
                 class="bk-drag-icon bk-drag-refresh-line node-icon"
@@ -36,13 +36,13 @@
                     content: '重试',
                     placements: ['top']
                 }"
-                @click="patchRetry"
+                @click.stop="patchRetry"
             ></i>
             <i
                 class="bk-drag-icon bk-drag-jump-link node-icon"
                 style="font-size: 14px;margin-left: 4px;"
                 v-if="node.url"
-                @click="toLink(node.url)"
+                @click.stop="toLink(node.url)"
             ></i>
         </span>
         <bk-dialog
@@ -125,7 +125,9 @@
                             const data = {
                                 builderDetail: builderItem,
                                 uuid: builderItem.session_id,
-                                story: builderItem.name
+                                story: builderItem.name,
+                                app_name: this.node?.app_name
+
                             }
                             await this.$store.dispatch('saasBackend/updateModuleStory', data)
                         }
