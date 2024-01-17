@@ -1,5 +1,5 @@
 <template>
-    <section class="parent-node">
+    <section class="parent-node" @click="openSlider">
         <span :class="['status-color', node.status]"></span>
         <span :class="['status-icon', node.status]">
             <svg v-if="node.status === 'running'" aria-hidden="true" width="16" height="16" class="loading-icon">
@@ -100,6 +100,12 @@
                 this.showEdit = true
                 this.inputStr = this.node?.name
             },
+            openSlider () {
+                if (this.node?.status === 'fail' || this.node?.status === 'success') {
+                    this.$store.commit('saasBackend/setStateProperty', { key: 'currentNode', value: JSON.parse(JSON.stringify(this.node)) })
+                    this.$store.commit('saasBackend/setStateProperty', { key: 'showSlider', value: true })
+                }    
+            },
             async handleEdit () {
                 try {
                     if (this.node?.type === 'story') {
@@ -164,6 +170,7 @@
     display: flex;
     justify-items: center;
     align-items: center;
+    cursor: pointer;
 }
 .status-color {
     height: 100%;

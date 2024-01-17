@@ -15,7 +15,7 @@
         </bk-exception>
         <bk-exception v-else class="component-list-empty" type="empty" scene="part">
             <div class="empty-text">
-                {{ $t('暂无数据') }} </div>
+                {{ emptyText || $t('暂无数据') }} </div>
         </bk-exception>
     </div>
 </template>
@@ -31,6 +31,10 @@
             part: {
                 type: Boolean,
                 default: true
+            },
+            emptyText: {
+                type: String,
+                default: ''
             }
         },
         data () {
