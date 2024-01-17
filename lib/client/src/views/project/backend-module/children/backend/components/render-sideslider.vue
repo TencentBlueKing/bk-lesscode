@@ -3,11 +3,18 @@
         :is-show.sync="showSlider"
         :quick-close="true"
         :width="1100"
-        :title="node.name"
         ext-cls="node-info-slider"
         transfer
         @shown="initData"
     >
+        <div slot="header">
+            <div class="node-slider-header">
+                <span class="node-name">{{node.name}}</span>
+                <span class="node-status" :class="node.status">
+                    {{nodeStatusText}}
+                </span>
+            </div>
+        </div>
         <div slot="content">
             <div class="operation-header">
                 <div v-if="node.status === 'fail'"
@@ -53,10 +60,19 @@
                         </div>
                         <div class="file-content">
                             <monaco
+                                width="786px"
                                 height="calc(100vh - 136px)"
                                 read-only
                                 :value="currentFile.code_content || ''"
                                 :options="{ language: 'python' }">
+                                <span
+                                    slot="title"
+                                    class="file-title"
+                                >{{ currentFile.file_path }}</span>
+                                <template v-slot:tools>
+                                    <i class="bk-drag-icon bk-drag-copy icon-style copy-icon" @click="handleCopyCode"></i>
+                                    <slot name="tools"></slot>
+                                </template>
                             </monaco>
                         </div>
                     </template>
@@ -107,17 +123,66 @@
             },
             currentFile () {
                 return this.filesInfo[this.fileIndex] || {}
+            },
+            nodeStatusText () {
+                let txt = this.node?.status
+                if (this.node?.status === 'success') {
+                    txt = window.i18n.t('执行成功')
+                } else if (this.node?.status === 'fail') {
+                    txt = window.i18n.t('执行失败')
+                }
+                return txt
             }
         },
         methods: {
             initData () {
                 this.currentTab = this.node?.status === 'fail' ? 'errors' : 'files'
+            },
+            handleCopyCode () {
+                const code = this.currentFile?.code_content || ''
+                const el = document.createElement('textarea')
+                el.value = code
+                el.setAttribute('readonly', '')
+                el.style.position = 'absolute'
+                el.style.left = '-9999px'
+                document.body.appendChild(el)
+                const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false
+                el.select()
+                document.execCommand('copy')
+                document.body.removeChild(el)
+                if (selected) {
+                    document.getSelection().removeAllRanges()
+                    document.getSelection().addRange(selected)
+                }
+                this.$bkMessage({ theme: 'primary', message: this.$t('复制成功'), delay: 2000, dismissable: false })
             }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
+.node-info-slider{
+    .node-slider-header {
+        display: flex;
+        align-items: center;
+        .node-status {
+            margin: 0 16px;
+            padding: 2px 8px;
+            line-height: 14px;
+            font-size: 12px;
+            border-radius: 2px;
+            color: #3A84FF;
+            background: #EDF4FF;
+            &.success {
+                color: #14A568;
+                background: #E4FAF0;
+            }
+            &.fail {
+                color: #EA3636;
+                background: #FFDDDD;
+            }
+        }
+    }
     .operation-header {
         height: 60px;
         background-color: #F5F7FA;
@@ -156,7 +221,7 @@
         height: calc(100vh - 136px);
         position: relative;
         .errors-container {
-            height: 100%;
+            height: calc(100% - 16px);
             margin: 16px 24px;
             .errors-content {
                 background: #FFEDED;
@@ -164,6 +229,7 @@
                 border-radius: 2px;
                 padding: 8px 16px 12px;
                 color: #63656E;
+                overflow-y: auto;
                 .err-msg-div {
                     display: flex;
                     align-items: center;
@@ -218,7 +284,15 @@
             }
             .file-content {
                 flex: 1;
+                .file-title {
+                    margin-left: 34px;
+                    color: #C4C6CC;
+                }
+                .copy-icon {
+                    margin: 0 16px 0 10px;
+                }
             }
         }
     }
+}
 </style>

@@ -18,7 +18,7 @@
         >
             {{ node.name }}
         </span>
-        <span class="node-icons">
+        <span class="node-icons" v-if="!isExecuting">
             <i
                 class="bk-drag-icon bk-drag-edit node-icon"
                 v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
@@ -45,18 +45,6 @@
                 @click.stop="toLink(node.url)"
             ></i>
         </span>
-        <bk-dialog
-            v-model="showEdit"
-            :width="360"
-            :show-footer="false"
-            :close-icon="false"
-        >
-            <bk-input type="textarea" v-model="inputStr"></bk-input>
-            <section class="dialog-footer">
-                <bk-button theme="primary" :disabled="isExecuting" @click="handleEdit">{{ confirmMessage }}</bk-button>
-                <bk-button @click="showEdit = false">{{ cancelMessage }}</bk-button>
-            </section>
-        </bk-dialog>
     </section>
 </template>
 
@@ -67,24 +55,17 @@
         data () {
             return {
                 finalNodeTypes,
-                inputStr: '',
                 editontent: window.i18n.t('编辑'),
-                confirmMessage: window.i18n.t('保存并执行'),
-                cancelMessage: window.i18n.t('取消'),
                 node: {
                     id: '',
                     status: '',
                     name: ''
-                },
-                showEdit: false
+                }
             }
         },
         computed: {
             isExecuting () {
                 return this.$store.state.saasBackend?.isExecuting || false
-            },
-            saasBuilderList () {
-                return this.$store.state.saasBackend?.saasBuilderList || []
             }
         },
         mounted () {
@@ -96,53 +77,14 @@
         },
         methods: {
             showDialog () {
-                console.log(this.node)
-                this.showEdit = true
-                this.inputStr = this.node?.name
+                this.$store.commit('saasBackend/setStateProperty', { key: 'currentNode', value: JSON.parse(JSON.stringify(this.node)) })
+                this.$store.commit('saasBackend/setStateProperty', { key: 'showUpdateDialog', value: true })
             },
             openSlider () {
                 if (this.node?.status === 'fail' || this.node?.status === 'success') {
                     this.$store.commit('saasBackend/setStateProperty', { key: 'currentNode', value: JSON.parse(JSON.stringify(this.node)) })
                     this.$store.commit('saasBackend/setStateProperty', { key: 'showSlider', value: true })
                 }    
-            },
-            async handleEdit () {
-                try {
-                    if (this.node?.type === 'story') {
-                        const data = {
-                            story: this.inputStr,
-                            uuid: this.node?.session_id,
-                            app_name: this.node?.app_name,
-                        }
-                        await this.$store.dispatch('saasBackend/patchModuleStory', data)
-                    } else {
-                        const builderItem = this.saasBuilderList.find(item => item.session_id === this.node?.saas_builder)
-                        if (builderItem) {
-                            const nodes = builderItem.nodes
-                            const nodeItem = nodes.find(item => item.node_id === this.node?.id)
-                            const nodeIndex = nodes.findIndex(item => item.node_id === this.node?.id)
-                            const itemContent = Object.assign({}, nodeItem.content, {
-                                name: this.inputStr,
-                                son_requirement: this.inputStr
-                            })
-                            Object.assign(nodeItem, { status: 'modified', content: itemContent })
-                            nodes.splice(nodeIndex, 1, nodeItem)
-                            builderItem.status = 'modified'
-                            const data = {
-                                builderDetail: builderItem,
-                                uuid: builderItem.session_id,
-                                story: builderItem.name,
-                                app_name: this.node?.app_name
-
-                            }
-                            await this.$store.dispatch('saasBackend/updateModuleStory', data)
-                        }
-                    }
-                    this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
-                    this.showEdit = false
-                } catch (err) {
-                    console.error(err)
-                }
             },
             async patchRetry () {
                 const data = {
@@ -171,6 +113,11 @@
     justify-items: center;
     align-items: center;
     cursor: pointer;
+    &:hover {
+        .node-icons {
+            display: flex;
+        }
+    }
 }
 .status-color {
     height: 100%;
@@ -224,7 +171,7 @@
     overflow: hidden;
 }
 .node-icons {
-    display: flex;
+    display: none;
     align-items: center;
     justify-self: flex-end;
     margin-right: 16px;
@@ -238,9 +185,5 @@
     }
 }
 
-.dialog-footer {
-    width: 100%;
-    display: flex;
-    margin-top: 10px;
-}
+
 </style>
