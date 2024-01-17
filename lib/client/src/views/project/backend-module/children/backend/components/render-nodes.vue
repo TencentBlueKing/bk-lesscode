@@ -7,6 +7,7 @@
         </empty-status>
         <section class="nodes-container">
         </section>
+        <render-side-slider />
     </section>
 </template>
 
@@ -19,6 +20,7 @@
     import { finalNodeTypes, getGraphDefaultConfig, sortNodes, getLineColor, getStatusMap } from './common'
     import RenderParentNode from './render-parent-node.vue'
     import RenderChildNode from './render-child-node.vue'
+    import RenderSideSlider from './render-sideslider'
 
     register({
         shape: 'parent-node',
@@ -35,6 +37,9 @@
     })
 
     export default defineComponent({
+        components: {
+            RenderSideSlider
+        },
         props: {
             moduleId: {
                 type: Number,

@@ -1,5 +1,5 @@
 <template>
-    <section class="child-node" @click="handleShowCode">
+    <section class="child-node">
         <i class="bk-drag-icon bk-drag-yuanma"></i>
         <span class="node-name"
             v-bk-tooltips="{
@@ -16,43 +16,15 @@
         <svg v-if="node.status === 'running'" aria-hidden="true" width="14" height="14" class="loading-icon tail-icon">
             <use xlink:href="#bk-drag-loading-2"></use>
         </svg>
-        <bk-sideslider
-            :is-show.sync="isShowCode"
-            :quick-close="true"
-            :width="960"
-            :title="title"
-            transfer
-        >
-            <div slot="content">
-                <monaco
-                    height="calc(100vh - 114px)"
-                    value="console.log(233)"
-                    :options="{ language: 'sql' }">
-                </monaco>
-            </div>
-            <template #footer>
-                <bk-button theme="primary" class="confirm-button">{{ confirmTxt }}</bk-button>
-                <bk-button>{{ cancelTxt }}</bk-button>
-            </template>
-        </bk-sideslider>
     </section>
 </template>
 
 <script>
-    import monaco from '@/components/monaco.vue'
-
     export default {
         inject: ['getNode'],
-        components: {
-            monaco
-        },
         data () {
             return {
-                node: {},
-                isShowCode: false,
-                title: window.i18n.t('编辑源码信息'),
-                confirmTxt: window.i18n.t('保存并执行'),
-                cancelTxt: window.i18n.t('取消')
+                node: {}
             }
         },
         mounted () {
@@ -61,11 +33,6 @@
             node.on('change:data', ({ current }) => {
                 this.node = current
             })
-        },
-        methods: {
-            handleShowCode () {
-                // this.isShowCode = true
-            }
         }
     }
 </script>
@@ -79,10 +46,6 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-}
-.bk-drag-yuanma {
-    font-size: 16px;
-    margin: 0 13px 0 12px;
 }
 .node-name {
     display: inline-block;
@@ -105,8 +68,5 @@
         fill: #3a84ff;
         animation: icon-loading 1.5s linear infinite;
     }
-}
-.confirm-button {
-    margin: 0 10px 0 15px;
 }
 </style>
