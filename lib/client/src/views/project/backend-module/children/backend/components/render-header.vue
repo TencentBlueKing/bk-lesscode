@@ -8,7 +8,8 @@
                     '--text-height': textHeight + 'px',
                     'width': '100%',
                     'max-width': '920px',
-                    'margin-right': '8px'
+                    'margin-right': '8px',
+                    'z-index': 2
                 }"
             >
                 <bk-input

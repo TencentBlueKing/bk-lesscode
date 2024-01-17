@@ -45,7 +45,6 @@
     border-radius: 4px;
     display: flex;
     align-items: center;
-    cursor: pointer;
 }
 .node-name {
     display: inline-block;

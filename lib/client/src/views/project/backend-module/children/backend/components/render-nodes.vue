@@ -8,6 +8,7 @@
         <section class="nodes-container">
         </section>
         <render-side-slider />
+        <update-node-dialog />
     </section>
 </template>
 
@@ -21,6 +22,7 @@
     import RenderParentNode from './render-parent-node.vue'
     import RenderChildNode from './render-child-node.vue'
     import RenderSideSlider from './render-sideslider'
+    import UpdateNodeDialog from './update-node-dialog'
 
     register({
         shape: 'parent-node',
@@ -38,7 +40,8 @@
 
     export default defineComponent({
         components: {
-            RenderSideSlider
+            RenderSideSlider,
+            UpdateNodeDialog
         },
         props: {
             moduleId: {
