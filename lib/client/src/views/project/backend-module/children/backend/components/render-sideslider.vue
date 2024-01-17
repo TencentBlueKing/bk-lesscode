@@ -112,7 +112,6 @@
         methods: {
             initData () {
                 this.currentTab = this.node?.status === 'fail' ? 'errors' : 'files'
-                console.log(this.node, 56644, this.filesInfo, this.errorsInfo)
             }
         }
     }
