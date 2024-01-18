@@ -4,7 +4,7 @@
             <render-header :current-module="currentModule"></render-header>
             <render-nodes ref="renderNodes" :module-id="currentModule.id"></render-nodes>
         </template>
-        <div style="padding-top: 20%">
+        <div v-else style="padding-top: 20%">
             <empty-status :empty-text="$t('请先在左侧创建模块')" :part="false" />
         </div>
     </article>
