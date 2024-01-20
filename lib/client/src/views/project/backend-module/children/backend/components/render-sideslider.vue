@@ -28,7 +28,7 @@
                     :class="{'active-item': currentTab === 'files' }"
                     @click="currentTab = 'files'" >
                     {{fileLabel}}
-                    <span class="number-span">{{typeof filesInfo === 'object' ? filesInfo.length : 0}}</span>
+                    <span class="number-span">{{filesInfo.length}}</span>
                 </div>
             </div>
             <div class="info-container">
@@ -45,7 +45,7 @@
                     
                 </div>
                 <div v-show="currentTab === 'files'" class="files-container">
-                    <empty-status style="width: 100%;" v-if="!currentFile.code_content" :part="false" :empty-text="emptyFileTips"></empty-status>
+                    <empty-status style="width: 100%;" v-if="filesInfo.length === 0" :part="false" :empty-text="emptyFileTips"></empty-status>
                     <template v-else>
                         <div class="file-list">
                             <div
@@ -119,7 +119,7 @@
                 }
             },
             filesInfo () {
-                return this.node?.content?.result?.code || []
+                return typeof this.node?.content?.result?.code === 'object' ? this.node?.content?.result?.code : []
             },
             currentFile () {
                 return this.filesInfo[this.fileIndex] || {}

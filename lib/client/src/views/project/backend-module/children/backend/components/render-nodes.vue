@@ -1,5 +1,5 @@
 <template>
-    <section v-bkloading="{ isLoading }" class="render-node-wrapper" >
+    <section v-bkloading="{ isLoading }" class="render-nodes-wrapper" >
         <empty-status v-if="!storyList.length" type="custom" :part="false">
             <div>
                 <span>{{$t('请先添加需求描述')}}</span>
@@ -183,7 +183,7 @@
                         other.status = getStatusMap(node.status)
                         other.saas_builder = node?.saas_builder
                         if (other.id === 'MigrateProcessor') {
-                            other.url = node?.content?.result?.ide_url
+                            other.url = node?.content?.ide_url
                         }
                         if (other.id === 'PreviewProcessor') {
                             other.url = node?.content?.result?.app_url
@@ -478,7 +478,7 @@
 <style lang="postcss" scoped>
     .render-nodes-wrapper {
         width: 100%;
-        height: calc(100% - 148px);
+        height: calc(100% - 150px);
         .node {
             display: flex;
             align-items: center;

@@ -85,7 +85,7 @@
                         store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
                     }
                 } catch (err) {
-                    console.err(err)
+                    console.error(err)
                 } finally {
                     isLoading.value = false
                 }
