@@ -1,5 +1,5 @@
 <template>
-    <section v-bkloading="{ isLoading }" class="render-node-wrapper" >
+    <section v-bkloading="{ isLoading }" class="render-nodes-wrapper" >
         <empty-status v-if="!storyList.length" type="custom" :part="false">
             <div>
                 <span>{{$t('请先添加需求描述')}}</span>
@@ -65,6 +65,7 @@
                     {
                         id: 'MigrateProcessor',
                         name: '集成框架',
+                        iconTips: '查看项目源码',
                         status: '',
                         url: ''
                     },
@@ -161,7 +162,7 @@
                 const index = findTaskFromRenderData(builderItem.session_id)
                 if (index !== undefined) {
                     renderData.tasks[index] = task
-                    updateOthersData(finalNodes)
+                    updateOthersData(finalNodes, story.app_name)
                     graph.clearCells()
                     nextTick(()=> initNodes(renderData))
                 }
@@ -175,15 +176,16 @@
                 store.commit('saasBackend/setStateProperty', { key: 'saasBuilderList', value: saasBuilderList })    
             }
 
-            const updateOthersData = (finalNodes) => {
+            const updateOthersData = (finalNodes, appName) => {
                 const others = renderData.others
                 others.forEach(other => {
                     const node = finalNodes.find(node => node?.content?.type === other.id)
                     if (node) {
                         other.status = getStatusMap(node.status)
                         other.saas_builder = node?.saas_builder
+                        other.app_name = appName
                         if (other.id === 'MigrateProcessor') {
-                            other.url = node?.content?.result?.ide_url
+                            other.url = node?.content?.ide_url
                         }
                         if (other.id === 'PreviewProcessor') {
                             other.url = node?.content?.result?.app_url
@@ -201,14 +203,14 @@
                 // 找出当前running的节点， 批量删除
                 if (data?.tasks.length === 0) return
                 // 当前绘制的起始坐标
-                let x = 0
-                let y = 150
+                let x = -275
+                let y = 100
 
                 let maxX = 0
                 const finalTasks = []
 
                 data.tasks.forEach((task) => {
-                    x = 0
+                    x = -275
                     let maxTask = 0
 
                     // 遍历的时候，判断是正在running的那一条需求及其后面的， 重画， 否则直接return
@@ -454,9 +456,9 @@
                     const { task, finalNodes } = getNodeFromStory(story)
                     tasks.push(task)
                     if (story.session_id === runningStory?.session_id) {
-                        updateOthersData(finalNodes)
+                        updateOthersData(finalNodes, story.app_name)
                     } else if (!runningStory?.session_id && story.session_id === latestStory?.session_id) {
-                        updateOthersData(finalNodes)
+                        updateOthersData(finalNodes, story.app_name)
                     }
                 })
             }
@@ -478,7 +480,7 @@
 <style lang="postcss" scoped>
     .render-nodes-wrapper {
         width: 100%;
-        height: calc(100% - 148px);
+        height: calc(100% - 150px);
         .node {
             display: flex;
             align-items: center;

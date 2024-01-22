@@ -13,6 +13,7 @@
                 <span class="node-status" :class="node.status">
                     {{nodeStatusText}}
                 </span>
+                <bk-button @click="patchRetry" theme="primary" size="small">立即重试</bk-button>
             </div>
         </div>
         <div slot="content">
@@ -24,11 +25,12 @@
                     {{errorLabel}}
                 </div>
                 <div 
+                    v-if="node.type === 'node'"
                     class="tab-item"
                     :class="{'active-item': currentTab === 'files' }"
                     @click="currentTab = 'files'" >
                     {{fileLabel}}
-                    <span class="number-span">{{typeof filesInfo === 'object' ? filesInfo.length : 0}}</span>
+                    <span class="number-span">{{filesInfo.length}}</span>
                 </div>
             </div>
             <div class="info-container">
@@ -39,13 +41,21 @@
                             <span>{{errorsInfo.msg}}</span>
                         </div>
                         <div class="err-tb-div">
-                            {{errorsInfo.tb}}
+                            <template v-if="errorsInfo.tb.length">
+                                <div v-for="(line, index) in errorsInfo.tb" :key="index" style="margin-bottom: 4px;">
+                                    {{ line }}
+                                </div>
+                            </template>
+                            <template v-else>
+                                {{errorEmpty}}
+                            </template>
+                            
                         </div>
                     </div>
                     
                 </div>
                 <div v-show="currentTab === 'files'" class="files-container">
-                    <empty-status style="width: 100%;" v-if="!currentFile.code_content" :part="false" :empty-text="emptyFileTips"></empty-status>
+                    <empty-status style="width: 100%;" v-if="filesInfo.length === 0" :part="false" :empty-text="emptyFileTips"></empty-status>
                     <template v-else>
                         <div class="file-list">
                             <div
@@ -92,6 +102,7 @@
             return {
                 currentTab: 'files',
                 fileIndex: 0,
+                errorEmpty: window.i18n.t('暂无堆栈消息'),
                 errorLabel: window.i18n.t('错误信息'),
                 fileLabel: window.i18n.t('生成的文件'),
                 emptyFileTips: window.i18n.t('当前节点没有文件生成')
@@ -115,11 +126,11 @@
             errorsInfo () {
                 return {
                     msg: this.node?.property?.exception?.exn?.msg || window.i18n.t('暂无报错消息'),
-                    tb: this.node?.property?.exception?.tb || window.i18n.t('暂无堆栈消息')
+                    tb: this.node?.property?.exception?.tb?.split('\n') || []
                 }
             },
             filesInfo () {
-                return this.node?.content?.result?.code || []
+                return typeof this.node?.content?.result?.code === 'object' ? this.node?.content?.result?.code : []
             },
             currentFile () {
                 return this.filesInfo[this.fileIndex] || {}
@@ -137,6 +148,16 @@
         methods: {
             initData () {
                 this.currentTab = this.node?.status === 'fail' ? 'errors' : 'files'
+            },
+            async patchRetry () {
+                const data = {
+                    app_name: this.node?.app_name,
+                    uuid: this.node?.session_id || this.node?.saas_builder,
+                    retry: true
+                }
+                await this.$store.dispatch('saasBackend/execModuleStory', data)
+                this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
+                this.showSlider = false
             },
             handleCopyCode () {
                 const code = this.currentFile?.code_content || ''

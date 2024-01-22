@@ -20,7 +20,7 @@
         </span>
         <span class="node-icons" v-if="!isExecuting">
             <i
-                class="bk-drag-icon bk-drag-edit node-icon"
+                class="bk-drag-icon bk-drag-edit node-icon hover-icon"
                 v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
                 v-bk-tooltips="{
                     content: editontent,
@@ -29,7 +29,7 @@
                 @click.stop="showDialog"
             ></i>
             <i
-                class="bk-drag-icon bk-drag-refresh-line node-icon"
+                class="bk-drag-icon bk-drag-refresh-line node-icon hover-icon"
                 style="font-size: 14px;margin-left: 4px;"
                 v-if="node.status === 'fail'"
                 v-bk-tooltips="{
@@ -39,9 +39,14 @@
                 @click.stop="patchRetry"
             ></i>
             <i
+                v-if="node.url"
+                v-bk-tooltips="{
+                    content: node.iconTips,
+                    placements: ['top'],
+                    disabled: !node.iconTips
+                }"
                 class="bk-drag-icon bk-drag-jump-link node-icon"
                 style="font-size: 14px;margin-left: 4px;"
-                v-if="node.url"
                 @click.stop="toLink(node.url)"
             ></i>
         </span>
@@ -81,7 +86,7 @@
                 this.$store.commit('saasBackend/setStateProperty', { key: 'showUpdateDialog', value: true })
             },
             openSlider () {
-                if (this.node?.status === 'fail' || this.node?.status === 'success') {
+                if (this.node?.status === 'fail' || (this.node?.status === 'success' && this.node?.type === 'node')) {
                     this.$store.commit('saasBackend/setStateProperty', { key: 'currentNode', value: JSON.parse(JSON.stringify(this.node)) })
                     this.$store.commit('saasBackend/setStateProperty', { key: 'showSlider', value: true })
                 }    
@@ -114,8 +119,8 @@
     align-items: center;
     cursor: pointer;
     &:hover {
-        .node-icons {
-            display: flex;
+        .hover-icon {
+            display: inline;
         }
     }
 }
@@ -162,7 +167,7 @@
 }
 .node-name {
     /* flex: 1; */
-    width: 160px;
+    width: 156px;
     word-break: break-all;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -171,10 +176,13 @@
     overflow: hidden;
 }
 .node-icons {
-    display: none;
+    display: flex;
     align-items: center;
     justify-self: flex-end;
     margin-right: 16px;
+    .hover-icon {
+        display: none;
+    }
     .node-icon {
         font-size: 22px;
         margin-left: 2px;

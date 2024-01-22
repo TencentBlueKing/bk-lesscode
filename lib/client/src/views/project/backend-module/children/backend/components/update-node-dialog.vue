@@ -2,7 +2,7 @@
     <bk-dialog
         v-model="showUpdateDialog"
         ext-cls="update-node-dialog"
-        :width="360"
+        :width="620"
         :show-footer="false"
         :close-icon="false"
         @value-change="toggleDialog"
@@ -139,12 +139,12 @@
             display: none;
         }
         .bk-dialog-body {
-            padding: 16px;
+            padding: 24px;
         }
         .dialog-footer {
             width: 100%;
             display: flex;
-            margin-top: 10px;
+            margin-top: 12px;
         }
     }
 </style>
