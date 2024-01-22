@@ -13,7 +13,11 @@
                 <span class="node-status" :class="node.status">
                     {{nodeStatusText}}
                 </span>
-                <bk-button @click="patchRetry" theme="primary" size="small">立即重试</bk-button>
+                <bk-button v-if="node.status === 'fail' && node.id !== 'MigrateProcessor'" @click="patchRetry" theme="primary" size="small">{{$t('立即重试')}}</bk-button>
+                <p v-if="node.status === 'fail' && node.id === 'MigrateProcessor' && node.url" class="migrate-error-tips">
+                    <span>{{$t('您可以根据错误信息修改源码后重试该步骤，')}}</span>
+                    <span class="link-text" @click="toLink(node.url)">{{$t('查看应用源码')}}</span>
+                </p>
             </div>
         </div>
         <div slot="content">
@@ -49,10 +53,8 @@
                             <template v-else>
                                 {{errorEmpty}}
                             </template>
-                            
                         </div>
-                    </div>
-                    
+                    </div>             
                 </div>
                 <div v-show="currentTab === 'files'" class="files-container">
                     <empty-status style="width: 100%;" v-if="filesInfo.length === 0" :part="false" :empty-text="emptyFileTips"></empty-status>
@@ -104,8 +106,8 @@
                 fileIndex: 0,
                 errorEmpty: window.i18n.t('暂无堆栈消息'),
                 errorLabel: window.i18n.t('错误信息'),
-                fileLabel: window.i18n.t('生成的文件'),
-                emptyFileTips: window.i18n.t('当前节点没有文件生成')
+                fileLabel: window.i18n.t('生成的代码片段'),
+                emptyFileTips: window.i18n.t('当前节点没有代码生成')
             }
         },
         computed: {
@@ -158,6 +160,9 @@
                 await this.$store.dispatch('saasBackend/execModuleStory', data)
                 this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
                 this.showSlider = false
+            },
+            toLink (url) {
+                window.open(url, '_blank')
             },
             handleCopyCode () {
                 const code = this.currentFile?.code_content || ''
@@ -239,7 +244,7 @@
         }
     }
     .info-container {
-        height: calc(100vh - 136px);
+        /* height: calc(100vh - 136px); */
         position: relative;
         .errors-container {
             height: calc(100% - 16px);
