@@ -17,7 +17,7 @@
                     class="send-input"
                     type="textarea"
                     row="2"
-                    :placeholder="$t('通过输入需求描述，自动生成开发框架')"
+                    :placeholder="$t('请输入应用需求，系统将自动生成应用框架及需求代码，并部署至开发调试环境')"
                     :native-attributes="{ autofocus: 'autofocus' }"
                     v-model="userInput"
                 ></bk-input>

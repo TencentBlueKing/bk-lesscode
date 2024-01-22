@@ -13,6 +13,7 @@
                 <span class="node-status" :class="node.status">
                     {{nodeStatusText}}
                 </span>
+                <bk-button @click="patchRetry" theme="primary" size="small">立即重试</bk-button>
             </div>
         </div>
         <div slot="content">
@@ -24,6 +25,7 @@
                     {{errorLabel}}
                 </div>
                 <div 
+                    v-if="node.type === 'node'"
                     class="tab-item"
                     :class="{'active-item': currentTab === 'files' }"
                     @click="currentTab = 'files'" >
@@ -39,7 +41,15 @@
                             <span>{{errorsInfo.msg}}</span>
                         </div>
                         <div class="err-tb-div">
-                            {{errorsInfo.tb}}
+                            <template v-if="errorsInfo.tb.length">
+                                <div v-for="(line, index) in errorsInfo.tb" :key="index" style="margin-bottom: 4px;">
+                                    {{ line }}
+                                </div>
+                            </template>
+                            <template v-else>
+                                {{errorEmpty}}
+                            </template>
+                            
                         </div>
                     </div>
                     
@@ -92,6 +102,7 @@
             return {
                 currentTab: 'files',
                 fileIndex: 0,
+                errorEmpty: window.i18n.t('暂无堆栈消息'),
                 errorLabel: window.i18n.t('错误信息'),
                 fileLabel: window.i18n.t('生成的文件'),
                 emptyFileTips: window.i18n.t('当前节点没有文件生成')
@@ -115,7 +126,7 @@
             errorsInfo () {
                 return {
                     msg: this.node?.property?.exception?.exn?.msg || window.i18n.t('暂无报错消息'),
-                    tb: this.node?.property?.exception?.tb || window.i18n.t('暂无堆栈消息')
+                    tb: this.node?.property?.exception?.tb?.split('\n') || []
                 }
             },
             filesInfo () {
@@ -137,6 +148,16 @@
         methods: {
             initData () {
                 this.currentTab = this.node?.status === 'fail' ? 'errors' : 'files'
+            },
+            async patchRetry () {
+                const data = {
+                    app_name: this.node?.app_name,
+                    uuid: this.node?.session_id || this.node?.saas_builder,
+                    retry: true
+                }
+                await this.$store.dispatch('saasBackend/execModuleStory', data)
+                this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
+                this.showSlider = false
             },
             handleCopyCode () {
                 const code = this.currentFile?.code_content || ''

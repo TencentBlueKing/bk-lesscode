@@ -12,18 +12,19 @@
                 <i class="bk-drag-icon bk-drag-custom-comp-default"></i>
                 <span>{{item.moduleCode}}</span>
             </div>
-            <div class="flex-item add-module-row" v-if="editing || renderList.length">
-                <bk-form :label-width="0" v-if="editing" :model="formModel" :rules="formRules" ref="moduleForm" style="width: 100%;">
+            <div class="add-module-row" v-if="editing || renderList.length">
+                <bk-form class="add-module-form" :label-width="0" v-if="editing" :model="formModel" :rules="formRules" ref="moduleForm" style="width: 100%;">
                     <bk-form-item property="moduleCode">
                         <bk-input
                             v-model="formModel.moduleCode"
-                            :placeholder="$t('请输入模块名称')"
+                            :placeholder="$t('请输入模块名称，按enter保存')"
                             ref="moduleInput"
                             @blur="resetInput"
                             @enter="createModule" />
                     </bk-form-item>
+                    <p>tips：{{moduleCodeTips}}</p>
                 </bk-form>
-                <div v-else-if="renderList.length" @click="inputModule">
+                <div class="add-module-entry flex-item" v-else-if="renderList.length" @click="inputModule">
                     <i class="bk-drag-icon bk-drag-plus-circle"></i>
                     <span>{{$t('添加模块')}}</span>
                 </div>
@@ -52,6 +53,7 @@
             }
         },
         setup (props) {
+            const moduleCodeTips = window.i18n.t('小写字母开头，只能包含小写字母、数字、中划线, 长度为1-16个字符')
             const currentInstance = getCurrentInstance()
             const store = useStore()
             const route = useRoute()
@@ -71,7 +73,7 @@
                 moduleCode: [
                     {
                         regex: /^[a-z][a-z0-9-]{0,15}$/,
-                        message: window.i18n.t('小写字母开头，只能包含小写字母、数字、中划线, 长度为1-16个字符'),
+                        message: moduleCodeTips,
                         trigger: 'change'
                     }
                 ]
@@ -163,6 +165,7 @@
             })
             return {
                 isLoading,
+                moduleCodeTips,
                 renderList,
                 currentModule,
                 emptyType,
@@ -191,13 +194,13 @@
                 align-items: center;
                 cursor: pointer;
                 padding: 0 16px;
-                height: 36px;
                 font-size: 12px;
                 span {
                     margin-left: 12px;
                 }
             }
             .module-item {
+                height: 36px;
                 color: #63656E;
                 .i {
                     color: #979BA5;
@@ -211,6 +214,7 @@
                 }
             }
             .add-module-row {
+                height: auto;
                 color: #3A84FF;
                 i {
                     font-size: 14px;
@@ -218,6 +222,21 @@
                 span {
                     margin-left: 10px;
                 }
+            }
+            .add-module-entry {
+                height: 36px;
+            }
+            .add-module-form {
+                margin: 4px 0;
+                padding: 0 16px;
+                font-size: 12px;
+                p {
+                    margin: 2px;
+                    color: #979ba5;
+                }
+                /* p {
+                    margin-left: 2px 12px;
+                } */
             }
         }
     }
