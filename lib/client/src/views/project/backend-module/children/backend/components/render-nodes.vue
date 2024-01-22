@@ -5,6 +5,11 @@
                 <span>{{$t('请先添加需求描述')}}</span>
             </div>
         </empty-status>
+        <div class="refresh-entry" @click="refreshCanvas">
+            <i class="bk-drag-icon bk-drag-reflash-line"></i>
+            <span>{{$t('刷新画布')}}</span>
+        </div>
+        <canvas-tools :graph-zoom="graphZoom" :graph-zoom-to="graphZoomTo" />
         <section class="nodes-container">
         </section>
         <render-side-slider />
@@ -23,6 +28,7 @@
     import RenderChildNode from './render-child-node.vue'
     import RenderSideSlider from './render-sideslider'
     import UpdateNodeDialog from './update-node-dialog'
+    import CanvasTools from './canvas-tools'
 
     register({
         shape: 'parent-node',
@@ -41,7 +47,8 @@
     export default defineComponent({
         components: {
             RenderSideSlider,
-            UpdateNodeDialog
+            UpdateNodeDialog,
+            CanvasTools
         },
         props: {
             moduleId: {
@@ -65,7 +72,7 @@
                     {
                         id: 'MigrateProcessor',
                         name: '集成框架',
-                        iconTips: '查看项目源码',
+                        iconTips: '查看应用源码',
                         status: '',
                         url: ''
                     },
@@ -96,8 +103,7 @@
             watch(
                 moduleId,
                 () => {
-                    socket && socket.close()
-                    fetchData()
+                    refreshCanvas()
                 }
             )
 
@@ -106,9 +112,7 @@
                 (val) => {
                     if (val) {
                         console.log('watch needupdate', val)
-                        socket && socket.close()
-                        fetchData()
-                        store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: false })
+                        refreshCanvas()
                     }
                 }
             )
@@ -129,6 +133,16 @@
                 graph = new Graph(graphConfig)
             }
 
+            // 放大缩小
+            const graphZoom = (val) => {
+                graph.zoom(val)
+            }
+
+            // 自适应
+            const graphZoomTo = (val) => {
+                graph.zoomTo(val)
+            }
+
             // 找到当前builder在图中的index
             const findTaskFromRenderData = (id) => {
                 const tasks = renderData.tasks
@@ -144,6 +158,13 @@
             const debounceUpdateNodes = debounce((buildItem) => {
                 updateNodes(buildItem)
             }, 1000)
+
+            // 刷新流程画布
+            const refreshCanvas = () => {
+                socket && socket.close()
+                fetchData()
+                store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: false })
+            }
 
             const updateNodes = (wsBuilderItem) => {
                 const builderItem = JSON.parse(JSON.stringify(wsBuilderItem))
@@ -471,7 +492,10 @@
             return {
                 needUpdate,
                 isLoading,
-                storyList
+                storyList,
+                refreshCanvas,
+                graphZoom,
+                graphZoomTo
             }
         }
     })
@@ -479,8 +503,18 @@
 
 <style lang="postcss" scoped>
     .render-nodes-wrapper {
+        position: relative;
         width: 100%;
         height: calc(100% - 150px);
+        .refresh-entry {
+            z-index: 10;
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #3A84FF;
+        }
         .node {
             display: flex;
             align-items: center;

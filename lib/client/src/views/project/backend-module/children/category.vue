@@ -234,9 +234,6 @@
                     margin: 2px;
                     color: #979ba5;
                 }
-                /* p {
-                    margin-left: 2px 12px;
-                } */
             }
         }
     }

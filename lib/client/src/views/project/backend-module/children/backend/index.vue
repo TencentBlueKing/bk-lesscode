@@ -14,16 +14,46 @@
     import RenderHeader from './components/render-header.vue'
     import RenderNodes from './components/render-nodes.vue'
 
+    // 兼容各浏览器的hidden属性
+    let hidden, visibilityChange
+    if (typeof document.hidden !== "undefined") { 
+        hidden = "hidden"
+        visibilityChange = "visibilitychange"
+    } else if (typeof document.msHidden !== "undefined") { 
+        hidden = "msHidden"
+        visibilityChange = "msvisibilitychange"
+    } else if (typeof document.webkitHidden !== "undefined") { 
+        hidden = "webkitHidden"
+        visibilityChange = "webkitvisibilitychange"; 
+    }
+
     export default {
         components: {
             RenderHeader,
             RenderNodes
         },
-
         props: {
             currentModule: {
                 type: Object,
                 required: true
+            }
+        },
+        mounted () {
+            document.addEventListener(visibilityChange, this.handleVisibilityChange)
+        },
+        beforeDestroyed () {
+            document.removeEventListener(visibilityChange, this.handleVisibilityChange)
+        },
+        methods: {
+            handleVisibilityChange () {
+                if (document[hidden]) {
+                    console.log("页面不可见")
+                } else {
+                    console.log("页面可见")
+                    this.$nextTick(() => {
+                        this.$store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: true })
+                    })
+                }
             }
         }
     }
