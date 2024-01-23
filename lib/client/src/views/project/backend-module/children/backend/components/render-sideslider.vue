@@ -208,6 +208,14 @@
                 background: #FFDDDD;
             }
         }
+        .migrate-error-tips {
+            font-size: 12px;
+            color: #979BA5;
+            .link-text {
+                cursor: pointer;
+                color: #3A84FF;
+            }
+        }
     }
     .operation-header {
         height: 60px;
