@@ -60,7 +60,7 @@
         data () {
             return {
                 finalNodeTypes,
-                editontent: window.i18n.t('编辑'),
+                editontent: window.i18n.t('编辑当前步骤需求任务描述'),
                 node: {
                     id: '',
                     status: '',

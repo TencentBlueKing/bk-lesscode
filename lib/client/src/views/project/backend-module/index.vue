@@ -19,7 +19,8 @@
     import ModuleCategory from './children/category.vue'
     import ModuleContent from './children/backend/index.vue'
 
-    import { defineComponent, ref } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onBeforeMount } from '@vue/composition-api'
+    import { useStore } from '@/store'
     
     export default defineComponent({
         components: {
@@ -28,13 +29,25 @@
             ModuleContent
         },
         setup () {
-            const isLoading = ref(false)
+            const store = useStore()
 
+            const isLoading = ref(false)
             const currentModule = ref({})
+
+            const projectDetail = computed(() => {
+                return store.getters['project/currentProject']
+            })
 
             const handleModuleChange = (moduleItem) => {
                 currentModule.value = moduleItem
             }
+
+            onBeforeMount(() => {
+                store.dispatch('saasBackend/checkSaasPerm', {
+                    appCode: projectDetail?.value?.appCode,
+                    createUser: projectDetail?.value?.createUser
+                })
+            })
 
             return {
                 isLoading,
