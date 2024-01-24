@@ -44,7 +44,7 @@
                             <i class="bk-drag-icon bk-drag-exclamation-fill"></i>
                             <span>{{errorsInfo.msg}}</span>
                         </div>
-                        <div class="err-tb-div">
+                        <div class="err-tb-div" v-if="node.id === 'MigrateProcessor'">
                             <template v-if="errorsInfo.tb.length">
                                 <div v-for="(line, index) in errorsInfo.tb" :key="index" style="margin-bottom: 4px;">
                                     {{ line }}
@@ -261,13 +261,12 @@
                 background: #FFEDED;
                 border: 1px solid #FFD2D2;
                 border-radius: 2px;
-                padding: 8px 16px 12px;
+                padding: 10px 16px;
                 color: #63656E;
                 overflow-y: auto;
                 .err-msg-div {
                     display: flex;
                     align-items: center;
-                    margin-bottom: 10px;
                     line-height: 22px;
                     i {
                         color: #EA3636;
@@ -277,6 +276,7 @@
                 .err-tb-div {
                     background-color: #FFF;
                     border-radius: 2px;
+                    margin-top: 10px;
                     padding: 16px 24px;
                 }
             }

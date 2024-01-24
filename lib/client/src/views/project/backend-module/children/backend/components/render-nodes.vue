@@ -9,7 +9,12 @@
             <i class="bk-drag-icon bk-drag-reflash-line"></i>
             <span>{{$t('刷新画布')}}</span>
         </div>
-        <canvas-tools :graph-zoom="graphZoom" :graph-zoom-to="graphZoomTo" />
+        <canvas-tools
+            :graph-zoom="graphZoom"
+            :graph-zoom-to="graphZoomTo"
+            :graph-fit="graphFit"
+            :graph-align="graphAlign"
+        />
         <section class="nodes-container">
         </section>
         <render-side-slider />
@@ -103,6 +108,8 @@
             watch(
                 moduleId,
                 () => {
+                    graphZoomTo(1)
+                    graphAlign()
                     refreshCanvas()
                 }
             )
@@ -138,11 +145,21 @@
                 graph.zoom(val)
             }
 
-            // 自适应
+            // 恢复默认大小
             const graphZoomTo = (val) => {
                 graph.zoomTo(val)
             }
 
+            // 自适应
+            const graphFit = () => {
+                graph.zoomToFit({ maxScale: 1 })
+            }
+
+            // 左上角对齐
+            const graphAlign = () => {
+                graph.positionPoint({ x: 0, y: 0 }, 10, 0)
+            }
+            
             // 找到当前builder在图中的index
             const findTaskFromRenderData = (id) => {
                 const tasks = renderData.tasks
@@ -377,7 +394,8 @@
                     saasBuilderList = await Promise.all(storyList.value.map((story) => store.dispatch('saasBackend/getSaasBuilderDetail', story.uuid)))
                     store.commit('saasBackend/setStateProperty', { key: 'saasBuilderList', value: saasBuilderList })
                     storyList.value = storyList.value.map(item => {
-                        const builderItem = JSON.parse(JSON.stringify(saasBuilderList.find(builder => builder.session_id === item.uuid))) || {}
+                        const preBuilderItem = saasBuilderList.find(builder => builder.session_id === item.uuid) || {}
+                        const builderItem = JSON.parse(JSON.stringify(preBuilderItem)) || {}
                         return {
                             ...builderItem,
                             id: builderItem.session_id,
@@ -495,7 +513,9 @@
                 storyList,
                 refreshCanvas,
                 graphZoom,
-                graphZoomTo
+                graphZoomTo,
+                graphFit,
+                graphAlign
             }
         }
     })

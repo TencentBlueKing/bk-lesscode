@@ -23,6 +23,9 @@
                     :native-attributes="{ autofocus: 'autofocus' }"
                     v-model="inputStr"
                 ></bk-input>
+                <p class="info-tips">
+                    {{$t('tips: 修改该需求任务后，点击“保存并执行”，系统将从该步骤开始重新执行后续所有流程')}}
+                </p>
             </section>
         </section>
         <section class="dialog-footer">
@@ -175,6 +178,10 @@
                 line-height: 16px;
                 }
             }
+        }
+        .info-tips {
+            font-size: 12px;
+            color: #979BA5;
         }
     }
 </style>
