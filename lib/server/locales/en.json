@@ -111,6 +111,7 @@
   "测试3": "Test 3",
   "测试4": "Test 4",
   "您没有执行该操作的权限，请联系应用ID为【{{0}}】开发负责人【{{1}}】在蓝鲸开发者中心添加开发者权限": "You do not have the permission to perform this operation. Please contact the developer【{{1}}】in charge of the APP with the ID【{{0}}】to add the developer permissions in the BlueKing Developer Center.",
+  "您没有该应用下的模块新建及部署权限，请联系应用ID为【{{0}}】开发负责人【{{1}}】在蓝鲸开发者中心添加开发者权限": "You do not have the permission to create or deploy module in this APP，请联系应用ID为【{{0}}】开发负责人【{{1}}】在蓝鲸开发者中心添加开发者权限",
   "版本号不能为空": "Version cannot be empty",
   "空白布局": "Blank Navigation",
   "侧边导航布局": "Side Navigation",

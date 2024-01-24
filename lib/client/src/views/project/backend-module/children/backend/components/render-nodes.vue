@@ -5,17 +5,19 @@
                 <span>{{$t('请先添加需求描述')}}</span>
             </div>
         </empty-status>
-        <div class="refresh-entry" @click="refreshCanvas">
-            <i class="bk-drag-icon bk-drag-reflash-line"></i>
-            <span>{{$t('刷新画布')}}</span>
-        </div>
-        <canvas-tools
-            :graph-zoom="graphZoom"
-            :graph-zoom-to="graphZoomTo"
-            :graph-fit="graphFit"
-            :graph-align="graphAlign"
-        />
-        <section class="nodes-container">
+        <template v-else>
+            <div class="refresh-entry" @click="refreshCanvas">
+                <i class="bk-drag-icon bk-drag-reflash-line"></i>
+                <span>{{$t('刷新画布')}}</span>
+            </div>
+            <canvas-tools
+                :graph-zoom="graphZoom"
+                :graph-zoom-to="graphZoomTo"
+                :graph-fit="graphFit"
+                :graph-align="graphAlign"
+            /> 
+        </template>
+        <section v-show="storyList.length" class="nodes-container" style="background-color: #F5F7FA;">
         </section>
         <render-side-slider />
         <update-node-dialog />
@@ -159,7 +161,7 @@
             const graphAlign = () => {
                 graph.positionPoint({ x: 0, y: 0 }, 10, 0)
             }
-            
+
             // 找到当前builder在图中的index
             const findTaskFromRenderData = (id) => {
                 const tasks = renderData.tasks

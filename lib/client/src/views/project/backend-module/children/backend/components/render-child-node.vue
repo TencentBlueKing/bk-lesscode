@@ -37,35 +37,40 @@
     }
 </script>
 <style lang="postcss" scoped>
-.child-node {
-    height: 100%;
-    width: 100%;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 #1919290d;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-}
-.node-name {
-    display: inline-block;
-    font-size: 12px;
-    width: 150px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-.tail-icon {
-    font-size: 14px;
-    margin-right: 17px;
-    &.icon-close-circle {
-        color: #EA3636;
+    .child-node {
+        height: 100%;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 4px 0 #1919290d;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        padding: 0 16px 0 14px;
+        color: #63656E;
     }
-    &.icon-check-circle {
-        color: #1CAB88;
+    .bk-drag-yuanma {
+        font-size: 16px;
     }
-    &.loading-icon {
-        fill: #3a84ff;
-        animation: icon-loading 1.5s linear infinite;
+    .node-name {
+        display: inline-block;
+        font-size: 12px;
+        width: 150px;
+        margin-left: 12px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
-}
+    .tail-icon {
+        font-size: 14px;
+        &.icon-close-circle {
+            color: #EA3636;
+        }
+        &.icon-check-circle {
+            color: #1CAB88;
+        }
+        &.loading-icon {
+            fill: #3a84ff;
+            animation: icon-loading 1.5s linear infinite;
+        }
+    }
 </style>
