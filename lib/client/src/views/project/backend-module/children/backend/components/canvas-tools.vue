@@ -1,41 +1,17 @@
 <template>
     <div class="canvas-tools">
-        <li @click="zoom(0.1)">
-            <i class="bk-drag-icon bk-drag-plus-circle"
+        <li v-for="tool in toolList" :key="tool.icon" @click="tool.func">
+            <i :class="tool.icon"
                 v-bk-tooltips="{
-                    content: '放大',
+                    content: tool.tips,
                     placements: ['left']
                 }">
             </i>
         </li>
-        <li @click="zoom(-0.1)">
-            <i class="bk-drag-icon bk-drag-minus-circle"
+        <li @click="screenItem.func">
+            <i :class="screenItem.icon"
                 v-bk-tooltips="{
-                    content: '缩小',
-                    placements: ['left']
-                }">
-            </i>
-        </li>
-        <!-- <li @click="zoomTo(1)">
-            <i class="bk-drag-icon bk-drag-undo"
-                v-bk-tooltips="{
-                    content: '恢复默认大小',
-                    placements: ['left']
-                }">
-            </i>
-        </li> -->
-        <li @click="fit">
-            <i class="bk-drag-icon bk-drag-zuoyouchengman"
-                v-bk-tooltips="{
-                    content: '自适应展示所有节点',
-                    placements: ['left']
-                }">
-            </i>
-        </li>
-        <li @click="align">
-            <i class="bk-drag-icon bk-drag-undo"
-                v-bk-tooltips="{
-                    content: '重置视图',
+                    content: screenItem.tips,
                     placements: ['left']
                 }">
             </i>
@@ -44,7 +20,9 @@
 </template>
 
 <script>
-    import { ref, defineComponent } from '@vue/composition-api'
+    import screenfull from 'screenfull'
+    import { ref, defineComponent, computed, onMounted, onBeforeUnmount } from '@vue/composition-api'
+    
     export default defineComponent({
         props: {
             graphZoom: {
@@ -65,30 +43,86 @@
             }
         },
         setup (props) {
-            const zoom = function (val = 0.1) {
-                if (val) {
-                    props.graphZoom(val)
+            const toolList = [
+                {
+                    icon: 'bk-drag-icon bk-drag-plus-circle',
+                    tips: '放大',
+                    func: () => {
+                        props.graphZoom(0.1)
+                    }
+                },
+                {
+                    icon: 'bk-drag-icon bk-drag-minus-circle',
+                    tips: '缩小',
+                    func: () => {
+                        props.graphZoom(-0.1)
+                    }
+                },
+                {
+                    icon: 'bk-drag-icon bk-drag-zuoyouchengman',
+                    tips: '自适应展示所有节点',
+                    func: props.graphFit
+                },
+                {
+                    icon: 'bk-drag-icon bk-drag-undo',
+                    tips: '重置视图',
+                    func: () => {
+                        props.graphZoomTo(1)
+                        props.graphAlign()
+                    }
                 }
-            }
+            ]
 
-            const zoomTo = function (val = 1) {
-                props.graphZoomTo(val)
-            }
+            const screenItem = ref({
+                icon: 'bk-drag-icon bk-drag-filliscreen-line',
+                tips: '全屏',
+                func: () => {
+                    handleScreenfull()
+                }
+            })
 
-            const fit = function () {
-                props.graphFit()
-            }
+            onMounted(() => {
+                if (screenfull.isEnabled) {
+                    screenfull.on('change', () => {
+                        screenItem.value = screenfull.isFullscreen ?
+                        {
+                            icon: 'bk-drag-icon bk-drag-un-full-screen-2',
+                            tips: '取消全屏',
+                            func: () => {
+                                screenfull.exit()
+                            }
+                        } : {
+                            icon: 'bk-drag-icon bk-drag-filliscreen-line',
+                            tips: '全屏',
+                            func: () => {
+                                handleScreenfull()
+                            }
+                        }
+                    })
+                }
+            })
 
-            const align = function () {
-                props.graphZoomTo(1)
-                props.graphAlign()
+            onBeforeUnmount(() => {
+                if (screenfull.isEnabled) {
+                    screenfull.off('change', () => {})
+                }
+            })
+            
+            const handleScreenfull  = function () {
+                const el = document.querySelector('.render-nodes-wrapper')
+                if (!screenfull.isEnabled) {
+                    this.$bkMessage({
+                        message: this.$t('浏览器不支持全屏'),
+                        theme: 'error'
+                    })
+                    return false
+                }
+                screenfull.request(el)
             }
             
             return {
-                zoom,
-                zoomTo,
-                fit,
-                align
+                toolList,
+                screenItem
             }
         }
     })
