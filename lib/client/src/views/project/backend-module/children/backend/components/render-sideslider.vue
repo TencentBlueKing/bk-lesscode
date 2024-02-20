@@ -149,6 +149,7 @@
         },
         methods: {
             initData () {
+                this.fileIndex = 0
                 this.currentTab = this.node?.status === 'fail' ? 'errors' : 'files'
             },
             async patchRetry () {

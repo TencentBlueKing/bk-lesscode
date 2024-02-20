@@ -35,9 +35,10 @@
 </template>
 
 <script>
-    import { ref, computed, watch } from '@vue/composition-api'
+    import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api'
     import { useStore } from '@/store'
     import { uuid } from 'shared/util'
+    import useResourceLock from '@/common/use-resource-lock'
 
     export default {
         props: {
@@ -54,9 +55,76 @@
             const textHeight = ref(54)
             const isLoading = ref(false)
 
+            const {
+                check: canvasLockCheck,
+                notify: canvasLockNotify,
+                update: canvaseLockUpdate,
+                release: canvasLockRelase,
+                destroy: canvasLockDestroy
+            } = useResourceLock()
+
+            const isLocked = ref(false)
+
+            let lockInfo = {}
+
+            const lockParams = computed(() => {
+                return {
+                    tableName: 'saas-backend',
+                    resourceId: props.currentModule?.id
+                }
+            })
+
             const isExecuting = computed(() => {
                 return store.getters['saasBackend/getIsExecuting']
             })
+
+            watch(
+                () => props.currentModule,
+                (val, oldVal) => {
+                    if (oldVal?.id) {
+                        canvasLockRelase({
+                            tableName: 'saas-backend',
+                            resourceId: oldVal?.id 
+                        })
+                    }
+                    handleLock()
+                }
+            )
+
+            onMounted(() => {
+                handleLock()
+            })
+
+            window.addEventListener('unload', handleReleaseLock)
+
+            // 组件卸载释放页面的编辑权
+            onBeforeUnmount(() => {
+                handleReleaseLock()
+            })
+
+            const handleReleaseLock = () => {
+                canvasLockRelase(lockParams.value)
+            }
+
+            const handleLock = () => {
+                canvasLockDestroy()
+                // 检测页面的可编辑状态
+                canvasLockCheck(lockParams.value)
+                    .then(data => {
+                        if (data.isLock) {
+                            lockInfo = data
+                            isLocked.value = true
+                            canvasLockNotify({
+                                type: 'lock',
+                                ...data
+                            })
+                        } else {
+                            isLocked.value = false
+                            canvaseLockUpdate(lockParams.value)
+                        }
+                    }
+                )
+            }
 
             const handleChangeTextHeight = () => {
                 const lines = userInput.value.split(/\r?\n/)
@@ -73,9 +141,9 @@
                 try {
                     const params = {
                         moduleId: props.currentModule?.id,
-                        appCode: props.currentModule?.appCode,
-                        moduleCode: props.currentModule?.moduleCode,
-                        app_name: `${props.currentModule?.appCode}_${props.currentModule?.moduleCode}`.replaceAll('-', '_'),
+                        appCode: props.currentModule?.appCode?.replaceAll('-', '_'),
+                        moduleCode: props.currentModule?.moduleCode?.replaceAll('-', '_'),
+                        app_name: props.currentModule?.moduleCode?.replaceAll('-', '_'),
                         story: userInput.value,
                         uuid: `${props.currentModule?.moduleCode}_${uuid(8)}`
                     }
@@ -101,6 +169,7 @@
                 textHeight,
                 isLoading,
                 isExecuting,
+                isLocked,
                 handleGenerate
             }
         }

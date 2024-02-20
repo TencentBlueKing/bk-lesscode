@@ -29,7 +29,7 @@
             </section>
         </section>
         <section class="dialog-footer">
-            <bk-button theme="primary" :disabled="isExecuting" @click="handleEdit">{{ confirmMessage }}</bk-button>
+            <bk-button theme="primary" :disabled="!inputStr || isExecuting" @click="handleEdit">{{ confirmMessage }}</bk-button>
             <bk-button @click="showUpdateDialog = false">{{ cancelMessage }}</bk-button>
         </section>
     </bk-dialog>
