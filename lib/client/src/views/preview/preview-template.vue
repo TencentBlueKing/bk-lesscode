@@ -23,7 +23,6 @@
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/reset.css'
   
-    import '@/css/animate.min.css'
     import mobileHeader from '@/components/render/mobile/common/mobile-header/mobile-header'
     import { i18nConfig } from '@/locales/i18n.js'
     import { bundless } from '@blueking/bundless'
