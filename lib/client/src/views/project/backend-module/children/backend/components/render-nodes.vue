@@ -58,6 +58,9 @@
             CanvasTools
         },
         props: {
+            projectId: {
+                required: true
+            },
             moduleId: {
                 type: Number,
                 default: 0
@@ -228,7 +231,9 @@
                             other.url = node?.content?.ide_url
                         }
                         if (other.id === 'PreviewProcessor') {
-                            other.url = node?.content?.result?.app_url
+                            if (node?.content?.result?.app_url || node?.content?.result?.schema_url) {
+                                other.url = `/preview-api/project/${props.projectId}?appName=${appName}`
+                            }
                         }
                         other.property = node.property
                         other.content = node.content
