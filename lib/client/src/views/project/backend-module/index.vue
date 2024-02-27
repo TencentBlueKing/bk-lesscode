@@ -60,6 +60,6 @@
 
 <style lang="postcss" scoped>
     .saas-backend-manage {
-        height: calc(100vh - 104px);
+        height: 100%;
     }
 </style>

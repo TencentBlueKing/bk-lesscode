@@ -172,7 +172,7 @@
         }
     }
     .lesscode-layout-empty {
-        min-height: calc(100vh - 160px);
+        min-height: calc(100vh - 180px);
         .container-content{
             padding: 20px;
         }

@@ -401,8 +401,7 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 52px);
-        margin-top: 52px;
+        height: 100%;
 
         .project-right-content {
             padding-left: 0px;
@@ -447,7 +446,7 @@
             .aside {
                 position: absolute;
                 z-index: 999;
-                height: calc(100% - 52px);
+                height: 100%;
             }
             .project-right-content {
                 padding-left: 60px;

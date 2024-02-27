@@ -34,6 +34,6 @@
 
 <style lang="postcss" scoped>
     .component-manage-all {
-        height: calc(100vh - 104px);
+        height: 100%;
     }
 </style>

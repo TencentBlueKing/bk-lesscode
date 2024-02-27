@@ -19,12 +19,15 @@
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
+            <notice-component :api-url="noticeUrl" @show-alert-change="showAlertChange" />
             <app-header></app-header>
-            <not-exist v-if="isNotExist" :message="notExistMsg" />
-            <template v-else>
-                <apply-page v-if="isNotPermission" :auth-result="authResult" />
-                <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
-            </template>
+            <div class="page-body" :style="{ height: bodyHeight }" >
+                <not-exist v-if="isNotExist" :message="notExistMsg" />
+                <template v-else>
+                    <apply-page v-if="isNotPermission" :auth-result="authResult" />
+                    <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
+                </template>
+            </div>   
         </div>
     </section>
 </template>
@@ -33,14 +36,18 @@
 
     import { bus } from './common/bus'
     import ApplyPage from './components/apply-permission/apply-page.vue'
+    import NoticeComponent from '@blueking/notice-component-vue2'
+    import '@blueking/notice-component-vue2/dist/style.css'
 
     export default {
         name: 'app',
         components: {
-            ApplyPage
+            ApplyPage,
+            NoticeComponent
         },
         data () {
             return {
+                noticeUrl: `${process.env.BK_AJAX_URL_PREFIX}/notice-center/getNoticeList`,
                 systemCls: 'mac',
                 position: 'middle',
                 navItems: [
@@ -74,7 +81,7 @@
         },
 
         computed: {
-            ...mapGetters(['mainContentLoading']),
+            ...mapGetters(['mainContentLoading', 'bodyHeight']),
             emptyPage () {
                 return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile'
             },
@@ -132,6 +139,10 @@
             notExistHold (msg) {
                 this.isNotExist = true
                 this.notExistMsg = msg
+            },
+
+            showAlertChange (isShow) {
+                this.$store.commit('updateShowAlertNotice', isShow)
             }
         }
     }
@@ -155,6 +166,10 @@
         @mixin scroller;
         font-size: 14px;
         color: #63656e;
+        .page-body {
+            position: relative;
+            overflow-y: hidden;
+        }
     }
 
     .mac {
