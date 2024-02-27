@@ -82,6 +82,7 @@
     "@blueking/cli-service-webpack": "0.0.0-beta.81",
     "@blueking/crypto-js-sdk": "^0.0.5",
     "@blueking/magicbox-header": "~1.1.49",
+    "@blueking/notice-component-vue2": "2.0.2",
     "@blueking/user-selector": "^1.0.7",
     "@icon-cool/bk-icon-vue-drag-vis": "^0.2.12",
     "@toast-ui/editor": "3.1.8",

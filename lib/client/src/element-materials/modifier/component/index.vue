@@ -189,6 +189,8 @@
     @import "@/css/variable";
 
     .material-modifier {
+        height: calc(100% - 42px);
+        position: relative;
         .modifier-tab-container {
             height: 49px;
             background: #fff;
@@ -208,7 +210,7 @@
         }
         .material-modifier-container {
             @mixin scroller;
-            height: calc(100vh - 104px - 42px - 84px);
+            height: calc(100% - 50px - 48px);
             padding-bottom: 20px;
             overflow-y: auto;
             overflow-x: hidden;
