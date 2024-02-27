@@ -4,13 +4,12 @@ $topHeight: 52px;
 $headerHeight: 64px;
 .help-main {
     min-width: 1280px;
-    height: calc(100vh - $headerHeight);
-    /* height: 100vh; */
-    margin-top: $headerHeight;
+    height: 100%;
+    margin-top: 8px;
 
     .main-container {
         display: flex;
-        height: calc(100% - $topHeight);
+        height: 100%;
         border-bottom: 1px solid #dcdee5;
         height: 100%;
         overflow: hidden;
@@ -517,7 +516,7 @@ $headerHeight: 64px;
         }
         .sidebar-bd {
             @mixin scroller;
-            height: calc(100% - 89px);
+            height: calc(100% - 24px);
             overflow-y: overlay;
 
             .component-group {

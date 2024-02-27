@@ -12,6 +12,7 @@
 <template>
     <main
         class="lessocde-editor-page"
+        :style="{ height: bodyHeight }"
         v-bkloading="{
             isLoading: isContentLoading || isCustomComponentLoading
         }">
@@ -77,7 +78,7 @@
             }
         },
         computed: {
-            ...mapGetters(['user']),
+            ...mapGetters(['user', 'bodyHeight']),
             ...mapGetters('drag', ['curTemplateData']),
             ...mapGetters('page', ['pageDetail', 'platform']),
             ...mapGetters('functions', ['funcGroups']),
@@ -341,8 +342,8 @@
     $pageHeaderHeight: 52px;
 
     .lessocde-editor-page {
+        position: relative;
         min-width: 1220px;
-        height: calc(100vh - $headerHeight);
     }
     .lesscode-editor-page-header {
         position: relative;
@@ -371,7 +372,7 @@
         }
     }
     .lesscode-editor-page-content{
-        height: calc(100vh - $headerHeight - $pageHeaderHeight);
+        height: calc(100% - $pageHeaderHeight);
     }
     .lesscode-materials-panel-content {
         height: 100%;

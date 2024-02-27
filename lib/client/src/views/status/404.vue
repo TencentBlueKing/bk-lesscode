@@ -29,8 +29,7 @@
 <style lang="postcss" module>
     .container {
         display: flex;
-        height: calc(100vh - 52px);
-        margin-top: 52px;
+        height: 100%;
         .exception-wrap {
             justify-content: center;
             margin-top: -120px;
