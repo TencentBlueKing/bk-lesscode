@@ -17,16 +17,12 @@
             }
         },
         computed: {
-            projectId () {
-                return this.$route.params.projectId
-            },
             appName () {
                 return this.$route.query?.appName
             }
         },
         async mounted() {
             this.apiJson = await this.$store.dispatch('saasBackend/getSaasApiDoc', {
-                projectId: this.projectId,
                 appName: this.appName
             })
             this.loadSwaggerUI();
