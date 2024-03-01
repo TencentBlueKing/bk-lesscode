@@ -1,6 +1,7 @@
 <template>
     <layout
         class="saas-backend-manage"
+        v-if="isAvailable"
         v-bkloading="{ isLoading }"
         :init-width="320"
     >
@@ -12,6 +13,9 @@
         <module-content :current-module="currentModule">
         </module-content>
     </layout>
+    <section v-else>
+        <empty-status :empty-text="$t('功能暂未开放')" :part="false" />
+    </section>
 </template>
 
 <script>
@@ -38,6 +42,10 @@
                 return store.getters['project/currentProject']
             })
 
+            const isAvailable = computed(() => {
+                return store.getters['ai/isAiAvailable']
+            })
+
             const handleModuleChange = (moduleItem) => {
                 currentModule.value = moduleItem
             }
@@ -51,6 +59,7 @@
 
             return {
                 isLoading,
+                isAvailable,
                 currentModule,
                 handleModuleChange
             }

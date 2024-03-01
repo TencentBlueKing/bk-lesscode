@@ -11,7 +11,7 @@
         >
             {{ node.name }}
         </span>
-        <i v-if="node.status === 'failed'" class="bk-icon icon-close-circle tail-icon"></i>
+        <i v-if="node.status === 'fail'" class="bk-icon icon-close-circle tail-icon"></i>
         <i v-if="node.status === 'success'" class="bk-icon icon-check-circle tail-icon"></i>
         <svg v-if="node.status === 'running'" aria-hidden="true" width="14" height="14" class="loading-icon tail-icon">
             <use xlink:href="#bk-drag-loading-2"></use>

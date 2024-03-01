@@ -115,7 +115,7 @@
                 () => {
                     graphZoomTo(1)
                     graphAlign()
-                    refreshCanvas()
+                    debounceRefreshCanvas()
                 }
             )
 
@@ -123,8 +123,7 @@
                 needUpdate,
                 (val) => {
                     if (val) {
-                        console.log('watch needupdate', val)
-                        refreshCanvas()
+                        debounceRefreshCanvas()
                     }
                 }
             )
@@ -188,6 +187,8 @@
                 store.commit('saasBackend/setStateProperty', { key: 'needUpdate', value: false })
             }
 
+            const debounceRefreshCanvas = debounce(() => { refreshCanvas() }, 500)
+
             const updateNodes = (wsBuilderItem) => {
                 const builderItem = JSON.parse(JSON.stringify(wsBuilderItem))
                 if (builderItem?.session_id !== runningStory?.session_id) return
@@ -231,7 +232,7 @@
                             other.url = node?.content?.ide_url
                         }
                         if (other.id === 'PreviewProcessor') {
-                            if (node?.content?.result?.app_url || node?.content?.result?.schema_url) {
+                            if (node?.content?.result?.schema_url) {
                                 other.url = `/preview-api/project/${props.projectId}?appName=${appName}`
                             }
                         }
@@ -398,10 +399,10 @@
                 renderData = JSON.parse(JSON.stringify(initRenderData))
                 try {
                     storyList.value = await store.dispatch('saasBackend/getStoryList', props.moduleId)
-                    saasBuilderList = await Promise.all(storyList.value.map((story) => store.dispatch('saasBackend/getSaasBuilderDetail', story.uuid)))
+                    saasBuilderList = await Promise.all(storyList.value.map((story) => store.dispatch('saasBackend/getSaasBuilderDetail', story.uuid || story.session_id)))
                     store.commit('saasBackend/setStateProperty', { key: 'saasBuilderList', value: saasBuilderList })
                     storyList.value = storyList.value.map(item => {
-                        const preBuilderItem = saasBuilderList.find(builder => builder.session_id === item.uuid) || {}
+                        const preBuilderItem = saasBuilderList.find(builder => (builder.session_id === item.uuid || builder.session_id === item.session_id)) || {}
                         const builderItem = JSON.parse(JSON.stringify(preBuilderItem)) || {}
                         return {
                             ...builderItem,

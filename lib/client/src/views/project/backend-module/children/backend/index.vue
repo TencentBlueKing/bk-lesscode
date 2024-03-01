@@ -1,7 +1,7 @@
 <template>
     <article class="backend-home">
         <template v-if="currentModule.id">
-            <render-header :current-module="currentModule"></render-header>
+            <render-header :current-module="currentModule" :project-id="projectId"></render-header>
             <render-nodes ref="renderNodes" :module-id="currentModule.id" :project-id="projectId"></render-nodes>
         </template>
         <div v-else style="padding-top: 20%">
