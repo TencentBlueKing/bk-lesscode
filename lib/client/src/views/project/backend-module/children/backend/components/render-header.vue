@@ -45,6 +45,9 @@
             currentModule: {
                 type: Object,
                 default: () => ({})
+            },
+            projectId: {
+                required:  true
             }
         },
 
@@ -145,7 +148,8 @@
                         moduleCode: props.currentModule?.moduleCode?.replaceAll('-', '_'),
                         app_name: props.currentModule?.moduleCode?.replaceAll('-', '_'),
                         story: userInput.value,
-                        uuid: `${props.currentModule?.moduleCode}_${uuid(8)}`
+                        uuid: `${props.currentModule?.moduleCode}_${uuid(8)}`,
+                        projectId: props.projectId
                     }
                     const item = await store.dispatch('saasBackend/createModuleStory', params)
                     if (item.id) {

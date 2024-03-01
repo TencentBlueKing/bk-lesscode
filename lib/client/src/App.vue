@@ -11,6 +11,7 @@
 
 <template>
     <section v-if="emptyPage" class="preview-page">
+        {{}}
         <not-exist v-if="isNotExist" :message="notExistMsg" />
         <template v-else>
             <apply-page v-if="isNotPermission" :auth-result="authResult" />
@@ -83,7 +84,7 @@
         computed: {
             ...mapGetters(['mainContentLoading', 'bodyHeight']),
             emptyPage () {
-                return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile'
+                return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile' || this.$route.meta?.navigation === 'empty'
             },
             authed () {
                 return this.$route.meta.authed

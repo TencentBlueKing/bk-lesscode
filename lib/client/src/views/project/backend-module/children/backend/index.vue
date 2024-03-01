@@ -1,8 +1,8 @@
 <template>
     <article class="backend-home">
         <template v-if="currentModule.id">
-            <render-header :current-module="currentModule"></render-header>
-            <render-nodes ref="renderNodes" :module-id="currentModule.id"></render-nodes>
+            <render-header :current-module="currentModule" :project-id="projectId"></render-header>
+            <render-nodes ref="renderNodes" :module-id="currentModule.id" :project-id="projectId"></render-nodes>
         </template>
         <div v-else style="padding-top: 20%">
             <empty-status :empty-text="$t('请先在左侧创建模块')" :part="false" />
@@ -36,6 +36,11 @@
             currentModule: {
                 type: Object,
                 required: true
+            }
+        },
+        computed: {
+            projectId () {
+                return this.$route.params.projectId
             }
         },
         mounted () {
