@@ -189,7 +189,7 @@
                     () => props.bkBaseBizList
                 ],
                 () => {
-                    if (props.dataSourceType === 'preview') {
+                    if (['preview', 'third-part'].includes(props.dataSourceType)) {
                         apiData.value = props.tableList.map((table) => {
                             return {
                                 ...table,

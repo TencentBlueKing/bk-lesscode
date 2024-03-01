@@ -1,8 +1,7 @@
 <template>
     <article
         v-bkloading="{
-            isLoading,
-            title: dataSourceType === 'preview' ? $t('正在加载 Mysql 数据表') : $t('正在加载 BkBase 结果表')
+            isLoading
         }"
     >
         <header>
@@ -28,7 +27,13 @@
                                     disabled: dataSourceType === 'preview'
                                 }"
                             >
-                                {{ dataSourceType === 'preview' ? $t('Mysql 数据表') : $t('BkBase 结果表') }}
+                                {{
+                                    dataSourceType === 'preview'
+                                        ? $t('内置数据库')
+                                        : dataSourceType === 'third-part'
+                                            ? thirdPartDB.dbName
+                                            : $t('BkBase 结果表')
+                                }}
                                 <i class="bk-icon icon-angle-down"></i>
                             </span>
                             <ul
@@ -42,7 +47,8 @@
                                     }"
                                     @click="chooseDataSource('preview')"
                                 >
-                                    {{ $t('Mysql 数据表') }} </li>
+                                    {{ $t('内置数据库') }}
+                                </li>
                                 <li
                                     :class="{
                                         active: dataSourceType === 'bk-base',
@@ -50,7 +56,19 @@
                                     }"
                                     @click="chooseDataSource('bk-base')"
                                 >
-                                    {{ $t('BkBase 结果表') }} </li>
+                                    {{ $t('BkBase 结果表') }}
+                                </li>
+                                <li
+                                    v-for="thirdPartDBItem,index in thirdPartDBList"
+                                    :key="index"
+                                    :class="{
+                                        active: dataSourceType === 'third-part' && thirdPartDB.id === thirdPartDBItem.id,
+                                        'operation-source-item': true
+                                    }"
+                                    @click="chooseDataSource('third-part', thirdPartDBItem)"
+                                >
+                                    {{ thirdPartDBItem.dbName }}
+                                </li>
                             </ul>
                         </bk-popover>
                     </span>
@@ -207,6 +225,7 @@
                     :bk-base-biz-list="bkBaseBizList"
                     :data-source-type="dataSourceType"
                     :is-successful-query="isSuccessfulQuery"
+                    :third-part-d-b="thirdPartDB"
                     @changeQueryStatus="changeQueryStatus"
                 />
                 <query-history
@@ -307,7 +326,7 @@
             const projectInfo = ref({
                 id: '',
                 appCode: '',
-                moduleCode: '',
+                moduleCode: ''
             })
             // 是否成功查询
             const isSuccessfulQuery = ref(false)
@@ -320,6 +339,9 @@
             // bk-base 业务列表，包含了结果表
             const bkBaseBizList = ref([])
             const isLoading = ref(false)
+            // 第三方数据源
+            const thirdPartDB = ref({})
+            const thirdPartDBList = ref([])
             // 弹框 & 侧滑相关状态
             const apiData = ref({
                 isShow: false,
@@ -349,10 +371,11 @@
             }
 
             // 选择数据源
-            const chooseDataSource = (type) => {
+            const chooseDataSource = (type, item) => {
                 dataSourceTypeRef.value.hideHandler()
-                if (type !== dataSourceType.value) {
+                if (type !== dataSourceType.value || item?.id !== thirdPartDB.value?.id) {
                     dataSourceType.value = type
+                    thirdPartDB.value = item
                     jsonQueryRef.value.handleClear()
                     sqlQuery.value = ''
                     // 重新获取数据
@@ -422,7 +445,7 @@
 
             const getAllTables = () => {
                 let tables = []
-                if (dataSourceType.value === 'preview') {
+                if (['preview', 'third-part'].includes(dataSourceType.value)) {
                     tables = tableList.value
                 } else {
                     bkBaseBizList.value.forEach((bkBaseBiz) => {
@@ -460,7 +483,7 @@
                         apiData.value.form = {
                             method: API_METHOD.POST,
                             projectId,
-                            url: '/api/data-source/user/queryBySql',
+                            url: `/api/data-source/user/queryBySql${thirdPartDB.value?.id ? `/${thirdPartDB.value.dbName}` : ''}`,
                             body: parseValue2Scheme({
                                 sql: getFinalySql(),
                                 dataSourceType: dataSourceType.value
@@ -488,7 +511,7 @@
                             versionId,
                             funcMethod: API_METHOD.POST,
                             funcBody: 'return res\r\n',
-                            funcApiUrl: '/api/data-source/user/queryBySql',
+                            funcApiUrl: `/api/data-source/user/queryBySql${thirdPartDB.value?.id ? `/${thirdPartDB.value.dbName}` : ''}`,
                             funcParams,
                             apiBody
                         }
@@ -501,6 +524,7 @@
             const handleLoadHistory = (history) => {
                 dataSourceType.value = history.dataSourceType
                 isLoading.value = true
+                thirdPartDB.value = thirdPartDBList.value.find(item => item.dbName === history.thirdPartDBName)
                 getTableList(history.dataSourceType)
                     .then(() => {
                         if (history.dataSourceType === 'bk-base') {
@@ -544,10 +568,11 @@
                     store
                         .dispatch('dataSource/list', {
                             projectId,
-                            dataSourceType: type
+                            dataSourceType: type,
+                            thirdPartDBId: thirdPartDB.value.id
                         })
                         .then((res) => {
-                            if (type === 'preview') {
+                            if (['preview', 'third-part'].includes(type)) {
                                 tableList.value = res.list
                             } else {
                                 bkBaseBizList.value = res.list.map((item) => ({
@@ -576,12 +601,22 @@
                     })
             }
 
+            // 获取第三方数据源的db列表
+            const getThirdParDBList = () => {
+                return store
+                    .dispatch('thirdPartDB/getDatabase', { projectId })
+                    .then((res) => {
+                        thirdPartDBList.value = res
+                    })
+            }
+
             onBeforeMount(() => {
                 isLoading.value = true
                 Promise
                     .all([
                         getTableList(),
-                        getProjectInfo()
+                        getProjectInfo(),
+                        getThirdParDBList()
                     ])
                     .finally(() => {
                         isLoading.value = false
@@ -609,6 +644,8 @@
                 funcData,
                 sqlData,
                 isEmptySql,
+                thirdPartDB,
+                thirdPartDBList,
                 toggleQueryType,
                 changeQueryStatus,
                 chooseDataSource,

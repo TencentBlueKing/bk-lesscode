@@ -46,7 +46,7 @@
             :is-show.sync="recordStatus.showConfirmDialog"
             :sql="recordStatus.sql"
             :title="$t('变更详情')"
-            tips=""
+            :tips="thirdPartDBId ? $t('变更的 SQL 详情：') : ''"
         ></confirm-dialog>
     </article>
 </template>
@@ -84,9 +84,11 @@
             })
             const emptyType = ref('noData')
             const id = router?.currentRoute?.query?.id
+            const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
+            const projectId = router?.currentRoute?.params?.projectId
 
             const goBack = () => {
-                router.push({ name: 'showTable', query: { id } })
+                router.back()
             }
 
             const timeFormatter = (obj, con, val) => {
@@ -104,7 +106,8 @@
                 const filterData = {
                     id,
                     timeRange: recordStatus.timeRange.map(x => timeFormatter(null, null, x)),
-                    createUser: recordStatus.createUser
+                    createUser: recordStatus.createUser,
+                    projectId: projectId
                 }
                 store.dispatch('dataSource/tableRecordList', filterData).then((data) => {
                     recordStatus.list = data
@@ -126,6 +129,7 @@
             return {
                 recordStatus,
                 emptyType,
+                thirdPartDBId,
                 goBack,
                 timeFormatter,
                 showSql,

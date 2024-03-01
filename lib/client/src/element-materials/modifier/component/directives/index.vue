@@ -336,7 +336,8 @@
                     format,
                     renderValue,
                     code,
-                    dataSourceType
+                    dataSourceType,
+                    thirdPartDBName
                 } = variableSelectData
 
                 const directiveKey = this.genDirectiveKey(directive)
@@ -349,7 +350,8 @@
                         format,
                         code,
                         renderValue,
-                        dataSourceType
+                        dataSourceType,
+                        thirdPartDBName
                     }
                 })
                 this.triggleUpdate()
