@@ -11,7 +11,6 @@
 
 <template>
     <section v-if="emptyPage" class="preview-page">
-        {{}}
         <not-exist v-if="isNotExist" :message="notExistMsg" />
         <template v-else>
             <apply-page v-if="isNotPermission" :auth-result="authResult" />
