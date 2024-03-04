@@ -255,7 +255,7 @@
     }
     .table-main {
         padding: 20px 24px;
-        height: 100%;
+        height: calc(100% - 52px);
         overflow-y: auto;
         @mixin scroller;
     }
