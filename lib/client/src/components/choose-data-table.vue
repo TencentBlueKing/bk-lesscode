@@ -227,9 +227,10 @@
             ])
 
             // 选择表
-            const handleSelectTable = (tableName, dataSourceType, tableList = [], thirdPartDBName = '') => {
+            const handleSelectTable = (tableName, dataSourceType, tableList = [], bkThirdPartDBName = '') => {
                 // 选完以后立即触发选中事件
                 const table = findTable(tableName, dataSourceType, tableList, tableGroups.value[tableGroups.value.length - 1].children)
+                const thirdPartDBName = dataSourceType === 'third-part' ? bkThirdPartDBName : ''
                 emit('choose-table', { tableName, table, dataSourceType, thirdPartDBName })
             }
 

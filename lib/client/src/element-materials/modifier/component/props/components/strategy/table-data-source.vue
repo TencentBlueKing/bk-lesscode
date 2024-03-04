@@ -82,7 +82,7 @@
                 // 类型改变的时候，需要重置部分状态
                 if (renderDataSourceType.value !== dataSourceType) {
                     renderDataSourceType.value = dataSourceType
-                    renderShowOperationColumn.value = dataSourceType === 'preview'
+                    renderShowOperationColumn.value = ['third-part', 'preview'].includes(dataSourceType)
                 }
                 // 触发更新
                 propStatus.change.value(

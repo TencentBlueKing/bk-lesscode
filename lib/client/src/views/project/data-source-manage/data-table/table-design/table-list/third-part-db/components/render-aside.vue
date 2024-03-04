@@ -124,6 +124,7 @@
             },
 
             handleCloseForm () {
+                window.leaveConfirm = false
                 this.formStatus.showAdd = false
             },
 
