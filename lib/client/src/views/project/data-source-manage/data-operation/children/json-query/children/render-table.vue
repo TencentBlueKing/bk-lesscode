@@ -36,7 +36,7 @@
                 @delete="handleTableDelete(tableIndex)"
             >
                 <select-table
-                    v-if="dataSourceType === 'preview'"
+                    v-if="['preview', 'third-part'].includes(dataSourceType)"
                     class="fl mr8 mt8 mb8 wh380"
                     :table-name="table.tableName"
                     :table-list="tableList"

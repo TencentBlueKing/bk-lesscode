@@ -21,6 +21,7 @@
 <script lang="ts">
     import { ref, defineComponent } from '@vue/composition-api'
     import monaco from '@/components/monaco.vue'
+    import router from '@/router'
 
     export default defineComponent({
         components: {
@@ -50,7 +51,10 @@
 
         setup (props, { emit }) {
             const isTitle = props.title || ref(window.i18n.t('确认提交'))
-            const isTips = props.tips || ref(window.i18n.t('执行的 SQL 内容：（提交后将会在下次部署的时候执行该 SQL，且不可更改。请确认后再提交）'))
+            const isTips = props.tips
+                || router?.currentRoute?.query?.thirdPartDBId
+                ? ref(window.i18n.t('执行的 SQL 内容：'))
+                : ref(window.i18n.t('执行的 SQL 内容：（提交后将会在下次部署的时候执行该 SQL，且不可更改。请确认后再提交）'))
             const confirm = () => {
                 emit('confirm')
             }

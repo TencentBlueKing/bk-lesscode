@@ -110,6 +110,12 @@
                         const table = tables.find(table => table.tableName === props.payload.sourceData.tableName)
                         options.value = table.columns.map(column => column.name)
                     }
+                    if (props.valueType.includes('data-source') && props.payload?.sourceData?.dataSourceType === 'third-part') {
+                        const thirdPartDBList = store.state?.thirdPartDB?.thirdPartDBList || []
+                        const thirdPartDB = thirdPartDBList.find(thirdPartDB => thirdPartDB.dbName === props.payload?.sourceData?.thirdPartDBName)
+                        const table = thirdPartDB.tableList.find(table => table.tableName === props.payload.sourceData.tableName)
+                        options.value = table.columns.map(column => column.name)
+                    }
                 },
                 {
                     immediate: true,

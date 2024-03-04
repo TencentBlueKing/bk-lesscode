@@ -9,7 +9,7 @@
             <h5 class="section-title">
                 {{ $t('字段配置') }} <bk-link
                     v-if="environment.key === 'preview'"
-                    :href="`/project/${projectId}/data-source-manage/edit-table?tableName=${activeTable.tableName}`"
+                    :href="`/project/${projectId}/data-source-manage/edit-table?tableName=${activeTable.tableName}${thirdPartDBId ? `&thirdPartDBId=${thirdPartDBId}` : ''}`"
                     target="_blank"
                     theme="primary"
                     class="title-link"
@@ -46,8 +46,10 @@
         setup () {
             const route = useRoute()
             const projectId = route.params.projectId
+            const thirdPartDBId = route.query.thirdPartDBId
             return {
-                projectId
+                projectId,
+                thirdPartDBId
             }
         }
     })

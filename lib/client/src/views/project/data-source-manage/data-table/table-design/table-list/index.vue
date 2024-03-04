@@ -7,7 +7,12 @@
                     class="tab-item"
                     :class="{ active: activePage === 'data-source' }"
                     @click="togglePage('data-source')"
-                >{{ $t('数据表管理') }}</div>
+                >{{ $t('内置数据库') }}</div>
+                <div
+                    class="tab-item"
+                    :class="{ active: activePage === 'thirdPartDB' }"
+                    @click="togglePage('thirdPartDB')"
+                >{{ $t('第三方数据库') }}</div>
             </div>
         </header>
 
@@ -16,14 +21,17 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, ref } from '@vue/composition-api'
+    import { defineComponent, ref, onBeforeMount } from '@vue/composition-api'
     import renderHeader from '../../common/header'
     import dataSource from './list/index.vue'
+    import thirdPartDB from './third-part-db/index.vue'
+    import router from '@/router'
 
     export default defineComponent({
         components: {
             renderHeader,
-            dataSource
+            dataSource,
+            thirdPartDB
         },
 
         setup () {
@@ -31,7 +39,18 @@
 
             const togglePage = (val: string): void => {
                 activePage.value = val
+                router.replace({
+                    query: {
+                        tab: val
+                    }
+                })
             }
+
+            onBeforeMount(() => {
+                if (router?.currentRoute?.query?.tab) {
+                    activePage.value = router.currentRoute.query.tab
+                }
+            })
 
             return {
                 activePage,

@@ -73,7 +73,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/register": "^7.18.9",
     "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.52",
-    "@blueking/babel-preset-bk": "^2.1.0-beta.9",
+    "@blueking/babel-preset-bk": "^2.1.0-beta.10",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
     "@blueking/bkui-vue-complex": "0.0.9",
     "@blueking/bundless": "0.0.8",

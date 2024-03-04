@@ -43,7 +43,7 @@
                 <span v-bk-tooltips="{ content: data.summary, maxWidth: 400 }">{{data.name}}</span>
                 <i
                     class="bk-drag-icon bk-drag-jump-link"
-                    v-if="['lesscode-api', 'datasource-api'].includes(data.id)"
+                    v-if="['lesscode-api', 'datasource-api', 'third-part-api'].includes(data.id)"
                     @click="goToCreate(data.id)"
                 ></i>
             </div>
@@ -111,6 +111,12 @@
                                 name: window.i18n.t('数据表操作API'),
                                 type: 'datasource',
                                 children: []
+                            },
+                            {
+                                id: 'third-part-api',
+                                name: window.i18n.t('第三方数据源API'),
+                                type: 'third-part',
+                                children: []
                             }
                         ]
                     )
@@ -177,7 +183,55 @@
                         return getFlowEsbSystems(data)
                     case 'flow-esb-api-list':
                         return getFlowEsbApiList(data)
+                    case 'third-part':
+                        return getThirdPartDBList(data)
+                    case 'third-part-db':
+                        return getThirdPartTableList(data)
+                    case 'third-part-table':
+                        return getThirdPartTableApiList(data)
                 }
+            }
+
+            // 获取第三方数据源db列表
+            const getThirdPartDBList = () => {
+                return store
+                    .dispatch('thirdPartDB/getDatabase', {
+                        projectId
+                    })
+                    .then((data) => {
+                        data.forEach((db) => {
+                            db.type = 'third-part-db'
+                            db.children = []
+                            db.name = db.dbName
+                            db.dbId = db.id
+                        })
+                        return getNodeValue(data)
+                    })
+            }
+
+            // 获取第三方数据源table列表
+            const getThirdPartTableList = (data) => {
+                return store
+                    .dispatch('dataSource/list', {
+                        projectId,
+                        thirdPartDBId: data.dbId,
+                        dataSourceType: 'third-part'
+                    })
+                    .then((res) => {
+                        res.list.forEach((table) => {
+                            table.type = 'third-part-table'
+                            table.children = []
+                            table.name = table.tableName
+                            table.dbName = data.name
+                        })
+                        return getNodeValue(res.list)
+                    })
+            }
+
+            // 获取第三方数据源表接口
+            const getThirdPartTableApiList = (item) => {
+                const apiList = getDataSourceApiList(item.name, item.columns, item.dbName)
+                return getNodeValue(apiList, true)
             }
 
             // 获取 lesscode 分类
@@ -356,7 +410,7 @@
 
             // 获取默认展开的节点
             const getDefaultExpandedNode = () => {
-                return ['lesscode-api', 'apigateway-api', 'datasource-api', 'flow-esb-api']
+                return ['lesscode-api', 'apigateway-api', 'datasource-api', 'flow-esb-api', 'third-part-api']
             }
 
             // 远程搜索
@@ -373,6 +427,9 @@
                         break
                     case 'datasource-api':
                         url = `/project/${projectId}/data-source-manage/`
+                        break
+                    case 'third-part-api':
+                        url = `/project/${projectId}/data-source-manage/?tab=thirdPartDB`
                         break
                 }
                 window.open(url, '_blank')
