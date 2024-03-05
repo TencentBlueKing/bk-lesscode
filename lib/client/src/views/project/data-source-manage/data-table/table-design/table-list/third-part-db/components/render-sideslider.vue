@@ -57,6 +57,7 @@
                 >
                     <bk-input
                         v-model="editForm.password"
+                        type="password"
                     ></bk-input>
                 </lc-form-item>
                 <lc-form-item

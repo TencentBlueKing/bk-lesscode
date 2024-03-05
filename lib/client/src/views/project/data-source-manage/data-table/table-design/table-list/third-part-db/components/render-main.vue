@@ -155,7 +155,8 @@
                 return [
                     { label: this.$t('数据库名称'), value: this.dataBaseInfo.dbName },
                     { label: this.$t('域名'), value: this.dataBaseInfo.host },
-                    { label: this.$t('端口'), value: this.dataBaseInfo.port }
+                    { label: this.$t('端口'), value: this.dataBaseInfo.port },
+                    { label: this.$t('用户名'), value: this.dataBaseInfo.username }
                 ]
             }
         },
