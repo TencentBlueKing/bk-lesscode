@@ -111,7 +111,8 @@
                     this.formStatus.isSaving = true
                     const postData = {
                         ...editForm,
-                        projectId: this.projectId
+                        projectId: this.projectId,
+                        password: btoa(editForm.password)
                     }
                     await this.addDatabase(postData)
                     this.getThirdPartDB()
