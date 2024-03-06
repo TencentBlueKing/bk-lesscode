@@ -192,6 +192,12 @@
     .node-slider-header {
         display: flex;
         align-items: center;
+        .node-name {
+            max-width: 800px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
         .node-status {
             margin: 0 16px;
             padding: 2px 8px;

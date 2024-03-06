@@ -13,7 +13,8 @@
                 content: node.name,
                 maxWidth: 300,
                 placements: ['top'],
-                delay: [100, 0]
+                delay: [100, 0],
+                disabled: finalNodeTypes.indexOf(node.id) !== -1
             }"
         >
             {{ node.name }}
@@ -39,16 +40,32 @@
                 @click.stop="patchRetry"
             ></i>
             <i
-                v-if="node.url"
+                v-if="node.url && node.id === 'MigrateProcessor'"
                 v-bk-tooltips="{
-                    content: node.iconTips,
-                    placements: ['top'],
-                    disabled: !node.iconTips
+                    content: '查看应用源码',
+                    placements: ['top']
                 }"
                 class="bk-drag-icon bk-drag-jump-link node-icon"
                 style="font-size: 14px;margin-left: 4px;"
                 @click.stop="toLink(node.url)"
             ></i>
+            
+            <bk-dropdown-menu ext-cls="schema-api-dropdown" v-if="node.url && node.id === 'PreviewProcessor'">
+                <i
+                    slot="dropdown-trigger"
+                    class="bk-drag-icon bk-drag-jump-link node-icon"
+                    style="font-size: 14px;margin-left: 4px;"
+                    @click.stop="toLink(node.url)"
+                ></i>
+                <ul class="bk-dropdown-list" slot="dropdown-content">
+                    <template v-for="api in schemaApiList">
+                        <li :title="api.desc" :key="api.path">
+                            <a target="_blank" :href="`${node.url}#${api.link}`">{{api.path}}</a>
+                        </li>
+                    </template>
+                </ul>
+            </bk-dropdown-menu>
+            
         </span>
     </section>
 </template>
@@ -71,6 +88,9 @@
         computed: {
             isExecuting () {
                 return this.$store.state.saasBackend?.isExecuting || false
+            },
+            schemaApiList () {
+                return this.$store.state.saasBackend?.schemaApiList || []
             }
         },
         mounted () {
@@ -108,90 +128,96 @@
 </script>
 
 <style lang="postcss" scoped>
-.parent-node {
-    height: 100%;
-    width: 100%;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 #1919290d;
-    border-radius: 4px;
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    cursor: pointer;
-    &:hover {
-        .hover-icon {
-            display: inline;
+    .schema-api-dropdown {
+        .bk-dropdown-content {
+            .bk-dropdown-list {
+                max-height: 400px;
+                max-width: 500px;
+            }
         }
     }
-}
-.status-color {
-    height: 100%;
-    width: 4px;
-    border-radius: 4px 0 0 4px;
-    &.success {
-        background: #1CAB88;
-    }
-    &.fail {
-        background: #EA3636;
-    }
-    &.running {
-        background: #3A84FF;
-    }
-}
-.status-icon {
-    margin: 0 12px;
-    height: 36px;
-    width: 36px;
-    border-radius: 4px;
-    background: #F5F7FA;
-    padding: 10px;
-    &.success {
-        background: #E8FFF5;
-        color: #1CAB88;
-    }
-    &.fail {
-        background: #FFEEEE;
-        color: #EA3636;
-    }
-    &.running {
-        background: #F5F7FA;
-        color: #3A84FF;
-    }
-    .status-i {
-        font-size: 15px;
-    }
-    .loading-icon {
-        fill: #3a84ff;
-        animation: icon-loading 1.5s linear infinite;
-    }
-}
-.node-name {
-    /* flex: 1; */
-    width: 156px;
-    word-break: break-all;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; /* 这里是超出几行省略 */
-    overflow: hidden;
-}
-.node-icons {
-    display: flex;
-    align-items: center;
-    justify-self: flex-end;
-    margin-right: 16px;
-    .hover-icon {
-        display: none;
-    }
-    .node-icon {
-        font-size: 22px;
-        margin-left: 2px;
+    .parent-node {
+        height: 100%;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 4px 0 #1919290d;
+        border-radius: 4px;
+        display: flex;
+        justify-items: center;
+        align-items: center;
         cursor: pointer;
         &:hover {
-            color: #3A84FF;
+            .hover-icon {
+                display: inline;
+            }
         }
     }
-}
-
-
+    .status-color {
+        height: 100%;
+        width: 4px;
+        border-radius: 4px 0 0 4px;
+        &.success {
+            background: #1CAB88;
+        }
+        &.fail {
+            background: #EA3636;
+        }
+        &.running {
+            background: #3A84FF;
+        }
+    }
+    .status-icon {
+        margin: 0 12px;
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        background: #F5F7FA;
+        padding: 10px;
+        &.success {
+            background: #E8FFF5;
+            color: #1CAB88;
+        }
+        &.fail {
+            background: #FFEEEE;
+            color: #EA3636;
+        }
+        &.running {
+            background: #F5F7FA;
+            color: #3A84FF;
+        }
+        .status-i {
+            font-size: 15px;
+        }
+        .loading-icon {
+            fill: #3a84ff;
+            animation: icon-loading 1.5s linear infinite;
+        }
+    }
+    .node-name {
+        /* flex: 1; */
+        width: 156px;
+        word-break: break-all;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* 这里是超出几行省略 */
+        overflow: hidden;
+    }
+    .node-icons {
+        display: flex;
+        align-items: center;
+        justify-self: flex-end;
+        margin-right: 16px;
+        .hover-icon {
+            display: none;
+        }
+        .node-icon {
+            font-size: 22px;
+            margin-left: 2px;
+            cursor: pointer;
+            &:hover {
+                color: #3A84FF;
+            }
+        }
+    }
 </style>
