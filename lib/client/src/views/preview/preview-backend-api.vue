@@ -25,7 +25,7 @@
             this.apiJson = await this.$store.dispatch('saasBackend/getSaasApiDoc', {
                 appName: this.appName
             })
-            this.loadSwaggerUI();
+            this.loadSwaggerUI()
         },
         methods: {
             loadSwaggerUI() {
@@ -36,7 +36,8 @@
                         SwaggerUIStandalonePreset
                     ],
                     layout: "StandaloneLayout",
-                    spec: this.apiJson
+                    spec: this.apiJson,
+                    deepLinking: true
                 })
             }
         }

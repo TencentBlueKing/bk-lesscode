@@ -13,6 +13,7 @@
                 }"
             >
                 <bk-input
+                    name="storyInput"
                     ref="inputRef"
                     class="send-input"
                     type="textarea"

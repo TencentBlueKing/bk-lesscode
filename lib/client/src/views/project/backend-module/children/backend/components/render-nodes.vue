@@ -82,7 +82,6 @@
                     {
                         id: 'MigrateProcessor',
                         name: '集成框架',
-                        iconTips: '查看应用源码',
                         status: '',
                         url: ''
                     },
@@ -234,6 +233,7 @@
                         if (other.id === 'PreviewProcessor') {
                             if (node?.content?.result?.schema_url) {
                                 other.url = `/preview-api/project/${props.projectId}?appName=${appName}`
+                                store.dispatch('saasBackend/updateSchemaApiList', { appName })
                             }
                         }
                         other.property = node.property
