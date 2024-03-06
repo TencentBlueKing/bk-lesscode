@@ -3,13 +3,13 @@
         <section class="data-base-section">
             <h5 class="section-title">
                 {{ $t('基础信息') }}
-                <!-- <bk-button
+                <bk-button
                     size="small"
                     class="section-btn"
                     @click="handleEditForm"
                 >
                     {{ $t('编辑') }}
-                </bk-button> -->
+                </bk-button>
             </h5>
 
             <ul class="info-database">
@@ -176,6 +176,7 @@
             ]),
 
             handleCloseForm () {
+                window.leaveConfirm = false
                 this.formStatus.isShow = false
             },
 
@@ -193,7 +194,8 @@
                     this.formStatus.isSaving = true
                     const postData = {
                         ...editForm,
-                        projectId: this.projectId
+                        projectId: this.projectId,
+                        password: btoa(editForm.password)
                     }
                     await this.updateDatabase(postData)
                     this.handleCloseForm()

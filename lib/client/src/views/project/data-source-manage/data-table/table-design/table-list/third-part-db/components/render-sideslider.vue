@@ -17,26 +17,39 @@
                 <lc-form-item
                     :label="$t('域名')"
                     :required="true"
-                    property="host"
                     :rules="getRequireRule('域名')"
+                    property="host"
                     error-display-type="normal"
                 >
                     <bk-input
                         v-model="editForm.host"
+                        :disabled="!!form.id"
                     ></bk-input>
                 </lc-form-item>
                 <lc-form-item
                     :label="$t('端口')"
                     :required="true"
-                    property="port"
                     :rules="getRequireRule('端口')"
+                    property="port"
                     error-display-type="normal"
                 >
                     <bk-input
                         v-model="editForm.port"
+                        :disabled="!!form.id"
                     ></bk-input>
                 </lc-form-item>
-
+                <lc-form-item
+                    :label="$t('数据库名')"
+                    :required="true"
+                    property="dbName"
+                    :rules="getRequireRule('数据库名')"
+                    error-display-type="normal"
+                >
+                    <bk-input
+                        v-model="editForm.dbName"
+                        :disabled="!!form.id"
+                    ></bk-input>
+                </lc-form-item>
                 <lc-form-item
                     :label="$t('用户名')"
                     :required="true"
@@ -58,17 +71,6 @@
                     <bk-input
                         v-model="editForm.password"
                         type="password"
-                    ></bk-input>
-                </lc-form-item>
-                <lc-form-item
-                    :label="$t('数据库名')"
-                    :required="true"
-                    property="dbName"
-                    :rules="getRequireRule('数据库名')"
-                    error-display-type="normal"
-                >
-                    <bk-input
-                        v-model="editForm.dbName"
                     ></bk-input>
                 </lc-form-item>
                 <lc-form-item style="margin-top: 20px;">
