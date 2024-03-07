@@ -117,8 +117,11 @@
             this.$once('hook:beforeDestroy', () => {
                 bus.$off('not-exist', this.notExistHold)
             })
-            await this.$store.dispatch('checkIamNoResourcesPerm')
-            await this.$store.dispatch('ai/checkAiAvailable')
+            await Promise.all([
+                this.$store.dispatch('checkIamNoResourcesPerm'),
+                this.$store.dispatch('ai/checkAiAvailable'),
+                this.$store.dispatch('saasBackend/checkSaasAvailable')
+            ])
         },
 
         mounted () {
