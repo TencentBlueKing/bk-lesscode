@@ -51,6 +51,13 @@
         component: RenderChildNode
     })
 
+    register({
+        shape: 'grand-child-node',
+        width: 179,
+        height: 36,
+        component: RenderChildNode
+    })
+
     export default defineComponent({
         components: {
             RenderSideSlider,
@@ -259,8 +266,6 @@
                     x = -275
                     let maxTask = 0
 
-                    // 遍历的时候，判断是正在running的那一条需求及其后面的， 重画， 否则直接return
-
                     task.forEach((item, index) => {
                         x += (parentNodeWidth + parentNodeOffset)
                         // calc max task height
@@ -276,9 +281,11 @@
                             shape: 'parent-node',
                             data: item
                         })
+                        // 表示当前是第几个节点（包括step跟step.children）, 用于计算childY 
+                        let totalIndex = 0
                         item?.children?.map((child, index) => {
                             const childX = x + childNodeOffset
-                            const childY = y + parentNodeHeight + childNodeMarginTop + index * (childNodeHeight + childNodeMarginTop)
+                            const childY = y + parentNodeHeight + childNodeMarginTop + totalIndex * (childNodeHeight + childNodeMarginTop)
                             graph.addNode({
                                 id: child.id,
                                 x: childX,
@@ -305,6 +312,39 @@
                                         }
                                     }
                                 }
+                            })
+                            totalIndex++
+
+                            child?.children?.map((grandchild, cindex) => {
+                                const grandchildX = childX + childNodeOffset
+                                const grandchildY = y + parentNodeHeight + childNodeMarginTop + totalIndex * (childNodeHeight + childNodeMarginTop)
+                                graph.addNode({
+                                    id: grandchild.id,
+                                    x: grandchildX,
+                                    y: grandchildY,
+                                    shape: 'grand-child-node',
+                                    data: grandchild
+                                })
+                                graph.addEdge({
+                                    source: { x: childX + parentLineOffset, y: childY + childNodeHeight },
+                                    target: { x: grandchildX, y: grandchildY + childNodeHeight / 2 },
+                                    vertices: [{ x: childX + parentLineOffset, y: grandchildY + childNodeHeight / 2 }],
+                                    attrs: {
+                                        line: {
+                                            stroke: '#C4C6CC',
+                                            strokeWidth: 1,
+                                            strokeDasharray: 3,
+                                            targetMarker: {
+                                                name: 'circle',
+                                                r: 3,
+                                                cx: 3,
+                                                fill: '#fff',
+                                                stroke: '#C4C6CC'
+                                            }
+                                        }
+                                    }
+                                })
+                                totalIndex++
                             })
                         })
                         if (index > 0) {
@@ -476,6 +516,15 @@
                 task.push(storyItem)
                 children = sortNodes(children, story.edges)
                 const finalNodes = children.filter(item => finalNodeTypes.includes(item?.content?.type))
+
+                const formatStep = (step) => {
+                    return {
+                        ...step,
+                        type: 'step',
+                        status: getStatusMap(step.status),
+                        children: step?.children?.map(grandStep => formatStep(grandStep))
+                    }
+                }
                 children?.map(node => {
                     // 非最后三个公共节点， 才画到图里
                     const nodeType = node?.content?.type
@@ -484,11 +533,7 @@
                         node.id = node.node_id
                         node.status = getStatusMap(node.status)
                         node.app_name = story.app_name
-                        node.children = node?.steps?.map(step => ({
-                            ...step,
-                            type: 'step',
-                            status: getStatusMap(step.status)
-                        }))
+                        node.children = node?.steps?.map(step => formatStep(step))
                         task.push(node)
                     }
                 })

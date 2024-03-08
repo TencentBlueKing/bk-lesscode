@@ -43,7 +43,7 @@
             })
 
             const isAvailable = computed(() => {
-                return store.getters['ai/isAiAvailable']
+                return store.getters['saasBackend/isSaasAvailable']
             })
 
             const handleModuleChange = (moduleItem) => {

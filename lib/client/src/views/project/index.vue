@@ -168,6 +168,9 @@
             },
             helpDocument () {
                 return this.$route.meta?.helpDocument
+            },
+            isSaasAvailable () {
+                return this.$store.getters['saasBackend/isSaasAvailable']
             }
         },
         beforeRouteUpdate (to, from, next) {
@@ -253,6 +256,9 @@
                 }
                 if (this.curProject?.framework === 'vue3') {
                     navList = navList.filter(item => item?.id !== 'flowList')
+                }
+                if (!this.isSaasAvailable) {
+                    navList = navList.filter(item => item?.id !== 'backendModule')
                 }
 
                 navList.forEach(item => {
