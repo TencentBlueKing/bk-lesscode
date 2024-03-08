@@ -183,7 +183,6 @@
             handleEditForm () {
                 this.formStatus.editForm = {
                     ...this.dataBaseInfo,
-                    username: '',
                     password: ''
                 }
                 this.formStatus.isShow = true
