@@ -318,6 +318,10 @@
                             child?.children?.map((grandchild, cindex) => {
                                 const grandchildX = childX + childNodeOffset
                                 const grandchildY = y + parentNodeHeight + childNodeMarginTop + totalIndex * (childNodeHeight + childNodeMarginTop)
+                                // 如果子step的高度比maxtask高， 以子step的高度为最大height
+                                if ((grandchildY - 100 + childNodeHeight) > maxTask) {
+                                    maxTask = grandchildY - 100 + childNodeHeight
+                                }
                                 graph.addNode({
                                     id: grandchild.id,
                                     x: grandchildX,
