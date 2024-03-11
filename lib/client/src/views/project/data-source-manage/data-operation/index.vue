@@ -472,7 +472,7 @@
                     ? generateSqlByCondition(conditionQuery.value, getAllTables())
                     : sqlQuery.value
                 // 回车转空格
-                return sql.replace(/\r\n/g, ' ')
+                return window.btoa(sql.replace(/\r\n/g, ' '))
             }
 
             // 生成 api
