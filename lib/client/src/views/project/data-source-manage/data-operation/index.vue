@@ -569,7 +569,7 @@
                         .dispatch('dataSource/list', {
                             projectId,
                             dataSourceType: type,
-                            thirdPartDBId: thirdPartDB.value.id
+                            thirdPartDBId: thirdPartDB.value?.id || 0
                         })
                         .then((res) => {
                             if (['preview', 'third-part'].includes(type)) {
