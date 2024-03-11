@@ -164,7 +164,7 @@
                 return new Promise((resolve, reject) => {
                     store
                         .dispatch('dataSource/queryBySql', {
-                            sql: queryRecord.sql,
+                            sql: window.btoa(queryRecord.sql),
                             dataSourceType: props.dataSourceType,
                             thirdPartDBName: props.thirdPartDB.dbName
                         })
