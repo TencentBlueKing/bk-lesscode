@@ -262,17 +262,14 @@
                 let maxX = 0
                 const finalTasks = []
 
+                // 记录最多的一列node or step总和
+                let maxStepCount = 0
                 data.tasks.forEach((task) => {
                     x = -275
                     let maxTask = 0
 
                     task.forEach((item, index) => {
                         x += (parentNodeWidth + parentNodeOffset)
-                        // calc max task height
-                        const taskHeight = parentNodeHeight + (item?.children?.length * (childNodeHeight + childNodeMarginTop) || 0)
-                        if (taskHeight > maxTask) {
-                            maxTask = taskHeight
-                        }
                         // parent node
                         graph.addNode({
                             id: item.id,
@@ -346,6 +343,11 @@
                                 })
                                 totalIndex++
                             })
+                            // 如果这一列的totalIndex最大， 说明列最高
+                            if (totalIndex > maxStepCount) {
+                                maxStepCount = totalIndex
+                                maxTask = parentNodeHeight + (maxStepCount * (childNodeHeight + childNodeMarginTop))
+                            }
                         })
                         if (index > 0) {
                             graph.addEdge({
