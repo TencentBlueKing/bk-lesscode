@@ -1,20 +1,20 @@
 <template>
-    <div class="tree">
-        <bk-tree></bk-tree>
-    </div>
+  <div class="tree">
+    <bk-tree></bk-tree>
+  </div>
 </template>
 <script>
-    export default {
-        name: 'Tree',
-        props: {
-            field: {
-                type: Object,
-                default: () => ({})
-            },
-            value: {
-                type: String,
-                default: ''
-            }
-        }
-    }
+export default {
+  name: 'Tree',
+  props: {
+    field: {
+      type: Object,
+      default: () => ({}),
+    },
+    value: {
+      type: String,
+      default: '',
+    },
+  },
+};
 </script>

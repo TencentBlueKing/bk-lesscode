@@ -1,18 +1,18 @@
 <template>
-    <section class="float-workbench-block" @click="goToWorkbench">
-        <i class="bk-icon icon-pc"></i>
-        <div style="margin-top: 4px;">工作台</div>
-    </section>
+  <section class="float-workbench-block" @click="goToWorkbench">
+    <i class="bk-icon icon-pc"></i>
+    <div style="margin-top: 4px;">工作台</div>
+  </section>
 </template>
 <script>
-    export default {
-        name: 'FloatWorkbenchBlock',
-        methods: {
-            goToWorkbench () {
-                window.open(`${process.env.BK_ITSM_URL}/#/workbench/ticket/todo`, '_blank')
-            }
-        }
-    }
+export default {
+  name: 'FloatWorkbenchBlock',
+  methods: {
+    goToWorkbench() {
+      window.open(`${process.env.BK_ITSM_URL}/#/workbench/ticket/todo`, '_blank');
+    },
+  },
+};
 </script>
 <style lang="postcss" scoped>
     .float-workbench-block {

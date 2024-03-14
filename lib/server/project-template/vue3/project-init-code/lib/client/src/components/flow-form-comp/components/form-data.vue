@@ -1,122 +1,120 @@
 <template>
-    <div class="form-data-manage">
-        <template v-if="!formDetailLoading">
-            <div class="opereate-btns">
-                <custom-buttons
-                    :table-name="tableName"
-                    :fields="fields"
-                    :system-fields="systemFields"
-                    :table-config="tableConfig"
-                    :buttons="config.buttons || []">
-                </custom-buttons>
-                <i
-                    v-if="filters.length > 0"
-                    class="bk-icon icon-funnel filter-switch-icon"
-                    @click="showFilter = !showFilter">
-                </i>
-            </div>
-            <filters
-                v-show="showFilter && filters.length > 0"
-                :filters="filters"
-                :fields="fields"
-                :system-fields="systemFields"
-                :value="filtersData"
-                @change="handleFilterDataChange">
-            </filters>
-            <table-fields
-                v-if="!formDetailLoading"
-                style="margin-top: 16px"
-                :form-id="formIds"
-                :table-name="tableName"
-                :table-config="tableConfig"
-                :table-actions="config.tableActions || []"
-                :fields="fields"
-                :system-fields="systemFields"
-                :filters-data="filtersData">
-            </table-fields>
-        </template>
-    </div>
+  <div class="form-data-manage">
+    <template v-if="!formDetailLoading">
+      <div class="opereate-btns">
+        <custom-buttons
+          :table-name="tableName"
+          :fields="fields"
+          :system-fields="systemFields"
+          :table-config="tableConfig"
+          :buttons="config.buttons || []">
+        </custom-buttons>
+        <i
+          v-if="filters.length > 0"
+          class="bk-icon icon-funnel filter-switch-icon"
+          @click="showFilter = !showFilter">
+        </i>
+      </div>
+      <filters
+        v-show="showFilter && filters.length > 0"
+        :filters="filters"
+        :fields="fields"
+        :system-fields="systemFields"
+        :value="filtersData"
+        @change="handleFilterDataChange">
+      </filters>
+      <table-fields
+        v-if="!formDetailLoading"
+        style="margin-top: 16px"
+        :form-id="formIds"
+        :table-name="tableName"
+        :table-config="tableConfig"
+        :table-actions="config.tableActions || []"
+        :fields="fields"
+        :system-fields="systemFields"
+        :filters-data="filtersData">
+      </table-fields>
+    </template>
+  </div>
 </template>
 <script>
-    import { formMap } from 'shared/form'
-    import { FORM_SYS_FIELD } from '../common/field.js'
-    import queryStrSearchMixin from '../common/query-str-search-mixin'
-    import { NO_VIEWED_FIELD } from '../form/constants/forms.js'
-    import CustomButtons from './custom-buttons.vue'
-    import Filters from './filters.vue'
-    import TableFields from './table-fields.vue'
+import { formMap } from 'shared/form';
+import { FORM_SYS_FIELD } from '../common/field.js';
+import queryStrSearchMixin from '../common/query-str-search-mixin';
+import { NO_VIEWED_FIELD } from '../form/constants/forms.js';
+import CustomButtons from './custom-buttons.vue';
+import Filters from './filters.vue';
+import TableFields from './table-fields.vue';
 
-    export default {
-        name: 'formData',
-        components: {
-            CustomButtons,
-            Filters,
-            TableFields
-        },
-        mixins: [queryStrSearchMixin],
-        props: {
-            formIds: Number,
-            viewType: String,
-            config: {
-                type: Object,
-                default: () => {
-                    return {
-                        filters: [],
-                        tableColsExclude: [],
-                        buttons: [],
-                        tableActions: []
-                    }
-                }
-            }
-        },
-        data () {
-            return {
-                showFilter: true,
-                filters: this.config.filters?.slice(0) || [],
-                tableConfig: [],
-                fields: [],
-                formDetailLoading: true,
-                systemFields: FORM_SYS_FIELD,
-                tableName: '',
-                filtersData: {}
-            }
-        },
-        async created () {
-            await this.getFormDetail()
-            this.setInitFilterData()
-        },
-        methods: {
-            async getFormDetail () {
-                try {
-                    this.formDetailLoading = true
-                    let formDetail = {}
-                    if (this.viewType === 'preview') {
-                        const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds } })
-                        const { tableName, content } = res.data
-                        formDetail = {
-                            tableName,
-                            content: JSON.parse(content)
-                        }
-                    } else {
-                        formDetail = formMap[this.formIds]
-                    }
-                    const { content = [], tableName } = formDetail
-                    const excludeKeys = this.config.tableColsExclude || []
-                    this.fields = content.filter(field => !NO_VIEWED_FIELD.includes(field.type))
-                    this.tableName = tableName
-                    this.tableConfig = this.fields.filter(item => !excludeKeys.includes(item.key)).map(item => item.key) 
-                } catch (e) {
-                    console.error(e.message || e)
-                } finally {
-                    this.formDetailLoading = false
-                }
-            },
-            handleFilterDataChange (val) {
-                this.filtersData = val
-                this.updateQueryString()
-            }
+export default {
+  name: 'FormData',
+  components: {
+    CustomButtons,
+    Filters,
+    TableFields,
+  },
+  mixins: [queryStrSearchMixin],
+  props: {
+    formIds: Number,
+    viewType: String,
+    config: {
+      type: Object,
+      default: () => ({
+        filters: [],
+        tableColsExclude: [],
+        buttons: [],
+        tableActions: [],
+      }),
+    },
+  },
+  data() {
+    return {
+      showFilter: true,
+      filters: this.config.filters?.slice(0) || [],
+      tableConfig: [],
+      fields: [],
+      formDetailLoading: true,
+      systemFields: FORM_SYS_FIELD,
+      tableName: '',
+      filtersData: {},
+    };
+  },
+  async created() {
+    await this.getFormDetail();
+    this.setInitFilterData();
+  },
+  methods: {
+    async getFormDetail() {
+      try {
+        this.formDetailLoading = true;
+        let formDetail = {};
+        if (this.viewType === 'preview') {
+          const res = await this.$http.get('/nocode-form/detail', { params: { formId: this.formIds } });
+          const { tableName, content } = res.data;
+          formDetail = {
+            tableName,
+            content: JSON.parse(content),
+          };
+        } else {
+          formDetail = formMap[this.formIds];
         }
-    }
+        const { content = [], tableName } = formDetail;
+        const excludeKeys = this.config.tableColsExclude || [];
+        this.fields = content.filter(field => !NO_VIEWED_FIELD.includes(field.type));
+        this.tableName = tableName;
+        this.tableConfig = this.fields.filter(item => !excludeKeys.includes(item.key)).map(item => item.key);
+      } catch (e) {
+        console.error(e.message || e);
+      } finally {
+        this.formDetailLoading = false;
+      }
+    },
+    handleFilterDataChange(val) {
+      this.filtersData = val;
+      this.updateQueryString();
+    },
+  },
+};
 </script>
 <style lang="postcss" scoped>
 .form-data-manage {

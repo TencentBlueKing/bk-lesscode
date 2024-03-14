@@ -223,6 +223,7 @@
             'form.id' () {
                 this.outputs = []
                 this.params = this.form.funcParams.map((key) => ({ key, value: '', format: 'value' }))
+                this.fixMethod()
             }
         },
 

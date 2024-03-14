@@ -39,10 +39,10 @@
 * 函数用于组件属性时，函数体代码示例如下：
 ```bash
 return Promise.all([
-    this.$http.get('接口地址'),
-    this.$http.post('接口地址', { value: 2 })
+  this.$http.get('接口地址'),
+  this.$http.post('接口地址', { value: 2 })
 ]).then(([getDataRes, postDataRes]) => {
-    return [...getDataRes.data, ...postDataRes.data]
+  return [...getDataRes.data, ...postDataRes.data];
 })
 ```
 

@@ -1,67 +1,72 @@
 <template>
-    <section class="table-cell-actions">
-        <bk-button
-            v-for="button in buttons.slice(0, 3)"
-            v-bind="getProperties(button)"
+  <section class="table-cell-actions">
+    <bk-button
+      v-for="button in buttons.slice(0, 3)"
+      v-bind="getProperties(button)"
+      :key="button.id"
+      text
+      @click="handleClick(button)">
+      {{ button.name }}
+    </bk-button>
+    <bk-popover
+      v-if="buttons.length > 3"
+      ref="popover"
+      ext-cls="actions-list-popover"
+      placement="bottom-start"
+      :tippy-options="{ theme: 'light', arrow: false, distance: 5, hideOnClick: false }"
+      :on-show="popShow"
+      :on-hide="popHide">
+      <i
+        :class="['bk-icon icon-more more-actions-icon', { active: isPopOpen }]"
+        @click="$refs.popover.showHandler()"
+      ></i>
+      <template #content>
+        <ul class="actions-list">
+          <li
+            v-for="button in buttons.slice(3)"
             :key="button.id"
-            text
+            class="action-item"
             @click="handleClick(button)">
             {{ button.name }}
-        </bk-button>
-        <bk-popover
-            v-if="buttons.length > 3"
-            ref="popover"
-            ext-cls="actions-list-popover"
-            placement="bottom-start"
-            :tippy-options="{ theme: 'light', arrow: false, distance: 5, hideOnClick: false }"
-            :on-show="popShow"
-            :on-hide="popHide">
-            <i :class="['bk-icon icon-more more-actions-icon', { active: isPopOpen }]" @click="$refs.popover.showHandler()"></i>
-            <ul class="actions-list" slot="content">
-                <li
-                    v-for="button in buttons.slice(3)"
-                    :key="button.id"
-                    class="action-item"
-                    @click="handleClick(button)">
-                    {{ button.name }}
-                </li>
-            </ul>
-        </bk-popover>
-    </section>
+          </li>
+        </ul>
+      </template>
+    </bk-popover>
+  </section>
 </template>
 <script>
-    export default {
-        name: 'TableCellActions',
-        props: {
-            buttons: {
-                type: Array,
-                default: () => []
-            }
-        },
-        data () {
-            return {
-                isPopOpen: false
-            }
-        },
-        methods: {
-            getProperties (button) {
-                const props = {}
-                Object.keys(button.props).forEach(key => {
-                    props[key] = button.props[key].val
-                })
-                return props
-            },
-            popShow () {
-                this.isPopOpen = true
-            },
-            popHide () {
-                this.isPopOpen = false
-            },
-            handleClick (button) {
-                this.$emit('click', button)
-            }
-        }
-    }
+export default {
+  name: 'TableCellActions',
+  props: {
+    buttons: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      isPopOpen: false,
+    };
+  },
+  methods: {
+    getProperties(button) {
+      const props = {};
+      Object.keys(button.props).forEach((key) => {
+        props[key] = button.props[key].val;
+      });
+      return props;
+    },
+    popShow() {
+      this.isPopOpen = true;
+    },
+    popHide() {
+      this.isPopOpen = false;
+    },
+    handleClick(button) {
+      this.$emit('click', button);
+    },
+  },
+};
 </script>
 <style lang="postcss" scoped>
     .table-cell-actions {

@@ -1,11 +1,11 @@
 <template>
-    <div class="formula">--</div>
+  <div class="formula">--</div>
 </template>
 
 <script>
-    export default {
-        name: 'Formula'
-    }
+export default {
+  name: 'Formula',
+};
 </script>
 
 <style scoped lang="postcss">

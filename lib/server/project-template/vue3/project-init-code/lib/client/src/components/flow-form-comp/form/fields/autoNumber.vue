@@ -1,10 +1,10 @@
 <template>
-    <div class="auto-number">--</div>
+  <div class="auto-number">--</div>
 </template>
 <script>
-    export default {
-        name: 'AutoNumber'
-    }
+export default {
+  name: 'AutoNumber',
+};
 </script>
 <style lang="postcss" scoped>
 .auto-number {
