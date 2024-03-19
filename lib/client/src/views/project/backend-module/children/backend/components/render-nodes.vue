@@ -238,9 +238,11 @@
                             other.url = node?.content?.ide_url
                         }
                         if (other.id === 'PreviewProcessor') {
-                            if (node?.content?.result?.schema_url) {
-                                other.url = `/preview-api/project/${props.projectId}?appName=${appName}`
-                                store.dispatch('saasBackend/updateSchemaApiList', { appName })
+                            const schemaUrl = node?.content?.result?.schema_url
+                            const host = node?.content?.result?.devcontainer_url
+                            if (schemaUrl) {
+                                other.url = `/preview-api/project/${props.projectId}?host=${host}&schemaUrl=${schemaUrl}`
+                                store.dispatch('saasBackend/updateSchemaApiList', { schemaUrl })
                             }
                         }
                         other.property = node.property
@@ -376,7 +378,11 @@
                     if (x >= maxX) {
                         maxX = x
                     }
-                    y += (maxTask + taskOffset)
+                    if (maxTask === 0) {
+                        y += (parentNodeHeight + taskOffset) 
+                    } else {
+                        y += (maxTask + taskOffset) 
+                    }
                 })
 
                 finalTasks.forEach((item) => {
