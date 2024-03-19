@@ -9,9 +9,11 @@
         </aside>
         <section class="data-main">
             <render-main
+                v-if="dataBaseInfo.id"
                 :data-base-info="dataBaseInfo"
                 @update="handleUpdate"
             />
+            <empty-status v-else type="noData" :part="false"></empty-status>
         </section>
     </layout>
 </template>
