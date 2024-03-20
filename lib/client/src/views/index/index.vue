@@ -39,7 +39,7 @@
 </template>
 <script>
     import Vue from 'vue'
-    import { init, vue3Resource, registerComponent } from 'bk-lesscode-render'
+    import { init, vue3Resource, bkuiResource, registerComponent } from 'bk-lesscode-render'
     import { mapActions, mapGetters, mapState } from 'vuex'
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
@@ -192,7 +192,7 @@
                             const [
                                 config,
                                 componentSource
-                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue)
+                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue, vue3Resource, bkuiResource)
                             new Promise((resolve) => componentSource(resolve)).then((component) => {
                                 registerComponent(config.type, component)
                             })
