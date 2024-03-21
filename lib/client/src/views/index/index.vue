@@ -192,7 +192,7 @@
                             const [
                                 config,
                                 componentSource
-                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue)
+                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue, vue3Resource, bkuiResource)
                             new Promise((resolve) => componentSource(resolve)).then((component) => {
                                 registerComponent(config.type, component)
                             })
