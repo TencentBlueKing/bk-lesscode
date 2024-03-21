@@ -34,7 +34,15 @@
     import widgetBkTable from '@/components/render/pc/widget/table/table'
     import widgetElTable from '@/components/patch/widget-el-table/index.vue'
     import widgetTableColumn from '@/components/render/pc/widget/table/table-column'
+    import BkLuckyCanvas from '@/components/render/pc/widget/bk-lucky-canvas'
     import '@vant/touch-emulator' // PC端模拟移动端事件 用于预览
+
+    import { register } from 'swiper/element/bundle'
+    import SwiperAnimation from 'swiper-element-animation'
+    import 'animate.css'
+
+    window.SwiperAnimation = SwiperAnimation
+    window.swiperRegister = register
 
     window.previewCustomCompontensPlugin = []
     window.registerPreview = function (callback) {
@@ -139,6 +147,7 @@
             registerComponent('widget-bk-table', widgetBkTable)
             registerComponent('widget-el-table', widgetElTable)
             registerComponent('widget-table-column', widgetTableColumn)
+            registerComponent('bk-lucky-canvas', BkLuckyCanvas)
         },
         async mounted () {
             this.minHeight = window.innerHeight
