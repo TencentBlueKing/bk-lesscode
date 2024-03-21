@@ -17,13 +17,16 @@
             }
         },
         computed: {
-            appName () {
-                return this.$route.query?.appName
+            schemaUrl () {
+                return this.$route.query?.schemaUrl
+            },
+            host () {
+                return this.$route.query?.host
             }
         },
         async mounted() {
             this.apiJson = await this.$store.dispatch('saasBackend/getSaasApiDoc', {
-                appName: this.appName
+                schemaUrl: this.schemaUrl
             })
             this.loadSwaggerUI()
         },
@@ -37,6 +40,10 @@
                     ],
                     layout: "StandaloneLayout",
                     spec: this.apiJson,
+                    requestInterceptor: (request) => {
+                        request.url = request.url?.replace(location.host, this.host);
+                        return request;
+                    },
                     deepLinking: true
                 })
             }

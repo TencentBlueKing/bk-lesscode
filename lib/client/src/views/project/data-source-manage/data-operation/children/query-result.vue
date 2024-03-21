@@ -162,9 +162,10 @@
                 })
                 // 执行查询
                 return new Promise((resolve, reject) => {
+                    queryRecord.sql = window.btoa(queryRecord.sql)
                     store
                         .dispatch('dataSource/queryBySql', {
-                            sql: window.btoa(queryRecord.sql),
+                            sql: queryRecord.sql,
                             dataSourceType: props.dataSourceType,
                             thirdPartDBName: props.thirdPartDB.dbName
                         })

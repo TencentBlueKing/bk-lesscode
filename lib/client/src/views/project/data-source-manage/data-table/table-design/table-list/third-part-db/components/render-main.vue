@@ -161,8 +161,11 @@
             }
         },
         watch: {
-            'dataBaseInfo.id' () {
-                this.getTables()
+            'dataBaseInfo.id': {
+                handler () {
+                    this.getTables()
+                },
+                immediate: true
             }
         },
         methods: {

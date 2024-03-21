@@ -19,7 +19,7 @@
         >
             {{ node.name }}
         </span>
-        <span class="node-icons" v-if="!isExecuting">
+        <span class="node-icons" v-if="!isExecuting && !isCanvasLocked">
             <i
                 class="bk-drag-icon bk-drag-edit node-icon hover-icon"
                 v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
@@ -88,6 +88,9 @@
         computed: {
             isExecuting () {
                 return this.$store.state.saasBackend?.isExecuting || false
+            },
+            isCanvasLocked () {
+                return this.$store.state.saasBackend?.isCanvasLocked || false
             },
             schemaApiList () {
                 return this.$store.state.saasBackend?.schemaApiList || []
