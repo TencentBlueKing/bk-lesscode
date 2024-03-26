@@ -7,6 +7,7 @@
             class="g-mb8"
             :value="sourceData.tableName"
             :data-source-type="sourceData.dataSourceType"
+            :third-part-d-b-name="sourceData.thirdPartDBName"
             @choose-table="chooseTable"
             @fetch-data="handleFetchData"
             @clear="clearTable"
@@ -65,14 +66,16 @@
             const sourceData = ref({
                 val: [],
                 tableName: originSourceData?.tableName,
-                dataSourceType: originSourceData?.dataSourceType
+                dataSourceType: originSourceData?.dataSourceType,
+                thirdPartDBName: originSourceData?.thirdPartDBName
             })
 
-            const chooseTable = ({ tableName, table, dataSourceType }) => {
+            const chooseTable = ({ tableName, table, dataSourceType, thirdPartDBName }) => {
                 // 更新值
                 sourceData.value.val = []
                 sourceData.value.tableName = tableName
                 sourceData.value.dataSourceType = dataSourceType
+                sourceData.value.thirdPartDBName = thirdPartDBName
                 triggleUpdate()
             }
 
@@ -85,6 +88,7 @@
                 sourceData.value.val = slotConfig?.value?.val
                 sourceData.value.tableName = ''
                 sourceData.value.dataSourceType = ''
+                sourceData.value.thirdPartDBName = ''
                 triggleUpdate()
             }
 
@@ -95,7 +99,8 @@
                     payload: {
                         sourceData: {
                             tableName: sourceData.value.tableName,
-                            dataSourceType: sourceData.value.dataSourceType
+                            dataSourceType: sourceData.value.dataSourceType,
+                            thirdPartDBName: sourceData.value.thirdPartDBName
                         }
                     }
                 }

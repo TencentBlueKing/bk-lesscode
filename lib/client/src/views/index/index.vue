@@ -12,6 +12,7 @@
 <template>
     <main
         class="lessocde-editor-page"
+        :style="{ height: bodyHeight }"
         v-bkloading="{
             isLoading: isContentLoading || isCustomComponentLoading
         }">
@@ -38,7 +39,7 @@
 </template>
 <script>
     import Vue from 'vue'
-    import { init, vue3Resource, registerComponent } from 'bk-lesscode-render'
+    import { init, vue3Resource, bkuiResource, registerComponent } from 'bk-lesscode-render'
     import { mapActions, mapGetters, mapState } from 'vuex'
     import { debounce } from 'shared/util.js'
     import LC from '@/element-materials/core'
@@ -77,7 +78,7 @@
             }
         },
         computed: {
-            ...mapGetters(['user']),
+            ...mapGetters(['user', 'bodyHeight']),
             ...mapGetters('drag', ['curTemplateData']),
             ...mapGetters('page', ['pageDetail', 'platform']),
             ...mapGetters('functions', ['funcGroups']),
@@ -191,7 +192,7 @@
                             const [
                                 config,
                                 componentSource
-                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue)
+                            ] = callback(LC.getFramework() === 'vue3' ? vue3Resource : Vue, vue3Resource, bkuiResource)
                             new Promise((resolve) => componentSource(resolve)).then((component) => {
                                 registerComponent(config.type, component)
                             })
@@ -341,8 +342,8 @@
     $pageHeaderHeight: 52px;
 
     .lessocde-editor-page {
+        position: relative;
         min-width: 1220px;
-        height: calc(100vh - $headerHeight);
     }
     .lesscode-editor-page-header {
         position: relative;
@@ -371,7 +372,7 @@
         }
     }
     .lesscode-editor-page-content{
-        height: calc(100vh - $headerHeight - $pageHeaderHeight);
+        height: calc(100% - $pageHeaderHeight);
     }
     .lesscode-materials-panel-content {
         height: 100%;

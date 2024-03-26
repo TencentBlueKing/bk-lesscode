@@ -78,6 +78,6 @@
 
 <style lang="postcss" scoped>
     .api-manage {
-        height: calc(100vh - 120px);
+        height: 100%;
     }
 </style>

@@ -2,6 +2,7 @@
     <choose-data-table
         :value="chooseTableName"
         :data-source-type="dataSourceType"
+        :third-part-d-b-name="thirdPartDBName"
         @choose-table="chooseTable"
         @fetch-data="handleFetchData"
         @clear="clearTable"
@@ -51,29 +52,32 @@
             const propStatus = toRefs<Iprop>(props)
             const chooseTableName = ref(propStatus.slotVal?.value?.payload?.sourceData?.tableName)
             const dataSourceType = ref(propStatus.slotVal?.value?.payload?.sourceData?.dataSourceType)
+            const thirdPartDBName = ref(propStatus.slotVal?.value?.payload?.sourceData?.thirdPartDBName)
 
-            const chooseTable = ({ tableName, dataSourceType }) => {
-                triggleUpdate(tableName, [], dataSourceType)
+            const chooseTable = ({ tableName, dataSourceType, thirdPartDBName }) => {
+                triggleUpdate(tableName, [], dataSourceType, thirdPartDBName)
             }
 
             const handleFetchData = ({ list }) => {
-                triggleUpdate(chooseTableName.value, list, dataSourceType.value)
+                triggleUpdate(chooseTableName.value, list, dataSourceType.value, thirdPartDBName.value)
             }
 
             const clearTable = () => {
-                triggleUpdate('', propStatus.slotConfig.value.val, '')
+                triggleUpdate('', propStatus.slotConfig.value.val, '', '')
             }
 
-            const triggleUpdate = (tableName, val, bkDataSourceType) => {
+            const triggleUpdate = (tableName, val, bkDataSourceType, bkThirdPartDBName) => {
                 chooseTableName.value = tableName
                 dataSourceType.value = bkDataSourceType
+                thirdPartDBName.value = bkThirdPartDBName
                 const slot = {
                     ...propStatus.slotVal.value,
                     val,
                     payload: {
                         sourceData: {
                             tableName,
-                            dataSourceType: bkDataSourceType
+                            dataSourceType: bkDataSourceType,
+                            thirdPartDBName
                         }
                     }
                 }
@@ -83,6 +87,7 @@
             return {
                 chooseTableName,
                 dataSourceType,
+                thirdPartDBName,
                 chooseTable,
                 handleFetchData,
                 clearTable

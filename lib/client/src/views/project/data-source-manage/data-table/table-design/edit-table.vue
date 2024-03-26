@@ -135,9 +135,10 @@
             } = useTableStatus()
 
             let id = ''
+            const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
 
             const goBack = () => {
-                router.push({ name: 'showTable', query: { id } })
+                router.back()
             }
 
             const changeEdit = (val) => {
@@ -185,7 +186,8 @@
                 const record = {
                     projectId,
                     sql: sql.value,
-                    tableId: id
+                    tableId: id,
+                    thirdPartDBId
                 }
                 const postData = {
                     dataTable,

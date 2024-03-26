@@ -19,49 +19,56 @@
                     :toggle-active="true"
                     :before-nav-change="beforeNavChange"
                     v-bind="defaultThemeColorProps">
-                    <bk-navigation-menu-item
-                        v-for="(menuItem) in navList"
-                        :key="`${menuItem.url}`"
-                        :has-child="menuItem.children && !!menuItem.children.length"
-                        :id="menuItem.url"
-                        @click="handleSelect">
-                        <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
-                        <template v-if="menuItem.iamAction">
-                            <auth-component
-                                :permission="menuItem.permission"
-                                :auth="menuItem.iamAction"
-                                :resource-id="$route.params.projectId"
-                                @before-show-permission-dialog="beforeShowPermissionDialog">
-                                <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-forbid-container-cls">{{menuItem.title}}</a>
-                                <span class="item-title" slot="allow">{{menuItem.title}}</span>
-                            </auth-component>
-                        </template>
-                        <template v-else>
-                            <span class="item-title">{{menuItem.title}}</span>
-                        </template>
-                        <div slot="child" class="menu-child">
-                            <bk-navigation-menu-item
-                                v-for="(childrenItem) in menuItem.children"
-                                :key="childrenItem.url"
-                                :id="childrenItem.url"
-                                :url="childrenItem.url"
-                                @click="handleSelect">
-                                <template v-if="childrenItem.iamAction">
-                                    <auth-component
-                                        :permission="childrenItem.permission"
-                                        :auth="childrenItem.iamAction"
-                                        :resource-id="$route.params.projectId"
-                                        @before-show-permission-dialog="beforeShowPermissionDialog">
-                                        <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-child-forbid-container-cls">{{childrenItem.title}}</a>
-                                        <span slot="allow">{{childrenItem.title}}</span>
-                                    </auth-component>
-                                </template>
-                                <template v-else>
-                                    <span>{{ childrenItem.title }}</span>
-                                </template>
-                            </bk-navigation-menu-item>
-                        </div>
-                    </bk-navigation-menu-item>
+                    <bk-navigation-menu-group
+                        v-for="group in navList"
+                        :key="group.name"
+                        :group-name="group.name"
+                    >
+                        <bk-navigation-menu-item
+                            v-for="(menuItem) in group.children"
+                            :key="`${menuItem.url}`"
+                            :has-child="menuItem.children && !!menuItem.children.length"
+                            :id="menuItem.url"
+                            @click="handleSelect">
+                            <bk-icon v-if="menuItem.bkicon" :type="menuItem.bkicon" style="margin-left: 2px"/>
+                            <i :class="`bk-drag-icon bk-drag-${menuItem.icon}`"></i>
+                            <template v-if="menuItem.iamAction">
+                                <auth-component
+                                    :permission="menuItem.permission"
+                                    :auth="menuItem.iamAction"
+                                    :resource-id="$route.params.projectId"
+                                    @before-show-permission-dialog="beforeShowPermissionDialog">
+                                    <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-forbid-container-cls">{{menuItem.title}}</a>
+                                    <span class="item-title" slot="allow">{{menuItem.title}}</span>
+                                </auth-component>
+                            </template>
+                            <template v-else>
+                                <span class="item-title">{{menuItem.title}}</span>
+                            </template>
+                            <div slot="child" class="menu-child">
+                                <bk-navigation-menu-item
+                                    v-for="(childrenItem) in menuItem.children"
+                                    :key="childrenItem.url"
+                                    :id="childrenItem.url"
+                                    :url="childrenItem.url"
+                                    @click="handleSelect">
+                                    <template v-if="childrenItem.iamAction">
+                                        <auth-component
+                                            :permission="childrenItem.permission"
+                                            :auth="childrenItem.iamAction"
+                                            :resource-id="$route.params.projectId"
+                                            @before-show-permission-dialog="beforeShowPermissionDialog">
+                                            <a href="javascript:;" slot="forbid" custom-forbid-container-cls="menu-child-forbid-container-cls">{{childrenItem.title}}</a>
+                                            <span slot="allow">{{childrenItem.title}}</span>
+                                        </auth-component>
+                                    </template>
+                                    <template v-else>
+                                        <span>{{ childrenItem.title }}</span>
+                                    </template>
+                                </bk-navigation-menu-item>
+                            </div>
+                        </bk-navigation-menu-item>
+                    </bk-navigation-menu-group>
                 </bk-navigation-menu>
             </div>
             <div class="side-ft" v-if="showMenuFooter" @mouseenter.stop>
@@ -161,6 +168,9 @@
             },
             helpDocument () {
                 return this.$route.meta?.helpDocument
+            },
+            isSaasAvailable () {
+                return this.$store.getters['saasBackend/isSaasAvailable']
             }
         },
         beforeRouteUpdate (to, from, next) {
@@ -242,10 +252,13 @@
 
                 // 如果未开启权限， 不展示权限管理
                 if (!IAM_ENABLE) {
-                    navList = navList.filter(item => item.url !== 'authManage')
+                    navList = navList.filter(item => item?.id !== 'authManage')
                 }
                 if (this.curProject?.framework === 'vue3') {
-                    navList = navList.filter(item => item.url !== 'flowList')
+                    navList = navList.filter(item => item?.id !== 'flowList')
+                }
+                if (!this.isSaasAvailable) {
+                    navList = navList.filter(item => item?.id !== 'backendModule')
                 }
 
                 navList.forEach(item => {
@@ -253,6 +266,11 @@
                     if (item.children) {
                         item.children.forEach(child => {
                             dealPermission(child)
+                            if (child.children) {
+                                child.children.forEach(cchild => {
+                                    dealPermission(cchild)
+                                })
+                            }
                         })
                     }
                 })
@@ -400,8 +418,7 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 52px);
-        margin-top: 52px;
+        height: 100%;
 
         .project-right-content {
             padding-left: 0px;
@@ -446,7 +463,7 @@
             .aside {
                 position: absolute;
                 z-index: 999;
-                height: calc(100% - 52px);
+                height: 100%;
             }
             .project-right-content {
                 padding-left: 60px;

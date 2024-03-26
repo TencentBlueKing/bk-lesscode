@@ -30,18 +30,6 @@
                     </div> -->
 
                     <template v-if="isRouteContains('op') && iamNoResourcesPerm[$IAM_ACTION.view_operation_data[0]]">
-                        <!-- <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/user">
-                            <i class="bk-drag-icon bk-drag-user-count"></i>用户数据
-                        </auth-router-link>
-                        <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/project">
-                            <i class="bk-drag-icon bk-drag-project-count"></i>应用数据
-                        </auth-router-link>
-                        <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/func">
-                            <i class="bk-drag-icon bk-drag-fc-count"></i>函数数据
-                        </auth-router-link>
-                        <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/comp">
-                            <i class="bk-drag-icon bk-drag-compoment-count"></i>自定义组件数据
-                        </auth-router-link> -->
                         <router-link tag="div" class="nav-item" to="/op/stats/user">
                             <i class="bk-drag-icon bk-drag-user-count"></i>{{ $t('用户数据') }}
                         </router-link>
@@ -134,8 +122,7 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 52px);
-        margin-top: 52px;
+        height: 100%;
 
         &.aside-folded {
             .aside {

@@ -277,8 +277,7 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        margin-top: 52px;
-        height: calc(100vh - 58px);
+        height: 100%;
         overflow-y: auto;
         @mixin scroller;
         .banner{

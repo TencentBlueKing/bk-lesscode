@@ -83,7 +83,8 @@
             tableList: Array,
             dataSourceType: String,
             bkBaseBizList: Array,
-            isSuccessfulQuery: Boolean
+            isSuccessfulQuery: Boolean,
+            thirdPartDB: Object
         },
 
         setup (props, { emit }) {
@@ -124,6 +125,7 @@
                 paginationList.value = []
                 displayResult.value = []
                 hiddenTableIndexs.value = []
+                tableNames.value = []
             }
 
             // 执行查询
@@ -133,13 +135,14 @@
                 const queryRecord = {
                     type: props.queryType,
                     projectId: router?.currentRoute?.params?.projectId,
-                    dataSourceType: props.dataSourceType
+                    dataSourceType: props.dataSourceType,
+                    thirdPartDBName: props.thirdPartDB.dbName
                 }
                 if (props.queryType === 'json-query') {
                     queryRecord.condition = props.condition
                     // 获取所有的 tables
                     let tables = []
-                    if (props.dataSourceType === 'preview') {
+                    if (['preview', 'third-part'].includes(props.dataSourceType)) {
                         tables = props.tableList
                     } else {
                         props.bkBaseBizList.forEach((bkBaseBiz) => {
@@ -159,10 +162,12 @@
                 })
                 // 执行查询
                 return new Promise((resolve, reject) => {
+                    queryRecord.sql = window.btoa(queryRecord.sql)
                     store
                         .dispatch('dataSource/queryBySql', {
                             sql: queryRecord.sql,
-                            dataSourceType: props.dataSourceType
+                            dataSourceType: props.dataSourceType,
+                            thirdPartDBName: props.thirdPartDB.dbName
                         })
                         .then(({ data, spendTime }) => {
                             // 存储总数

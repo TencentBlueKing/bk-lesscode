@@ -17,11 +17,13 @@
     import * as echarts from 'echarts'
     import { uuid, debounce } from 'shared/util'
 
-    let chartInst = null
-
     export default {
         name: 'chart',
         props: {
+            componentId: {
+                type: String,
+                default: ''
+            },
             width: {
                 type: [Number, String],
                 default: ''
@@ -37,6 +39,7 @@
         },
         data () {
             return {
+                charInst: null,
                 uuid: '',
                 observer: null
             }
@@ -55,16 +58,16 @@
             options: {
                 deep: true,
                 handler (val) {
-                    chartInst.setOption(val, true)
+                    this.chartInst?.setOption(val, true)
                 }
             }
         },
         created () {
-            this.uuid = `echart${uuid()}`
+            this.uuid = this.componentId || uuid()
         },
         mounted () {
-            chartInst = echarts.init(this.$refs[this.uuid])
-            chartInst.setOption(this.options)
+            this.chartInst = echarts.init(this.$refs[this.uuid])
+            this.chartInst.setOption(this.options)
             this.debounceResize = debounce(this.resizeChart, 500)
             this.observer = new ResizeObserver(this.debounceResize)
             this.observer.observe(this.$refs[this.uuid])
@@ -74,7 +77,7 @@
         },
         methods: {
             resizeChart () {
-                chartInst && chartInst.resize()
+                this.chartInst?.resize()
             }
         }
     }

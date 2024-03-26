@@ -280,6 +280,7 @@
 
         setup (props) {
             const projectId = router?.currentRoute?.params?.projectId
+            const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
             const { environment, activeTable } = toRefs<IProps>(props)
             const formRef = ref(null)
             const dataStatus = reactive({
@@ -355,6 +356,7 @@
 
                 const queryData = {
                     projectId,
+                    thirdPartDBId,
                     environment: environment.value.key,
                     tableName: activeTable.value.tableName,
                     page: dataStatus.pagination.current,
@@ -537,7 +539,8 @@
                 const apiData = {
                     environment: environment.value.key,
                     projectId,
-                    sql
+                    sql,
+                    thirdPartDBId
                 }
                 return store.dispatch('dataSource/modifyOnlineDb', apiData)
             }

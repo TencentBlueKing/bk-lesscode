@@ -22,8 +22,7 @@
     import 'bk-lesscode-render/dist/index.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/reset.css'
-    import * as swiperAni from '@/common/swiper.animate.min.js'
-    import '@/css/animate.min.css'
+  
     import mobileHeader from '@/components/render/mobile/common/mobile-header/mobile-header'
     import { i18nConfig } from '@/locales/i18n.js'
     import { bundless } from '@blueking/bundless'
@@ -35,9 +34,16 @@
     import widgetBkTable from '@/components/render/pc/widget/table/table'
     import widgetElTable from '@/components/patch/widget-el-table/index.vue'
     import widgetTableColumn from '@/components/render/pc/widget/table/table-column'
+    import BkLuckyCanvas from '@/components/render/pc/widget/bk-lucky-canvas'
     import '@vant/touch-emulator' // PC端模拟移动端事件 用于预览
 
-    window.swiperAni = swiperAni
+    import { register } from 'swiper/element/bundle'
+    import SwiperAnimation from 'swiper-element-animation'
+    import 'animate.css'
+
+    window.SwiperAnimation = SwiperAnimation
+    window.swiperRegister = register
+
     window.previewCustomCompontensPlugin = []
     window.registerPreview = function (callback) {
         window.previewCustomCompontensPlugin.push(callback)
@@ -141,6 +147,7 @@
             registerComponent('widget-bk-table', widgetBkTable)
             registerComponent('widget-el-table', widgetElTable)
             registerComponent('widget-table-column', widgetTableColumn)
+            registerComponent('bk-lucky-canvas', BkLuckyCanvas)
         },
         async mounted () {
             this.minHeight = window.innerHeight

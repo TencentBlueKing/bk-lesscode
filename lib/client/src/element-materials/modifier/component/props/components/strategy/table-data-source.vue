@@ -4,6 +4,7 @@
         <choose-data-table
             :value="renderChooseTableName"
             :data-source-type="renderDataSourceType"
+            :third-part-d-b-name="renderThirdPartDBName"
             @choose-table="chooseTable"
             @fetch-data="handleFetchData"
             @clear="clearTable"
@@ -73,13 +74,15 @@
             const renderChooseTableName = ref(propStatus.payload?.value?.sourceData?.tableName)
             const renderDataSourceType = ref(propStatus.payload?.value?.sourceData?.dataSourceType)
             const renderShowOperationColumn = ref(propStatus.payload?.value?.sourceData?.showOperationColumn)
+            const renderThirdPartDBName = ref(propStatus.payload?.value?.sourceData?.thirdPartDBName)
 
-            const chooseTable = ({ tableName, dataSourceType }) => {
+            const chooseTable = ({ tableName, dataSourceType, thirdPartDBName }) => {
                 renderChooseTableName.value = tableName
+                renderThirdPartDBName.value = thirdPartDBName
                 // 类型改变的时候，需要重置部分状态
                 if (renderDataSourceType.value !== dataSourceType) {
                     renderDataSourceType.value = dataSourceType
-                    renderShowOperationColumn.value = dataSourceType === 'preview'
+                    renderShowOperationColumn.value = ['third-part', 'preview'].includes(dataSourceType)
                 }
                 // 触发更新
                 propStatus.change.value(
@@ -90,6 +93,7 @@
                         sourceData: {
                             tableName,
                             dataSourceType,
+                            thirdPartDBName,
                             showOperationColumn: renderShowOperationColumn.value
                         }
                     }
@@ -108,6 +112,7 @@
             const clearTable = () => {
                 renderChooseTableName.value = ''
                 renderDataSourceType.value = ''
+                renderThirdPartDBName.value = ''
                 renderShowOperationColumn.value = false
                 propStatus.change.value(
                     props.name,
@@ -116,6 +121,7 @@
                     {
                         sourceData: {
                             tableName: '',
+                            thirdPartDBName: '',
                             showOperationColumn: false
                         }
                     }
@@ -141,6 +147,7 @@
                 renderChooseTableName,
                 renderDataSourceType,
                 renderShowOperationColumn,
+                renderThirdPartDBName,
                 chooseTable,
                 handleFetchData,
                 clearTable,
