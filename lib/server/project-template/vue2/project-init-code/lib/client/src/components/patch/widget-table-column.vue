@@ -95,7 +95,7 @@
 
             handleFilter (column) {
                 this.$parent.$refs.tableHeader.$refs.popoverRef.forEach(refItem => refItem.hideHandler())
-                this.$parent.$parent.handleFilter({
+                this.$parent.$parent.$parent.handleFilter({
                     key: column.property,
                     value: this.filterText
                 })
