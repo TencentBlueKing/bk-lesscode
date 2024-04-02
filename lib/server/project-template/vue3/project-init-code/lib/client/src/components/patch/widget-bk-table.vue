@@ -27,6 +27,8 @@
                 v-if="showOperationColumn"
                 label="操作"
                 width="120"
+                type="action"
+                :index="9999"
             >
                 <template #default="prop">
                     <bk-button
@@ -286,10 +288,10 @@
                 },
                 renderPagination: {
                     'show-total-count': true,
-                    'count': 3,
+                    count: 3,
                     'show-limit': true,
-                    'limit': 10,
-                    'current': 1
+                    limit: 10,
+                    current: 1
                 },
                 renderData: [],
                 isLoading: false,

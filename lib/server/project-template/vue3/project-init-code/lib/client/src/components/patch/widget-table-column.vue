@@ -21,7 +21,8 @@
             sortable: Boolean,
             width: String,
             filterable: Boolean,
-            align: String
+            align: String,
+            index: Number
         },
 
         data () {

@@ -278,10 +278,10 @@
                 },
                 renderPagination: {
                     'show-total-count': true,
-                    'count': 3,
+                    count: 3,
                     'show-limit': true,
-                    'limit': 10,
-                    'current': 1
+                    limit: 10,
+                    current: 1
                 },
                 renderData: [],
                 isLoading: false,
