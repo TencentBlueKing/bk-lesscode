@@ -14,9 +14,9 @@
         class="lessocde-editor-page"
         :style="{ height: bodyHeight }"
         v-bkloading="{
-            isLoading: isContentLoading || isCustomComponentLoading
+            isLoading: isContentLoading
         }">
-        <div v-if="!isContentLoading && !isCustomComponentLoading" class="lesscode-editor-page-header">
+        <div v-if="!isContentLoading" class="lesscode-editor-page-header">
             <page-list :is-canvas-updated="isCanvasUpdated" />
             <div
                 id="toolActionBox"
@@ -26,7 +26,7 @@
             <page-operate />
         </div>
         <!-- 编辑应用的普通页面 -->
-        <template v-if="!isContentLoading && !isCustomComponentLoading">
+        <template v-if="!isContentLoading">
             <draw-layout
                 class="lesscode-editor-page-content">
                 <material-panel slot="left" />
@@ -72,7 +72,6 @@
                 customNav: {},
                 pageHasChange: false,
                 isContentLoading: true,
-                isCustomComponentLoading: true,
                 operationType: 'edit',
                 isCanvasUpdated: false
             }
@@ -182,11 +181,10 @@
             /**
              * @desc 注册自定义组件
              */
-            registerCustomComponent (platform) {
-                this.isCustomComponentLoading = true
+            registerCustomComponent (platform, allCompsFlag) {
                 return new Promise((resolve, reject) => {
                     const script = document.createElement('script')
-                    script.src = `/${this.projectId}/${this.pageId}/component/register.js?platform=${platform}`
+                    script.src = `/${this.projectId}/${this.pageId}/component/register.js?platform=${platform}&allCompsFlag=${allCompsFlag}`
                     script.onload = () => {
                         window.customCompontensPlugin.forEach((callback) => {
                             const [
@@ -199,11 +197,9 @@
                             // 注册自定义组件 material
                             LC.registerMaterial(config.type, config, config.framework)
                         })
-                        this.isCustomComponentLoading = false
                         resolve()
                     }
                     script.onerror = () => {
-                        this.isCustomComponentLoading = false
                         reject(new Error(window.i18n.t('自定义组件注册失败')))
                     }
                     document.body.appendChild(script)
@@ -249,7 +245,10 @@
                     LC.setFramework(projectDetail.framework)
                     init(projectDetail.framework)
 
-                    await this.registerCustomComponent(pageDetail.pageType || 'PC')
+                    // 同步加载当前页面已用到的自定义组件
+                    await this.registerCustomComponent(pageDetail.pageType || 'PC', 0)
+                    // 异步加载自定义组件列表组件
+                    this.registerCustomComponent(pageDetail.pageType || 'PC', 1)
 
                     await this.$store.dispatch('page/getPageSetting', {
                         pageId: this.pageId,
