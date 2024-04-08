@@ -82,6 +82,8 @@ export default defineComponent({
         }
         // 切换是否展示子节点
         const toggleShowProperty = () => {
+            if (copyScheme.value.valueType === 'variable') return
+
             copyScheme.value.showChildren = !copyScheme.value.showChildren
             triggerChange()
         }
@@ -178,7 +180,8 @@ export default defineComponent({
                                         API_PARAM_TYPES.BOOLEAN.VAL,
                                         API_PARAM_TYPES.NUMBER.VAL,
                                         API_PARAM_TYPES.STRING.VAL
-                                    ].includes(this.copyScheme.type)
+                                    ].includes(this.copyScheme.type),
+                                    disabled: this.copyScheme.valueType === 'variable'
                                 }
                             ]
                         }
@@ -288,16 +291,15 @@ export default defineComponent({
                         </bk-form-item>
                     </bk-form>
                     {
-                        this.showRule ?
-                        [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)
-                            ? <span class="layout-middle">--</span>
-                            : <render-validate
-                                class="layout-middle"
-                                scheme={this.copyScheme}
-                                onChange={(validate) => this.update({ validate })}
-                            />
-                        :
-                        ''
+                        this.showRule
+                            ? [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)
+                                ? <span class="layout-middle">--</span>
+                                : <render-validate
+                                    class="layout-middle"
+                                    scheme={this.copyScheme}
+                                    onChange={(validate) => this.update({ validate })}
+                                />
+                            : ''
                     }
                     <bk-input
                         class="layout-middle"

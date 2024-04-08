@@ -33,6 +33,11 @@
         &.close {
             transform: rotate(-90deg);
         }
+        &.disabled {
+            transform: rotate(-90deg);
+            cursor: not-allowed;
+            color: #DCDEE5;
+        }
         &.icon-down-shape {
             margin-right: 4px;
         }

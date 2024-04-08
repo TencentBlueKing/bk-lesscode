@@ -123,13 +123,15 @@
                                 <bk-select
                                     style="width: 100%; background-color: #fff"
                                     :popover-options="{ appendTo: 'parent' }"
-                                    v-model="item.type"
-                                    @change="val => handleChange(val, 'type', index)"
+                                    :value="item.type || 'normal'"
+                                    @change="val => handleChange(val === 'normal' ? '' : val, 'type', index)"
                                 >
-                                    <bk-option v-for="option in typeList"
+                                    <bk-option
+                                        v-for="option in typeList"
                                         :key="option.id"
                                         :id="option.id"
-                                        :name="option.name">
+                                        :name="option.name"
+                                    >
                                     </bk-option>
                                 </bk-select>
                             </div>
@@ -259,8 +261,9 @@
             const type = props.type
             const column = ref([])
             const showMethod = ref(false)
+            // normal 是因为必须有一个id，空字符串select会有重影
             const typeList = [
-                { id: '', name: window.i18n.t('普通数据列') },
+                { id: 'normal', name: window.i18n.t('普通数据列') },
                 { id: 'selection', name: window.i18n.t('多选框列') },
                 // { id: 'expand', name: '展开按钮' },
                 { id: 'index', name: window.i18n.t('索引序号列（从 1 开始）') }

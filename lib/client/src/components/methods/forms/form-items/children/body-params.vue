@@ -50,6 +50,11 @@
             const paramRef = ref()
 
             const handleUpdate = (row, val) => {
+                // 变量就不展示子节点
+                if (val.valueType === 'variable') {
+                    row.showChildren = false
+                    row.children = []
+                }
                 Object.assign(row, val)
                 triggleChange()
             }
