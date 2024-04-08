@@ -1,7 +1,8 @@
 import {
     getDefaultApiUseScheme,
     getDefaultApiEditScheme,
-    API_PARAM_TYPES
+    API_PARAM_TYPES,
+    API_PARAM_VALUE_TYPES
 } from 'shared/api'
 import './scheme.css'
 import {
@@ -74,7 +75,7 @@ export default defineComponent({
         }
         const customValidateRule = {
             validator (val) {
-                const value = copyScheme.value.valueType === 'variable' ? copyScheme.value.code : val
+                const value = copyScheme.value.valueType === API_PARAM_VALUE_TYPES.VARIABLE ? copyScheme.value.code : val
                 return customValidate(value, copyScheme.value.validate, props.variableList, props.functionList, props.apiList)
             },
             message: window.i18n.t('参数值不符合自定义校验'),
@@ -82,7 +83,7 @@ export default defineComponent({
         }
         // 切换是否展示子节点
         const toggleShowProperty = () => {
-            if (copyScheme.value.valueType === 'variable') return
+            if (copyScheme.value.valueType === API_PARAM_VALUE_TYPES.VARIABLE) return
 
             copyScheme.value.showChildren = !copyScheme.value.showChildren
             triggerChange()
@@ -181,7 +182,7 @@ export default defineComponent({
                                         API_PARAM_TYPES.NUMBER.VAL,
                                         API_PARAM_TYPES.STRING.VAL
                                     ].includes(this.copyScheme.type),
-                                    disabled: this.copyScheme.valueType === 'variable'
+                                    disabled: this.copyScheme.valueType === API_PARAM_VALUE_TYPES.VARIABLE
                                 }
                             ]
                         }
