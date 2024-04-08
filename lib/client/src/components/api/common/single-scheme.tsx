@@ -320,7 +320,7 @@ export default defineComponent({
                                 [
                                     API_PARAM_TYPES.OBJECT.VAL,
                                     API_PARAM_TYPES.ARRAY.VAL
-                                ].includes(this.copyScheme.type) && this.disablePlusBrother
+                                ].includes(this.copyScheme.type) && this.disablePlusBrother && this.copyScheme.valueType !== API_PARAM_VALUE_TYPES.VARIABLE
                                     ? <i
                                         class="bk-drag-icon bk-drag-add-fill layout-icon"
                                         onClick={this.plusChildProperty}
@@ -343,7 +343,18 @@ export default defineComponent({
                                 [
                                     API_PARAM_TYPES.OBJECT.VAL,
                                     API_PARAM_TYPES.ARRAY.VAL
-                                ].includes(this.copyScheme.type) && !this.disablePlusBrother
+                                ].includes(this.copyScheme.type) && !this.disablePlusBrother && this.copyScheme.valueType === API_PARAM_VALUE_TYPES.VARIABLE
+                                    ? <i
+                                        class="bk-drag-icon bk-drag-add-fill layout-icon"
+                                        onClick={this.handlePlusBrotherProperty}
+                                    ></i>
+                                    : ''
+                            }
+                            {
+                                [
+                                    API_PARAM_TYPES.OBJECT.VAL,
+                                    API_PARAM_TYPES.ARRAY.VAL
+                                ].includes(this.copyScheme.type) && !this.disablePlusBrother && this.copyScheme.valueType !== API_PARAM_VALUE_TYPES.VARIABLE
                                     ? <i
                                         class="bk-drag-icon bk-drag-add-fill layout-icon"
                                     ></i>
@@ -365,7 +376,7 @@ export default defineComponent({
                                     [
                                         API_PARAM_TYPES.OBJECT.VAL,
                                         API_PARAM_TYPES.ARRAY.VAL
-                                    ].includes(this.copyScheme.type)
+                                    ].includes(this.copyScheme.type) && this.copyScheme.valueType !== API_PARAM_VALUE_TYPES.VARIABLE
                                         ? <bk-button
                                             class="property-icon"
                                             text
