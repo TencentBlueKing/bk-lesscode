@@ -3,6 +3,7 @@
         :is="columnType"
         :formatter="bkTableFormatter"
         :render-header="renderHeader"
+        type="action"
         v-bind="$props"
     />
 </template>
@@ -22,7 +23,8 @@
             width: String,
             filterable: Boolean,
             align: String,
-            index: Number
+            index: Number,
+            field: String
         },
 
         data () {

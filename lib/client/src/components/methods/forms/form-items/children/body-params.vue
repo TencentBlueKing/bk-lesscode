@@ -26,7 +26,8 @@
     import {
         LCGetParamsVal,
         getDefaultApiUseScheme,
-        API_PARAM_TYPES
+        API_PARAM_TYPES,
+        API_PARAM_VALUE_TYPES
     } from 'shared/api'
     import UsePostScheme from '@/components/api/use-scheme/post'
     import RenderParamSlot from './render-param-slot'
@@ -50,6 +51,11 @@
             const paramRef = ref()
 
             const handleUpdate = (row, val) => {
+                // 变量就不展示子节点
+                if (val.valueType === API_PARAM_VALUE_TYPES.VARIABLE) {
+                    row.showChildren = false
+                    row.children = []
+                }
                 Object.assign(row, val)
                 triggleChange()
             }
