@@ -3932,5 +3932,9 @@
   "布尔值": "Boolean",
   "您可以键入 “/” 查看更多Prompt": "You can type “/” to see more prompts",
   "小鲸": "Little Whale",
-  "AI开发助手小鲸": "AI Development Assistant Little Whale"
+  "AI开发助手小鲸": "AI Development Assistant Little Whale",
+  "状态设置": "Status Setting",
+  "当满足": "is satisfied when",
+  "则显示": "failing agreement",
+  "状态列": "status bar"
 }
