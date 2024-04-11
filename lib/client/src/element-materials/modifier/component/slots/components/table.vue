@@ -212,7 +212,7 @@
                                         >
                                             <img
                                                 class="status-img"
-                                                :src="`/images/icon/${statusItem}.svg`"
+                                                :src="`/static/images/icon/${statusItem}.svg`"
                                             />
                                         </bk-option>
                                         <template #trigger>
@@ -220,7 +220,7 @@
                                                 <i class="bk-select-angle bk-icon icon-angle-down"></i>
                                                 <img
                                                     class="status-img"
-                                                    :src="`/images/icon/${status.show.status}.svg`"
+                                                    :src="`/static/images/icon/${status.show.status}.svg`"
                                                 />
                                             </section>
                                         </template>
