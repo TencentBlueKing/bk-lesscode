@@ -552,7 +552,7 @@
     }
     .template-item-list {
         padding: 10px 16px 16px;
-        max-height: 500px;
+        max-height: 600px;
         overflow-y: auto;
         @mixin scroller;
     }
