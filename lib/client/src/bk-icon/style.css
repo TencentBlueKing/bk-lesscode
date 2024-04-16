@@ -467,11 +467,20 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-router:before {
 	content: "\e187";
 }
+.bk-drag-sync-failed:before {
+	content: "\e29c";
+}
 .bk-drag-sync-pending:before {
 	content: "\e297";
 }
+.bk-drag-sync-success:before {
+	content: "\e29d";
+}
 .bk-drag-paste:before {
 	content: "\e248";
+}
+.bk-drag-sync-default:before {
+	content: "\e29e";
 }
 .bk-drag-un-full-screen-2:before {
 	content: "\e21c";
@@ -526,6 +535,15 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-freedrag:before {
 	content: "\e199";
+}
+.bk-drag-abnormal:before {
+	content: "\e299";
+}
+.bk-drag-normal:before {
+	content: "\e29a";
+}
+.bk-drag-unknown:before {
+	content: "\e29b";
 }
 .bk-drag-copy-line:before {
 	content: "\e1a9";
@@ -604,6 +622,9 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-dianzan:before {
 	content: "\e28d";
+}
+.bk-drag-sync-waiting-01:before {
+	content: "\e2a0";
 }
 .bk-drag-select-value:before {
 	content: "\e1b2";
@@ -1003,6 +1024,12 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 }
 .bk-drag-refill:before {
 	content: "\e241";
+}
+.bk-drag-warning-2:before {
+	content: "\e29f";
+}
+.bk-drag-delete:before {
+	content: "\e2a1";
 }
 .bk-drag-xlsx:before {
 	content: "\e247";
