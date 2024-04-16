@@ -87,17 +87,18 @@
             } = useTableStatus()
             const id = router?.currentRoute?.query?.id
             const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
+            const tab = router?.currentRoute?.query?.tab
 
             const goBack = () => {
                 router.back()
             }
 
             const goRecord = () => {
-                router.push({ name: 'updateTableRecord', query: { id, thirdPartDBId } })
+                router.push({ name: 'updateTableRecord', query: { id, thirdPartDBId, tab } })
             }
 
             const goEdit = () => {
-                router.push({ name: 'editTable', query: { id, thirdPartDBId } })
+                router.push({ name: 'editTable', query: { id, thirdPartDBId, tab } })
             }
 
             const getDetail = () => {
