@@ -1874,7 +1874,7 @@
   "更新 {0} 表的数据。注意：传入的数据一定要包含 id 字段": "Update data for {0} table. \nNote: The incoming data must contain the ID field",
   "查看请求参数": "View Request Parameters",
   "查看返回数据": "View Return Data",
-  "注：可以将请求地址复制到函数中使用，具体使用方式可以参考函数示例": "Note: You can copy the request address to the function and use it. For specific usage, please refer to the function example.",
+  "注：可以将请求地址复制到函数中使用，也可以在新建远程函数的时候选择数据表操作API": "Note: You can copy the request address to be used in the function, or you can select the Data Table Operations API when creating a new remote function",
   "状态码,-1表示接口异常": "Status code, -1 means the interface is abnormal",
   "table_请求方法": "Request method",
   "如果导入 sql 文件，仅支持解析插入数据的语法": "If the SQL file is imported, only the syntax for parsing the inserted data is supported",

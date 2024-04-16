@@ -243,14 +243,16 @@
                         name: 'showTable',
                         query: {
                             id: row.id,
-                            thirdPartDBId: this.dataBaseInfo.id
+                            thirdPartDBId: this.dataBaseInfo.id,
+                            tab: 'thirdPartDB'
                         }
                     })
                 } else {
                     this.$router.push({
                         name: 'createTable',
                         query: {
-                            thirdPartDBId: this.dataBaseInfo.id
+                            thirdPartDBId: this.dataBaseInfo.id,
+                            tab: 'thirdPartDB'
                         }
                     })
                 }
@@ -261,7 +263,8 @@
                     name: 'dataManage',
                     query: {
                         tableName: row?.tableName,
-                        thirdPartDBId: this.dataBaseInfo.id
+                        thirdPartDBId: this.dataBaseInfo.id,
+                        tab: 'thirdPartDB'
                     }
                 })
             },
