@@ -284,7 +284,6 @@
   "页面不存在": "Page does not exist",
   "页面的【{{n}}】生命周期": "[{{n}}] life cycle of the page",
   "项目【id: {{n}}】未绑定应用": "Project [id: {{n}}] is not bound to an application",
-  "项目不存在": "Item does not exist",
   "请先安装 {{0}} 组件库、{{1}} 复合组件库": "Please install {{0}} component library, {{1}} composite component library first",
   "请先安装 {{0}} 组件库、{{1}} 复合组件库以及 {{2}} 组件库": "Please install {{0}} component library, {{1}} composite component library and {{2}} component library first",
   "默认字段": "Default Field",

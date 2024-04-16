@@ -284,7 +284,8 @@
                     data: {
                         layoutData: { id: this.pageLayout?.layoutId, content: JSON.stringify(templateData) },
                         projectId: this.projectId,
-                        versionId: this.versionId
+                        versionId: this.versionId,
+                        id: this.pageLayout?.layoutId
                     }
                 })
             },
