@@ -371,10 +371,10 @@
              */
             displayName () {
                 if (this.renderComponentList.length > 1) {
-                    return this.name
+                    return this.describe?.displayName || this.name
                 }
                 const [editCom] = this.renderComponentList
-                return `${this.name}(${toPascal(editCom.valueType)})`
+                return `${this.describe?.displayName || this.name}(${toPascal(editCom.valueType)})`
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)
