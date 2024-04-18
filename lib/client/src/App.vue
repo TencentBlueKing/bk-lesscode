@@ -129,9 +129,6 @@
             if (platform.indexOf('win') === 0) {
                 this.systemCls = 'win'
             }
-            bus.$on('redirect-login', data => {
-                window.location.replace(data.loginUrl)
-            })
         },
         methods: {
             permissionHold (authResult) {
