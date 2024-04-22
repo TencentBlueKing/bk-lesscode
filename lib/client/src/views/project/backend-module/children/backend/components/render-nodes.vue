@@ -264,11 +264,11 @@
                 let maxX = 0
                 const finalTasks = []
 
-                // 记录最多的一列node or step总和
-                let maxStepCount = 0
                 data.tasks.forEach((task) => {
                     x = -275
                     let maxTask = 0
+                    // 记录最多的一列node or step总和
+                    let maxStepCount = 0
 
                     task.forEach((item, index) => {
                         x += (parentNodeWidth + parentNodeOffset)
@@ -378,6 +378,7 @@
                     if (x >= maxX) {
                         maxX = x
                     }
+                    console.log(maxTask, y)
                     if (maxTask === 0) {
                         y += (parentNodeHeight + taskOffset) 
                     } else {
