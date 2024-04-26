@@ -77,7 +77,8 @@
                 { id: 'block', name: 'block' },
                 { id: 'inline', name: 'inline' },
                 { id: 'inline-block', name: 'inline-block' },
-                { id: 'unset', name: 'unset' }
+                { id: 'flex', name: 'flex' },
+                { id: 'unset', name: 'unset' },
             ]
         }
     ]
