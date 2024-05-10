@@ -5,7 +5,7 @@ $headerHeight: 64px;
 .help-main {
     min-width: 1280px;
     height: 100%;
-    margin-top: 8px;
+    padding-top: 8px;
 
     .main-container {
         display: flex;

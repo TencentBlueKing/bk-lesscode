@@ -1,7 +1,7 @@
 ## 如何开发一个表格查询页面
 ### 第一步：拖拽“输入框”、“表格”组件到画布
 
-<img src="../../../images/help/case-table1.png" alt="grid" width="640" class="help-img">
+<img src="../../../images/help/case-table1.png" alt="grid" width="80%" class="help-img">
 
 ### 第二步：配置组件属性和指令
 
@@ -15,7 +15,7 @@
 
 ### 第三步：新建函数 “getTableData” 查询并获取表格数据
 
-<img src="../../../images/help/case-table2.png" alt="grid" width="640" class="help-img">
+<img src="../../../images/help/case-table2.png" alt="grid" width="80%" class="help-img">
 
 **注意：**
 
@@ -25,7 +25,7 @@
 
 2、可以使用 lesscode.函数名，必须通过编辑器自动补全功能选择需要调用的函数。
 
-<img src="../../../images/help/case-table3.png" alt="grid" width="640" class="help-img">
+<img src="../../../images/help/case-table3.png" alt="grid" width="80%" class="help-img">
 
 ### 第四步：“表格”组件 “data” 属性及事件配置
 
@@ -35,15 +35,15 @@
 
 ### 第五步：输入框 “enter” 事件绑定表格查询函数 “getTableData”
 
-<img src="../../../images/help/case-table5.png" alt="grid" width="640" class="help-img">
+<img src="../../../images/help/case-table5.png" alt="grid" width="80%" class="help-img">
 
 ### 第六步：表格分页事件绑定事件函数
 
 分别给 “page-change” 和 “page-limit-change” 事件绑定表格查询函数 “getTableData”，并配置对应函数调用参数。
 
-<img src="../../../images/help/case-table7.png" alt="grid" width="640" class="help-img">
+<img src="../../../images/help/case-table7.png" alt="grid" width="80%" class="help-img">
 
 
 ### 第七步：预览效果
 
-<img src="../../../images/help/case-table9.png" alt="grid" width="640" class="help-img">
+<img src="../../../images/help/case-table9.png" alt="grid" width="80%" class="help-img">

@@ -17,7 +17,7 @@
                         >{{ $t('应用模板') }}</bk-button>
                         <bk-button
                             class="mt10 banner-btn help-btn"
-                            @click="handlerRouter('intro')"
+                            @click="handlerRouter('help')"
                             v-enStyle="'width:180px'"
                         >{{ $t('帮助文档') }}</bk-button>
                     </div>
