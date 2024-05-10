@@ -95,6 +95,7 @@
     "@blueking/bkui-vue-complex": "latest",
     "@blueking/cli-service-webpack": "0.0.0-beta.81",
     "@blueking/user-selector": "^1.0.7",
+    "@blueking/bkui-library": "0.0.0-beta.6",
     "@toast-ui/editor": "3.1.8",
     "@toast-ui/vue-editor": "^3.1.5",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
