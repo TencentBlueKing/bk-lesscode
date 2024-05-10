@@ -63,7 +63,7 @@ return Promise.all([
 在函数管理页或者函数管理弹窗编写好函数后，在应用页面编辑页面，鼠标单击选择相应的组件，在右侧的配置面板，选择`事件`tab，然后就可以通过下拉框来配置相应的回调函数了，注意函数的入参和组件的事件参数一致，具体可以查看[MagicBox组件库文档](https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/)
 :::
 
-<img src="../../../images/help/method-event.png" alt="grid" width="600" class="help-img" />
+<img src="../../../images/help/method-event.png" alt="grid" width="80%" class="help-img" />
 
 ### 函数配合页面生命周期
 ---
@@ -71,7 +71,7 @@ return Promise.all([
 在函数管理页或者函数管理弹窗编写好函数后，在应用页面编辑页面，顶部选择`页面配置`，即可通过生命周期配置，来选择回调函数
 :::
 
-<img src="../../../images/help/method-lifecycle.png" alt="grid" width="600" class="help-img" />
+<img src="../../../images/help/method-lifecycle.png" alt="grid" width="80%" class="help-img" />
 
 ### 函数配合指令
 ---
@@ -79,9 +79,9 @@ return Promise.all([
 组件的指令配置页面，可以配置属性的指令变量名，然后在函数中，可以使用或者修改属性值。选中组件后，可以在右侧配置面板进行属性编辑，切换到指令tab，可以对部分属性进行指令key的配置，系统会为该属性生成变量名。然后在函数编辑面板中，使用`lesscode`这样的字符串，引出编辑器自动补全功能，然后选择相应的属性指令，即可在函数中获取或者修改相应的属性值
 :::
 
-<img src="../../../images/help/method-dir.png" alt="grid" width="600" class="help-img" /><br>
+<img src="../../../images/help/method-dir.png" alt="grid" width="80%" class="help-img" /><br>
 
-<img src="../../../images/help/method-dir-use.png" alt="grid" width="600" class="help-img" />
+<img src="../../../images/help/method-dir-use.png" alt="grid" width="80%" class="help-img" />
 
 ### 函数绑定组件数据源
 ---
@@ -89,7 +89,7 @@ return Promise.all([
 在组件的部分属性中，可以通过绑定远程数据源来设置初始化数据。选中组件后，可以在右侧配置面板进行属性编辑，找到类型为remote的属性，切换到remote tab，然后通过下拉框选择函数来绑定远程数据源。也可以点击获取数据按钮，来实时看到获取数据源后的组件效果
 :::
 
-<img src="../../../images/help/method-remote.png" alt="grid" width="600" class="help-img" />
+<img src="../../../images/help/method-remote.png" alt="grid" width="80%" class="help-img" />
 
 ### 函数中调用函数，调用其他组件
 ---
@@ -117,4 +117,4 @@ this.$bkNotify({
     offsetY: 80
 })
 ```
-<img src="../../../images/help/method-method.png" alt="grid" width="600" class="help-img" />
+<img src="../../../images/help/method-method.png" alt="grid" width="80%" class="help-img" />
