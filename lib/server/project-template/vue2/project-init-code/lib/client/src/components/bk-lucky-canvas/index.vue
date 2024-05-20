@@ -57,7 +57,7 @@
                     radius: '35%',
                     background: '#8a9bf3',
                     pointer: true,
-                    fonts: [{ text: '开始', top: '-10px' }]
+                    fonts: [{ text: window.i18n.t('开始'), top: '-10px' }]
                 }]
             }
         },
@@ -163,7 +163,7 @@
                 }
 
                 // 理论上不应该到达这里，因为上面的代码已经覆盖了所有可能性
-                throw new Error('中奖逻辑有误，请检查概率数组')
+                throw new Error(this.$t('中奖逻辑有误，请检查概率数组'))
             }
         }
     }

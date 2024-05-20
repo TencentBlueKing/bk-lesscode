@@ -67,7 +67,7 @@
                 this.defaultOptions.toolbarItems.push([{
                     el: this.createLastButton(),
                     command: 'fullScreen',
-                    tooltip: '全屏'
+                    tooltip: this.$t('全屏')
                 }])
             }
         },
