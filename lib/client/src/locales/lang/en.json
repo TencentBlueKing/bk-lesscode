@@ -3936,5 +3936,7 @@
   "状态设置": "Status Setting",
   "当满足": "is satisfied when",
   "则显示": "failing agreement",
-  "状态列": "status bar"
+  "状态列": "status bar",
+  "类型为{0}": "Type is {0}",
+  "类型为{0}，": "Type is {0}, "
 }
