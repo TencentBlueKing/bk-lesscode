@@ -189,7 +189,7 @@
     @import "@/css/variable";
 
     .material-modifier {
-        height: calc(100% - 42px);
+        height: calc(100% - 82px);
         position: relative;
         .modifier-tab-container {
             height: 49px;
