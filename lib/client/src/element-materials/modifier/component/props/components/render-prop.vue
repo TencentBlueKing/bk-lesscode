@@ -390,10 +390,7 @@
              * @returns { Object }
              */
             introTips () {
-                const [editCom] = this.renderComponentList
-                const prefixField = `${isEmpty(this.describe.tips) ? '类型为{0}' : '类型为{0}，'}`
-                const prefix = window.i18n.t(`${prefixField}`, [toPascal(editCom.valueType)])
-                const tip = transformTipsWidth(prefix + window.i18n.t(this.describe.tips))
+                const tip = transformTipsWidth(this.dataTypeTips + window.i18n.t(this.describe.tips))
                 const commonOptions = {
                     disabled: !tip,
                     interactive: false,
@@ -407,6 +404,19 @@
                         content: tip
                     }
                     : Object.assign(tip, commonOptions)
+            },
+            /**
+             * 属性描述加 类型xxx
+             */
+            dataTypeTips () {
+                const [editCom] = this.renderComponentList
+                let prefixField = ''
+                let prefix = ''
+                if (!Array.isArray(this.describe.type)) {
+                    prefixField = `${isEmpty(this.describe.tips) ? '类型为{0}' : '类型为{0}，'}`
+                    prefix = window.i18n.t(`${prefixField}`, [toPascal(editCom.valueType)])
+                }
+                return prefix
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量

@@ -68,7 +68,7 @@
             icon: 'bk-drag-zuidagaodu'
         },
         {
-            tips: 'display',
+            tips: window.i18n.t('style_显示'),
             name: 'display',
             key: 'display',
             icon: 'bk-drag-display-3',
