@@ -111,6 +111,7 @@
     import { IAM_ACTION } from 'shared/constant'
     import changelog from '@/components/changelog-version'
     import { getCurLang, changeLang } from '@/locales/i18n.js'
+    import helpDocs from './help-docs'
 
     export default defineComponent({
         components: {
