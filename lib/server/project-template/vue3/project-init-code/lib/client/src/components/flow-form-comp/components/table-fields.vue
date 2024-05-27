@@ -26,7 +26,7 @@
                     </table-cell-value>
                 </template>
             </bk-table-column>
-            <bk-table-column v-if="tableActions.length > 0" label="操作">
+            <bk-table-column v-if="tableActions.length > 0" :label="$t('操作')">
                 <template slot-scope="{ row }">
                     <table-cell-actions :buttons="tableActions" @click="handleOperate($event, row)"></table-cell-actions>
                 <!-- <bk-button theme="primary" :text="true" @click="handleViewDetail(row.id)">详情</bk-button> -->
@@ -36,10 +36,10 @@
                 <bk-table-setting-content ref="settingCol" v-show="false">
                 </bk-table-setting-content>
                 <div class="table-setting-wrapper">
-                    <h2 class="title">表格设置</h2>
+                    <h2 class="title">{{ $t('表格设置') }}</h2>
                     <div class="field-content-wrapper">
                         <template v-if="systemFields.length > 0">
-                            <p class="field-title">系统字段</p>
+                            <p class="field-title">{{ $t('系统字段') }}</p>
                             <bk-checkbox-group :value="selectedFieldKeys">
                                 <bk-checkbox
                                     v-for="item in systemFields"
@@ -50,7 +50,7 @@
                                 </bk-checkbox>
                             </bk-checkbox-group>
                         </template>
-                        <p class="field-title" style="margin-top: 6px;">自定义字段</p>
+                        <p class="field-title" style="margin-top: 6px;">{{ $t('自定义字段') }}</p>
                         <bk-checkbox-group v-if="fields.length > 0" :value="selectedFieldKeys">
                             <bk-checkbox
                                 v-for="item in fields"
@@ -60,11 +60,11 @@
                                 {{ item.name }}
                             </bk-checkbox>
                         </bk-checkbox-group>
-                        <bk-exception v-else type="empty" scene="part">暂无可展示字段，请在节点表单中配置</bk-exception>
+                        <bk-exception v-else type="empty" scene="part">{{ $t('暂无可展示字段，请在节点表单中配置') }}</bk-exception>
                     </div>
                     <div class="btn-area">
-                        <bk-button :theme="'primary'" @click="handleSelectConfirm">确定</bk-button>
-                        <bk-button :theme="'default'" @click="handleSelectCancel">取消</bk-button>
+                        <bk-button :theme="'primary'" @click="handleSelectConfirm">{{ $t('确定') }}</bk-button>
+                        <bk-button :theme="'default'" @click="handleSelectCancel">{{ $t('取消') }}</bk-button>
                     </div>
                 </div>
             </bk-table-column>
@@ -76,7 +76,7 @@
             :fields="colFields">
         </table-cell-detail>
         <bk-sideslider
-            title="富文本"
+            :title="$t('富文本')"
             :width="640"
             :is-show.sync="showRichText"
             :quick-close="true"
@@ -231,13 +231,13 @@
             // 删除数据
             handleDelItem (id) {
                 this.$bkInfo({
-                    title: '确认删除该条数据？',
+                    title: this.$t('确认删除该条数据'),
                     confirmLoading: true,
                     confirmFn: async () => {
                         try {
                             await this.$http.delete(`/data-source/user/tableName/${this.tableName}?id=${id}`)
                             this.$bkMessage({
-                                message: '删除成功',
+                                message: this.$t('删除成功'),
                                 theme: 'success'
                             })
                             this.getTableData()
