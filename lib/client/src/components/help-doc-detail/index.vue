@@ -48,9 +48,12 @@
                 </div>
             </aside>
             <div class="main-content">
-                <div :class="['container', detailBodyCls]">
+                <div v-if="isExistDoc" :class="['container', detailBodyCls]">
                     <components :is="selectDoc" />
                 </div>
+                <bk-exception v-else type="empty" scene="part" ext-cls="excep-cls">
+                    <span>暂无该文档</span>
+                </bk-exception>
             </div>
         </div>
     </main>
@@ -269,6 +272,15 @@
                 }
             })
 
+            const isExistDoc = computed(() => {
+                const comKeys = Object.keys(docComs)
+                const firstCharUp = props.selectDoc?.slice(0, 1).toUpperCase() + props.selectDoc?.slice(1)
+                if (comKeys.includes(firstCharUp)) {
+                    return true
+                }
+                return false
+            })
+
             // 切换页面详情时，滚动条位置
             watch(() => props.selectDoc, (newVal, oldVal) => {
                 setTreeSelect(props.selectDoc)
@@ -309,6 +321,7 @@
                 trees,
                 jump,
                 isSingleTree,
+                isExistDoc,
                 handlerSelectTreeData
             }
         }
@@ -375,5 +388,8 @@
             }
         }
     }
-
+    .excep-cls.bk-exception {
+        top: 50%;
+        margin-top: -60px;
+    }
 </style>
