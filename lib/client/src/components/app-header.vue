@@ -29,6 +29,7 @@
             </ul>
         </nav>
         <div class="top-info">
+            <div class="help-doc" @click="closePage(true)">{{ $t('帮助文档') }}</div>
             <bk-popover class="info-item"
                 theme="light header-top-info-popover"
                 animation="fade"
@@ -99,6 +100,7 @@
             </bk-popover>
         </div>
         <changelog ref="log"></changelog>
+        <helpDocs :visible="visible" @closePage="closePage" />
     </header>
 </template>
 
@@ -112,7 +114,8 @@
 
     export default defineComponent({
         components: {
-            changelog
+            changelog,
+            helpDocs
         },
         computed: {
             currentRoute () {
@@ -195,6 +198,10 @@
                 changeLang(lang.id)
             }
 
+            const visible = ref(false)
+            const closePage = (value) => {
+                visible.value = value
+            }
             return {
                 languageList,
                 userName,
@@ -205,7 +212,9 @@
                 goLogin,
                 toProjectList,
                 currentLang,
-                handleLanguageChange
+                handleLanguageChange,
+                visible,
+                closePage
             }
         }
     })
@@ -222,7 +231,6 @@
         top: 0;
         z-index: 1000;
         background: #182132;
-
         .logo {
             display: flex;
             align-items: center;
@@ -273,6 +281,13 @@
             display: flex;
             align-items: center;
             margin-left: auto;
+
+            .help-doc {
+                font-family: MicrosoftYaHei;
+                color: #96A2B9;
+                cursor: pointer;
+                margin: 0 16px;
+            }
 
             .info-item {
                 cursor: pointer;

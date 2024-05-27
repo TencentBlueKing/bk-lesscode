@@ -12,7 +12,7 @@
 
 #### 2.1 在新建应用时添加
 
-<img src="../../../images/help/layout-guide-1.png" width="640" alt="layout-guide" class="help-img">
+<img src="../../../images/help/layout-guide-1.png" width="80%" alt="layout-guide" class="help-img">
 
 - 其中，“空白布局”为系统默认布局，自动勾选且不能取消。
 - 如果添加时未选择其它导航布局，可创建应用后，到“导航布局管理”功能页中添加。
@@ -20,14 +20,14 @@
 
 #### 2.2 在导航布局管理中添加
 
-<img src="../../../images/help/layout-guide-3.png" width="640" alt="layout-guide" class="help-img">
+<img src="../../../images/help/layout-guide-3.png" width="80%" alt="layout-guide" class="help-img">
 
 - 进入“导航布局管理”页面，新建导航布局
 :::tip
 路由：最终所属布局的页面访问路由为“布局路由/页面路由”
 :::
 
-<img src="../../../images/help/layout-guide-2.png" width="640" alt="layout-guide" class="help-img">
+<img src="../../../images/help/layout-guide-2.png" width="80%" alt="layout-guide" class="help-img">
 
 - 新建成功后，可看到应用中所有的导航布局。
 
@@ -37,7 +37,7 @@
 多个页面使用同一个布局，则可达到复用布局的效果。布局配置在所有页面间生效，同时页面拥有共同的父路由即布局的路由。
 :::
 
-<img src="../../../images/help/layout-guide-4.png" width="640" alt="layout-guide" class="help-img">
+<img src="../../../images/help/layout-guide-4.png" width="80%" alt="layout-guide" class="help-img">
 
 - 新建页面时选择导航布局，可选择的模板为应用中所添加的所有模板。
 
@@ -47,7 +47,7 @@
 如使用的空白布局则无模板内容可见，画布中可视的即为页面内容。目前可提供的配置包括：站点名称、Logo和导航。
 :::
 
-<img src="../../../images/help/layout-guide-5.png" width="640" alt="layout-guide" width="960" class="help-img">
+<img src="../../../images/help/layout-guide-5.png" width="80%" alt="layout-guide" width="960" class="help-img">
 
 - 示例图中使用的是“侧边导航布局”，正在对布局导航进入设置。其中，中间区域为页面内容编辑区。
 
@@ -61,4 +61,4 @@
 
 - 进入“导航布局管理”页找到需要修改的模板
 
-<img src="../../../images/help/layout-guide-6.png" width="640" alt="layout-guide" class="help-img">
+<img src="../../../images/help/layout-guide-6.png" width="80%" alt="layout-guide" class="help-img">

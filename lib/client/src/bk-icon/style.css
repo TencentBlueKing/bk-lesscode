@@ -1229,3 +1229,12 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .bk-drag-builder:before {
 	content: "\e298";
 }
+.bk-drag-tuopu:before {
+	content: "\e2a2";
+}
+.bk-drag-jiedian:before {
+	content: "\e2a3";
+}
+.bk-drag-rongqi:before {
+	content: "\e2a4";
+}
