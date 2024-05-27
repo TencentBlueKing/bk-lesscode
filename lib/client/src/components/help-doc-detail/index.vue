@@ -18,25 +18,28 @@
                         <div class="nav-list">
                             <div class="nav-item" v-for="item in navList" :key="item.name">
                                 <div class="item-title">{{item.title}}</div>
-                                <template v-if="item.tree">
-                                    <bk-big-tree
-                                        ext-cls="tree-cls"
-                                        ref="trees"
-                                        selectable
-                                        enable-title-tip
-                                        default-expand-all
-                                        :default-selected-node="selectDoc"
-                                        :data="item.childs"
-                                        @select-change="handlerSelectTreeData">
-                                    </bk-big-tree>
-                                </template>
-                                <template v-else>
-                                    <div class="nav-child"
-                                        v-for="child in item.childs"
-                                        :class="selectDoc === child.name ? 'nav-active' : ''"
-                                        :key="child.name"
-                                        @click="jump(child.name)">
-                                        {{child.title}}
+                                <template v-for="child in item.childs">
+                                    <div :key="child.id">
+                                        <template v-if="!isSingleTree(child)">
+                                            <div class="nav-child"
+                                                :title="child.name"
+                                                :class="selectDoc === child.id ? 'nav-active' : ''"
+                                                @click="jump(child.id)">
+                                                {{child.name}}
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <bk-big-tree
+                                                ext-cls="tree-cls"
+                                                ref="trees"
+                                                selectable
+                                                enable-title-tip
+                                                default-expand-all
+                                                :default-selected-node="selectDoc"
+                                                :data="[child]"
+                                                @select-change="handlerSelectTreeData">
+                                            </bk-big-tree>
+                                        </template>
                                     </div>
                                 </template>
                             </div>
@@ -55,7 +58,7 @@
 
 <script>
     import { getActualTop } from '@/common/util'
-    import { defineComponent, ref, watch, onMounted } from '@vue/composition-api'
+    import { defineComponent, ref, watch, computed, onMounted } from '@vue/composition-api'
     import { useRoute } from '@/router'
     import docComs from './docs'
     export default defineComponent({
@@ -90,22 +93,29 @@
                     title: window.i18n.t('产品使用文档'),
                     name: 'doc',
                     childs: [{
-                        title: window.i18n.t('产品简介'),
-                        name: 'intro'
+                        name: window.i18n.t('产品简介'),
+                        id: 'intro'
                     }, {
-                        title: window.i18n.t('快速上手'),
-                        name: 'start'
+                        name: window.i18n.t('快速上手'),
+                        id: 'start'
                     }]
                 },
                 {
-                    title: window.i18n.t('abbr_应用开发'),
+                    title: window.i18n.t('abbr_前端模块开发'),
                     name: 'app',
-                    tree: true,
                     childs: [{
-                        name: window.i18n.t('页面布局'),
+                        name: window.i18n.t('页面开发'),
                         level: 0,
                         id: 'layout',
                         children: [{
+                            name: window.i18n.t('页面管理'),
+                            level: 1,
+                            id: 'pageManage'
+                        }, {
+                            name: window.i18n.t('画布编辑'),
+                            level: 1,
+                            id: 'canvasEdit'
+                        }, {
                             name: window.i18n.t('栅格布局'),
                             level: 1,
                             id: 'grid'
@@ -114,55 +124,114 @@
                             level: 1,
                             id: 'freeLayout'
                         }, {
-                            name: window.i18n.t('导航布局'),
+                            name: window.i18n.t('移动端页面'),
                             level: 1,
-                            id: 'layout-guide'
-                        }]
-                    }, {
-                        name: window.i18n.t('页面画布'),
-                        level: 0,
-                        id: 'canvas',
-                        children: [{
-                            name: window.i18n.t('变量使用指引'),
-                            level: 1,
-                            id: 'variable'
+                            id: 'mobilePage'
                         }, {
-                            name: window.i18n.t('组件指令使用指引'),
+                            name: window.i18n.t('表单容器跟数据管理容器'),
                             level: 1,
-                            id: 'directive'
+                            id: 'formDataContainer'
                         }, {
-                            name: window.i18n.t('交互式组件使用指引'),
+                            name: window.i18n.t('画布中函数使用'),
+                            level: 1,
+                            id: 'functionUsing'
+                        }, {
+                            name: window.i18n.t('画布中变量使用'),
+                            level: 1,
+                            id: 'variableUsing'
+                        }, {
+                            name: window.i18n.t('交互式组件使用'),
                             level: 1,
                             id: 'interactive'
                         }]
                     }, {
-                        name: window.i18n.t('交互函数'),
+                        name: window.i18n.t('路由管理'),
+                        id: 'routeManage'
+                    }, {
+                        name: window.i18n.t('js函数开发'),
+                        id: 'method'
+                    }, {
+                        name: window.i18n.t('变量管理'),
+                        id: 'variable'
+                    }, {
+                        name: window.i18n.t('资源管理'),
                         level: 0,
-                        id: 'function',
+                        id: 'resource',
                         children: [{
-                            name: window.i18n.t('函数使用指引'),
+                            name: window.i18n.t('导航布局'),
                             level: 1,
-                            id: 'method'
+                            id: 'layout-guide'
+                        }, {
+                            name: window.i18n.t('文件管理'),
+                            level: 1,
+                            id: 'file'
+                        }, {
+                            name: window.i18n.t('自定义组件'),
+                            level: 1,
+                            id: 'custom'
+                        }, {
+                            name: window.i18n.t('页面模板'),
+                            level: 1,
+                            id: 'pageTemplate'
+                        }, {
+                            name: window.i18n.t('API'),
+                            level: 1,
+                            id: 'api'
                         }]
                     }, {
-                        name: window.i18n.t('二次开发指引'),
+                        name: window.i18n.t('发布管理'),
                         level: 0,
-                        id: 'develop'
-                    }, {
-                        name: window.i18n.t('自定义组件开发指引'),
-                        level: 0,
-                        id: 'custom'
+                        id: 'publication',
+                        children: [{
+                            name: window.i18n.t('发布部署'),
+                            level: 1,
+                            id: 'deploy'
+                        }, {
+                            name: window.i18n.t('版本管理'),
+                            level: 1,
+                            id: 'version'
+                        }]
                     }]
                 },
                 {
-                    title: window.i18n.t('模板市场'),
-                    name: 'template',
+                    title: window.i18n.t('数据源管理'),
+                    name: 'data',
                     childs: [{
-                        title: window.i18n.t('应用模板使用指引'),
-                        name: 'template-project'
+                        name: window.i18n.t('数据表管理'),
+                        id: 'table'
                     }, {
-                        title: window.i18n.t('页面模板使用指引'),
-                        name: 'template-page'
+                        name: window.i18n.t('数据操作'),
+                        id: 'operation'
+                    }]
+                },
+                {
+                    title: window.i18n.t('其他文档'),
+                    name: 'other',
+                    childs: [{
+                        name: window.i18n.t('模板市场'),
+                        level: 0,
+                        id: 'template',
+                        children: [{
+                            name: window.i18n.t('应用模板'),
+                            level: 1,
+                            id: 'template-project'
+                        }, {
+                            name: window.i18n.t('页面模板'),
+                            level: 1,
+                            id: 'template-page'
+                        }]
+                    }, {
+                        name: window.i18n.t('实战案例'),
+                        level: 0,
+                        id: 'exercise',
+                        children: [{
+                            name: window.i18n.t('表格查询案例'),
+                            level: 1,
+                            id: 'tableQry'
+                        }]
+                    }, {
+                        name: window.i18n.t('二次开发指引'),
+                        id: 'develop'
                     }]
                 }
             ]
@@ -190,15 +259,30 @@
                     jumpAnchor(anchor)
                 }, 0)
             }
+
+            const isSingleTree = computed(() => {
+                return (child) => {
+                    const childrenNodes = child?.children || ''
+                    if (!childrenNodes) return false
+                    if (!Array.isArray(childrenNodes)) return false
+                    return childrenNodes.length > 0
+                }
+            })
+
             // 切换页面详情时，滚动条位置
             watch(() => props.selectDoc, (newVal, oldVal) => {
-                trees.value[0].setSelected(props.selectDoc)
+                setTreeSelect(props.selectDoc)
                 adjustAnchor()
             })
 
             const trees = ref(null)
+            const setTreeSelect = (val) => {
+                trees.value.forEach(element => {
+                    element.setSelected(val)
+                })
+            }
             const jump = (routeName) => {
-                trees.value[0].setSelected(null)
+                setTreeSelect(null)
                 //  详情切换 方式 由外部决定
                 ctx.emit('pageSwitchMethod', routeName)
             }
@@ -207,6 +291,9 @@
                 if (data.isLeaf) {
                     // 详情切换 方式 由外部决定
                     ctx.emit('pageSwitchMethod', data.id)
+                } else {
+                    // 保持一个树下 叶子节点 是选中状态 is-selected
+                    data.tree.setSelected(props.selectDoc)
                 }
             }
 
@@ -221,6 +308,7 @@
                 navList,
                 trees,
                 jump,
+                isSingleTree,
                 handlerSelectTreeData
             }
         }
@@ -240,6 +328,12 @@
             line-height: 40px;
             &:hover {
                 background-color: #f0f1f5;
+            }
+            &.is-root.is-selected {
+                background: none;
+                .node-content {
+                    color: #63656e;
+                }
             }
         }
         .is-leaf{
@@ -266,6 +360,9 @@
                 font-size: 14px;
                 line-height: 40px;
                 cursor: pointer;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 .bk-drag-icon {
                     font-size: 24px;
                 }

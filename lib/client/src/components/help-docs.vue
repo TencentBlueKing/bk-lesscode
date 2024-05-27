@@ -3,30 +3,30 @@
         <!-- 头部 -->
         <div class="header" @mousedown.stop="bindResize('nesw', $event)">
             <div class="header-left">
-                <div v-show="!isDocDetail">帮助文档</div>
+                <div v-show="!isDocDetail">{{ $t('帮助文档') }}</div>
                 <div v-show="isDocDetail" @click="backUpPage" class="header-detail-title">
                     <i class="bk-drag-icon bk-drag-arrow-back"></i>
-                    文档详情
+                    {{ $t('文档详情') }}
                 </div>
             </div>
             <div class="header-right">
                 <div class="change-height">
-                    <div v-show="!isFull" v-bk-tooltips.top="'全屏'">
+                    <div v-show="!isFull" v-bk-tooltips.top="`${$t('全屏')}`">
                         <i class="bk-drag-icon bk-drag-filliscreen-line" @click="changeFull(true)"></i>
                     </div>
-                    <div v-show="isFull" v-bk-tooltips.top="'退出全屏'">
+                    <div v-show="isFull" v-bk-tooltips.top="`${$t('退出全屏')}`">
                         <i class="bk-drag-icon bk-drag-un-full-screen-2" @click="changeFull(false)"></i>
                     </div>
                 </div>
                 <div class="change-height">
-                    <div v-show="!isExtendHeight" v-bk-tooltips="`向下扩展`">
+                    <div v-show="!isExtendHeight" v-bk-tooltips="`${$t('向下收缩')}`">
                         <i class="bk-drag-icon bk-drag-shangxiajuhe" @click="changeExtend(true)"></i>
                     </div>
-                    <div v-show="isExtendHeight" v-bk-tooltips="`向上扩展`">
+                    <div v-show="isExtendHeight" v-bk-tooltips="`${$t('向上扩展')}`">
                         <i class="bk-drag-icon bk-drag-shangxialashen-2" @click="changeExtend(false)"></i>
                     </div>
                 </div>
-                <div v-bk-tooltips="`关闭`">
+                <div v-bk-tooltips="`${$t('关闭')}`">
                     <i class="bk-drag-icon bk-drag-shanchu-2 close" @click="closeDocPopover"></i>
                 </div>
             </div>
@@ -37,7 +37,7 @@
             <div class="search-space">
                 <bk-input
                     clearable
-                    placeholder="请搜索文档名称或概述"
+                    :placeholder="$t('请搜索文档名称或概述')"
                     right-icon="bk-icon icon-search"
                     v-model="searchKey"
                     @change="searchDocs"
@@ -69,7 +69,7 @@
                                 <div v-for="(doc) in item.docsList" :key="doc.name" class="doc">
                                     <div class="doc-name">{{ doc.name }}</div>
                                     <div class="doc-des">{{ doc.description }}</div>
-                                    <div class="doc-operation" @click="getDocDetail(doc)">查看文档 ></div>
+                                    <div class="doc-operation" @click="getDocDetail(doc)">{{ $t('查看文档') }} ></div>
                                 </div>
                             </div>
                         </div>
@@ -87,9 +87,9 @@
                     <!-- 无内容时 展示 -->
                     <div v-else class="empty-text">
                         <bk-exception type="search-empty" scene="part">
-                            <div>搜索结果为空</div>
+                            <div>{{ $t('搜索结果为空') }}</div>
                             <div>
-                                可以尝试 调整关键词 或 <span class="clear-condition">清空筛选条件</span>
+                                {{ $t('可以尝试 调整关键词或') }}<span class="clear-condition">{{ $t('清空筛选条件') }}</span>
                             </div>
                         </bk-exception>
                     </div>
@@ -183,7 +183,7 @@
                 }
             }
             const isExtendHeight = ref(false)
-            // true -》向上扩展，否则， 向下扩展
+            // true -》向上扩展，否则， 向下收缩
             const changeExtend = (boolVal) => {
                 isExtendHeight.value = boolVal
                 if (!boolVal) {
@@ -317,26 +317,8 @@
                             description: '蓝鲸应用开发采用前后台分离开发模式，应用前端模块独立开发、部署，通过与后台模块API调用的方式进行数据获取、保存等操作。'
                         },
                         {
-                            name: '导航布局管理',
+                            name: '资源管理',
                             selectDoc: 'layout',
-                            description: '蓝鲸应用开发采用前后台分离开发模式，应用前端模块独立开发、部署，通过与后台模块API调用的方式进行数据获取、保存等操作。'
-                        },
-                        {
-                            name: '文件管理',
-                            description: '蓝鲸应用开发采用前后台分离开发模式，应用前端模块独立开发、部署，通过与后台模块API调用的方式进行数据获取、保存等操作。'
-                        },
-                        {
-                            name: '自定义组件管理',
-                            selectDoc: 'custom',
-                            description: '蓝鲸应用开发采用前后台分离开发模式，应用前端模块独立开发、部署，通过与后台模块API调用的方式进行数据获取、保存等操作。'
-                        },
-                        {
-                            name: '页面模板管理',
-                            selectDoc: 'template-page',
-                            description: '蓝鲸应用开发采用前后台分离开发模式，应用前端模块独立开发、部署，通过与后台模块API调用的方式进行数据获取、保存等操作。'
-                        },
-                        {
-                            name: 'api管理',
                             description: '蓝鲸应用开发采用前后台分离开发模式，应用前端模块独立开发、部署，通过与后台模块API调用的方式进行数据获取、保存等操作。'
                         },
                         {
