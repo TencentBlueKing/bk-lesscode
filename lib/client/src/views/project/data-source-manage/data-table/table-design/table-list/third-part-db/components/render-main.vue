@@ -108,6 +108,9 @@
         StructJsonParser,
         StructSqlParser
     } from 'shared/data-source'
+    import {
+        encodeBase64
+    } from 'shared/util'
 
     export default {
         components: {
@@ -197,7 +200,7 @@
                     const postData = {
                         ...editForm,
                         projectId: this.projectId,
-                        password: btoa(editForm.password)
+                        password: encodeBase64(editForm.password)
                     }
                     await this.updateDatabase(postData)
                     this.handleCloseForm()

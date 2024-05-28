@@ -294,7 +294,8 @@
         generateSqlByCondition
     } from 'shared/data-source'
     import {
-        isEmpty
+        isEmpty,
+        encodeBase64
     } from 'shared/util'
 
     export default defineComponent({
@@ -472,7 +473,7 @@
                     ? generateSqlByCondition(conditionQuery.value, getAllTables())
                     : sqlQuery.value
                 // 回车转空格
-                return window.btoa(sql.replace(/\r\n/g, ' '))
+                return encodeBase64(sql.replace(/\r\n/g, ' '))
             }
 
             // 生成 api
