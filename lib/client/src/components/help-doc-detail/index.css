@@ -23,9 +23,12 @@ $headerHeight: 64px;
             overflow: auto;
             code {
                 font-family: 'Microsoft Yahei', arial;
-                /* background-color: #f9fafc; */
                 background-color: rgba(225, 236, 255, 0.6);
                 padding: 0 5px;
+            }
+            img {
+                display: block;
+                margin: 12px 0;
             }
 
             ul {
@@ -58,13 +61,32 @@ $headerHeight: 64px;
                     }
                 }
             }
-
+            h1 {
+                display: block;
+                font-size: 1.75em;
+                margin-block-start: 0.67em;
+                margin-block-end: 0.67em;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
+                font-weight: bold;
+                unicode-bidi: isolate;
+                margin: 40px 0 24px 0;
+                padding-bottom: 0.8em;
+            }
+            h2 {
+                margin: 32px 0 24px 0;
+                padding-bottom: 0.5em;
+            }
+            h1, h2 {
+                border-bottom: 1px solid #DCDEE5;
+            }
+            h1,
             h2,
             h3,
             h4,
             h5 {
-                font-weight: 400;
-                color: #1f2f3d;
+                font-weight: 500;
+                color: #313238;
                 &:hover {
                     .header-anchor {
                         visibility: visible;
@@ -74,7 +96,7 @@ $headerHeight: 64px;
 
             p {
                 font-size: 14px;
-                color: #5e6d82;
+                color: #63656E;
                 line-height: 1.5em;
             }
 
@@ -84,160 +106,12 @@ $headerHeight: 64px;
                 cursor: pointer;
             }
 
-            h3 {
-                margin: 35px 0 15px;
-            }
-
-            .demo-box {
-                border: 1px solid #f0f0f0;
-                position: relative;
-            }
-
-            .demo-box .demo-desc code {
-                background-color: #f1f1f1;
-                border: 1px solid #eaeefb;
-                border-radius: 4px;
-                transition: .2s;
-                display: inline-block;
-                padding: 0 4px;
-                margin: 5px;
-            }
-
             .header-anchor {
                 float: left;
                 margin-left: -20px;
                 padding-right: 4px;
                 visibility: hidden;
                 padding-top: 1px;
-            }
-
-            .demo-box .demo-source {
-                padding: 24px;
-            }
-
-            .demo-box .demo-meta {
-                background-color: #f9fafc;
-                border-top: 1px solid #eaeefb;
-                overflow: hidden;
-                transition: height .2s;
-                display: flex;
-                max-height: 300px;
-
-                &:before,
-                &:after {
-                    content: '';
-                    display: table;
-                    line-height: 0;
-                }
-
-                &:after {
-                    clear: both;
-                }
-            }
-
-            .demo-box .demo-code {
-                background-color: #f9fafc;
-                border-top: 1px solid #eaeefb;
-                transition: height .2s;
-                display: flex;
-
-                &:before,
-                &:after {
-                    content: '';
-                    display: table;
-                    line-height: 0;
-                }
-
-                &:after {
-                    clear: both;
-                }
-            }
-
-            .demo-box .demo-code > pre {
-                display: block;
-                overflow: auto;
-                margin: 0;
-                padding: 10px;
-                font-family: "微软雅黑", arial;
-
-                &::-webkit-scrollbar {
-                    width: 6px;
-                    height: 5px;
-                }
-                &::-webkit-scrollbar-thumb {
-                    border-radius: 20px;
-                    background: #a5a5a5;
-                    -webkit-box-shadow: inset 0 0 6px hsla(0, 0%, 80%, .3);
-                }
-            }
-
-            .demo-box .demo-meta > pre {
-                display: block;
-                width: 60%;
-                border-left: 1px solid #eaeefb;
-                overflow: auto;
-                margin: 0;
-                padding: 24px;
-                font-family: "微软雅黑", arial;
-
-                &::-webkit-scrollbar {
-                    width: 6px;
-                    height: 5px;
-                }
-                &::-webkit-scrollbar-thumb {
-                    border-radius: 20px;
-                    background: #a5a5a5;
-                    -webkit-box-shadow: inset 0 0 6px hsla(0, 0%, 80%, .3);
-                }
-            }
-
-            .demo-box .demo-meta > pre code {
-                font-size: 12px;
-                display: block;
-                line-height: 1.5;
-                padding: 0;
-                background-color: #f9fafc;
-                border: none;
-            }
-
-            .demo-box .demo-code > pre code {
-                font-size: 12px;
-                display: block;
-                line-height: 1.8;
-                padding: 0;
-                background-color: #f9fafc;
-                border: none;
-            }
-
-            .demo-meta {
-                .demo-source-code {
-                    position: absolute;
-                    top: 32px;
-                    left: 32px;
-                }
-            }
-
-            .demo-box .demo-desc {
-                padding: 18px 24px;
-                width: 40%;
-                box-sizing: border-box;
-                float: right;
-                font-size: 14px;
-                line-height: 1.8;
-                color: #5e6d82;
-                word-break: break-word;
-                p {
-                    margin: 0;
-                    line-height: 1.5;
-                    font-size: 13px;
-                }
-            }
-            .demo-box .code-copy {
-                position: absolute;
-                right: 25px;
-                margin-top: 10px;
-                cursor: pointer;
-                z-index: 1;
             }
 
             .auto-height {
