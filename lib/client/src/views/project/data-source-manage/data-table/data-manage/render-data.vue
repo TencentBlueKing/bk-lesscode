@@ -754,7 +754,7 @@
                                         slot: 'content',
                                         props: {
                                             value: filterValue.value,
-                                            placeholder: '请输入并按回车键进行搜索'
+                                            placeholder: window.i18n.t('请输入并按回车键进行搜索')
                                         },
                                         on: {
                                             enter () {
