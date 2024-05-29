@@ -273,9 +273,9 @@
             })
 
             const isExistDoc = computed(() => {
-                const comKeys = Object.keys(docComs)
-                const firstCharUp = props.selectDoc?.slice(0, 1).toUpperCase() + props.selectDoc?.slice(1)
-                if (comKeys.includes(firstCharUp)) {
+                const comKeys = Object.keys(docComs)?.map(item => item.toLocaleUpperCase())
+                const selectDoc = props.selectDoc?.toUpperCase()?.replaceAll('-', '')
+                if (comKeys.includes(selectDoc)) {
                     return true
                 }
                 return false

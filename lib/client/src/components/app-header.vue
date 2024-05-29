@@ -285,6 +285,9 @@
 
             .help-doc {
                 color: #96A2B9;
+                &:hover {
+                    color: #d3d9e4;
+                }
             }
 
             .info-item {
