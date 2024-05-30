@@ -49,6 +49,9 @@
 <script>
     import { mapActions } from 'vuex'
     import RenderSideslider from './render-sideslider.vue'
+    import {
+        encodeBase64
+    } from 'shared/util'
 
     export default {
         components: {
@@ -112,7 +115,7 @@
                     const postData = {
                         ...editForm,
                         projectId: this.projectId,
-                        password: btoa(editForm.password)
+                        password: encodeBase64(editForm.password)
                     }
                     await this.addDatabase(postData)
                     this.getThirdPartDB()

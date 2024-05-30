@@ -3953,5 +3953,14 @@
   "文档详情": "Document Detail",
   "请搜索文档名称或概述": "Please search for document name or overview",
   "查看文档": "Viewing Document",
-  "可以尝试 调整关键词或": "Try adjusting keywords or"
+  "可以尝试 调整关键词或": "Try adjusting keywords or",
+  "内置数据库": "Built-in database",
+  "第三方数据库": "Third-party databases",
+  "请输入数据库名": "Please enter the database name",
+  "新增数据库": "New databases",
+  "数据库名": "Database name",
+  "域名": "Domain name",
+  "端口": "Port",
+  "密码": "Password",
+  "编辑数据库": "Edit Database"
 }

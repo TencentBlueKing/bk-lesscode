@@ -69,7 +69,8 @@
     import dayjs from 'dayjs'
     import {
         isEmpty,
-        splitSql
+        splitSql,
+        encodeBase64
     } from 'shared/util'
     import {
         generateSqlByCondition
@@ -162,7 +163,7 @@
                 })
                 // 执行查询
                 return new Promise((resolve, reject) => {
-                    queryRecord.sql = window.btoa(queryRecord.sql)
+                    queryRecord.sql = encodeBase64(queryRecord.sql)
                     store
                         .dispatch('dataSource/queryBySql', {
                             sql: queryRecord.sql,

@@ -165,6 +165,7 @@
     "html2canvas": "~1.0.0-rc.5",
     "http-errors": "^1.8.0",
     "i18next": "20.6.0",
+    "js-base64": "^3.7.7",
     "js-cookie": "3.0.1",
     "jsdom": "~16.7.0",
     "koa": "~2.8.2",
