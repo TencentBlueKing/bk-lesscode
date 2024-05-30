@@ -28,7 +28,7 @@
                             }"
                         ></i>
                         <span
-                            :class="{ label: describe.tips }"
+                            :class="{ label: true }"
                             v-bk-tooltips="introTips">
                             {{ displayName }}
                         </span>
@@ -390,33 +390,27 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(this.dataTypeTips + window.i18n.t(this.describe.tips))
-                const commonOptions = {
-                    disabled: !tip,
-                    interactive: false,
+                return {
                     placements: ['left-start'],
-                    boundary: 'window',
-                    maxWidth: 300
+                    maxWidth: 300,
+                    content: this.tipsContent
                 }
-                return typeof tip === 'string'
-                    ? {
-                        ...commonOptions,
-                        content: tip
-                    }
-                    : Object.assign(tip, commonOptions)
             },
-            /**
-             * 属性描述加 类型xxx
-             */
-            dataTypeTips () {
+            tipsContent () {
                 const [editCom] = this.renderComponentList
-                let prefixField = ''
-                let prefix = ''
+                
+                let tips = window.i18n.t('属性英文名：{0}', [this.name])
+                let typeTips = ''
                 if (!Array.isArray(this.describe.type)) {
-                    prefixField = `${isEmpty(this.describe.tips) ? '类型为{0}' : '类型为{0}，'}`
-                    prefix = window.i18n.t(`${prefixField}`, [toPascal(editCom.valueType)])
+                    typeTips = window.i18n.t('类型：{0}', [toPascal(editCom.valueType)])
+                    tips += `<br>${typeTips}`
                 }
-                return prefix
+                let descTips = ''
+                if (this.describe.tips) {
+                    descTips = window.i18n.t('使用说明：{0}', [this.describe.tips])
+                    tips += `<br>${descTips}`
+                }
+                return tips
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量

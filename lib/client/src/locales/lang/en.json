@@ -3940,6 +3940,9 @@
   "当满足": "is satisfied when",
   "则显示": "failing agreement",
   "状态列": "status bar",
+  "属性英文名：{0}": "Prop name: ",
+  "类型：{0}": "Type: ",
+  "使用说明：{0}": "Description: ",
   "移动端页面": "Mobile Page",
   "表单容器跟数据管理容器": "Form Container And Data Container",
   "画布中函数使用": "Function Usage In The Canvas",
@@ -3950,7 +3953,5 @@
   "文档详情": "Document Detail",
   "请搜索文档名称或概述": "Please search for document name or overview",
   "查看文档": "Viewing Document",
-  "可以尝试 调整关键词或": "Try adjusting keywords or",
-  "类型为{0}": "Type is {0}",
-  "类型为{0}，": "Type is {0}, "
+  "可以尝试 调整关键词或": "Try adjusting keywords or"
 }
