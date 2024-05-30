@@ -290,7 +290,7 @@
             // 模块展示
             const moduleList = reactive([
                 {
-                    moduleName: '流程图',
+                    moduleName: '应用开发流程',
                     iconClass: 'bk-drag-icon bk-drag-tuopu icon-pos',
                     frameSrc: frameImg
                 },
@@ -300,7 +300,7 @@
                     docsList: [
                         {
                             name: '页面开发',
-                            description: '通过可视化编排组件及配置组件属性样式等， 便捷的拖拽出所需的页面， 支持pc端页面跟移动端页面'
+                            description: '通过可视化编排组件及配置组件属性样式等， 便捷的拖拽出所需的页面， 支持PC端和移动端页面开发'
                         },
                         {
                             name: '路由管理',
