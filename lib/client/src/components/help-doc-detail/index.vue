@@ -149,7 +149,7 @@
                         }]
                     }, {
                         name: window.i18n.t('路由管理'),
-                        id: 'routeManage'
+                        id: 'route-manage'
                     }, {
                         name: window.i18n.t('js函数开发'),
                         id: 'method'
@@ -167,7 +167,7 @@
                         }, {
                             name: window.i18n.t('文件管理'),
                             level: 1,
-                            id: 'file'
+                            id: 'file-manage'
                         }, {
                             name: window.i18n.t('自定义组件'),
                             level: 1,
@@ -238,7 +238,7 @@
                     }]
                 }
             ]
-            
+
             const jumpAnchor = (anchor) => {
                 const node = document.getElementById(anchor)
                 if (!node) {
