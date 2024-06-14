@@ -17,6 +17,14 @@
                 @enter="handleKeywordEnter"
                 v-model="filters.keyword">
             </bk-input>
+            <bk-select
+                class="filter-item search-input"
+                v-model="filters.source"
+                :placeholder="$t('创建来源')"
+                @change="handleChangeSource">
+                <bk-option id="FROM_LESSCODE" :name="$t('运维开发平台')"> </bk-option>
+                <bk-option id="FROM_PAAS" :name="$t('开发者中心')"> </bk-option>
+            </bk-select>
             <export-button name="project" :list="list" :fields="exportFields" :remote-list="getAllData" />
         </div>
         <div class="data-list" v-bkloading="{ isLoading: fetching.base }">
@@ -87,6 +95,7 @@
                 ],
                 filters: {
                     keyword: '',
+                    source: '',
                     dateRange: []
                 },
                 fetching: {
@@ -99,6 +108,7 @@
             params () {
                 const params = {
                     q: this.filters.keyword,
+                    source: this.filters.source,
                     time: this.timeParam, // mixin
                     pageSize: this.pagination.limit,
                     pageNum: this.pagination.current,
@@ -118,7 +128,7 @@
             async getProjectBase () {
                 this.fetching.base = true
                 const dateRanges = this.filters.dateRange?.filter(item => item)
-                if (this.filters.keyword || dateRanges?.length) {
+                if (this.filters.keyword || this.filters.source  || dateRanges?.length) {
                     this.emptyType = 'search'
                 } else {
                     this.emptyType = 'noData'
@@ -216,6 +226,7 @@
             },
             handlerClearSearch () {
                 this.filters.dateRange = []
+                this.filters.source = ''
                 this.filters.keyword = ''
                 this.handleKeywordClear()
             }
