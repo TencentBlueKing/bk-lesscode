@@ -197,10 +197,10 @@
                     name: 'data',
                     childs: [{
                         name: window.i18n.t('数据表管理'),
-                        id: 'table'
+                        id: 'data-manage'
                     }, {
                         name: window.i18n.t('数据操作'),
-                        id: 'operation'
+                        id: 'data-operation'
                     }]
                 },
                 {
