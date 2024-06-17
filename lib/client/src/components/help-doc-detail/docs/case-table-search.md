@@ -1,4 +1,4 @@
-## 如何开发一个表格查询页面
+# 如何开发一个表格查询页面
 ### 第一步：拖拽“输入框”、“表格”组件到画布
 
 <img src="../../../images/help/case-table1.png" alt="grid" width="80%" class="help-img">

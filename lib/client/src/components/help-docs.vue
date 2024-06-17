@@ -300,10 +300,12 @@
                     docsList: [
                         {
                             name: '页面开发',
+                            selectDoc: 'page-manage',
                             description: '通过可视化编排组件及配置组件属性样式等， 便捷的拖拽出所需的页面， 支持PC端和移动端页面开发'
                         },
                         {
                             name: '路由管理',
+                            selectDoc: 'route-manage',
                             description: '通过路由管理可以设置每个页面的访问链接及跳转关系'
                         },
                         {
@@ -318,11 +320,12 @@
                         },
                         {
                             name: '资源管理',
-                            selectDoc: 'layout',
+                            selectDoc: 'layout-guide',
                             description: '包含导航布局、自定义组件、文件、页面模板、API等应用资源的管理'
                         },
                         {
                             name: ' 发布部署',
+                            selectDoc: 'release',
                             description: '将拖拽出来的应用快速便捷部署到蓝鲸开发者中心'
                         }
                     ]
@@ -333,10 +336,12 @@
                     docsList: [
                         {
                             name: '数据表管理',
+                            selectDoc: 'data-manage',
                             description: '在线对数据表结构及表数据进行增删改查，支持接入第三方db'
                         },
                         {
                             name: '数据操作',
+                            selectDoc: 'data-operation',
                             description: '在线查询数据表数据、同时支持便捷组装出的数据查询语句'
                         }
                     ]

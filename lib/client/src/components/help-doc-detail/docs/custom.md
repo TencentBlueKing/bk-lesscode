@@ -1,6 +1,7 @@
-## 自定义组件开发指引
+# 自定义组件管理
+除了平台提供的基础组件以外、LessCode还提供自定义组件的方式， 支持用户自行开发上传更丰富更贴合自身业务场景的组件到平台中使用
 
-### 组件升级
+## 组件本地开发
 ```bash
 1. 必须下载使用平台提供的开发框架
 
@@ -86,9 +87,7 @@
     </tr>
 </table>
 
-:::info
-events —— 组件内部支持 vue 的自定义事件（this.$emit('click')），配置希望那些事件可以暴露给 LessCode
-:::
+#### events —— 组件内部支持 vue 的自定义事件（this.$emit('click')），配置希望那些事件可以暴露给 LessCode
 
 ```js
 // events
@@ -97,19 +96,19 @@ events —— 组件内部支持 vue 的自定义事件（this.$emit('click')）
     events: [
         {
             name: 'click', // 组件支持点击事件
+            displayName: '点击事件', // 展示的事件中文名称
             tips: '响应组件的点击事件' // 事件功能描述
         },
         {
             name: 'foucs', // 组件支持获得焦点事件
+            displayName: '获得焦点事件', // 展示的事件中文名称
             tips: '响应组件的获得焦点事件' // 事件功能描述
         }
     ]
 }
 ```
 
-:::info
-props —— 组件支持配置那些 props（与 vue 自定义组件使用方式保持一致）
-:::
+#### props —— 组件支持配置那些 props（与 vue 自定义组件使用方式保持一致）
 
 ```js
 // props
@@ -119,15 +118,14 @@ props —— 组件支持配置那些 props（与 vue 自定义组件使用方�
     value: {
         type: 'string', // 类型（string、number、array、object、boolean）
         val: 'hello world !!!', // 默认值
-        options: [] // 值可选列表
+        options: [], // 值可选列表
+        displayName: '值', // 属性中文名称
         tips: '空白提示', // 数据使用描述
     }
 }
 ```
 
-:::info
-directives —— 支持配置那些指令
-:::
+#### directives —— 支持配置那些指令
 
 ```js
 // directives
@@ -165,19 +163,15 @@ npm run build
 2. 构建完成后，/zip 目录下会构建出自定义组件
 ```
 
-### 上传
+## 上传自定义组件
 
-#### 登录蓝鲸运维开发平台
-
-> 已登录可回到首页
-
-#### 选择一个应用，进入应用管理
+#### 1、选择一个应用，进入应用管理
 
 > 在应用列表中选择将要编辑的应用，或者新建一个应用（应用创建成功会自动进入到应用管理页面）
 
 <img src="../../../images/help/project-list.png" alt="grid" width="80%" class="help-img" />
 
-#### 新建自定义组件
+#### 2、新建自定义组件
 
 > 在左侧可选 tab 中选中自定义组件管理，进入自定义组件管理页面
 >
@@ -187,7 +181,7 @@ npm run build
 
 <img src="../../../images/help/component-upload.png" alt="grid" width="80%" class="help-img" />
 
-#### 上传自定义组件（component-project.zip）
+#### 3、上传自定义组件（component-project.zip）
 
 > 点击新建按钮会出现自定义组件新建弹框
 >
@@ -195,9 +189,9 @@ npm run build
 >
 > 上传成功后会自动解析自定义组件包中的 config.json，返回提供的 type、name、displayName 并自动回填到对应的表单项中
 
-<img src="../../../images/help/component-create.png" alt="grid" width="80%" class="help-img" />
+<img src="../../../images/help/component-create.png" width="80%" class="help-img" />
 
-### 使用
+## 页面使用自定义组件
 
 #### 指定使用组件的页面
 > 在应用页面列表中选择将要编辑的页面，或者新建一个页面来编辑
@@ -209,11 +203,9 @@ npm run build
 >
 > 找到将要使用的组件拖拽到编辑区
 
-<img src="../../../images/help/component-use.png" alt="grid" width="80%" class="help-img" />
-
 #### 编辑组件功能
 > 在编辑区选中将要操作的组件
 >
 > 在右侧配置面板选中将进行的操作 tab 完成页面功能配置
 
-<img src="../../../images/help/component-operation.png" alt="grid" width="80%" class="help-img" />
+<img src="../../../images/help/component-use.png" width="80%" class="help-img" />
