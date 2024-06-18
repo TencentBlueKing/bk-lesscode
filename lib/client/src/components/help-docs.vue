@@ -37,7 +37,7 @@
             <div class="search-space">
                 <bk-input
                     clearable
-                    :placeholder="$t('请搜索文档名称或概述')"
+                    :placeholder="$t('请搜索文档名称')"
                     right-icon="bk-icon icon-search"
                     v-model="searchKey"
                     @change="searchDocs"
@@ -81,7 +81,6 @@
                     <div v-if="searchDocList.length" class="search-content">
                         <div v-for="(item, index) in searchDocList" :key="`${item.name + index}`" :class="['search-doc', hoverCls(index)]" @mouseenter="getHoverIndex($event, index)" @click="getDocDetail(item)">
                             <div class="search-doc-name" v-html="item.name"></div>
-                            <div class="search-doc-des" v-html="item.description"></div>
                         </div>
                     </div>
                     <!-- 无内容时 展示 -->
@@ -109,6 +108,7 @@
 <script>
     import { defineComponent, computed, ref, reactive, set, onBeforeMount, onBeforeUnmount } from '@vue/composition-api'
     import HelpDocDetail from '@/components/help-doc-detail'
+    import { getDocsMenuList } from './help-doc-detail/docs-menu'
     import frameImg from '../images/frame.png'
     export default defineComponent({
         name: 'help-docs',
@@ -372,23 +372,26 @@
                 if (!Array.isArray(docTree)) return []
                 let allDoc = []
                 docTree.forEach((item) => {
-                    if (!item.docsList) allDoc.push(item)
-                    if (Array.isArray(item.docsList)) {
-                        allDoc = allDoc.concat(getDocList(item.docsList))
+                    if (item.id) allDoc.push(item)
+                    if (Array.isArray(item.childs)) {
+                        allDoc = allDoc.concat(getDocList(item.childs))
+                    }
+                    if (Array.isArray(item.children)) {
+                        allDoc = allDoc.concat(getDocList(item.children))
                     }
                 })
                 return allDoc
             }
-            const allDoc = getDocList(moduleList.slice(1))
+
+            const allDoc = getDocList(getDocsMenuList())
             const searchDocs = () => {
                 const regWord = new RegExp(searchKey.value, 'gi')
                 // 获取所有叶子节点
                 searchDocList.value = allDoc.reduce((preVal, curVal) => {
-                    const isSearchDoc = curVal.name.includes(searchKey.value) || curVal.description.includes(searchKey.value)
+                    const isSearchDoc = curVal.name.includes(searchKey.value)
                     isSearchDoc && preVal.push({
                         name: curVal.name.replace(regWord, `<span class="high-blue">${searchKey.value}</span>`),
-                        selectDoc: curVal.selectDoc,
-                        description: curVal.description.replace(regWord, `<span class="high-blue">${searchKey.value}</span>`)
+                        selectDoc: curVal.id
                     })
                     return preVal
                 }, [])
@@ -409,6 +412,7 @@
             const getDocDetail = (item) => {
                 isDocDetail.value = true
                 docNameParam.value = item?.selectDoc || ''
+                changeFull(true)
             }
             const backUpPage = () => {
                 isDocDetail.value = false
@@ -592,7 +596,6 @@
                         height: 20px;
                         line-height: 20px;
                         font-weight: 700;
-                        font-family: MicrosoftYaHei-Bold;
                     }
                     &-des {
                         padding: 8px 0 11px 0;
