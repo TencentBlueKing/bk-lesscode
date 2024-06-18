@@ -533,7 +533,7 @@
             .side-bd {
                 height: calc(100% - var(--side-hd-height) - var(--side-ft-height, 0px));
                 overflow-y: auto;
-                @mixin scroller;
+                @mixin scroller #565C67;
             }
             .side-ft {
                 position: absolute;
