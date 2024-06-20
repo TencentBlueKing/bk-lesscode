@@ -20,11 +20,15 @@
 
 根据使用场景，表单容器中所支持的表单元素划分了三类控件，可以根据不同的使用场景按需添加到画布中。
 
+- 布局控件：包括描述文本控件和分割线控件，主要用来增加表单填写说明或者多个表单分块的用途。
+- 基础控件：主要一些常见的表单元素控件，例如输入框、文本框、时间选择、人员选择、表格等，不同类型的表单可能会有不同的属性配置。
+- 高级控件：计算控件的作用是根据表单中表单项或者内置的部分时间属性，通过指定一定的计算规则来得到一个计算后的值，比如多个表单项值求和，目前主要支持数值计算和日期计算，计算控件计算的值不会实际写入DB数据表。容器中添加一个自动编号控件，则会在DB数据表中增加一个对应的字段，当表单数据提交时，该字段的值会根据设定好的编号规则自动生成一条数据并写入数据表。
+
 <img src="../../../images/help/form-data-container-02.png" alt="grid" class="help-img">
 
 一个包含多种表单元素控件的使用示例：
 
-<img src="../../../images/help/form-data-container-03-2.png" alt="grid" class="help-img">
+<img src="../../../images/help/form-data-container-03-2.png" alt="grid" width="80%" class="help-img">
 
 ### 配置表单字段属性
 
@@ -52,12 +56,12 @@
 
 表格数据也支持配置筛选字段，通过定义筛选字段可以实现数据的过滤。
 
-<img src="../../../images/help/form-data-container-07.png" alt="grid" class="help-img">
+<img src="../../../images/help/form-data-container-07.png" width="80%" alt="grid" class="help-img">
  
 ### 表格数据操作
 
 表格支持配置操作列，目前内置了详情、删除、跳转三种操作类型，另外操作按钮也可按需绑定权限规则。添加操作按钮后，表格中的每一条数据都会有对应的操作选项。
 
-<img src="../../../images/help/form-data-container-08.png" alt="grid" class="help-img">
+<img src="../../../images/help/form-data-container-08.png" width="80%" alt="grid" class="help-img">
 
 <img src="../../../images/help/form-data-container-09.png" alt="grid" class="help-img">
