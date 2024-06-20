@@ -17,7 +17,7 @@
                 <div class="link-type">
                     <bk-select
                         class="menu-page"
-                        :placeholder="$t('请选中路由')"
+                        :placeholder="$t('请选择导航点击跳转路由')"
                         style="width: 100%"
                         clearable
                         :value="baseInfo.pageCode"
@@ -64,7 +64,7 @@
             <div v-else class="link-type">
                 <bk-input
                     class="menu-link"
-                    :placeholder="$t('请输入链接')"
+                    :placeholder="$t('请输入链接，如https://xxx')"
                     :value="baseInfo.link"
                     clearable
                     @change="handleLinkChange" />
@@ -75,7 +75,7 @@
             </div>
             <div
                 class="menu-type"
-                v-bk-tooltips.top-start="isPageCode ? $t('点击切换链接模式') : $t('点击切换路由模式')"
+                v-bk-tooltips.top-start="isPageCode ? $t('点击切换第三方链接模式') : $t('点击切换路由模式')"
                 @click="handleTogglePageCode">
                 <div class="text">{{ isPageCode ? $t('路由') : $t('链接') }}</div>
             </div>

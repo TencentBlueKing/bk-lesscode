@@ -371,10 +371,12 @@
              */
             displayName () {
                 if (this.renderComponentList.length > 1) {
-                    return this.name
+                    return this.describe?.displayName || this.name
                 }
-                const [editCom] = this.renderComponentList
-                return `${this.name}(${toPascal(editCom.valueType)})`
+                if (!isEmpty(this.describe?.displayName)) {
+                    return `${this.describe.displayName}(${this.name})`
+                }
+                return this.name
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)
@@ -388,7 +390,7 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(window.i18n.t(this.describe.tips))
+                const tip = transformTipsWidth(this.dataTypeTips + window.i18n.t(this.describe.tips))
                 const commonOptions = {
                     disabled: !tip,
                     interactive: false,
@@ -402,6 +404,19 @@
                         content: tip
                     }
                     : Object.assign(tip, commonOptions)
+            },
+            /**
+             * 属性描述加 类型xxx
+             */
+            dataTypeTips () {
+                const [editCom] = this.renderComponentList
+                let prefixField = ''
+                let prefix = ''
+                if (!Array.isArray(this.describe.type)) {
+                    prefixField = `${isEmpty(this.describe.tips) ? '类型为{0}' : '类型为{0}，'}`
+                    prefix = window.i18n.t(`${prefixField}`, [toPascal(editCom.valueType)])
+                }
+                return prefix
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量
@@ -757,7 +772,6 @@
     .modifier-prop {
         margin: 0 10px;
         .prop-name {
-            height: 40px;
             font-size: 12px;
             font-weight: bold;
             color: #313238;
@@ -767,20 +781,24 @@
             align-items: center;
             border-top: 1px solid #EAEBF0;
             cursor: pointer;
+            padding: 10px 0;
             .icon-and-name {
                 display: flex;
+                align-items: center;
                 max-width: calc(100% - 65px);
             }
             .label {
                 border-bottom: 1px dashed #313238;
                 cursor: pointer;
                 line-height: 19px;
-                display: inline-block;
             }
             span {
-                white-space: nowrap;
                 overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
                 text-overflow: ellipsis;
+                word-break: break-all;
             }
             .icon-angle-down {
                 cursor: pointer;

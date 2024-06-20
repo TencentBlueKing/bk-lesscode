@@ -112,7 +112,11 @@
                             </div>
                         </template>
                         <template v-else>
-                            <div class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                            <div
+                                v-if="item.type !== 'status'"
+                                class="template-item"
+                                :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''"
+                            >
                                 <div class="label">
                                     <span class="g-config-subline" v-bk-tooltips="{ content: $t('该列对应的字段名') }">{{ $t('字段名') }}</span>
                                 </div>
@@ -123,17 +127,118 @@
                                 <bk-select
                                     style="width: 100%; background-color: #fff"
                                     :popover-options="{ appendTo: 'parent' }"
-                                    v-model="item.type"
-                                    @change="val => handleChange(val, 'type', index)"
+                                    :value="item.type || 'normal'"
+                                    @change="val => handleChange(val === 'normal' ? '' : val, 'type', index)"
                                 >
-                                    <bk-option v-for="option in typeList"
+                                    <bk-option
+                                        v-for="option in typeList"
                                         :key="option.id"
                                         :id="option.id"
-                                        :name="option.name">
+                                        :name="option.name"
+                                    >
                                     </bk-option>
                                 </bk-select>
                             </div>
                         </template>
+                        <div class="template-item" v-if="item.type === 'status'">
+                            <div class="label">{{$t('状态设置')}}</div>
+                            <section
+                                v-for="status,statusIndex in item.status"
+                                :key="statusIndex"
+                                class="status-main"
+                            >
+                                <h5 class="status-head">
+                                    {{$t('当满足')}}
+                                    <i
+                                        :class="{
+                                            'bk-drag-icon bk-drag-delete': true,
+                                            disabled: item.status.length <= 1
+                                        }"
+                                        @click="handleDeleteStatus(statusIndex, index)"
+                                    ></i>
+                                </h5>
+                                <bk-compose-form-item>
+                                    <bk-select
+                                        style="width: 110px"
+                                        :value="status.when.field"
+                                        :clearable="false"
+                                        :popover-options="{ appendTo: 'parent' }"
+                                        @change="val => handleStatusChange(val, 'when', 'field', statusIndex, index)"
+                                    >
+                                        <bk-option
+                                            v-for="columnItem,columnIndex in column"
+                                            :key="columnItem.label + columnItem.prop + columnIndex"
+                                            :id="columnItem.prop"
+                                            :name="columnItem.label"
+                                        />
+                                    </bk-select>
+                                    <bk-select
+                                        style="width: 46px"
+                                        :popover-width="100"
+                                        :value="status.when.comparator"
+                                        :clearable="false"
+                                        :popover-options="{ appendTo: 'parent' }"
+                                        @change="val => handleStatusChange(val, 'when', 'comparator', statusIndex, index)"
+                                    >
+                                        <bk-option
+                                            v-for="comparatorItem in comparatorList"
+                                            :key="comparatorItem"
+                                            :id="comparatorItem"
+                                            :name="comparatorItem"
+                                        />
+                                    </bk-select>
+                                    <bk-input
+                                        style="width: 92px"
+                                        :value="status.when.value"
+                                        @change="val => handleStatusChange(val, 'when', 'value', statusIndex, index)"
+                                    />
+                                </bk-compose-form-item>
+                                <h5 class="status-head mt-5">
+                                    {{$t('则显示')}}
+                                </h5>
+                                <bk-compose-form-item>
+                                    <bk-select
+                                        style="width: 110px;height:31.34px;"
+                                        :value="status.show.status"
+                                        :clearable="false"
+                                        :popover-options="{ appendTo: 'parent' }"
+                                        @change="val => handleStatusChange(val, 'show', 'status', statusIndex, index)"
+                                    >
+                                        <bk-option
+                                            v-for="statusItem in statusList"
+                                            :key="statusItem"
+                                            :id="statusItem"
+                                            :name="statusItem"
+                                        >
+                                            <img
+                                                class="status-img"
+                                                :src="`/static/images/icon/${statusItem}.svg`"
+                                            />
+                                        </bk-option>
+                                        <template #trigger>
+                                            <section class="status-trigger">
+                                                <i class="bk-select-angle bk-icon icon-angle-down"></i>
+                                                <img
+                                                    class="status-img"
+                                                    :src="`/static/images/icon/${status.show.status}.svg`"
+                                                />
+                                            </section>
+                                        </template>
+                                    </bk-select>
+                                    <bk-input
+                                        style="width: 137px"
+                                        :value="status.show.description"
+                                        @change="val => handleStatusChange(val, 'show', 'description', statusIndex, index)"
+                                    />
+                                </bk-compose-form-item>
+                            </section>
+                            <bk-link
+                                theme="primary"
+                                icon="bk-icon icon-plus-circle"
+                                class="plus-status-icon"
+                                @click="handlePlusStatus(index)"
+                            >{{$t('添加')}}</bk-link>
+                        </div>
                         <div class="template-item">
                             <div class="label">
                                 <span class="g-config-subline" v-bk-tooltips="{ content: $t('列宽度，请填写正整数，单位为px') }">{{ $t('宽度') }}</span>
@@ -224,6 +329,38 @@
         sortable: false,
         filterable: false
     })
+    const generateStatus = (field) => ({
+        when: {
+            field,
+            comparator: '>',
+            value: ''
+        },
+        show: {
+            status: 'success',
+            description: ''
+        }
+    })
+    const statusList = [
+        'normal',
+        'error',
+        'unknown',
+        'warning',
+        'success',
+        'waiting',
+        'pending',
+        'failed',
+        'loading'
+    ]
+    const comparatorList = [
+        '>',
+        '<',
+        '>=',
+        '<=',
+        '=',
+        '!=',
+        'in',
+        'like'
+    ]
 
     export default defineComponent({
         name: 'slot-table',
@@ -259,11 +396,13 @@
             const type = props.type
             const column = ref([])
             const showMethod = ref(false)
+            // normal 是因为必须有一个id，空字符串select会有重影
             const typeList = [
-                { id: '', name: window.i18n.t('普通数据列') },
+                { id: 'normal', name: window.i18n.t('普通数据列') },
                 { id: 'selection', name: window.i18n.t('多选框列') },
                 // { id: 'expand', name: '展开按钮' },
-                { id: 'index', name: window.i18n.t('索引序号列（从 1 开始）') }
+                { id: 'index', name: window.i18n.t('索引序号列（从 1 开始）') },
+                { id: 'status', name: window.i18n.t('状态列') }
             ]
             const alignList = [
                 { id: 'left', name: window.i18n.t('左对齐') },
@@ -281,7 +420,29 @@
             }
 
             const handleChange = (value, key, index) => {
+                if (key === 'type' && !column.value[index].status?.length) {
+                    column.value[index].status = [
+                        generateStatus(column.value[0].prop)
+                    ]
+                }
                 column.value[index][key] = value
+                trigger()
+            }
+
+            const handleStatusChange = (value, statusKey, key, statusIndex, index) => {
+                column.value[index].status[statusIndex][statusKey][key] = value
+                trigger()
+            }
+
+            const handlePlusStatus = (index) => {
+                column.value[index].status.push(generateStatus(column.value[0].prop))
+                trigger()
+            }
+
+            const handleDeleteStatus = (statusIndex, index) => {
+                if (column.value[index].status.length <= 1) return
+
+                column.value[index].status.splice(statusIndex, 1)
                 trigger()
             }
 
@@ -325,8 +486,13 @@
                 showMethod,
                 typeList,
                 alignList,
+                statusList,
+                comparatorList,
                 handleDelete,
                 handleChange,
+                handleStatusChange,
+                handlePlusStatus,
+                handleDeleteStatus,
                 handleAdd,
                 trigger,
                 showMethodDialog
@@ -336,6 +502,8 @@
 </script>
 
 <style lang="postcss" scoped>
+    @import "@/css/mixins/scroller";
+
     .group-list {
         margin-top: 4px;
         .list-item {
@@ -384,6 +552,9 @@
     }
     .template-item-list {
         padding: 10px 16px 16px;
+        max-height: 600px;
+        overflow-y: auto;
+        @mixin scroller;
     }
     .template-item {
         margin-top: 12px;
@@ -395,5 +566,54 @@
             line-height: 20px;
             margin-bottom: 6px;
         }
+    }
+    .status-main {
+        background: #F0F1F5;
+        border-radius: 2px;
+        padding: 8px;
+        margin-bottom: 12px;
+        /deep/ input {
+            height: 30px;
+            box-sizing: content-box;
+        }
+        &:hover {
+            box-shadow: 0 2px 4px 0 #0000001a, 0 2px 4px 0 #1919290d;
+        }
+    }
+    .status-head {
+        color: #63656E;
+        font-size: 12px;
+        line-height: 20px;
+        display: flex;
+        justify-content: space-between;
+        font-weight: normal;
+        margin: 0 0 4px;
+        &.mt-5 {
+            margin-top: 5px;
+        }
+        .bk-drag-delete {
+            cursor: pointer;
+            color: #979BA5;
+            &.disabled {
+                color: #c4c6cc;
+                cursor: not-allowed;
+            }
+        }
+    }
+    .plus-status-icon {
+        margin-top: -4px;
+        ::v-deep .bk-link-text {
+            font-size: 12px;
+        }
+    }
+    .status-trigger {
+        display: flex;
+        align-items: center;
+        height: 31.34px;
+        padding-left: 11px;
+    }
+    .status-img {
+        width: 13px;
+        height: 13px;
     }
 </style>

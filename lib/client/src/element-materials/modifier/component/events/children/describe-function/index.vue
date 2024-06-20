@@ -1,6 +1,9 @@
 <template>
     <section>
-        <RenderAI @plus-action="handlePlusActionByAI" />
+        <RenderAI
+            v-if="isAiAvailable"
+            @plus-action="handlePlusActionByAI"
+        />
         <span class="describe-title">
             {{ $t('事件行为') }}
             <span class="describe-sub-title">
@@ -26,6 +29,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import RenderAI from './render-ai.vue'
     import RenderComponent from './render-component.vue'
     import RenderLink from './render-link.vue'
@@ -52,6 +56,9 @@
                     [EVENT_ACTION_TYPE.VARIABLE]: RenderVariable
                 }
             }
+        },
+        computed: {
+            ...mapGetters('ai', ['isAiAvailable'])
         },
         created () {
             this.copyEventValue = JSON.parse(JSON.stringify(this.eventValue))

@@ -19,7 +19,7 @@
                     @change="$emit('change', $event)">
                 </component>
             </template>
-            <span v-else style="font-size: 12px; color: #c3cdd7;">找不到该类型控件，请删除字段</span>
+            <span v-else style="font-size: 12px; color: #c3cdd7;">{{ $t('找不到该类型控件，请删除字段') }}</span>
         </div>
     </div>
 </template>

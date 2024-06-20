@@ -2,7 +2,7 @@
     <setter-form-item :title="$t('form_唯一标识')">
         <bk-input
             :value="value"
-            :disabled="disabled || hasCreatedForm"
+            :disabled="disabled || !field.unsaved"
             @change="$emit('change', $event)" />
     </setter-form-item>
 </template>
@@ -16,8 +16,11 @@
             setterFormItem
         },
         props: {
-            hasCreatedForm: Boolean,
             disabled: Boolean,
+            field: {
+                type: Object,
+                default: () => ({})
+            },
             value: {
                 type: String,
                 default: ''

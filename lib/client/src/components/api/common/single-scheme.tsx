@@ -1,7 +1,8 @@
 import {
     getDefaultApiUseScheme,
     getDefaultApiEditScheme,
-    API_PARAM_TYPES
+    API_PARAM_TYPES,
+    API_PARAM_VALUE_TYPES
 } from 'shared/api'
 import './scheme.css'
 import {
@@ -74,7 +75,7 @@ export default defineComponent({
         }
         const customValidateRule = {
             validator (val) {
-                const value = copyScheme.value.valueType === 'variable' ? copyScheme.value.code : val
+                const value = copyScheme.value.valueType === API_PARAM_VALUE_TYPES.VARIABLE ? copyScheme.value.code : val
                 return customValidate(value, copyScheme.value.validate, props.variableList, props.functionList, props.apiList)
             },
             message: window.i18n.t('参数值不符合自定义校验'),
@@ -82,6 +83,8 @@ export default defineComponent({
         }
         // 切换是否展示子节点
         const toggleShowProperty = () => {
+            if (copyScheme.value.valueType === API_PARAM_VALUE_TYPES.VARIABLE) return
+
             copyScheme.value.showChildren = !copyScheme.value.showChildren
             triggerChange()
         }
@@ -178,7 +181,8 @@ export default defineComponent({
                                         API_PARAM_TYPES.BOOLEAN.VAL,
                                         API_PARAM_TYPES.NUMBER.VAL,
                                         API_PARAM_TYPES.STRING.VAL
-                                    ].includes(this.copyScheme.type)
+                                    ].includes(this.copyScheme.type),
+                                    disabled: this.copyScheme.valueType === API_PARAM_VALUE_TYPES.VARIABLE
                                 }
                             ]
                         }
@@ -288,16 +292,15 @@ export default defineComponent({
                         </bk-form-item>
                     </bk-form>
                     {
-                        this.showRule ?
-                        [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)
-                            ? <span class="layout-middle">--</span>
-                            : <render-validate
-                                class="layout-middle"
-                                scheme={this.copyScheme}
-                                onChange={(validate) => this.update({ validate })}
-                            />
-                        :
-                        ''
+                        this.showRule
+                            ? [API_PARAM_TYPES.ARRAY.VAL, API_PARAM_TYPES.OBJECT.VAL].includes(this.copyScheme.type)
+                                ? <span class="layout-middle">--</span>
+                                : <render-validate
+                                    class="layout-middle"
+                                    scheme={this.copyScheme}
+                                    onChange={(validate) => this.update({ validate })}
+                                />
+                            : ''
                     }
                     <bk-input
                         class="layout-middle"
@@ -317,7 +320,7 @@ export default defineComponent({
                                 [
                                     API_PARAM_TYPES.OBJECT.VAL,
                                     API_PARAM_TYPES.ARRAY.VAL
-                                ].includes(this.copyScheme.type) && this.disablePlusBrother
+                                ].includes(this.copyScheme.type) && this.disablePlusBrother && this.copyScheme.valueType !== API_PARAM_VALUE_TYPES.VARIABLE
                                     ? <i
                                         class="bk-drag-icon bk-drag-add-fill layout-icon"
                                         onClick={this.plusChildProperty}
@@ -340,7 +343,18 @@ export default defineComponent({
                                 [
                                     API_PARAM_TYPES.OBJECT.VAL,
                                     API_PARAM_TYPES.ARRAY.VAL
-                                ].includes(this.copyScheme.type) && !this.disablePlusBrother
+                                ].includes(this.copyScheme.type) && !this.disablePlusBrother && this.copyScheme.valueType === API_PARAM_VALUE_TYPES.VARIABLE
+                                    ? <i
+                                        class="bk-drag-icon bk-drag-add-fill layout-icon"
+                                        onClick={this.handlePlusBrotherProperty}
+                                    ></i>
+                                    : ''
+                            }
+                            {
+                                [
+                                    API_PARAM_TYPES.OBJECT.VAL,
+                                    API_PARAM_TYPES.ARRAY.VAL
+                                ].includes(this.copyScheme.type) && !this.disablePlusBrother && this.copyScheme.valueType !== API_PARAM_VALUE_TYPES.VARIABLE
                                     ? <i
                                         class="bk-drag-icon bk-drag-add-fill layout-icon"
                                     ></i>
@@ -362,7 +376,7 @@ export default defineComponent({
                                     [
                                         API_PARAM_TYPES.OBJECT.VAL,
                                         API_PARAM_TYPES.ARRAY.VAL
-                                    ].includes(this.copyScheme.type)
+                                    ].includes(this.copyScheme.type) && this.copyScheme.valueType !== API_PARAM_VALUE_TYPES.VARIABLE
                                         ? <bk-button
                                             class="property-icon"
                                             text

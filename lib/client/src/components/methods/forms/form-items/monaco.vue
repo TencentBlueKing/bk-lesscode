@@ -72,7 +72,7 @@
     import DebugParam from './children/debug/param.vue'
     import DebugProblem from './children/debug/problem.vue'
     import mixins from './form-item-mixins'
-    import { mapActions } from 'vuex'
+    import { mapActions, mapGetters } from 'vuex'
     import LC from '@/element-materials/core'
     import {
         FUNCTION_TIPS,
@@ -166,6 +166,8 @@
         },
 
         computed: {
+            ...mapGetters('ai', ['isAiAvailable']),
+
             functionTips () {
                 return {
                     content: `<pre class="function-tips">${this.tips || FUNCTION_TIPS()[this.form.funcType]}</pre>`,
@@ -512,7 +514,7 @@
             },
 
             codeAI () {
-                if (!this.renderCode) return
+                if (!this.renderCode || !this.isAiAvailable) return
 
                 const { blinkBefore, blinkAfter } = this.getCode()
                 this.aiHelper.code(blinkBefore, blinkAfter, 'javascript')

@@ -18,10 +18,10 @@
                 :placeholder="$t('请选择')"
                 @change="handlePositionChange"
                 style="width: 100%;">
-                <bk-option id="absolute" name="absolute" v-bk-tooltips="getTooltipsConfig($t('元素会被移出正常文档流，并不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的偏移，来确定元素位置'))" />
-                <bk-option id="fixed" name="fixed" v-bk-tooltips="getTooltipsConfig($t('元素会被移出正常文档流，并不为元素预留空间，而是通过指定元素相对于屏幕视口（viewport）的位置来指定元素位置'))" />
-                <bk-option id="static" name="static" v-bk-tooltips="getTooltipsConfig($t('使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效'))" />
-                <bk-option id="unset" name="unset" v-bk-tooltips="getTooltipsConfig($t('未设置'))" />
+                <bk-option id="absolute" name="absolute" v-bk-tooltips="getTooltipsConfig($t('绝对定位:HTML元素会被移出正常文档流，并不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的移，来确定元素位置。'))" />
+                <bk-option id="fixed" name="fixed" v-bk-tooltips="getTooltipsConfig($t('固定位置:HTML 元素的位置相对于浏览器窗口是固定位置，即使窗口是滚动的它也不会移动。'))" />
+                <bk-option id="static" name="static" v-bk-tooltips="getTooltipsConfig($t('静态定位:HTML元素的默认值，即没有定位，循正常的文档流对象。静态定位的元素不会受到 top,bottom,left,right设置影响。'))" />
+                <bk-option id="relative" name="relative" v-bk-tooltips="getTooltipsConfig($t('相对定位: HTML元素相对于其原本位置进行定位，但不会脱离文档流， 可以结合 top、right、bottom 和 left 属性对元素位置进行调整。'))" />
             </bk-select>
         </style-item>
         <div v-if="positionValue && positionValue !== 'static' && positionValue !== 'unset'" style="margin-top: 12px;">

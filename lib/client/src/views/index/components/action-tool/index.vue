@@ -1,6 +1,6 @@
 <template>
     <div class="action-tool-list">
-        <save-as-template v-if="iamNoResourcesPerm[$IAM_ACTION.manage_template[0]]" />
+        <save-as-template />
         <clear-canvas />
         <code-and-json />
         <show-function />

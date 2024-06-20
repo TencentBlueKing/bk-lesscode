@@ -136,9 +136,15 @@
 
             let id = ''
             const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
+            const tab = router?.currentRoute?.query?.tab
 
             const goBack = () => {
-                router.back()
+                router.push({
+                    name: 'tableList',
+                    query: {
+                        tab
+                    }
+                })
             }
 
             const changeEdit = (val) => {
@@ -209,7 +215,14 @@
 
             const getDetail = () => {
                 isLoading.value = true
-                store.dispatch('dataSource/findOne', router?.currentRoute?.query).then((data) => {
+                store.dispatch(
+                    'dataSource/findOne',
+                    {
+                        thirdPartDBId,
+                        id: router?.currentRoute?.query?.id,
+                        tableName: router?.currentRoute?.query?.tableName
+                    }
+                ).then((data) => {
                     originTableStatus.basicInfo.tableName = data.tableName
                     originTableStatus.basicInfo.comment = data.comment
                     originTableStatus.data = data.columns

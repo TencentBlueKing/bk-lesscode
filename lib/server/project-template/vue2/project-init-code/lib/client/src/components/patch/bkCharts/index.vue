@@ -36,7 +36,12 @@
             baseChartOptions () {
                 const title = {
                     display: this.title !== '',
-                    text: this.title
+                    text: this.title,
+                    align: this.titleAlign
+                }
+
+                const legend = {
+                    position: this.legendPosition
                 }
 
                 return {
@@ -46,7 +51,8 @@
                     },
                     options: {
                         plugins: {
-                            title
+                            title,
+                            legend
                         },
                         maintainAspectRatio: this.maintainAspectRatio
                     }

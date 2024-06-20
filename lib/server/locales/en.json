@@ -284,7 +284,6 @@
   "页面不存在": "Page does not exist",
   "页面的【{{n}}】生命周期": "[{{n}}] life cycle of the page",
   "项目【id: {{n}}】未绑定应用": "Project [id: {{n}}] is not bound to an application",
-  "项目不存在": "Item does not exist",
   "请先安装 {{0}} 组件库、{{1}} 复合组件库": "Please install {{0}} component library, {{1}} composite component library first",
   "请先安装 {{0}} 组件库、{{1}} 复合组件库以及 {{2}} 组件库": "Please install {{0}} component library, {{1}} composite component library and {{2}} component library first",
   "默认字段": "Default Field",
@@ -411,5 +410,12 @@
   "画布（页面ID：{{0}}）": "Canvas（pageID：{{0}}）",
   "基本信息（页面ID：{{0}}）": "Base info（pageID：{{0}}）",
   "页面ID：{{0}}": "PageID：{{0}}",
-  "创建失败": "Create failed"
+  "创建失败": "Create failed",
+  "不允许出现 database() 函数": "The database() function is not allowed",
+  "不允许出现 user() 函数": "The user() function is not allowed",
+  "不允许出现 version() 函数": "The version() function is not allowed",
+  "不允许查询 INFORMATION_SCHEMA 相关数据": "Queries related to INFORMATION_SCHEMA are not allowed.",
+  "不允许查询 PERFORMANCE_SCHEMA 相关数据": "Querying PERFORMANCE_SCHEMA related data is not allowed.",
+  "不允许查询 MYSQL 内置表相关数据": "Do not allow querying data related to MYSQL built-in tables",
+  "不允许出现@@符号": "The @@ symbol is not allowed"
 }

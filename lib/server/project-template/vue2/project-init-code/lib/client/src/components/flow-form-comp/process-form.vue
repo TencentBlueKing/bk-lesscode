@@ -11,28 +11,28 @@
                     <bk-button
                         v-bk-tooltips="{
                             disabled: viewType === 'projectCode' || type === 'FORM' || flowDeployed,
-                            content: '流程有更新未部署，提单或流程执行可能会失败'
+                            content: $t('流程有更新未部署，提单或流程执行可能会失败')
                         }"
                         theme="primary"
                         style="min-width: 88px; margin-right: 4px;"
                         :loading="submitPending"
                         @click="handleSubmit">
-                        提交
+                        {{ $t('提交') }}
                     </bk-button>
-                    <bk-button @click="value = {}">清空</bk-button>
+                    <bk-button @click="value = {}">{{ $t('清空') }}</bk-button>
                 </div>
             </template>
-            <bk-exception v-else type="empty" class="empty-form-fields">暂无数据</bk-exception>
+            <bk-exception v-else type="empty" class="empty-form-fields">{{ $t('暂无数据') }}</bk-exception>
         </div>
         <div class="create-ticket-success" v-if="showSuccess">
             <div class="success-tip-content">
                 <div class="icon-wrapper">
                     <i class="bk-icon icon-check-circle"></i>
-                    <p class="title">提单完成</p>
-                    <p class="desc">数据已提交并保存，接下来你可以继续提单</p>
+                    <p class="title">{{ $t('提单完成') }}</p>
+                    <p class="desc">{{ $t('数据已提交并保存，接下来你可以继续提单') }}</p>
                 </div>
                 <div class="btn-action">
-                    <bk-button theme="primary" @click="handleContinue">继续提单</bk-button>
+                    <bk-button theme="primary" @click="handleContinue">{{ $t('继续提单') }}</bk-button>
                 </div>
             </div>
         </div>
@@ -124,7 +124,7 @@
                         valid = false
                         this.$bkMessage({
                             theme: 'error',
-                            message: `字段【${field.name}】为必填项`
+                            message: this.$t('字段【{0}】为必填项', [field.name])
                         })
                         return true
                     }
@@ -158,7 +158,7 @@
                     const data = this.getFieldsData()
                     if (this.type === 'FLOW') {
                         const params = {
-                            fields: [{ key: 'title', value: 'lesscode 提单' }, ...data],
+                            fields: [{ key: 'title', value: this.$t('lesscode 提单') }, ...data],
                             creator: this.$store.state.user.username,
                             service_id: this.serviceId,
                             tag: this.viewType === 'preview' ? 'preview' : BKPAAS_ENVIRONMENT,
@@ -174,8 +174,8 @@
                         }
                         const reqConfig = {
                             handingError (message) {
-                                if (typeof message === 'string' && message.includes('服务未启用')) {
-                                    return '当前流程未部署，请部署后提单'
+                                if (typeof message === 'string' && message.includes(this.$t('服务未启用'))) {
+                                    return this.$t('当前流程未部署，请部署后提单')
                                 }
                                 return message
                             }
