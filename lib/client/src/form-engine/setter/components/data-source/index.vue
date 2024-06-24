@@ -1,11 +1,12 @@
 <template>
-    <setter-form-item :title="$t('字段名称')">
+    <setter-form-item :title="$t('数据源')">
         <bk-radio-group
             class="g-prop-radio-group"
             :value="localVal.type"
             @change="handleSourceTypeChange">
             <bk-radio-button
                 v-for="item in sourceTypeList"
+                :disabled="disabled"
                 :key="item.id"
                 :value="item.id">
                 {{ item.name }}
