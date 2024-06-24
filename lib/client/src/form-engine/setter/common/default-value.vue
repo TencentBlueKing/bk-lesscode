@@ -90,7 +90,7 @@ export default {
                 if (config) {
                     this.dataSourceList = []
                     this.dataSourceListLoding = true
-                    this.dataSourceList = await transDataSourceValue(config, this)
+                    this.dataSourceList = await transDataSourceValue(config, this.value, this)
                     this.dataSourceListLoding = false
                 }
             },

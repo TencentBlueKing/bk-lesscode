@@ -152,7 +152,7 @@
                     const expressions = conditions.expressions.slice()
                     conditions.expressions = expressions.filter(item => item.type === 'const')
                     const params = {
-                        field: fieldId,
+                        fields: [fieldId],
                         group: fieldId,
                         conditions
                     }
