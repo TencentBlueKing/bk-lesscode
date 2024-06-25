@@ -37,7 +37,15 @@
                 }
             },
             handleChange (property, val) {
-                this.fieldData.configure[property] = val
+                if (property in this.fieldData.configure) {
+                    this.fieldData.configure[property] = val
+                } else {
+                    this.$set(this.fieldData.configure, property, val)
+                }
+
+                if (property === 'dateDimension') {
+                    this.fieldData.configure.value = ''
+                }
 
                 const { componentData } = LC.getActiveElement()
                 if (componentData) {

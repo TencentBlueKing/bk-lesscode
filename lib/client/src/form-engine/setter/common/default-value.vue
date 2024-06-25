@@ -14,7 +14,7 @@
             @change="handleChange" />
         <bk-date-picker
             v-else-if="['date', 'datetime'].includes(field.type)"
-            :type="field.type"
+            :type="dateDimension"
             :transfer="true"
             :disabled="disabled"
             :value="value"
@@ -79,6 +79,9 @@ export default {
     computed: {
         dataSource () {
             return this.field.configure?.dataSource || null
+        },
+        dateDimension () {
+            return this.field.configure?.dateDimension || this.field.type
         }
     },
     watch: {
@@ -87,7 +90,7 @@ export default {
                 if (config) {
                     this.dataSourceList = []
                     this.dataSourceListLoding = true
-                    this.dataSourceList = await transDataSourceValue(config, this)
+                    this.dataSourceList = await transDataSourceValue(config, this.value, this)
                     this.dataSourceListLoding = false
                 }
             },

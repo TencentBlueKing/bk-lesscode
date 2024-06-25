@@ -69,6 +69,7 @@
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange"
             @selection-change="selectionChange"
+            @sort-change="handleSortChange"
         >
             <bk-table-column
                 type="selection"
@@ -84,6 +85,7 @@
                     :prop="column.name"
                     :formatter="columnFormatter(column.type)"
                     :render-header="renderHeader"
+                    sortable
                     show-overflow-tooltip
                 ></bk-table-column>
             </template>
@@ -197,7 +199,8 @@
         toRefs,
         ref,
         PropType,
-        reactive
+        reactive,
+        getCurrentInstance
     } from '@vue/composition-api'
     import Vue from 'vue'
     import { messageError, messageSuccess } from '@/common/bkmagic'
@@ -304,7 +307,14 @@
             })
             const downloadType = ref('')
             const dataImportOperationType = ref(DATA_IMPORT_OPERATION_TYPE().ALL_INSERT.ID)
+            const filterValue = ref('')
+            const filterKey = ref('')
+            const sortKey = ref('')
+            const sortValue = ref('')
+            
             const userInfo = store.state.user
+
+            const vm = getCurrentInstance()
 
             const calcTableSetting = () => {
                 const fields = activeTable
@@ -337,6 +347,12 @@
                 getDataList()
             }
 
+            const handleSortChange = ({ prop, order }) => {
+                sortKey.value = prop
+                sortValue.value = order === 'descending' ? 'DESC' : 'ASC'
+                resetTableData()
+            }
+
             const normalizeData = (data) => {
                 // update datetime
                 const dateTimeColumns = activeTable.value.columns?.filter((column) => (column.type === 'datetime'))
@@ -360,7 +376,11 @@
                     environment: environment.value.key,
                     tableName: activeTable.value.tableName,
                     page: dataStatus.pagination.current,
-                    pageSize: dataStatus.pagination.limit
+                    pageSize: dataStatus.pagination.limit,
+                    filterKey: filterKey.value,
+                    filterValue: filterValue.value,
+                    sortKey: sortKey.value,
+                    sortValue: sortValue.value
                 }
                 dataStatus.isLoading = true
                 return store.dispatch('dataSource/getOnlineTableDatas', queryData).then((res) => {
@@ -690,6 +710,21 @@
                 )
             }
 
+            const handleFilter = (column) => {
+                // hide popover
+                const tableEl = vm.proxy.$el.querySelector('.bk-table.g-hairless-table')
+                const popoverRef = tableEl?.__vue__?.$refs?.tableHeader?.$refs?.popoverRef || []
+                popoverRef.forEach(ref => ref.hideHandler())
+                // record filter
+                filterKey.value = column.label
+                // update data
+                resetTableData()
+            }
+
+            const changeFilterText = (val) => {
+                filterValue.value = val
+            }
+
             const renderHeader = (h, data) => {
                 return h(
                     'span',
@@ -699,23 +734,63 @@
                         },
                         style: 'render-table-header'
                     },
-                    data.column.label
+                    [
+                        data.column.label,
+                        h(
+                            'bk-popover',
+                            {
+                                props: {
+                                    trigger: 'click',
+                                    theme: 'light',
+                                    extCls: 'g-popover-empty-padding'
+                                },
+                                ref: 'popoverRef',
+                                refInFor: true
+                            },
+                            [
+                                h(
+                                    'bk-input',
+                                    {
+                                        slot: 'content',
+                                        props: {
+                                            value: filterValue.value,
+                                            placeholder: window.i18n.t('请输入并按回车键进行搜索')
+                                        },
+                                        on: {
+                                            enter () {
+                                                handleFilter(data.column)
+                                            },
+                                            change (val) {
+                                                changeFilterText(val)
+                                            }
+                                        }
+                                    }
+                                ),
+                                h(
+                                    'i',
+                                    {
+                                        class: 'bk-table-column-filter-trigger bk-icon icon-funnel',
+                                        slot: 'default'
+                                    }
+                                )
+                            ]
+                        )
+                    ]
                 )
+            }
+
+            const resetTableData = () => {
+                dataStatus.pagination.current = 1
+                getDataList()
+                calcTableSetting()
             }
 
             watch(
                 [environment, activeTable],
-                () => {
-                    dataStatus.pagination.current = 1
-                    getDataList()
-                    calcTableSetting()
-                }
+                resetTableData
             )
 
-            onBeforeMount(() => {
-                getDataList()
-                calcTableSetting()
-            })
+            onBeforeMount(resetTableData)
 
             return {
                 DATA_FILE_TYPE,
@@ -735,6 +810,7 @@
                 selectionChange,
                 handlePageChange,
                 handlePageLimitChange,
+                handleSortChange,
                 close,
                 closeForm,
                 addData,

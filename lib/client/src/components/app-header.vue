@@ -29,6 +29,7 @@
             </ul>
         </nav>
         <div class="top-info">
+            <div class="info-item help-doc" @click="closePage(true)">{{ $t('帮助文档') }}</div>
             <bk-popover class="info-item"
                 theme="light header-top-info-popover"
                 animation="fade"
@@ -99,6 +100,7 @@
             </bk-popover>
         </div>
         <changelog ref="log"></changelog>
+        <helpDocs :visible="visible" @closePage="closePage" />
     </header>
 </template>
 
@@ -109,10 +111,12 @@
     import { IAM_ACTION } from 'shared/constant'
     import changelog from '@/components/changelog-version'
     import { getCurLang, changeLang } from '@/locales/i18n.js'
+    import helpDocs from './help-docs'
 
     export default defineComponent({
         components: {
-            changelog
+            changelog,
+            helpDocs
         },
         computed: {
             currentRoute () {
@@ -195,6 +199,10 @@
                 changeLang(lang.id)
             }
 
+            const visible = ref(false)
+            const closePage = (value) => {
+                visible.value = value
+            }
             return {
                 languageList,
                 userName,
@@ -205,7 +213,9 @@
                 goLogin,
                 toProjectList,
                 currentLang,
-                handleLanguageChange
+                handleLanguageChange,
+                visible,
+                closePage
             }
         }
     })
@@ -222,7 +232,6 @@
         top: 0;
         z-index: 1000;
         background: #182132;
-
         .logo {
             display: flex;
             align-items: center;
@@ -273,6 +282,13 @@
             display: flex;
             align-items: center;
             margin-left: auto;
+
+            .help-doc {
+                color: #96A2B9;
+                &:hover {
+                    color: #d3d9e4;
+                }
+            }
 
             .info-item {
                 cursor: pointer;

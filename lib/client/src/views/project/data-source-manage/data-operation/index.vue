@@ -291,10 +291,12 @@
         FUNCTION_TYPE
     } from 'shared/function'
     import {
-        generateSqlByCondition
+        generateSqlByCondition,
+        getSqlParam
     } from 'shared/data-source'
     import {
-        isEmpty
+        isEmpty,
+        encodeBase64
     } from 'shared/util'
 
     export default defineComponent({
@@ -472,7 +474,7 @@
                     ? generateSqlByCondition(conditionQuery.value, getAllTables())
                     : sqlQuery.value
                 // 回车转空格
-                return window.btoa(sql.replace(/\r\n/g, ' '))
+                return encodeBase64(sql.replace(/\r\n/g, ' '))
             }
 
             // 生成 api
@@ -486,7 +488,8 @@
                             url: `/api/data-source/user/queryBySql${thirdPartDB.value?.id ? `/${thirdPartDB.value.dbName}` : ''}`,
                             body: parseValue2Scheme({
                                 sql: getFinalySql(),
-                                dataSourceType: dataSourceType.value
+                                dataSourceType: dataSourceType.value,
+                                ...getSqlParam(conditionQuery.value)
                             })
                         }
                     })
@@ -501,7 +504,8 @@
                     .then(() => {
                         const apiBody = parseValue2UseScheme({
                             sql: getFinalySql(),
-                            dataSourceType: dataSourceType.value
+                            dataSourceType: dataSourceType.value,
+                            ...getSqlParam(conditionQuery.value)
                         })
                         const funcParams = getParamFromApi(null, apiBody, 'post')
                         funcData.value.isShow = true
