@@ -378,7 +378,6 @@
                     if (x >= maxX) {
                         maxX = x
                     }
-                    console.log(maxTask, y)
                     if (maxTask === 0) {
                         y += (parentNodeHeight + taskOffset) 
                     } else {
