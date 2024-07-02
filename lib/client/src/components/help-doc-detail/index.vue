@@ -36,7 +36,7 @@
                                                 enable-title-tip
                                                 default-expand-all
                                                 :default-selected-node="selectDoc"
-                                                :data="[child]"
+                                                :data="child"
                                                 @select-change="handlerSelectTreeData">
                                             </bk-big-tree>
                                         </template>
@@ -120,7 +120,7 @@
 
             const isSingleTree = computed(() => {
                 return (child) => {
-                    const childrenNodes = child?.children || ''
+                    const childrenNodes = child
                     if (!childrenNodes) return false
                     if (!Array.isArray(childrenNodes)) return false
                     return childrenNodes.length > 0
@@ -134,6 +134,12 @@
                     return true
                 }
                 return false
+            })
+
+            const childArr = computed(() => {
+                return (child) => {
+                    return [child]
+                }
             })
 
             // 切换页面详情时，滚动条位置
@@ -177,6 +183,7 @@
                 jump,
                 isSingleTree,
                 isExistDoc,
+                childArr,
                 handlerSelectTreeData
             }
         }
