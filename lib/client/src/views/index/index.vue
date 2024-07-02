@@ -69,7 +69,10 @@
         },
         data () {
             return {
+                // 暂存导航的顶部拖拽区域内容
                 customNav: {},
+                // 暂存导航的侧边拖拽区域内容
+                sideCustomNav: {},
                 pageHasChange: false,
                 isContentLoading: true,
                 operationType: 'edit',
@@ -313,8 +316,11 @@
 
                 // 导航拖拽区域更新，需要触发导航修改
                 if (JSON.stringify(this.customNav) !== JSON.stringify(LC.getNavCustomCon())) {
-                    console.log('drag menu change', LC.getNavCustomCon())
                     this.customNav = JSON.parse(JSON.stringify(LC.getNavCustomCon()))
+                    this.handleUpdateNavPerview()
+                }
+                if (JSON.stringify(this.sideCustomNav) !== JSON.stringify(LC.getSideNavCustomConsMap())) {
+                    this.sideCustomNav = JSON.parse(JSON.stringify(LC.getSideNavCustomConsMap()))
                     this.handleUpdateNavPerview()
                 }
             },
