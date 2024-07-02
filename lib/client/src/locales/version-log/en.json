@@ -419,7 +419,7 @@
   "应用: vue2应用表单类型页面以表单容器组件形式整合到自定义页面": "APP: Vue2 APP form type pages integrated into custom pages as form container components",
   "应用: vue2应用数据管理类型页面以数据管理容器组件形式整合到自定义页面": "APP: Vue2 APP data management type pages integrated into custom pages as data management container components",
   "画布: vue3应用支持表单容器跟数据管理容器组件": "Canvas: Vue3 APP supports form container and data management container components",
-  "画布: AI小鲸支持页面需求描述 拆解任务 完成多个组件布局生成": "Canvas: AI Little Whale supports page requirement description, task breakdown, and completion of multiple component layouts",
+  "画布: AI小鲸支持页面需求描述 拆解任务 完成多个组件布局生成": "Canvas: AI Assistant supports page requirement description, task breakdown, and completion of multiple component layouts",
   "发布部署: 新建的应用部署后为开发者中心云原生类型类用，发布部署模块适配云原生类型应用": "Release Deployment: After deployment, the newly created APP will be used in the Developer Center for cloud-native type APPs. The release deployment module is compatible with cloud-native type APPs",
   "画布: 修复echart图表无法自适应屏幕宽高变化问题": "Canvas: Fixed the issue of echart charts not adapting to changes in screen width and height",
   "移动端: 修复vant样式冲突问题": "Mobile: Fixed the issue of style conflicts with Vant",
