@@ -372,9 +372,12 @@
                 if (!Array.isArray(docTree)) return []
                 let allDoc = []
                 docTree.forEach((item) => {
-                    if (item.id) allDoc.push(item)
+                    if (item.id && !item.children) allDoc.push(item)
                     if (Array.isArray(item.childs)) {
                         allDoc = allDoc.concat(getDocList(item.childs))
+                    }
+                    if (Array.isArray(item)) {
+                        allDoc = allDoc.concat(getDocList(item))
                     }
                     if (Array.isArray(item.children)) {
                         allDoc = allDoc.concat(getDocList(item.children))
