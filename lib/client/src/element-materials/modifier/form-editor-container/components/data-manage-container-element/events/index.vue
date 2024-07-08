@@ -2,10 +2,11 @@
     <div class="events-setting">
         <section class="choose-function">
             <div class="event-title">
-                <span class="event-name" v-bk-tooltips="$t('点击组件时调用该事件函数')">click</span>
-                <bk-switcher :value="eventConfig.enable" size="small" theme="primary" @change="handleEventConfigChange($event, 'enable')"></bk-switcher>
+                <span class="event-name" v-bk-tooltips="$t('点击组件时调用该事件的行为')">click</span>
+                <bk-switcher v-model="formData.enable" size="small" theme="primary" @change="update"></bk-switcher>
             </div>
-            <bk-select :value="eventConfig.name" :placeholder="$t('请选择函数')" @selected="handleEventConfigChange($event, 'name')">
+            <div class="label">事件行为</div>
+            <bk-select :value="formData.name" @selected="handleEventNameChange">
                 <bk-option
                     v-for="item in functionList"
                     :key="item.id"
@@ -13,6 +14,10 @@
                     :name="item.name">
                 </bk-option>
             </bk-select>
+            <template v-if="formData.name === 'rowJump'">
+                <div class="label">跳转链接</div>
+                <bk-input v-model="formData.config.url" @change="update" />
+            </template>
         </section>
     </div>
 </template>
@@ -24,10 +29,12 @@
         props: {
             elementData: Object
         },
+        data () {
+            return {
+                formData: cloneDeep(this.elementData.events.click)
+            }
+        },
         computed: {
-            eventConfig () {
-                return this.elementData.events.click
-            },
             functionList () {
                 if (this.elementData.type === 'formDataButton') {
                     return [
@@ -36,14 +43,30 @@
                 }
                 return [
                     { id: 'rowDetail', name: this.$t('详情') },
-                    { id: 'rowDelete', name: this.$t('删除') }
+                    { id: 'rowDelete', name: this.$t('删除') },
+                    { id: 'rowJump', name: this.$t('跳转') }
                 ]
             }
         },
+        watch: {
+            elementData (val) {
+                this.formData = cloneDeep(val.events.click)
+            }
+        },
         methods: {
-            handleEventConfigChange (val, type) {
+            handleEventNameChange (val) {
+                if (this.formData.config) {
+                    this.formData.config.url = ''
+                } else {
+                    // 旧数据不存在config字段
+                    this.formData = Object.assign({}, this.formData, { config: { url: '' } })
+                }
+                this.formData.name = val
+                this.update();
+            },
+            update () {
                 const elementData = cloneDeep(this.elementData)
-                elementData.events.click[type] = val
+                elementData.events.click = this.formData
                 this.$emit('change', elementData)
             }
         }
@@ -69,5 +92,10 @@
     }
     .bk-select {
         background: #ffffff;
+    }
+    .label {
+        margin-top: 12px;
+        font-size: 12px;
+        line-height: 20px;
     }
 </style>

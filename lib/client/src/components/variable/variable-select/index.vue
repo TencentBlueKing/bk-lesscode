@@ -5,7 +5,7 @@
             <bk-select
                 v-if="show"
                 class="format-list"
-                :value="formData.format"
+                :value="formData.format || 'value'"
                 :clearable="false"
                 :disabled="readonly"
                 style="width: 68px;"
@@ -33,7 +33,7 @@
                         $refs.example.isShow = true
                     }">
                     {{ $t('数据示例') }}</div>
-                <slot v-if="formData.format === 'value'" />
+                <slot v-if="formData.format === 'value' || !formData.format" />
                 <render-variable
                     v-if="formData.format === 'variable'"
                     :options="options"

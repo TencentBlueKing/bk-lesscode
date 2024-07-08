@@ -79,12 +79,12 @@
             // 在 render-column 和 render-block 中的组件要实现对齐，需要操作容器组件
             // 在 free-layout 中的组件要实现对齐，操作组件本身
             if (!['render-column', 'render-block'].includes(this.componentNode.type)
-                && !isFreeLayoutProperty(this.componentNode.parentNode.type)) {
+                && !isFreeLayoutProperty(this.componentNode?.parentNode.type)) {
                 this.isShow = false
                 return
             }
 
-            this.isInnerFreeLayout = isFreeLayoutProperty(this.componentNode.parentNode.type)
+            this.isInnerFreeLayout = isFreeLayoutProperty(this.componentNode.parentNode?.type)
 
             this.isShow = true
             this.renderAlign = Object.assign({}, this.componentNode.align)

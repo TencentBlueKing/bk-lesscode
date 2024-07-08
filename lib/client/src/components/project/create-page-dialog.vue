@@ -27,13 +27,17 @@
                     </bk-form-item>
                     <bk-form-item :label="$t('form_页面名称')" required property="pageName" error-display-type="normal">
                         <bk-input
+                            id="pageName-input"
                             maxlength="60"
                             v-model.trim="formData.pageName"
                             :placeholder="$t('请输入页面名称，60个字符以内')">
                         </bk-input>
                     </bk-form-item>
                     <bk-form-item :label="$t('页面ID')" required property="pageCode" error-display-type="normal">
-                        <bk-input maxlength="60" v-model.trim="formData.pageCode"
+                        <bk-input
+                            id="pageCode-input"
+                            maxlength="60"
+                            v-model.trim="formData.pageCode"
                             :placeholder="pageCodePlaceholder">
                         </bk-input>
                     </bk-form-item>
@@ -53,7 +57,10 @@
                     <bk-form-item :label="$t('form_页面路由')" required property="pageRoute"
                         style="margin-top: 14px"
                         error-display-type="normal">
-                        <bk-input maxlength="60" v-model.trim="formData.pageRoute"
+                        <bk-input 
+                            id="pageRoute-input"
+                            maxlength="60"
+                            v-model.trim="formData.pageRoute"
                             :placeholder="$t('由数字、字母、下划线、中划线(-)、冒号(:)或反斜杠(/)组成')">
                             <template slot="prepend">
                                 <div class="group-text">{{layoutRoutePath}}</div>
@@ -319,6 +326,10 @@
                     return { id: res, pageName: this.formData.pageName }
                 } catch (e) {
                     console.error(e)
+                    if (e?.field) {
+                        const errorField = document.getElementById(`${e?.field}-input`)
+                        errorField?.scrollIntoView({ behavior: 'smooth' })
+                    }
                 } finally {
                     this.loading = false
                 }

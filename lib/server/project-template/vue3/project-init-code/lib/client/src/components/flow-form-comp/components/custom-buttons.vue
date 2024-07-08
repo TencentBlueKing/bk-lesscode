@@ -14,7 +14,7 @@
             @show="isDropdownShow = true"
             @hide="isDropdownShow = false">
             <div class="more-buttons-trigger" slot="dropdown-trigger">
-                更多
+                {{ $t('更多') }}
                 <i :class="['bk-icon icon-angle-down angle-icon', { 'active': isDropdownShow }]"></i>
             </div>
             <ul class="more-btns-list" slot="dropdown-content">
