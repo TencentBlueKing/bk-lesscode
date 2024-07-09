@@ -223,6 +223,8 @@
                     target.clientX = ev.clientX
                     target.clientY = ev.clientY
                 }
+                // 拖拽时 禁用iframe上的鼠标行为
+                hanldeIframe('none')
                 // 拖拽过程中 取消选中
                 document.onselectstart = () => {
                     return false
@@ -274,6 +276,7 @@
             }
             const endResize = () => {
                 target.isMove = false
+                hanldeIframe('auto')
                 document.onselectstart = null
             }
             const handleResize = () => {
@@ -283,6 +286,12 @@
                 popoverRight.value = limitPos.min.right
                 popoverBottom.value = limitPos.min.bottom
                 popoverLeft.value = windowSize.width - limitSize.min.width
+            }
+            const hanldeIframe = (val) => {
+                const iframeEL = document.querySelector('iframe')
+                if(iframeEL) {
+                    iframeEL.style.pointerEvents = val
+                }
             }
             onBeforeMount(() => {
                 window.addEventListener('mousemove', resizeDocs, true)
