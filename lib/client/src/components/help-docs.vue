@@ -5,8 +5,7 @@
             <div class="header-left">
                 <div v-show="!isDocDetail">{{ $t('帮助文档') }}</div>
                 <div v-show="isDocDetail" @click="backUpPage" class="header-detail-title">
-                    <i class="bk-drag-icon bk-drag-arrow-back"></i>
-                    {{ $t('文档详情') }}
+                    <i class="bk-drag-icon bk-drag-arrow-back"></i>{{ $t('文档详情') }}
                 </div>
             </div>
             <div class="header-right">
@@ -63,7 +62,7 @@
                                 </div>
                             </div>
                             <div ref="moduleRefs" v-if="!isHasDocs(item.docsList)" class="frame-img">
-                                <bk-zoom-image :src="item.frameSrc" class="zoom-image"></bk-zoom-image>
+                                <bk-image class="zoom-image" :src="item.frameSrc" :preview-src-list="[item.frameSrc]"></bk-image>
                             </div>
                             <div ref="moduleRefs" v-else>
                                 <div v-for="(doc) in item.docsList" :key="doc.name" class="doc">
@@ -78,7 +77,7 @@
                 <!-- 搜索时 展示某些模块 文档 -->
                 <div v-show="isSearching" class="search-docs">
                     <!-- 有内容时 展示 -->
-                    <div v-if="searchDocList.length" class="search-content">
+                    <div v-if="searchDocList.length" class="search-content" @mouseleave="initHoverIndex">
                         <div v-for="(item, index) in searchDocList" :key="`${item.name + index}`" :class="['search-doc', hoverCls(index)]" @mouseenter="getHoverIndex($event, index)" @click="getDocDetail(item)">
                             <div class="search-doc-name" v-html="item.name"></div>
                         </div>
@@ -165,10 +164,14 @@
                     bottom: `${popoverBottom.value}px`
                 }
             })
-            const isFull = ref(false)
+            const isFull = computed({
+                get() {
+                    const docWinSize = windowSize.width - popoverLeft.value - popoverRight.value
+                    return docWinSize === 1000 && popoverTop.value === 0 && popoverBottom.value === 0
+                }
+            })
             // true -> 全屏，否则 非全屏
             const changeFull = (boolVal) => {
-                isFull.value = boolVal
                 popoverTop.value = 0
                 popoverBottom.value = 0
                 popoverRight.value = 0
@@ -182,10 +185,13 @@
                     popoverLeft.value = windowSize.width - limitSize.max.width
                 }
             }
-            const isExtendHeight = ref(false)
+            const isExtendHeight = computed({
+                get() {
+                    return !(popoverTop.value === 0 && popoverBottom.value === 0)
+                }
+            })
             // true -》向上扩展，否则， 向下收缩
             const changeExtend = (boolVal) => {
-                isExtendHeight.value = boolVal
                 if (!boolVal) {
                     popoverTop.value = 0
                     popoverBottom.value = 0
@@ -216,6 +222,12 @@
                 if (['nesw', 'nw', 'ne', 'se', 'sw'].includes(direction)) {
                     target.clientX = ev.clientX
                     target.clientY = ev.clientY
+                }
+                // 拖拽时 禁用iframe上的鼠标行为
+                hanldeIframe('none')
+                // 拖拽过程中 取消选中
+                document.onselectstart = () => {
+                    return false
                 }
             }
             const resizeDocs = (event) => {
@@ -264,6 +276,8 @@
             }
             const endResize = () => {
                 target.isMove = false
+                hanldeIframe('auto')
+                document.onselectstart = null
             }
             const handleResize = () => {
                 windowSize.width = window.innerWidth
@@ -272,6 +286,12 @@
                 popoverRight.value = limitPos.min.right
                 popoverBottom.value = limitPos.min.bottom
                 popoverLeft.value = windowSize.width - limitSize.min.width
+            }
+            const hanldeIframe = (val) => {
+                const iframeEL = document.querySelector('iframe')
+                if(iframeEL) {
+                    iframeEL.style.pointerEvents = val
+                }
             }
             onBeforeMount(() => {
                 window.addEventListener('mousemove', resizeDocs, true)
@@ -372,9 +392,12 @@
                 if (!Array.isArray(docTree)) return []
                 let allDoc = []
                 docTree.forEach((item) => {
-                    if (item.id) allDoc.push(item)
+                    if (item.id && !item.children) allDoc.push(item)
                     if (Array.isArray(item.childs)) {
                         allDoc = allDoc.concat(getDocList(item.childs))
+                    }
+                    if (Array.isArray(item)) {
+                        allDoc = allDoc.concat(getDocList(item))
                     }
                     if (Array.isArray(item.children)) {
                         allDoc = allDoc.concat(getDocList(item.children))
@@ -397,6 +420,9 @@
                 }, [])
             }
             const hoverIndex = ref('')
+            const initHoverIndex = () => {
+                hoverIndex.value = ''
+            }
             const getHoverIndex = (evt, index) => {
                 hoverIndex.value = index
             }
@@ -448,6 +474,7 @@
                 searchDocList,
                 isSearching,
                 hoverCls,
+                initHoverIndex,
                 getHoverIndex,
                 isDocDetail,
                 getDocDetail,
@@ -487,6 +514,13 @@
             color: #fff;
             .header-detail-title {
                 cursor: pointer;
+                & > i:first-child {
+                    margin-right: 9px;
+                    &:hover {
+                        background-color: rgba(250,250,250,.2);
+                        border-radius: 2px;
+                    }
+                }
             }
         }
         &-right {
@@ -535,8 +569,9 @@
             .module-title {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
                 padding: 19px 0;
-                border-bottom: 2px solid #EAEBF0;
+                border-bottom: 1px solid #EAEBF0;
                 margin-left: 32px;
                 .left {
                     font-weight: 700;
@@ -555,6 +590,11 @@
                         display: inline-block;
                     }
                 }
+                .right {
+                    i {
+                        font-size: 20px;
+                    }
+                }
             }
             .border-none {
                 border: none;
@@ -567,7 +607,7 @@
             .doc {
                 padding: 16px 0 13px 0;
                 color: #63656E;
-                border-bottom: 2px solid #EAEBF0;
+                border-bottom: 1px solid #EAEBF0;
                 margin-left: 32px;
                 &-name {
                     font-weight: 700;
@@ -581,6 +621,9 @@
                     margin-top: 8px;
                     color: #3A84FF;
                     cursor: pointer;
+                    &:hover {
+                        color: #1768EF;
+                    }
                 }
             }
             & > div:last-child .doc:last-child {
