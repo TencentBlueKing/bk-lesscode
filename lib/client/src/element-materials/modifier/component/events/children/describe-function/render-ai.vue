@@ -94,8 +94,7 @@
 
             const setComponentStyle = (componentId, value) => {
                 if (!hasComponent(LC.getRoot().children, componentId)) {
-                    messageError(window.i18n.t('没有找到 componentId 为{0}的组件，生成组件事件行为失败', [componentId]))
-                    return
+                    throw new Error(window.i18n.t('没有找到 componentId 为{0}的组件，生成组件事件行为失败', [componentId]))
                 }
 
                 const action = {
@@ -109,8 +108,7 @@
             const setVariableValue = (variableCode, value) => {
                 const variableList = store.getters['variable/variableList']
                 if (!variableList.some((item) => item.variableCode === variableCode)) {
-                    messageError(window.i18n.t('没有找到 variableCode 为{0}的变量，生成变量事件行为失败', [variableCode]))
-                    return
+                    throw new Error(window.i18n.t('没有找到 variableCode 为{0}的变量，生成变量事件行为失败', [variableCode]))
                 }
                 const action = {
                     type: EVENT_ACTION_TYPE.VARIABLE,
@@ -123,8 +121,7 @@
             const executeFunction = (functionCode, params) => {
                 const functionList = store.getters['functions/functionList']
                 if (!functionList.some(item => item.funcCode === functionCode)) {
-                    messageError(window.i18n.t('没有找到 functionCode 为{0}的函数，生成函数事件行为失败', [functionCode]))
-                    return
+                    throw new Error(window.i18n.t('没有找到 functionCode 为{0}的函数，生成函数事件行为失败', [functionCode]))
                 }
                 const action = {
                     type: EVENT_ACTION_TYPE.METHOD,
@@ -162,7 +159,7 @@
                     })
                 })
                 if (!hasPageName) {
-                    messageError(window.i18n.t('没有找到 pageName 为{0}的页面，生成跳转事件行为失败', [pageName]))
+                    throw new Error(window.i18n.t('没有找到 pageName 为{0}的页面，生成跳转事件行为失败', [pageName]))
                 }
             }
 
@@ -173,8 +170,6 @@
             const handleMessage = (aiMessage, content) => {
                 if (!/(cmd(?:\d)?): (?:<)?([^>\n]+)(?:>)?/gmi.test(content)) {
                     errorMessage.value = window.i18n.t('生成失败，请优化你的提示词')
-                } else {
-                    prompt.value = ''
                 }
                 loading.value = false
             }
@@ -217,11 +212,23 @@
                 errorMessage.value = ''
             }
 
+            const handleEnd = () => {
+                if (!errorMessage.value) {
+                    prompt.value = ''
+                }
+            }
+
+            const handleCmdError = (errorCmd, errorMessage) => {
+                messageError(errorMessage)
+            }
+
             const aiHelper = new Ai({
                 handleCmd,
+                handleCmdError,
                 handlerStart,
                 handleMessage,
                 handleApiError,
+                handleEnd,
                 systemPrompt,
                 type: 'event',
                 needCmd: true
