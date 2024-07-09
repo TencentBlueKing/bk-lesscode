@@ -137,7 +137,6 @@
 
             // 切换页面详情时，滚动条位置
             watch(() => props.selectDoc, (newVal, oldVal) => {
-                debugger
                 setTreeSelect(props.selectDoc)
                 adjustAnchor()
             })
