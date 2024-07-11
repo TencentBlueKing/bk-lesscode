@@ -48,7 +48,7 @@
                 <div v-show="!isSearching" class="module-docs">
                     <template v-for="(item, index) in moduleList">
                         <div :key="item.moduleName">
-                            <div :class="{
+                            <div @click="queryModule(index)" :class="{
                                 'module-title': true,
                                 'border-none': !isHasDocs(item.docsList)
                             }">
@@ -57,8 +57,8 @@
                                     {{ item.moduleName }}
                                 </div>
                                 <div class="right">
-                                    <i v-if="typeof item.isShowModule === 'boolean' && !item.isShowModule" class="bk-icon icon-angle-up" @click="queryModule(true, index)"></i>
-                                    <i v-else class="bk-drag-icon bk-drag-arrow-down" @click="queryModule(false, index)"></i>
+                                    <i v-if="typeof item.isShowModule === 'boolean' && !item.isShowModule" class="bk-icon icon-angle-up" ></i>
+                                    <i v-else class="bk-drag-icon bk-drag-arrow-down"></i>
                                 </div>
                             </div>
                             <div ref="moduleRefs" v-if="!isHasDocs(item.docsList)" class="frame-img">
@@ -376,7 +376,11 @@
                 }
             })
             const moduleRefs = ref([])
-            const queryModule = (val, index) => {
+            const queryModule = (index) => {
+                let val = !moduleList[index].isShowModule
+                if(typeof moduleList[index].isShowModule === 'undefined') {
+                    val = false
+                }
                 set(moduleList[index], 'isShowModule', val)
                 moduleRefs.value[index].style.display = val ? 'block' : 'none'
             }
@@ -506,7 +510,7 @@
         background-image: linear-gradient(267deg, #2DD1F4 0%, #1482FF 95%);
         border-radius: 4px 4px 0 0;
         line-height: 22px;
-        cursor: move;
+        cursor: url(../images/svg/drag.svg) 0 15, move;
         &-left {
             font-size: 16px;
             font-weight: 700;
@@ -573,6 +577,7 @@
                 padding: 19px 0;
                 border-bottom: 1px solid #EAEBF0;
                 margin-left: 32px;
+                cursor: pointer;
                 .left {
                     font-weight: 700;
                     font-family: MicrosoftYaHei-Bold;
@@ -685,7 +690,7 @@
         .y-direction {
             height: 5px;
             left: 0;
-            cursor: n-resize;
+            cursor: url(../images/svg/up-down-extend.svg) 0 15, n-resize;
         }
         .n-resize {
             top: 0;
@@ -696,7 +701,7 @@
         .x-direction {
             width: 5px;
             top: 0;
-            cursor: e-resize;
+            cursor: url(../images/svg/stretch.svg) 15 0, e-resize;
         }
         .e-resize {
             right: 0;
@@ -708,7 +713,7 @@
             width: 10px;
             height: 10px;
             z-index: 1001;
-            cursor: ne-resize;
+            cursor: url(../images/svg/right-up.svg) 20 20, ne-resize;
         }
         .ne-resize {
             top: 0;
@@ -722,7 +727,7 @@
             width: 10px;
             height: 10px;
             z-index: 1001;
-            cursor: nw-resize;
+            cursor: url(../images/svg/right-down.svg) 15 15, nw-resize;
         }
         .nw-resize {
             top: 0;
