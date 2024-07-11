@@ -12,8 +12,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="icon" href="<%= process.env.BK_STATIC_URL %>/static/images/logo.png" type="image/x-icon" />
-        <link rel="shortcut icon" href="<%= process.env.BK_STATIC_URL %>/static/images/logo.png" type="image/x-icon" />
+        <link rel="shortcut icon" type="image/x-icon" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
         <title>运维开发平台 | 腾讯蓝鲸智云</title>
@@ -31,6 +30,7 @@
             var BKPAAS_ENVIRONMENT = '<%= process.env.BK_PAAS_ENVIRONMENT %>'
             var BK_COMPONENT_API_URL = '<%= process.env.BK_COMPONENT_API_URL  %>'
             var BKPAAS_BK_DOMAIN = '<%= process.env.BKPAAS_BK_DOMAIN  %>'
+            var BK_SHARED_RES_URL = '<%= process.env.BK_SHARED_RES_URL %>'
             var BK_API_URL_TMPL = '{{ BK_API_URL_TMPL }}'
             var BKPAAS_ENGINE_REGION = '<%= process.env.BK_PAAS_ENGINE_REGION %>'
             var BK_APP_APIGW_PREFIX = '<%= process.env.BK_API_GATEWAY_ORIGIN.replace('{api_name}', 'bk-lesscode') + '/' + process.env.BK_LESSCODE_ENVIRONMENT || '' %>'

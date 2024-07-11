@@ -39,6 +39,8 @@
     import NoticeComponent from '@blueking/notice-component-vue2'
     import '@blueking/notice-component-vue2/dist/style.css'
 
+    import { getPlatformConfig, setDocumentTitle, setShortcutIcon } from '@blueking/platform-config';
+
     export default {
         name: 'app',
         components: {
@@ -82,6 +84,7 @@
 
         computed: {
             ...mapGetters(['mainContentLoading', 'bodyHeight']),
+            ...mapGetters('platformConfig', ['defaultConfig', 'platformConfig']),
             emptyPage () {
                 return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile' || this.$route.meta?.navigation === 'empty'
             },
@@ -117,6 +120,7 @@
             this.$once('hook:beforeDestroy', () => {
                 bus.$off('not-exist', this.notExistHold)
             })
+            this.initPlatformConfig()
             await Promise.all([
                 this.$store.dispatch('checkIamNoResourcesPerm'),
                 this.$store.dispatch('ai/checkAiAvailable'),
@@ -143,6 +147,14 @@
 
             showAlertChange (isShow) {
                 this.$store.commit('updateShowAlertNotice', isShow)
+            },
+
+            async initPlatformConfig () {
+                const url = `${window.BK_SHARED_RES_URL}/lesscode/base.js`
+                const config = await getPlatformConfig(url, this.defaultConfig)
+                this.$store.commit('platformConfig/update', config)
+                setDocumentTitle(config.i18n)
+                setShortcutIcon(config.favicon)
             }
         }
     }

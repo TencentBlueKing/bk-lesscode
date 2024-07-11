@@ -109,6 +109,7 @@
     "@blueking/login-modal": "^1.0.1",
     "@blueking/notice-component-vue2": "^2.0.5",
     "@blueking/user-selector": "^1.0.7",
+    "@blueking/platform-config": "^1.0.2",
     "@icon-cool/bk-icon-vue-drag-vis": "^0.2.12",
     "@toast-ui/editor": "3.1.8",
     "@toast-ui/vue-editor": "3.1.8",
