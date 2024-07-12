@@ -492,12 +492,10 @@
                 })
             }
 
-            // 基于 json 更新 db
-            const updateDB = (tableName, list, dataParse) => {
-                // 入库前根据浏览器时间转换时区
+            const transferTimezone = (data) => {
                 const dateColumns = activeTable.value.columns?.filter((column) => (['date', 'datetime'].includes(column.type)))
                 dateColumns.forEach((dateColumn) => {
-                    list.forEach((form) => {
+                    data.forEach((form) => {
                         if (isEmpty(form[dateColumn.name])) {
                             return
                         }
@@ -505,6 +503,7 @@
                             throw new Error(window.i18n.t('数据是【{1}】类型，但是值【{0}】不符合【{1}】格式', [form[dateColumn.name], dateColumn.type]))
                         }
                         if (dateColumn.type === 'datetime') {
+                            console.log(form[dateColumn.name], '====')
                             form[dateColumn.name] = dayjs(form[dateColumn.name])
                                 .utcOffset(0)
                                 .format('YYYY-MM-DD HH:mm:ss')
@@ -515,7 +514,12 @@
                         }
                     })
                 })
+            }
 
+            // 基于 json 更新 db
+            const updateDB = (tableName, list, dataParse) => {
+                // 入库前根据浏览器时间转换时区
+                transferTimezone(list)
                 const data = [{ tableName, list }]
                 const dataJsonParser = new DataJsonParser(data)
                 const dataSqlParser = new DataSqlParser()
@@ -581,6 +585,10 @@
                         return row
                     })
                 }]
+                // 导出sql转换成0时区
+                if (fileType === DATA_FILE_TYPE.SQL) {
+                    transferTimezone(datas[0].list)
+                }
                 const fileName = fileType === DATA_FILE_TYPE.SQL ? `bklesscode-data-${projectId}.sql` : ''
                 const files = generateExportDatas(datas, fileType, fileName)
                 files.forEach(({ name, content }) => {
