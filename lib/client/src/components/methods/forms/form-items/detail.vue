@@ -206,6 +206,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import mixins from './form-item-mixins'
+    import variableMixins from './variable-mixins'
     import DynamicTag from '@/components/dynamic-tag.vue'
     import HeaderParams from './children/header-params.vue'
     import QueryParams from './children/query-params.vue'
@@ -238,16 +239,12 @@
             ChooseApi
         },
 
-        mixins: [mixins],
+        mixins: [mixins, variableMixins],
 
         props: {
             requireSummary: {
                 type: Boolean,
                 default: false
-            },
-            variableList: {
-                type: Array,
-                default: () => ([])
             },
             functionList: {
                 type: Array,
@@ -407,7 +404,8 @@
                 }
             },
 
-            getRemoteResponse () {
+            async getRemoteResponse () {
+                await this.refreshVariable()
                 this.validate()
                     .then(() => {
                         this.isLoadingResponse = true
