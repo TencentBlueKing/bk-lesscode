@@ -38,7 +38,7 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('所属分类')" :min-width="90" show-overflow-tooltip>
-                    {{ groupName }}
+                    {{ $t(groupName) }}
                 </bk-table-column>
                 <bk-table-column :label="$t('简介')" prop="funcSummary" :min-width="110" show-overflow-tooltip>
                     <template slot-scope="props">

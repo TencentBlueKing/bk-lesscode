@@ -22,7 +22,7 @@
                                             <i v-if="layout.layoutType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
                                             <i v-else class="bk-drag-icon bk-drag-pc"> </i>
                                         </span>
-                                        <div class="name" v-bk-tooltips="{ content: layout.showName, disabled: !(layout.showName && layout.showName.length > 16) }">{{layout.showName}}</div>
+                                        <div class="name" v-bk-tooltips="{ content: $t(layout.showName), disabled: !(layout.showName && layout.showName.length > 16) }">{{ $t(layout.showName) }}</div>
                                     </div>
                                     <div class="stat" :title="layout.routePath">
                                         {{ $t('路由: {0}', [layout.routePath]) }} </div>
