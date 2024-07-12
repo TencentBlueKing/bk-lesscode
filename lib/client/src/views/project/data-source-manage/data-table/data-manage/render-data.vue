@@ -503,7 +503,6 @@
                             throw new Error(window.i18n.t('数据是【{1}】类型，但是值【{0}】不符合【{1}】格式', [form[dateColumn.name], dateColumn.type]))
                         }
                         if (dateColumn.type === 'datetime') {
-                            console.log(form[dateColumn.name], '====')
                             form[dateColumn.name] = dayjs(form[dateColumn.name])
                                 .utcOffset(0)
                                 .format('YYYY-MM-DD HH:mm:ss')
