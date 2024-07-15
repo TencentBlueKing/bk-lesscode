@@ -3985,5 +3985,6 @@
   "删除函数": "Delete Function",
   "添加函数分类": "Create Function Category",
   "更新函数分类": "Update Function Category",
-  "删除函数分类": "Delete Function Category"
+  "删除函数分类": "Delete Function Category",
+  "离开修改的内容将会丢失": "Leaving modifications will be lost"
 }
