@@ -55,7 +55,7 @@
                     show-overflow-tooltip
                     sortable
                 >
-                    {{ categoryName }}
+                    {{ $t(categoryName) }}
                 </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'method')"

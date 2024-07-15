@@ -1,6 +1,6 @@
 # 画布布局容器
 
-LessCode提供行布局、多列布局、自由布局三种布局容器， 以便用户能便捷的编排出所需的页面
+蓝鲸运维开发平台(LessCode)提供行布局、多列布局、自由布局三种布局容器， 以便用户能便捷的编排出所需的页面
 <img src="../../../images/help/container-total.png" alt="grid" width="80%" class="help-img">
 
 ## 通用样式设置

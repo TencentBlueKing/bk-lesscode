@@ -72,6 +72,7 @@
     import DebugParam from './children/debug/param.vue'
     import DebugProblem from './children/debug/problem.vue'
     import mixins from './form-item-mixins'
+    import variableMixins from './variable-mixins'
     import { mapActions, mapGetters } from 'vuex'
     import LC from '@/element-materials/core'
     import {
@@ -104,7 +105,7 @@
             DebugProblem
         },
 
-        mixins: [mixins],
+        mixins: [mixins, variableMixins],
 
         props: {
             height: {
@@ -112,10 +113,6 @@
                 default: 600
             },
             functionList: {
-                type: Array,
-                default: () => ([])
-            },
-            variableList: {
                 type: Array,
                 default: () => ([])
             },
@@ -578,6 +575,7 @@
                     this.messageError(this.$t('函数名称不能为空'))
                     return
                 }
+                await this.refreshVariable()
                 this.renderDebug = 'DebugOutput'
                 this.outputs = []
                 this.isDebuging = true

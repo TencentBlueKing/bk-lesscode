@@ -36,7 +36,7 @@
                                                 enable-title-tip
                                                 default-expand-all
                                                 :default-selected-node="selectDoc"
-                                                :data="[child]"
+                                                :data="child"
                                                 @select-change="handlerSelectTreeData">
                                             </bk-big-tree>
                                         </template>
@@ -120,10 +120,9 @@
 
             const isSingleTree = computed(() => {
                 return (child) => {
-                    const childrenNodes = child?.children || ''
-                    if (!childrenNodes) return false
-                    if (!Array.isArray(childrenNodes)) return false
-                    return childrenNodes.length > 0
+                    if (!child) return false
+                    if (!Array.isArray(child)) return false
+                    return child.length > 0
                 }
             })
 

@@ -60,7 +60,7 @@
                 const url = location.href
                 const reg = new RegExp(/(\w+):\/\/([^/:]+)(:\d*)?/)
                 const matchObj = url.match(reg)
-                return matchObj[2].startsWith('local-') ? matchObj[2] : `local-${matchObj[2]}`
+                return matchObj[2].startsWith('local.') ? matchObj[2] : `local.${matchObj[2]}`
             }
         }
     }
