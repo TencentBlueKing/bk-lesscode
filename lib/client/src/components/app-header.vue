@@ -12,8 +12,9 @@
 <template>
     <header class="app-header">
         <div class="logo" @click="toProjectList">
-            <img src="../images/logo.png" alt="logo">
-            {{ $t('蓝鲸运维开发平台') }} </div>
+            <img :src="logoUrl" alt="logo">
+            {{ platformName }}
+        </div>
         <nav class="top-nav">
             <ul class="menu">
                 <router-link
@@ -145,6 +146,14 @@
             const user = computed(() => store.getters['user'])
             const userName = computed(() => user.value?.username ?? '')
             const showAlertNotice = computed(() => store.getters['showAlertNotice'])
+
+            const logoUrl = computed(() => {
+                return store.getters['platformConfig/platformConfig']?.appLogo || '../images/logo.png'
+            })
+
+            const platformName = computed(() => {
+                return store.getters['platformConfig/platformConfig']?.i18n?.name || window.i18n.t('蓝鲸运维开发平台')
+            })
             
             const menus = computed(() => {
                 const list = [
@@ -204,6 +213,8 @@
                 visible.value = value
             }
             return {
+                logoUrl,
+                platformName,
                 languageList,
                 userName,
                 menus,
