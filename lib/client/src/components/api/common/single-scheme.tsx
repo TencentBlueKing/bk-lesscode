@@ -241,7 +241,7 @@ export default defineComponent({
                         value={this.copyScheme.type}
                         clearable={false}
                         disabled={this.finalTypeDisable}
-                        onChange={(type) => this.updateType(type)}
+                        onSelected={(type) => this.updateType(type)}
                     >
                         {
                             Object.keys(API_PARAM_TYPES).map((key) => (
