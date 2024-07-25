@@ -2,7 +2,7 @@
     <div class="flow-archived-list">
         <header class="breadcrumbs">
             <div class="header-content">
-                <i class="bk-drag-icon bk-drag-arrow-back" @click="$router.push({ name: 'flowList' })"></i>
+                <i class="bk-drag-icon bk-drag-arrow-back" @click="$router.push({ name: 'flowTplList' })"></i>
                 {{ $t('流程归档列表') }} </div>
         </header>
         <main class="archived-list-content">
@@ -28,21 +28,14 @@
                 :header-cell-style="{ background: '#f0f1f5' }"
                 @page-change="handlePageChange"
                 @page-limit-change="handlePageLimitChange">
-                <bk-table-column :label="$t('table_流程名称')" property="flowName" show-overflow-tooltip :min-width="120">
+                <bk-table-column :label="$t('table_流程名称')" property="name" show-overflow-tooltip :min-width="120">
                     <template slot-scope="{ row }">
-                        <!-- <router-link
-                            class="link-btn"
-                            :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
-                            {{ row.flowName }}
-                        </router-link> -->
-                        <span>{{ row.flowName }}</span>
+                        <span>{{ row.name }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('table_流程描述')" property="summary" show-overflow-tooltip :min-width="100">
                     <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
                 </bk-table-column>
-                <bk-table-column :label="$t('table_流程表单页')" property="pageName" show-overflow-tooltip :min-width="100"></bk-table-column>
-                <bk-table-column :label="$t('table_流程数据管理页')" property="managePageNames" show-overflow-tooltip :render-header="renderHeaderAddTitle"></bk-table-column>
                 <bk-table-column :label="$t('table_创建人')" property="createUser"></bk-table-column>
                 <bk-table-column :label="$t('table_创建时间')" show-overflow-tooltip>
                     <template slot-scope="{ row }">
@@ -55,7 +48,6 @@
                             trigger="click"
                             width="350"
                             :title="$t('确认恢复改流程')"
-                            :content="$t('恢复后，关联的流程提单页，流程数据管理页也一并恢复')"
                             @confirm="handleRestoreConfirm">
                             <bk-button
                                 theme="primary"
@@ -114,13 +106,13 @@
                     deleteFlag: 1
                 }
                 if (this.keyword) {
-                    params.flowName = this.keyword.trim()
+                    params.name = this.keyword.trim()
                     this.emptyType = 'search'
                 } else {
                     this.emptyType = 'noData'
                 }
                 try {
-                    const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
+                    const res = await this.$store.dispatch('flow/tpl/getTplList', params)
                     const { list, count } = res
                     this.flowList = list
                     this.pagination.count = count
@@ -136,7 +128,7 @@
                         id: this.restoreId,
                         deleteFlag: 0
                     }
-                    await this.$store.dispatch('nocode/flow/archiveFlow', params)
+                    await this.$store.dispatch('flow/tpl/archiveFlowTpl', params)
                     this.restoreId = ''
                     if (this.flowList.length === 1 && this.pagination.current > 1) {
                         this.pagination.current -= 1
