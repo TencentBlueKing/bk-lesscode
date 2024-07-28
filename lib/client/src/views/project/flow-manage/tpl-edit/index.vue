@@ -30,8 +30,8 @@
                 </menu-item>
             </div>
         </div>
-        <div class="flow-edit-main">
-            <router-view />
+        <div v-if="!tplDetailLoading" class="flow-edit-main">
+            <router-view :tpl-detail="tplDetail" />
         </div>
     </section>
 </template>
@@ -127,9 +127,7 @@
             async getFlowList () {
                 this.listLoading = true
                 try {
-                    const res = await this.$store.dispatch('flow/tpl/getTplList', {
-                        projectId: this.projectId
-                    })
+                    const res = await this.$store.dispatch('flow/tpl/getTplList')
                     this.tplList = res.list
                 } catch (err) {
                     messageError(err.message || err)
