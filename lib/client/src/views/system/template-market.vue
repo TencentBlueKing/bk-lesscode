@@ -173,7 +173,8 @@
                         <bk-option v-for="option in dialog.page.projectList"
                             :key="option.id"
                             :id="option.id"
-                            :name="option.projectName">
+                            :name="option.projectName"
+                            :disabled="option.id === dialog.page.curPage.belongProjectId">
                         </bk-option>
                     </bk-select>
                 </bk-form-item>

@@ -35,6 +35,8 @@
     import widgetElTable from '@/components/patch/widget-el-table/index.vue'
     import widgetTableColumn from '@/components/render/pc/widget/table/table-column'
     import BkLuckyCanvas from '@/components/render/pc/widget/bk-lucky-canvas'
+    import bkCharts from '@/components/render/pc/widget/bk-charts/bk-charts'
+    import chart from '@/components/render/pc/widget/chart/chart'
     import '@vant/touch-emulator' // PC端模拟移动端事件 用于预览
 
     import { register } from 'swiper/element/bundle'
@@ -164,6 +166,8 @@
                     registerComponent('widget-el-table', widgetElTable)
                     registerComponent('widget-table-column', widgetTableColumn)
                     registerComponent('bk-lucky-canvas', BkLuckyCanvas)
+                    registerComponent('bk-charts', bkCharts)
+                    registerComponent('chart', chart)
                 })
             },
             async loadFile () {

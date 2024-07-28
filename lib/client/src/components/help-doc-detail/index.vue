@@ -182,7 +182,7 @@
     })
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
     @import './index.css';
     .container{
         width: 1000px;
