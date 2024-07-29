@@ -1,13 +1,25 @@
 <template>
-    <div ref="flowGraphRef" class="flow-graph-container"></div>
+    <div class="render-graph">
+        <Tools v-if="instance" class="tools-container" />
+        <Dnd v-if="instance" class="dnd-container" :instance="instance" />
+        <div ref="renderGraphRef" class="graph-canvas-container"></div>
+    </div>
 </template>
 <script>
-    import { defineComponent, onMounted } from '@vue/composition-api'
+    import { defineComponent, ref, onMounted } from '@vue/composition-api'
     import { Graph } from '@antv/x6';
-    import { registryNode, registryEvents } from './registry';
+    import { Snapline } from '@antv/x6-plugin-snapline'
+    import { registryNode } from './registry'
+    import { GET_GRAPH_CONFIG } from './constants'
+    import Dnd from './dnd.vue'
+    import Tools from './tools.vue'
 
     export default defineComponent({
-        name: 'FlowGraph',
+        name: 'RenderGraph',
+        components: {
+            Dnd,
+            Tools
+        },
         props: {
             nodes: {
                 type: Array,
@@ -19,10 +31,7 @@
             }
         },
         setup (props, ctx) {
-            console.log('props: ', props)
-            console.log('ctx: ', ctx)
-
-            const flowGraphRef = ref(null)
+            const renderGraphRef = ref(null)
             const instance = ref(null)
 
             onMounted(() => {
@@ -30,67 +39,116 @@
             })
 
             const initGraph = () => {
-                instance.value = new Graph({
-                    container: flowGraphRef.value,
-                    color: '#F5F7FA',
-                    autoResize: true,
-                    interacting: false,
-                    panning: {
-                        enabled: true,
-                        eventTypes: ['leftMouseDown', 'mouseWheel']
-                    },
-                    mousewheel: {
-                        enabled: true,
-                        modifiers: 'ctrl',
-                        factor: 1.1,
-                        maxScale: 3,
-                        minScale: 0.5
-                    },
-                    highlighting: {
-                        magnetAdsorbed: {
-                            name: 'stroke',
-                            args: {
-                                attrs: {
-                                    fill: '#fff',
-                                    stroke: '#31d0c6',
-                                    strokeWidth: 4
-                                }
-                            }
-                        }
-                    },
-                    connecting: {
-                        snap: true,
-                        allowBlank: false,
-                        allowLoop: false,
-                        highlight: true,
-                        connectionPoint: 'anchor',
-                        anchor: 'center',
-                        validateMagnet () {
-                            return false
+                instance.value = new Graph(GET_GRAPH_CONFIG(renderGraphRef.value))
+
+                // 节点对齐线
+                instance.value.use(
+                    new Snapline({
+                        enabled: true
+                    })
+                )
+
+                registryNode({ delete: handleDeleteNode })
+                setGraphEvents()
+                updateGraph()
+            }
+
+            const setGraphEvents = () => {
+                // 控制连接桩显示/隐藏
+                instance.value.on('node:mouseenter', ({ cell }) => {
+                    const ports = cell.getPorts()
+                    ports.forEach((item) => {
+                        cell.setPortProp(item.id, 'attrs/circle/style/visibility', 'visible')
+                    })
+                })
+                instance.value.on('node:mouseleave', ({ cell }) => {
+                    const ports = cell.getPorts()
+                    ports.forEach((item) => {
+                        cell.setPortProp(item.id, 'attrs/circle/style/visibility', 'hidden')
+                    })
+                })
+                // 节点停止移动
+                instance.value.on('node:moved', ({ node }) => ctx.emit('node:moved', node))
+                // 新增节点
+                instance.value.on('node:added', ({ node }) => ctx.emit('node:added', node))
+                // 鼠标点击
+                instance.value.on('cell:click', ({ node }) => ctx.emit('node:click', node));
+                // 新增边
+                instance.value.on('edge:connected', ({ edge }) => ctx.emit('edge:added', edge));
+            }
+
+            const updateGraph = () => {
+                const cells = []
+                props.nodes.forEach(node => {
+                    const { id, axis, type } = node
+                    const { x, y } = axis
+                    const shape = ['Start', 'End'].includes(type) ? 'custom-circle' : 'custom-rect'
+                    cells.push(instance.value.createNode({
+                        shape,
+                        id,
+                        x,
+                        y,
+                        data: node
+                    }))
+                })
+                props.edges.forEach(edge => {
+                    cells.push(instance.value.createEdge({
+                        shape: 'edge',
+                        ...edge,
+                        attrs: {
+                            line: {
+                                stroke: '#a9adb6',
+                                strokeWidth: 2,
+                                targetMarker: {
+                                    name: 'block',
+                                    width: 6,
+                                    height: 8,
+                                },
+                            },
                         },
-                        validateEdge () {
-                            return false
+                        zIndex: 0,
+                        router: {
+                            name: 'manhattan',
+                            args: {
+                                padding: 1,
+                            },
                         }
-                    }
+                    }))
                 })
-
-                registryNode()
-                registryEvents(instance.value)
-                renderNodes()
-                renderEdges()
+                instance.value.resetCells(cells)
             }
 
-            const renderNodes = () => {
-                this.nodes.forEach(node => {
-                    instance.value.addNode(node)
-                })
+            const handleDeleteNode = (node) => {
+                instance.value.removeNode(node.id)
+                ctx.emit('node:deleted', node)
             }
 
-            const renderEdges = () => {
-                this.edges.forEach(edge => {
-                    instance.value.addEdge(edge)
-                })
+            return {
+                renderGraphRef,
+                instance
             }
         }
     })
 </script>
+<style lang="postcss" scoped>
+    .render-graph {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        .dnd-container {}
+        .tools-container {
+            position: absolute;
+            top: 20px;
+            left: 100px;
+            z-index: 1;
+        }
+        .graph-canvas-container {
+            height: 100%;
+            flex: 1;
+            cursor: -webkit-grab;
+        }
+    }
+</style>

@@ -27,7 +27,7 @@
     </bk-dialog>
 </template>
 <script>
-    import { GET_INITIALIZE_FLOW_TPL_STRUCTURE } from 'shared/flow'
+    import { GET_INITIALIZE_FLOW_TPL_STRUCTURE } from '../tpl-edit/canvas/render-graph/constants.js'
 
     export default {
         name: 'CreateFlowDialog',
