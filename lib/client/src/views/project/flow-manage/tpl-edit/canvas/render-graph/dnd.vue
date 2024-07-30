@@ -19,6 +19,7 @@
     import { Graph } from '@antv/x6';
     import { Dnd } from "@antv/x6-plugin-dnd"
     import { NODES, GET_NODE_ICON, IS_CIRCLE_NODE, GET_NODE_DEFAULT_CONFIG } from './constants'
+    import { uuid } from '@/common/util'
 
     export default defineComponent({
         name: 'GraphDnd',
@@ -46,9 +47,11 @@
                 const target = e.currentTarget
                 const type = target.getAttribute('data-type')
                 const isCircleNode = IS_CIRCLE_NODE(type)
+                const nodeData = GET_NODE_DEFAULT_CONFIG(type)
                 const node = props.instance.createNode({
+                    id: nodeData.id,
                     shape: isCircleNode ? 'custom-circle' : 'custom-rect',
-                    data: GET_NODE_DEFAULT_CONFIG(type)
+                    data: nodeData
                 })
 
                 dndIns.value.start(node, e)

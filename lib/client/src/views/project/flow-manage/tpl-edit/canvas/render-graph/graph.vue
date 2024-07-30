@@ -10,7 +10,7 @@
     import { Graph } from '@antv/x6';
     import { Snapline } from '@antv/x6-plugin-snapline'
     import { registryNode } from './registry'
-    import { GET_GRAPH_CONFIG } from './constants'
+    import { GET_GRAPH_CONFIG, GET_EDGE_DEFAULT_CONFIG } from './constants'
     import Dnd from './dnd.vue'
     import Tools from './tools.vue'
 
@@ -75,6 +75,19 @@
                 instance.value.on('cell:click', ({ node }) => ctx.emit('node:click', node));
                 // 新增边
                 instance.value.on('edge:connected', ({ edge }) => ctx.emit('edge:added', edge));
+                // 边删除
+                instance.value.on('edge:removed', ({ edge }) => ctx.emit('edge:deleted', edge));
+                // 边hover
+                instance.value.on('edge:mouseenter', ({ edge }) => {
+                    if (!edge.hasTool('button-remove')) {
+                        edge.addTools([{ name: 'button-remove' }])
+                    }
+                })
+                instance.value.on('edge:mouseleave', ({ edge }) => {
+                    if (edge.hasTool('button-remove')) {
+                        edge.removeTools([{ name: 'button-remove' }])
+                    }
+                })
             }
 
             const updateGraph = () => {
@@ -93,34 +106,17 @@
                 })
                 props.edges.forEach(edge => {
                     cells.push(instance.value.createEdge({
-                        shape: 'edge',
+                        ...GET_EDGE_DEFAULT_CONFIG(),
                         ...edge,
-                        attrs: {
-                            line: {
-                                stroke: '#a9adb6',
-                                strokeWidth: 2,
-                                targetMarker: {
-                                    name: 'block',
-                                    width: 6,
-                                    height: 8,
-                                },
-                            },
-                        },
-                        zIndex: 0,
-                        router: {
-                            name: 'manhattan',
-                            args: {
-                                padding: 1,
-                            },
-                        }
                     }))
                 })
                 instance.value.resetCells(cells)
             }
 
             const handleDeleteNode = (node) => {
+                const edgeIds = instance.value.getConnectedEdges(node.id).map(item => item.id)
                 instance.value.removeNode(node.id)
-                ctx.emit('node:deleted', node)
+                ctx.emit('node:deleted', node, edgeIds)
             }
 
             return {
@@ -138,7 +134,6 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        .dnd-container {}
         .tools-container {
             position: absolute;
             top: 20px;
@@ -149,6 +144,26 @@
             height: 100%;
             flex: 1;
             cursor: -webkit-grab;
+        }
+    }
+</style>
+<style lang="postcss">
+    .graph-edge-label {
+        display: flex;
+        align-items: center;
+        .edge-del-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #d8d8d8;
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            z-index: 2;
+            cursor: pointer;
+            &:hover {
+                background-color: #979ba5;
+            }
         }
     }
 </style>
