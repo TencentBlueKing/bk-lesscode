@@ -2868,6 +2868,7 @@
   "搜索选择数据": "Search selection data",
   "条件选择列表": "Conditional selection list",
   "是否可以清空": "Whether it can be cleared",
+  "sql语句已做base64加密处理": "The sql field has been encrypted",
   "列表name指定的key值，默认为name,若需要改为其他key值，在这里传入即可": "List name specifies the key value. The default is name. If you want to change it to a different key value, you can pass it in here",
   "列表id指定的key值，默认为id,若需要改为其他key值，在这里传入即可": "List id specifies the key value. The default value is id. If you want to change to a different key value, you can pass it in here",
   "是否显示控制器，只在 type = 'number'时有效": "Whether to display the controller is valid only when type = 'number'",
