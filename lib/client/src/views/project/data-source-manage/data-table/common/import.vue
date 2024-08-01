@@ -76,7 +76,7 @@
         defineComponent,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         DATA_FILE_TYPE,
     } from 'shared/data-source'

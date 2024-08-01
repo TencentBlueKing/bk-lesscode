@@ -70,7 +70,7 @@
         toRef,
         computed,
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         FUNCTION_METHOD
     } from 'shared/function/'

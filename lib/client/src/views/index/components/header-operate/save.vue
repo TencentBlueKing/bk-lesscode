@@ -6,7 +6,7 @@
         ref,
         onBeforeUnmount,
         getCurrentInstance
-    } from '@vue/composition-api'
+    } from 'vue'
     import useSave from './common/use-save'
     import useSaveFormContainer from './common/use-save-form-container' // 表单容器数据源为新建表时需要，创建或更新form表
     import usePreviewImg from './common/use-preview-img'

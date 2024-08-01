@@ -10,7 +10,7 @@
 -->
 
 <script lang="ts">
-    import { defineComponent, PropType, h } from '@vue/composition-api'
+    import { defineComponent, PropType, h } from 'vue'
     import { UploadFile, getFileUrl, getFileExt, isImageFile } from './helper'
 
     export default defineComponent({

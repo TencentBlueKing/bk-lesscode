@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-    import {
+    import Vue, {
         defineComponent,
         onBeforeMount,
         watch,
@@ -201,8 +201,7 @@
         PropType,
         reactive,
         getCurrentInstance
-    } from '@vue/composition-api'
-    import Vue from 'vue'
+    } from 'vue'
     import { messageError, messageSuccess } from '@/common/bkmagic'
     import { bkInfoBox } from 'bk-magic-vue'
     import router from '@/router'

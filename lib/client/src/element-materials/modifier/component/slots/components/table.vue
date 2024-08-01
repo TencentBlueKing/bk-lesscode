@@ -310,7 +310,7 @@
         ref,
         watch,
         getCurrentInstance
-    } from '@vue/composition-api'
+    } from 'vue'
 
     const generateColumn = (index) => ({
         label: window.i18n.t('选项{0}', { n: index }),

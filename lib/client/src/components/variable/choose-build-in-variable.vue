@@ -48,7 +48,7 @@
         defineComponent,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         execCopy
     } from '@/common/util'

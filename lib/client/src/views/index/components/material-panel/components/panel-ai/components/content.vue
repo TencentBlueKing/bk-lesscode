@@ -40,7 +40,7 @@
         ref,
         onBeforeMount,
         nextTick
-    } from '@vue/composition-api'
+    } from 'vue'
     import LC from '@/element-materials/core'
     import RenderMessage from './message.vue'
     import systemPrompt from './system-prompt.txt'

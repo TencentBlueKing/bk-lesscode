@@ -93,7 +93,7 @@
         defineComponent,
         toRef,
         PropType
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         JOIN_TYPE,
         SQL_FUNCTION_TYPE,

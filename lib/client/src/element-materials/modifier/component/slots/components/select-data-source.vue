@@ -20,7 +20,7 @@
         defineComponent,
         ref,
         toRefs
-    } from '@vue/composition-api'
+    } from 'vue'
     import chooseDataTable from '@/components/choose-data-table.vue'
 
     interface Iprop {

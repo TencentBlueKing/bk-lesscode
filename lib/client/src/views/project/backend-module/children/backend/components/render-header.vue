@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api'
+    import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
     import { useStore } from '@/store'
     import { uuid } from 'shared/util'
     import useResourceLock from '@/common/use-resource-lock'

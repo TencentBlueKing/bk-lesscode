@@ -30,7 +30,7 @@
         watch,
         ref,
         onBeforeUnmount
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         IColumn
     } from './select-field.vue'

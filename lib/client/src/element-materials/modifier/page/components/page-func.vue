@@ -28,7 +28,7 @@
 <script>
     import StyleLayout from '@/element-materials/modifier/component/styles/layout/index'
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
-    import { defineComponent, computed } from '@vue/composition-api'
+    import { defineComponent, computed } from 'vue'
     import store from '@/store'
 
     export default defineComponent({
