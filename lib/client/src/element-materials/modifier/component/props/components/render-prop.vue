@@ -370,13 +370,18 @@
              * @returns { String }
              */
             displayName () {
-                if (this.renderComponentList.length > 1) {
-                    return this.describe?.displayName || this.name
+                // 英文版只展示英文属性名称
+                if (this.$store.state.Language === 'en') {
+                    return this.name
+                } else {
+                    if (this.renderComponentList.length > 1) {
+                        return this.describe?.displayName || this.name
+                    }
+                    if (!isEmpty(this.describe?.displayName)) {
+                        return `${this.describe.displayName}(${this.name})`
+                    }
+                    return this.name
                 }
-                if (!isEmpty(this.describe?.displayName)) {
-                    return `${this.describe.displayName}(${this.name})`
-                }
-                return this.name
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)

@@ -3,7 +3,7 @@
         <div class="banner">
             <mg-content-loader :is-loading="isLoading" placeholder="index-loading" :offset-top="0" :height="350">
                 <div class="img-container">
-                    <img class="banner-img" src="../../images/banner.png" alt="">
+                    <img class="banner-img" :src="bannerSrc" alt="">
                     <div class="btn-group">
                         <bk-button
                             class="mt10 banner-btn"
@@ -231,6 +231,9 @@
             }
         },
         computed: {
+            bannerSrc () {
+                return this.$store.state.Language === 'en' ? require('../../images/banner-en.png') : require('../../images/banner.png')
+            },
             exampleImg () {
                 return this.rightNavList[this.actionIndex].image
             },

@@ -310,59 +310,59 @@
             // 模块展示
             const moduleList = reactive([
                 {
-                    moduleName: '应用开发流程',
+                    moduleName: window.i18n.t('应用开发流程'),
                     iconClass: 'bk-drag-icon bk-drag-tuopu icon-pos',
                     frameSrc: frameImg
                 },
                 {
-                    moduleName: '前端模块开发',
+                    moduleName: window.i18n.t('前端模块开发'),
                     iconClass: 'bk-drag-icon bk-drag-template-fill icon-pos',
                     docsList: [
                         {
-                            name: '页面开发',
+                            name: window.i18n.t('页面开发'),
                             selectDoc: 'page-manage',
-                            description: '通过可视化编排组件及配置组件属性样式等， 便捷的拖拽出所需的页面， 支持PC端和移动端页面开发'
+                            description: window.i18n.t('通过可视化编排组件及配置组件属性样式等， 便捷的拖拽出所需的页面， 支持PC端和移动端页面开发')
                         },
                         {
-                            name: '路由管理',
+                            name: window.i18n.t('路由管理'),
                             selectDoc: 'route-manage',
-                            description: '通过路由管理可以设置每个页面的访问链接及跳转关系'
+                            description: window.i18n.t('通过路由管理可以设置每个页面的访问链接及跳转关系')
                         },
                         {
-                            name: 'JS函数开发',
+                            name: window.i18n.t('JS函数开发'),
                             selectDoc: 'method',
-                            description: '通过JS函数可以丰富页面的交互、实现复杂的逻辑计算、也可以通过远程函数调用API获取动态数据'
+                            description: window.i18n.t('通过JS函数可以丰富页面的交互、实现复杂的逻辑计算、也可以通过远程函数调用API获取动态数据')
                         },
                         {
-                            name: '变量管理',
+                            name: window.i18n.t('变量管理'),
                             selectDoc: 'variable',
-                            description: '通过变量管理可以设置应用级变量跟页面级别变量、实现数据的动态变化'
+                            description: window.i18n.t('通过变量管理可以设置应用级变量跟页面级别变量、实现数据的动态变化')
                         },
                         {
-                            name: '资源管理',
+                            name: window.i18n.t('资源管理'),
                             selectDoc: 'layout-guide',
-                            description: '包含导航布局、自定义组件、文件、页面模板、API等应用资源的管理'
+                            description: window.i18n.t('包含导航布局、自定义组件、文件、页面模板、API等应用资源的管理')
                         },
                         {
-                            name: ' 发布部署',
+                            name: window.i18n.t('发布部署'),
                             selectDoc: 'release',
-                            description: '将拖拽出来的应用快速便捷部署到蓝鲸开发者中心'
+                            description: window.i18n.t('将拖拽出来的应用快速便捷部署到蓝鲸开发者中心')
                         }
                     ]
                 },
                 {
-                    moduleName: '数据源管理',
+                    moduleName: window.i18n.t('数据源管理'),
                     iconClass: 'bk-drag-icon bk-drag-jiedian icon-pos',
                     docsList: [
                         {
-                            name: '数据表管理',
+                            name: window.i18n.t('数据表管理'),
                             selectDoc: 'data-manage',
-                            description: '在线对数据表结构及表数据进行增删改查，支持接入第三方db'
+                            description: window.i18n.t('在线对数据表结构及表数据进行增删改查，支持接入第三方db')
                         },
                         {
-                            name: '数据操作',
+                            name: window.i18n.t('数据操作'),
                             selectDoc: 'data-operation',
-                            description: '在线查询数据表数据、同时支持便捷组装出的数据查询语句'
+                            description: window.i18n.t('在线查询数据表数据、同时支持便捷组装出的数据查询语句')
                         }
                     ]
                 }

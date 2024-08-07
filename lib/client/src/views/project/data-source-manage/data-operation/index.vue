@@ -245,6 +245,7 @@
             :form="apiData.form"
             :is-show.sync="apiData.isShow"
             :is-edit="false"
+            :show-tips="true"
         />
         <bk-dialog
             theme="primary"
