@@ -289,7 +289,8 @@
                 let hasBtnItem = true
 
                 let btnItemNode = _.find(this.componentNode.children, node => !node.prop.property)
-                const btnSetting = this.componentNode.prop?.btnSetting
+                const key = this.componentNode.renderProps?.btnSetting ? 'btnSetting': 'btn-setting'
+                const btnSetting = this.componentNode.prop[key]
                 
                 if (!btnItemNode) {
                     hasBtnItem = false
@@ -336,7 +337,8 @@
             },
 
             handleUpdateBtn (btnSetting) {
-                this.componentNode.setProp('btnSetting', LC.utils.genPropFormatValue({
+                const key = this.componentNode.renderProps?.btnSetting ? 'btnSetting': 'btn-setting'
+                this.componentNode.setProp(key, LC.utils.genPropFormatValue({
                     format: 'value',
                     code: btnSetting,
                     renderValue: btnSetting
