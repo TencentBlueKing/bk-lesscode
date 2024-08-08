@@ -64,7 +64,7 @@
             @click="handleShowOperation(null)">
             {{ $t('继续添加表单项') }} </div>
 
-        <form-button-setting :button-setting="componentNode.prop.btnSetting || {}" :handle-update-btn-item="handleUpdateBtn">
+        <form-button-setting :button-setting="componentNode.prop.btnSetting || componentNode.prop['btn-setting'] || {}" :handle-update-btn-item="handleUpdateBtn">
         </form-button-setting>
 
         <form-item-edit
