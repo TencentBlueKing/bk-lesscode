@@ -152,7 +152,7 @@
             })
 
             const platformName = computed(() => {
-                return store.getters['platformConfig/platformConfig']?.i18n?.name || window.i18n.t('蓝鲸运维开发平台')
+                return store.getters['platformConfig/platformConfig']?.i18n?.productName || window.i18n.t('蓝鲸运维开发平台')
             })
             
             const menus = computed(() => {
