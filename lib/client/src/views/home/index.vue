@@ -3,7 +3,7 @@
         <div class="banner">
             <mg-content-loader :is-loading="isLoading" placeholder="index-loading" :offset-top="0" :height="350">
                 <div class="img-container">
-                    <img class="banner-img" src="../../images/banner.png" alt="">
+                    <img class="banner-img" :src="bannerSrc" alt="">
                     <div class="btn-group">
                         <bk-button
                             class="mt10 banner-btn"
@@ -94,18 +94,8 @@
                     <div class="frame-name" @click="handlerToWeb(item)">{{item.name}}</div>
                 </div>
             </div>
-            <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=1&key=XzgwMDgwMjAwMV80NDMwOTZfODAwODAyMDAxXzJf"
-                target="_blank"
-                class="magic-feedback"
-                :title="$t('QQ交谈')">
-                <img src="../../images/qq.png" />
-                <span>{{ $t('QQ交谈') }}</span>
-            </a>
-            <!-- <a href="wxwork://message/?username=BK-MagicBox" class="magic-feedback" title="蓝鲸MagicBox助手">
-            <img src="../../images/wx-work.png" />
-            <span>蓝鲸MagicBox助手</span>
-        </a> -->
-            Copyright &copy; 2012 Tencent BlueKing. All Rights Reserved. {{$t('腾讯蓝鲸 版权所有')}}
+            <p v-html="footerInfoHtml" ></p>
+            <p>{{footerCopyrightContent}}</p>
         </div>
     </div>
 </template>
@@ -241,12 +231,18 @@
             }
         },
         computed: {
+            bannerSrc () {
+                return this.$store.state.Language === 'en' ? require('../../images/banner-en.png') : require('../../images/banner.png')
+            },
             exampleImg () {
                 return this.rightNavList[this.actionIndex].image
+            },
+            footerInfoHtml () {
+                return this.$store.getters['platformConfig/platformConfig']?.i18n?.footerInfoHTML
+            },
+            footerCopyrightContent () {
+                return this.$store.getters['platformConfig/platformConfig']?.footerCopyrightContent || 'Copyright © 2012 Tencent BlueKing. All Rights Reserved. '
             }
-        },
-        created () {
-
         },
         mounted () {
             this.isLoading = false
@@ -504,6 +500,13 @@
                     width: 17px;
                     vertical-align: middle;
                     margin-top: -2px;
+                }
+            }
+            
+            p {
+                line-height: 20px;
+                a {
+                    color: #3A84FF;
                 }
             }
         }

@@ -5,8 +5,7 @@
             <div class="header-left">
                 <div v-show="!isDocDetail">{{ $t('帮助文档') }}</div>
                 <div v-show="isDocDetail" @click="backUpPage" class="header-detail-title">
-                    <i class="bk-drag-icon bk-drag-arrow-back"></i>
-                    {{ $t('文档详情') }}
+                    <i class="bk-drag-icon bk-drag-arrow-back"></i>{{ $t('文档详情') }}
                 </div>
             </div>
             <div class="header-right">
@@ -49,7 +48,7 @@
                 <div v-show="!isSearching" class="module-docs">
                     <template v-for="(item, index) in moduleList">
                         <div :key="item.moduleName">
-                            <div :class="{
+                            <div @click="queryModule(index)" :class="{
                                 'module-title': true,
                                 'border-none': !isHasDocs(item.docsList)
                             }">
@@ -58,12 +57,12 @@
                                     {{ item.moduleName }}
                                 </div>
                                 <div class="right">
-                                    <i v-if="typeof item.isShowModule === 'boolean' && !item.isShowModule" class="bk-icon icon-angle-up" @click="queryModule(true, index)"></i>
-                                    <i v-else class="bk-drag-icon bk-drag-arrow-down" @click="queryModule(false, index)"></i>
+                                    <i v-if="typeof item.isShowModule === 'boolean' && !item.isShowModule" class="bk-icon icon-angle-up" ></i>
+                                    <i v-else class="bk-drag-icon bk-drag-arrow-down"></i>
                                 </div>
                             </div>
                             <div ref="moduleRefs" v-if="!isHasDocs(item.docsList)" class="frame-img">
-                                <bk-zoom-image :src="item.frameSrc" class="zoom-image"></bk-zoom-image>
+                                <bk-image class="zoom-image" :src="item.frameSrc" :preview-src-list="[item.frameSrc]"></bk-image>
                             </div>
                             <div ref="moduleRefs" v-else>
                                 <div v-for="(doc) in item.docsList" :key="doc.name" class="doc">
@@ -78,7 +77,7 @@
                 <!-- 搜索时 展示某些模块 文档 -->
                 <div v-show="isSearching" class="search-docs">
                     <!-- 有内容时 展示 -->
-                    <div v-if="searchDocList.length" class="search-content">
+                    <div v-if="searchDocList.length" class="search-content" @mouseleave="initHoverIndex">
                         <div v-for="(item, index) in searchDocList" :key="`${item.name + index}`" :class="['search-doc', hoverCls(index)]" @mouseenter="getHoverIndex($event, index)" @click="getDocDetail(item)">
                             <div class="search-doc-name" v-html="item.name"></div>
                         </div>
@@ -165,10 +164,14 @@
                     bottom: `${popoverBottom.value}px`
                 }
             })
-            const isFull = ref(false)
+            const isFull = computed({
+                get() {
+                    const docWinSize = windowSize.width - popoverLeft.value - popoverRight.value
+                    return docWinSize === 1000 && popoverTop.value === 0 && popoverBottom.value === 0
+                }
+            })
             // true -> 全屏，否则 非全屏
             const changeFull = (boolVal) => {
-                isFull.value = boolVal
                 popoverTop.value = 0
                 popoverBottom.value = 0
                 popoverRight.value = 0
@@ -182,10 +185,13 @@
                     popoverLeft.value = windowSize.width - limitSize.max.width
                 }
             }
-            const isExtendHeight = ref(false)
+            const isExtendHeight = computed({
+                get() {
+                    return !(popoverTop.value === 0 && popoverBottom.value === 0)
+                }
+            })
             // true -》向上扩展，否则， 向下收缩
             const changeExtend = (boolVal) => {
-                isExtendHeight.value = boolVal
                 if (!boolVal) {
                     popoverTop.value = 0
                     popoverBottom.value = 0
@@ -216,6 +222,12 @@
                 if (['nesw', 'nw', 'ne', 'se', 'sw'].includes(direction)) {
                     target.clientX = ev.clientX
                     target.clientY = ev.clientY
+                }
+                // 拖拽时 禁用iframe上的鼠标行为
+                hanldeIframe('none')
+                // 拖拽过程中 取消选中
+                document.onselectstart = () => {
+                    return false
                 }
             }
             const resizeDocs = (event) => {
@@ -264,6 +276,8 @@
             }
             const endResize = () => {
                 target.isMove = false
+                hanldeIframe('auto')
+                document.onselectstart = null
             }
             const handleResize = () => {
                 windowSize.width = window.innerWidth
@@ -272,6 +286,12 @@
                 popoverRight.value = limitPos.min.right
                 popoverBottom.value = limitPos.min.bottom
                 popoverLeft.value = windowSize.width - limitSize.min.width
+            }
+            const hanldeIframe = (val) => {
+                const iframeEL = document.querySelector('iframe')
+                if(iframeEL) {
+                    iframeEL.style.pointerEvents = val
+                }
             }
             onBeforeMount(() => {
                 window.addEventListener('mousemove', resizeDocs, true)
@@ -290,59 +310,59 @@
             // 模块展示
             const moduleList = reactive([
                 {
-                    moduleName: '应用开发流程',
+                    moduleName: window.i18n.t('应用开发流程'),
                     iconClass: 'bk-drag-icon bk-drag-tuopu icon-pos',
                     frameSrc: frameImg
                 },
                 {
-                    moduleName: '前端模块开发',
+                    moduleName: window.i18n.t('前端模块开发'),
                     iconClass: 'bk-drag-icon bk-drag-template-fill icon-pos',
                     docsList: [
                         {
-                            name: '页面开发',
+                            name: window.i18n.t('页面开发'),
                             selectDoc: 'page-manage',
-                            description: '通过可视化编排组件及配置组件属性样式等， 便捷的拖拽出所需的页面， 支持PC端和移动端页面开发'
+                            description: window.i18n.t('通过可视化编排组件及配置组件属性样式等， 便捷的拖拽出所需的页面， 支持PC端和移动端页面开发')
                         },
                         {
-                            name: '路由管理',
+                            name: window.i18n.t('路由管理'),
                             selectDoc: 'route-manage',
-                            description: '通过路由管理可以设置每个页面的访问链接及跳转关系'
+                            description: window.i18n.t('通过路由管理可以设置每个页面的访问链接及跳转关系')
                         },
                         {
-                            name: 'JS函数开发',
+                            name: window.i18n.t('JS函数开发'),
                             selectDoc: 'method',
-                            description: '通过JS函数可以丰富页面的交互、实现复杂的逻辑计算、也可以通过远程函数调用API获取动态数据'
+                            description: window.i18n.t('通过JS函数可以丰富页面的交互、实现复杂的逻辑计算、也可以通过远程函数调用API获取动态数据')
                         },
                         {
-                            name: '变量管理',
+                            name: window.i18n.t('变量管理'),
                             selectDoc: 'variable',
-                            description: '通过变量管理可以设置应用级变量跟页面级别变量、实现数据的动态变化'
+                            description: window.i18n.t('通过变量管理可以设置应用级变量跟页面级别变量、实现数据的动态变化')
                         },
                         {
-                            name: '资源管理',
+                            name: window.i18n.t('资源管理'),
                             selectDoc: 'layout-guide',
-                            description: '包含导航布局、自定义组件、文件、页面模板、API等应用资源的管理'
+                            description: window.i18n.t('包含导航布局、自定义组件、文件、页面模板、API等应用资源的管理')
                         },
                         {
-                            name: ' 发布部署',
+                            name: window.i18n.t('发布部署'),
                             selectDoc: 'release',
-                            description: '将拖拽出来的应用快速便捷部署到蓝鲸开发者中心'
+                            description: window.i18n.t('将拖拽出来的应用快速便捷部署到蓝鲸开发者中心')
                         }
                     ]
                 },
                 {
-                    moduleName: '数据源管理',
+                    moduleName: window.i18n.t('数据源管理'),
                     iconClass: 'bk-drag-icon bk-drag-jiedian icon-pos',
                     docsList: [
                         {
-                            name: '数据表管理',
+                            name: window.i18n.t('数据表管理'),
                             selectDoc: 'data-manage',
-                            description: '在线对数据表结构及表数据进行增删改查，支持接入第三方db'
+                            description: window.i18n.t('在线对数据表结构及表数据进行增删改查，支持接入第三方db')
                         },
                         {
-                            name: '数据操作',
+                            name: window.i18n.t('数据操作'),
                             selectDoc: 'data-operation',
-                            description: '在线查询数据表数据、同时支持便捷组装出的数据查询语句'
+                            description: window.i18n.t('在线查询数据表数据、同时支持便捷组装出的数据查询语句')
                         }
                     ]
                 }
@@ -356,7 +376,11 @@
                 }
             })
             const moduleRefs = ref([])
-            const queryModule = (val, index) => {
+            const queryModule = (index) => {
+                let val = !moduleList[index].isShowModule
+                if(typeof moduleList[index].isShowModule === 'undefined') {
+                    val = false
+                }
                 set(moduleList[index], 'isShowModule', val)
                 moduleRefs.value[index].style.display = val ? 'block' : 'none'
             }
@@ -372,9 +396,12 @@
                 if (!Array.isArray(docTree)) return []
                 let allDoc = []
                 docTree.forEach((item) => {
-                    if (item.id) allDoc.push(item)
+                    if (item.id && !item.children) allDoc.push(item)
                     if (Array.isArray(item.childs)) {
                         allDoc = allDoc.concat(getDocList(item.childs))
+                    }
+                    if (Array.isArray(item)) {
+                        allDoc = allDoc.concat(getDocList(item))
                     }
                     if (Array.isArray(item.children)) {
                         allDoc = allDoc.concat(getDocList(item.children))
@@ -397,6 +424,9 @@
                 }, [])
             }
             const hoverIndex = ref('')
+            const initHoverIndex = () => {
+                hoverIndex.value = ''
+            }
             const getHoverIndex = (evt, index) => {
                 hoverIndex.value = index
             }
@@ -448,6 +478,7 @@
                 searchDocList,
                 isSearching,
                 hoverCls,
+                initHoverIndex,
                 getHoverIndex,
                 isDocDetail,
                 getDocDetail,
@@ -479,7 +510,7 @@
         background-image: linear-gradient(267deg, #2DD1F4 0%, #1482FF 95%);
         border-radius: 4px 4px 0 0;
         line-height: 22px;
-        cursor: move;
+        cursor: url(../images/svg/drag.svg) 0 15, move;
         &-left {
             font-size: 16px;
             font-weight: 700;
@@ -487,6 +518,13 @@
             color: #fff;
             .header-detail-title {
                 cursor: pointer;
+                & > i:first-child {
+                    margin-right: 9px;
+                    &:hover {
+                        background-color: rgba(250,250,250,.2);
+                        border-radius: 2px;
+                    }
+                }
             }
         }
         &-right {
@@ -535,9 +573,11 @@
             .module-title {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
                 padding: 19px 0;
-                border-bottom: 2px solid #EAEBF0;
+                border-bottom: 1px solid #EAEBF0;
                 margin-left: 32px;
+                cursor: pointer;
                 .left {
                     font-weight: 700;
                     font-family: MicrosoftYaHei-Bold;
@@ -555,6 +595,11 @@
                         display: inline-block;
                     }
                 }
+                .right {
+                    i {
+                        font-size: 20px;
+                    }
+                }
             }
             .border-none {
                 border: none;
@@ -567,7 +612,7 @@
             .doc {
                 padding: 16px 0 13px 0;
                 color: #63656E;
-                border-bottom: 2px solid #EAEBF0;
+                border-bottom: 1px solid #EAEBF0;
                 margin-left: 32px;
                 &-name {
                     font-weight: 700;
@@ -581,6 +626,9 @@
                     margin-top: 8px;
                     color: #3A84FF;
                     cursor: pointer;
+                    &:hover {
+                        color: #1768EF;
+                    }
                 }
             }
             & > div:last-child .doc:last-child {
@@ -642,7 +690,7 @@
         .y-direction {
             height: 5px;
             left: 0;
-            cursor: n-resize;
+            cursor: url(../images/svg/up-down-extend.svg) 0 15, n-resize;
         }
         .n-resize {
             top: 0;
@@ -653,7 +701,7 @@
         .x-direction {
             width: 5px;
             top: 0;
-            cursor: e-resize;
+            cursor: url(../images/svg/stretch.svg) 15 0, e-resize;
         }
         .e-resize {
             right: 0;
@@ -665,7 +713,7 @@
             width: 10px;
             height: 10px;
             z-index: 1001;
-            cursor: ne-resize;
+            cursor: url(../images/svg/right-up.svg) 20 20, ne-resize;
         }
         .ne-resize {
             top: 0;
@@ -679,7 +727,7 @@
             width: 10px;
             height: 10px;
             z-index: 1001;
-            cursor: nw-resize;
+            cursor: url(../images/svg/right-down.svg) 15 15, nw-resize;
         }
         .nw-resize {
             top: 0;

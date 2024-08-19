@@ -245,6 +245,7 @@
             :form="apiData.form"
             :is-show.sync="apiData.isShow"
             :is-edit="false"
+            :show-tips="true"
         />
         <bk-dialog
             theme="primary"
@@ -274,7 +275,12 @@
     import CreateApiSideslider from '@/components/api/create-api-sideslider/index.vue'
     import Monaco from '@/components/monaco.vue'
 
-    import { messageError } from '@/common/bkmagic'
+    import {
+        messageError
+    } from '@/common/bkmagic'
+    import {
+        bkInfoBox
+    } from 'bk-magic-vue'
     import {
         defineComponent,
         ref,
@@ -309,6 +315,22 @@
             EditFuncSideslider,
             CreateApiSideslider,
             Monaco
+        },
+
+        beforeRouteLeave (to, from, next) {
+            const confirmFn = () => next()
+            const cancelFn = () => next(false)
+            if (this.isUserInput) {
+                bkInfoBox({
+                    title: window.i18n.t('确认离开当前页面？'),
+                    toText: window.i18n.t('离开'),
+                    subTitle: window.i18n.t('离开修改的内容将会丢失'),
+                    confirmFn,
+                    cancelFn
+                })
+            } else {
+                confirmFn()
+            }
         },
 
         setup () {
@@ -357,6 +379,8 @@
                 isShow: false,
                 sql: ''
             })
+            // 用户是否输入了
+            const isUserInput = ref(false)
 
             // 计算变量
             const isEmptySql = computed(() => {
@@ -395,6 +419,9 @@
 
             // 查询条件发生变化
             const handleConditionChange = (val) => {
+                if (val?.table?.[0]?.tableName) {
+                    isUserInput.value = true
+                }
                 conditionQuery.value = val
                 // 查询条件发生变化以后，需要重置成功查询状态
                 changeQueryStatus(false)
@@ -402,6 +429,7 @@
 
             // 查询 sql 发生变化
             const handleSqlChange = (val) => {
+                isUserInput.value = true
                 sqlQuery.value = val
                 // 查询条件发生变化以后，需要重置成功查询状态
                 changeQueryStatus(false)
@@ -650,6 +678,7 @@
                 isEmptySql,
                 thirdPartDB,
                 thirdPartDBList,
+                isUserInput,
                 toggleQueryType,
                 changeQueryStatus,
                 chooseDataSource,

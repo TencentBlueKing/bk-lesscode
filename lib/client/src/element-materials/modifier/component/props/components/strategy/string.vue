@@ -21,6 +21,7 @@
 </template>
 
 <script>
+    import { debounce } from 'shared/util.js'
     export default {
         props: {
             defaultValue: {
@@ -50,9 +51,12 @@
             }
         },
         created () {
-            // this.change(this.name, this.defaultValue, this.type)
+            this.debounceUpdate = debounce(this.handleUpdate, 200)
         },
         methods: {
+            handleUpdate(val) {
+                this.change(this.name, val, this.type)
+            },
             handleChange (val) {
                 const { regExp } = this.describe
                 // 如果配置了正则就先校验
@@ -64,7 +68,7 @@
                         this.isError = true
                     }
                 } else {
-                    this.change(this.name, val, this.type)
+                    this.debounceUpdate(val)
                 }
             }
         }

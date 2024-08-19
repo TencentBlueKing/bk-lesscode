@@ -120,10 +120,9 @@
 
             const isSingleTree = computed(() => {
                 return (child) => {
-                    const childrenNodes = child
-                    if (!childrenNodes) return false
-                    if (!Array.isArray(childrenNodes)) return false
-                    return childrenNodes.length > 0
+                    if (!child) return false
+                    if (!Array.isArray(child)) return false
+                    return child.length > 0
                 }
             })
 
@@ -134,12 +133,6 @@
                     return true
                 }
                 return false
-            })
-
-            const childArr = computed(() => {
-                return (child) => {
-                    return [child]
-                }
             })
 
             // 切换页面详情时，滚动条位置
@@ -183,14 +176,13 @@
                 jump,
                 isSingleTree,
                 isExistDoc,
-                childArr,
                 handlerSelectTreeData
             }
         }
     })
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
     @import './index.css';
     .container{
         width: 1000px;

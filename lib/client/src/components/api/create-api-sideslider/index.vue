@@ -27,7 +27,15 @@
                 :api-list="apiList"
                 @update="handleUpdate"
             />
-            <h3 class="api-form-title">{{ $t('默认请求参数') }}</h3>
+            <div class="api-form-title" style="display: flex;align-items: center;">
+                <h3 style="margin: 0 4px 0;">{{ $t('默认请求参数') }}</h3>
+                <i
+                    v-if="showTips"
+                    v-bk-tooltips="{ content: $t('sql语句已做base64加密处理') }"
+                    class="bk-icon icon-info"
+                ></i>
+            </div>
+            
             <render-param
                 class="api-form"
                 ref="paramRef"
@@ -121,6 +129,10 @@
             },
             isEdit: {
                 type: Boolean
+            },
+            showTips: {
+                type: Boolean,
+                default: false
             }
         },
 

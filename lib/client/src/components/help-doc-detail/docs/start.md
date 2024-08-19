@@ -2,7 +2,7 @@
 
 ## 1. 新建应用
 
-进入蓝鲸运维开发平台后，你可以“**新建应用**”开始在线一站式研发。
+进入蓝鲸运维开发平台(LessCode)后，你可以“**新建应用**”开始在线一站式研发。
 
 <img src="../../../images/help/create-proj.png" alt="grid" width="80%" class="help-img">
 

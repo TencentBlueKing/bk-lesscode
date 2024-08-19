@@ -1,10 +1,10 @@
 # 发布部署
 
-发布部署模块，可以将在LessCode上拖拽的应用快速部署到蓝鲸PaaS平台-开发者中心
+发布部署模块，可以将在蓝鲸运维开发平台(LessCode)上拖拽的应用快速部署到蓝鲸PaaS平台-开发者中心
 
 ## 应用关联
 - 在LessCode上创建应用时，会在PaaS平台-开发者中心创建同名应用的defalut模块。
-- 在PaaS平台-开发者中心创建应用， 代码来源选择“蓝鲸运维开发平台”， 也会在LessCode上同步创建应用
+- 在PaaS平台-开发者中心创建应用， 代码来源选择“蓝鲸运维开发平台(LessCode)”， 也会在LessCode上同步创建应用
 <img src="../../../images/help/release-paas.png" alt="grid" width="80%" class="help-img">
 
 ## 部署

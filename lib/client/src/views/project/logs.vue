@@ -74,7 +74,7 @@
                 </bk-table-column>
                 <bk-table-column :label="$t('table_操作类型')" prop="operateCodeText" min-width="120" show-overflow-tooltip>
                     <template slot-scope="{ row }">
-                        <span>{{row.operateCodeText}}</span>
+                        <span>{{ $t(row.operateCodeText) }}</span>
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('table_对象及类型')" prop="operateObj" min-width="220" class-name="table-cell-operate-obj" show-overflow-tooltip>
@@ -95,7 +95,8 @@
                 <bk-table-column :label="$t('操作人')" prop="createUser" min-width="120" show-overflow-tooltip />
                 <bk-table-column :label="$t('描述')" prop="operateDesc" min-width="300" show-overflow-tooltip>
                     <template slot-scope="{ row }">
-                        <span>{{row.operateDesc}}</span>
+                        <span v-if="row.operateStatus">{{ $t(row.operateCodeText) }}{{ $t('成功') }}</span>
+                        <span v-else>{{ row.operateDesc }}</span>
                     </template>
                 </bk-table-column>
                 <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
