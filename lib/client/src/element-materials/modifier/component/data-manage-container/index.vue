@@ -23,7 +23,7 @@
     export default {
         name: 'dataManageContainerProps',
         components: {
-          propGroup
+            propGroup
         },
         data () {
             return {
@@ -35,7 +35,10 @@
             }
         },
         computed: {
-            ...mapGetters('projectVersion', ['currentVersionId'])
+            ...mapGetters('projectVersion', ['currentVersionId']),
+            type () {
+                return this.activeNode.type === 'widget-data-manage-container' ? 'data-manage' : 'flow-manage'
+            }
         },
         watch: {
             value (val) {
@@ -44,9 +47,11 @@
         },
         created () {
             const activeNode = LC.getActiveNode()
-            if (activeNode.type === 'widget-data-manage-container') {
+            if (['widget-data-manage-container', 'widget-flow-manage-container'].includes(activeNode.type)) {
                 this.show = true
-                this.formId = activeNode.renderProps?.formId?.code
+                this.formId = activeNode.type === 'widget-data-manage-container'
+                    ? activeNode.renderProps?.formId?.code
+                    : activeNode.renderProps?.id?.code
                 this.activeNode = activeNode
             }
             this.getFormList()
@@ -54,14 +59,29 @@
         methods: {
             async getFormList () {
                 this.loading = true
-                const params = {
+
+                const params = this.type === 'data-manage' ? {
                     projectId: this.$route.params.projectId,
                     versionId: this.currentVersionId
+                } : {
+                    projectId: this.$route.params.projectId
                 }
-                this.formList = await this.$store.dispatch('nocode/form/getNewFormList', params)
+
+                const action = this.type === 'data-manage' ? 'nocode/form/getNewFormList' : 'flow/tpl/getTplList'
+                
+                const res = await this.$store.dispatch(action, params)
+
+                this.formList = this.type === 'data-manage' ? res : res.list.map(item => ({
+                    ...item,
+                    formName: item.name
+                }))
                 this.loading = false
             },
             handleSelectForm (val) {
+                this.type === 'data-manage' ? this.handleDataManageSelectForm(val) : this.handleFlowManageSelectForm(val)
+            },
+
+            handleDataManageSelectForm (val) {
                 this.activeNode.setProp('formId', {
                     ...this.activeNode.renderProps.formId,
                     code: val,
@@ -86,6 +106,14 @@
                     ...this.activeNode.renderProps.tableColsExclude,
                     code: ['createUser', 'createTime', 'updateUser', 'updateTime'],
                     renderValue: ['createUser', 'createTime', 'updateUser', 'updateTime']
+                })
+            },
+
+            handleFlowManageSelectForm (val) {
+                this.activeNode.setProp('id', {
+                    ...this.activeNode.renderProps.id,
+                    code: val,
+                    renderValue: val
                 })
             }
         }
