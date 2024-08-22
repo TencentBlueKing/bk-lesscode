@@ -46,7 +46,8 @@
                 theme="primary"
                 :loading="pending"
                 @click="handleSave">
-                {{ $t('提交') }} </bk-button>
+                {{ $t('提交') }}
+            </bk-button>
             <bk-button @click="$router.push({ name: 'flowTplList' })">{{ $t('取消') }}</bk-button>
         </div>
     </section>
