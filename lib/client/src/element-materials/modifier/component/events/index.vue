@@ -116,7 +116,12 @@
                         methodCode: '',
                         type: EVENT_TYPE.METHOD,
                         params: [],
-                        actions: []
+                        actions: [],
+                        flow: {
+                            id: '', // 流程id
+                            taskId: '', // 任务id
+                            actionName: '' // 操作
+                        }
                     }
                 }
                 this.updateTargetData()
