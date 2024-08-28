@@ -10,25 +10,35 @@
             </div>
         </bk-alert>
         <RenderGraph
+            ref="renderGraphRef"
             :nodes="nodes"
             :edges="edges"
             @node:added="handleNodeAdded"
             @node:moved="handleNodeMoved"
             @node:deleted="handleNodeDeleted"
+            @node:click="handleNodeClick"
             @edge:added="handleEdgeAdded"
             @edge:deleted="handleEdgeDeleted" />
+        <NodeDetail
+            v-if="nodeDetailPanelData.show"
+            :tpl-id="tplDetail.id"
+            :detail="nodeDetailPanelData"
+            @update="handleDetailUpdate"
+            @close="handleDetailClose" />
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+    import { defineComponent, ref, watch, computed, onMounted } from '@vue/composition-api';
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import RenderGraph from './render-graph/graph.vue'
+    import NodeDetail from './node-detail/index.vue'
 
     export default defineComponent({
         name: 'FlowTplCanvas',
         components: {
-            RenderGraph
+            RenderGraph,
+            NodeDetail
         },
         props: {
             tplDetail: {
@@ -40,8 +50,10 @@
             const store = useStore()
             const route = useRoute()
 
+            const renderGraphRef = ref(null)
             const nodes = ref([])
             const edges = ref([])
+            const nodeDetailPanelData = ref({ show: false, data: {} })
             const deployPending = ref(false)
 
             const projectId = computed(() => route.params.id)
@@ -67,7 +79,6 @@
                 nodes.value.push(data)
             }
             const handleNodeDeleted = async (node, edgeIds) => {
-                console.log(edgeIds)
                 await store.dispatch('flow/tpl/deleteNode', { id: props.tplDetail.id, nodeId: node.id })
                 const index = nodes.value.find(n => n.id === node.id)
                 if (index > -1) {
@@ -90,16 +101,42 @@
                 }
             }
 
+            const handleNodeClick = ({ id }) => {
+                const node = nodes.value.find(n => n.id === id)
+                if (node) {
+                    nodeDetailPanelData.value = { show: true, data: node }
+                }
+            }
+
+            const handleDetailUpdate = (data) => {
+                if (data) {
+                    const index = nodes.value.findIndex(n => n.id === data.id)
+                    if (index > -1) {
+                        nodes.value.splice(index, 1, data)
+                        renderGraphRef.value.updateNode(data)
+                    }
+                }
+            }
+
+            const handleDetailClose = () => {
+                nodeDetailPanelData.value = { show: false, data: {} }
+            }
+
             return {
+                renderGraphRef,
                 nodes,
                 edges,
+                nodeDetailPanelData,
                 deployPending,
                 projectId,
                 handleNodeAdded,
                 handleNodeMoved,
                 handleNodeDeleted,
                 handleEdgeAdded,
-                handleEdgeDeleted
+                handleEdgeDeleted,
+                handleNodeClick,
+                handleDetailUpdate,
+                handleDetailClose
             }
         }
     })
@@ -117,6 +154,17 @@
         }
         .deploy-project-btn {
             color: #3a84ff;
+        }
+        .node-detail-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            >>> .form-section:not(:last-child) {
+                margin-bottom: 16px;
+            }
         }
     }
 </style>

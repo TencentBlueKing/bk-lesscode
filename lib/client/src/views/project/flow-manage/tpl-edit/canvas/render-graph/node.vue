@@ -1,5 +1,5 @@
 <template>
-    <div v-if="node.type" class="graph-node-wrapper">
+    <div v-if="node.type" :class="['graph-node-wrapper', node.isDraft ? 'is-draft' : '']">
         <div
             v-if="isCircle"
             class="circle-node">
@@ -16,7 +16,10 @@
                     <span class="name">{{ node.config.name }}</span>
                 </div>
                 <p class="desc">
-                    <span class="config-tips">点击配置</span>
+                    <span v-if="node.isDraft" class="config-tips">点击配置</span>
+                    <template v-else>
+                        <span v-if="node.type === 'DataProcessing'">目标表：{{ node.config.tableName }}</span>
+                    </template>
                 </p>
             </div>
         </div>
@@ -42,6 +45,7 @@
                 const nodeIns = getNode()
                 node.value = nodeIns.getData()
                 nodeIns.on('change:data', ({ current }) => {
+                    debugger
                     node.value = current
                 })
             })
@@ -63,6 +67,18 @@
                 display: block;
             }
         }
+        &.is-draft {
+            .circle-node {
+                .text {
+                    background: #e6e7eb;
+                }
+            }
+            .rect-node {
+                .node-icon-area {
+                    background-color: #c4c6cc;
+                }
+            }
+        }
     }
     .circle-node {
         padding: 8px;
@@ -77,7 +93,7 @@
             justify-content: center;
             height: 100%;
             width: 100%;
-            background: #e6e7eb;
+            background: #3a84ff;
             font-size: 12px;
             font-weight: bold;
             color: #979ba5;
@@ -103,7 +119,7 @@
             height: 100%;
             font-size: 18px;
             color: #fff;
-            background-color: #c4c6cc;
+            background-color: #3a84ff;
         }
         .node-name-area {
             position: relative;

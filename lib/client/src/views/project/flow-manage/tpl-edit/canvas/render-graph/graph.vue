@@ -2,7 +2,7 @@
     <div class="render-graph">
         <Tools v-if="instance" class="tools-container" />
         <Dnd v-if="instance" class="dnd-container" :instance="instance" />
-        <div ref="renderGraphRef" class="graph-canvas-container"></div>
+        <div ref="graphRef" class="graph-canvas-container"></div>
     </div>
 </template>
 <script>
@@ -31,7 +31,7 @@
             }
         },
         setup (props, ctx) {
-            const renderGraphRef = ref(null)
+            const graphRef = ref(null)
             const instance = ref(null)
 
             onMounted(() => {
@@ -39,7 +39,7 @@
             })
 
             const initGraph = () => {
-                instance.value = new Graph(GET_GRAPH_CONFIG(renderGraphRef.value))
+                instance.value = new Graph(GET_GRAPH_CONFIG(graphRef.value))
 
                 // 节点对齐线
                 instance.value.use(
@@ -119,9 +119,18 @@
                 ctx.emit('node:deleted', node, edgeIds)
             }
 
+            const updateNode = (data) => {
+                const node = instance.value.getCellById(data.id)
+                node.setData({
+                    ...node.getData(),
+                    ...data
+                })
+            }
+
             return {
-                renderGraphRef,
-                instance
+                graphRef,
+                instance,
+                updateNode
             }
         }
     })
