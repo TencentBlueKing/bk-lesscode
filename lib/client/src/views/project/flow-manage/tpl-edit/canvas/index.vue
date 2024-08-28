@@ -22,6 +22,7 @@
         <NodeDetail
             v-if="nodeDetailPanelData.show"
             :tpl-id="tplDetail.id"
+            :nodes="nodes"
             :detail="nodeDetailPanelData"
             @update="handleDetailUpdate"
             @close="handleDetailClose" />

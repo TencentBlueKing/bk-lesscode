@@ -1,33 +1,38 @@
 <template>
     <div class="create-binding-section">
         <div
-            v-for="item in CREATE_METHODS"
+            v-for="item in MANUAL_NODE_BINDING_TYPES"
             class="method-item"
             :key="item.id"
             @click="handleMethodClick(item.id)">
             <i class="bk-drag-icon bk-drag-crosshair"></i>
             {{ item.name }}
         </div>
-        <select-form-dialog v-bind="dialogData" @selected="handleSelected" @close="handleClose" />
+        <select-form-dialog
+            v-bind="dialogData"
+            :nodes="nodes"
+            @selected="handleSelected"
+            @preview="emit('preview', $event)"
+            @close="handleClose" />
     </div>
 </template>
 <script>
     import { defineComponent, ref } from '@vue/composition-api'
     import SelectFormDialog from './select-form-dialog.vue'
+    import { MANUAL_NODE_BINDING_TYPES } from '../../../render-graph/constants'
 
     export default defineComponent({
         name: 'CreateBindingSection',
         components: {
             SelectFormDialog
         },
-        props: {},
+        props: {
+            nodes: {
+                type: Array,
+                default: () => []
+            }
+        },
         setup (props, { emit }) {
-            const CREATE_METHODS = [
-                { id: 'NEW_FORM', name: window.i18n.t('新建空白表单') },
-                { id: 'CITE_FORM', name: window.i18n.t('引用已有表单') },
-                { id: 'REUSE_FORM', name: window.i18n.t('复用已有表单') }
-            ]
-
             const dialogData = ref({
                 show: false,
                 isCite: true
@@ -43,18 +48,21 @@
                 }
             }
 
-            const handleSelected = () => {}
+            const handleSelected = (id) => {
+                emit('selected', { formType: dialogData.value.isCite ? 'CITE_FORM' : 'USE_FORM', formId: id })
+            }
 
             const handleClose = () => {
                 dialogData.value.show = false
             }
 
             return {
-                CREATE_METHODS,
+                MANUAL_NODE_BINDING_TYPES,
                 dialogData,
                 handleMethodClick,
                 handleSelected,
-                handleClose
+                handleClose,
+                emit
             }
         }
     })

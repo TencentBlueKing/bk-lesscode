@@ -5,7 +5,7 @@
             <h3 class="config-title">{{ $t('{n}配置',{ n: nodeTypeName })}}</h3>
         </div>
         <div class="config-content-wrapper">
-            <component ref="nodeFormRef" :is="nodeConfigCompMap[detail.data.type]" :detail="detail.data" @change="handleChange" />
+            <component ref="nodeFormRef" :is="nodeConfigCompMap[detail.data.type]" :nodes="nodes" :detail="detail.data" @change="handleChange" />
             <div class="save-btn">
                 <bk-button theme="primary" @click="handleSave">{{ $t('保存') }}</bk-button>
             </div>
@@ -27,6 +27,10 @@
         },
         props: {
             tplId: Number,
+            nodes: {
+                type: Array,
+                default: () => []
+            },
             detail: {
                 type: Object,
                 default: () => ({})

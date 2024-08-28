@@ -13,10 +13,10 @@
             <h4>{{$t('请选择已有表单')}}</h4>
             <span>（{{ isCite ? $t('引用') : $t('复用') }}{{$t('已有表单')}}）</span>
         </header>
-        <div class="dialog-content" v-bkloading="{ isLoading: listLoading }">
+        <div class="dialog-content" v-bkloading="{ isLoading: formListLoading }">
             <div class="search-area">
                 <bk-input
-                    v-model="searchStr"
+                    :value="searchStr"
                     class="search-input"
                     right-icon="icon-search"
                     :clearable="true"
@@ -26,12 +26,12 @@
                     @input="handleSearchInput">
                 </bk-input>
             </div>
-            <div style="margin-bottom: 16px; padding: 0 24px;">
-                <bk-alert type="warning" :closable="true" :title="tips"></bk-alert>
+            <div class="tips-wrapper">
+                <bk-alert type="warning" :closable="true" :title="tips" />
             </div>
             <div class="form-list-wrapper">
                 <div
-                    v-for="item in listData"
+                    v-for="item in listInView"
                     v-bk-tooltips="{
                         disabled: !item.disabled,
                         placement: 'top',
@@ -41,14 +41,14 @@
                     :class="['form-card-item', { 'selected': selected === item.id, disabled: item.disabled }]"
                     @click="handleSelect(item)">
                     <div class="selected-label"></div>
-                    <span class="preview-btn" @click.stop="$emit('preview', JSON.parse(item.content))">{{ $t('预览') }}</span>
+                    <span class="preview-btn" @click.stop="handlePreviewClick(item)">{{ $t('预览') }}</span>
                     <p class="form-name">{{ item.formName }}</p>
                 </div>
                 <bk-exception
-                    v-if="listData.length === 0"
+                    v-if="listInView.length === 0"
+                    class="empty-exception"
                     type="empty"
-                    scene="part"
-                    style="margin: 40px 0 80px;">
+                    scene="part">
                     {{ searchStr ? '暂无搜索结果' : '暂无数据' }}
                 </bk-exception>
             </div>
@@ -57,6 +57,8 @@
 </template>
 <script>
     import { defineComponent, ref, computed, watch } from '@vue/composition-api'
+    import { useStore } from '@/store'
+    import { useRoute } from '@/router'
 
     export default defineComponent({
         name: 'SelectFormDialog',
@@ -65,22 +67,39 @@
                 type: Boolean,
                 default: false
             },
+            // 是否为引用表单
             isCite: {
                 type: Boolean,
                 defualt: true
+            },
+            nodes: {
+                type: Array,
+                default: () => []
             }
         },
         setup (props, { emit }) {
 
-            const listData = ref([])
-            const listLoading = ref(false)
+            const store = useStore()
+            const route = useRoute()
+
+            const formList = ref([])
+            const formListLoading = ref(false)
             const searchStr = ref('')
+            const selected = ref(0)
+
             const tips = computed(() => {
                 return props.isCite
                     ? window.i18n.t('引用已有表单：引用已有表单快速建表，运行时节点数据不会存入被引用的表中，字段属性可自定义')
                     : window.i18n.t('复用已有表单：运行时节点数据会存入被复用的表中，不支持增加和修改字段属性')
             })
 
+            // 展示的表单列表
+            const listInView = computed(() => {
+                if (searchStr.value) {
+                    return formList.value.filter(item => item.formName.includes(searchStr.value))
+                }
+                return formList.value
+            })
 
             watch(() => props.show, (val) => {
                 if (val) {
@@ -89,26 +108,62 @@
             })
 
             const getFormList = async() => {
-                console.log('获取表单列表数据')
+                formListLoading.value = true
+                const params = {
+                    projectId: route.params.projectId,
+                    versionId: store.getters['projectVersion/currentVersionId']
+                }
+                const res = await store.dispatch('nocode/form/getNewFormList', params)
+                const boundFormNodes = props.nodes.filter(item => item.type === 'Manual' && item.formId)
+                res.forEach(item => {
+                    item.disabled = boundFormNodes.findIndex(node => node.formId === item.id) > -1
+                })
+                formList.value = res
+                formListLoading.value = false
             }
 
-            const handleSearch = () => {}
+            const handleSearch = (val) => {
+                searchStr.value = val
+            }
 
-            const handleSearchInput = () => {}
+            const handleSearchInput = (val) => {
+                if (!val) {
+                    searchStr.value = ''
+                }
+            }
 
-            const handleConfirm = () => {}
+            const handleSelect = (form) => {
+                if (form.disabled) {
+                    return
+                }
+                selected.value = form.id
+            }
+
+            const handlePreviewClick = (form) => {
+                emit('preview', JSON.parse(form.content))
+            }
+
+            const handleConfirm = () => {
+                emit('selected', selected.value)
+                close()
+            }
 
             const close = () => {
+                searchStr.value = ''
+                selected.value = 0
                 emit('close')
             }
 
             return {
-                listData,
-                listLoading,
+                formListLoading,
+                listInView,
                 searchStr,
+                selected,
                 tips,
                 handleSearch,
                 handleSearchInput,
+                handleSelect,
+                handlePreviewClick,
                 handleConfirm,
                 close
             }
@@ -148,6 +203,10 @@
             .search-input {
                 width: 240px;
             }
+        }
+        .tips-wrapper {
+            margin-bottom: 16px;
+            padding: 0 24px;
         }
         .form-list-wrapper {
             padding: 0 24px;
@@ -237,6 +296,9 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
             }
+        }
+        .empty-exception {
+            margin: 40px 0 80px;
         }
     }
 </style>

@@ -2,7 +2,7 @@
     <div class="bound-detail-section">
         <div class="title-area">
             <h5 class="form-name">人工节点_表单</h5>
-            <div class="method-tag">引用表单</div>
+            <div class="method-tag">{{ typeNameMap[formType] }}</div>
         </div>
         <div class="bound-form-table">
             {{ $t('关联数据表：') }}
@@ -31,13 +31,23 @@
 
     export default defineComponent({
         name: 'BoundDetailSection',
-        props: {},
+        props: {
+            formType: String,
+            formId: Number
+        },
         setup (props, { emit }) {
+
+            const typeNameMap = {
+                NEW_FORM: window.i18n.t('新建表单'),
+                CITE_FORM: window.i18n.t('引用表单'),
+                USE_FORM: window.i18n.t('复用表单')
+            }
 
             const handleBtnClick = (action) => {
                 console.log('action: ', action)
             }
             return {
+                typeNameMap,
                 handleBtnClick
             }
         }
@@ -64,6 +74,7 @@
             }
             .method-tag {
                 padding: 2px 6px;
+                line-height: 1;
                 font-size: 12px;
                 color: #3a84ff;
                 background: #edf4ff;
