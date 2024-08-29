@@ -59,7 +59,6 @@
 
             onMounted(() => {
                 detailCopy.value = JSON.parse(JSON.stringify(props.detail.data))
-                console.log('detailCopy: ', detailCopy.value)
             })
 
             const handleClose = () => {

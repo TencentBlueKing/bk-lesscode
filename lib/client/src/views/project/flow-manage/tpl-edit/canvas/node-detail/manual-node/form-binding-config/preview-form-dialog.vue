@@ -11,7 +11,7 @@
         :mask-close="false"
         @cancel="emit('close')">
         <div class="dialog-content">
-            <form-fields-preview :fields="fields" />
+            <FormContainerRenderComp :fields="fields" />
         </div>
         <div class="dialog-footer" slot="footer">
             <bk-button @click="emit('close')">{{ $t('关闭') }}</bk-button>
@@ -20,12 +20,12 @@
 </template>
 <script>
     import { defineComponent } from '@vue/composition-api'
-    import FormFieldsPreview from '@/form-engine/renderer/index'
+    import FormContainerRenderComp from './form-container-render-comp'
 
     export default defineComponent({
         name: 'PreviewFormDialog',
         components: {
-            FormFieldsPreview
+            FormContainerRenderComp
         },
         props: {
             fields: {
@@ -37,11 +37,8 @@
                 default: false
             }
         },
-        setup (props, { emit }) {
-
-            return {
-                emit
-            }
+        setup(props, { emit }) {
+            return { emit }
         }
     })
 </script>

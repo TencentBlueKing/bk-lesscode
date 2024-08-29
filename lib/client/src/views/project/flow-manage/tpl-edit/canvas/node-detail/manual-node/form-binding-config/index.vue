@@ -40,7 +40,6 @@
             })
 
             const handleOpenPreview = (fields) => {
-                console.log(fields)
                 previewDialogData.value = {
                     show: true,
                     fields
