@@ -4,8 +4,14 @@
             v-if="config.formType === ''"
             :nodes="nodes"
             @preview="handleOpenPreview"
+            @edit="emit('edit', $event)"
             @selected="emit('update', $event)" />
-        <bound-detail v-else :form-type="config.formType" :form-id="config.formId" />
+        <bound-detail
+            v-else
+            :form-type="config.formType"
+            :form-id="config.formId"
+            @preview="handleOpenPreview"
+            @edit="emit('edit', $event)" />
         <preview-form-dialog v-bind="previewDialogData" @close="previewDialogData.show = false" />
     </div>
 </template>
@@ -20,7 +26,7 @@
         components: {
             CreateBinding,
             BoundDetail,
-            PreviewFormDialog
+            PreviewFormDialog,
         },
         props: {
             nodes: {

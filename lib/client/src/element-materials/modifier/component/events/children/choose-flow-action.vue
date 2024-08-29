@@ -73,6 +73,7 @@
         display: flex;
         align-items: center;
         margin-bottom: 10px;
+        overflow: hidden;
         .label {
             padding: 0 15px;
             height: 32px;

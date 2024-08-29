@@ -73,18 +73,7 @@
         },
         watch: {
             field (val) {
-                this.groups.forEach(group => {
-                    group.open = true
-                    group.children = []
-                })
-                const list = materials.find(item => item.type === val.type)?.properties || []
-                list.forEach(item => {
-                    if(basicProperties.includes(item)) {
-                        this.groups[0].children.push(item)
-                    } else {
-                        this.groups[1].children.push(item)
-                    }
-                })
+                this.setGroups(val)
             }
         },
         computed: {
@@ -99,7 +88,27 @@
                 this.$options.components[key] = setter.component
             })
         },
-        methods: {}
+        created () {
+            if (this.field?.id) {
+                this.setGroups(this.field)
+            }
+        },
+        methods: {
+            setGroups (val) {
+                this.groups.forEach(group => {
+                    group.open = true
+                    group.children = []
+                })
+                const list = materials.find(item => item.type === val.type)?.properties || []
+                list.forEach(item => {
+                    if(basicProperties.includes(item)) {
+                        this.groups[0].children.push(item)
+                    } else {
+                        this.groups[1].children.push(item)
+                    }
+                })
+            }
+        }
     }
 </script>
 <style lang="postcss" scoped>

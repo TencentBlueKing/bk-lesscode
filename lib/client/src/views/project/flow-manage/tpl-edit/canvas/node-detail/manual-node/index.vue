@@ -11,10 +11,22 @@
             </form-section>
             <form-section :title="$t('表单配置')">
                 <bk-form-item>
-                    <form-binding-config :nodes="nodes" :config="nodeData.config" @update="handleUpdateBinding" />
+                    <form-binding-config
+                        :nodes="nodes"
+                        :config="nodeData.config"
+                        @edit="handleOpenNodeFieldsEdit"
+                        @update="handleUpdateBinding" />
                 </bk-form-item>
             </form-section>
         </bk-form>
+        <node-fields-canvas
+            v-if="nodeFieldsCanvasData.show"
+            :tpl-id="tplId"
+            :tpl-name="tplName"
+            :node-name="nodeData.config.name"
+            :type="nodeFieldsCanvasData.data.type"
+            :id="nodeFieldsCanvasData.data.id"
+            @close="nodeFieldsCanvasData.show = false" />
     </div>
 </template>
 <script>
@@ -23,6 +35,7 @@
     import NodeName from '../components/node-name.vue'
     import NodeProcessor from '../components/node-processor.vue'
     import FormBindingConfig from './form-binding-config/index.vue'
+    import NodeFieldsCanvas from './node-fields-canvas/index.vue'
 
     export default defineComponent({
         name: 'ManualNodeConfig',
@@ -30,9 +43,12 @@
             FormSection,
             NodeName,
             NodeProcessor,
-            FormBindingConfig
+            FormBindingConfig,
+            NodeFieldsCanvas
         },
         props: {
+            tplId: Number,
+            tplName: String,
             nodes: {
                 type: Array,
                 default: () => []
@@ -55,6 +71,23 @@
 
             const nodeData = ref(JSON.parse(JSON.stringify(props.detail)))
             const basicFormRef = ref(null)
+            const nodeFieldsCanvasData = ref({
+                show: false,
+                data: {
+                    type: 'NEW_FORM',
+                    id: 0
+                }
+            })
+
+            const handleOpenNodeFieldsEdit = ({ formType, formId }) => {
+                nodeFieldsCanvasData.value = {
+                    show: true,
+                    data: {
+                        id: formId,
+                        type: formType
+                    }
+                }
+            }
 
             const handleUpdateBinding = ({ formType, formId }) => {
                 nodeData.value.config.formType = formType
@@ -82,7 +115,9 @@
                 rules,
                 nodeData,
                 basicFormRef,
+                nodeFieldsCanvasData,
                 handleUpdateBinding,
+                handleOpenNodeFieldsEdit,
                 handleChange,
                 validate
             }

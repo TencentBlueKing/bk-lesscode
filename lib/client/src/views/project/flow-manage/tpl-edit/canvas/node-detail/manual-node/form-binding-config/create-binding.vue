@@ -39,9 +39,8 @@
             })
 
             const handleMethodClick = (val) => {
-                console.log('method: ', val)
                 if (val === 'NEW_FORM') {
-                    console.log('新建空白表单')
+                    emit('edit', { formId: 0, formType: val })
                 } else {
                     dialogData.value.isCite = val === 'CITE_FORM'
                     dialogData.value.show = true

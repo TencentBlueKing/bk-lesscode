@@ -1,12 +1,12 @@
 <template>
-    <div class="bound-detail-section">
+    <div v-bkloading="{ loading: formListLoading }" class="bound-detail-section">
         <div class="title-area">
-            <h5 class="form-name">人工节点_表单</h5>
+            <h5 class="form-name">{{ formDetail.formName }}</h5>
             <div class="method-tag">{{ typeNameMap[formType] }}</div>
         </div>
         <div class="bound-form-table">
             {{ $t('关联数据表：') }}
-            <a class="form-table-name" href="/">表单名称</a>
+            <a v-if="formDetail.tableName" class="form-table-name" target="_blank" :href="tableDetailUrl">{{ formDetail.tableName }}</a>
         </div>
         <div class="operate-btns">
             <i
@@ -16,7 +16,7 @@
             <i
                 v-bk-tooltips.top="$t('预览表单内容')"
                 class="bk-drag-icon bk-drag-visible-eye preview-icon"
-                @click="handleBtnClick('preivew')">
+                @click="handleBtnClick('preview')">
             </i>
             <i
                 class="bk-icon icon-delete"
@@ -27,7 +27,9 @@
     </div>
 </template>
 <script>
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onMounted } from '@vue/composition-api'
+    import { useStore } from '@/store'
+    import { useRoute, useRouter } from '@/router'
 
     export default defineComponent({
         name: 'BoundDetailSection',
@@ -37,17 +39,61 @@
         },
         setup (props, { emit }) {
 
+            const store = useStore()
+            const route = useRoute()
+            const router = useRouter()
+
             const typeNameMap = {
                 NEW_FORM: window.i18n.t('新建表单'),
                 CITE_FORM: window.i18n.t('引用表单'),
                 USE_FORM: window.i18n.t('复用表单')
             }
 
+            const formList = ref([])
+            const formListLoading = ref(false)
+
+            const formDetail = computed(() => {
+                if (props.formId) {
+                    return formList.value.find(item => item.id === props.formId) || {}
+                }
+                return {}
+            })
+
+            const tableDetailUrl = computed(() => {
+                if (formDetail.value) {
+                    const route = router.resolve({ name: 'dataManage', query: { tableName: formDetail.value.tableName } })
+                    return route.href
+                }
+                return ''
+            })
+
+            onMounted(() => {
+                getFormList()
+            })
+
+            const getFormList = async() => {
+                formListLoading.value = true
+                const params = {
+                    projectId: route.params.projectId,
+                    versionId: store.getters['projectVersion/currentVersionId']
+                }
+                formList.value = await store.dispatch('nocode/form/getNewFormList', params)
+                formListLoading.value = false
+            }
+
             const handleBtnClick = (action) => {
                 console.log('action: ', action)
+                if (action === 'edit') {
+                    emit('edit', { formId: props.formId, formType: props.formType })
+                } else if (action === 'preview') {
+                    emit('preview', JSON.parse(formDetail.value.content))
+                }
             }
             return {
                 typeNameMap,
+                formListLoading,
+                formDetail,
+                tableDetailUrl,
                 handleBtnClick
             }
         }

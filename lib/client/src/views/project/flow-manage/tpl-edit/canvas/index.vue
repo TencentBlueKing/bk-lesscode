@@ -22,6 +22,7 @@
         <NodeDetail
             v-if="nodeDetailPanelData.show"
             :tpl-id="tplDetail.id"
+            :tpl-name="tplDetail.name"
             :nodes="nodes"
             :detail="nodeDetailPanelData"
             @update="handleDetailUpdate"
@@ -162,7 +163,7 @@
             right: 0;
             bottom: 0;
             left: 0;
-            z-index: 1000;
+            z-index: 120;
             >>> .form-section:not(:last-child) {
                 margin-bottom: 16px;
             }

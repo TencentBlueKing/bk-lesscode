@@ -5,7 +5,14 @@
             <h3 class="config-title">{{ $t('{n}配置',{ n: nodeTypeName })}}</h3>
         </div>
         <div class="config-content-wrapper">
-            <component ref="nodeFormRef" :is="nodeConfigCompMap[detail.data.type]" :nodes="nodes" :detail="detail.data" @change="handleChange" />
+            <component
+                ref="nodeFormRef"
+                :is="nodeConfigCompMap[detail.data.type]"
+                :tpl-id="tplId"
+                :tpl-name="tplName"
+                :nodes="nodes"
+                :detail="detail.data"
+                @change="handleChange" />
             <div class="save-btn">
                 <bk-button theme="primary" @click="handleSave">{{ $t('保存') }}</bk-button>
             </div>
@@ -13,7 +20,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, computed, onMounted } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onMounted, getCurrentInstance } from '@vue/composition-api'
     import { NODES } from '../render-graph/constants'
     import { useStore } from '@/store'
     import ManualNode from './manual-node/index.vue'
@@ -27,6 +34,7 @@
         },
         props: {
             tplId: Number,
+            tplName: String,
             nodes: {
                 type: Array,
                 default: () => []
@@ -37,6 +45,7 @@
             }
         },
         setup(props, { emit }) {
+            const instance = getCurrentInstance()
 
             const store = useStore()
 
@@ -76,10 +85,10 @@
                 console.log('detailCopy: ', detailCopy.value)
                 await store.dispatch('flow/tpl/updateNode', { id: props.tplId, data: detailCopy.value })
                 emit('update', detailCopy.value)
-                // $bkMessage({
-                //     theme: 'success',
-                //     message: window.i18n.t('保存成功')
-                // })
+                instance.proxy.$bkMessage({
+                    theme: 'success',
+                    message: window.i18n.t('保存成功')
+                })
             }
 
             return {

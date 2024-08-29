@@ -45,7 +45,6 @@
                 const nodeIns = getNode()
                 node.value = nodeIns.getData()
                 nodeIns.on('change:data', ({ current }) => {
-                    debugger
                     node.value = current
                 })
             })
