@@ -25,14 +25,21 @@
             formEngineMaterial
         },
         setup (props, { emit }) {
-            const searchList = ref([...materialsConfig])
-            const widgetList = ref([...materialsConfig])
+            const configList = materialsConfig.map(item => {
+                const config = { ...item }
+                if (['description', 'divider', 'computed', 'auto-counting'].includes(config.type)) {
+                    config.disabled = true
+                }
+                return config
+            })
+            const searchList = ref([...configList])
+            const widgetList = ref([...configList])
 
             const handleSearch = (val) => {
                 if (val) {
                     widgetList.value = val.type === 'widget-form-container' ? [] : [val]
                 } else {
-                    widgetList.value = [...materialsConfig]
+                    widgetList.value = [...configList]
                 }
             }
 

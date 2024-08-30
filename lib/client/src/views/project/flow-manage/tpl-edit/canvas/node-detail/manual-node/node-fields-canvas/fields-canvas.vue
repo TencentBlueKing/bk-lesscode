@@ -33,7 +33,8 @@
                     component: WidgetFormLayout,
                     on: {
                         update: this.update,
-                        activeField: this.activeField
+                        activeField: this.activeField,
+                        delField: this.delField
                     }
                 }),
                 props: {
@@ -55,6 +56,9 @@
             },
             activeField (field) {
                 this.$emit('selected', field)
+            },
+            delField (field) {
+                this.$emit('deleted', field)
             }
         }
     }

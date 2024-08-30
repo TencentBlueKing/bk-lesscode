@@ -18,6 +18,7 @@
                 <p class="desc">
                     <span v-if="node.isDraft" class="config-tips">点击配置</span>
                     <template v-else>
+                        <span v-if="node.type === 'Manual'">处理人：{{ processorName }}</span>
                         <span v-if="node.type === 'DataProcessing'">目标表：{{ node.config.tableName }}</span>
                     </template>
                 </p>
@@ -40,6 +41,17 @@
             const getNode = inject('getNode')
 
             const isCircle = computed(() => ['Start', 'End'].includes(node.value.type))
+            const processorName = computed(() => {
+                const typeMap = {
+                    ALL: '不限',
+                    CREATOR: '提单人'
+                }
+                if (!isCircle.value && !node.value.isDraft) {
+                    const { type, users } = node.value.config.processor
+                    return type === 'CUSTOM' ? users : typeMap[type]
+                }
+                return ''
+            })
 
             onMounted(() => {
                 const nodeIns = getNode()
@@ -52,6 +64,7 @@
             return {
                 node,
                 isCircle,
+                processorName,
                 GET_NODE_ICON
             }
         }

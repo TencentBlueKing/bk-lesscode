@@ -82,7 +82,7 @@
                             v-for="field in group.items"
                             v-bk-tooltips="{
                                 disabled: !isFieldDisable(field.type),
-                                content: $t('流程表单暂不支持布局类型控件')
+                                content: $t('流程表单暂不支持该类型控件')
                             }"
                             :class="['field-item drag-entry', { 'not-available': isFieldDisable(field.type) }]"
                             :data-type="field.type"
