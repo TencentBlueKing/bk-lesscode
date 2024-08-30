@@ -38,6 +38,7 @@
             :label="$t('table_数据源')"
             prop="dataSourceType"
             width="150"
+            show-overflow-tooltip
             :formatter="dataSourceTypeFormatter"
         />
         <bk-table-column
@@ -137,7 +138,8 @@
                     type: row.type,
                     condition: JSON.parse(JSON.stringify(row.condition)),
                     sql: row.sql,
-                    dataSourceType: row.dataSourceType
+                    dataSourceType: row.dataSourceType,
+                    thirdPartDBName: row.thirdPartDBName
                 })
             }
 
@@ -161,7 +163,19 @@
             }
 
             const dataSourceTypeFormatter = (row, column, cellValue, index) => {
-                return cellValue === 'bk-base' ? window.i18n.t('BkBase 结果表') : window.i18n.t('Mysql 数据表')
+                let result
+                switch (cellValue) {
+                    case 'bk-base':
+                        result = window.i18n.t('BkBase 结果表')
+                        break
+                    case 'preview':
+                        result = window.i18n.t('内置数据库')
+                        break
+                    case 'third-part':
+                        result = row.thirdPartDBName
+                        break
+                }
+                return result
             }
 
             onBeforeMount(getHistory)

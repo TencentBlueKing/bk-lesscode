@@ -4,7 +4,7 @@
  * Copyright © 2012-2019 Tencent BlueKing. All Rights Reserved. 蓝鲸智云 版权所有
  */
 
-const hljs = require('highlight.js/lib/highlight')
+const hljs = require('highlight.js');
 const bash = require('highlight.js/lib/languages/bash')
 const css = require('highlight.js/lib/languages/css')
 const javascript = require('highlight.js/lib/languages/javascript')

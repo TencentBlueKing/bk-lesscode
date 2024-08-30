@@ -278,6 +278,13 @@
             line-height: 16px;
             padding: 0 8px;
         }
+        /deep/ .bk-checkbox {
+            line-height: 16px;
+            &:after {
+                top: 2px;
+                left: 5px;
+            }
+        }
     }
     .plus-rule {
         cursor: pointer;

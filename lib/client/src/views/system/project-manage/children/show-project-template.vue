@@ -1,5 +1,5 @@
 <template>
-    <section class="template-area" v-if="showTemplateIntro">
+    <section class="template-area" v-if="showTemplateIntro && appTemplateList.length">
         <div class="template-header">
             <div class="template-title" @click="toggleShowTemplate">
                 <i 

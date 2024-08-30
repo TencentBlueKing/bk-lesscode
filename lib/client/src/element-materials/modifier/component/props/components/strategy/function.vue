@@ -13,6 +13,7 @@
     <section>
         <choose-function
             :choosen-function="remoteData"
+            :format-include="['event', 'value', 'variable', 'expression']"
             @change="saveChange"
             @clear="handleClear"
         ></choose-function>
@@ -60,7 +61,7 @@
                 this.change(this.name, this.defaultValue, this.type, val)
             },
             handleClear () {
-                this.change(this.name, this.defaultValue, this.type, '')
+                this.change(this.name, this.defaultValue, this.type, { methodCode: '', params: [] })
             }
         }
     }

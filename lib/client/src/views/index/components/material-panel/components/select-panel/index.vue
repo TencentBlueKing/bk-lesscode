@@ -79,9 +79,13 @@
         },
         methods: {
             changePanelCallBack () {
+                // 如果当前在 tree Panle，不做切换响应
+                if (this.value === 'tree') return
+
                 const activeNode = LC.getActiveNode()
                 const activeElement = LC.getActiveElement()
 
+                // 当 form 表单激活时，左侧面板自动切换到表单编辑器; 否则自动切换到组件编辑器
                 if (activeNode?.type === 'widget-form-container' || activeElement) {
                     this.handleChange('formEngine')
                 } else {

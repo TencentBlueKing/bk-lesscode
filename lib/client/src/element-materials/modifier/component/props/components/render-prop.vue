@@ -28,7 +28,7 @@
                             }"
                         ></i>
                         <span
-                            :class="{ label: describe.tips }"
+                            :class="{ label: true }"
                             v-bk-tooltips="introTips">
                             {{ displayName }}
                         </span>
@@ -370,11 +370,18 @@
              * @returns { String }
              */
             displayName () {
-                if (this.renderComponentList.length > 1) {
+                // 英文版只展示英文属性名称
+                if (this.$store.state.Language === 'en') {
+                    return this.name
+                } else {
+                    if (this.renderComponentList.length > 1) {
+                        return this.describe?.displayName || this.name
+                    }
+                    if (!isEmpty(this.describe?.displayName)) {
+                        return `${this.describe.displayName}(${this.name})`
+                    }
                     return this.name
                 }
-                const [editCom] = this.renderComponentList
-                return `${this.name}(${toPascal(editCom.valueType)})`
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)
@@ -388,20 +395,27 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(window.i18n.t(this.describe.tips))
-                const commonOptions = {
-                    disabled: !tip,
-                    interactive: false,
+                return {
                     placements: ['left-start'],
-                    boundary: 'window',
-                    maxWidth: 300
+                    maxWidth: 300,
+                    content: this.tipsContent
                 }
-                return typeof tip === 'string'
-                    ? {
-                        ...commonOptions,
-                        content: tip
-                    }
-                    : Object.assign(tip, commonOptions)
+            },
+            tipsContent () {
+                const [editCom] = this.renderComponentList
+                
+                let tips = window.i18n.t('属性英文名：{0}', [this.name])
+                let typeTips = ''
+                if (!Array.isArray(this.describe.type)) {
+                    typeTips = window.i18n.t('类型：{0}', [toPascal(editCom.valueType)])
+                    tips += `<br>${typeTips}`
+                }
+                let descTips = ''
+                if (this.describe.tips) {
+                    descTips = window.i18n.t('使用说明：{0}', [this.describe.tips])
+                    tips += `<br>${descTips}`
+                }
+                return tips
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量
@@ -757,7 +771,6 @@
     .modifier-prop {
         margin: 0 10px;
         .prop-name {
-            height: 40px;
             font-size: 12px;
             font-weight: bold;
             color: #313238;
@@ -767,20 +780,24 @@
             align-items: center;
             border-top: 1px solid #EAEBF0;
             cursor: pointer;
+            padding: 10px 0;
             .icon-and-name {
                 display: flex;
+                align-items: center;
                 max-width: calc(100% - 65px);
             }
             .label {
                 border-bottom: 1px dashed #313238;
                 cursor: pointer;
                 line-height: 19px;
-                display: inline-block;
             }
             span {
-                white-space: nowrap;
                 overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
                 text-overflow: ellipsis;
+                word-break: break-all;
             }
             .icon-angle-down {
                 cursor: pointer;

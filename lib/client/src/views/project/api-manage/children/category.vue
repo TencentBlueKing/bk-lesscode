@@ -65,8 +65,8 @@
                             'show-tool-name': category.showChange
                         }
                     ]"
-                    v-tooltips="category.name"
-                >{{ category.name }}</span>
+                    v-tooltips="$t(category.name)"
+                >{{ $t(category.name) }}</span>
                 <bk-popconfirm
                     trigger="click"
                     confirm-text=""

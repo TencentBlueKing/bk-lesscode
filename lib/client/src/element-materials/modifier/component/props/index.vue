@@ -216,7 +216,12 @@
                     // 通过接口获取 columns
                     if (valueType === 'table-data-source') {
                         const { getTable } = useDatasource()
-                        const table = await getTable(this.$route.params.projectId, payload.sourceData?.tableName, payload.sourceData?.dataSourceType)
+                        const table = await getTable(
+                            this.$route.params.projectId,
+                            payload.sourceData?.tableName,
+                            payload.sourceData?.dataSourceType,
+                            payload.sourceData?.thirdPartDBName
+                        )
                         columns = table?.columns?.map(column => column.name) || []
                     }
                     // 获取自定义column配置，这个配置比较复杂不覆盖

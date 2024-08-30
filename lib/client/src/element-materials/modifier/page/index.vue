@@ -3,10 +3,10 @@
         <div class="setting-type">
             <select-tab :tab-list="typeList" :active-item="activeType" :item-change="handleChangeType" />
         </div>
-        <div>
+        <section class="setting-content-area">
             <page-setting v-if="activeType === 'pageSetting'"></page-setting>
             <page-func v-else></page-func>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -54,20 +54,26 @@
 
     .page-setting-modifier {
         height: 100%;
+        position: relative;
         background: #fff;
         overflow: hidden;
         .setting-type {
             padding: 8px 12px;
         }
-    }
-    .page-setting-container {
-        height: calc(100vh - 104px - 42px);
-        overflow-y: auto;
-        @mixin scroller;
-        font-size: 12px;
-        .field-display-name {
-            cursor: pointer;
-            border-bottom: 1px dashed #999;
+        .setting-content-area {
+            height: calc(100% - 48px);
+            position: relative;
+            .page-setting-container {
+                height: 100%;
+                overflow-y: auto;
+                @mixin scroller;
+                font-size: 12px;
+                .field-display-name {
+                    cursor: pointer;
+                    border-bottom: 1px dashed #999;
+                }
+            }
         }
     }
+    
 </style>

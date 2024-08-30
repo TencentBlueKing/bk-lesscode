@@ -72,7 +72,8 @@
     import DebugParam from './children/debug/param.vue'
     import DebugProblem from './children/debug/problem.vue'
     import mixins from './form-item-mixins'
-    import { mapActions } from 'vuex'
+    import variableMixins from './variable-mixins'
+    import { mapActions, mapGetters } from 'vuex'
     import LC from '@/element-materials/core'
     import {
         FUNCTION_TIPS,
@@ -104,7 +105,7 @@
             DebugProblem
         },
 
-        mixins: [mixins],
+        mixins: [mixins, variableMixins],
 
         props: {
             height: {
@@ -112,10 +113,6 @@
                 default: 600
             },
             functionList: {
-                type: Array,
-                default: () => ([])
-            },
-            variableList: {
                 type: Array,
                 default: () => ([])
             },
@@ -166,6 +163,8 @@
         },
 
         computed: {
+            ...mapGetters('ai', ['isAiAvailable']),
+
             functionTips () {
                 return {
                     content: `<pre class="function-tips">${this.tips || FUNCTION_TIPS()[this.form.funcType]}</pre>`,
@@ -512,7 +511,7 @@
             },
 
             codeAI () {
-                if (!this.renderCode) return
+                if (!this.renderCode || !this.isAiAvailable) return
 
                 const { blinkBefore, blinkAfter } = this.getCode()
                 this.aiHelper.code(blinkBefore, blinkAfter, 'javascript')
@@ -576,6 +575,7 @@
                     this.messageError(this.$t('函数名称不能为空'))
                     return
                 }
+                await this.refreshVariable()
                 this.renderDebug = 'DebugOutput'
                 this.outputs = []
                 this.isDebuging = true

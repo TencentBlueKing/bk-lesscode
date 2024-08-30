@@ -43,6 +43,7 @@ lib/server/conf/data-source.js
 lib/server/conf/encrypt-secret-key.js
 lib/server/conf/no-code.js
 lib/server/conf/iam.js
+lib/server/conf/flow.js
 
 !lib/server/project-template/project-init-code/bin
 lib/server/project-template/project-target*
@@ -52,3 +53,6 @@ lib/server/project-template/bklesscode-proj*
 .codecc
 build.yml
 package-lock.json
+
+
+pre-*-bkcodeai

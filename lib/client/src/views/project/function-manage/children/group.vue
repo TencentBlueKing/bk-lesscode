@@ -49,8 +49,8 @@
                 <i class="bk-drag-icon bk-drag-folder-fill"></i>
                 <span
                     :class="['item-name', { 'show-tool-name': group.showChange }]"
-                    v-tooltips="group.groupName"
-                >{{ group.groupName }}</span>
+                    v-tooltips="$t(group.groupName)"
+                >{{ $t(group.groupName) }}</span>
                 <bk-popconfirm
                     trigger="click"
                     confirm-text=""

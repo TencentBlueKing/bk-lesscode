@@ -25,7 +25,12 @@
                     :only-export-all="true"
                     @download="exportTables"
                 ></export-table>
-                <bk-button size="small" @click="goRecord">{{ $t('变更记录') }}</bk-button>
+                <bk-button
+                    size="small"
+                    @click="goRecord"
+                >
+                    {{ $t('变更记录') }}
+                </bk-button>
             </span>
         </render-header>
 
@@ -81,17 +86,19 @@
                 isLoading
             } = useTableStatus()
             const id = router?.currentRoute?.query?.id
+            const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
+            const tab = router?.currentRoute?.query?.tab
 
             const goBack = () => {
-                router.push({ name: 'tableList' })
+                router.back()
             }
 
             const goRecord = () => {
-                router.push({ name: 'updateTableRecord', query: { id } })
+                router.push({ name: 'updateTableRecord', query: { id, thirdPartDBId, tab } })
             }
 
             const goEdit = () => {
-                router.push({ name: 'editTable', query: { id } })
+                router.push({ name: 'editTable', query: { id, thirdPartDBId, tab } })
             }
 
             const getDetail = () => {
@@ -125,6 +132,7 @@
             return {
                 tableStatus,
                 isLoading,
+                thirdPartDBId,
                 goBack,
                 goRecord,
                 goEdit,

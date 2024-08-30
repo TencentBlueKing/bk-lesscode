@@ -13,7 +13,7 @@
             <slot></slot>
             <bk-table-column
                 v-if="showOperationColumn"
-                label="操作"
+                :label="$t('操作')"
                 width="120"
             >
                 <template slot-scope="{ row }">
@@ -23,21 +23,21 @@
                         :text="true"
                         @click="handleEdit(row)"
                     >
-                        编辑
+                        {{ $t('编辑') }}
                     </bk-button>
                     <bk-button
                         title="primary"
                         :text="true"
                         @click="handleDelete(row)"
                     >
-                        删除
+                        {{ $t('删除') }}
                     </bk-button>
                 </template>
             </bk-table-column>
         </bk-table>
 
         <bk-sideslider
-            title="编辑数据"
+            :title="$t('编辑数据')"
             :is-show.sync="editData.show"
             :width="740"
             :transfer="true"
@@ -73,13 +73,13 @@
                             v-model="editData.form[column.propertyName]"
                             :precision="+column.scale"
                             type="number"
-                            placeholder="请输入数字"
+                            :placeholder="$t('请输入数字')"
                         ></bk-input>
                         <bk-input
                             v-else-if="column.type === 'int'"
                             v-model="editData.form[column.propertyName]"
                             type="number"
-                            placeholder="请输入数字"
+                            :placeholder="$t('请输入数字')"
                         ></bk-input>
                         <bk-date-picker
                             v-else-if="column.type === 'date'"
@@ -96,7 +96,7 @@
                         <bk-input
                             v-else
                             v-model="editData.form[column.propertyName]"
-                            placeholder="请输入字符串"
+                            :placeholder="$t('请输入字符串')"
                         ></bk-input>
                     </bk-form-item>
                     <bk-form-item>
@@ -105,30 +105,30 @@
                             class="mr5"
                             :loading="editData.isSaving"
                             @click="handleSubmitData"
-                        >提交</bk-button>
+                        >{{ $t('提交') }}</bk-button>
                         <bk-button
                             :disabled="editData.isSaving"
                             @click="handleCloseForm"
-                        >取消</bk-button>
+                        >{{ $t('取消') }}</bk-button>
                     </bk-form-item>
                 </bk-form>
             </div>
         </bk-sideslider>
 
         <bk-dialog
-            title="确定删除"
+            :title="$t('确定删除')"
             ext-cls=""
             :loading="deleteData.isloading"
             :mask-close="false"
             v-model="deleteData.show"
         >
-            确定删除【id：{{ deleteData.form.id }}】？
+            {{ $t('确定删除') }}【id：{{ deleteData.form.id }}】？
             <div class="dialog-footer" slot="footer">
                 <bk-button
                     theme="danger"
                     :loading="deleteData.isloading"
-                    @click="handleConfirmDelete">确定</bk-button>
-                <bk-button @click="handleCloseDialog" :disabled="deleteData.isloading">取消</bk-button>
+                    @click="handleConfirmDelete">{{ $t('确定') }}</bk-button>
+                <bk-button @click="handleCloseDialog" :disabled="deleteData.isloading">{{ $t('取消') }}</bk-button>
             </div>
         </bk-dialog>
     </section>
@@ -258,7 +258,8 @@
             paginationType: String,
             dataValueType: String,
             bkDataSourceType: String,
-            showOperationColumn: Boolean
+            showOperationColumn: Boolean,
+            thirdPartDBName: String
         },
 
         data () {
@@ -277,10 +278,10 @@
                 },
                 renderPagination: {
                     'show-total-count': true,
-                    'count': 3,
+                    count: 3,
                     'show-limit': true,
-                    'limit': 10,
-                    'current': 1
+                    limit: 10,
+                    current: 1
                 },
                 renderData: [],
                 isLoading: false,
@@ -357,7 +358,7 @@
                 this.editData.isLoading = true
                 this
                     .$http
-                    .get(`/data-source/user/tableName/${this.tableName}/columns`)
+                    .get(`/data-source/user/tableName/${this.tableName}/columns${this.thirdPartDBName ? `/${this.thirdPartDBName}` : ''}`)
                     .then((res) => {
                         this.editData.columns = res.data || []
                         this.editData.columns.forEach((column) => {
@@ -386,7 +387,7 @@
                 this.deleteData.isloading = true
                 return this
                     .$http
-                    .delete(`/data-source/user/tableName/${this.tableName}?id=${this.deleteData.form.id}`)
+                    .delete(`/data-source/user/tableName/${this.tableName}${this.thirdPartDBName ? `/${this.thirdPartDBName}` : ''}?id=${this.deleteData.form.id}`)
                     .then(() => {
                         this.getTableDataFromApi()
                         this.handleCloseDialog()
@@ -415,7 +416,7 @@
                         this.editData.isSaving = true
                         return this
                             .$http
-                            .put(`/data-source/user/tableName/${this.tableName}`, this.editData.form)
+                            .put(`/data-source/user/tableName/${this.tableName}${this.thirdPartDBName ? `/${this.thirdPartDBName}` : ''}`, this.editData.form)
                             .then(() => {
                                 this.getTableDataFromApi()
                                 this.handleCloseForm()
@@ -440,7 +441,7 @@
                 if (!column.isNullable) {
                     return [{
                         required: true,
-                        message: `${column.propertyName} 是必填项`,
+                        message: this.$t('{0} 是必填项', [column.propertyName]),
                         trigger: 'blur'
                     }]
                 }
@@ -451,7 +452,7 @@
                 this
                     .$http
                     .get(
-                        `/data-source/user/tableName/${this.tableName}`,
+                        `/data-source/user/tableName/${this.tableName}${this.thirdPartDBName ? `/${this.thirdPartDBName}` : ''}`,
                         {
                             params: {
                                 page: this.renderPagination?.current,

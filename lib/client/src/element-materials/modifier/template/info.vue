@@ -11,7 +11,7 @@
                 <div>{{ $t('应用名称') }}</div>
             </div>
             <div class="action-content" v-if="showNameProp">
-                <bk-input :value="siteName" @change="handleSiteNameChange" />
+                <bk-input :value="siteName" @change="(val) => handleChange('siteName', val)" />
             </div>
         </div>
         <div class="prop-box">
@@ -25,12 +25,41 @@
                 <div>{{ $t('logo 设置') }}</div>
             </div>
             <div class="action-content" v-if="showLogoProp">
-                <src-input :value="logo" file-type="img" @change="handleLogoChange" />
+                <src-input :value="logo" file-type="img" @change="(val) => handleChange('logo', val)" />
+            </div>
+        </div>
+        <div class="prop-box">
+            <div class="action-title" @click="() => showLinkProp = !showLinkProp">
+                <i
+                    :class="{
+                        'bk-icon icon-angle-down': true,
+                        close: !showLinkProp
+                    }"
+                ></i>
+                <div>{{ $t('logo点击跳转页面') }}</div>
+            </div>
+            <div class="action-content" v-if="showLinkProp">
+                <bk-select
+                    class="menu-page"
+                    :placeholder="$t('请选中路由')"
+                    style="width: 100%"
+                    clearable
+                    :value="logoLink"
+                    @change="(val) => handleChange('logoLink', val)">
+                    <bk-option
+                        v-for="page in pageRouteList"
+                        v-bk-tooltips="{ disabled: !page.disabled, content: $t('未设置路由') }"
+                        :key="page.pageCode"
+                        :id="page.pageCode"
+                        :disabled="page.disabled"
+                        :name="page.pageName" />
+                </bk-select>
             </div>
         </div>
     </div>
 </template>
 <script>
+    import { mapState } from 'vuex'
     import SrcInput from '@/components/src-input/index.vue'
 
     export default {
@@ -40,20 +69,40 @@
         },
         props: {
             logo: String,
-            siteName: String
+            siteName: String,
+            logoLink: String
         },
         data () {
             return {
                 showNameProp: true,
-                showLogoProp: true
+                showLogoProp: true,
+                showLinkProp: true
+            }
+        },
+        computed: {
+            ...mapState('route', ['layoutPageList']),
+            pageRouteList () {
+                const pageRouteList = this.layoutPageList.reduce((acc, cur) => {
+                    const pageType = cur.pageType || 'PC'
+                    if (pageType === LC.platform) { // 只允许调准同平台路由
+                        const { id, layoutPath, path } = cur
+                        const disabled = !id
+                        acc.push({
+                            ...cur,
+                            disabled,
+                            fullPath: `${layoutPath}${layoutPath.endsWith('/') ? '' : '/'}${path}`
+                        })
+                    }
+                    return acc
+                }, [])
+
+                pageRouteList.sort((p1, p2) => p1.disabled - p2.disabled)
+                return pageRouteList
             }
         },
         methods: {
-            handleSiteNameChange (value) {
-                this.$emit('on-change', 'siteName', value)
-            },
-            handleLogoChange (value) {
-                this.$emit('on-change', 'logo', value)
+            handleChange (key, value) {
+                this.$emit('on-change', key, value)
             }
         }
     }

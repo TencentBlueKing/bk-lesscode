@@ -1,7 +1,6 @@
 <template>
     <bk-dialog
         header-position="left"
-        ext-cls="data-source-dialog"
         :mask-close="false"
         :auto-close="false"
         :width="780"
@@ -180,10 +179,5 @@
   position: absolute;
   top: 2px;
   right: 20px;
-}
-</style>
-<style lang="postcss">
-.data-source-dialog .bk-dialog-body {
-  padding: 0;
 }
 </style>

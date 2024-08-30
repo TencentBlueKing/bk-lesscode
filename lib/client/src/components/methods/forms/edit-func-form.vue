@@ -33,7 +33,6 @@
                 ></form-group>
                 <form-detail
                     :form.sync="form"
-                    :variable-list="variableList"
                     :function-list="functionList"
                     :api-list="apiList"
                     :show-token="true"
@@ -53,7 +52,6 @@
                 slot="main"
                 :form.sync="form"
                 :function-list="functionList"
-                :variable-list="variableList"
             >
                 <template v-slot:tools>
                     <i class="bk-drag-icon bk-drag-close-line icon-style" @click="handleClose"></i>

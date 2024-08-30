@@ -68,7 +68,7 @@
             icon: 'bk-drag-zuidagaodu'
         },
         {
-            tips: 'display',
+            tips: window.i18n.t('style_显示'),
             name: 'display',
             key: 'display',
             icon: 'bk-drag-display-3',
@@ -77,7 +77,8 @@
                 { id: 'block', name: 'block' },
                 { id: 'inline', name: 'inline' },
                 { id: 'inline-block', name: 'inline-block' },
-                { id: 'unset', name: 'unset' }
+                { id: 'flex', name: 'flex' },
+                { id: 'unset', name: 'unset' },
             ]
         }
     ]

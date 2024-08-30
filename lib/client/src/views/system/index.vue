@@ -30,18 +30,6 @@
                     </div> -->
 
                     <template v-if="isRouteContains('op') && iamNoResourcesPerm[$IAM_ACTION.view_operation_data[0]]">
-                        <!-- <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/user">
-                            <i class="bk-drag-icon bk-drag-user-count"></i>用户数据
-                        </auth-router-link>
-                        <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/project">
-                            <i class="bk-drag-icon bk-drag-project-count"></i>应用数据
-                        </auth-router-link>
-                        <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/func">
-                            <i class="bk-drag-icon bk-drag-fc-count"></i>函数数据
-                        </auth-router-link>
-                        <auth-router-link auth="view_operation_data" :permission="false" tag="div" class="nav-item" to="/op/stats/comp">
-                            <i class="bk-drag-icon bk-drag-compoment-count"></i>自定义组件数据
-                        </auth-router-link> -->
                         <router-link tag="div" class="nav-item" to="/op/stats/user">
                             <i class="bk-drag-icon bk-drag-user-count"></i>{{ $t('用户数据') }}
                         </router-link>
@@ -71,18 +59,8 @@
             <router-view :key="$route.path"></router-view>
         </div>
         <footer class="footer" v-if="showFooter">
-            <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=1&key=XzgwMDgwMjAwMV80NDMwOTZfODAwODAyMDAxXzJf"
-                target="_blank"
-                class="magic-feedback"
-                :title="$t('QQ交谈')">
-                <img src="../../images/qq.png" />
-                <span>{{ $t('QQ交谈') }}</span>
-            </a>
-            <!-- <a href="wxwork://message/?username=BK-MagicBox" class="magic-feedback" title="蓝鲸MagicBox助手">
-                <img src="../../images/wx-work.png" />
-                <span>蓝鲸MagicBox助手</span>
-            </a> -->
-            Copyright &copy; 2012 Tencent BlueKing. All Rights Reserved. {{$t('腾讯蓝鲸 版权所有')}}
+            <p v-html="footerInfoHtml" ></p>
+            <p>{{footerCopyrightContent}}</p>
         </footer>
     </main>
 </template>
@@ -112,6 +90,12 @@
             },
             showFooter () {
                 return this.$route?.meta?.showFooter
+            },
+            footerInfoHtml () {
+                return this.$store.getters['platformConfig/platformConfig']?.i18n?.footerInfoHTML
+            },
+            footerCopyrightContent () {
+                return this.$store.getters['platformConfig/platformConfig']?.footerCopyrightContent || 'Copyright © 2012 Tencent BlueKing. All Rights Reserved. '
             }
         },
         methods: {
@@ -134,8 +118,7 @@
         --breadcrumb-height: 52px;
         --aside-folded-width: 60px;
         min-width: 1280px;
-        height: calc(100vh - 52px);
-        margin-top: 52px;
+        height: 100%;
 
         &.aside-folded {
             .aside {
@@ -266,6 +249,7 @@
         }
 
         .footer {
+            padding-top: 6px;
             position: fixed;
             bottom: 0;
             width: 100%;
@@ -287,6 +271,13 @@
                     width: 17px;
                     vertical-align: middle;
                     margin-top: -2px;
+                }
+            }
+            
+            p {
+                line-height: 20px;
+                a {
+                    color: #3A84FF;
                 }
             }
         }

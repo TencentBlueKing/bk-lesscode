@@ -14,7 +14,6 @@
                             :list="list"
                             :current-form-id="dataSource.type === 'NEW_FORM' ? dataSource.id : dataSource.relatedId"
                             :value="field.configure[property]"
-                            :has-created-form="hasCreatedForm"
                             :disabled="isReuseForm"
                             @change="$emit('change', property, $event)" />
                     </div>
@@ -74,6 +73,28 @@
         },
         watch: {
             field (val) {
+                this.setGroups(val)
+            }
+        },
+        computed: {
+            // 表单容器数据源是否为复用数据表
+            isReuseForm () {
+                return this.dataSource.type === 'USE_FORM'
+            }
+        },
+        beforeCreate () {
+            Object.keys(setters).forEach(key => {
+                const setter = setters[key]
+                this.$options.components[key] = setter.component
+            })
+        },
+        created () {
+            if (this.field?.id) {
+                this.setGroups(this.field)
+            }
+        },
+        methods: {
+            setGroups (val) {
                 this.groups.forEach(group => {
                     group.open = true
                     group.children = []
@@ -87,24 +108,7 @@
                     }
                 })
             }
-        },
-        computed: {
-            // 表单容器是否已经生成数据表
-            hasCreatedForm () {
-                return !!this.dataSource.id
-            },
-            // 表单容器数据源是否为复用数据表
-            isReuseForm () {
-                return this.dataSource.type === 'USE_FORM'
-            }
-        },
-        beforeCreate () {
-            Object.keys(setters).forEach(key => {
-                const setter = setters[key]
-                this.$options.components[key] = setter.component
-            })
-        },
-        methods: {}
+        }
     }
 </script>
 <style lang="postcss" scoped>

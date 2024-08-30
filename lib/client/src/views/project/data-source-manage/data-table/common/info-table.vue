@@ -71,6 +71,7 @@
             const currentRoute = router?.currentRoute
             const projectId = currentRoute?.params?.projectId
             const tableId = currentRoute?.query?.id
+            const thirdPartDBId = currentRoute?.query?.thirdPartDBId
             let tableList = []
             const basicForm = ref(null)
             const form = reactive({ tableName: '', comment: '' })
@@ -132,7 +133,13 @@
             const getAllTable = () => {
                 if (!canEditTableName) return
 
-                const params = { projectId }
+                const params: any = {
+                    projectId
+                }
+                if (thirdPartDBId) {
+                    params.thirdPartDBId = thirdPartDBId
+                    params.dataSourceType = 'third-part'
+                }
                 isLoading.value = true
                 store.dispatch('dataSource/list', params).then((res) => {
                     tableList = res.list

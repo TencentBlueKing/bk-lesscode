@@ -1,6 +1,6 @@
 <template>
     <div v-if="isShow && isSearch" class="modifier-grid">
-        <style-layout :title="$t('列宽度配置')"
+        <style-layout :title="$t('列宽度占比配置')"
             :tips="`<p>${$t('每一列栅格宽度占比为')}</p><p>${$t('该列配置值占总列配置值的百分比')}</p><p>${$t('如总共有3列，值分别为1，2，1')}</p><p>${$t('则这三列的宽度分别为整行宽度的1/4，1/2，1/4')}</p>`">
             <div class="column-list">
                 <div

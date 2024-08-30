@@ -1,6 +1,6 @@
 <template>
     <bk-dialog
-        title="查看详情"
+        :title="$t('查看详情')"
         header-position="left"
         :mask-close="true"
         :auto-close="false"

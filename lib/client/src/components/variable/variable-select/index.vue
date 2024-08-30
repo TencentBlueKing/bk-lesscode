@@ -5,7 +5,7 @@
             <bk-select
                 v-if="show"
                 class="format-list"
-                :value="formData.format"
+                :value="formData.format || 'value'"
                 :clearable="false"
                 :disabled="readonly"
                 style="width: 68px;"
@@ -33,7 +33,7 @@
                         $refs.example.isShow = true
                     }">
                     {{ $t('数据示例') }}</div>
-                <slot v-if="formData.format === 'value'" />
+                <slot v-if="formData.format === 'value' || !formData.format" />
                 <render-variable
                     v-if="formData.format === 'variable'"
                     :options="options"
@@ -51,6 +51,7 @@
                     :show-data-button="false"
                     :value="formData.code"
                     :data-source-type="formData.dataSourceType"
+                    :third-part-d-b-name="formData.thirdPartDBName"
                     @choose-table="handleChooseTable"
                 />
                 <bk-input
@@ -78,7 +79,8 @@
         code = '',
         valueType = [],
         renderValue,
-        dataSourceType
+        dataSourceType,
+        thirdPartDBName
     }) => ({
         // 类型（value、variable、expression）
         format,
@@ -89,7 +91,9 @@
         // 编辑器渲染值
         renderValue,
         // 数据源类型
-        dataSourceType
+        dataSourceType,
+        // 第三方数据源名称
+        thirdPartDBName
     })
 
     const formatTypeMap = {
@@ -206,9 +210,10 @@
             /**
              * 选择数据源的时候
              */
-            handleChooseTable ({ tableName, dataSourceType }) {
+            handleChooseTable ({ tableName, dataSourceType, thirdPartDBName }) {
                 this.formData.code = tableName
                 this.formData.dataSourceType = dataSourceType
+                this.formData.thirdPartDBName = thirdPartDBName
                 this.triggerChange()
             },
             /**
@@ -223,6 +228,7 @@
                 }
                 this.formData.format = format
                 this.formData.code = ''
+                this.formData.thirdPartDBName = ''
                 this.triggerChange()
             },
             /**

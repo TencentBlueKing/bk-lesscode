@@ -29,9 +29,25 @@
                         </bk-option>
                     </bk-select>
                 </bk-form-item>
-                <bk-form-item :label="$t('字段')" property="fieldKey" :required="true" error-display-type="normal">
+                <bk-form-item :label="$t('选项值')" property="fieldKey" :required="true" error-display-type="normal">
                     <bk-select
                         v-model="localVal.fieldKey"
+                        :placeholder="$t('请选择字段')"
+                        :clearable="false"
+                        :searchable="true"
+                        :disabled="fieldListLoading"
+                        :loading="fieldListLoading">
+                        <bk-option
+                            v-for="item in fieldList"
+                            :key="item.key"
+                            :id="item.key"
+                            :name="`${item.name}(${item.key})`">
+                        </bk-option>
+                    </bk-select>
+                </bk-form-item>
+                <bk-form-item :label="$t('选项名称')" property="fieldLabel" error-display-type="normal">
+                    <bk-select
+                        v-model="localVal.fieldLabel"
                         :placeholder="$t('请选择字段')"
                         :clearable="false"
                         :searchable="true"
@@ -141,6 +157,7 @@
                 default: () => ({
                     tableName: '',
                     fieldKey: '',
+                    fieldLabel: '',
                     logic: 'and',
                     conditions: []
                 })
@@ -159,6 +176,7 @@
                 localVal: {
                     tableName: '',
                     fieldKey: '',
+                    fieldLabel: '',
                     logic: 'and',
                     conditions: []
                 },
@@ -211,7 +229,6 @@
                         this.$store.dispatch('nocode/form/getNewFormList', { projectId, versionId: this.versionId }),
                         this.$store.dispatch('dataSource/list', { projectId})
                     ])
-                    console.log(forms)
                     const tableList = []
                     tablesRes.list.forEach(table => {
                         if (table.source === 'nocode') {
@@ -296,6 +313,7 @@
                 this.localVal.tableName = table.tableName
                 this.localVal.conditions = []
                 this.localVal.fieldKey = ''
+                this.localVal.fieldLabel = ''
             },
             // 增加筛选条件
             handleAddCondition (index) {
@@ -346,23 +364,16 @@
     overflow: auto;
     @mixin scroller;
     .select-worksheet {
-        display: flex;
-        align-items: top;
-
         .bk-form-item {
-        margin-top: 0;
-        width: calc(50% - 10px);
-        /deep/ {
-            .bk-form-content{
-                line-height: unset;
+            margin-top: 0;
+            /deep/ {
+                .bk-form-content{
+                    line-height: unset;
+                }
+                .bk-label {
+                    font-size: 12px;
+                }
             }
-            .bk-label {
-                font-size: 12px;
-            }
-        }
-        &:not(:last-of-type) {
-            margin-right: 20px;
-        }
         }
     }
     .filter-rules-wrapper {

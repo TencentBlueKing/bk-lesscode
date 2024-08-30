@@ -19,50 +19,54 @@
                 <img src="../images/svg/loading.svg" class="bk-select-loading" v-if="isLoadingList">
                 <i class="bk-select-angle bk-icon icon-angle-down" v-else></i>
             </span>
-            <bk-option-group :name="tableGroups[0].name">
+            <bk-option-group
+                v-for="tableGroup,index in tableGroups.slice(0, tableGroups.length - 1)"
+                :key="index"
+                :name="tableGroup.name"
+            >
                 <span slot="group-name">
-                    {{ tableGroups[0].name }}
+                    {{ tableGroup.name }}
                     <i
                         class="bk-drag-icon bk-drag-jump-link tool-icon"
                         @click="handleCreate"
                     ></i>
                     <i
                         class="bk-icon icon-refresh tool-icon"
-                        @click="handleGetMysqlTables"
+                        @click="handleUpdateMysqlTables(index)"
                     ></i>
                 </span>
-                <section v-bkloading="{ isLoading: tableGroups[0].isLoading }">
+                <section v-bkloading="{ isLoading: tableGroup.isLoading }">
                     <bk-option
-                        v-for="table in tableGroups[0].children"
+                        v-for="table in tableGroup.children"
                         :key="table.tableName"
                         :id="table.tableName"
                         :name="table.tableName"
-                        @click.native="handleSelectTable(table.tableName, tableGroups[0].dataSourceType)"
+                        @click.native="handleSelectTable(table.tableName, tableGroup.dataSourceType, tableGroup.children, tableGroup.name)"
                     >
                     </bk-option>
                     <bk-exception
-                        v-if="tableGroups[0].children.length <= 0"
+                        v-if="tableGroup.children.length <= 0"
                         ext-cls="exception-wrap-item exception-part"
                         type="empty"
                         scene="part"
                     >
-                        {{ $t('请点击上方刷新按钮获取 Mysql 数据表') }} </bk-exception>
+                        {{ $t('请点击上方按钮刷新') }} </bk-exception>
                 </section>
             </bk-option-group>
             <bk-option-group
                 class="bk-base-options"
-                :name="tableGroups[1].name"
+                :name="tableGroups[tableGroups.length - 1].name"
             >
                 <span slot="group-name">
-                    <span v-bk-tooltips="{ content: $t('目前只支持查询 mysql 或 tspider 的结果表'), maxWidth: 400 }">{{ tableGroups[1].name }}</span>
+                    <span v-bk-tooltips="{ content: $t('目前只支持查询 mysql 或 tspider 的结果表'), maxWidth: 400 }">{{ tableGroups[tableGroups.length - 1].name }}</span>
                     <i
                         class="bk-icon icon-refresh tool-icon"
                         @click="handleGetBkBaseBizs"
                     ></i>
                 </span>
-                <section v-bkloading="{ isLoading: tableGroups[1].isLoading }">
+                <section v-bkloading="{ isLoading: tableGroups[tableGroups.length - 1].isLoading }">
                     <bk-option-group
-                        v-for="bkBaseBiz in tableGroups[1].children"
+                        v-for="bkBaseBiz in tableGroups[tableGroups.length - 1].children"
                         :key="bkBaseBiz.bkBizId"
                         :name="bkBaseBiz.bkBizName"
                     >
@@ -89,7 +93,7 @@
                                 :key="table.id"
                                 :id="table.tableName"
                                 :name="table.tableName"
-                                @click.native="handleSelectTable(table.tableName, tableGroups[1].dataSourceType)"
+                                @click.native="handleSelectTable(table.tableName, tableGroups[tableGroups.length - 1].dataSourceType)"
                             >
                             </bk-option>
                             <bk-exception
@@ -117,7 +121,7 @@
                         </span>
                     </bk-exception>
                     <bk-exception
-                        v-else-if="tableGroups[1].children.length <= 0"
+                        v-else-if="tableGroups[tableGroups.length - 1].children.length <= 0"
                         ext-cls="exception-wrap-item exception-part"
                         type="empty"
                         scene="part"
@@ -146,7 +150,7 @@
             size="small"
             :disabled="!value"
             :loading="isLoadingData"
-            @click="handleGetTableDatas(value, dataSourceType)"
+            @click="handleGetTableDatas(value, dataSourceType, thirdPartDBName)"
         >{{ $t('获取数据') }}</bk-button>
     </section>
 </template>
@@ -176,6 +180,9 @@
             showDataButton: {
                 type: Boolean,
                 default: true
+            },
+            thirdPartDBName: {
+                type: String
             }
         },
 
@@ -184,7 +191,9 @@
                 getMysqlTables,
                 getBkBaseBizs,
                 getBkBaseTables,
-                getTableDatas
+                getTableDatas,
+                getAllThirdPartDBTables,
+                getThirdPartDBTables
             } = useDatasource()
 
             const selectRef = ref()
@@ -202,30 +211,33 @@
             })
             const tableGroups = ref([
                 {
-                    name: window.i18n.t('Mysql 数据表'),
+                    name: window.i18n.t('内置数据库'),
                     dataSourceType: DATA_SOURCE_TYPE.PREVIEW,
                     children: [],
-                    isLoading: false
+                    isLoading: false,
+                    id: ''
                 },
                 {
                     name: window.i18n.t('BkBase 结果表'),
                     dataSourceType: DATA_SOURCE_TYPE.BK_BASE,
                     children: [],
-                    isLoading: false
+                    isLoading: false,
+                    id: ''
                 }
             ])
 
             // 选择表
-            const handleSelectTable = (tableName, dataSourceType) => {
+            const handleSelectTable = (tableName, dataSourceType, tableList = [], bkThirdPartDBName = '') => {
                 // 选完以后立即触发选中事件
-                const table = findTable(tableName, dataSourceType, tableGroups.value[0].children, tableGroups.value[1].children)
-                emit('choose-table', { tableName, table, dataSourceType })
+                const table = findTable(tableName, dataSourceType, tableList, tableGroups.value[tableGroups.value.length - 1].children)
+                const thirdPartDBName = dataSourceType === 'third-part' ? bkThirdPartDBName : ''
+                emit('choose-table', { tableName, table, dataSourceType, thirdPartDBName })
             }
 
             // 获取表数据
-            const handleGetTableDatas = (tableName, bkDataSourceType) => {
+            const handleGetTableDatas = (tableName, bkDataSourceType, thirdPartDBName) => {
                 isLoadingData.value = true
-                getTableDatas(tableName, bkDataSourceType)
+                getTableDatas(tableName, bkDataSourceType, thirdPartDBName)
                     .then((data) => {
                         emit('fetch-data', data)
                     })
@@ -242,7 +254,7 @@
 
             // 展示 bk-base options
             const handleShowOptions = (bkBizId) => {
-                const bkBaseBiz = tableGroups.value[1].children.find(bkBaseBiz => bkBaseBiz.bkBizId === bkBizId)
+                const bkBaseBiz = tableGroups.value[tableGroups.value.length - 1].children.find(bkBaseBiz => bkBaseBiz.bkBizId === bkBizId)
                 if (!bkBaseBiz.loaded) {
                     // 加载数据
                     isLoadingIds.value.push(bkBizId)
@@ -264,6 +276,15 @@
                 }
             }
 
+            // 更新 mysql 表
+            const handleUpdateMysqlTables = (index) => {
+                if (index <= 0) {
+                    handleGetMysqlTables()
+                } else {
+                    handleGetThirdPartDBTables(index)
+                }
+            }
+
             // 获取 mysql 数据表
             const handleGetMysqlTables = () => {
                 tableGroups.value[0].isLoading = true
@@ -278,17 +299,43 @@
 
             // 获取 bk-base 结果表
             const handleGetBkBaseBizs = () => {
-                tableGroups.value[1].isLoading = true
+                tableGroups.value[tableGroups.value.length - 1].isLoading = true
                 return getBkBaseBizs(projectId)
                     .then((list) => {
-                        tableGroups.value[1].children = list.map((item) => ({
+                        tableGroups.value[tableGroups.value.length - 1].children = list.map((item) => ({
                             ...item,
                             tables: [],
                             loaded: false
                         }))
                     })
                     .finally(() => {
-                        tableGroups.value[1].isLoading = false
+                        tableGroups.value[tableGroups.value.length - 1].isLoading = false
+                    })
+            }
+
+            // 获取所有第三方数据表
+            const handleGetAllThirdPartDBTables = () => {
+                return getAllThirdPartDBTables(projectId)
+                    .then((list) => {
+                        tableGroups.value.splice(1, 0, ...list.map(item => ({
+                            name: item.dbName,
+                            dataSourceType: DATA_SOURCE_TYPE.THIRD_PART,
+                            children: item.tableList,
+                            id: item.id,
+                            isLoading: false
+                        })))
+                    })
+            }
+
+            // 获取某一个db下的表
+            const handleGetThirdPartDBTables = (index) => {
+                const tableGroup = tableGroups.value[index]
+                tableGroup.isLoading = true
+                return getThirdPartDBTables(projectId, tableGroup.id)
+                    .then((list) => {
+                        tableGroup.children = list
+                    }).finally(() => {
+                        tableGroup.isLoading = false
                     })
             }
 
@@ -317,6 +364,7 @@
                 Promise
                     .all([
                         handleGetMysqlTables(),
+                        handleGetAllThirdPartDBTables(),
                         handleGetProjectInfo()
                     ])
                     .finally(() => {
@@ -334,7 +382,9 @@
                 projectInfo,
                 tableGroups,
                 handleSelectTable,
+                handleUpdateMysqlTables,
                 handleGetMysqlTables,
+                handleGetThirdPartDBTables,
                 handleGetBkBaseBizs,
                 handleCreate,
                 handleClearTable,

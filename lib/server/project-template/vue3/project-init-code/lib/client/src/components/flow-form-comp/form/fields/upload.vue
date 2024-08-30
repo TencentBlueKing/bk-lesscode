@@ -8,7 +8,7 @@
             @on-delete="handleDelete">
         </bk-upload>
         <div class="field-down-load" v-if="field.fileTemplate.length > 0">
-            <label class="bk-label">模板下载：</label>
+            <label class="bk-label">{{ $t('模板下载：') }}</label>
             <div>
                 <ul v-for="(file, index) in field" :key="index">
                     <li @click="downloadFile(file)"

@@ -5,7 +5,7 @@
                 <i class="bk-drag-icon bk-drag-arrow-back" @click="goBack"></i>
                 {{ $t('数据管理') }} </span>
         </render-header>
-        <div class="g-page-tab">
+        <div class="g-page-tab" v-bkloading="{ isLoading }">
             <div
                 v-for="environment in environmentList"
                 :key="environment.key"
@@ -87,6 +87,7 @@
     import {
         defineComponent,
         reactive,
+        ref,
         computed,
         watch,
         onBeforeMount
@@ -101,12 +102,6 @@
     import renderStruct from './render-struct.vue'
     import renderApi from './render-api.vue'
     import layout from '@/components/ui/layout.vue'
-
-    const environmentList = [
-        { key: 'preview', name: window.i18n.t('预览环境') },
-        { key: 'stag', name: window.i18n.t('预发布环境') },
-        { key: 'prod', name: window.i18n.t('正式环境') }
-    ]
 
     const panels = [
         { name: 'render-data', label: window.i18n.t('数据'), count: 10 },
@@ -126,6 +121,13 @@
         setup () {
             const projectId = router?.currentRoute?.params?.projectId
             const tableName = router?.currentRoute?.query?.tableName
+            const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
+            const environmentList = ref([
+                { key: 'preview', name: window.i18n.t('预览环境') },
+                { key: 'stag', name: window.i18n.t('预发布环境') },
+                { key: 'prod', name: window.i18n.t('正式环境') }
+            ])
+
             const pageStatus = reactive({
                 activeEnvironment: { key: 'preview', name: window.i18n.t('预览环境') },
                 isLoading: false,
@@ -143,9 +145,10 @@
                 isProdNeedUpdate: false,
                 isStagNeedUpdate: false
             })
+            const isLoading = ref(false)
 
             const goBack = () => {
-                router.push({ name: 'tableList' })
+                router.back()
             }
 
             const goDeploy = () => {
@@ -165,7 +168,8 @@
                 pageStatus.isLoading = true
                 const queryData = {
                     environment: pageStatus.activeEnvironment?.key,
-                    projectId
+                    projectId,
+                    thirdPartDBId
                 }
                 store.dispatch('dataSource/getOnlineTableList', queryData).then((data) => {
                     pageStatus.tableList = data || []
@@ -228,7 +232,7 @@
                     stag: releaseInfo.isStagNeedUpdate,
                     prod: releaseInfo.isProdNeedUpdate
                 }
-                return updateMap[pageStatus.activeEnvironment.key]
+                return updateMap[pageStatus.activeEnvironment.key] && thirdPartDBId <= 0
             })
 
             const emptyType = computed(() => {
@@ -238,12 +242,28 @@
                 return 'noData'
             })
 
+            const initThirdPartDb = async () => {
+                if (thirdPartDBId > 0) {
+                    isLoading.value = true
+                    store.dispatch('thirdPartDB/findDatabase', thirdPartDBId).then((data) => {
+                        const environment = { key: 'third-part', name: data.dbName }
+                        environmentList.value = [environment]
+                        pageStatus.activeEnvironment = environment
+                    }).catch((error) => {
+                        messageError(error.message || error)
+                    }).finally(() => {
+                        isLoading.value = false
+                    })
+                }
+            }
+
             watch(
                 () => pageStatus.activeEnvironment.key,
                 getTableList
             )
 
-            onBeforeMount(() => {
+            onBeforeMount(async () => {
+                await initThirdPartDb()
                 getReleaseInfo()
                 getTableList()
             })
@@ -255,6 +275,7 @@
                 displayTableList,
                 isShowUpdateInfo,
                 emptyType,
+                isLoading,
                 goBack,
                 goDeploy,
                 setEnvironment,

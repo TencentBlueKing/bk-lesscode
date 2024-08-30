@@ -8,11 +8,10 @@
         <section class="table-section">
             <h5 class="section-title">
                 {{ $t('字段配置') }} <bk-link
-                    v-if="environment.key === 'preview'"
-                    :href="`/project/${projectId}/data-source-manage/edit-table?tableName=${activeTable.tableName}`"
-                    target="_blank"
+                    v-if="['preview', 'third-part'].includes(environment.key)"
                     theme="primary"
                     class="title-link"
+                    @click="goToStruct"
                 >{{ $t('设计表结构') }}</bk-link>
             </h5>
             <show-column-table :columns="activeTable.columns"></show-column-table>
@@ -27,7 +26,10 @@
     } from '@vue/composition-api'
     import infoTable from '../common/info-table.vue'
     import showColumnTable from '../common/show-column-table.vue'
-    import { useRoute } from '@/router'
+    import {
+        useRoute,
+        useRouter
+    } from '@/router'
 
     interface ITable {
         tableName: string,
@@ -43,11 +45,28 @@
             activeTable: Object as PropType<ITable>,
             environment: Object as PropType<{ key: string, name: string }>
         },
-        setup () {
+        setup (props) {
             const route = useRoute()
+            const router = useRouter()
             const projectId = route.params.projectId
+            const thirdPartDBId = route.query.thirdPartDBId
+            const tab = route.query.tab
+
+            const goToStruct = () => {
+                const query = {
+                    tableName: props.activeTable.tableName,
+                    thirdPartDBId,
+                    tab
+                }
+                router.push({
+                    name: 'editTable',
+                    query
+                })
+            }
             return {
-                projectId
+                projectId,
+                thirdPartDBId,
+                goToStruct
             }
         }
     })

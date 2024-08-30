@@ -108,6 +108,9 @@
 
         setup () {
             const projectId = router?.currentRoute?.params?.projectId
+            const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
+            const tab = router?.currentRoute?.query?.tab
+
             const {
                 tableStatus,
                 sql,
@@ -121,7 +124,12 @@
             })
 
             const goBack = () => {
-                router.push({ name: 'tableList' })
+                router.push({
+                    name: 'tableList',
+                    query: {
+                        tab
+                    }
+                })
             }
 
             const changeEdit = (val) => {
@@ -159,11 +167,13 @@
                 }
                 const record = {
                     projectId,
-                    sql: sql.value
+                    sql: sql.value,
+                    thirdPartDBId
                 }
                 const postData = {
                     dataTable,
-                    record
+                    record,
+                    thirdPartDBId
                 }
                 isLoading.value = true
                 return enableDataSource().then(() => {

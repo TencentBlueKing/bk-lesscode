@@ -45,7 +45,7 @@
                 prop="summary"
             ></bk-table-column>
         </bk-table>
-        <span class="function-tips">{{ $t('注：可以将请求地址复制到函数中使用，具体使用方式可以参考函数示例') }}</span>
+        <span class="function-tips">{{ $t('注：可以将请求地址复制到函数中使用，也可以在新建远程函数的时候选择数据表操作API') }}</span>
 
         <bk-dialog
             v-model="isShowDetail"
@@ -76,6 +76,7 @@
     } from 'shared/function/'
     import copyIcon from '@/components/copy-icon.js'
     import monaco from '@/components/monaco.vue'
+    import router from '@/router'
 
     interface ITable {
         tableName: string,
@@ -83,7 +84,7 @@
     }
 
     // 默认提供的函数
-    const getDataApiList = (tableName, columns) => {
+    const getDataApiList = (tableName, columns, thirdPartDBIdApiPath) => {
         const url = `/api/data-source/user/tableName/${tableName}`
         const dataObject = columns.reduce((acc, cur) => {
             acc[cur.name] = window.i18n.t('{0}的值', [cur.name])
@@ -97,7 +98,7 @@
         }, {})
         return [
             {
-                url: url + '/detail',
+                url: url + '/detail' + thirdPartDBIdApiPath,
                 type: FUNCTION_METHOD.GET,
                 params: {
                     '[key]': window.i18n.t('query 参数，可以填写多个键值对，并使用 AND 关系查询具体的数据，如果匹配到多条数据，则返回第一条。key 可以填写任意字段。value 填写值，可以用 %xx% 的形式进行模糊匹配。示例：\'name\': \'xxx\' 或者 \'name\': \'%xxx%\'')
@@ -110,7 +111,7 @@
                 summary: window.i18n.t('获取 {0} 表的某一条数据', [tableName])
             },
             {
-                url: url + '/update/condition',
+                url: url + '/update/condition' + thirdPartDBIdApiPath,
                 type: FUNCTION_METHOD.PUT,
                 params: {
                     data: dataObject,
@@ -126,7 +127,7 @@
                 summary: window.i18n.t('使用 where 条件更新 {0} 表的数据。注意：匹配到 where 条件的数据都会执行更新', [tableName])
             },
             {
-                url,
+                url: url + thirdPartDBIdApiPath,
                 type: FUNCTION_METHOD.GET,
                 params: {
                     page: window.i18n.t('query 参数，数字类型，表示分页的页码。不传表示获取所有数据'),
@@ -146,7 +147,7 @@
                 summary: window.i18n.t('分页获取 {0} 表的数据,返回该页数据和数据总数目', [tableName])
             },
             {
-                url,
+                url: url + thirdPartDBIdApiPath,
                 type: FUNCTION_METHOD.POST,
                 params: dataWithOutId,
                 result: {
@@ -157,7 +158,7 @@
                 summary: window.i18n.t('新增 {0} 表的数据。注意：非空字段必填', [tableName])
             },
             {
-                url,
+                url: url + thirdPartDBIdApiPath,
                 type: FUNCTION_METHOD.PUT,
                 params: dataObject,
                 result: {
@@ -168,7 +169,7 @@
                 summary: window.i18n.t('更新 {0} 表的数据。注意：传入的数据一定要包含 id 字段', [tableName])
             },
             {
-                url,
+                url: url + thirdPartDBIdApiPath,
                 type: FUNCTION_METHOD.DELETE,
                 params: {
                     '[key]': window.i18n.t('query 参数，传入 id 或者 unqiue 字段来唯一定位到要删除的数据')
@@ -189,6 +190,7 @@
             monaco
         },
         props: {
+            environment: Object,
             activeTable: Object as PropType<ITable>
         },
         setup (props) {
@@ -196,8 +198,10 @@
             const isShowDetail = ref(false)
             const showDetailValue = ref('')
             const detailTitle = ref('')
+            const thirdPartDBId = +router?.currentRoute?.query?.thirdPartDBId
+            const thirdPartDBIdApiPath = thirdPartDBId > 0 ? `/${props.environment.name}` : ''
 
-            const apiList = computed(() => getDataApiList(activeTable.value.tableName, activeTable.value.columns))
+            const apiList = computed(() => getDataApiList(activeTable.value.tableName, activeTable.value.columns, thirdPartDBIdApiPath))
 
             const showDetail = (title, value) => {
                 detailTitle.value = title

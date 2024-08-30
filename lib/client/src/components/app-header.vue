@@ -12,8 +12,9 @@
 <template>
     <header class="app-header">
         <div class="logo" @click="toProjectList">
-            <img src="../images/logo.png" alt="logo">
-            {{ $t('蓝鲸运维开发平台') }} </div>
+            <img :src="logoUrl" alt="logo">
+            {{ platformName }}
+        </div>
         <nav class="top-nav">
             <ul class="menu">
                 <router-link
@@ -29,6 +30,7 @@
             </ul>
         </nav>
         <div class="top-info">
+            <div class="info-item help-doc" @click="closePage(true)">{{ $t('帮助文档') }}</div>
             <bk-popover class="info-item"
                 theme="light header-top-info-popover"
                 animation="fade"
@@ -99,6 +101,7 @@
             </bk-popover>
         </div>
         <changelog ref="log"></changelog>
+        <helpDocs :visible="visible" @closePage="closePage" />
     </header>
 </template>
 
@@ -107,13 +110,14 @@
     import { useStore } from '@/store'
     import { useRouter } from '@/router'
     import { IAM_ACTION } from 'shared/constant'
-    import { jsonp } from 'vue-jsonp'
     import changelog from '@/components/changelog-version'
-    import jsCookie from 'js-cookie'
+    import { getCurLang, changeLang } from '@/locales/i18n.js'
+    import helpDocs from './help-docs'
 
     export default defineComponent({
         components: {
-            changelog
+            changelog,
+            helpDocs
         },
         computed: {
             currentRoute () {
@@ -141,6 +145,16 @@
             
             const user = computed(() => store.getters['user'])
             const userName = computed(() => user.value?.username ?? '')
+            const showAlertNotice = computed(() => store.getters['showAlertNotice'])
+
+            const logoUrl = computed(() => {
+                return store.getters['platformConfig/platformConfig']?.appLogo || '../images/logo.png'
+            })
+
+            const platformName = computed(() => {
+                return store.getters['platformConfig/platformConfig']?.i18n?.productName || window.i18n.t('蓝鲸运维开发平台')
+            })
+            
             const menus = computed(() => {
                 const list = [
                     {
@@ -167,7 +181,7 @@
 
                 return list.filter(item => item.authed)
             })
-            const currentLang = computed(() => jsCookie.get('blueking_language') || 'zh-cn')
+            const currentLang = computed(() => getCurLang())
 
             const isMenuActive = (route) => {
                 const [topRoute] = router.currentRoute.matched
@@ -191,47 +205,16 @@
 
             /** 语言切换 */
             const handleLanguageChange = (lang) => {
-                // 写到用户管理
-                const url = `${window.BK_COMPONENT_API_URL}/api/c/compapi/v2/usermanage/fe_update_user_language`
-                console.log(url, 'component api url')
-                jsonp(url, {
-                    language: lang.id
-                }).then(res => {
-                    console.log(url, 'changelangres:', res)
-                })
-
-                const domainList = location.hostname.split('.')
-
-                // 本项目开发环境因为需要配置了 host 域名比联调环境多 1 级
-                if (process.env.NODE_ENV === 'development') {
-                    domainList.splice(0, 1)
-                }
-
-                // 删除已有cookie
-                for (let i = 0; i < domainList.length - 1; i++) {
-                    jsCookie.remove('blueking_language', {
-                        domain: domainList.slice(i).join('.')
-                    })
-                }
-
-                // 优先使用环境变量中的bk_domain
-                let domain = window.BKPAAS_BK_DOMAIN
-                if (!domain) {
-                    domain = domainList.length > 2 ? domainList.slice(1).join('.') : domainList.join('.')
-                }
-                console.log(domain, 'bk_domain:', window.BKPAAS_BK_DOMAIN)
-
-
-                jsCookie.set('blueking_language', lang.id, {
-                    expires: 30,
-                    // 和平台保持一致，cookie 种在上级域名
-                    domain
-                })
-
-                window.location.reload()
+                changeLang(lang.id)
             }
 
+            const visible = ref(false)
+            const closePage = (value) => {
+                visible.value = value
+            }
             return {
+                logoUrl,
+                platformName,
                 languageList,
                 userName,
                 menus,
@@ -241,7 +224,9 @@
                 goLogin,
                 toProjectList,
                 currentLang,
-                handleLanguageChange
+                handleLanguageChange,
+                visible,
+                closePage
             }
         }
     })
@@ -250,7 +235,7 @@
 <style lang="postcss" scoped>
     .app-header {
         display: flex;
-        position: fixed;
+        /* position: fixed; */
         height: 52px;
         width: 100%;
         min-width: 1280px;
@@ -258,7 +243,6 @@
         top: 0;
         z-index: 1000;
         background: #182132;
-
         .logo {
             display: flex;
             align-items: center;
@@ -309,6 +293,13 @@
             display: flex;
             align-items: center;
             margin-left: auto;
+
+            .help-doc {
+                color: #96A2B9;
+                &:hover {
+                    color: #d3d9e4;
+                }
+            }
 
             .info-item {
                 cursor: pointer;

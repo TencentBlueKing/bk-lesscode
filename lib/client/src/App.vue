@@ -19,12 +19,15 @@
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
+            <notice-component :api-url="noticeUrl" @show-alert-change="showAlertChange" />
             <app-header></app-header>
-            <not-exist v-if="isNotExist" :message="notExistMsg" />
-            <template v-else>
-                <apply-page v-if="isNotPermission" :auth-result="authResult" />
-                <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
-            </template>
+            <div class="page-body" :style="{ height: bodyHeight }" >
+                <not-exist v-if="isNotExist" :message="notExistMsg" />
+                <template v-else>
+                    <apply-page v-if="isNotPermission" :auth-result="authResult" />
+                    <router-view v-if="!isNotPermission" :name="topView" v-show="!mainContentLoading" />
+                </template>
+            </div>   
         </div>
     </section>
 </template>
@@ -33,14 +36,20 @@
 
     import { bus } from './common/bus'
     import ApplyPage from './components/apply-permission/apply-page.vue'
+    import NoticeComponent from '@blueking/notice-component-vue2'
+    import '@blueking/notice-component-vue2/dist/style.css'
+
+    import { getPlatformConfig, setDocumentTitle, setShortcutIcon } from '@blueking/platform-config';
 
     export default {
         name: 'app',
         components: {
-            ApplyPage
+            ApplyPage,
+            NoticeComponent
         },
         data () {
             return {
+                noticeUrl: `${process.env.BK_AJAX_URL_PREFIX}/notice-center/getNoticeList`,
                 systemCls: 'mac',
                 position: 'middle',
                 navItems: [
@@ -74,9 +83,10 @@
         },
 
         computed: {
-            ...mapGetters(['mainContentLoading']),
+            ...mapGetters(['mainContentLoading', 'bodyHeight']),
+            ...mapGetters('platformConfig', ['defaultConfig', 'platformConfig']),
             emptyPage () {
-                return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile'
+                return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile' || this.$route.meta?.navigation === 'empty'
             },
             authed () {
                 return this.$route.meta.authed
@@ -110,8 +120,12 @@
             this.$once('hook:beforeDestroy', () => {
                 bus.$off('not-exist', this.notExistHold)
             })
-            await this.$store.dispatch('checkIamNoResourcesPerm')
-            await this.$store.dispatch('ai/checkAiAvailable')
+            this.initPlatformConfig()
+            await Promise.all([
+                this.$store.dispatch('checkIamNoResourcesPerm'),
+                this.$store.dispatch('ai/checkAiAvailable'),
+                this.$store.dispatch('saasBackend/checkSaasAvailable')
+            ])
         },
 
         mounted () {
@@ -119,9 +133,6 @@
             if (platform.indexOf('win') === 0) {
                 this.systemCls = 'win'
             }
-            bus.$on('redirect-login', data => {
-                window.location.replace(data.loginUrl)
-            })
         },
         methods: {
             permissionHold (authResult) {
@@ -132,6 +143,18 @@
             notExistHold (msg) {
                 this.isNotExist = true
                 this.notExistMsg = msg
+            },
+
+            showAlertChange (isShow) {
+                this.$store.commit('updateShowAlertNotice', isShow)
+            },
+
+            async initPlatformConfig () {
+                const url = `${window.BK_SHARED_RES_URL}/lesscode/base.js`
+                const config = await getPlatformConfig(url, this.defaultConfig)
+                this.$store.commit('platformConfig/update', config)
+                setDocumentTitle(config.i18n)
+                setShortcutIcon(config.favicon)
             }
         }
     }
@@ -155,6 +178,10 @@
         @mixin scroller;
         font-size: 14px;
         color: #63656e;
+        .page-body {
+            position: relative;
+            overflow-y: hidden;
+        }
     }
 
     .mac {

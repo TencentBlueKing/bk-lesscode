@@ -7,7 +7,7 @@
             <span>{{ $t('当表单中') }}</span>
             <bk-select
                 v-model="relation.field"
-                style="width: 300px;"
+                style="width: 380px;"
                 size="small"
                 :placeholder="$t('表单字段')"
                 :loading="!isCurrentTable && formListLoading"
@@ -25,7 +25,7 @@
         <div class="interval-row" v-for="(item,intervalIndex) in rule.intervals " :key="intervalIndex">
             <bk-input
                 v-model="item.min"
-                style="width: 120px;"
+                style="width: 160px;"
                 type="number"
                 size="small"
                 :disabled="disabled"
@@ -33,7 +33,7 @@
             ~
             <bk-input
                 v-model="item.max"
-                style="width: 120px;"
+                style="width: 160px;"
                 type="number"
                 size="small"
                 :disabled="disabled"

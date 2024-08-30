@@ -12,8 +12,8 @@
         @cancel="close">
         <div class="custom-data-wrapper">
             <div class="text-area">
-                <div class="custom-text">{{ $t('选项名') }}</div>
-                <div class="custom-text">{{ $t('选项ID') }}</div>
+                <div class="custom-text">{{ $t('选项名称') }}</div>
+                <div class="custom-text">{{ $t('选项值') }}</div>
                 <div class="custom-color" v-show="localValIsDisplayTag">{{ $t('标签颜色') }}</div>
             </div>
             <li v-for="(item, index) in localVal" class="cutsom-data-item" :key="index">
@@ -135,10 +135,13 @@
     @import "@/css/mixins/scroller";
 
     .custom-data-wrapper {
-        padding: 3px 24px 26px;
+        padding: 3px 0 26px;
         max-height: 384px;
         overflow: auto;
         @mixin scroller;
+        .custom-text {
+            font-size: 12px;
+        }
     }
     .cutsom-data-item {
         display: flex;

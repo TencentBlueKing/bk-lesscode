@@ -13,6 +13,7 @@
     <!-- 表单页面和表单管理页面 -->
     <main
         class="lessocde-editor-page"
+        :style="{ height: bodyHeight }"
         v-bkloading="{
             isLoading: isContentLoading
         }">
@@ -63,6 +64,7 @@
             }
         },
         computed: {
+            ...mapGetters(['bodyHeight']),
             ...mapGetters('page', ['pageDetail']),
             ...mapGetters('layout', ['pageLayout']),
             ...mapGetters('projectVersion', {
@@ -175,7 +177,6 @@
 
     .lessocde-editor-page {
         min-width: 1220px;
-        height: calc(100vh - $headerHeight);
     }
     .lesscode-editor-page-header {
         position: relative;
@@ -218,6 +219,6 @@
         }
     }
     .lesscode-editor-page-content{
-        height: calc(100vh - $headerHeight - $pageHeaderHeight);
+        height: calc(100% - $pageHeaderHeight);
     }
 </style>

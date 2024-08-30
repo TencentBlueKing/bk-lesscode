@@ -30,7 +30,8 @@
                             class="relation-item"
                             v-for="(relation, index) in rule.relations"
                             :key="`${relation.field}_${relation.type}_${index}`">
-                            {{ $t('当') }} <bk-select
+                            {{ $t('当') }}
+                            <bk-select
                                 v-model="relation.field"
                                 style="width: 130px;"
                                 :placeholder="$t('表单字段')"
@@ -44,7 +45,21 @@
                                     :name="item.configure.name">
                                 </bk-option>
                             </bk-select>
-                            {{ $t('等于') }} <bk-select
+                            <!-- 选择逻辑关系 -->
+                            <bk-select
+                                v-model="relation.logic"
+                                style="width: 100px;"
+                                :clearable="false"
+                                :disabled="disabled"
+                                @change="change">
+                                <bk-option
+                                    v-for="logic in getRelationLogics(relation.field)"
+                                    :key="logic.id"
+                                    :id="logic.id"
+                                    :name="logic.name">
+                                </bk-option>
+                            </bk-select>
+                            <bk-select
                                 style="width: 80px;"
                                 :clearable="false"
                                 :placeholder="$t('请选择')"
@@ -162,6 +177,7 @@
                         {
                             relations: [{ // 关联的字段信息
                                 field: '',
+                                logic: '',
                                 type: '', // CONST常量、VAR变量
                                 value: ''
                             }],
@@ -217,7 +233,16 @@
         },
         methods: {
             getLocalVal (list) {
-                return list.map(item => cloneDeep(item))
+                return list.map(item => {
+                    const rule = cloneDeep(item)
+                    // 添加比较逻辑下拉框之前，不存在logic字段，默认填充'=='
+                    rule.relations.forEach(relation => {
+                        if (!('logic' in relation)) {
+                            relation.logic = '=='
+                        }
+                    })
+                    return rule
+                })
             },
             // 规则字段可选列表
             getRelFieldList () {
@@ -227,6 +252,30 @@
                     return this.field.type === 'rate' ? item.type === 'int' : true
                 })
                 return relFieldList
+            },
+            getRelationLogics (key) {
+                if (!key) {
+                    return []
+                }
+
+                const fieldList = this.getRelFieldList()
+                const field = fieldList.find(item => item.configure.key === key)
+                if (field) {
+                    if (['input', 'textarea', 'date', 'datetime', 'select', 'multiple-select', 'member', 'members', 'rich-text', 'description', 'link'].includes(field.type)) {
+                        return [
+                            { id: '==', name: window.i18n.t('等于') },
+                            { id: 'in', name: window.i18n.t('包含') }
+                        ]
+                    }
+                    return [
+                        { id: '==', name: window.i18n.t('等于') },
+                        { id: '>', name: window.i18n.t('大于') },
+                        { id: '<', name: window.i18n.t('小于') },
+                        { id: '>=', name: window.i18n.t('大于等于') },
+                        { id: '<=', name: window.i18n.t('小于等于') }
+                    ]
+                }
+                return []
             },
             // 规则字段值为变量时只能选本表字段
             // 字段可选列表只能是可比较值类型的字段，并排除已选中字段
@@ -248,6 +297,7 @@
                 this.localVal.push({
                     relations: [{ // 关联的字段信息
                         field: '',
+                        logic: '',
                         type: '', // CONST常量、VAR变量
                         value: ''
                     }],

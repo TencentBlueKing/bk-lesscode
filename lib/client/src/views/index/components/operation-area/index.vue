@@ -112,7 +112,9 @@
 
                 this.renderStyles = {
                     width: `${width}px`,
-                    'min-height': `calc(100vh - ${top + 25}px)`
+                    height: 'calc(100% - 16px)',
+                    position: 'relative',
+                    'min-height': `calc(100vh - ${top + 30}px)`
                 }
             },
             calcOperationItemStyles () {
@@ -148,5 +150,7 @@
     }
     .vertical-wrapper{
         background: #fff;
+        position: relative;
+        height: 100%;
     }
 </style>
