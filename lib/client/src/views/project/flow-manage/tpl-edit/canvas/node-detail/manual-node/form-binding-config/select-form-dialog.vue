@@ -38,7 +38,7 @@
                         content: $t('当前流程节点中已绑定表单不可复用')
                     }"
                     :key="item.id"
-                    :class="['form-card-item', { 'selected': selected === item.id, disabled: item.disabled }]"
+                    :class="['form-card-item', { 'selected': selected.id === item.id, disabled: item.disabled }]"
                     @click="handleSelect(item)">
                     <div class="selected-label"></div>
                     <span class="preview-btn" @click.stop="handlePreviewClick(item)">{{ $t('预览') }}</span>
@@ -85,7 +85,7 @@
             const formList = ref([])
             const formListLoading = ref(false)
             const searchStr = ref('')
-            const selected = ref(0)
+            const selected = ref({})
 
             const tips = computed(() => {
                 return props.isCite
@@ -136,7 +136,7 @@
                 if (form.disabled) {
                     return
                 }
-                selected.value = form.id
+                selected.value = form
             }
 
             const handlePreviewClick = (form) => {
@@ -150,7 +150,7 @@
 
             const close = () => {
                 searchStr.value = ''
-                selected.value = 0
+                selected.value = {}
                 emit('close')
             }
 

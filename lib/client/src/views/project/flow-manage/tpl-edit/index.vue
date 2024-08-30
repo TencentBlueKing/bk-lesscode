@@ -31,7 +31,7 @@
             </div>
         </div>
         <div v-if="!tplDetailLoading" class="flow-edit-main">
-            <router-view :tpl-detail="tplDetail" />
+            <router-view :tpl-detail="tplDetail" @deploy="handleDeploy" />
         </div>
     </section>
 </template>
@@ -89,7 +89,7 @@
             })
         },
         beforeRouteLeave (to, from, next) {
-            if (this.tplDetail.deployed || this.allowExitRoute  || to.name === 'createTicketPageEdit') {
+            if (this.tplDetail.deployed || this.allowExitRoute) {
                 next()
                 return
             }
@@ -155,29 +155,10 @@
                 }.bind(this)
             },
             // @todo
-            // 部署流程
-            async deployItsmFlow () {
-                return new Promise((resolve, reject) => {
-                    this.$store.dispatch('nocode/flow/deployFlow', this.tplDetail.itsmId)
-                        .then(() => {
-                            resolve()
-                        }).catch((error) => {
-                            const h = this.$createElement
-                            this.$bkMessage({
-                                theme: 'error',
-                                message: error.message
-                            })
-                            reject(error.message)
-                        })
-                })
-            },
-            // @todo
             async handleDeploy () {
                 try {
                     this.deployPending = true
-                    await this.deployItsmFlow()
-                    await this.$store.dispatch('nocode/flow/editFlow', { id: this.tplDetail.id, deployed: 1 })
-                    this.$store.commit('nocode/flow/setFlowConfig', { deployed: 1 })
+                    await this.$store.dispatch('flow/tpl/updateDeployStatus', { id: this.tplDetail.id, deployed: 1 })
                     this.$bkMessage({
                         theme: 'success',
                         message: window.i18n.t('流程部署成功')

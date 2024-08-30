@@ -40,15 +40,19 @@
 
             const handleMethodClick = (val) => {
                 if (val === 'NEW_FORM') {
-                    emit('edit', { formId: 0, formType: val })
+                    emit('edit', { formId: 0, relatedId: 0, formType: val })
                 } else {
                     dialogData.value.isCite = val === 'CITE_FORM'
                     dialogData.value.show = true
                 }
             }
 
-            const handleSelected = (id) => {
-                emit('selected', { formType: dialogData.value.isCite ? 'CITE_FORM' : 'USE_FORM', formId: id })
+            const handleSelected = (form) => {
+                emit('selected', {
+                    id: form.id,
+                    fields: JSON.parse(form.content || '[]'),
+                    formType: dialogData.value.isCite ? 'CITE_FORM' : 'USE_FORM',
+                })
             }
 
             const handleClose = () => {

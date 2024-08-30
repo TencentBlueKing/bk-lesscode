@@ -5,13 +5,15 @@
             :nodes="nodes"
             @preview="handleOpenPreview"
             @edit="emit('edit', $event)"
-            @selected="emit('update', $event)" />
+            @selected="emit('select', $event)" />
         <bound-detail
             v-else
             :form-type="config.formType"
             :form-id="config.formId"
+            :related-id="config.relatedId"
             @preview="handleOpenPreview"
-            @edit="emit('edit', $event)" />
+            @edit="handleOpenEdit"
+            @delete="emit('delete')" />
         <preview-form-dialog v-bind="previewDialogData" @close="previewDialogData.show = false" />
     </div>
 </template>
@@ -52,9 +54,15 @@
                 }
             }
 
+            const handleOpenEdit = () => {
+                const { formType, formId, relatedId } = props.config
+                emit('edit', { formType, formId, relatedId })
+            }
+
             return {
                 previewDialogData,
                 handleOpenPreview,
+                handleOpenEdit,
                 emit
             }
         }

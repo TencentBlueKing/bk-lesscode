@@ -41,7 +41,9 @@
                 execCopy(props.fieldData.id)
             }
 
-            const handleChange = () => {}
+            const handleChange = (property, val) => {
+                emit('change', property, val)
+            }
 
             return {
                 handleCopyId,

@@ -68,7 +68,7 @@
             const handleSave = () => {
                 if (validate()) {
                     editMode.value = false
-                    emit('update', name.value.trim())
+                    emit('change', name.value.trim())
                 }
             }
 
@@ -126,7 +126,7 @@
         }
         .form-name {
             margin-left: 4px;
-            max-width: 150px;
+            max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
