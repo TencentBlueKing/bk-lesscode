@@ -1,34 +1,51 @@
 <template>
     <div class="node-fields-canvas">
-        <div class="canvas-top-header">
-            <div class="nav-area">
-                <i class="bk-drag-icon bk-drag-arrow-back back-icon" @click="handleBack"></i>
-                <div class="split-line"></div>
-                <breadcrumb-nav :tpl-name="tplName" :node-name="nodeName" :form-name="formName" />
+        <div class="content-container">
+            <div class="canvas-top-header">
+                <div class="nav-area">
+                    <i class="bk-drag-icon bk-drag-arrow-back back-icon" @click="handleBack"></i>
+                    <div class="split-line"></div>
+                    <breadcrumb-nav
+                        :tpl-name="tplName"
+                        :node-name="nodeName"
+                        :form-name="formName"
+                        :editable="editable"
+                        @change="formName = $event" />
+                </div>
+                <div class="operate-btns">
+                    <save-btn
+                        :tpl-id="tplId"
+                        :node-id="nodeId"
+                        :form-type="formType"
+                        :form-id="formId"
+                        :form-name="formName"
+                        :table-name="tableName"
+                        :fields="fields"
+                        :editable="editable"
+                        @saved="emit('saved', $event)" />
+                    <!-- <bk-button
+                        v-bk-tooltips="{ content: $t('复用表单模式下表单不可编辑'), disabled: editable, placement: 'bottom-end' }"
+                        :class="{ disabled: !editable }"
+                        @click="handleClear">
+                        {{ $t('清空') }}
+                    </bk-button> -->
+                </div>
             </div>
-            <div class="operate-btns">
-                <save-btn :editable="editable" />
-                <bk-button
-                    v-bk-tooltips="{ content: $t('复用表单模式下表单不可编辑'), disabled: editable, placement: 'bottom-end' }"
-                    :class="{ disabled: !editable }"
-                    @click="handleClear">
-                    {{ $t('清空') }}
-                </bk-button>
-            </div>
-        </div>
-        <div v-if="!loading" class="canvas-edit-container">
-            <div class="left-panel">
-                <materials />
-            </div>
-            <div class="fields-edit-panel">
-                <fields-canvas
-                    :fields="fields"
-                    :type="type"
-                    @selected="handleSelected"
-                    @update="handleUpdate" />
-            </div>
-            <div class="right-panel">
-                <modifiers :fields="fields" :field-data="selected" :data-source="dataSource" @change="handleModifierChange" />
+            <div v-if="!loading" class="canvas-edit-container">
+                <div class="left-panel">
+                    <materials />
+                </div>
+                <div class="fields-edit-panel">
+                    <fields-canvas
+                        :fields="fields"
+                        :type="formType"
+                        @selected="handleSelectField"
+                        @update="handleUpdateFields"
+                        @deleted="handleDeleteField" />
+                </div>
+                <div class="right-panel">
+                    <modifiers :fields="fields" :field-data="selected" :data-source="dataSource" @change="handleModifierChange" />
+                </div>
             </div>
         </div>
     </div>
@@ -56,9 +73,11 @@
         props: {
             tplId: Number,
             tplName: String,
+            nodeId: String,
             nodeName: String,
-            id: Number,
-            type: String
+            formId: Number,
+            relatedId: Number,
+            formType: String
         },
         setup (props, { emit }) {
             const instance = getCurrentInstance()
@@ -67,28 +86,31 @@
 
             const loading = ref(false)
             const formName = ref('')
+            const tableName = ref('')
             const fields = ref([])
             const selected = ref({})
 
             const dataSource = computed(() => {
-                return { type: props.type, id: props.id, relatedId: props.id }
+                return { type: props.formType, id: props.formId, relatedId: props.relatedId }
             })
 
-            const editable = computed(() => props.type && props.type !== 'USE_FORM')
+            const editable = computed(() => props.formType && props.formType !== 'USE_FORM')
 
             onMounted(() => {
-                if (props.id) {
-                    getFormDetail()
+                const id = props.formId || props.relatedId
+                if (id) {
+                    getFormDetail(id)
                 } else {
-                    formName.value = `${props.nodeName}_表单`
+                    formName.value = props.nodeName
                     fields.value = []
                 }
             })
 
-            const getFormDetail = async () => {
+            const getFormDetail = async (id) => {
                 loading.value = true
-                const res = await store.dispatch('nocode/form/formDetail', { formId: props.id })
+                const res = await store.dispatch('nocode/form/formDetail', { formId: id })
                 formName.value = res.formName
+                tableName.value = res.tableName
                 fields.value = JSON.parse(res.content || '[]')
                 loading.value = false
             }
@@ -115,40 +137,51 @@
                 })
             }
 
-            const handleSelected = (field) => {
+            const handleSelectField = (field) => {
                 selected.value = field
             }
 
-            const handleUpdate = (fields) => {
-                console.log('update fields: ', fields)
-                fields.value = fields
+            const handleUpdateFields = (list) => {
+                fields.value = list
+            }
+
+            const handleDeleteField = (field) => {
+                if (field.id === selected.value.id) {
+                    selected.value = {}
+                }
             }
 
             const handleModifierChange = (property, val) => {
-                if (property in this.selected.configure) {
-                    this.selected.configure[property] = val
+                if (property in selected.value.configure) {
+                    selected.value.configure[property] = val
                 } else {
-                    this.$set(this.selected.configure, property, val)
+                    this.$set(selected.value.configure, property, val)
                 }
 
                 if (property === 'dateDimension') {
-                    this.selected.configure.value = ''
+                    selected.value.configure.value = ''
                 }
-                console.log('modifier change: ', field)
+                const index = fields.value.findIndex((item) => item.id === selected.value.id)
+                if (index > -1) {
+                    fields.value.splice(index, 1, selected.value)
+                }
             }
 
             return {
                 loading,
                 formName,
+                tableName,
                 fields,
                 selected,
                 dataSource,
                 editable,
                 handleBack,
                 handleClear,
-                handleSelected,
-                handleUpdate,
-                handleModifierChange
+                handleSelectField,
+                handleUpdateFields,
+                handleDeleteField,
+                handleModifierChange,
+                emit
             }
         }
     })
@@ -160,8 +193,12 @@
         right: 0;
         left: 59px;
         bottom: 0;
+        overflow: auto;
         background: #fafbfd;
         z-index: 3000;
+    }
+    .content-container {
+        height: 100%;
     }
     .canvas-top-header {
         position: relative;

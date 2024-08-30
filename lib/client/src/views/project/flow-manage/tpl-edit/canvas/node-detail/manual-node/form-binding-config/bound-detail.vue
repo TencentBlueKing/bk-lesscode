@@ -35,7 +35,8 @@
         name: 'BoundDetailSection',
         props: {
             formType: String,
-            formId: Number
+            formId: Number,
+            relatedId: Number
         },
         setup (props, { emit }) {
 
@@ -53,8 +54,9 @@
             const formListLoading = ref(false)
 
             const formDetail = computed(() => {
-                if (props.formId) {
-                    return formList.value.find(item => item.id === props.formId) || {}
+                const id = props.formType === 'USE_FORM' ? props.relatedId : props.formId
+                if (id) {
+                    return formList.value.find(item => item.id === id) || {}
                 }
                 return {}
             })
@@ -82,11 +84,12 @@
             }
 
             const handleBtnClick = (action) => {
-                console.log('action: ', action)
                 if (action === 'edit') {
-                    emit('edit', { formId: props.formId, formType: props.formType })
+                    emit('edit')
                 } else if (action === 'preview') {
                     emit('preview', JSON.parse(formDetail.value.content))
+                } else if (action === 'delete') {
+                    emit('delete')
                 }
             }
             return {

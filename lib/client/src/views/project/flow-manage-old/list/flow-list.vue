@@ -7,7 +7,7 @@
             :closable="true">
         </bk-alert>
         <div class="operation-area">
-            <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button>
+            <!-- <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button> -->
             <div class="search-wrapper">
                 <bk-input
                     v-model="keyword"

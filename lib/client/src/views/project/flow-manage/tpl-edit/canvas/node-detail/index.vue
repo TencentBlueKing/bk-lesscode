@@ -12,7 +12,8 @@
                 :tpl-name="tplName"
                 :nodes="nodes"
                 :detail="detail.data"
-                @change="handleChange" />
+                @change="handleChange"
+                @update="handleUpdate" />
             <div class="save-btn">
                 <bk-button theme="primary" @click="handleSave">{{ $t('保存') }}</bk-button>
             </div>
@@ -78,11 +79,14 @@
                 detailCopy.value = val
             }
 
+            const handleUpdate = (val) => {
+                handleChange(val)
+                emit('update', val)
+            }
+
             const handleSave = async() => {
-                const result = await nodeFormRef.value.validate()
-                console.log('result: ', result)
+                await nodeFormRef.value.validate()
                 detailCopy.value.isDraft = false
-                console.log('detailCopy: ', detailCopy.value)
                 await store.dispatch('flow/tpl/updateNode', { id: props.tplId, data: detailCopy.value })
                 emit('update', detailCopy.value)
                 instance.proxy.$bkMessage({
@@ -97,7 +101,8 @@
                 nodeFormRef,
                 handleClose,
                 handleChange,
-                handleSave
+                handleSave,
+                handleUpdate
             }
         }
     })

@@ -781,7 +781,7 @@
   "form_数据源配置": "Data source configuration",
   "条件配置项不能为空": "Condition configuration item cannot be empty",
   "没有找到": "Could not find it",
-  "流程表单暂不支持布局类型控件": "Flow forms do not currently support layout type controls",
+  "流程表单暂不支持该类型控件": "This type of control is not yet supported in process forms.",
   "组件名称": "Component Name",
   "table_组件名称": "Component name",
   "form_组件名称": "Component name",
