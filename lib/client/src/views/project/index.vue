@@ -297,7 +297,9 @@
                 }
 
                 // 流程管理子页面、左侧选中流程管理
-                if (name?.startsWith('flow')) {
+                if (name?.startsWith('flowTpl')) {
+                    name = 'flowTplList'
+                } else if (name?.startsWith('flow')) {
                     name = 'flowList'
                 }
 
