@@ -1,6 +1,6 @@
 <template>
     <div class="flow-tpl-canvas">
-        <bk-alert class="deploy-tips" type="warning">
+        <bk-alert v-if="tplDetail.deployed === 0" class="deploy-tips" type="warning">
             <div class="tips-content" slot="title">
                 {{ $t('当前流程未部署，需部署后，预览环境才生效；如果需要该流程在应用预发布环境或生产环境生效，需将整个应用部署至对应环境，') }}
                 <bk-button
@@ -54,7 +54,7 @@
                 default: () => ({})
             }
         },
-        setup (props) {
+        setup (props, { emit }) {
             const store = useStore()
             const route = useRoute()
 
@@ -77,6 +77,7 @@
                 const { x, y } = node.position()
                 const nodeData = { ...node.data, axis: { x, y } }
                 store.dispatch('flow/tpl/createNode', { id: props.tplDetail.id, data: nodeData })
+                emit('updateDeployStatus', 0)
                 nodes.value.push(nodeData)
             }
             const handleNodeMoved = async (node) => {
@@ -84,11 +85,13 @@
                 const nodeData = nodes.value.find(n => n.id === node.id)
                 const data = { ...nodeData, axis: { x, y } }
                 store.dispatch('flow/tpl/updateNode', { id: props.tplDetail.id, data })
+                emit('updateDeployStatus', 0)
                 nodes.value.push(data)
             }
             const handleNodeDeleted = async (node, edgeIds) => {
                 await store.dispatch('flow/tpl/deleteNode', { id: props.tplDetail.id, nodeId: node.id })
-                const index = nodes.value.find(n => n.id === node.id)
+                emit('updateDeployStatus', 0)
+                const index = nodes.value.findIndex(n => n.id === node.id)
                 if (index > -1) {
                     nodes.value.splice(index, 1)
                 }
@@ -97,14 +100,16 @@
             const handleEdgeAdded = async(edge) => {
                 const { id, source, target } = edge
                 await store.dispatch('flow/tpl/createEdge', { id: props.tplDetail.id, data: { id, source, target } })
+                emit('updateDeployStatus', 0)
                 edges.value.push(edge)
             }
 
             const handleEdgeDeleted = async (edge) => {
-                const index = edges.value.find(e => e.id === edge.id)
+                const index = edges.value.findIndex(e => e.id === edge.id)
 
                 if (index > -1) {
                     await store.dispatch('flow/tpl/deleteEdge', { id: props.tplDetail.id, edgeId: edge.id })
+                    emit('updateDeployStatus', 0)
                     edges.value.splice(index, 1)
                 }
             }

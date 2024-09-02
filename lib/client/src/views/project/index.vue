@@ -266,6 +266,7 @@
                 if (this.curProject?.framework === 'vue2') {
                     const index = navList.findIndex(item => item.id === 'flowList')
                     if (index > -1) {
+                        console.log('projectOldFlowLength', this.projectOldFlowLength, index)
                         const childrenNav = navList[index].children.slice()
                         if (this.projectOldFlowLength > 0) {
                             childrenNav.unshift({
