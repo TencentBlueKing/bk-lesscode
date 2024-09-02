@@ -31,7 +31,7 @@
             </div>
         </div>
         <div v-if="!tplDetailLoading" class="flow-edit-main">
-            <router-view :tpl-detail="tplDetail" @deploy="handleDeploy" />
+            <router-view :tpl-detail="tplDetail" @deploy="handleDeploy" @updateDeployStatus="tplDetail.deployed = $event" />
         </div>
     </section>
 </template>
@@ -154,11 +154,11 @@
                     this.$router.push({ name })
                 }.bind(this)
             },
-            // @todo
             async handleDeploy () {
                 try {
                     this.deployPending = true
                     await this.$store.dispatch('flow/tpl/updateDeployStatus', { id: this.tplDetail.id, deployed: 1 })
+                    this.tplDetail.deployed = 1
                     this.$bkMessage({
                         theme: 'success',
                         message: window.i18n.t('流程部署成功')
