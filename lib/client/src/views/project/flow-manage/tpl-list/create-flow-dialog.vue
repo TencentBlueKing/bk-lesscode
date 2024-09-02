@@ -67,6 +67,7 @@
                             summary,
                             nodes: JSON.stringify(nodes),
                             edges: JSON.stringify(edges),
+                            notifyConfig: JSON.stringify({ notifyType :{ fail :[], success :[] },receivers: '' }),
                             projectId: this.projectId
                         }
                         const res = await this.$store.dispatch('flow/tpl/createFlowTpl', params)

@@ -53,7 +53,6 @@
     </section>
 </template>
 <script>
-    import cloneDeep from 'lodash.clonedeep'
     import NotifyTypeConfig from './notify-type-config.vue'
 
     export default {
@@ -99,7 +98,7 @@
                     this.formData = {
                         name,
                         summary,
-                        notifyConfig: cloneDeep(notifyConfig),
+                        notifyConfig: JSON.parse(notifyConfig),
                     }
                 },
                 immediate: true
@@ -116,7 +115,7 @@
                     ...this.tplDetail,
                     name,
                     summary,
-                    notifyConfig
+                    notifyConfig: JSON.stringify(notifyConfig)
                 }
                 this.$store.dispatch('flow/tpl/updateFlowTpl', data)
                 this.$bkMessage({
