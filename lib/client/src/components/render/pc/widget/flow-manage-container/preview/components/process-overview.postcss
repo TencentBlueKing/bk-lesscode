@@ -4,9 +4,9 @@
         background: #FAFBFC;
     }
 
-    .bk-form-vertical {
+    .bk-form-vertical, .bk-lesscode-form--vertical {
         display: flex;
-        .bk-form-item {
+        .bk-form-item, .bk-lesscode-form-item {
             flex: 1;
             margin-top: 0 !important;
         }
@@ -15,5 +15,31 @@
         color: #3a84ff;
         cursor: pointer;
         font-size: 12px;
+    }
+    .flow-status-item {
+        .flow-status-icon {
+            display: inline-block;
+            margin-right: 8px;
+            width: 8px;
+            height: 8px;
+            border: 1px solid #000;
+            border-radius: 50%;
+            &.CREATED {
+                background: #F0F1F5;
+                border: 1px solid #C4C6CC;
+            };
+            &.FAILED, &.REVOKED {
+                background: #FFE6E6;
+                border: 1px solid #EA3636;
+            };
+            &.FINISHED {
+                background: #E8FFF5;
+                border: 1px solid #4DC8AE;
+            }
+            &.RUNNING {
+                background: #FFE8C3;
+                border: 1px solid #FF9C01;
+            }
+        }
     }
 }
