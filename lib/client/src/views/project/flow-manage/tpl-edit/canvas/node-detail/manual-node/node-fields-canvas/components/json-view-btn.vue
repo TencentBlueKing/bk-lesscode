@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch } from '@vue/composition-api'
+    import { defineComponent, ref, watch } from 'vue'
     import JsonView from '@/element-materials/modifier/component/props/components/strategy/json-view.vue'
     import { circleJSON } from '@/common/util.js'
 

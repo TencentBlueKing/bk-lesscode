@@ -9,9 +9,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-import { defineComponent, toRef, reactive, watch } from '@vue/composition-api'
-import Vue, { VNode } from 'vue'
-
+import Vue, { defineComponent, toRef, ref, reactive, watch, VNode } from 'vue'
 import './field-table.css'
 
 interface ISelectOption {
@@ -60,7 +58,7 @@ export default defineComponent({
          * value: error tips text
          */
         const errorMap = reactive({})
-        let renderColumns = reactive<IColumnItem[]>([])
+        let renderColumns = ref<IColumnItem[]>([])
         /**
          * 生成随机ID
          * @param {String} prefix 统一前缀
@@ -78,7 +76,7 @@ export default defineComponent({
         watch(
             toRef(props, 'column'),
             (val) => {
-                renderColumns = val.map((column: IColumnItem) => Object.assign({
+                renderColumns.value = val.map((column: IColumnItem) => Object.assign({
                     key: generateId(`field_table_column_${column.prop}`)
                 }, column))
             },
@@ -289,7 +287,7 @@ export default defineComponent({
                 // 待校验完成，防止input失焦的时候同时调用该方法。
                 setTimeout(async () => {
                     const length = props.data.length
-                    for (const item of renderColumns) {
+                    for (const item of renderColumns.value) {
                         // 自定义列且没有自定义rules则不校验
                         if (item.type === 'custom' && !item?.rules?.length) continue
                         for (let i = 0; i < length; i++) {

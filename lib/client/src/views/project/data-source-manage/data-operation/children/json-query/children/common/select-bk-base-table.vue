@@ -77,7 +77,7 @@
         ref,
         toRef,
         onBeforeUnmount
-    } from '@vue/composition-api'
+    } from 'vue'
     import { useStore } from '@/store'
     import {
         ITable

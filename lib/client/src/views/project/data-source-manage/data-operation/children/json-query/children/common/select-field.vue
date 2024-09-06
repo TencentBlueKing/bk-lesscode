@@ -80,7 +80,7 @@
         computed,
         ref,
         onBeforeUnmount
-    } from '@vue/composition-api'
+    } from 'vue'
     import validateContainer from '../composables/validate'
     import {
         isEmpty

@@ -24,7 +24,7 @@
         PropType,
         computed,
         onMounted
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         isEmpty
     } from 'shared/util'

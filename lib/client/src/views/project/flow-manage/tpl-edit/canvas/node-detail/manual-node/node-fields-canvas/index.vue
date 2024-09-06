@@ -51,7 +51,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, computed, onMounted, getCurrentInstance } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onMounted, getCurrentInstance } from 'vue'
     import { useStore } from '@/store'
     import BreadcrumbNav from './components/breadcrumb-nav.vue'
     import SaveBtn from './components/save-btn.vue'

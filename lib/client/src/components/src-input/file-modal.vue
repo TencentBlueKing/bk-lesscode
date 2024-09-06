@@ -1,5 +1,5 @@
 <script>
-    import { computed, defineComponent, onBeforeUnmount, reactive, ref } from '@vue/composition-api'
+    import { computed, defineComponent, onBeforeUnmount, reactive, ref } from 'vue'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import { messageError, messageSuccess } from '@/common/bkmagic'

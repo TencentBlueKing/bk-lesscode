@@ -13,7 +13,7 @@
 <script lang="ts">
     import {
         defineComponent
-    } from '@vue/composition-api'
+    } from 'vue'
 
     export default defineComponent({
         emits: ['click'],

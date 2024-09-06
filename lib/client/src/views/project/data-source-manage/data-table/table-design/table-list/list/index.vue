@@ -81,7 +81,7 @@
     import store from '@/store'
     import router from '@/router'
     import { messageError } from '@/common/bkmagic'
-    import { defineComponent, onBeforeMount, reactive, ref } from '@vue/composition-api'
+    import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
     import dayjs from 'dayjs'
     import exportTable from '../../../common/export.vue'
     import confirmDialog from '../../../common/confirm-dialog.vue'

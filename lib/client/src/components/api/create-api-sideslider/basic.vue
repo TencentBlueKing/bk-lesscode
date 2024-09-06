@@ -131,7 +131,7 @@
         defineComponent,
         ref,
         onBeforeMount
-    } from '@vue/composition-api'
+    } from 'vue'
     import useForm from './use-form'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'

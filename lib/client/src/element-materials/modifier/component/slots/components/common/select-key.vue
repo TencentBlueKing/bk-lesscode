@@ -47,7 +47,7 @@
         PropType,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import store from '@/store'
 
     interface IKey {

@@ -19,7 +19,7 @@
     </bk-dialog>
 </template>
 <script>
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent } from 'vue'
     import FormContainerRenderComp from './form-container-render-comp'
 
     export default defineComponent({

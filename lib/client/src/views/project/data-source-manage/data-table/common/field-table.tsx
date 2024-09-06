@@ -12,11 +12,10 @@
 import {
     defineComponent,
     watch,
-    reactive,
     toRef,
-    ref
-} from '@vue/composition-api'
-import { VNode } from 'vue'
+    ref,
+    VNode
+} from 'vue'
 import fieldTable from '@/components/field-table/field-table'
 import { getDefaultJson, normalizeJson } from 'shared/data-source/helper'
 import { ORM_KEYS, BASE_COLUMNS, FIELDS_TYPES } from 'shared/data-source/constant'
@@ -106,7 +105,7 @@ export default defineComponent({
                     },
                     {
                         validator (val, row) {
-                            return !tableList.find((table) => table.name === val && row.columnId !== table.columnId)
+                            return !tableList.value.find((table) => table.name === val && row.columnId !== table.columnId)
                         },
                         message: window.i18n.t('字段名称不能重复')
                     },
@@ -222,15 +221,15 @@ export default defineComponent({
                 prop: 'comment'
             }
         ]
-        const tableList = reactive([])
+        const tableList = ref([])
         const tableRef = ref(null)
 
         watch(
             toRef(props, 'data'),
             (val) => {
-                tableList.splice(
+                tableList.value.splice(
                     0,
-                    tableList.length,
+                    tableList.value.length,
                     ...val.map(normalizeTableItem)
                 )
             },
@@ -241,18 +240,18 @@ export default defineComponent({
 
         const addField = (row, index) => {
             const defaultRow = getDefaultJson()
-            tableList.splice(index + 1, 0, defaultRow)
+            tableList.value.splice(index + 1, 0, defaultRow)
             emit('change')
         }
 
         const deleteField = (row, index) => {
-            tableList.splice(index, 1)
+            tableList.value.splice(index, 1)
             emit('change')
         }
 
         const changeData = (value, row, column, index) => {
             // 设置值
-            const currentRow = tableList[index]
+            const currentRow = tableList.value[index]
             Object.assign(currentRow, { [column.prop]: value })
 
             // 标准化
@@ -266,7 +265,7 @@ export default defineComponent({
         const validate = () => {
             return new Promise((resolve, reject) => {
                 tableRef.value?.verification().then(() => {
-                    resolve(tableList.map(normalizeOrmItem))
+                    resolve(tableList.value.map(normalizeOrmItem))
                 }).catch(reject)
             })
         }

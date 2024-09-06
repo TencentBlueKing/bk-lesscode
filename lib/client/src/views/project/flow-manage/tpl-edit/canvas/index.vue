@@ -36,7 +36,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch, computed, onMounted } from '@vue/composition-api';
+    import { defineComponent, ref, watch, computed, onMounted } from 'vue'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import RenderGraph from './render-graph/graph.vue'
@@ -97,7 +97,7 @@
                 }
                 edges.value = edges.value.filter(e => !edgeIds.includes(e.id))
             }
-            const handleEdgeAdded = async(edge) => {
+            const handleEdgeAdded = async (edge) => {
                 const { id, source, target } = edge
                 await store.dispatch('flow/tpl/createEdge', { id: props.tplDetail.id, data: { id, source, target } })
                 emit('updateDeployStatus', 0)

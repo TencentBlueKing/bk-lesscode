@@ -9,7 +9,7 @@
     </bk-button>
 </template>
 <script>
-    import { defineComponent, ref } from '@vue/composition-api'
+    import { defineComponent, ref } from 'vue'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import { uuid } from '@/common/util'

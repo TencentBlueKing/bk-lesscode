@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch, nextTick } from '@vue/composition-api'
+    import { defineComponent, ref, watch, nextTick } from 'vue'
 
     export default defineComponent({
         name: 'BreadcrumbNav',

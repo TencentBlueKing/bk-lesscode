@@ -15,7 +15,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, onMounted } from '@vue/composition-api'
+    import { defineComponent, ref, onMounted } from 'vue'
     import { Graph } from '@antv/x6';
     import { Dnd } from "@antv/x6-plugin-dnd"
     import { NODES, GET_NODE_ICON, IS_CIRCLE_NODE, GET_NODE_DEFAULT_CONFIG } from './constants'

@@ -23,7 +23,7 @@
     import ModuleCategory from './children/category.vue'
     import ModuleContent from './children/backend/index.vue'
 
-    import { defineComponent, ref, computed, onBeforeMount } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onBeforeMount } from 'vue'
     import { useStore } from '@/store'
     
     export default defineComponent({

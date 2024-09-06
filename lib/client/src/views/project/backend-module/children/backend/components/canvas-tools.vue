@@ -21,7 +21,7 @@
 
 <script>
     import screenfull from 'screenfull'
-    import { ref, defineComponent, computed, onMounted, onBeforeUnmount } from '@vue/composition-api'
+    import { ref, defineComponent, computed, onMounted, onBeforeUnmount } from 'vue'
     
     export default defineComponent({
         props: {
