@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent } from 'vue'
     import { execCopy } from '@/common/util'
     import Setter from '@/form-engine/setter/index'
 

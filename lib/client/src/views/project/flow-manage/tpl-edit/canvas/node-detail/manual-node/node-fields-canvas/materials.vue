@@ -10,7 +10,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref } from '@vue/composition-api';
+    import { defineComponent, ref } from 'vue';
     import searchBox from '@/views/index/components/material-panel/components/common/search-box/index'
     import renderComponent from '@/views/index/components/material-panel/components/common/group-box/render-component'
     import formEngineMaterial from '@/form-engine/material/index.vue'

@@ -56,7 +56,7 @@
     </bk-dialog>
 </template>
 <script>
-    import { defineComponent, ref, computed, watch } from '@vue/composition-api'
+    import { defineComponent, ref, computed, watch } from 'vue'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
 

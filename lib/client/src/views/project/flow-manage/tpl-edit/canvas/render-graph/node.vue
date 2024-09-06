@@ -31,7 +31,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, inject, computed, onMounted } from '@vue/composition-api'
+    import { defineComponent, ref, inject, computed, onMounted } from 'vue'
     import { GET_NODE_ICON } from './constants'
 
     export default defineComponent({
