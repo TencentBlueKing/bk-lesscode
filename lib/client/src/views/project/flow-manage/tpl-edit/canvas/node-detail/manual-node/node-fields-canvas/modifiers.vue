@@ -4,8 +4,16 @@
             <section class="panel-head">
                 <span class="element-id">{{ fieldData.id }}</span>
                 <div class="actions">
-                    <i v-bk-tooltips="$t('删除')" class="bk-drag-icon bk-drag-delet mr5"></i>
-                    <i v-bk-tooltips="$t('复制id')" class="bk-drag-icon bk-drag-copy" @click="handleCopyId"></i>
+                    <i
+                        v-bk-tooltips="$t('删除')"
+                        :class="['bk-drag-icon bk-drag-delet delete-icon', dataSource.type === 'USE_FORM' ? 'disabled' : '']"
+                        @click="handleDelete">
+                    </i>
+                    <i
+                        v-bk-tooltips="$t('复制id')"
+                        class="bk-drag-icon bk-drag-copy"
+                        @click="handleCopyId">
+                    </i>
                 </div>
             </section>
             <section class="field-setting-container">
@@ -37,6 +45,14 @@
             dataSource: Object
         },
         setup (props, { emit }) {
+
+            const handleDelete = () => {
+                if (props.dataSource.type === 'USE_FORM') {
+                    return
+                }
+                emit('delete', props.fieldData)
+            }
+
             const handleCopyId = () => {
                 execCopy(props.fieldData.id)
             }
@@ -46,6 +62,7 @@
             }
 
             return {
+                handleDelete,
                 handleCopyId,
                 handleChange
             }
@@ -74,9 +91,16 @@
         .actions {
             display: inline-flex;
             align-items: center;
+            .delete-icon {
+                margin-right: 5px;
+            }
             & > i {
                 cursor: pointer;
-                &:hover {
+                &.disabled {
+                    color: #dcdee5;
+                    cursor: not-allowed;
+                }
+                &:not(.disabled):hover {
                     color: #3a84ff;
                 }
             }

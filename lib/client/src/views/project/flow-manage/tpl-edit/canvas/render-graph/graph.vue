@@ -48,7 +48,10 @@
                     })
                 )
 
-                registryNode({ delete: handleDeleteNode })
+                registryNode({
+                    click: handleClick,
+                    delete: handleDeleteNode
+                })
                 setGraphEvents()
                 updateGraph()
             }
@@ -71,8 +74,8 @@
                 instance.value.on('node:moved', ({ node }) => ctx.emit('node:moved', node))
                 // 新增节点
                 instance.value.on('node:added', ({ node }) => ctx.emit('node:added', node))
-                // 鼠标点击
-                instance.value.on('cell:click', ({ node }) => ctx.emit('node:click', node));
+                // 鼠标点击，触发区域改为icon
+                // instance.value.on('cell:click', ({ node }) => ctx.emit('node:click', node));
                 // 新增边
                 instance.value.on('edge:connected', ({ edge }) => ctx.emit('edge:added', edge));
                 // 边删除
@@ -111,6 +114,10 @@
                     }))
                 })
                 instance.value.resetCells(cells)
+            }
+
+            const handleClick = (node) => {
+                ctx.emit('node:click', node)
             }
 
             const handleDeleteNode = (node) => {

@@ -140,7 +140,7 @@
             }
 
             const handlePreviewClick = (form) => {
-                emit('preview', JSON.parse(form.content))
+                emit('preview', form.id)
             }
 
             const handleConfirm = () => {

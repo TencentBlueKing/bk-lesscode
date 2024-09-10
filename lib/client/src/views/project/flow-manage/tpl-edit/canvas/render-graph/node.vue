@@ -22,12 +22,13 @@
                         <span v-if="node.type === 'DataProcessing'">目标表：{{ node.config.tableName }}</span>
                     </template>
                 </p>
+                <i class="bk-drag-icon bk-drag-edit node-edit-icon" @click.stop="$emit('click', node)" />
             </div>
         </div>
         <i
+            v-if="!['Start', 'End'].includes(node.type)"
             class="bk-icon icon-close node-delete-icon"
-            @click.stop="$emit('delete', node)">
-        </i>
+            @click.stop="$emit('delete', node)" />
     </div>
 </template>
 <script>
@@ -123,6 +124,11 @@
         border-radius: 4px;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.20);
         overflow: hidden;
+        &:hover {
+            .node-name-area .node-edit-icon {
+                display: block;
+            }
+        }
         .node-icon-area {
             display: flex;
             align-items: center;
@@ -174,6 +180,19 @@
                 overflow: hidden;
                 .config-tips {
                     color: #c4c6cc;
+                }
+            }
+            .node-edit-icon {
+                display: none;
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 26px;
+                color: #63656e;
+                cursor: pointer;
+                &:hover {
+                    color: #3a84ff;
                 }
             }
         }
