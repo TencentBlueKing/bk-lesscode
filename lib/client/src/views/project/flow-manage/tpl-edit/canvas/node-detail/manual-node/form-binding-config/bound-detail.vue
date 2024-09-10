@@ -10,15 +10,17 @@
         </div>
         <div class="operate-btns">
             <i
+                v-bk-tooltips.top="$t('编辑表单')"
                 class="bk-drag-icon bk-drag-edit edit-icon"
                 @click="handleBtnClick('edit')">
             </i>
             <i
-                v-bk-tooltips.top="$t('预览表单内容')"
+                v-bk-tooltips.top="$t('预览表单')"
                 class="bk-drag-icon bk-drag-visible-eye preview-icon"
                 @click="handleBtnClick('preview')">
             </i>
             <i
+                v-bk-tooltips.top="$t('删除表单')"
                 class="bk-icon icon-delete"
                 style="font-size: 12px;"
                 @click="handleBtnClick('delete')">
@@ -87,7 +89,7 @@
                 if (action === 'edit') {
                     emit('edit')
                 } else if (action === 'preview') {
-                    emit('preview', JSON.parse(formDetail.value.content))
+                    emit('preview', formDetail.value.id)
                 } else if (action === 'delete') {
                     emit('delete')
                 }

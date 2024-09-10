@@ -1,7 +1,15 @@
 <template>
     <div class="choose-flow-action">
         <div class="label-select">
-            <div class="label">{{ $t('流程') }}</div>
+            <div
+                v-bk-tooltips="{
+                    content: $t('可选择当前应用下已部署的流程'),
+                    placement: 'top-end',
+                    boundary: 'window'
+                }"
+                class="label">
+                <span class="desc-line">{{ $t('流程') }}</span>
+            </div>
             <bk-select
                 v-model="copyEventValue.flow.id"
                 :searchable="true"
@@ -17,7 +25,7 @@
         <div class="label-select">
             <div class="label">{{ $t('操作') }}</div>
             <bk-select v-model="copyEventValue.flow.actionName" @change="change">
-                <bk-option id="createTask" :name="$t('创建任务')" />
+                <bk-option id="createTask" :name="$t('执行流程')" />
                 <!-- <bk-option id="createAndExcute" :name="$t('创建并执行任务')" /> -->
             </bk-select>
         </div>
@@ -56,7 +64,7 @@
             async getFlowList () {
                 this.loading = true
                 const res = await this.$store.dispatch('flow/tpl/getTplList', { projectId: this.projectId })
-                this.flowList = res.list
+                this.flowList = res.list.filter(item => item.deployed === 1)
                 this.loading = false
             },
             change () {
@@ -84,6 +92,9 @@
             color: #63656e;
             background: #f2f4f8;
             border: 1px solid #c4c6cc;
+            .desc-line {
+                border-bottom: 1px dashed #63656e ;
+            }
         }
         .bk-select {
             flex: 1;

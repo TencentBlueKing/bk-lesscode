@@ -73,23 +73,32 @@
                 }
             }, { immediate: true })
 
+            // 新增节点
             const handleNodeAdded = async (node) => {
                 const { x, y } = node.position()
                 const nodeData = { ...node.data, axis: { x, y } }
-                store.dispatch('flow/tpl/createNode', { id: props.tplDetail.id, data: nodeData })
+                await store.dispatch('flow/tpl/createNode', { id: props.tplDetail.id, data: nodeData })
                 emit('updateDeployStatus', 0)
                 nodes.value.push(nodeData)
             }
+
+            // 移动节点位置
             const handleNodeMoved = async (node) => {
                 const { x, y } = node.position()
                 const nodeData = nodes.value.find(n => n.id === node.id)
                 const data = { ...nodeData, axis: { x, y } }
-                store.dispatch('flow/tpl/updateNode', { id: props.tplDetail.id, data })
+                await store.dispatch('flow/tpl/updateNode', { id: props.tplDetail.id, data })
                 emit('updateDeployStatus', 0)
-                nodes.value.push(data)
+                const index = nodes.value.findIndex(n => n.id === node.id)
+                if (index > -1) {
+                    nodes.value.splice(index, 1, data)
+                }
             }
+
+            // 删除节点
             const handleNodeDeleted = async (node, edgeIds) => {
                 await store.dispatch('flow/tpl/deleteNode', { id: props.tplDetail.id, nodeId: node.id })
+                console.log('node delete: ', node.id)
                 emit('updateDeployStatus', 0)
                 const index = nodes.value.findIndex(n => n.id === node.id)
                 if (index > -1) {
@@ -97,18 +106,22 @@
                 }
                 edges.value = edges.value.filter(e => !edgeIds.includes(e.id))
             }
-            const handleEdgeAdded = async(edge) => {
+
+            // 新增边
+            const handleEdgeAdded = async (edge) => {
                 const { id, source, target } = edge
                 await store.dispatch('flow/tpl/createEdge', { id: props.tplDetail.id, data: { id, source, target } })
                 emit('updateDeployStatus', 0)
                 edges.value.push(edge)
             }
 
+            // 删除边
             const handleEdgeDeleted = async (edge) => {
                 const index = edges.value.findIndex(e => e.id === edge.id)
 
                 if (index > -1) {
                     await store.dispatch('flow/tpl/deleteEdge', { id: props.tplDetail.id, edgeId: edge.id })
+                    console.log('edge delete: ', edge.id)
                     emit('updateDeployStatus', 0)
                     edges.value.splice(index, 1)
                 }
@@ -116,7 +129,7 @@
 
             const handleNodeClick = ({ id }) => {
                 const node = nodes.value.find(n => n.id === id)
-                if (node) {
+                if (node && !['Start', 'End'].includes(node.type)) {
                     nodeDetailPanelData.value = { show: true, data: node }
                 }
             }
