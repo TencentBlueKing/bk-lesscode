@@ -15,22 +15,15 @@
             :show="!isReadOnly && variableSelectEnable"
             :options="variableSelectOptions"
             :value="formData"
-            :show-content="isShowProp"
             :describe="describe"
             @change="handleVariableFormatChange">
             <template v-slot:title>
                 <div class="prop-name">
-                    <section class="icon-and-name" @click="toggleShowProp">
-                        <i
-                            :class="{
-                                'bk-icon icon-angle-down': true,
-                                close: !isShowProp
-                            }"
-                        ></i>
+                    <section class="icon-and-name">
                         <span
                             :class="{ label: true }"
-                            v-bk-tooltips="introTips">
-                            {{ displayName }}
+                            v-bk-tooltips="introTips"
+                            v-html="displayName">
                         </span>
                     </section>
                 </div>
@@ -247,7 +240,6 @@
                 selectValueType: '',
                 formData: {},
                 isRenderValueCom: false,
-                isShowProp: true,
                 isSyncing: false
             }
         },
@@ -378,7 +370,7 @@
                         return this.describe?.displayName || this.name
                     }
                     if (!isEmpty(this.describe?.displayName)) {
-                        return `${this.describe.displayName}(${this.name})`
+                        return `${this.describe.displayName}<span class='prop-field'>(${this.name})</span>`
                     }
                     return this.name
                 }
@@ -704,10 +696,6 @@
                 }
             },
 
-            toggleShowProp () {
-                this.isShowProp = !this.isShowProp
-            },
-
             // 每个formItem中表单组件v-model的变量名替换成formModel选择的变量名
             replaceFormItemVmodelKey (formNode = {}, buildInVariableType, payload, buildInVariable) {
                 let formModelKey = `${buildInVariable}model`
@@ -734,7 +722,7 @@
         }
     }
 </script>
-<style lang="postcss">
+<style lang="postcss" scoped>
     .item-ghost {
         border: 1px dashed #3a84ff;
         background: #fff !important;
@@ -778,7 +766,6 @@
             width: 100%;
             display: flex;
             align-items: center;
-            border-top: 1px solid #EAEBF0;
             cursor: pointer;
             padding: 10px 0;
             .icon-and-name {
@@ -787,9 +774,14 @@
                 max-width: calc(100% - 65px);
             }
             .label {
-                border-bottom: 1px dashed #313238;
+                color: #63656E;
+                border-bottom: 1px dashed #DCDEE5;
                 cursor: pointer;
                 line-height: 19px;
+                /deep/ span.prop-field {
+                    margin-left: 3px;
+                    color: #C4C6CC;
+                }
             }
             span {
                 overflow: hidden;
