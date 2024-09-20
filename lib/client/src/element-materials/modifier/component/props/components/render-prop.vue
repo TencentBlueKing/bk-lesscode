@@ -760,8 +760,6 @@
         margin: 0 10px;
         .prop-name {
             font-size: 12px;
-            font-weight: bold;
-            color: #313238;
             word-break: keep-all;
             width: 100%;
             display: flex;
@@ -777,10 +775,11 @@
                 color: #63656E;
                 border-bottom: 1px dashed #DCDEE5;
                 cursor: pointer;
-                line-height: 19px;
+                line-height: 20px;
                 /deep/ span.prop-field {
                     margin-left: 3px;
                     color: #C4C6CC;
+                    font-weight: 400;
                 }
             }
             span {
@@ -790,16 +789,6 @@
                 -webkit-box-orient: vertical;
                 text-overflow: ellipsis;
                 word-break: break-all;
-            }
-            .icon-angle-down {
-                cursor: pointer;
-                font-size: 20px;
-                margin-left: -5px;
-                margin-right: 3px;
-                transition: transform 200ms;
-                &.close {
-                    transform: rotate(-90deg);
-                }
             }
         }
         .prop-action {
