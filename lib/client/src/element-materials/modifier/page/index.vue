@@ -14,7 +14,7 @@
     import SelectTab from '@/components/ui/select-tab'
     import PageSetting from './components/page-setting'
     import PageFunc from './components/page-func'
-    import { defineComponent, ref } from '@vue/composition-api'
+    import { defineComponent, ref } from 'vue'
 
     export default defineComponent({
         components: {

@@ -10,7 +10,7 @@ import {
     toRef,
     ref,
     getCurrentInstance
-} from '@vue/composition-api'
+} from 'vue'
 import useCustomValidate from '@/hooks/use-custom-validate'
 
 export default defineComponent({

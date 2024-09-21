@@ -19,7 +19,7 @@
                     @clear="handleSearch"
                     @enter="handleSearch">
                 </bk-input>
-                <div class="archived-icon" @click="$router.push({ name: 'flowArchivedList' })">
+                <div class="archived-icon" @click="$router.push({ name: 'flowTplArchivedList' })">
                     <i class="bk-drag-icon bk-drag-countdown" v-bk-tooltips="$t('已归档流程')"></i>
                 </div>
             </div>
@@ -34,29 +34,17 @@
             :header-cell-style="{ background: '#f0f1f5' }"
             @page-change="handlePageChange"
             @page-limit-change="handlePageLimitChange">
-            <bk-table-column :label="$t('table_流程名称')" property="flowName" show-overflow-tooltip :min-width="120">
+            <bk-table-column :label="$t('table_流程名称')" property="name" show-overflow-tooltip :min-width="120">
                 <template slot-scope="{ row }">
                     <router-link
                         class="link-btn"
-                        :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
-                        {{ row.flowName }}
+                        :to="{ name: 'flowTplCanvas', params: { projectId, tplId: row.id } }">
+                        {{ row.name }}
                     </router-link>
                 </template>
             </bk-table-column>
             <bk-table-column :label="$t('table_流程描述')" :render-header="renderHeaderAddTitle" property="summary" show-overflow-tooltip>
                 <template slot-scope="{ row }">{{ row.summary || '--' }}</template>
-            </bk-table-column>
-            <bk-table-column :label="$t('table_流程表单页')" :render-header="renderHeaderAddTitle" property="pageName" show-overflow-tooltip>
-                <template slot-scope="{ row }">
-                    <span v-if="row.pageId" class="link-btn" @click="handlePreviewPage(row.pageId, row.pageCode)">{{ row.pageName }}</span>
-                    <span v-else style="color: #3a84ff">--</span>
-                </template>
-            </bk-table-column>
-            <bk-table-column :label="$t('table_流程数据管理页')" :render-header="renderHeaderAddTitle" min-width="100px" property="managePageNames" show-overflow-tooltip>
-                <template slot-scope="{ row }">
-                    <span v-if="row.managePageIds" class="link-btn" :text="true" @click="handlePreviewPage(row.managePageIds, row.managePageCodes)">{{ row.managePageNames }}</span>
-                    <span v-else style="color: #3a84ff">--</span>
-                </template>
             </bk-table-column>
             <bk-table-column :label="$t('table_预览环境部署状态')" :render-header="renderHeaderAddTitle" min-width="100px">
                 <template slot-scope="{ row }">
@@ -76,7 +64,7 @@
                 <template slot-scope="{ row }">
                     <router-link
                         class="link-btn"
-                        :to="{ name: 'flowConfig', params: { projectId, flowId: row.id } }">
+                        :to="{ name: 'flowTplCanvas', params: { projectId, tplId: row.id } }">
                         {{ $t('编辑') }} </router-link>
                     <bk-popconfirm
                         trigger="click"
@@ -90,7 +78,7 @@
                             {{ $t('归档') }} </bk-button>
                         <div slot="content" class="archive-tips-content">
                             <h4>{{ $t('确认归档该流程') }}</h4>
-                            <p>1. {{ $t('流程归档后，将不能使用，流程的提单页面将会被删除，请谨慎操作') }}</p>
+                            <p>1. {{ $t('流程归档后，将不能使用，请谨慎操作') }}</p>
                             <p>2. {{ $t('后续可通过归档列表恢复使用') }}</p>
                         </div>
                     </bk-popconfirm>
@@ -174,12 +162,12 @@
                     page: this.pagination.current
                 }
                 if (this.keyword) {
-                    params.flowName = this.keyword.trim()
+                    params.name = this.keyword.trim()
                     this.emptyType = 'search'
                 } else {
                     this.emptyType = 'noData'
                 }
-                const res = await this.$store.dispatch('nocode/flow/getFlowList', params)
+                const res = await this.$store.dispatch('flow/tpl/getTplList', params)
                 const { list, count } = res
                 this.flowList = list
                 this.pagination.count = count
@@ -190,7 +178,7 @@
                     id: this.archiveId,
                     deleteFlag: 1
                 }
-                await this.$store.dispatch('nocode/flow/archiveFlow', params)
+                await this.$store.dispatch('flow/tpl/archiveFlowTpl', params)
                 this.archiveId = ''
                 if (this.flowList.length === 1 && this.pagination.current > 1) {
                     this.pagination.current -= 1

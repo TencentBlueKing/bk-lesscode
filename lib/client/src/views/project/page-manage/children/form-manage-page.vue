@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent } from 'vue'
     import usePageOperation from './use-page-operation'
     import { NOCODE_TYPE_MAP } from '@/common/constant'
 

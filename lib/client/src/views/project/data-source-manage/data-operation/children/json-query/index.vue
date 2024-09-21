@@ -61,13 +61,12 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue'
-    import {
+    import Vue, {
         defineComponent,
         ref,
         computed,
         PropType
-    } from '@vue/composition-api'
+    } from 'vue'
     import RenderTable, { ITable, IBkBaseBiz } from './children/render-table.vue'
     import RenderWhere from './children/render-where.vue'
     import RenderGroup from './children/render-group.vue'

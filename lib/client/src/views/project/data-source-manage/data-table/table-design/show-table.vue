@@ -52,7 +52,7 @@
     import {
         defineComponent,
         onBeforeMount
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         useTableStatus
     } from './composables/table-info'

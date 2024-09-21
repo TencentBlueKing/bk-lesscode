@@ -7,7 +7,7 @@
     </render-modal>
 </template>
 <script>
-    import { ref } from '@vue/composition-api'
+    import { ref } from 'vue'
     import RenderModal from './components/modal.vue'
     import RenderContent from './components/content.vue'
 

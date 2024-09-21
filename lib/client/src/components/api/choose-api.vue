@@ -55,7 +55,7 @@
     import {
         defineComponent,
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import { getDataSourceApiList } from 'shared/data-source'

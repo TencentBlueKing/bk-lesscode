@@ -11,7 +11,7 @@
 
 <script lang="ts">
     import { mapGetters } from 'vuex'
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent } from 'vue'
     import dayjs from '@/common/dayjs'
 
     export default defineComponent({

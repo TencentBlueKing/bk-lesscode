@@ -25,7 +25,7 @@
 <script>
     import {
         defineComponent
-    } from '@vue/composition-api'
+    } from 'vue'
     import SelectType from './select-type.vue'
 
     export default defineComponent({

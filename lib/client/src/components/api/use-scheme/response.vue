@@ -24,7 +24,7 @@
         watch,
         onMounted,
         getCurrentInstance
-    } from '@vue/composition-api'
+    } from 'vue'
     import SchemeHeader from '../common/scheme-header'
     import SingleScheme from '../common/single-scheme'
 

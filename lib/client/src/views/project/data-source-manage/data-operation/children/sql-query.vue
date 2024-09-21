@@ -65,7 +65,7 @@
         ref,
         watch,
         computed
-    } from '@vue/composition-api'
+    } from 'vue'
     import Monaco from '@/components/monaco.vue'
     import AiSqlInput from './ai-sql-input'
     import {

@@ -160,7 +160,7 @@
         defineComponent,
         ref,
         onBeforeMount
-    } from '@vue/composition-api'
+    } from 'vue'
     import store from '@/store'
     import router from '@/router'
     import useDatasource from '@/hooks/use-datasource'

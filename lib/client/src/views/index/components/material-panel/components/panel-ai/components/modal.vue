@@ -55,7 +55,7 @@
         computed,
         onBeforeMount,
         onBeforeUnmount
-    } from '@vue/composition-api'
+    } from 'vue'
 
     export default {
         emits: ['clear', 'close'],

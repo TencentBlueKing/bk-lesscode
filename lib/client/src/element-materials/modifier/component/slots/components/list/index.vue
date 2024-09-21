@@ -71,7 +71,7 @@
         ref,
         watch,
         computed
-    } from '@vue/composition-api'
+    } from 'vue'
     import Icon from '@/components/modifier/icon-select.vue'
     import configMap from './config.js'
 
