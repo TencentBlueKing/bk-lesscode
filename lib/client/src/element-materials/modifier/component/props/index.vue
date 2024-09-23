@@ -10,7 +10,7 @@
 -->
 
 <template>
-    <div v-if="hasMaterialConfig">
+    <div v-if="hasMaterialConfig" :class="{ mt10: keyword.length }">
         <template v-for="(group, indexKey) in propGropuList">
             <div v-if="hasGroupProp(group)" :key="indexKey">
                 <div class="group-name" @click="toggleShowGroupProp(group, indexKey)">
@@ -22,7 +22,7 @@
                         }"
                     ></i>
                 </div>
-                <div v-if="group.isShow">
+                <div v-if="group.isShow" class="mt10 group-bt">
                     <template v-for="(item, key) in group.groupProps">
                         <render-prop
                             v-if="item.type !== 'hidden'"
@@ -361,15 +361,19 @@
     }
 </script>
 <style lang='postcss' scoped>
+.group-bt {
+    border-bottom: 1px solid #EAEBF0;
+}
 .group-name {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 10px 10px;
+    margin: 0 10px;
     line-height: 40px;
     border-bottom: 1px solid #F5F7FA;
     cursor: pointer;
-    span {
+    & > span:first-child{
+        font-size: 12px;
         font-weight: 700;
         color: #313238;
     }
