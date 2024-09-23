@@ -19,6 +19,7 @@
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
+            <chrome-tips :domain="cookieDomain" />
             <notice-component :api-url="noticeUrl" @show-alert-change="showAlertChange" />
             <app-header></app-header>
             <div class="page-body" :style="{ height: bodyHeight }" >
@@ -38,6 +39,8 @@
     import ApplyPage from './components/apply-permission/apply-page.vue'
     import NoticeComponent from '@blueking/notice-component-vue2'
     import '@blueking/notice-component-vue2/dist/style.css'
+    import ChromeTips from '@blueking/chrome-tips/vue2'
+    import '@blueking/chrome-tips/vue2/vue2.css'
 
     import { getPlatformConfig, setDocumentTitle, setShortcutIcon } from '@blueking/platform-config';
 
@@ -45,10 +48,12 @@
         name: 'app',
         components: {
             ApplyPage,
-            NoticeComponent
+            NoticeComponent,
+            ChromeTips
         },
         data () {
             return {
+                cookieDomain: window.BKPAAS_BK_DOMAIN,
                 noticeUrl: `${process.env.BK_AJAX_URL_PREFIX}/notice-center/getNoticeList`,
                 systemCls: 'mac',
                 position: 'middle',
