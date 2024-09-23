@@ -13,27 +13,30 @@
                         }"
                     ></i>
                 </div>
-                <div v-if="group.isDisplay">
-                    <template v-for="(item, key) in group.groupSlots">
-                        <renderSlot
-                            :key="key"
-                            :name="key"
-                            :last-value="lastSlots[key]"
-                            :describe="item"
-                            :component-id="componentId"
-                            @on-change="handleChange" />
-                    </template>
+                <div v-if="group.isDisplay" class="group-bt">
+                    <div class="mar-lr">
+                        <template v-for="(item, key) in group.groupSlots">
+                            <renderSlot
+                                :key="key"
+                                :name="key"
+                                :last-value="lastSlots[key]"
+                                :describe="item"
+                                :component-id="componentId"
+                                @on-change="handleChange" />
+                        </template>
+                    </div>
                 </div>
             </div>
             <template v-else>
-                <renderSlot
-                    :key="indexKey"
-                    :name="indexKey"
-                    :last-value="lastSlots[indexKey]"
-                    :describe="group"
-                    :is-has-group="false"
-                    :component-id="componentId"
-                    @on-change="handleChange" />
+                <div class="mar-lr" :key="indexKey">
+                    <renderSlot
+                        :name="indexKey"
+                        :last-value="lastSlots[indexKey]"
+                        :describe="group"
+                        :is-has-group="false"
+                        :component-id="componentId"
+                        @on-change="handleChange" />
+                </div>
             </template>
         </template>
     </div>
@@ -193,7 +196,6 @@
 
 <style lang="postcss" scoped>
     .modifier-slot {
-        margin: 0 10px;
         .group-name {
             display: flex;
             justify-content: space-between;
@@ -201,7 +203,9 @@
             line-height: 40px;
             border-bottom: 1px solid #F5F7FA;
             cursor: pointer;
-            span {
+            margin: 0 10px;
+            & > span:first-child {
+                font-size: 12px;
                 font-weight: 700;
                 color: #313238;
             }
@@ -218,6 +222,12 @@
                     transform: rotate(-90deg);
                 }
             }
+        }
+        .group-bt {
+            border-bottom: 1px solid #EAEBF0;
+        }
+        .mar-lr{
+            margin: 0 10px;
         }
     }
 </style>
