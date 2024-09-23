@@ -4,18 +4,11 @@
         :value="formData"
         :remote-config="remoteConfig"
         :show="variableSelectEnable"
-        :show-content="isShowSlot"
         @change="handleVariableFormatChange">
         <template v-slot:title>
             <section class="slot-title-wrapper">
-                <span class="slot-name">
-                    <section class="icon-and-name" @click="toggleShowSlot">
-                        <i
-                            :class="{
-                                'bk-icon icon-angle-down': true,
-                                close: !isShowSlot
-                            }"
-                        ></i>
+                <span v-show="variableSelectEnable || !isHasGroup" class="slot-name">
+                    <section class="icon-and-name">
                         <span
                             class="name-content"
                             :class="{
@@ -24,7 +17,7 @@
                             v-bk-tooltips="computedSlotTip"
                         >
                             {{ $t(describe.displayName) && $t(describe.displayName).toLowerCase() }}
-                            <span v-if="describe.type && describe.type.length <= 1">
+                            <span v-if="describe.type && describe.type.length <= 1" class="slot-type">
                                 ({{ formData.valueType | capFirstLetter }})
                             </span>
                         </span>
@@ -49,7 +42,7 @@
         </template>
 
         <template v-if="showInnerVariable">
-            <span class="g-prop-sub-title g-mb6">{{ $t('变量类型') }}</span>
+            <span class="g-prop-sub-title g-mb6 g-mt8">{{ $t('变量类型') }}</span>
             <choose-build-in-variable
                 class="g-mb4"
                 :build-in-variable="buildInVariable"
@@ -198,14 +191,17 @@
             describe: {
                 type: Object,
                 default: () => ({})
+            },
+            isHasGroup: {
+                type: Boolean,
+                default: true
             }
         },
 
         data () {
             return {
                 formData: {},
-                isRenderValueCom: false,
-                isShowSlot: true
+                isRenderValueCom: false
             }
         },
 
@@ -500,12 +496,6 @@
                 this.triggerUpdateVariable()
             },
             /**
-             * 切换展示 slot 配置区域
-             */
-            toggleShowSlot () {
-                this.isShowSlot = !this.isShowSlot
-            },
-            /**
              * 内置变量数据变化回调
              */
             handleBuildInVariableChange ({ buildInVariableType, payload }) {
@@ -548,13 +538,11 @@
     .slot-name {
         height: 40px;
         font-size: 12px;
-        font-weight: bold;
-        color: #313238;
+        color: #63656E;
         word-break: keep-all;
         width: 100%;
         display: flex;
         align-items: center;
-        border-top: 1px solid #EAEBF0;
         .icon-and-name {
             display: flex;
             cursor: pointer;
@@ -563,15 +551,10 @@
                 align-items: center;
             }
         }
-        .icon-angle-down {
-            cursor: pointer;
-            font-size: 20px;
-            margin-left: -5px;
-            margin-right: 3px;
-            transition: transform 200ms;
-            &.close {
-                transform: rotate(-90deg);
-            }
+        span.slot-type {
+            margin-left: 3px;
+            color: #C4C6CC;
+            font-weight: 400;
         }
     }
     .slot-tips {
