@@ -28,6 +28,7 @@
                     </section>
                 </div>
             </template>
+            <div :class="{ 'title-margin': true }"></div>
 
             <template v-if="showInnerVariable">
                 <span class="g-prop-sub-title g-mb6">{{ $t('变量类型') }}</span>
@@ -765,7 +766,6 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            padding: 10px 0;
             .icon-and-name {
                 display: flex;
                 align-items: center;
@@ -790,6 +790,9 @@
                 text-overflow: ellipsis;
                 word-break: break-all;
             }
+        }
+        .title-margin {
+            margin-top: 10px;
         }
         .prop-action {
             width: 100%;

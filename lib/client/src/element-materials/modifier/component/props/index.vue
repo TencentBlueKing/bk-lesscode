@@ -360,12 +360,12 @@
         }
     }
 </script>
-<style lang='postcss'>
+<style lang='postcss' scoped>
 .group-name {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 10px;
+    margin: 0 10px 10px;
     line-height: 40px;
     border-bottom: 1px solid #F5F7FA;
     cursor: pointer;
