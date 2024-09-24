@@ -10,15 +10,10 @@
 -->
 
 <template>
-    <div class="modifier-style" :class="{ 'no-padding': isFolded }">
+    <div class="modifier-style" :class="{ 'no-padding': isFolded, 'style-border': true }">
         <div class="style-group-box">
-            <div class="ui-group-name">
-                <section @click="handleToggle" style="display: flex;align-items: center;">
-                    <i
-                        class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
-                        :class="{
-                            floded: isFolded
-                        }" />
+            <div @click="handleToggle" class="ui-group-name">
+                <section class="group-name-left">
                     <span
                         class="label"
                         :class="{ 'tips-content': tips }"
@@ -31,10 +26,15 @@
                         }">
                         {{ title }}
                     </span>
+                    <div class="operate-icon">
+                        <slot name="header"></slot>
+                    </div>
                 </section>
-                <div class="operate-icon">
-                    <slot name="header" />
-                </div>
+                <i
+                    class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
+                    :class="{
+                        floded: isFolded
+                    }" />
             </div>
             <div class="style-action">
                 <template v-if="!isFolded">
@@ -81,6 +81,9 @@
     .modifier-style.no-padding {
         padding-bottom: 0;
     }
+    .modifier-style.style-border{
+        border-bottom: 1px solid #dde4eb;
+    }
     .modifier-style {
         display: flex;
         flex-direction: column;
@@ -104,26 +107,21 @@
         }
     }
     .style-group-box {
-        padding: 0 8px 0 12px;
-        border-top: 1px solid #dde4eb;
         .ui-group-name {
-            margin-left: -6px;
             height: 40px;
             font-size: 12px;
             color: #313238;
             font-weight: Bold;
-            position: relative;
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            padding: 0 8px 0 12px;
             &:hover{
                 cursor: pointer;
             }
             .toggle-arrow {
-                position: absolute;
                 display: block;
                 line-height: 40px;
-                top: 0;
-                left: 0;
                 font-size: 24px;
                 color: #63656E;
                 transition: all .1s linear;
@@ -133,26 +131,35 @@
             }
             span {
                 display: block;
-                position: absolute;
-                left: 24px;
                 line-height: 40px;
             }
             .tips-content {
                 border-bottom: 1px dashed #313238;
                 line-height: 19px;
             }
+            .group-name-left {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
             .operate-icon {
-                position: absolute;
-                right: 0px;
+                font-size: 0;
+                margin-left: 5px;
                 padding: 4px;
                 color: #979BA5;
                 border-radius: 2px;
-                font-size: 14px;
+                i {
+                    font-size: 14px;
+                }
                 &:hover {
                     background-color: #F0F5FF;
                     color: #3a84ff;
                 }
             }
+        }
+        .style-action {
+            padding: 0 8px 0 12px;
         }
     }
 </style>
