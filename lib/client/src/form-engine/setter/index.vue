@@ -3,8 +3,8 @@
         <template v-for="group in groups">
             <section v-if="group.children.length > 0" class="properties-group" :key="group.name">
                 <div class="group-header" @click="group.open = !group.open">
-                    <i :class="['bk-icon icon-angle-down arrow-icon', { closed: !group.open }]"></i>
                     <span class="group-name-text">{{ group.name }}</span>
+                    <i :class="['bk-icon icon-angle-down arrow-icon', { closed: !group.open }]"></i>
                 </div>
                 <div v-show="group.open" class="group-content">
                     <div v-for="property in group.children" class="property-item" :key="`${field.id}_${property}`">
@@ -71,15 +71,15 @@
                 ]
             }
         },
-        watch: {
-            field (val) {
-                this.setGroups(val)
-            }
-        },
         computed: {
             // 表单容器数据源是否为复用数据表
             isReuseForm () {
                 return this.dataSource.type === 'USE_FORM'
+            }
+        },
+        watch: {
+            field (val) {
+                this.setGroups(val)
             }
         },
         beforeCreate () {
@@ -101,7 +101,7 @@
                 })
                 const list = materials.find(item => item.type === val.type)?.properties || []
                 list.forEach(item => {
-                    if(basicProperties.includes(item)) {
+                    if (basicProperties.includes(item)) {
                         this.groups[0].children.push(item)
                     } else {
                         this.groups[1].children.push(item)
@@ -117,8 +117,9 @@
     }
     .group-header {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        padding: 0 7px;
+        padding: 0 7px 0 12px;
         height: 40px;
         cursor: pointer;
         .arrow-icon {
