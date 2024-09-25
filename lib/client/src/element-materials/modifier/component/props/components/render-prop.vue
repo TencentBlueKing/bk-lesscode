@@ -758,7 +758,7 @@
         }
     }
     .modifier-prop {
-        margin: 0 10px;
+        margin: 0 8px 0 12px;
         .prop-name {
             font-size: 12px;
             word-break: keep-all;

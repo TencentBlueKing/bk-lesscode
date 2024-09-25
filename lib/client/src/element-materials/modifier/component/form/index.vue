@@ -14,7 +14,7 @@
         v-if="isShow"
         class="modifier-form"
     >
-        <div class="form-set-group" @click="open = !open">
+        <div :class="{ 'form-set-group': true, 'form-set-group-bt': open }" @click="open = !open">
             <span>{{ $t('表单设置') }}</span>
             <i
                 :class="{
@@ -23,65 +23,67 @@
                 }"
             ></i>
         </div>
-        <div v-show="open" class="mt10 group-bt">
-            <init-form :component-node="componentNode" :handle-submit-form-item="handleSubmitFormItem" />
-            <div class="form-title">
-                {{ $t('表单内容配置') }} </div>
-            <div
-                class="form-item-list">
-                <vue-draggable
-                    ghost-class="block-item-ghost"
-                    :list="formItemList"
-                    handle=".option-col-drag"
-                    :group="{ name: 'form-item-list', pull: false, put: false }"
-                    @change="handleSort">
-                    <transition-group
-                        type="transition"
-                        :name="'flip-list'">
-                        <template v-for="(formItemNode, index) in formItemList">
-                            <div
-                                v-if="formItemNode.prop.property"
-                                :key="`item${index}`"
-                                class="form-item">
-                                <section
-                                    class="item-name"
-                                    :title="`${formItemNode.prop.label}(${formItemNode.prop.property})`">
-                                    <span>{{ formItemNode.prop.label }}</span>
-                                    <span class="property">({{ formItemNode.prop.property }})</span>
-                                </section>
-                                <section class="operate-btns">
-                                    <span
-                                        class="form-item-edit"
-                                        @click.stop="handleShowOperation(formItemNode)">
-                                        <i class="bk-drag-icon bk-drag-edit" />
-                                    </span>
-                                    <span class="form-item-drag option-col-drag">
-                                        <i class="bk-drag-icon bk-drag-drag-small1" />
-                                    </span>
-                                    <span
-                                        class="form-item-delete"
-                                        @click.stop="handleDelete(formItemNode)">
-                                        <i class="bk-icon icon-close" />
-                                    </span>
-                                </section>
-                            </div>
-                        </template>
-                    </transition-group>
-                </vue-draggable>
+        <div class="group-bt">
+            <div v-show="open" class="mar-lr">
+                <init-form :component-node="componentNode" :handle-submit-form-item="handleSubmitFormItem" />
+                <div class="form-title">
+                    {{ $t('表单内容配置') }} </div>
+                <div
+                    class="form-item-list">
+                    <vue-draggable
+                        ghost-class="block-item-ghost"
+                        :list="formItemList"
+                        handle=".option-col-drag"
+                        :group="{ name: 'form-item-list', pull: false, put: false }"
+                        @change="handleSort">
+                        <transition-group
+                            type="transition"
+                            :name="'flip-list'">
+                            <template v-for="(formItemNode, index) in formItemList">
+                                <div
+                                    v-if="formItemNode.prop.property"
+                                    :key="`item${index}`"
+                                    class="form-item">
+                                    <section
+                                        class="item-name"
+                                        :title="`${formItemNode.prop.label}(${formItemNode.prop.property})`">
+                                        <span>{{ formItemNode.prop.label }}</span>
+                                        <span class="property">({{ formItemNode.prop.property }})</span>
+                                    </section>
+                                    <section class="operate-btns">
+                                        <span
+                                            class="form-item-edit"
+                                            @click.stop="handleShowOperation(formItemNode)">
+                                            <i class="bk-drag-icon bk-drag-edit" />
+                                        </span>
+                                        <span class="form-item-drag option-col-drag">
+                                            <i class="bk-drag-icon bk-drag-drag-small1" />
+                                        </span>
+                                        <span
+                                            class="form-item-delete"
+                                            @click.stop="handleDelete(formItemNode)">
+                                            <i class="bk-icon icon-close" />
+                                        </span>
+                                    </section>
+                                </div>
+                            </template>
+                        </transition-group>
+                    </vue-draggable>
+                </div>
+                <div
+                    class="table-column-add"
+                    @click="handleShowOperation(null)">
+                    {{ $t('继续添加表单项') }} </div>
+
+                <form-button-setting :button-setting="componentNode.prop.btnSetting || componentNode.prop['btn-setting'] || {}" :handle-update-btn-item="handleUpdateBtn">
+                </form-button-setting>
+
+                <form-item-edit
+                    :is-show="isShowOperation"
+                    :default-value="editFormItemData"
+                    :submit="handleSubmitFormItem"
+                    :close="handleCancel" />
             </div>
-            <div
-                class="table-column-add"
-                @click="handleShowOperation(null)">
-                {{ $t('继续添加表单项') }} </div>
-
-            <form-button-setting :button-setting="componentNode.prop.btnSetting || componentNode.prop['btn-setting'] || {}" :handle-update-btn-item="handleUpdateBtn">
-            </form-button-setting>
-
-            <form-item-edit
-                :is-show="isShowOperation"
-                :default-value="editFormItemData"
-                :submit="handleSubmitFormItem"
-                :close="handleCancel" />
         </div>
     </div>
 </template>
@@ -521,9 +523,8 @@
             justify-content: space-between;
             align-items: center;
             line-height: 40px;
-            border-bottom: 1px solid #F5F7FA;
             cursor: pointer;
-            margin: 0 10px;
+            margin: 0 8px 0 12px;
             & > span:first-child{
                 font-size: 12px;
                 font-weight: 700;
@@ -534,18 +535,21 @@
             }
             .icon-angle-down {
                 cursor: pointer;
-                font-size: 20px;
-                margin-left: -5px;
-                margin-right: 3px;
+                font-size: 24px;
                 transition: transform 200ms;
                 &.close {
                     transform: rotate(-90deg);
                 }
             }
         }
+        .form-set-group-bt {
+            border-bottom: 1.25px solid #F5F7FA;
+        }
         .group-bt {
-            padding: 0 10px 16px;
-            border-bottom: 1px solid #EAEBF0;
+            border-bottom: 1.25px solid #EAEBF0;
+        }
+        .mar-lr {
+            margin: 0 8px 16px 12px;
         }
         .form-title {
             margin: 10px 0 10px;

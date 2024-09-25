@@ -24,7 +24,7 @@
 </script>
 <style lang="postcss" scoped>
 .prop-group {
-    border-bottom: 1px solid #dde4eb;
+    border-bottom: 1.25px solid #EAEBF0;
 }
 .group-header {
     display: flex;

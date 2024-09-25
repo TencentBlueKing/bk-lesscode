@@ -82,12 +82,12 @@
         padding-bottom: 0;
     }
     .modifier-style.style-border{
-        border-bottom: 1px solid #dde4eb;
+        border-bottom: 1.25px solid #EAEBF0;
     }
     .modifier-style {
         display: flex;
         flex-direction: column;
-        padding-bottom: 16px;
+        padding-bottom: 14px;
         .style-title {
             font-size: 12px;
             display: flex;

@@ -13,7 +13,7 @@
     <div v-if="hasMaterialConfig" :class="{ mt10: keyword.length }">
         <template v-for="(group, indexKey) in propGropuList">
             <div v-if="hasGroupProp(group)" :key="indexKey">
-                <div class="group-name" @click="toggleShowGroupProp(group, indexKey)">
+                <div :class="{ 'group-name': true, 'group-name-bt': group.isShow }" @click="toggleShowGroupProp(group, indexKey)">
                     <span>{{ group.label || group.value }}</span>
                     <i
                         :class="{
@@ -22,20 +22,22 @@
                         }"
                     ></i>
                 </div>
-                <div v-if="group.isShow" class="mt10 group-bt">
-                    <template v-for="(item, key) in group.groupProps">
-                        <render-prop
-                            v-if="item.type !== 'hidden'"
-                            :component-type="componentType"
-                            :component-id="componentId"
-                            :describe="item"
-                            :last-value="lastProps[key]"
-                            :name="key"
-                            :key="key"
-                            :sync-slot="syncSlot"
-                            :last-data-origin="lastProps[item.dataOrigin]"
-                            @on-change="handleChange" />
-                    </template>
+                <div class="group-bt">
+                    <div v-if="group.isShow" class="mt10">
+                        <template v-for="(item, key) in group.groupProps">
+                            <render-prop
+                                v-if="item.type !== 'hidden'"
+                                :component-type="componentType"
+                                :component-id="componentId"
+                                :describe="item"
+                                :last-value="lastProps[key]"
+                                :name="key"
+                                :key="key"
+                                :sync-slot="syncSlot"
+                                :last-data-origin="lastProps[item.dataOrigin]"
+                                @on-change="handleChange" />
+                        </template>
+                    </div>
                 </div>
             </div>
             <template v-else>
@@ -361,34 +363,31 @@
     }
 </script>
 <style lang='postcss' scoped>
-.group-bt {
-    border-bottom: 1px solid #EAEBF0;
-}
 .group-name {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 10px;
+    margin: 0 8px 0 12px;
     line-height: 40px;
-    border-bottom: 1px solid #F5F7FA;
     cursor: pointer;
     & > span:first-child{
         font-size: 12px;
         font-weight: 700;
         color: #313238;
     }
-    i {
-        font-size: 22px;
-    }
     .icon-angle-down {
         cursor: pointer;
-        font-size: 20px;
-        margin-left: -5px;
-        margin-right: 3px;
+        font-size: 24px;
         transition: transform 200ms;
         &.close {
             transform: rotate(-90deg);
         }
     }
+}
+.group-name-bt {
+    border-bottom: 1.25px solid #F5F7FA;
+}
+.group-bt {
+    border-bottom: 1.25px solid #EAEBF0;
 }
 </style>
