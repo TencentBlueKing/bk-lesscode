@@ -112,14 +112,14 @@
     }
 </script>
 <style lang="postcss" scoped>
-    .properties-group:not(:last-of-type) {
-        border-bottom: 1px solid #dde4eb;
+    .properties-group {
+        border-bottom: 1.25px solid #EAEBF0;
     }
     .group-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 7px 0 12px;
+        padding: 0 8px 0 12px;
         height: 40px;
         cursor: pointer;
         .arrow-icon {
@@ -140,6 +140,6 @@
         padding: 0 12px;
     }
     .property-item {
-        margin-bottom: 12px;
+        margin-bottom: 14px;
     }
 </style>
