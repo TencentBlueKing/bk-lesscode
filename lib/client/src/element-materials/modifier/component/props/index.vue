@@ -41,17 +41,19 @@
                 </div>
             </div>
             <template v-else>
-                <render-prop
-                    v-if="group.type !== 'hidden'"
-                    :component-type="componentType"
-                    :component-id="componentId"
-                    :describe="group"
-                    :last-value="lastProps[indexKey]"
-                    :name="indexKey"
-                    :key="indexKey"
-                    :sync-slot="syncSlot"
-                    :last-data-origin="lastProps[group.dataOrigin]"
-                    @on-change="handleChange" />
+                <template v-if="keyword.length">
+                    <render-prop
+                        v-if="group.type !== 'hidden'"
+                        :component-type="componentType"
+                        :component-id="componentId"
+                        :describe="group"
+                        :last-value="lastProps[indexKey]"
+                        :name="indexKey"
+                        :key="indexKey"
+                        :sync-slot="syncSlot"
+                        :last-data-origin="lastProps[group.dataOrigin]"
+                        @on-change="handleChange" />
+                </template>
             </template>
         </template>
     </div>
