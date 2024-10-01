@@ -61,7 +61,8 @@
                         <span
                             v-bk-tooltips="{
                                 content: calcDisableInfo(props.row).tips,
-                                disabled: !calcDisableInfo(props.row).disabled
+                                disabled: !calcDisableInfo(props.row).disabled,
+                                allowHTML: false
                             }">
                             <bk-button
                                 class="mr10"

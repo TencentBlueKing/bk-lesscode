@@ -66,7 +66,7 @@
                         <span class="table-btn" @click="handleEditFunction(props.row)">{{ $t('编辑') }}</span>
                         <span class="table-btn" @click="handleCopyFunction(props.row)">{{ $t('复制') }}</span>
                         <span @click="handleDeleteFunction(props.row)"
-                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400 }"
+                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400, allowHTML: false }"
                             :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
                         >{{ $t('删除') }}</span>
                     </template>

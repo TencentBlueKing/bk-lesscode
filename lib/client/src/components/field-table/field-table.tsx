@@ -349,7 +349,7 @@ export default defineComponent({
                     const defaultSlot = <div class={{ 'field-error': !!errorInfo, 'disable-row': row.isReadonly }}>
                         { (this as any)[typeList[item.type]](item, props) }
                         { !!errorInfo
-                    && <i class="bk-icon icon-exclamation-circle-shape row-icons" v-bk-tooltips={ { content: errorInfo, maxWidth: 400 }} /> }
+                    && <i class="bk-icon icon-exclamation-circle-shape row-icons" v-bk-tooltips={ { content: errorInfo, maxWidth: 400, allowHTML: false }} /> }
                     </div>
                     return defaultSlot
                 }

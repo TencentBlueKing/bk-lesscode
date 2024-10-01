@@ -4,7 +4,8 @@
         v-bk-tooltips="{
             content: tips,
             disabled: !tips,
-            maxWidth: 400
+            maxWidth: 400,
+            allowHTML: false
         }"
         @click="handleClick"
     ></i>

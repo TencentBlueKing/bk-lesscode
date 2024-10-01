@@ -225,7 +225,8 @@
                     ...(tips || {}),
                     disabled,
                     placements: ['left-start'],
-                    boundary: 'window'
+                    boundary: 'window',
+                    allowHTML: false
                 }
             },
             /**

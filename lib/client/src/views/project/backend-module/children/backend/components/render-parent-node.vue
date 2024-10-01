@@ -14,7 +14,8 @@
                 maxWidth: 300,
                 placements: ['top'],
                 delay: [100, 0],
-                disabled: finalNodeTypes.indexOf(node.id) !== -1
+                disabled: finalNodeTypes.indexOf(node.id) !== -1,
+                allowHTML: false
             }"
         >
             {{ node.name }}
@@ -25,7 +26,8 @@
                 v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
                 v-bk-tooltips="{
                     content: editontent,
-                    placements: ['top']
+                    placements: ['top'],
+                    allowHTML: false
                 }"
                 @click.stop="showDialog"
             ></i>
