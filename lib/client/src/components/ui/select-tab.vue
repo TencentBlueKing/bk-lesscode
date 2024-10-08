@@ -10,7 +10,8 @@
                     v-bk-tooltips="{
                         content: item.tips,
                         disabled: !item.tips,
-                        maxWidth: 400
+                        maxWidth: 400,
+                        allowHTML: false
                     }"
                 >
                     <i v-if="item.icon" :class="`${item.icon} ${!item.name ? 'only-icon' : ''}`"></i>

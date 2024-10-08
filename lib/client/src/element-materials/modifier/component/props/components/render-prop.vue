@@ -111,6 +111,7 @@
     import _ from 'lodash'
     import { mapActions } from 'vuex'
     import LC from '@/element-materials/core'
+    import DOMPurify from 'dompurify'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
@@ -364,17 +365,18 @@
              */
             displayName () {
                 // 英文版只展示英文属性名称
+                let name = this.name
                 if (this.$store.state.Language === 'en') {
-                    return this.name
+                    name = this.name
                 } else {
                     if (this.renderComponentList.length > 1) {
-                        return this.describe?.displayName || this.name
+                        name = this.describe?.displayName || this.name
                     }
                     if (!isEmpty(this.describe?.displayName)) {
-                        return `${this.describe.displayName}<span class='prop-field'>(${this.name})</span>`
+                        name = `${this.describe.displayName}<span class='prop-field'>(${this.name})</span>`
                     }
-                    return this.name
                 }
+                return DOMPurify.sanitize(name)
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)
@@ -391,7 +393,7 @@
                 return {
                     placements: ['left-start'],
                     maxWidth: 300,
-                    content: this.tipsContent
+                    content: DOMPurify.sanitize(this.tipsContent)
                 }
             },
             tipsContent () {

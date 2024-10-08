@@ -334,6 +334,7 @@
              * 更新列配置并同步 slot
              */
             handleChange: _.throttle(function (propName, propData) {
+                console.log(propName, propData, 998822)
                 this.lastProps = Object.freeze({
                     ...this.lastProps,
                     [propName]: propData

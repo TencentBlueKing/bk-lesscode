@@ -5,7 +5,8 @@
             v-bk-tooltips="{
                 content: panel.tips,
                 disabled: !panel.tips,
-                maxWidth: 400
+                maxWidth: 400,
+                allowHTML: false
             }"
             :class="{
                 'debug-header': true,

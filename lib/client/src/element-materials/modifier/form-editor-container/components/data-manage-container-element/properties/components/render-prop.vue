@@ -7,7 +7,8 @@
                 v-bk-tooltips="{
                     disabled: !showTips,
                     content: config.tips,
-                    maxWidth: 400
+                    maxWidth: 400,
+                    allowHTML: false
                 }">
                 {{ config.propertyDisplayName }}
                 <template v-if="config.type">({{ config.type | caseConversion }})</template>

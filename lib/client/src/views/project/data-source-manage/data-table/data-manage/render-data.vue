@@ -48,7 +48,7 @@
                                         'import-tips': true,
                                         checked: dataImportOperationType === item.ID
                                     }"
-                                    v-bk-tooltips="{ content: item.TIPS, maxWidth: 400 }"
+                                    v-bk-tooltips="{ content: item.TIPS, maxWidth: 400, allowHTML: false }"
                                 >{{ item.NAME }}</span>
                             </bk-radio-button>
                         </bk-radio-group>

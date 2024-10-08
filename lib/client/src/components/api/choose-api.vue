@@ -40,7 +40,7 @@
                 }"
                 @click="chooseApi(data, node)"
             >
-                <span v-bk-tooltips="{ content: data.summary, maxWidth: 400 }">{{data.name}}</span>
+                <span v-bk-tooltips="{ content: data.summary, maxWidth: 400, allowHTML: false }">{{data.name}}</span>
                 <i
                     class="bk-drag-icon bk-drag-jump-link"
                     v-if="['lesscode-api', 'datasource-api', 'third-part-api'].includes(data.id)"

@@ -31,7 +31,8 @@
                             v-bk-tooltips="{
                                 content: directive.tips && $t(directive.tips(lastDirectiveMap[genDirectiveKey(directive)])),
                                 disabled: !directive.tips,
-                                width: 290
+                                width: 290,
+                                allowHTML: false
                             }"
                             :class="{
                                 'under-line': directive.tips,

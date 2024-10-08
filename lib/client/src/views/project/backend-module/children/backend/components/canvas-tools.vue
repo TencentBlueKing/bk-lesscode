@@ -4,7 +4,8 @@
             <i :class="tool.icon"
                 v-bk-tooltips="{
                     content: tool.tips,
-                    placements: ['left']
+                    placements: ['left'],
+                    allowHTML: false
                 }">
             </i>
         </li>
@@ -12,7 +13,8 @@
             <i :class="screenItem.icon"
                 v-bk-tooltips="{
                     content: screenItem.tips,
-                    placements: ['left']
+                    placements: ['left'],
+                    allowHTML: false
                 }">
             </i>
         </li>

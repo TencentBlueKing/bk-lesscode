@@ -20,7 +20,7 @@
                         v-bk-tooltips="{
                             width: 300,
                             interactive: false,
-                            allowHtml: true,
+                            allowHtml: false,
                             disabled: !tips,
                             content: tips
                         }">

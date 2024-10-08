@@ -22,7 +22,8 @@
                     content: buildInVariableTip,
                     maxWidth: '300',
                     placements: ['left-start'],
-                    boundary: 'window'
+                    boundary: 'window',
+                    allowHTML: false
                 }"
             ></i>
             <i class="bk-icon icon-copy" @click="copyBuildInVariable"></i>

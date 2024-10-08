@@ -21,7 +21,8 @@
                     disabled: !eventConfig.tips,
                     placements: ['left-start'],
                     width: 200,
-                    boundary: 'window'
+                    boundary: 'window',
+                    allowHTML: false
                 }"
             >
                 {{ eventName }}

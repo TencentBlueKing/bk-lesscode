@@ -14,7 +14,7 @@
                         >
                             <template v-slot:header>
                                 <div class="setting-label">
-                                    <span v-bk-tooltips="{ content: func.desc, maxWidth: 400, disabled: !func.desc }" class="field-display-name">{{func.name}}</span>：
+                                    <span v-bk-tooltips="{ content: func.desc, maxWidth: 400, disabled: !func.desc, allowHTML: false }" class="field-display-name">{{func.name}}</span>：
                                 </div>
                             </template>
                         </choose-function>
