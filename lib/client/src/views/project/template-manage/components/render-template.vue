@@ -238,9 +238,19 @@
                     functions: [],
                     vars: []
                 }
-                const { varList: vars = [], funcList: functions = [] } = await this.getVarAndFuncList(template)
+                const newContent = JSON.parse(template.content || {})
+                if (newContent.vars || newContent.functions) {
+                    const { vars, functions } = newContent
+                    Object.assign(templateJson, { functions, vars })
+                    const delAttr = ['vars', 'functions']
+                    delAttr.forEach(key => delete newContent[key])
+                    template.content = JSON.stringify(newContent)
+                } else {
+                    const { varList: vars = [], funcList: functions = [] } = await this.getVarAndFuncList(template)
+                    Object.assign(templateJson, { functions, vars })
+                }
                 const newTemplate = Object.assign({}, template, { createUser: '', updateUser: '' })
-                Object.assign(templateJson, { functions, vars }, { template: newTemplate })
+                Object.assign(templateJson, { template: newTemplate })
 
                 const jsonStr = JSON.stringify(templateJson)
                 const downlondEl = document.createElement('a')
