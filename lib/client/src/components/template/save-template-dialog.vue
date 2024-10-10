@@ -65,9 +65,11 @@
     import { mapGetters } from 'vuex'
     import html2canvas from 'html2canvas'
     import { bus } from '@/common/bus'
+    import templateMixin from '@/views/project/template-manage/components/template-mixin'
 
     export default {
         name: 'template-dialog',
+        mixins: [templateMixin],
         data () {
             return {
                 isShow: false,
@@ -189,7 +191,8 @@
                             previewImg: imgData,
                             framework: this.projectDetail.framework
                         }
-                        
+                        const { varList: vars = [], funcList: functions = [] } = await this.getVarAndFuncList(params)
+                        params.content = JSON.stringify(Object.assign(this.eventData.value, { functions, vars }))
                         if (formData.saveType === 'edit') {
                             data = {
                                 id: formData.templateId,
