@@ -3,8 +3,8 @@
         <div :class="['info-flexible', $style['inner']]" v-show="!pageLoading">
             <bk-link :class="[$style['to-link'],'nav-link']" theme="primary" @click="handleCreateLayout">{{ $t('导航布局管理') }}</bk-link>
             <div :class="$style['caption']">
-                <div :class="$style['col']">{{ $t('table_路由配置') }}</div>
-                <div :class="$style['col']">{{ $t('绑定页面跳转路由') }}</div>
+                <div :class="$style['col']">{{ $t('table_路由链接配置') }}</div>
+                <div :class="$style['col']">{{ $t('绑定页面或跳转路由') }}</div>
             </div>
             <dl :class="$style['content']" v-if="routeGroup.length">
                 <div v-if="type === 'MOBILE'" :class="$style['mobile-route']">
@@ -82,7 +82,7 @@
                                     { [$style['editing']]: editState.route === route }
                                 ]">
                                     <div :class="$style['path-name']">
-                                        <span v-if="editState.route !== route" v-bk-tooltips="{ content: route.path , disabled: !( route.path && route.path.length > 26) }">{{route.path | routeShow}}</span>
+                                        <span v-if="editState.route !== route" v-bk-tooltips="{ content: route.path , disabled: !( route.path && route.path.length > 26), allowHTML: false }">{{route.path | routeShow}}</span>
                                         <div
                                             :class="[
                                                 $style['edit-form'],
@@ -135,6 +135,7 @@
                                     <div :class="$style['bind-name']" @click="handleEditBinding(route)"
                                         v-if="bindState.route !== route" v-bk-tooltips="{
                                             content: getBindDisplayValue(route),
+                                            allowHTML: false,
                                             disabled: !(getBindDisplayValue(route) && getBindDisplayValue(route).length > 29) }">
                                         {{getBindDisplayValue(route)}}
                                     </div>

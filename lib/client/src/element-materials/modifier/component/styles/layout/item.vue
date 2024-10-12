@@ -18,7 +18,8 @@
                 disabled: !props.tips,
                 placements: ['left-start'],
                 boundary: 'window',
-                maxWidth: 400
+                maxWidth: 400,
+                allowHTML: false
             }"
         >
             <span

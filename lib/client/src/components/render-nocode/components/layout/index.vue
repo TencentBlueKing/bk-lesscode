@@ -6,7 +6,7 @@
     </component>
 </template>
 <script>
-    import { defineComponent, computed, onMounted } from '@vue/composition-api'
+    import { defineComponent, computed, onMounted } from 'vue'
     import useComponentAction from '../component-action-use'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'

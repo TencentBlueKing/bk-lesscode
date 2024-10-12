@@ -12,7 +12,7 @@
 <template>
     <div class="bk-text-wrapper">
         <label :class="['bk-text', { 'has-desc': !!desc }, extCls]">
-            <span v-if="desc" v-bk-tooltips="desc">{{text}}</span>
+            <span v-if="desc" v-bk-tooltips="{ content: desc, allowHTML: false }">{{text}}</span>
             <span v-else>{{text}}</span>
         </label>
     </div>

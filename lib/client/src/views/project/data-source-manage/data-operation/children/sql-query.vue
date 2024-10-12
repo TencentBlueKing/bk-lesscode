@@ -1,6 +1,6 @@
 <template>
     <section>
-        <ai-sql-input :table-data="tableData" :generate-sql="generateAiSql" />
+        <ai-sql-input v-if="isAiValid" :table-data="tableData" :generate-sql="generateAiSql" />
         <bk-divider></bk-divider>
         <section class="sql-query">
             <monaco
@@ -65,7 +65,7 @@
         ref,
         watch,
         computed
-    } from '@vue/composition-api'
+    } from 'vue'
     import Monaco from '@/components/monaco.vue'
     import AiSqlInput from './ai-sql-input'
     import {
@@ -104,6 +104,8 @@
         setup (props, { emit }) {
             const store = useStore()
             const apiData = ref([])
+
+            const isAiValid = computed(() => store.getters['ai/isAiAvailable'])
 
             // 构造节点数据
             const getNodeValue = (data, isLeaf) => {
@@ -211,6 +213,7 @@
             )
 
             return {
+                isAiValid,
                 tableData,
                 apiData,
                 handleSqlChange,

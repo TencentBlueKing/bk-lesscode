@@ -23,7 +23,7 @@
 <script lang="ts">
     import {
         defineComponent
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         BASE_COLUMNS
     } from 'shared/data-source/constant'

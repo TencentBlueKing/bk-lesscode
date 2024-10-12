@@ -40,7 +40,7 @@
         ref,
         onBeforeMount,
         nextTick
-    } from '@vue/composition-api'
+    } from 'vue'
     import LC from '@/element-materials/core'
     import RenderMessage from './message.vue'
     import systemPrompt from './system-prompt.txt'
@@ -249,8 +249,8 @@
             } = useMethod(cmdMessage)
             // 页面
             const {
-                handleGetTemplate,
-                handleUpdatePageSetting
+                handleUseTemplate,
+                handleGetTemplates
             } = usePage(cmdMessage)
             const cmd = {
                 component: {
@@ -276,8 +276,8 @@
                     get: handleGetFunctions
                 },
                 page: {
-                    getTemplate: handleGetTemplate,
-                    updatePageSetting: handleUpdatePageSetting
+                    useTemplate: handleUseTemplate,
+                    getTemplates: handleGetTemplates
                 },
                 done: handleDone,
                 clear: handleClear

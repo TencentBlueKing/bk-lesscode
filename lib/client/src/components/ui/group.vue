@@ -1,12 +1,12 @@
 <template>
     <div class="ui-group-box" :class="{ 'box-border-top': showBorderTop }">
-        <div class="ui-group-name" @click="handleToggle" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17), maxWidth: 400 }">
+        <div class="ui-group-name" @click="handleToggle" v-bk-tooltips="{ content: groupName, disabled: !(groupName && groupName.length > 17), maxWidth: 400, allowHTML: false }">
             <i
                 class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
                 :class="{
                     floded: isFolded
                 }" />
-            <span>{{ groupName }}</span>
+            <span>{{ $t(groupName) }}</span>
         </div>
         <template v-if="!isFolded">
             <slot />

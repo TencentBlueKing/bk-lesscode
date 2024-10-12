@@ -1,5 +1,5 @@
 <script>
-    import { computed, defineComponent } from '@vue/composition-api'
+    import { computed, defineComponent } from 'vue'
     import SrcInput from '@/components/src-input/index.vue'
 
     export default defineComponent({

@@ -189,7 +189,7 @@
     @import "@/css/variable";
 
     .material-modifier {
-        height: calc(100% - 42px);
+        height: calc(100% - 82px);
         position: relative;
         .modifier-tab-container {
             height: 49px;
@@ -263,6 +263,7 @@
     }
     .props-search {
         padding: 8px 12px;
+        border-bottom: 1.25px solid #EAEBF0;
         .props-search-input input {
             background-color: #F5F7FA;
             border-radius: 2px;

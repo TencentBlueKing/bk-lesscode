@@ -41,7 +41,7 @@
                             :width="200"
                             boundary="window"
                         >
-                            <span>{{ event.name }}</span>
+                            <span>{{ getEventName(event) }}</span>
                         </bk-popover>
                     </li>
                 </ul>
@@ -85,6 +85,12 @@
 
             computedDisabled () {
                 return !this.computedEventList.length && !this.searchEventName
+            },
+            getEventName () {
+                return (event) => {
+                    if (!event.displayName) return event.name
+                    return `${event.displayName}(${event.name})`
+                }
             }
         },
 

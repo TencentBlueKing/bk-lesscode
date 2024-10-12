@@ -14,18 +14,20 @@
                 maxWidth: 300,
                 placements: ['top'],
                 delay: [100, 0],
-                disabled: finalNodeTypes.indexOf(node.id) !== -1
+                disabled: finalNodeTypes.indexOf(node.id) !== -1,
+                allowHTML: false
             }"
         >
             {{ node.name }}
         </span>
-        <span class="node-icons" v-if="!isExecuting">
+        <span class="node-icons" v-if="!isExecuting && !isCanvasLocked">
             <i
                 class="bk-drag-icon bk-drag-edit node-icon hover-icon"
                 v-if="(node.status !== 'running' && node.status !== 'pending') && finalNodeTypes.indexOf(node.id) === -1"
                 v-bk-tooltips="{
                     content: editontent,
-                    placements: ['top']
+                    placements: ['top'],
+                    allowHTML: false
                 }"
                 @click.stop="showDialog"
             ></i>
@@ -88,6 +90,9 @@
         computed: {
             isExecuting () {
                 return this.$store.state.saasBackend?.isExecuting || false
+            },
+            isCanvasLocked () {
+                return this.$store.state.saasBackend?.isCanvasLocked || false
             },
             schemaApiList () {
                 return this.$store.state.saasBackend?.schemaApiList || []

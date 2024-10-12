@@ -38,7 +38,7 @@
         ref,
         PropType,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         getDefaultLimit
     } from 'shared/data-source'

@@ -63,7 +63,7 @@
                     this.copyValue = formatterVal
                     this.$emit('update:value', formatterVal)
                 } catch (e) {
-                    this.displayJSON = '请输入正确格式的数据'
+                    this.displayJSON = this.$t('请输入正确格式的数据')
                 }
             },
 
@@ -72,7 +72,7 @@
                     this.displayJSON = JSON.parse(val)
                     this.$emit('update:value', val)
                 } catch (e) {
-                    this.displayJSON = '请输入正确格式的数据'
+                    this.displayJSON = this.$t('请输入正确格式的数据')
                 }
             }
         }

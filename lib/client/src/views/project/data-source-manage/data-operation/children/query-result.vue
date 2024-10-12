@@ -63,13 +63,14 @@
         defineComponent,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import store from '@/store'
     import router from '@/router'
     import dayjs from 'dayjs'
     import {
         isEmpty,
-        splitSql
+        splitSql,
+        encodeBase64
     } from 'shared/util'
     import {
         generateSqlByCondition
@@ -162,9 +163,10 @@
                 })
                 // 执行查询
                 return new Promise((resolve, reject) => {
+                    queryRecord.sql = encodeBase64(queryRecord.sql)
                     store
                         .dispatch('dataSource/queryBySql', {
-                            sql: window.btoa(queryRecord.sql),
+                            sql: queryRecord.sql,
                             dataSourceType: props.dataSourceType,
                             thirdPartDBName: props.thirdPartDB.dbName
                         })

@@ -50,7 +50,8 @@
                             theme: 'light',
                             width: 300,
                             zIndex: 9999999,
-                            extCls: 'prompt-tips'
+                            extCls: 'prompt-tips',
+                            allowHTML: false
                         }"
                         v-for="prompt in prompts"
                         :key="prompt.id"

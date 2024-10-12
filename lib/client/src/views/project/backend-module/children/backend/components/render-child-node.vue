@@ -6,7 +6,8 @@
                 content: node.name,
                 maxWidth: 300,
                 placements: ['top'],
-                delay: [100, 0]
+                delay: [100, 0],
+                allowHTML: false
             }"
         >
             {{ node.name }}

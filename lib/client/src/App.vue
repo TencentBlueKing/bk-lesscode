@@ -19,6 +19,7 @@
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
+            <chrome-tips :domain="cookieDomain" />
             <notice-component :api-url="noticeUrl" @show-alert-change="showAlertChange" />
             <app-header></app-header>
             <div class="page-body" :style="{ height: bodyHeight }" >
@@ -38,15 +39,21 @@
     import ApplyPage from './components/apply-permission/apply-page.vue'
     import NoticeComponent from '@blueking/notice-component-vue2'
     import '@blueking/notice-component-vue2/dist/style.css'
+    import ChromeTips from '@blueking/chrome-tips/vue2'
+    import '@blueking/chrome-tips/vue2/vue2.css'
+
+    import { getPlatformConfig, setDocumentTitle, setShortcutIcon } from '@blueking/platform-config';
 
     export default {
         name: 'app',
         components: {
             ApplyPage,
-            NoticeComponent
+            NoticeComponent,
+            ChromeTips
         },
         data () {
             return {
+                cookieDomain: window.BKPAAS_BK_DOMAIN,
                 noticeUrl: `${process.env.BK_AJAX_URL_PREFIX}/notice-center/getNoticeList`,
                 systemCls: 'mac',
                 position: 'middle',
@@ -82,6 +89,7 @@
 
         computed: {
             ...mapGetters(['mainContentLoading', 'bodyHeight']),
+            ...mapGetters('platformConfig', ['defaultConfig', 'platformConfig']),
             emptyPage () {
                 return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile' || this.$route.meta?.navigation === 'empty'
             },
@@ -117,6 +125,7 @@
             this.$once('hook:beforeDestroy', () => {
                 bus.$off('not-exist', this.notExistHold)
             })
+            this.initPlatformConfig()
             await Promise.all([
                 this.$store.dispatch('checkIamNoResourcesPerm'),
                 this.$store.dispatch('ai/checkAiAvailable'),
@@ -129,9 +138,6 @@
             if (platform.indexOf('win') === 0) {
                 this.systemCls = 'win'
             }
-            bus.$on('redirect-login', data => {
-                window.location.replace(data.loginUrl)
-            })
         },
         methods: {
             permissionHold (authResult) {
@@ -146,6 +152,14 @@
 
             showAlertChange (isShow) {
                 this.$store.commit('updateShowAlertNotice', isShow)
+            },
+
+            async initPlatformConfig () {
+                const url = `${window.BK_SHARED_RES_URL}/lesscode/base.js`
+                const config = await getPlatformConfig(url, this.defaultConfig)
+                this.$store.commit('platformConfig/update', config)
+                setDocumentTitle(config.i18n)
+                setShortcutIcon(config.favicon)
             }
         }
     }

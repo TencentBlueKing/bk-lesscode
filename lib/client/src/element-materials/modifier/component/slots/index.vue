@@ -2,14 +2,43 @@
     <div
         v-if="isShow && Object.keys(filerConfig).length"
         class="modifier-slot">
-        <renderSlot
-            v-for="(slotConfig, slotName) in filerConfig"
-            :key="slotName"
-            :name="slotName"
-            :last-value="lastSlots[slotName]"
-            :describe="slotConfig"
-            :component-id="componentId"
-            @on-change="handleChange" />
+        <template v-for="(group, indexKey) in slotGroupList">
+            <div v-if="hasGroupSlot(group)" :key="indexKey">
+                <div :class="{ 'group-name': true, 'group-name-bt': group.isDisplay }" @click="toggleShowGroupSlot(group, indexKey)">
+                    <span>{{ group.label || group.value }}</span>
+                    <i
+                        :class="{
+                            'bk-icon icon-angle-down': true,
+                            close: !group.isDisplay
+                        }"
+                    ></i>
+                </div>
+                <div class="group-bt">
+                    <div v-if="group.isDisplay" class="mar-lr">
+                        <template v-for="(item, key) in group.groupSlots">
+                            <renderSlot
+                                :key="key"
+                                :name="key"
+                                :last-value="lastSlots[key]"
+                                :describe="item"
+                                :component-id="componentId"
+                                @on-change="handleChange" />
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <template v-else>
+                <div class="mar-lr" :key="indexKey">
+                    <renderSlot
+                        :name="indexKey"
+                        :last-value="lastSlots[indexKey]"
+                        :describe="group"
+                        :is-has-group="false"
+                        :component-id="componentId"
+                        @on-change="handleChange" />
+                </div>
+            </template>
+        </template>
     </div>
 </template>
 
@@ -18,6 +47,7 @@
     import LC from '@/element-materials/core'
     import renderSlot from './render-slot.vue'
     import { encodeRegexp } from '../../component/utils'
+    import { isEmpty } from '@/common/util'
     export default {
         components: {
             renderSlot
@@ -43,6 +73,58 @@
                     result[key] = this.config[key]
                     return result
                 }, {})
+            },
+            slotGroupList () {
+                if (this.keyword.length) {
+                    return this.filerConfig
+                } else {
+                    const groups = this.componentNode?.material?.groups || []
+                    const slotGroups = []
+                    Object.keys(this.filerConfig).reduce((pre, cur) => {
+                        // 该插槽无法用 值 变量 表达式
+                        if (this.filerConfig[cur].type.includes('remote')) {
+                            const aGroup = {
+                                value: cur,
+                                label: this.filerConfig[cur]?.displayName,
+                                isDisplay: true,
+                                groupSlots: {}
+                            }
+                            aGroup.groupSlots[cur] = this.filerConfig[cur]
+                            pre.push(aGroup)
+                        } else {
+                            const groupVal = this.filerConfig[cur]?.belongGroup || 'defSlot'
+                            const groupItem = pre.find(item => item.value === groupVal)
+                            if (!pre?.length || !groupItem) {
+                                const aGroup = {
+                                    value: groupVal,
+                                    label: groupVal === 'defSlot' ? this.filerConfig[cur]?.displayName || '默认插槽' : groups.find(item => item.value === groupVal)?.label,
+                                    isDisplay: true,
+                                    groupSlots: {}
+                                }
+                                aGroup.groupSlots[cur] = this.filerConfig[cur]
+                                pre.push(aGroup)
+                            }
+                            if (groupItem) {
+                                groupItem.isDisplay ??= true
+                                groupItem.groupSlots ??= {}
+                                groupItem.groupSlots[cur] = this.filerConfig[cur]
+                            }
+                        }
+                        return pre
+                    }, slotGroups)
+                    return slotGroups
+                }
+            },
+            hasGroupSlot () {
+                return (group) => {
+                    if (isEmpty(group.groupSlots)) {
+                        return false
+                    }
+                    if (!Object.keys(group.groupSlots).length) {
+                        return false
+                    }
+                    return true
+                }
             }
         },
         created () {
@@ -103,13 +185,46 @@
                 })
                 this.isInnerChange = true
                 this.componentNode.setRenderSlots(slotData, slotName)
-            }, 60)
+            }, 60),
+            toggleShowGroupSlot (group) {
+                group.isDisplay = !group.isDisplay
+                this.$forceUpdate()
+            }
         }
     }
 </script>
 
 <style lang="postcss" scoped>
     .modifier-slot {
-        margin: 0 10px;
+        .group-name {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            line-height: 40px;
+            cursor: pointer;
+            margin: 0 8px 0 12px;
+            & > span:first-child {
+                font-size: 12px;
+                font-weight: 700;
+                color: #313238;
+            }
+            .icon-angle-down {
+                cursor: pointer;
+                font-size: 24px;
+                transition: transform 200ms;
+                &.close {
+                    transform: rotate(-90deg);
+                }
+            }
+        }
+        .group-name-bt {
+            border-bottom: 1.25px solid #F5F7FA;
+        }
+        .group-bt {
+            border-bottom: 1.25px solid #EAEBF0;
+        }
+        .mar-lr{
+            margin: 0 8px 0 12px;
+        }
     }
 </style>

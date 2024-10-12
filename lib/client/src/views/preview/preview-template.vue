@@ -34,7 +34,17 @@
     import widgetBkTable from '@/components/render/pc/widget/table/table'
     import widgetElTable from '@/components/patch/widget-el-table/index.vue'
     import widgetTableColumn from '@/components/render/pc/widget/table/table-column'
+    import BkLuckyCanvas from '@/components/render/pc/widget/bk-lucky-canvas'
+    import bkCharts from '@/components/render/pc/widget/bk-charts/bk-charts'
+    import chart from '@/components/render/pc/widget/chart/chart'
     import '@vant/touch-emulator' // PC端模拟移动端事件 用于预览
+
+    import { register } from 'swiper/element/bundle'
+    import SwiperAnimation from 'swiper-element-animation'
+    import 'animate.css'
+
+    window.SwiperAnimation = SwiperAnimation
+    window.swiperRegister = register
 
     window.previewCustomCompontensPlugin = []
     window.registerPreview = function (callback) {
@@ -85,11 +95,11 @@
                 height: 812,
                 headerHeight: 30,
                 mobileWidth: '375',
-                isCustomComponentLoading: true,
+                // isCustomComponentLoading: true,
                 detail: {},
                 pageType: 'preview',
                 comp: 'LoadingComponent',
-                isLoading: false,
+                isLoading: true,
                 targetData: [],
                 minHeight: 0,
                 renderType: 'PC'
@@ -115,40 +125,51 @@
                 return this.$route.query.type || ''
             },
             framework () {
-                return this.$route.query.framework || 'vue2'
+                return this.$route.query?.framework && this.$route.query?.framework !== 'null' ? this.$route.query?.framework : 'vue2'
             }
         },
-        created () {
-            // init
-            init(this.framework)
-            console.log('preview-template')
-            const script = document.createElement('script')
-            script.src = `/${parseInt(this.projectId)}/component/preview-register.js?v=${this.versionId}`
-            script.onload = () => {
-                window.previewCustomCompontensPlugin.forEach(callback => {
-                    const [config, source] = callback(this.framework === 'vue3' ? vue3Resource : Vue)
-                    new Promise((resolve) => source(resolve)).then((component) => {
-                        registerComponent(config.type, component)
-                    })
-                })
-                this.isCustomComponentLoading = false
-            }
-            document.body.appendChild(script)
-            // 注入全局组件
-            registerComponent('render-html', renderHtml)
-            registerComponent('widget-bk-table', widgetBkTable)
-            registerComponent('widget-el-table', widgetElTable)
-            registerComponent('widget-table-column', widgetTableColumn)
+        async created () {
+            await this.loadResources()
+            await this.loadFile()
         },
-        async mounted () {
+        mounted () {
             this.minHeight = window.innerHeight
             window.addEventListener('resize', this.resizeHandler)
-            await this.loadFile()
         },
         destroyed () {
             window.removeEventListener('resize', this.resizeHandler)
         },
         methods: {
+            async loadResources () {
+                return new Promise((resolve, reject) => {
+                    init(this.framework)
+                    const script = document.createElement('script')
+                    script.src = `/${parseInt(this.projectId)}/component/preview-register.js?framework=${this.framework}&v=${this.versionId}`
+                    script.onload = () => {
+                        window.previewCustomCompontensPlugin.forEach(callback => {
+                            const [config, source] = callback(this.framework === 'vue3' ? vue3Resource : Vue)
+                            new Promise((resolve) => source(resolve)).then((component) => {
+                                registerComponent(config.type, component)
+                            })
+                        })
+                        resolve()
+                        // this.isCustomComponentLoading = false
+                    }
+                    script.onerror = (err) => {
+                        reject(err.message || err || window.i18n.t('获取自定义组件失败'))
+                    }
+                    document.body.appendChild(script)
+
+                    // 注入全局组件
+                    registerComponent('render-html', renderHtml)
+                    registerComponent('widget-bk-table', widgetBkTable)
+                    registerComponent('widget-el-table', widgetElTable)
+                    registerComponent('widget-table-column', widgetTableColumn)
+                    registerComponent('bk-lucky-canvas', BkLuckyCanvas)
+                    registerComponent('bk-charts', bkCharts)
+                    registerComponent('chart', chart)
+                })
+            },
             async loadFile () {
                 this.isLoading = true
 
@@ -224,7 +245,7 @@
             }
         },
         template: `<div :style="{ height: windowHeight + 'px' }" v-bkloading="{ isLoading }">
-            <div v-show="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">
+            <div :style="{ \'min-height\': minHeight + \'px\' }">
                 <div v-if="renderType === 'MOBILE'" class="area-wrapper">
                     <div class="simulator-wrapper" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px' }">
                         <div class="device-phone-frame">

@@ -10,7 +10,7 @@
 -->
 
 <script lang="ts">
-    import { computed, defineComponent } from '@vue/composition-api'
+    import { computed, defineComponent } from 'vue'
     import { execCopy } from '@/common/util'
     import { UPLOAD_STATUS, UploadFile, getFileUrl } from './helper'
     import FileIcon from './file-icon.vue'

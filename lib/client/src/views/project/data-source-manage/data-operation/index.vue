@@ -245,6 +245,7 @@
             :form="apiData.form"
             :is-show.sync="apiData.isShow"
             :is-edit="false"
+            :show-tips="true"
         />
         <bk-dialog
             theme="primary"
@@ -274,13 +275,18 @@
     import CreateApiSideslider from '@/components/api/create-api-sideslider/index.vue'
     import Monaco from '@/components/monaco.vue'
 
-    import { messageError } from '@/common/bkmagic'
+    import {
+        messageError
+    } from '@/common/bkmagic'
+    import {
+        bkInfoBox
+    } from 'bk-magic-vue'
     import {
         defineComponent,
         ref,
         computed,
         onBeforeMount
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         API_METHOD,
         parseValue2Scheme,
@@ -291,10 +297,12 @@
         FUNCTION_TYPE
     } from 'shared/function'
     import {
-        generateSqlByCondition
+        generateSqlByCondition,
+        getSqlParam
     } from 'shared/data-source'
     import {
-        isEmpty
+        isEmpty,
+        encodeBase64
     } from 'shared/util'
 
     export default defineComponent({
@@ -307,6 +315,22 @@
             EditFuncSideslider,
             CreateApiSideslider,
             Monaco
+        },
+
+        beforeRouteLeave (to, from, next) {
+            const confirmFn = () => next()
+            const cancelFn = () => next(false)
+            if (this.isUserInput) {
+                bkInfoBox({
+                    title: window.i18n.t('确认离开当前页面？'),
+                    toText: window.i18n.t('离开'),
+                    subTitle: window.i18n.t('离开修改的内容将会丢失'),
+                    confirmFn,
+                    cancelFn
+                })
+            } else {
+                confirmFn()
+            }
         },
 
         setup () {
@@ -355,6 +379,8 @@
                 isShow: false,
                 sql: ''
             })
+            // 用户是否输入了
+            const isUserInput = ref(false)
 
             // 计算变量
             const isEmptySql = computed(() => {
@@ -393,6 +419,9 @@
 
             // 查询条件发生变化
             const handleConditionChange = (val) => {
+                if (val?.table?.[0]?.tableName) {
+                    isUserInput.value = true
+                }
                 conditionQuery.value = val
                 // 查询条件发生变化以后，需要重置成功查询状态
                 changeQueryStatus(false)
@@ -400,6 +429,7 @@
 
             // 查询 sql 发生变化
             const handleSqlChange = (val) => {
+                isUserInput.value = true
                 sqlQuery.value = val
                 // 查询条件发生变化以后，需要重置成功查询状态
                 changeQueryStatus(false)
@@ -472,7 +502,7 @@
                     ? generateSqlByCondition(conditionQuery.value, getAllTables())
                     : sqlQuery.value
                 // 回车转空格
-                return window.btoa(sql.replace(/\r\n/g, ' '))
+                return encodeBase64(sql.replace(/\r\n/g, ' '))
             }
 
             // 生成 api
@@ -486,7 +516,8 @@
                             url: `/api/data-source/user/queryBySql${thirdPartDB.value?.id ? `/${thirdPartDB.value.dbName}` : ''}`,
                             body: parseValue2Scheme({
                                 sql: getFinalySql(),
-                                dataSourceType: dataSourceType.value
+                                dataSourceType: dataSourceType.value,
+                                ...getSqlParam(conditionQuery.value)
                             })
                         }
                     })
@@ -501,7 +532,8 @@
                     .then(() => {
                         const apiBody = parseValue2UseScheme({
                             sql: getFinalySql(),
-                            dataSourceType: dataSourceType.value
+                            dataSourceType: dataSourceType.value,
+                            ...getSqlParam(conditionQuery.value)
                         })
                         const funcParams = getParamFromApi(null, apiBody, 'post')
                         funcData.value.isShow = true
@@ -569,7 +601,7 @@
                         .dispatch('dataSource/list', {
                             projectId,
                             dataSourceType: type,
-                            thirdPartDBId: thirdPartDB.value.id
+                            thirdPartDBId: thirdPartDB.value?.id || 0
                         })
                         .then((res) => {
                             if (['preview', 'third-part'].includes(type)) {
@@ -646,6 +678,7 @@
                 isEmptySql,
                 thirdPartDB,
                 thirdPartDBList,
+                isUserInput,
                 toggleQueryType,
                 changeQueryStatus,
                 chooseDataSource,

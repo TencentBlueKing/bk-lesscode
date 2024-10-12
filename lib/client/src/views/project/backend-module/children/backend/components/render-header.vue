@@ -25,7 +25,7 @@
             </section>
             <bk-button
                 theme="primary"
-                :disabled="!userInput || isExecuting"
+                :disabled="!userInput || isExecuting || isLocked"
                 :loading="isLoading"
                 @click="handleGenerate"
             >
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api'
+    import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
     import { useStore } from '@/store'
     import { uuid } from 'shared/util'
     import useResourceLock from '@/common/use-resource-lock'
@@ -91,6 +91,7 @@
                             resourceId: oldVal?.id 
                         })
                     }
+                    userInput.value = ''
                     handleLock()
                 }
             )
@@ -118,12 +119,14 @@
                         if (data.isLock) {
                             lockInfo = data
                             isLocked.value = true
+                            store.commit('saasBackend/setStateProperty', { key: 'isCanvasLocked', value: true })
                             canvasLockNotify({
                                 type: 'lock',
                                 ...data
                             })
                         } else {
                             isLocked.value = false
+                            store.commit('saasBackend/setStateProperty', { key: 'isCanvasLocked', value: false })
                             canvaseLockUpdate(lockParams.value)
                         }
                     }

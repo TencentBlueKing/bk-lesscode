@@ -9,8 +9,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-import { defineComponent } from '@vue/composition-api'
-import { VNode } from 'vue'
+import { defineComponent, VNode } from 'vue'
 import mobileBaseTemplate from './mobile-base-template'
 
 export default defineComponent({

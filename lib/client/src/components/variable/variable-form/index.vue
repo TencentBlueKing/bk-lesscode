@@ -36,7 +36,8 @@
                                     v-if="renderJsType.tips"
                                     v-bk-tooltips="{
                                         content: renderJsType.tips,
-                                        width: '500px'
+                                        width: '500px',
+                                        allowHTML: false
                                     }"
                                 ></i>
                             </bk-radio-button>
@@ -80,7 +81,7 @@
             >{{$t('取消')}}</bk-button>
             <section
                 class="variable-button"
-                v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled, maxWidth: 400 }"
+                v-bk-tooltips="{ content: useSaveStatus.content, disabled: !useSaveStatus.disabled, maxWidth: 400, allowHTML: false }"
             >
                 <bk-button
                     :loading="isUseSaving"

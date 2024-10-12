@@ -1,5 +1,5 @@
 <template>
-    <section class="template-area" v-if="showTemplateIntro">
+    <section class="template-area" v-if="showTemplateIntro && appTemplateList.length">
         <div class="template-header">
             <div class="template-title" @click="toggleShowTemplate">
                 <i 
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import { defineComponent, ref, computed, onBeforeMount } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onBeforeMount } from 'vue'
     import store from '@/store'
     import router from '@/router'
     import { bkInfoBox } from 'bk-magic-vue'

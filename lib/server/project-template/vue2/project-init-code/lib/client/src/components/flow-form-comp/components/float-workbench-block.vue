@@ -1,7 +1,7 @@
 <template>
     <section class="float-workbench-block" @click="goToWorkbench">
         <i class="bk-icon icon-pc"></i>
-        <div style="margin-top: 4px;">工作台</div>
+        <div style="margin-top: 4px;">{{ $t('工作台') }}</div>
     </section>
 </template>
 <script>

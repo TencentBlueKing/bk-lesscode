@@ -1,6 +1,6 @@
 <template>
     <div class="base-component">
-        <span class="tab-item-label" v-bk-tooltips="{ content: $t(componentNameText) ,distance: 8, maxWidth: 400 }">
+        <span class="tab-item-label" v-bk-tooltips="{ content: $t(componentNameText) ,distance: 8, maxWidth: 400, allowHTML: false }">
             {{ componentNameText }}
         </span>
         <bk-dropdown-menu

@@ -27,7 +27,7 @@
 <script>
     import { Graph } from '@antv/x6'
     import { register } from '../x6-render-vue/registry.js'
-    import { ref, computed, watch, onMounted, defineComponent, nextTick } from '@vue/composition-api'
+    import { ref, computed, watch, onMounted, defineComponent, nextTick } from 'vue'
     import { useStore } from '@/store'
     import { debounce } from 'shared/util.js'
     import { finalNodeTypes, getGraphDefaultConfig, sortNodes, getLineColor, getStatusMap } from './common'
@@ -238,9 +238,11 @@
                             other.url = node?.content?.ide_url
                         }
                         if (other.id === 'PreviewProcessor') {
-                            if (node?.content?.result?.schema_url) {
-                                other.url = `/preview-api/project/${props.projectId}?appName=${appName}`
-                                store.dispatch('saasBackend/updateSchemaApiList', { appName })
+                            const schemaUrl = node?.content?.result?.schema_url
+                            const host = node?.content?.result?.devcontainer_url
+                            if (schemaUrl) {
+                                other.url = `/preview-api/project/${props.projectId}?host=${host}&schemaUrl=${schemaUrl}`
+                                store.dispatch('saasBackend/updateSchemaApiList', { schemaUrl })
                             }
                         }
                         other.property = node.property
@@ -265,14 +267,11 @@
                 data.tasks.forEach((task) => {
                     x = -275
                     let maxTask = 0
+                    // 记录最多的一列node or step总和
+                    let maxStepCount = 0
 
                     task.forEach((item, index) => {
                         x += (parentNodeWidth + parentNodeOffset)
-                        // calc max task height
-                        const taskHeight = parentNodeHeight + (item?.children?.length * (childNodeHeight + childNodeMarginTop) || 0)
-                        if (taskHeight > maxTask) {
-                            maxTask = taskHeight
-                        }
                         // parent node
                         graph.addNode({
                             id: item.id,
@@ -346,6 +345,11 @@
                                 })
                                 totalIndex++
                             })
+                            // 如果这一列的totalIndex最大， 说明列最高
+                            if (totalIndex > maxStepCount) {
+                                maxStepCount = totalIndex
+                                maxTask = parentNodeHeight + (maxStepCount * (childNodeHeight + childNodeMarginTop))
+                            }
                         })
                         if (index > 0) {
                             graph.addEdge({
@@ -374,7 +378,11 @@
                     if (x >= maxX) {
                         maxX = x
                     }
-                    y += (maxTask + taskOffset)
+                    if (maxTask === 0) {
+                        y += (parentNodeHeight + taskOffset) 
+                    } else {
+                        y += (maxTask + taskOffset) 
+                    }
                 })
 
                 finalTasks.forEach((item) => {

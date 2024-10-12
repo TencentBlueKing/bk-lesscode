@@ -60,7 +60,7 @@
         ref,
         PropType,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         getDefaultGroupBy,
         getDefaultTableField,

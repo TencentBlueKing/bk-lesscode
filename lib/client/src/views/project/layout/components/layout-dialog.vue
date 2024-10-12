@@ -277,7 +277,8 @@
                         data: {
                             layoutData: formData,
                             projectId: this.projectId,
-                            versionId: this.versionId
+                            versionId: this.versionId,
+                            id: formData?.id
                         }
                     })
                     if (res) {

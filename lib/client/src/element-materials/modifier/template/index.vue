@@ -6,7 +6,7 @@
                 v-if="!isComplexSide && !isMobileLayout && !isVue3"
                 v-bind="templateData"
                 @on-change="handleChange" />
-            <div ref="container" :class="{ 'container': true, 'is-complex': isComplexSide }">
+            <div ref="container" :class="{ 'nav-container': true, 'is-complex': isComplexSide }">
                 <component
                     :is="panelCom"
                     v-bind="templateData"
@@ -106,7 +106,7 @@
                 height: 100%
             }
         }
-        .container {
+        .nav-container {
             padding: 0 10px;
             &.is-complex {
                 padding: 0;

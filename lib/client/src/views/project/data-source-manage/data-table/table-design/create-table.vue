@@ -52,7 +52,7 @@
 <script lang="ts">
     import {
         defineComponent
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         useTableStatus
     } from './composables/table-info'
@@ -109,6 +109,7 @@
         setup () {
             const projectId = router?.currentRoute?.params?.projectId
             const thirdPartDBId = router?.currentRoute?.query?.thirdPartDBId
+            const tab = router?.currentRoute?.query?.tab
 
             const {
                 tableStatus,
@@ -123,7 +124,12 @@
             })
 
             const goBack = () => {
-                router.back()
+                router.push({
+                    name: 'tableList',
+                    query: {
+                        tab
+                    }
+                })
             }
 
             const changeEdit = (val) => {

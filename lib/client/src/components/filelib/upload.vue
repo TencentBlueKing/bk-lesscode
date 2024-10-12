@@ -10,7 +10,7 @@
 -->
 
 <script lang="ts">
-    import { defineComponent, ref, shallowRef } from '@vue/composition-api'
+    import { defineComponent, ref, shallowRef } from 'vue'
     import { genFileId } from './use-upload-handler.js'
     import useAjaxUpload from '@/common/use-ajax-upload.js'
     import { messageError } from '@/common/bkmagic'

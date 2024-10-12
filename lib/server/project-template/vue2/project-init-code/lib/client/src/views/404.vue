@@ -1,6 +1,6 @@
 <template>
     <bk-exception class="exception-wrap-item" type="404">
-        <span>页面不存在</span>
+        <span>{{ $t('页面不存在') }}</span>
     </bk-exception>
 </template>
 

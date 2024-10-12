@@ -30,7 +30,6 @@
                     {{ $t('引用已有表') }}
                 </span>
                 <bk-select
-                    size="small"
                     :value="localVal.relatedId"
                     :loading="formListLoading"
                     :clearable="false"

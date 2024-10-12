@@ -3,9 +3,9 @@
         <div
             v-if="showLabel && !['DESC','DIVIDER'].includes(field.type)"
             :class="['field-label', { required: field.validate_type === 'REQUIRE' }]">
-            <span v-if="field.desc" v-bk-tooltips="field.desc" class="label-text has-desc">{{ field.name }}</span>
+            <span v-if="field.desc" v-bk-tooltips="{ content: field.desc, allowHTML: false }" class="label-text has-desc">{{ field.name }}</span>
             <span v-else class="label-text">{{ field.name }}</span>
-            <i v-if="field.tips" v-bk-tooltips="field.tips" class="bk-icon icon-question-circle tips-icon"></i>
+            <i v-if="field.tips" v-bk-tooltips="{ content: field.tips, allowHTML: false }" class="bk-icon icon-question-circle tips-icon"></i>
         </div>
         <div class="field-form-content">
             <template v-if="fieldComp">
@@ -19,7 +19,7 @@
                     @change="$emit('change', $event)">
                 </component>
             </template>
-            <span v-else style="font-size: 12px; color: #c3cdd7;">找不到该类型控件，请删除字段</span>
+            <span v-else style="font-size: 12px; color: #c3cdd7;">{{ $t('找不到该类型控件，请删除字段') }}</span>
         </div>
     </div>
 </template>
