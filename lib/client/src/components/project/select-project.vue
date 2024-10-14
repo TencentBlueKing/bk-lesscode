@@ -70,6 +70,13 @@
                             projectId: id
                         }
                     })
+                } else if (this.$route.name === 'flowTplCanvas') {
+                    this.$router.push({
+                        name: 'flowTplList',
+                        params: {
+                            projectId: id
+                        }
+                    })
                 } else {
                     this.$router.replace({
                         params: {

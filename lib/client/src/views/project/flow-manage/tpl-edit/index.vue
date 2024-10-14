@@ -144,7 +144,8 @@
                     ])
                     this.tplDetail = tplRes
                 } catch (e) {
-                    console.error(e)
+                    this.allowExitRoute = true
+                    this.$router.push({ name: 'flowTplList' })
                 } finally {
                     this.tplDetailLoading = false
                 }

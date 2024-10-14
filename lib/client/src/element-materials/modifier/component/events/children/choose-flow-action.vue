@@ -25,8 +25,7 @@
         <div class="label-select">
             <div class="label">{{ $t('操作') }}</div>
             <bk-select v-model="copyEventValue.flow.actionName" @change="change">
-                <bk-option id="createTask" :name="$t('执行流程')" />
-                <!-- <bk-option id="createAndExcute" :name="$t('创建并执行任务')" /> -->
+                <bk-option id="createAndExecuteTask" :name="$t('执行流程')" />
             </bk-select>
         </div>
     </div>
