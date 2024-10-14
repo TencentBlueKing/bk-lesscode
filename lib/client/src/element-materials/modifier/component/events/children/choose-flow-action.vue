@@ -1,14 +1,8 @@
 <template>
     <div class="choose-flow-action">
         <div class="label-select">
-            <div
-                v-bk-tooltips="{
-                    content: $t('可选择当前应用下已部署的流程'),
-                    placement: 'top-end',
-                    boundary: 'window'
-                }"
-                class="label">
-                <span class="desc-line">{{ $t('流程') }}</span>
+            <div class="label">
+                <span>{{ $t('流程') }}</span>
             </div>
             <bk-select
                 v-model="copyEventValue.flow.id"
@@ -19,7 +13,12 @@
                     v-for="flow in flowList"
                     :key="flow.id"
                     :id="flow.id"
-                    :name="flow.name" />
+                    :name="flow.name">
+                    <div class="flow-name-wrapper">
+                        <span v-bk-overflow-tips class="flow-name">{{ flow.name }}</span>
+                        <span v-if="flow.deployed === 0" class="status-tag">{{ $t('未部署') }}</span>
+                    </div>
+                </bk-option>
             </bk-select>
         </div>
         <div class="label-select">
@@ -63,7 +62,7 @@
             async getFlowList () {
                 this.loading = true
                 const res = await this.$store.dispatch('flow/tpl/getTplList', { projectId: this.projectId })
-                this.flowList = res.list.filter(item => item.deployed === 1)
+                this.flowList = res.list
                 this.loading = false
             },
             change () {
@@ -101,6 +100,26 @@
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
             background: #ffffff;
+        }
+    }
+    .flow-name-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .flow-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .status-tag {
+            flex-shrink: 0;
+            padding: 2px 4px;
+            line-height: 1;
+            font-size: 12px;
+            color: #fe9c00;
+            border: 1px solid #fe9c00;
+            border-radius: 2px;
+            transform: scale(0.83, 0.83);
         }
     }
 </style>
