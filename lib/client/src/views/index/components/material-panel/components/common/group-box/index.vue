@@ -28,6 +28,7 @@
                 :list="list"
                 :sort="false"
                 :group="dragGroup"
+                :filter="filter"
                 :force-fallback="false"
                 ghost-class="source-ghost"
                 chosen-class="source-chosen"
@@ -55,6 +56,7 @@
             group: String,
             // 选中组件时的回调
             createFallback: Function,
+            filter: String,
             dragOptions: {
                 type: Object,
                 default: () => ({})
