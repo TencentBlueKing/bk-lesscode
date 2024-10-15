@@ -11,6 +11,7 @@
                 :tpl-id="tplId"
                 :tpl-name="tplName"
                 :nodes="nodes"
+                :edges="edges"
                 :detail="detail.data"
                 @change="handleChange"
                 @update="handleUpdate" />
@@ -37,6 +38,10 @@
             tplId: Number,
             tplName: String,
             nodes: {
+                type: Array,
+                default: () => []
+            },
+            edges: {
                 type: Array,
                 default: () => []
             },

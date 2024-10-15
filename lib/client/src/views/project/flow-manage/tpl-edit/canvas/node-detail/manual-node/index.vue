@@ -151,7 +151,6 @@
 
             const handleChange = (key, val) => {
                 nodeData.value.config[key] = val
-                console.log('nodeData: ', nodeData.value)
                 emit('change', nodeData.value)
             }
 
