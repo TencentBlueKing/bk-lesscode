@@ -153,7 +153,7 @@
                             if (formDetail?.content) {
                                 const fields = JSON.parse(formDetail.content || '[]').map(item => {
                                     const { key, name } = item.configure
-                                    return { type: item.type, id: `\${callback_data_${node.id}['\${${key}}']}`, name: `${name}(${key})` }
+                                    return { type: item.type, id: `\${callback_data_${node.id}['${key}']}`, name: `${name}(${key})` }
                                 })
                                 varList.push({ id: node.id, name: node.config.name, fields })
                             }
