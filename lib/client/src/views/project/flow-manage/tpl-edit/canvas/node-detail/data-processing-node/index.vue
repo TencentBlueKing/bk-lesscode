@@ -45,6 +45,7 @@
                     :form-fields="formFields"
                     :form-list="formList"
                     :form-list-loading="formListLoading"
+                    :field-var-list="fieldVarList"
                     @change="handleProcessingRuleChange" />
                 <bk-exception
                     v-else
@@ -78,6 +79,14 @@
             detail: {
                 type: Object,
                 default: () => ({})
+            },
+            nodes: {
+                type: Array,
+                default: () => []
+            },
+            edges: {
+                type: Array,
+                default: () => []
             }
         },
         setup(props, { emit }) {
@@ -120,13 +129,43 @@
             const formList = ref([])
             const formListLoading = ref(false)
             const formFields = ref([])
+            const fieldVarList = ref([]) // 字段变量
 
             onMounted(async () => {
                 await getFormList()
                 if (nodeData.value.config.tableName) {
                     getFormFields(nodeData.value.config.tableName)
                 }
+                fieldVarList.value = getGroupedVars(nodeData.value.id)
             })
+
+            // 提取流程中在当前节点之前的人工节点表单，按照节点分组
+            const getGroupedVars = (nodeId) => {
+                const varList = []
+
+                const traverse = (nodeId) => {
+                    const sourceIds = props.edges.filter(edge => edge.target.cell === nodeId).map(edge => edge.source.cell)
+                    sourceIds.forEach(id => {
+                        const node = props.nodes.find(item => item.id === id)
+                        if (node.type === 'Manual') {
+                            const formId = node.config.formType === 'USE_FORM' ? node.config.relatedId : node.config.formId
+                            const formDetail = formList.value.find(item => item.id === formId)
+                            if (formDetail?.content) {
+                                const fields = JSON.parse(formDetail.content || '[]').map(item => {
+                                    const { key, name } = item.configure
+                                    return { type: item.type, id: `\${callback_data_${node.id}['\${${key}}']}`, name: `${name}(${key})` }
+                                })
+                                varList.push({ id: node.id, name: node.config.name, fields })
+                            }
+                        }
+                        traverse(id)
+                    })
+                }
+
+                traverse(nodeId)
+
+                return varList
+            }
 
             // 获取表单列表
             const getFormList = async () => {
@@ -189,6 +228,7 @@
                 formList,
                 formListLoading,
                 formFields,
+                fieldVarList,
                 handleSelectAction,
                 handleSelectTable,
                 handleChange,

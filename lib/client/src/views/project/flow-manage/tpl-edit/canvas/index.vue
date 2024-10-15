@@ -30,6 +30,7 @@
             :tpl-id="tplDetail.id"
             :tpl-name="tplDetail.name"
             :nodes="nodes"
+            :edges="edges"
             :detail="nodeDetailPanelData"
             @update="handleDetailUpdate"
             @close="handleDetailClose" />
@@ -140,6 +141,7 @@
                     if (index > -1) {
                         nodes.value.splice(index, 1, data)
                         renderGraphRef.value.updateNode(data)
+                        emit('updateDeployStatus', 0)
                     }
                 }
             }

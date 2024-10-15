@@ -56,7 +56,8 @@
                             :clearable="false"
                             :searchable="true"
                             :loading="relationListLoading"
-                            :disabled="relationListLoading">
+                            :disabled="relationListLoading"
+                            @change="handleValueChange(expression, $event)">
                             <bk-option-group
                                 v-for="(group, gIdx) in getAvailableRelationList(expression)"
                                 :key="gIdx"
@@ -67,7 +68,7 @@
                                     v-for="item in group.fields"
                                     :key="item.id"
                                     :id="item.id"
-                                    :name="`${item.name}(${item.key})`">
+                                    :name="item.name">
                                 </bk-option>
                             </bk-option-group>
                         </bk-select>
@@ -123,7 +124,8 @@
                             :clearable="false"
                             :searchable="true"
                             :loading="relationListLoading"
-                            :disabled="relationListLoading">
+                            :disabled="relationListLoading"
+                            @change="handleValueChange(mapping, $event)">
                             <bk-option-group
                                 v-for="(group, gIdx) in getAvailableRelationList(mapping)"
                                 :key="gIdx"
@@ -180,6 +182,10 @@
             formListLoading: {
                 type: Boolean,
                 default: false
+            },
+            fieldVarList: {
+                type: Array,
+                default: () => []
             }
         },
         setup (props, { emit }) {
@@ -253,7 +259,7 @@
 
             // 流程中所有人工节点包含的字段列表，按照节点分组，其中目标表字段为int类型时，只能选节点中为int类型的字段
             const getAvailableRelationList = () => {
-                return []
+                return props.fieldVarList
             }
 
             // 选择目标表字段后，将值类型设置为const，将逻辑条件清空，并根据字段的类型设置默认值
@@ -281,7 +287,9 @@
                     type = 'int'
                 } else {
                     const field = props.formFields.find(item => item.configure.key === ruleItem.key)
-                    type = field.type
+                    if (field) {
+                        type = field.type
+                    }
                 }
                 ruleItem.value = getFieldDefaultVal(type)
             }
@@ -300,8 +308,6 @@
                 conditions.value.expressions.splice(index, 1)
                 change()
             }
-
-            const handleSelectMapValue = () => {}
 
             const handleAddMapping = (index) => {
                 mapping.value.splice(index + 1, 0, {
