@@ -137,6 +137,7 @@
             return {
                 graphRef,
                 instance,
+                updateGraph,
                 updateNode
             }
         }

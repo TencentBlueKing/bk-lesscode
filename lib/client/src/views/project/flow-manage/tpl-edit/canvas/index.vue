@@ -42,6 +42,8 @@
     import { useRoute } from '@/router'
     import RenderGraph from './render-graph/graph.vue'
     import NodeDetail from './node-detail/index.vue'
+    import { GET_NODE_DEFAULT_CONFIG } from './render-graph/constants'
+    import { uuid } from '@/common/util'
 
     export default defineComponent({
         name: 'FlowTplCanvas',
@@ -79,8 +81,42 @@
                 const { x, y } = node.position()
                 const nodeData = { ...node.data, axis: { x, y } }
                 await store.dispatch('flow/tpl/createNode', { id: props.tplDetail.id, data: nodeData })
-                emit('updateDeployStatus', 0)
                 nodes.value.push(nodeData)
+                if (nodeData.type === 'Manual') {
+                    addDefaultDataProcessingNode(nodeData)
+                }
+                emit('updateDeployStatus', 0)
+            }
+
+            // 拖入人工节点后，自动添加一个数据处理节点
+            const addDefaultDataProcessingNode = async (manualNode) => {
+                const dataProcessingNode = {
+                    ...GET_NODE_DEFAULT_CONFIG('DataProcessing', {
+                        sourceManualNode: manualNode.id,
+                        axis: {
+                            x: manualNode.axis.x + 335,
+                            y: manualNode.axis.y
+                        },
+                        isAutoAdd: true
+                    })
+                }
+                const edge = {
+                    id: `edge${uuid(12)}`,
+                    source: {
+                        cell: manualNode.id,
+                        port: 'port_right'
+                    },
+                    target: {
+                        cell: dataProcessingNode.id,
+                        port: 'port_left'
+                    }
+                }
+
+                await store.dispatch('flow/tpl/createNode', { id: props.tplDetail.id, data: dataProcessingNode })
+                await store.dispatch('flow/tpl/createEdge', { id: props.tplDetail.id, data: edge })
+                nodes.value.push(dataProcessingNode)
+                edges.value.push(edge)
+                renderGraphRef.value.updateGraph()
             }
 
             // 移动节点位置
@@ -99,7 +135,6 @@
             // 删除节点
             const handleNodeDeleted = async (node, edgeIds) => {
                 await store.dispatch('flow/tpl/deleteNode', { id: props.tplDetail.id, nodeId: node.id })
-                console.log('node delete: ', node.id)
                 emit('updateDeployStatus', 0)
                 const index = nodes.value.findIndex(n => n.id === node.id)
                 if (index > -1) {
