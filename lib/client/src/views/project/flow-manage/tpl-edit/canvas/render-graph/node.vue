@@ -14,6 +14,7 @@
             <div class="node-name-area" :title="node.config.name">
                 <div class="name-wrapper">
                     <span class="name">{{ node.config.name }}</span>
+                    <span v-if="node.sourceManualNode" class="system-add-icon">系统</span>
                 </div>
                 <p class="desc">
                     <span v-if="node.isDraft" class="config-tips">点击配置</span>
@@ -155,7 +156,7 @@
                 height: 18px;
                 line-height: 18px;
                 .name {
-                    max-width: calc(100% - 50px);
+                    max-width: calc(100% - 40px);
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
