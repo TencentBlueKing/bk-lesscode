@@ -1,5 +1,11 @@
 <template>
-    <div v-if="node.type" :class="['graph-node-wrapper', node.isDraft ? 'is-draft' : '']">
+    <div
+        v-if="node.type"
+        :class="[
+            'graph-node-wrapper',
+            node.isDraft ? 'is-draft' : '',
+            node.status
+        ]">
         <div
             v-if="isCircle"
             class="circle-node">
@@ -8,7 +14,7 @@
             </div>
         </div>
         <div v-else class="rect-node">
-            <div class="node-icon-area">
+            <div :class="['node-icon-area', viewMode ? 'view-mode' : '']">
                 <i :class="['bk-drag-icon', GET_NODE_ICON(node.type)]"></i>
             </div>
             <div class="node-name-area" :title="node.config.name">
@@ -23,11 +29,12 @@
                         <span v-if="node.type === 'DataProcessing'">目标表：{{ node.config.tableName }}</span>
                     </template>
                 </p>
-                <i class="bk-drag-icon bk-drag-edit node-edit-icon" @click.stop="$emit('click', node)" />
+                <i v-if="!viewMode" class="bk-drag-icon bk-drag-edit node-edit-icon" @click.stop="$emit('click', node)" />
+                <i v-else-if="node.status === 'RUNNING'" class="bk-drag-icon bk-drag-sync-pending running-spin"  />
             </div>
         </div>
         <i
-            v-if="!['Start', 'End'].includes(node.type)"
+            v-if="!viewMode && !['Start', 'End'].includes(node.type)"
             class="bk-icon icon-close node-delete-icon"
             @click.stop="$emit('delete', node)" />
     </div>
@@ -38,6 +45,12 @@
 
     export default defineComponent({
         name: 'GraphNode',
+        props: {
+            viewMode: {
+                type: Boolean,
+                deufault: false
+            }
+        },
         setup () {
             const node = ref({})
             const getNode = inject('getNode')
@@ -73,6 +86,19 @@
     })
 </script>
 <style lang="postcss" scoped>
+    @keyframes rotate {
+        0% {
+            transform: rotate(0);
+        }
+
+        50% {
+            transform: rotate(180deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
     .graph-node-wrapper {
         position: relative;
         height: 100%;
@@ -85,6 +111,7 @@
             .circle-node {
                 .text {
                     background: #e6e7eb;
+                    color: #ffffff;
                 }
             }
             .rect-node {
@@ -93,7 +120,44 @@
                 }
             }
         }
-    }
+        &.RUNNING {
+            cursor: pointer;
+            .circle-node {
+                .text {
+                    background-color: #699df4;
+                }
+            }
+            .rect-node {
+                .node-icon-area {
+                    background-color: #699df4;
+                }
+            }
+        }
+        &.FINISHED {
+            .circle-node {
+                .text {
+                    background-color: #9adc9e;
+                }
+            }
+            .rect-node {
+                .node-icon-area {
+                    background-color: #9adc9e;
+                }
+            }
+        }
+        &.FAILED {
+            .circle-node {
+                .text {
+                    background-color: #ea3636;
+                }
+            }
+            .rect-node {
+                .node-icon-area {
+                    background-color: #ea3636;
+                }
+            }
+        }
+     }
     .circle-node {
         padding: 8px;
         height: 100%;
@@ -139,6 +203,9 @@
             font-size: 18px;
             color: #fff;
             background-color: #3a84ff;
+            &.view-mode {
+                background-color: #b4becd;
+            }
         }
         .node-name-area {
             position: relative;
@@ -195,6 +262,14 @@
                 &:hover {
                     color: #3a84ff;
                 }
+            }
+            .running-spin {
+                position: absolute;
+                right: 8px;
+                top: 16px;
+                font-size: 16px;
+                color: #ff9c01;
+                animation: rotate 2s linear infinite;
             }
         }
     }
