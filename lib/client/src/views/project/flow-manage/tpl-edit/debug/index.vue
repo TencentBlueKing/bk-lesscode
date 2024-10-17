@@ -33,7 +33,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch, getCurrentInstance, onMounted, onBeforeUnmount } from '@vue/composition-api'
+    import { defineComponent, ref, watch, getCurrentInstance, onBeforeUnmount } from '@vue/composition-api'
     import { useStore } from '@/store'
     import RenderGraph from '../canvas/render-graph/graph.vue'
     import NodeOperateSideslider from './node-operate-sideslider.vue'
@@ -58,7 +58,7 @@
             const renderGraphRef = ref(null)
             const nodes = ref([])
             const edges = ref([])
-            const taskId = ref(32)
+            const taskId = ref(0)
             const isShowNodeOperate = ref(false)
             const crtNode = ref({})
             const timer = ref(null)
@@ -69,10 +69,6 @@
                     edges.value = JSON.parse(val.edges)
                 }
             }, { immediate: true })
-
-            onMounted(() => {
-                getTaskStatusDetail()
-            })
 
             onBeforeUnmount(() => {
                 if (timer.value) {
