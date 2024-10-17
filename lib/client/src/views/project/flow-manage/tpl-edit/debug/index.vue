@@ -24,17 +24,25 @@
                 :edges="edges"
                 @node:click="handleNodeClick" />
         </div>
+        <node-operate-sideslider
+            :show="isShowNodeOperate"
+            :task-id="taskId"
+            :node-data="crtNode"
+            @submitted="handleSubmitted"
+            @close="close" />
     </div>
 </template>
 <script>
     import { defineComponent, ref, watch, getCurrentInstance, onBeforeUnmount } from '@vue/composition-api'
     import { useStore } from '@/store'
     import RenderGraph from '../canvas/render-graph/graph.vue'
+    import NodeOperateSideslider from './node-operate-sideslider.vue'
 
     export default defineComponent({
         name: 'DebugCanvas',
         components: {
-            RenderGraph
+            RenderGraph,
+            NodeOperateSideslider
         },
         props: {
             tplDetail: {
@@ -51,6 +59,8 @@
             const nodes = ref([])
             const edges = ref([])
             const taskId = ref(0)
+            const isShowNodeOperate = ref(false)
+            const crtNode = ref({})
             const timer = ref(null)
 
             watch(() => props.tplDetail, val => {
@@ -69,7 +79,8 @@
             const handleNodeClick = (node) => {
                 const data = node.getData()
                 if (data.type === 'Manual' && data.status === 'RUNNING') {
-                    console.log(data)
+                    crtNode.value = data
+                    isShowNodeOperate.value = true
                 }
             }
 
@@ -103,8 +114,16 @@
                 }, 3000);
             }
 
+            const handleSubmitted = () => {
+                close()
+                if (timer) {
+                    clearTimeout(timer.value)
+                }
+                getTaskStatusDetail()
+            }
+
             const close = () => {
-                emit('close')
+                isShowNodeOperate.value = false
             }
 
             return {
@@ -112,8 +131,11 @@
                 nodes,
                 edges,
                 taskId,
+                isShowNodeOperate,
+                crtNode,
                 handleNodeClick,
                 handleCreateAndExecute,
+                handleSubmitted,
                 close
             }
         }
