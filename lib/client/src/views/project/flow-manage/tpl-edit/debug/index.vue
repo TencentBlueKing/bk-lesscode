@@ -29,7 +29,7 @@
             :task-id="taskId"
             :node-data="crtNode"
             @submitted="handleSubmitted"
-            @close="close" />
+            @close="isShowNodeOperate.value = false" />
     </div>
 </template>
 <script>
@@ -115,7 +115,7 @@
             }
 
             const handleSubmitted = () => {
-                close()
+                isShowNodeOperate.value = false
                 if (timer) {
                     clearTimeout(timer.value)
                 }
@@ -123,7 +123,7 @@
             }
 
             const close = () => {
-                isShowNodeOperate.value = false
+                emit('close')
             }
 
             return {
