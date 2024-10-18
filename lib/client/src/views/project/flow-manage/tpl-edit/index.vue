@@ -176,8 +176,7 @@
             async handleDeploy () {
                 try {
                     this.deployPending = true
-                    await this.$store.dispatch('flow/tpl/updateDeployStatus', { id: this.tplDetail.id, deployed: 1 })
-                    this.tplDetail.deployed = 1
+                    this.tplDetail = await this.$store.dispatch('flow/tpl/updateDeployStatus', { id: this.tplDetail.id, deployed: 1 })
                     this.$bkMessage({
                         theme: 'success',
                         message: window.i18n.t('流程部署成功')

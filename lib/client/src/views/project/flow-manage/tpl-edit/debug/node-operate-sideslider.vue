@@ -14,8 +14,12 @@
         <template #content>
             <div v-if="!formLoading" class="task-detail-content">
                 <div class="manual-node-form-wrapper">
-                    <manual-node :id="taskId" :node-id="nodeData.id" :fields="fields" @submitted="emit('submitted')" @close="emit('close')
-" />
+                    <manual-node
+                        :id="taskId"
+                        :node-id="nodeData.id"
+                        :fields="fields"
+                        @submitted="emit('submitted')"
+                        @close="close"/>
                 </div>
             </div>
         </template>
@@ -87,12 +91,17 @@
                 }
             }
 
+            const close = () => {
+                emit('close')
+            }
+
             return {
                 fields,
                 pending,
                 formLoading,
                 submitFormData,
                 handleSumitClick,
+                close,
                 emit
             }
         }

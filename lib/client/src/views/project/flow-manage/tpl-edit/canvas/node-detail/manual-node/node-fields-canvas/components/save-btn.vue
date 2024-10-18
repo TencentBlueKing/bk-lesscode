@@ -55,14 +55,16 @@
                 try {
                     pending.value = true
                     let formId = props.formId
+                    let tableName = props.tableName
                     if (props.formId) {
-                        await store.dispatch('form/updateForm', { ...common, id: props.formId, tableName: props.tableName })
+                        await store.dispatch('form/updateForm', { ...common, id: formId, tableName })
                     } else {
                         const res = await store.dispatch('form/createForm', { ...common, tableName: `manual_node_${props.tplId}_${props.nodeId}_${uuid(4)}` })
                         formId = res.id
+                        tableName = res.tableName
                     }
     
-                    emit('saved', { formId, formType: props.formType })
+                    emit('saved', { formId, formType: props.formType, tableName })
                 } catch (e) {
                     console.error(e)
                 } finally {

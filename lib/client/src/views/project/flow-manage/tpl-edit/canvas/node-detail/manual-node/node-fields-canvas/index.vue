@@ -22,7 +22,7 @@
                         :table-name="tableName"
                         :fields="fields"
                         :editable="editable"
-                        @saved="emit('saved', $event)" />
+                        @saved="handleFormSaved" />
                     <!-- <bk-button
                         v-bk-tooltips="{ content: $t('复用表单模式下表单不可编辑'), disabled: editable, placement: 'bottom-end' }"
                         :class="{ disabled: !editable }"
@@ -180,6 +180,11 @@
                 }
             }
 
+            const handleFormSaved = (data) => {
+                tableName.value = data.tableName
+                emit('saved', data)
+            }
+
             return {
                 loading,
                 formName,
@@ -195,6 +200,7 @@
                 handleUpdateFields,
                 clearSelected,
                 handleModifierChange,
+                handleFormSaved,
                 emit
             }
         }
