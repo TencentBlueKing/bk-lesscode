@@ -29,7 +29,7 @@
             :task-id="taskId"
             :node-data="crtNode"
             @submitted="handleSubmitted"
-            @close="isShowNodeOperate.value = false" />
+            @close="isShowNodeOperate = false" />
     </div>
 </template>
 <script>
