@@ -30,7 +30,7 @@
                                 :component-type="componentType"
                                 :component-id="componentId"
                                 :describe="item"
-                                :last-value="lastProps[key]"
+                                :last-value="lastPropVal(key)"
                                 :name="key"
                                 :key="key"
                                 :sync-slot="syncSlot"
@@ -47,7 +47,7 @@
                         :component-type="componentType"
                         :component-id="componentId"
                         :describe="group"
-                        :last-value="lastProps[indexKey]"
+                        :last-value="lastPropVal(indexKey)"
                         :name="indexKey"
                         :key="indexKey"
                         :sync-slot="syncSlot"
@@ -67,6 +67,7 @@
     import { encodeRegexp } from '../../component/utils'
     import { framework } from 'bk-lesscode-render'
     import { isEmpty } from '@/common/util'
+    import { camelCase, paramCase } from 'change-case'
 
     // 属性类型转为该变量接受的值类型
     const getPropValueType = (type) => {
@@ -165,6 +166,15 @@
                         return false
                     }
                     return true
+                }
+            },
+            lastPropVal () {
+                return (key) => {
+                    if (!this.lastProps[key]) {
+                        // 同一个属性在原有组件和现物料组件的命名方式不一样，需要属性转成短线/驼峰 从而获取原来属性的值
+                        return this.lastProps[camelCase(key)] || this.lastProps[paramCase(key)]
+                    }
+                    return this.lastProps[key]
                 }
             }
         },
@@ -334,9 +344,21 @@
              * 更新列配置并同步 slot
              */
             handleChange: _.throttle(function (propName, propData) {
-                console.log(propName, propData, 998822)
+                let result = this.lastProps
+                if (!this.lastProps[propName]) {
+                    const camelPropName = camelCase(propName)
+                    const paramPropName = paramCase(propName)
+                    const excludeProp = this.lastProps[camelPropName] ? camelPropName : paramPropName
+                    // 同一属性在原来与现在命名不一致时，剔除原有属性
+                    result = Object.keys(this.lastProps).reduce((acc, key) => {
+                        if (key !== excludeProp) {
+                            acc[key] = this.lastProps[key]
+                        }
+                        return acc
+                    }, {})
+                }
                 this.lastProps = Object.freeze({
-                    ...this.lastProps,
+                    ...result,
                     [propName]: propData
                 })
                 
