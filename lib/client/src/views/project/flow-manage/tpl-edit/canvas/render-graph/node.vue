@@ -48,7 +48,7 @@
         props: {
             viewMode: {
                 type: Boolean,
-                deufault: false
+                default: false
             }
         },
         setup () {

@@ -120,7 +120,7 @@
                     const { x, y } = axis
                     const shape = ['Start', 'End'].includes(type) ? 'custom-circle' : 'custom-rect'
                     cells.push(instance.value.createNode({
-                        shape,
+                        shape: props.viewMode ? `${shape}-view` : shape,
                         id,
                         x,
                         y,
