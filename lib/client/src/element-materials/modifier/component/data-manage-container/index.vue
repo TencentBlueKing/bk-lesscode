@@ -2,7 +2,7 @@
     <div v-if="show" class="data-manage-container-modifier">
         <prop-group :title="$t('数据源')">
             <section class="data-source">
-                <span class="g-prop-sub-title g-mt8 g-mb6">{{ $t('数据表') }}</span>
+                <span class="g-prop-sub-title g-mt8 g-mb6">{{ labelName }}</span>
                 <bk-select
                     v-model="formId"
                     size="small"
@@ -38,6 +38,9 @@
             ...mapGetters('projectVersion', ['currentVersionId']),
             type () {
                 return this.activeNode.type === 'widget-data-manage-container' ? 'data-manage' : 'flow-manage'
+            },
+            labelName () {
+                return this.type === 'data-manage' ? this.$t('数据表') : this.$t('form_关联流程')
             }
         },
         watch: {
