@@ -1,12 +1,13 @@
 <template>
-  <div v-if="show" class="form-container-modifier">
-    <data-source
-        :value="propsData.dataSource.code"
-        @change="handleChange('dataSource', $event)"
-        @updateFields="handleUpdateFields"/>
-    <row-layout :value="propsData.rowLayout.code" @change="handleChange('rowLayout', $event)"/>
-    <operate-actions :value="propsData.actions.code" @change="handleChange('actions', $event)" />
-  </div>
+    <div v-if="show" class="form-container-modifier">
+        <data-source
+            :value="propsData.dataSource.code"
+            :active-node="activeNode"
+            @change="handleChange('dataSource', $event)"
+            @updateFields="handleUpdateFields" />
+        <row-layout :value="propsData.rowLayout.code" @change="handleChange('rowLayout', $event)" />
+        <operate-actions :value="propsData.actions.code" @change="handleChange('actions', $event)" />
+    </div>
 </template>
 <script>
     import LC from '@/element-materials/core'

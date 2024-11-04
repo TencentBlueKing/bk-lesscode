@@ -4006,5 +4006,7 @@
   "添加函数分类": "Create Function Category",
   "更新函数分类": "Update Function Category",
   "删除函数分类": "Delete Function Category",
-  "离开修改的内容将会丢失": "Leaving modifications will be lost"
+  "离开修改的内容将会丢失": "Leaving modifications will be lost",
+  "请输入表名，不填则使用默认表名": "Please enter the table name, if not filled, use the default table name",
+  "表名保存后无法修改，请谨慎填写": "The table name cannot be modified after saving, please be careful when filling in"
 }
