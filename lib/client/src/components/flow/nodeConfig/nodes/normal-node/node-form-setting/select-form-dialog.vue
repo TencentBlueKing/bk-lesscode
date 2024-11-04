@@ -43,7 +43,7 @@
                     @click="handleSelect(item)">
                     <div class="selected-label"></div>
                     <span class="preview-btn" @click.stop="$emit('preview', JSON.parse(item.content))">{{ $t('预览') }}</span>
-                    <p class="form-name">{{ item.formName }}</p>
+                    <p v-bk-overflow-tips class="form-name">{{ `${item.formName}(${item.tableName})` }}</p>
                 </div>
                 <bk-exception
                     v-if="listData.length === 0"
@@ -94,7 +94,7 @@
             },
             projectId () {
                 return this.$route.params.projectId
-            },
+            }
         },
         watch: {
             show (val) {
@@ -115,7 +115,7 @@
                 if (this.type === 'USE_FORM') {
                     const formIds = Object.values(JSON.parse(this.flowConfig.formIds || '{}'))
                     res.forEach(item => {
-                        if(formIds.includes(item.id)) {
+                        if (formIds.includes(item.id)) {
                             item.disabled = true
                         }
                     })
