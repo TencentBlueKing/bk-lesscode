@@ -1842,6 +1842,7 @@
   "支持 XLSX，SQL 文件格式，": "Supports XLSX, SQL file formats,",
   "支持 {0} 文件格式，": "Supports {0} file formats,",
   "表名": "Table Name",
+  "数据表表名": "Table Name",
   "form_表名": "Table name",
   "table_表名": "Table name",
   "表名不能重复": "Table name cannot be repeated",
