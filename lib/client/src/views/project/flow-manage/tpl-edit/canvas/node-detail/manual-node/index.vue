@@ -107,7 +107,7 @@
                         content: fields,
                         componentId: `flow-tpl-${props.tplId}-${nodeData.value.id}`,
                         formName,
-                        tableName: tableName || `manual_node_${props.tplId}_${nodeData.value.id}_${uuid(4)}`
+                        tableName: tableName || `manual_node_${uuid(8, 16, true)}`
                     })
                     nodeData.value.config.formId = res.id
                 } else {

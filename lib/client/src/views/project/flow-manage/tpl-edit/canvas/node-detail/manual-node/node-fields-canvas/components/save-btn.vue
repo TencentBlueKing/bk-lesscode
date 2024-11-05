@@ -21,7 +21,7 @@
                 form-type="vertical"
                 :model="formData"
                 :rules="rules">
-                <bk-form-item label="数据表表名" property="name">
+                <bk-form-item :label="$t('数据表表名')" property="name">
                     <bk-input
                         v-model="formData.name"
                         :placeholder="$t('开头和结尾需是小写字母，中间可以是小写字母、连字符和下划线。长度为2-64')"
@@ -64,7 +64,7 @@
             const store = useStore()
             const route = useRoute()
 
-            const defaultNewTableName = `manual_node_${props.tplId}_${props.nodeId}_${uuid(4)}`
+            const defaultNewTableName = `manual_node_${uuid(8, 16, true)}`
             const rules = {
                 name: [
                     {
