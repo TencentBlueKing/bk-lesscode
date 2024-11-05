@@ -417,5 +417,6 @@
   "不允许查询 INFORMATION_SCHEMA 相关数据": "Queries related to INFORMATION_SCHEMA are not allowed.",
   "不允许查询 PERFORMANCE_SCHEMA 相关数据": "Querying PERFORMANCE_SCHEMA related data is not allowed.",
   "不允许查询 MYSQL 内置表相关数据": "Do not allow querying data related to MYSQL built-in tables",
-  "不允许出现@@符号": "The @@ symbol is not allowed"
+  "不允许出现@@符号": "The @@ symbol is not allowed",
+  "已存在表名为{{0}}的数据表": "A data table named {{0}} already exists"
 }
