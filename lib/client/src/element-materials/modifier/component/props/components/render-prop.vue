@@ -28,7 +28,7 @@
                     </section>
                 </div>
             </template>
-            <!-- <div :class="{ 'title-margin': true }"></div> -->
+            <div :class="{ 'title-margin': true }"></div>
 
             <template v-if="showInnerVariable">
                 <span class="g-prop-sub-title g-mb6">{{ $t('变量类型') }}</span>
@@ -762,7 +762,6 @@
     .modifier-prop {
         margin: 0 8px 0 12px;
         .prop-name {
-            padding-bottom: 10px;
             font-size: 12px;
             word-break: keep-all;
             width: 100%;
