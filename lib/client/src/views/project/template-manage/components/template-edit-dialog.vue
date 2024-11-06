@@ -205,6 +205,7 @@
                             const { varList, funcList } = await this.getVarAndFuncList(this.fromTemplate)
                             Object.assign(data, { varList, funcList })
                         }
+                        data['framework'] = this.fromTemplate.framework
                     }
                     const res = await this.$store.dispatch(`pageTemplate/${this.actionType}`, data)
                     if (res) {
