@@ -29,6 +29,7 @@
                         :show-word-limit="true" />
                 </bk-form-item>
             </bk-form>
+            <p class="tips">{{ $t('数据表表名保存后不可再次修改') }}</p>
             <div class="action-btns">
                 <bk-button theme="primary" size="small" @click="handleCreateConfirm">{{ $t('确定') }}</bk-button>
                 <bk-button size="small" @click="handleCreateCancel">{{ $t('取消') }}</bk-button>
@@ -97,8 +98,8 @@
 
             const handleCreateConfirm = () => {
                 tableNameForm.value.validate().then(() => {
-                    popover.value.hideHandler()
                     saveForm(formData.value.name)
+                    popover.value.hideHandler()
                 })
             }
 
@@ -162,6 +163,11 @@
     }
     .table-name-form {
         margin-top: 10px;
+    }
+    .tips {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #c4c6cc;
     }
     .action-btns {
         margin: 24px 0 10px;

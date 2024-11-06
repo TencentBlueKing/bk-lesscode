@@ -35,7 +35,16 @@
                     :clearable="false"
                     @toggle="handleSelectOpen"
                     @selected="handleSeletedRelatedForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="`${item.formName}(${item.tableName})`" />
+                    <bk-option
+                        v-for="item in formList"
+                        :key="item.id"
+                        :id="item.id"
+                        :name="item.tableName">
+                        <div class="table-option-item">
+                            <span class="table-name">{{ item.tableName }}</span>
+                            <i class="bk-drag-icon bk-drag-jump-link link-icon" @click.stop="handleJumpToDataSource(item.tableName)" />
+                        </div>
+                    </bk-option>
                 </bk-select>
                 <span
                     v-bk-tooltips.top="$t('表名保存后无法修改，请谨慎填写')"
@@ -55,8 +64,18 @@
                     size="small"
                     :loading="formListLoading"
                     :clearable="false"
+                    @toggle="handleSelectOpen"
                     @selected="handleSeletedRelatedForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName" />
+                    <bk-option
+                        v-for="item in formList"
+                        :key="item.id"
+                        :id="item.id"
+                        :name="item.tableName">
+                        <div class="table-option-item">
+                            <span class="table-name">{{ item.tableName }}</span>
+                            <i class="bk-drag-icon bk-drag-jump-link link-icon" @click.stop="handleJumpToDataSource(item.tableName)" />
+                        </div>
+                    </bk-option>
                 </bk-select>
             </section>
         </div>
@@ -114,7 +133,7 @@
                     versionId: this.currentVersionId
                 }
                 const res = await this.$store.dispatch('nocode/form/getNewFormList', params)
-                this.formList = res.filter(item => item.id !== this.localVal.id)
+                this.formList = res
                 this.formListLoading = false
             },
             handleTypeChange (val) {
@@ -146,6 +165,10 @@
                 const fields = JSON.parse(this.formList.find(item => item.id === val).content)
                 this.$emit('updateFields', fields)
                 this.change()
+            },
+            handleJumpToDataSource (tableName) {
+                const { href } = this.$router.resolve({ name: 'dataManage', query: { tableName } })
+                window.open(href, '_blank')
             },
             change () {
                 this.$emit('change', { ...this.localVal })
@@ -180,5 +203,25 @@
     .subline {
         border-bottom: 1px dashed #63656e;
         cursor: pointer;
+    }
+    .table-option-item {
+        position: relative;
+        padding-right: 14px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        &:hover {
+            .link-icon {
+                display: inline-block;
+            }
+        }
+        .link-icon {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 0;
+            font-size: 12px;
+            cursor: pointer;
+        }
     }
 </style>
