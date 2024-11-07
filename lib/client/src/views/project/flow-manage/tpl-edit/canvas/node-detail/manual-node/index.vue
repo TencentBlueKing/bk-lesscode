@@ -65,7 +65,7 @@
                 default: () => ({})
             }
         },
-        setup(props, { emit }) {
+        setup (props, { emit }) {
             const store = useStore()
             const route = useRoute()
             const instance = getCurrentInstance()
@@ -99,16 +99,15 @@
             }
 
             // 引用或复用表单
-            const handleSelectBinding = async({ formType, id, fields }) => {
+            const handleSelectBinding = async ({ formType, id, fields, tableName }) => {
                 const formName = nodeData.value.config.name || window.i18n.t('人工节点')
-                const tableName = `manual_node_${props.tplId}_${nodeData.value.id}_${uuid(4)}`
                 if (formType === 'CITE_FORM') {
                     const res = await store.dispatch('form/createForm', {
                         projectId: route.params.projectId,
                         content: fields,
                         componentId: `flow-tpl-${props.tplId}-${nodeData.value.id}`,
                         formName,
-                        tableName,
+                        tableName: tableName || `manual_node_${uuid(8, 16, true)}`
                     })
                     nodeData.value.config.formId = res.id
                 } else {
@@ -129,7 +128,7 @@
                     subTitle: window.i18n.t('已生成的关联数据表及表数据将继续保留'),
                     theme: 'danger',
                     confirmLoading: true,
-                    confirmFn: async() => {
+                    confirmFn: async () => {
                         nodeData.value.config.formType = ''
                         nodeData.value.config.formId = 0
                         nodeData.value.config.relatedId = 0
@@ -151,11 +150,10 @@
 
             const handleChange = (key, val) => {
                 nodeData.value.config[key] = val
-                console.log('nodeData: ', nodeData.value)
                 emit('change', nodeData.value)
             }
 
-            const updateNodeBinding = async(isDelete = false) => {
+            const updateNodeBinding = async (isDelete = false) => {
                 await store.dispatch('flow/tpl/updateNode', { id: props.tplId, data: nodeData.value })
                 emit('update', nodeData.value)
                 instance.proxy.$bkMessage({

@@ -22,7 +22,7 @@
                         :table-name="tableName"
                         :fields="fields"
                         :editable="editable"
-                        @saved="emit('saved', $event)" />
+                        @saved="handleFormSaved" />
                     <!-- <bk-button
                         v-bk-tooltips="{ content: $t('复用表单模式下表单不可编辑'), disabled: editable, placement: 'bottom-end' }"
                         :class="{ disabled: !editable }"
@@ -41,10 +41,15 @@
                         :type="formType"
                         @selected="handleSelectField"
                         @update="handleUpdateFields"
-                        @deleted="handleDeleteField" />
+                        @deleted="clearSelected" />
                 </div>
                 <div class="right-panel">
-                    <modifiers :fields="fields" :field-data="selected" :data-source="dataSource" @change="handleModifierChange" />
+                    <modifiers
+                        :fields="fields"
+                        :field-data="selected"
+                        :data-source="dataSource"
+                        @delete="handleDelete"
+                        @change="handleModifierChange" />
                 </div>
             </div>
         </div>
@@ -145,7 +150,15 @@
                 fields.value = list
             }
 
-            const handleDeleteField = (field) => {
+            const handleDelete = (field) => {
+                const index = fields.value.findIndex((item) => item.id === field.id)
+                if (index > -1) {
+                    fields.value.splice(index, 1)
+                }
+                clearSelected(field)
+            }
+
+            const clearSelected = (field) => {
                 if (field.id === selected.value.id) {
                     selected.value = {}
                 }
@@ -167,6 +180,11 @@
                 }
             }
 
+            const handleFormSaved = (data) => {
+                tableName.value = data.tableName
+                emit('saved', data)
+            }
+
             return {
                 loading,
                 formName,
@@ -177,10 +195,12 @@
                 editable,
                 handleBack,
                 handleClear,
+                handleDelete,
                 handleSelectField,
                 handleUpdateFields,
-                handleDeleteField,
+                clearSelected,
                 handleModifierChange,
+                handleFormSaved,
                 emit
             }
         }

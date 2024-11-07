@@ -29,9 +29,24 @@
                     :class="{ 'menu-actived': $route.name === item.id }">
                 </menu-item>
             </div>
+            <div class="debug-btn">
+                <bk-popover
+                    placement="bottom-end"
+                    :content="$t('请先部署流程后测试执行')"
+                    :disabled="!!tplDetail.deployed">
+                    <bk-button
+                        :disabled="!tplDetail.deployed"
+                        @click="isDebugMode = true">
+                        {{ $t('测试执行') }}
+                    </bk-button>
+                </bk-popover>
+            </div>
         </div>
         <div v-if="!tplDetailLoading" class="flow-edit-main">
             <router-view :tpl-detail="tplDetail" @deploy="handleDeploy" @updateDeployStatus="tplDetail.deployed = $event" />
+        </div>
+        <div v-if="isDebugMode" class="debug-canvas">
+            <debug-canvas-comp  :tpl-detail="tplDetail" @close="isDebugMode = false" />
         </div>
     </section>
 </template>
@@ -40,12 +55,14 @@
     import { messageError } from '@/common/bkmagic'
     import MenuItem from '@/views/index/components/action-tool/components/menu-item'
     import FlowSelector from './components/flow-selector.vue'
+    import DebugCanvasComp from './debug/index.vue'
 
     export default {
         name: 'flowTplEdit',
         components: {
             MenuItem,
-            FlowSelector
+            FlowSelector,
+            DebugCanvasComp
         },
         data () {
             return {
@@ -59,6 +76,7 @@
                 tplDetail: {},
                 tplDetailLoading: true,
                 deployPending: false,
+                isDebugMode: false,
                 fromPageList: false, // 是否由页面列表页进入
                 allowExitRoute: false // 是否可以离开页面
             }
@@ -144,7 +162,8 @@
                     ])
                     this.tplDetail = tplRes
                 } catch (e) {
-                    console.error(e)
+                    this.allowExitRoute = true
+                    this.$router.push({ name: 'flowTplList' })
                 } finally {
                     this.tplDetailLoading = false
                 }
@@ -157,8 +176,7 @@
             async handleDeploy () {
                 try {
                     this.deployPending = true
-                    await this.$store.dispatch('flow/tpl/updateDeployStatus', { id: this.tplDetail.id, deployed: 1 })
-                    this.tplDetail.deployed = 1
+                    this.tplDetail = await this.$store.dispatch('flow/tpl/updateDeployStatus', { id: this.tplDetail.id, deployed: 1 })
                     this.$bkMessage({
                         theme: 'success',
                         message: window.i18n.t('流程部署成功')
@@ -181,6 +199,7 @@
 </script>
 <style lang="postcss" scoped>
 .tpl-edit-wrapper {
+    position: relative;
     height: 100%;
 }
 .page-header-container {
@@ -218,6 +237,11 @@
             color: #3a84ff;
         }
     }
+    .debug-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+    }
     .genarate-action {
         position: absolute;
         top: 0;
@@ -227,6 +251,15 @@
 }
 .flow-edit-main {
     height: calc(100% - 53px);
+}
+.debug-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    z-index: 998;
 }
 </style>
 <style lang="postcss">

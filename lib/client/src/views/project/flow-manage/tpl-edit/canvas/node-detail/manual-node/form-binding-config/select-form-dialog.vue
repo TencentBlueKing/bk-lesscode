@@ -26,6 +26,14 @@
                     @input="handleSearchInput">
                 </bk-input>
             </div>
+            <!-- 引用表单时，允许用户自定义表名 -->
+            <div v-if="isCite" class="form-name-wrapper">
+                <bk-form :label-width="65">
+                    <bk-form-item :label="$t('表名')">
+                        <bk-input v-model="tableName" :placeholder="$t('请输入表名，不填则使用默认表名')" />
+                    </bk-form-item>
+                </bk-form>
+            </div>
             <div class="tips-wrapper">
                 <bk-alert type="warning" :closable="true" :title="tips" />
             </div>
@@ -42,7 +50,7 @@
                     @click="handleSelect(item)">
                     <div class="selected-label"></div>
                     <span class="preview-btn" @click.stop="handlePreviewClick(item)">{{ $t('预览') }}</span>
-                    <p class="form-name">{{ item.formName }}</p>
+                    <p v-bk-overflow-tips class="form-name">{{ `${item.formName}(${item.tableName})` }}</p>
                 </div>
                 <bk-exception
                     v-if="listInView.length === 0"
@@ -78,7 +86,6 @@
             }
         },
         setup (props, { emit }) {
-
             const store = useStore()
             const route = useRoute()
 
@@ -86,11 +93,12 @@
             const formListLoading = ref(false)
             const searchStr = ref('')
             const selected = ref({})
+            const tableName = ref('')
 
             const tips = computed(() => {
                 return props.isCite
-                    ? window.i18n.t('引用已有表单：引用已有表单快速建表，运行时节点数据不会存入被引用的表中，字段属性可自定义')
-                    : window.i18n.t('复用已有表单：运行时节点数据会存入被复用的表中，不支持增加和修改字段属性')
+                    ? window.i18n.t('引用已有表单：引用已有表单快速创新表单，可对新表单进行编辑')
+                    : window.i18n.t('复用已有表单：系统将复用已有表单进行后续操作，不会创建新表单，不支持对复用表单进行编辑')
             })
 
             // 展示的表单列表
@@ -107,7 +115,7 @@
                 }
             })
 
-            const getFormList = async() => {
+            const getFormList = async () => {
                 formListLoading.value = true
                 const params = {
                     projectId: route.params.projectId,
@@ -140,11 +148,14 @@
             }
 
             const handlePreviewClick = (form) => {
-                emit('preview', JSON.parse(form.content))
+                emit('preview', form.id)
             }
 
             const handleConfirm = () => {
-                emit('selected', selected.value)
+                emit('selected', {
+                    ...selected.value,
+                    tableName: tableName.value
+                })
                 close()
             }
 
@@ -165,7 +176,8 @@
                 handleSelect,
                 handlePreviewClick,
                 handleConfirm,
-                close
+                close,
+                tableName
             }
         }
     })
@@ -202,6 +214,14 @@
             text-align: right;
             .search-input {
                 width: 240px;
+            }
+        }
+        .form-name-wrapper {
+            padding: 0 24px 16px;
+            .bk-form {
+                background: #fafbfd;
+                padding: 16px;
+                border-radius: 2px;
             }
         }
         .tips-wrapper {

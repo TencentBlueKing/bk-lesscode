@@ -10,8 +10,8 @@
         :auto-close="false"
         :mask-close="false"
         @cancel="emit('close')">
-        <div class="dialog-content">
-            <FormContainerRenderComp :fields="fields" />
+        <div v-bkloading="{ loading }" class="dialog-content">
+            <FormContainerRenderComp v-if="!loading" :fields="fields" />
         </div>
         <div class="dialog-footer" slot="footer">
             <bk-button @click="emit('close')">{{ $t('关闭') }}</bk-button>
@@ -19,7 +19,8 @@
     </bk-dialog>
 </template>
 <script>
-    import { defineComponent } from 'vue'
+    import { defineComponent, ref, watch } from 'vue'
+    import { useStore } from '@/store' 
     import FormContainerRenderComp from './form-container-render-comp'
 
     export default defineComponent({
@@ -28,9 +29,9 @@
             FormContainerRenderComp
         },
         props: {
-            fields: {
-                type: Array,
-                default: () => []
+            id: {
+                type: Number,
+                default: 0
             },
             show: {
                 type: Boolean,
@@ -38,7 +39,25 @@
             }
         },
         setup(props, { emit }) {
-            return { emit }
+            const store = useStore()
+
+            const fields = ref([])
+            const loading = ref(false)
+
+            watch(() => props.show, (val) => {
+                if (val && props.id) {
+                    getFormDetail()
+                }
+            })
+
+            const getFormDetail = async () => {
+                loading.value = true
+                const res = await store.dispatch('nocode/form/formDetail', { formId: props.id })
+                fields.value = JSON.parse(res.content || '[]')
+                loading.value = false
+            }
+
+            return { fields, loading, emit }
         }
     })
 </script>

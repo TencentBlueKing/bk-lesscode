@@ -47,10 +47,10 @@
                 fields: []
             })
 
-            const handleOpenPreview = (fields) => {
+            const handleOpenPreview = (id) => {
                 previewDialogData.value = {
                     show: true,
-                    fields
+                    id
                 }
             }
 

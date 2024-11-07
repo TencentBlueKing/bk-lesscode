@@ -19,7 +19,6 @@
     import { Graph } from '@antv/x6';
     import { Dnd } from "@antv/x6-plugin-dnd"
     import { NODES, GET_NODE_ICON, IS_CIRCLE_NODE, GET_NODE_DEFAULT_CONFIG } from './constants'
-    import { uuid } from '@/common/util'
 
     export default defineComponent({
         name: 'GraphDnd',

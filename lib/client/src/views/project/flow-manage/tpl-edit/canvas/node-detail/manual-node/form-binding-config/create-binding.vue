@@ -49,9 +49,14 @@
 
             const handleSelected = (form) => {
                 emit('selected', {
-                    id: form.id,
-                    fields: JSON.parse(form.content || '[]'),
-                    formType: dialogData.value.isCite ? 'CITE_FORM' : 'USE_FORM',
+                    ...{
+                        id: form.id,
+                        fields: JSON.parse(form.content || '[]'),
+                        formType: dialogData.value.isCite ? 'CITE_FORM' : 'USE_FORM'
+                    },
+                    ...(dialogData.value.isCite ? {
+                        tableName: form.tableName
+                    } : {})
                 })
             }
 
