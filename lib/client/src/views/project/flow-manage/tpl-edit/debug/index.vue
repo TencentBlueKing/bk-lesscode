@@ -33,7 +33,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch, getCurrentInstance, onBeforeUnmount } from '@vue/composition-api'
+    import { defineComponent, ref, watch, getCurrentInstance, onBeforeUnmount } from 'vue'
     import { useStore } from '@/store'
     import RenderGraph from '../canvas/render-graph/graph.vue'
     import NodeOperateSideslider from './node-operate-sideslider.vue'
