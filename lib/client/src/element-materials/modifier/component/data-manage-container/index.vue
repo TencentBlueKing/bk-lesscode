@@ -4,11 +4,26 @@
             <section class="data-source">
                 <span class="g-prop-sub-title g-mt8 g-mb6">{{ labelName }}</span>
                 <bk-select
+                    v-if="type === 'data-manage'"
                     v-model="formId"
                     size="small"
                     :clearable="false"
                     :loading="loading"
-                    @selected="handleSelectForm">
+                    @selected="handleDataManageSelectForm">
+                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.tableName">
+                        <div class="table-option">
+                            <span class="name-text">{{ item.tableName }}</span>
+                            <i class="bk-drag-icon bk-drag-jump-link" @click.stop="goToDataSource(item.tableName)" />
+                        </div>
+                    </bk-option>
+                </bk-select>
+                <bk-select
+                    v-else
+                    v-model="formId"
+                    size="small"
+                    :clearable="false"
+                    :loading="loading"
+                    @selected="handleFlowManageSelectForm">
                     <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName" />
                 </bk-select>
             </section>
@@ -80,10 +95,6 @@
                 }))
                 this.loading = false
             },
-            handleSelectForm (val) {
-                this.type === 'data-manage' ? this.handleDataManageSelectForm(val) : this.handleFlowManageSelectForm(val)
-            },
-
             handleDataManageSelectForm (val) {
                 this.activeNode.setProp('formId', {
                     ...this.activeNode.renderProps.formId,
@@ -111,14 +122,38 @@
                     renderValue: ['createUser', 'createTime', 'updateUser', 'updateTime']
                 })
             },
-
             handleFlowManageSelectForm (val) {
                 this.activeNode.setProp('id', {
                     ...this.activeNode.renderProps.id,
                     code: val,
                     renderValue: val
                 })
+            },
+            goToDataSource (tableName) {
+                const { href } = this.$router.resolve({ name: 'dataManage', query: { tableName } })
+                window.open(href, '_blank')
             }
         }
     }
 </script>
+<style lang="postcss" scoped>
+    .table-option {
+        position: relative;
+        padding-right: 14px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        &:hover {
+            i {
+                display: inline-block;
+            }
+        }
+        i {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 0;
+            font-size: 12px;
+        }
+    }
+</style>
