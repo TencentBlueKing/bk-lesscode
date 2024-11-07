@@ -26,7 +26,7 @@
     </bk-sideslider>
 </template>
 <script>
-    import { defineComponent, ref, watch, getCurrentInstance } from '@vue/composition-api'
+    import { defineComponent, ref, watch, getCurrentInstance } from 'vue'
     import { useStore } from '@/store'
     import ManualNode from './manual-node.js'
 
