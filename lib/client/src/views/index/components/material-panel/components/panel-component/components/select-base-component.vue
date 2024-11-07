@@ -66,7 +66,7 @@
                                 key: 'bk',
                                 name: 'BKUI-VUE2',
                                 type: 'Vue',
-                                tooltip: window.i18n.t('当前组件库版本为') + '“2.4.14“，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog?anchor=2.4.14" style="cursor: pointer;color: #3a84ff">' + window.i18n.t('查看更新日志') + '</a>'
+                                tooltip: window.i18n.t('当前组件库版本为') + '“2.5.9-beta.5“，<a target="_blank" href="https://magicbox.bk.tencent.com/static_api/v3/components_vue/2.0/example/index.html#/changelog?anchor=2.5.9-beta.5" style="cursor: pointer;color: #3a84ff">' + window.i18n.t('查看更新日志') + '</a>'
                             },
                             {
                                 key: 'element',
