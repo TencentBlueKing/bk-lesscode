@@ -471,5 +471,13 @@
   "函数: 修复编辑函数需要检验变量时，变量非最新的问题": "Function: Fix the issue where the variable is not the latest when editing functions that need to check the variable",
   "数据源: 修复预览时需要区分本地数据源跟第三方数据源的问题": "Data Source: Fix the issue that needs to distinguish between local data sources and third-party data sources during preview",
   "数据源: 修复数据源api默认page不为1的问题": "Data Source: Fix the issue that the default page of the data source API is not 1",
-  "模板市场: 添加页面模板到应用时，disabled页面模板所属的应用本身": "Template Market: When adding page templates to the APP, disable the page template belonging to the APP itself"
+  "模板市场: 添加页面模板到应用时，disabled页面模板所属的应用本身": "Template Market: When adding page templates to the APP, disable the page template belonging to the APP itself",
+  "流程: 流程模块重构、对接新的流程引擎": "Flow: Refactor flow module and integrate new flow engine",
+  "画布: 组件属性进行分组": "Canvas: Group component properties",
+  "画布: 补充组件缺少的属性": "Canvas: Add missing properties in the component library",
+  "画布: 组件事件增加简易中文描述": "Canvas: Add simple Chinese descriptions for component events",
+  "画布: vue2组件升级到最新版本": "Canvas: Upgrade Vue2 components to the latest version",
+  "画布: echarts图表提供简易配置": "Canvas: Provide simple configuration for ECharts charts",
+  "平台: 源码工程里面的vue升级到2.7.x版本": "Platform: Upgrade Vue in the source project to version 2.7.x",
+  "画布: 兼容当组件的数据中，含有连字符跟驼峰格式的的相同属性": "Canvas: Compatible with components where the data contains the same properties in both hyphenated and camel case formats"
 }
