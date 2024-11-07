@@ -18,7 +18,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref } from '@vue/composition-api'
+    import { defineComponent, ref } from 'vue'
     import CreateBinding from './create-binding.vue'
     import BoundDetail from './bound-detail.vue';
     import PreviewFormDialog from './preview-form-dialog.vue'

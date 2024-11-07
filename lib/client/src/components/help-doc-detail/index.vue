@@ -61,7 +61,7 @@
 
 <script>
     import { getActualTop } from '@/common/util'
-    import { defineComponent, ref, watch, computed, onMounted } from '@vue/composition-api'
+    import { defineComponent, ref, watch, computed, onMounted } from 'vue'
     import { useRoute } from '@/router'
     import { getDocsMenuList } from './docs-menu'
     import docComs from './docs'

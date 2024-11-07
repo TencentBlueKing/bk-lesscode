@@ -12,7 +12,7 @@
                 @enter="handleSave" />
             <i
                 v-if="errorTips.length > 0"
-                v-bk-tooltips="{ content: errorTips, maxWidth: 400 }"
+                v-bk-tooltips="{ content: errorTips, maxWidth: 400, allowHTML: false }"
                 class="bk-icon icon-exclamation-circle-shape error-icon" />
         </template>
         <div v-else class="breadcrumb-content">
@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch, nextTick } from '@vue/composition-api'
+    import { defineComponent, ref, watch, nextTick } from 'vue'
 
     export default defineComponent({
         name: 'BreadcrumbNav',

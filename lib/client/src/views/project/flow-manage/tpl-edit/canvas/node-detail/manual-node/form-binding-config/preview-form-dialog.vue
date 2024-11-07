@@ -19,7 +19,7 @@
     </bk-dialog>
 </template>
 <script>
-    import { defineComponent, ref, watch } from '@vue/composition-api'
+    import { defineComponent, ref, watch } from 'vue'
     import { useStore } from '@/store' 
     import FormContainerRenderComp from './form-container-render-comp'
 

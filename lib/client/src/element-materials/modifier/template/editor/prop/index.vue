@@ -15,7 +15,8 @@
                         boundary: 'window',
                         content: prop.tips,
                         disabled: !prop.tips,
-                        maxWidth: 400
+                        maxWidth: 400,
+                        allowHTML: false
                     }">
                     {{ prop.name }}
                     <span v-if="prop.type">({{ prop.type }})</span>

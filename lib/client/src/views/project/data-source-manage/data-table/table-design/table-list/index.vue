@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, ref, onBeforeMount } from '@vue/composition-api'
+    import { defineComponent, ref, onBeforeMount } from 'vue'
     import renderHeader from '../../common/header'
     import dataSource from './list/index.vue'
     import thirdPartDB from './third-part-db/index.vue'

@@ -13,7 +13,7 @@
     </bk-form-item>
 </template>
 <script>
-    import { defineComponent, ref } from '@vue/composition-api';
+    import { defineComponent, ref } from 'vue';
     import MemberSelect from '@/components/flow-form-comp/form/components/memberSelect.vue'
 
     export default defineComponent({

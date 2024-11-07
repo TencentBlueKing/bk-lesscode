@@ -34,7 +34,8 @@
                             v-bk-tooltips="{
                                 content: field.desc,
                                 disabled: !field.desc,
-                                maxWidth: 400
+                                maxWidth: 400,
+                                allowHTML: false
                             }"
                             class="field-display-name">
                             {{field.name}}

@@ -322,7 +322,7 @@
         }
         .display-content {
             width: 100%;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             .edit-text {
                 font-size: 12px;
                 cursor: pointer;

@@ -14,7 +14,7 @@
         defineComponent,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         getDefaultApiEditScheme
     } from 'shared/api'

@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, ref, PropType, watch } from '@vue/composition-api'
+    import { defineComponent, ref, PropType, watch } from 'vue'
 
     interface IButton {
         name: string,

@@ -105,7 +105,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, computed, ref, reactive, set, onBeforeMount, onBeforeUnmount } from '@vue/composition-api'
+    import { defineComponent, computed, ref, set, onBeforeMount, onBeforeUnmount } from 'vue'
     import HelpDocDetail from '@/components/help-doc-detail'
     import { getDocsMenuList } from './help-doc-detail/docs-menu'
     import frameImg from '../images/frame.png'
@@ -308,7 +308,7 @@
             }
 
             // 模块展示
-            const moduleList = reactive([
+            const moduleList = ref([
                 {
                     moduleName: window.i18n.t('应用开发流程'),
                     iconClass: 'bk-drag-icon bk-drag-tuopu icon-pos',
@@ -377,11 +377,11 @@
             })
             const moduleRefs = ref([])
             const queryModule = (index) => {
-                let val = !moduleList[index].isShowModule
-                if(typeof moduleList[index].isShowModule === 'undefined') {
+                let val = !moduleList.value[index].isShowModule
+                if(typeof moduleList.value[index].isShowModule === 'undefined') {
                     val = false
                 }
-                set(moduleList[index], 'isShowModule', val)
+                set(moduleList.value[index], 'isShowModule', val)
                 moduleRefs.value[index].style.display = val ? 'block' : 'none'
             }
 

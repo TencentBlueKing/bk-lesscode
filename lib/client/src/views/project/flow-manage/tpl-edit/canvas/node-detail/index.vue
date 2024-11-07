@@ -22,7 +22,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, computed, onMounted, getCurrentInstance } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onMounted, getCurrentInstance } from 'vue'
     import { NODES } from '../render-graph/constants'
     import { useStore } from '@/store'
     import ManualNode from './manual-node/index.vue'
@@ -50,14 +50,14 @@
                 default: () => ({})
             }
         },
-        setup(props, { emit }) {
+        setup (props, { emit }) {
             const instance = getCurrentInstance()
 
             const store = useStore()
 
             const nodeConfigCompMap = {
                 Manual: 'ManualNode',
-                DataProcessing: 'DataProcessingNode',
+                DataProcessing: 'DataProcessingNode'
             }
 
             const detailCopy = ref({})
@@ -89,7 +89,7 @@
                 emit('update', val)
             }
 
-            const handleSave = async() => {
+            const handleSave = async () => {
                 await nodeFormRef.value.validate()
                 detailCopy.value.isDraft = false
                 await store.dispatch('flow/tpl/updateNode', { id: props.tplId, data: detailCopy.value })

@@ -17,7 +17,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref } from '@vue/composition-api'
+    import { defineComponent, ref } from 'vue'
     import SelectFormDialog from './select-form-dialog.vue'
     import { MANUAL_NODE_BINDING_TYPES } from '../../../render-graph/constants'
 

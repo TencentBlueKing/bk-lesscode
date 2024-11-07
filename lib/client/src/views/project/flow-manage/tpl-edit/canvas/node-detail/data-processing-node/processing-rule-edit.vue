@@ -157,7 +157,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, computed, watch } from '@vue/composition-api'
+    import { defineComponent, ref, computed, watch } from 'vue'
     import { getFieldDefaultVal } from '@/form-engine/utils/index'
     import DefaultValue from '@/form-engine/setter/common/default-value.vue'
 

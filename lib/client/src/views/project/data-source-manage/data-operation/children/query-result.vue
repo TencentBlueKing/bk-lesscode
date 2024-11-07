@@ -63,7 +63,7 @@
         defineComponent,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import store from '@/store'
     import router from '@/router'
     import dayjs from 'dayjs'

@@ -75,7 +75,8 @@
                                                     disabled: !functionData.funcSummary,
                                                     placements: ['left-start'],
                                                     width: 200,
-                                                    boundary: 'window'
+                                                    boundary: 'window',
+                                                    allowHTML: false
                                                 }"
                                                 v-for="functionData in funcGroup.children"
                                                 :class="{
@@ -113,7 +114,8 @@
                                         disabled: !functionData.funcSummary,
                                         placements: ['left-start'],
                                         width: 200,
-                                        boundary: 'window'
+                                        boundary: 'window',
+                                        allowHTML: false
                                     }"
                                     :key="functionData.funcName"
                                 >
@@ -165,7 +167,8 @@
                         v-bk-tooltips="{
                             content: paramTips,
                             boundary: 'window',
-                            disabled: !paramTips
+                            disabled: !paramTips,
+                            allowHTML: false
                         }"
                         @change="value => handleInputParam(index, { value })"
                         @blur="triggleUpdate"

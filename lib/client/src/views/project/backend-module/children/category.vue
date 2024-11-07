@@ -41,7 +41,7 @@
 </template>
 
 <script>
-    import { defineComponent, ref, computed, getCurrentInstance, onBeforeMount, nextTick } from '@vue/composition-api'
+    import { defineComponent, ref, computed, getCurrentInstance, onBeforeMount, nextTick } from 'vue'
     import { useStore } from '@/store'
     import { useRoute, useRouter } from '@/router'
 

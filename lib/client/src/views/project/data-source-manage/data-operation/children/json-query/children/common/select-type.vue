@@ -33,7 +33,7 @@
         ref,
         onMounted,
         getCurrentInstance
-    } from '@vue/composition-api'
+    } from 'vue'
 
     type item = {
         disabled?: boolean,

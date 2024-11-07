@@ -59,7 +59,7 @@
     </form-section>
 </template>
 <script>
-    import { defineComponent, ref, onMounted, getCurrentInstance } from '@vue/composition-api'
+    import { defineComponent, ref, onMounted, getCurrentInstance } from 'vue'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import FormSection from '../components/form-section.vue'
