@@ -34,7 +34,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, getCurrentInstance } from '@vue/composition-api'
+    import { defineComponent, ref, getCurrentInstance } from 'vue'
     import FormSection from '../components/form-section.vue'
     import NodeName from '../components/node-name.vue'
     import NodeProcessor from '../components/node-processor.vue'

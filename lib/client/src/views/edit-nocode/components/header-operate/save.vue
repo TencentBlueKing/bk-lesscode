@@ -3,7 +3,8 @@
         v-bk-tooltips="{
         disabled: !tips,
         content: tips,
-        placement: 'bottom'
+        placement: 'bottom',
+        allowHTML: false
     }">
         <bk-button
             theme="primary"

@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    import { ref, computed, watch, onMounted, onBeforeUnmount } from '@vue/composition-api'
+    import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
     import { useStore } from '@/store'
     import { uuid } from 'shared/util'
     import useResourceLock from '@/common/use-resource-lock'
@@ -48,7 +48,7 @@
                 default: () => ({})
             },
             projectId: {
-                required:  true
+                required: true
             }
         },
 
@@ -88,7 +88,7 @@
                     if (oldVal?.id) {
                         canvasLockRelase({
                             tableName: 'saas-backend',
-                            resourceId: oldVal?.id 
+                            resourceId: oldVal?.id
                         })
                     }
                     userInput.value = ''
@@ -100,16 +100,16 @@
                 handleLock()
             })
 
+            const handleReleaseLock = () => {
+                canvasLockRelase(lockParams.value)
+            }
+            
             window.addEventListener('unload', handleReleaseLock)
 
             // 组件卸载释放页面的编辑权
             onBeforeUnmount(() => {
                 handleReleaseLock()
             })
-
-            const handleReleaseLock = () => {
-                canvasLockRelase(lockParams.value)
-            }
 
             const handleLock = () => {
                 canvasLockDestroy()
@@ -130,7 +130,7 @@
                             canvaseLockUpdate(lockParams.value)
                         }
                     }
-                )
+                    )
             }
 
             const handleChangeTextHeight = () => {

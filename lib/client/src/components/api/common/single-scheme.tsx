@@ -10,7 +10,7 @@ import {
     toRef,
     ref,
     getCurrentInstance
-} from '@vue/composition-api'
+} from 'vue'
 import useCustomValidate from '@/hooks/use-custom-validate'
 
 export default defineComponent({
@@ -220,7 +220,7 @@ export default defineComponent({
                                                     id={option.name}
                                                     name={option.name}
                                                     key={option.name}
-                                                    v-bk-tooltips={{ content: option.comment, disabled: !option.comment, maxWidth: 400 }}
+                                                    v-bk-tooltips={{ content: option.comment, disabled: !option.comment, maxWidth: 400, allowHTML: false }}
                                                 >
                                                 </bk-option>
                                             ))
@@ -304,7 +304,7 @@ export default defineComponent({
                     }
                     <bk-input
                         class="layout-middle"
-                        v-bk-tooltips={{ content: this.copyScheme.description, disabled: !this.copyScheme.description, maxWidth: 400 }}
+                        v-bk-tooltips={{ content: this.copyScheme.description, disabled: !this.copyScheme.description, maxWidth: 400, allowHTML: false }}
                         value={this.copyScheme.description}
                         disabled={this.finalDisable}
                         onChange={(description) => this.update({ description })}

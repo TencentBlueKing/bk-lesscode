@@ -34,7 +34,7 @@
         ref,
         getCurrentInstance,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import SchemeTab from '../common/scheme-tab'
     import SchemeHeader from '../common/scheme-header'
     import SingleScheme from '../common/single-scheme'

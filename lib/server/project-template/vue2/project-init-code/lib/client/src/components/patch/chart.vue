@@ -16,6 +16,7 @@
 <script>
     import * as echarts from 'echarts'
     import { uuid, debounce } from 'shared/util'
+    import { colorSets } from './bkCharts/bk-chart-config'
 
     export default {
         name: 'chart',
@@ -31,6 +32,34 @@
             height: {
                 type: [Number, String],
                 default: ''
+            },
+            type: {
+                type: String,
+                default: 'line'
+            },
+            title: {
+                type: String,
+                default: ''
+            },
+            titleX: {
+                type: String,
+                default: 'center'
+            },
+            legendOrient: {
+                type: String,
+                default: 'horizontal'
+            },
+            legendLeft: {
+                type: String,
+                default: 'left'
+            },
+            color: {
+                type: String,
+                default: 'default'
+            },
+            series: {
+                type: Array,
+                default: () => []
             },
             options: {
                 type: Object,
@@ -52,10 +81,30 @@
                 const heightStr = `height:${heightVal};`
                 
                 return widthStr + heightStr
+            },
+            echartOptions () {
+                // 专业配置options优先
+                if (Object.keys(this.options).length) {
+                    return this.options
+                }
+                const { list: colorList } = colorSets.find(item => item.name === this.color)
+                return {
+                    title: {
+                        text: this.title,
+                        x: this.titleX
+                    },
+                    legend: {
+                        orient: this.legendOrient,
+                        left: this.legendLeft
+                    },
+                    color: colorList,
+                    ...this.handleRemainOp(),
+                    series: this.series
+                }
             }
         },
         watch: {
-            options: {
+            echartOptions: {
                 deep: true,
                 handler (val) {
                     this.chartInst?.setOption(val, true)
@@ -67,7 +116,7 @@
         },
         mounted () {
             this.chartInst = echarts.init(this.$refs[this.uuid])
-            this.chartInst.setOption(this.options)
+            this.chartInst.setOption(this.echartOptions)
             this.debounceResize = debounce(this.resizeChart, 500)
             this.observer = new ResizeObserver(this.debounceResize)
             this.observer.observe(this.$refs[this.uuid])
@@ -78,6 +127,30 @@
         methods: {
             resizeChart () {
                 this.chartInst?.resize()
+            },
+            handleRemainOp () {
+                if (this.type === 'line') {
+                    return {
+                        xAxis: {
+                            type: 'category'
+                        },
+                        yAxis: {
+                            type: 'value'
+                        }
+                    }
+                }
+                if (this.type === 'bar') {
+                    return {
+                        tooltip: {},
+                        xAxis: {
+                            type: 'category'
+                        },
+                        yAxis: {
+                            type: 'value'
+                        }
+                    }
+                }
+                return {}
             }
         }
     }

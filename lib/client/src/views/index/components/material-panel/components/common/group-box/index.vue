@@ -1,6 +1,6 @@
 <template>
     <div class="drag-group-box" :class="{ 'fold-box': isFolded }">
-        <div class="group-name" v-bk-tooltips="{ content: groupName,disabled: !(groupName && groupName.length > 17), maxWidth: 400 }">
+        <div class="group-name" v-bk-tooltips="{ content: groupName, disabled: !(groupName && groupName.length > 17), maxWidth: 400, allowHTML: false }">
             <section style="display: flex;height: 40px;" @click="handleToggle">
                 <i
                     class="bk-drag-icon bk-drag-arrow-down toggle-arrow"
@@ -28,6 +28,7 @@
                 :list="list"
                 :sort="false"
                 :group="dragGroup"
+                :filter="filter"
                 :force-fallback="false"
                 ghost-class="source-ghost"
                 chosen-class="source-chosen"
@@ -55,6 +56,7 @@
             group: String,
             // 选中组件时的回调
             createFallback: Function,
+            filter: String,
             dragOptions: {
                 type: Object,
                 default: () => ({})

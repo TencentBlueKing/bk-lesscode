@@ -11,7 +11,7 @@
                 {{ title }}
                 <i
                     v-if="tips"
-                    v-bk-tooltips="{ content: tips, maxWidth: 400 }"
+                    v-bk-tooltips="{ content: tips, maxWidth: 400, allowHTML: false }"
                     class="bk-icon icon-info"
                 ></i>
             </span>
@@ -76,7 +76,7 @@
         defineComponent,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         DATA_FILE_TYPE,
     } from 'shared/data-source'

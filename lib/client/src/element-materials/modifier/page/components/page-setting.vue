@@ -23,7 +23,7 @@
     import StyleItem from '@/element-materials/modifier/component/styles/layout/item'
     import PageRouteSetting from './children/page-route-setting'
     import PageStyleSetting from './children/page-style-setting'
-    import { defineComponent, computed } from '@vue/composition-api'
+    import { defineComponent, computed } from 'vue'
     import store from '@/store'
     import LC from '@/element-materials/core'
 

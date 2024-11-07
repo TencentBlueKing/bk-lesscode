@@ -96,7 +96,7 @@
     import SelectTab from '@/components/ui/select-tab'
     import GroupBox from '@/components/ui/group'
     import SearchBox from '@/views/index/components/material-panel/components/common/search-box'
-    import { defineComponent, ref, computed, onBeforeMount } from '@vue/composition-api'
+    import { defineComponent, ref, computed, onBeforeMount } from 'vue'
     import usePageOperation from './children/use-page-operation'
     import store from '@/store'
     import router from '@/router'

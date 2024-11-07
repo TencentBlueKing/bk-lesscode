@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import { defineComponent, toRef } from '@vue/composition-api'
+    import { defineComponent, toRef } from 'vue'
 
     export default defineComponent({
         props: {

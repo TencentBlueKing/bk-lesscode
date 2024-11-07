@@ -16,7 +16,7 @@
                         :name="option.funcName">
                         <span class="market-function-name">
                             {{ option.funcName }}
-                            <i class="bk-icon icon-info" v-bk-tooltips="{ ...getTips(option.funcSummary), maxWidth: 400 }"></i>
+                            <i class="bk-icon icon-info" v-bk-tooltips="{ ...getTips(option.funcSummary), maxWidth: 400, allowHTML: false }"></i>
                         </span>
                     </bk-option>
                 </bk-select>
@@ -50,7 +50,8 @@
                 let tipObj = {
                     content: tips,
                     placement: 'left',
-                    boundary: 'window'
+                    boundary: 'window',
+                    allowHTML: false
                 }
                 if (typeof tips === 'object') {
                     tipObj = {

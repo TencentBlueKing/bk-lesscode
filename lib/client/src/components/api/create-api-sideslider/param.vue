@@ -16,7 +16,7 @@
         ref,
         computed,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         METHODS_WITHOUT_DATA,
         getDefaultApiEditScheme,

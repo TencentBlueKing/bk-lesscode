@@ -37,7 +37,7 @@
     </div>
 </template>
 <script>
-    import { defineComponent, ref, watch, computed, onMounted } from '@vue/composition-api';
+    import { defineComponent, ref, watch, computed, onMounted } from 'vue'
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import RenderGraph from './render-graph/graph.vue'

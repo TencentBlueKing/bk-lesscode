@@ -29,6 +29,7 @@
                     :group-name="group.categoryName"
                     group="layout"
                     :create-fallback="createFallback"
+                    filter=".uninstall"
                     :key="group.id">
                     <div
                         v-for="(template, templateIndex) in group.list"
@@ -51,7 +52,7 @@
                             </div>
                         </div>
                         <div class="item-info">
-                            <span class="item-name" v-bk-tooltips="template.templateName">{{ template.templateName }}</span>
+                            <span class="item-name" v-bk-tooltips="{ content: template.templateName, allowHTML: false }">{{ template.templateName }}</span>
                             <span
                                 class="preview"
                                 @click="handlePreview(template)">

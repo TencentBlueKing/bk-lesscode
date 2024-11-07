@@ -58,7 +58,7 @@
         PropType,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import SelectType from './select-type.vue'
     import SelectTableField, { IField } from './select-table-field.vue'
     import PlusIcon from '@/components/plus-icon.vue'

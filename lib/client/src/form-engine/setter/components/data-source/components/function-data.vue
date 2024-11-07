@@ -18,7 +18,7 @@
     </div>
 </template>
 <script>
-    import { computed, defineComponent, ref, watch } from '@vue/composition-api'
+    import { computed, defineComponent, ref, watch } from 'vue'
     import cloneDeep from 'lodash.clonedeep'
     import Remote from '@/element-materials/modifier/component/props/components/strategy/remote'
     import SelectKey from '@/element-materials/modifier/component/slots/components/common/select-key.vue'
