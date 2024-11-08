@@ -1,11 +1,11 @@
 <template>
     <ul class="palette-panel">
         <li v-for="node in nodeTypeList"
-          v-bk-tooltips={
+          v-bk-tooltips="{
             placements: ['right'],
             content: node.name,
             allowHTML: false
-          }
+          }"
           :key="node.type"
         >
             <div v-if="node.type === 'START'" class="start-node" data-type="START">
