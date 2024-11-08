@@ -58,8 +58,9 @@
             :event-value="eventValue"
             @change="handleChangeEvent"
         />
+        <!-- 兼容老数据中type为undefined的情形 -->
         <choose-function
-            v-else-if="eventValue.type === EVENT_TYPE.METHOD"
+            v-else-if="eventValue.type === EVENT_TYPE.METHOD || !eventValue.type"
             default-variable-format="event"
             :format-include="['event', 'value', 'variable', 'expression']"
             :choosen-function="eventValue"

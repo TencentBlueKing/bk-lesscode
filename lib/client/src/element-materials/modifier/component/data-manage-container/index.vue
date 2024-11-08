@@ -52,7 +52,7 @@
         computed: {
             ...mapGetters('projectVersion', ['currentVersionId']),
             type () {
-                return this.activeNode.type === 'widget-data-manage-container' ? 'data-manage' : 'flow-manage'
+                return this.activeNode?.type === 'widget-data-manage-container' ? 'data-manage' : 'flow-manage'
             },
             labelName () {
                 return this.type === 'data-manage' ? this.$t('数据表') : this.$t('form_关联流程')
