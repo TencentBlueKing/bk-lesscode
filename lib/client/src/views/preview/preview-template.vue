@@ -279,7 +279,7 @@
         .simulator-preview {
             z-index: 0;
             position: absolute;
-            pointer-events: none;
+            pointer-events: auto;
             .mobile-content-wrapper {
                 height: 100%;
                 width: 100%;
