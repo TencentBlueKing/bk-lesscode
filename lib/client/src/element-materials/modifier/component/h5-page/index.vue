@@ -9,14 +9,8 @@
                 <span class="h5-page-title">{{ $t('第{0}页', [index + 1]) }}</span>
                 <bk-button>{{page.componentId}}</bk-button>
                 <i class="bk-icon icon-minus-circle" @click="handleDelete(page)" />
+                <i v-show="pageCount <= 11" class="bk-icon icon-plus-circle" @click="handleAdd(page)" />
             </div>
-        </div>
-        <div
-            v-show="pageCount <= 11"
-            class="page-add"
-            @click="handleAdd">
-            <span>{{ $t('添加 1 页') }}</span>
-            <i class="bk-icon icon-plus-circle" />
         </div>
     </div>
 </template>
@@ -70,12 +64,12 @@
             handleDelete (page) {
                 this.componentNode.removeChild(page)
             },
-            handleAdd () {
+            handleAdd (page) {
                 const newPage = LC.createNode('h5-page')
-                LC.getActiveNode().appendChild(newPage)
-                this.$nextTick(() => {
+                this.componentNode.insertAfter(newPage, page)
+                setTimeout(() => {
                     newPage.$elm.scrollIntoView({ behavior: 'smooth' })
-                })
+                }, 100)
             }
         }
     }
@@ -109,7 +103,7 @@
             .bk-button {
                 flex: 1;
             }
-            .icon-minus-circle {
+            .icon-minus-circle, .icon-plus-circle {
                 margin-left: 8px;
                 cursor: pointer;
                 font-size: 16px;
