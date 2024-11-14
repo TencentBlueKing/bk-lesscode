@@ -28,7 +28,7 @@
             icon: 'bk-drag-icon bk-drag-biaodan',
             name: 'form-container',
             type: 'widget-form-container',
-            displayName: '表单容器',
+            displayName: '表单编辑容器',
             order: 1,
             events: [],
             styles: [

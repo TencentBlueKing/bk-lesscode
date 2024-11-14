@@ -2608,6 +2608,7 @@
   "异常提示": "Exception",
   "异常类型": "Exception Type",
   "表单容器": "Form Container",
+  "表单编辑容器": "Form Container",
   "数据管理容器": "Data Container",
   "表单编辑器": "Form Editor",
   "容器": "Container",
