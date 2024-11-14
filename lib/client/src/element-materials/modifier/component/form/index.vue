@@ -14,64 +14,77 @@
         v-if="isShow"
         class="modifier-form"
     >
-        <init-form :component-node="componentNode" :handle-submit-form-item="handleSubmitFormItem" />
-        <div class="form-title">
-            {{ $t('表单内容配置') }} </div>
-        <div
-            class="form-item-list">
-            <vue-draggable
-                ghost-class="block-item-ghost"
-                :list="formItemList"
-                handle=".option-col-drag"
-                :group="{ name: 'form-item-list', pull: false, put: false }"
-                @change="handleSort">
-                <transition-group
-                    type="transition"
-                    :name="'flip-list'">
-                    <template v-for="(formItemNode, index) in formItemList">
-                        <div
-                            v-if="formItemNode.prop.property"
-                            :key="`item${index}`"
-                            class="form-item">
-                            <section
-                                class="item-name"
-                                :title="`${formItemNode.prop.label}(${formItemNode.prop.property})`">
-                                <span>{{ formItemNode.prop.label }}</span>
-                                <span class="property">({{ formItemNode.prop.property }})</span>
-                            </section>
-                            <section class="operate-btns">
-                                <span
-                                    class="form-item-edit"
-                                    @click.stop="handleShowOperation(formItemNode)">
-                                    <i class="bk-drag-icon bk-drag-edit" />
-                                </span>
-                                <span class="form-item-drag option-col-drag">
-                                    <i class="bk-drag-icon bk-drag-drag-small1" />
-                                </span>
-                                <span
-                                    class="form-item-delete"
-                                    @click.stop="handleDelete(formItemNode)">
-                                    <i class="bk-icon icon-close" />
-                                </span>
-                            </section>
-                        </div>
-                    </template>
-                </transition-group>
-            </vue-draggable>
+        <div :class="{ 'form-set-group': true, 'form-set-group-bt': open }" @click="open = !open">
+            <span>{{ $t('表单设置') }}</span>
+            <i
+                :class="{
+                    'bk-icon icon-angle-down': true,
+                    close: !open
+                }"
+            ></i>
         </div>
-        <div
-            class="table-column-add"
-            @click="handleShowOperation(null)">
-            {{ $t('继续添加表单项') }} </div>
+        <div class="group-bt">
+            <div v-show="open" class="mar-lr">
+                <init-form :component-node="componentNode" :handle-submit-form-item="handleSubmitFormItem" />
+                <div class="form-title">
+                    {{ $t('表单内容配置') }} </div>
+                <div
+                    class="form-item-list">
+                    <vue-draggable
+                        ghost-class="block-item-ghost"
+                        :list="formItemList"
+                        handle=".option-col-drag"
+                        :group="{ name: 'form-item-list', pull: false, put: false }"
+                        @change="handleSort">
+                        <transition-group
+                            type="transition"
+                            :name="'flip-list'">
+                            <template v-for="(formItemNode, index) in formItemList">
+                                <div
+                                    v-if="formItemNode.prop.property"
+                                    :key="`item${index}`"
+                                    class="form-item">
+                                    <section
+                                        class="item-name"
+                                        :title="`${formItemNode.prop.label}(${formItemNode.prop.property})`">
+                                        <span>{{ formItemNode.prop.label }}</span>
+                                        <span class="property">({{ formItemNode.prop.property }})</span>
+                                    </section>
+                                    <section class="operate-btns">
+                                        <span
+                                            class="form-item-edit"
+                                            @click.stop="handleShowOperation(formItemNode)">
+                                            <i class="bk-drag-icon bk-drag-edit" />
+                                        </span>
+                                        <span class="form-item-drag option-col-drag">
+                                            <i class="bk-drag-icon bk-drag-drag-small1" />
+                                        </span>
+                                        <span
+                                            class="form-item-delete"
+                                            @click.stop="handleDelete(formItemNode)">
+                                            <i class="bk-icon icon-close" />
+                                        </span>
+                                    </section>
+                                </div>
+                            </template>
+                        </transition-group>
+                    </vue-draggable>
+                </div>
+                <div
+                    class="table-column-add"
+                    @click="handleShowOperation(null)">
+                    {{ $t('继续添加表单项') }} </div>
 
-        <form-button-setting :button-setting="componentNode.prop.btnSetting || componentNode.prop['btn-setting'] || {}" :handle-update-btn-item="handleUpdateBtn">
-        </form-button-setting>
+                <form-button-setting :button-setting="componentNode.prop.btnSetting || componentNode.prop['btn-setting'] || {}" :handle-update-btn-item="handleUpdateBtn">
+                </form-button-setting>
 
-        <form-item-edit
-            :is-show="isShowOperation"
-            :default-value="editFormItemData"
-            :submit="handleSubmitFormItem"
-            :close="handleCancel" />
+                <form-item-edit
+                    :is-show="isShowOperation"
+                    :default-value="editFormItemData"
+                    :submit="handleSubmitFormItem"
+                    :close="handleCancel" />
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -134,7 +147,8 @@
                 editFormItemData: {},
                 initPayload: {},
                 submitBtnNode: null,
-                cancelBtnNode: null
+                cancelBtnNode: null,
+                open: true
             }
         },
 
@@ -289,7 +303,7 @@
                 let hasBtnItem = true
 
                 let btnItemNode = _.find(this.componentNode.children, node => !node.prop.property)
-                const key = this.componentNode.renderProps?.btnSetting ? 'btnSetting': 'btn-setting'
+                const key = this.componentNode.renderProps?.btnSetting ? 'btnSetting' : 'btn-setting'
                 const btnSetting = this.componentNode.prop[key]
                 
                 if (!btnItemNode) {
@@ -337,7 +351,7 @@
             },
 
             handleUpdateBtn (btnSetting) {
-                const key = this.componentNode.renderProps?.btnSetting ? 'btnSetting': 'btn-setting'
+                const key = this.componentNode.renderProps?.btnSetting ? 'btnSetting' : 'btn-setting'
                 this.componentNode.setProp(key, LC.utils.genPropFormatValue({
                     format: 'value',
                     code: btnSetting,
@@ -504,13 +518,44 @@
 </script>
 <style lang='postcss'>
     .modifier-form {
-        padding: 0 10px;
-        margin-bottom: 16px;
+        .form-set-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            line-height: 40px;
+            cursor: pointer;
+            margin: 0 8px 0 12px;
+            & > span:first-child{
+                font-size: 12px;
+                font-weight: 700;
+                color: #313238;
+            }
+            i {
+                font-size: 22px;
+            }
+            .icon-angle-down {
+                cursor: pointer;
+                font-size: 24px;
+                transition: transform 200ms;
+                &.close {
+                    transform: rotate(-90deg);
+                }
+            }
+        }
+        .form-set-group-bt {
+            border-bottom: 1.25px solid #F5F7FA;
+        }
+        .group-bt {
+            border-bottom: 1.25px solid #EAEBF0;
+        }
+        .mar-lr {
+            margin: 0 8px 16px 12px;
+        }
         .form-title {
-            margin: 20px 0 10px;
+            margin: 10px 0 10px;
             font-size: 12px;
             color: #313238;
-            font-weight: bold;
+            font-weight: 500;
         }
         .form-item-list {
             display: flex;

@@ -1,0 +1,82 @@
+.node-tab-wrapper {
+    .bk-tab, .bk-lesscode-tab {
+        padding: 4px;
+        max-width: calc(100% - 250px);
+        background: #f0f1f5;
+        border-radius: 2px;
+        margin-bottom: 20px;
+        .bk-tab-section {
+            display: none;
+        }
+        .bk-tab-header {
+            background: #f0f1f5;
+            background-image: none !important;
+            height: 25px !important;
+            border: none;
+            .bk-tab-label-list {
+                height: 100% !important;
+                display: flex;
+                align-items: center;
+
+            }
+            .bk-tab-label {
+                font-size: 12px;
+            }
+            .bk-tab-label-item {
+                border: none !important;
+                line-height: 25px;
+                font-size: 12px;
+            }
+        }
+        .bk-tab-label-wrapper {
+            .bk-tab-scroll-controller {
+                height: 33px !important;
+                background: #f5f7fa;
+                color: #979ba5;
+                &:hover {
+                    background: #eaebf0;
+                    color: #63656e;
+                }
+            }
+        }
+    }
+    .bk-lesscode-tab {
+        .bk-lesscode-tab-header {
+            line-height: 20px !important;
+            padding: 4px !important;
+            border-bottom: 0px !important;
+            font-size: 12px;
+            .bk-lesscode-tab-header-item.bk-lesscode-tab-header--active {
+                border-radius: 2px 2px 0 0 ;
+            }
+        }
+        .bk-lesscode-tab-content {
+            display: none;
+        }
+    }
+    .header-operate-area {
+        position: relative;
+        padding-right: 40px;
+        margin-top: 20px;
+    }
+    .toggle-filters-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+        color: #979ba5;
+        border: 1px solid #c4c6cc;
+        border-radius: 2px;
+        cursor: pointer;
+        pointer-events: auto !important;
+        &:hover {
+            border-color: #3a84ff;
+            color: #3a84ff;
+        }
+    }
+}

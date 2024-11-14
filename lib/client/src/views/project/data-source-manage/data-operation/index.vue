@@ -286,7 +286,7 @@
         ref,
         computed,
         onBeforeMount
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         API_METHOD,
         parseValue2Scheme,

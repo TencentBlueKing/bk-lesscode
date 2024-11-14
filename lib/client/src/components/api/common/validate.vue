@@ -97,7 +97,7 @@
 <script>
     import {
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         API_VALIDATE_TYPES
     } from 'shared/api'

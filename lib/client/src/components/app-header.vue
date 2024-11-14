@@ -106,7 +106,7 @@
 </template>
 
 <script>
-    import { defineComponent, computed, ref } from '@vue/composition-api'
+    import { defineComponent, computed, ref } from 'vue'
     import { useStore } from '@/store'
     import { useRouter } from '@/router'
     import { IAM_ACTION } from 'shared/constant'

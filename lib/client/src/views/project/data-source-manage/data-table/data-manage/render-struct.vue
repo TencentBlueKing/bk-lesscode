@@ -23,7 +23,7 @@
     import {
         defineComponent,
         PropType
-    } from '@vue/composition-api'
+    } from 'vue'
     import infoTable from '../common/info-table.vue'
     import showColumnTable from '../common/show-column-table.vue'
     import {

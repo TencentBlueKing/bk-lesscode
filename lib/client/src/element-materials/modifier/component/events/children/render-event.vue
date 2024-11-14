@@ -21,7 +21,8 @@
                     disabled: !eventConfig.tips,
                     placements: ['left-start'],
                     width: 200,
-                    boundary: 'window'
+                    boundary: 'window',
+                    allowHTML: false
                 }"
             >
                 {{ eventName }}
@@ -57,8 +58,9 @@
             :event-value="eventValue"
             @change="handleChangeEvent"
         />
+        <!-- 兼容老数据中type为undefined的情形 -->
         <choose-function
-            v-else
+            v-else-if="eventValue.type === EVENT_TYPE.METHOD || !eventValue.type"
             default-variable-format="event"
             :format-include="['event', 'value', 'variable', 'expression']"
             :choosen-function="eventValue"
@@ -66,12 +68,18 @@
             @change="handleChangeEvent"
             @clear="handleClearEvent"
         />
+        <choose-flow-action
+            v-else-if="eventValue.type === EVENT_TYPE.FLOW"
+            :event-value="eventValue"
+            @change="handleChangeEvent"
+        />
     </section>
 </template>
 
 <script>
     import ChooseFunction from '@/components/methods/choose-function/index.vue'
     import DescribeFunction from './describe-function/index.vue'
+    import ChooseFlowAction from './choose-flow-action.vue'
     import {
         EVENT_TYPE
     } from 'shared/function/constant'
@@ -81,7 +89,8 @@
 
         components: {
             ChooseFunction,
-            DescribeFunction
+            DescribeFunction,
+            ChooseFlowAction
         },
 
         props: {
@@ -101,6 +110,10 @@
                     {
                         id: EVENT_TYPE.ACTION,
                         name: this.$t('事件行为描述')
+                    },
+                    {
+                        id: EVENT_TYPE.FLOW,
+                        name: this.$t('操作流程')
                     }
                 ]
             }
@@ -188,5 +201,8 @@
     }
     .prop-radio {
         background-color: #fff;
+        >>> .bk-radio-button-text {
+            padding: 0 12px;
+        }
     }
 </style>

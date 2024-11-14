@@ -35,8 +35,27 @@
                     :clearable="false"
                     @toggle="handleSelectOpen"
                     @selected="handleSeletedRelatedForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName" />
+                    <bk-option
+                        v-for="item in formList"
+                        :key="item.id"
+                        :id="item.id"
+                        :name="item.tableName">
+                        <div class="table-option-item">
+                            <span class="table-name">{{ item.tableName }}</span>
+                            <i class="bk-drag-icon bk-drag-jump-link link-icon" @click.stop="handleJumpToDataSource(item.tableName)" />
+                        </div>
+                    </bk-option>
                 </bk-select>
+                <span
+                    v-bk-tooltips.top="$t('表名保存后无法修改，请谨慎填写')"
+                    class="g-prop-sub-title subline g-mt8 g-mb6">
+                    {{ $t('表名') }}
+                </span>
+                <bk-input
+                    v-model="localVal.tableName"
+                    :placeholder="$t('请输入表名，不填则使用默认表名')"
+                    :disabled="localVal.id !== ''"
+                    @change="handleTableNameChange" />
             </section>
             <section v-else>
                 <span class="g-prop-sub-title g-mt8 g-mb6">{{ $t('复用数据表') }}</span>
@@ -45,94 +64,117 @@
                     size="small"
                     :loading="formListLoading"
                     :clearable="false"
+                    @toggle="handleSelectOpen"
                     @selected="handleSeletedRelatedForm">
-                    <bk-option v-for="item in formList" :key="item.id" :id="item.id" :name="item.formName" />
+                    <bk-option
+                        v-for="item in formList"
+                        :key="item.id"
+                        :id="item.id"
+                        :name="item.tableName">
+                        <div class="table-option-item">
+                            <span class="table-name">{{ item.tableName }}</span>
+                            <i class="bk-drag-icon bk-drag-jump-link link-icon" @click.stop="handleJumpToDataSource(item.tableName)" />
+                        </div>
+                    </bk-option>
                 </bk-select>
             </section>
         </div>
     </prop-group>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import propGroup from './prop-group.vue'
+    import { mapGetters } from 'vuex'
+    import propGroup from './prop-group.vue'
 
-export default {
-    name: '',
-    components: {
-        propGroup
-    },
-    props: {
-        value: {
-            type: Object,
-            default: () => {
-                return {
-                    type: 'NEW_FORM',
-                    relatedId: 0,
-                    id: 0
+    export default {
+        name: '',
+        components: {
+            propGroup
+        },
+        props: {
+            activeNode: {
+                type: Object,
+                default: () => {}
+            },
+            value: {
+                type: Object,
+                default: () => {
+                    return {
+                        type: 'NEW_FORM',
+                        relatedId: 0,
+                        id: 0
+                    }
                 }
             }
-        }
-    },
-    data () {
-        return {
-            localVal: { ...this.value },
-            formListLoading: false,
-            formList: []
-        }
-    },
-    computed: {
-        ...mapGetters('projectVersion', ['currentVersionId'])
-    },
-    watch: {
-        value (val) {
-            this.localVal = { ...val }
-        }
-    },
-    mounted () {
-        this.getFormList()
-    },
-    methods: {
-        async getFormList () {
-            this.formListLoading = true
-            const params = {
-                projectId: this.$route.params.projectId,
-                versionId: this.currentVersionId
-            }
-            const res = await this.$store.dispatch('nocode/form/getNewFormList', params)
-            this.formList = res.filter(item => item.id !== this.localVal.id)
-            this.formListLoading = false
         },
-        handleTypeChange (val) {
-            if (this.localVal.type === val || val === 'USE_FORM') {
-                return
-            }
-            this.localVal.type = val
-            this.localVal.relatedId = ''
-            this.$emit('updateFields', [])
-            this.change()
-        },
-        handleReuseconfirm () {
-            this.localVal.type = 'USE_FORM'
-            this.localVal.relatedId = ''
-            this.$emit('updateFields', [])
-            this.change()
-        },
-        handleSelectOpen (val) {
-            if (val) {
-                this.getFormList()
+        data () {
+            return {
+                localVal: { ...this.value },
+                formListLoading: false,
+                formList: []
             }
         },
-        handleSeletedRelatedForm (val) {
-            this.localVal.relatedId = val
-            const fields = JSON.parse(this.formList.find(item => item.id === val).content)
-            this.$emit('updateFields', fields)
-            this.change()
+        computed: {
+            ...mapGetters('projectVersion', ['currentVersionId']),
+            ...mapGetters('page', ['pageDetail'])
         },
-        change () {
-            this.$emit('change', { ...this.localVal })
+        watch: {
+            value (val) {
+                this.localVal = { ...val }
+            }
+        },
+        mounted () {
+            this.getFormList()
+        },
+        methods: {
+            async getFormList () {
+                this.formListLoading = true
+                const params = {
+                    projectId: this.$route.params.projectId,
+                    versionId: this.currentVersionId
+                }
+                const res = await this.$store.dispatch('nocode/form/getNewFormList', params)
+                this.formList = res
+                this.formListLoading = false
+            },
+            handleTypeChange (val) {
+                if (this.localVal.type === val || val === 'USE_FORM') {
+                    return
+                }
+                this.localVal.type = val
+                this.localVal.relatedId = ''
+                this.$emit('updateFields', [])
+                this.change()
+            },
+            handleReuseconfirm () {
+                this.localVal.type = 'USE_FORM'
+                this.localVal.relatedId = ''
+                this.$emit('updateFields', [])
+                this.change()
+            },
+            handleTableNameChange (val) {
+                this.localVal.tableName = val
+                this.change()
+            },
+            handleSelectOpen (val) {
+                if (val) {
+                    this.getFormList()
+                }
+            },
+            handleSeletedRelatedForm (val) {
+                this.localVal.relatedId = val
+                const fields = JSON.parse(this.formList.find(item => item.id === val).content)
+                this.$emit('updateFields', fields)
+                this.change()
+            },
+            handleJumpToDataSource (tableName) {
+                const { href } = this.$router.resolve({ name: 'dataManage', query: { tableName } })
+                window.open(href, '_blank')
+            },
+            change () {
+                this.$emit('change', { ...this.localVal })
+            }
         }
     }
-}
 </script>
 <style lang="postcss" scoped>
     .bk-button-group {
@@ -161,5 +203,25 @@ export default {
     .subline {
         border-bottom: 1px dashed #63656e;
         cursor: pointer;
+    }
+    .table-option-item {
+        position: relative;
+        padding-right: 14px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        &:hover {
+            .link-icon {
+                display: inline-block;
+            }
+        }
+        .link-icon {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 0;
+            font-size: 12px;
+            cursor: pointer;
+        }
     }
 </style>

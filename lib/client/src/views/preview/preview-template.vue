@@ -210,13 +210,16 @@
                             layoutType: this.detail.type
                         })
                     } else {
+                        const content = JSON.parse(this.detail.content || {})
+                        const isHasVarFunc = content.vars || content.functions
                         code = await this.$store.dispatch('vueCode/getPageCode', {
                             targetData,
                             projectId: projectId,
                             versionId: this.detail.versionId,
                             pageType: 'previewSingle',
                             fromPageCode: this.detail.fromPageCode,
-                            platform: this.detail?.templateType || this.detail?.layoutType
+                            platform: this.detail?.templateType || this.detail?.layoutType,
+                            ...(isHasVarFunc ? { varList: content.vars || [], funcList: content.functions || [] } : {})
                         })
                     }
                     this.renderType = this.detail?.templateType || this.detail?.layoutType
@@ -276,7 +279,7 @@
         .simulator-preview {
             z-index: 0;
             position: absolute;
-            pointer-events: none;
+            pointer-events: auto;
             .mobile-content-wrapper {
                 height: 100%;
                 width: 100%;

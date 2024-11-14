@@ -50,7 +50,7 @@
         reactive,
         watch,
         onBeforeMount
-    } from '@vue/composition-api'
+    } from 'vue'
     import { messageError } from '@/common/bkmagic'
     import store from '@/store'
     import router from '@/router'

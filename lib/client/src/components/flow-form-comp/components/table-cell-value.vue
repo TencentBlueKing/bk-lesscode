@@ -15,7 +15,8 @@
                         content: transValToTagArray(value[field.key]).map(i => i.name).join(','),
                         placements: ['top'],
                         extCls: 'custom-tooltip',
-                        maxWidth: 400
+                        maxWidth: 400,
+                        allowHTML: false
                     }"
                     :style="{ 'background-color': tag.color }">
                     {{tag.name}}

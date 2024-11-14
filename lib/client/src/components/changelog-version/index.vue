@@ -23,7 +23,7 @@
     </bk-version-detail>
 </template>
 <script>
-    import { defineComponent, ref, reactive } from '@vue/composition-api'
+    import { defineComponent, ref, reactive } from 'vue'
     import logMassageList from './changelog-data'
     export default defineComponent({
         setup () {

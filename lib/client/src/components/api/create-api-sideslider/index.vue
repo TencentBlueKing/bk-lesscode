@@ -92,7 +92,7 @@
         ref,
         watch,
         computed
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         parseScheme2Value,
         getDefaultApi,

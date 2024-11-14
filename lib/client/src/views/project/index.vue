@@ -144,7 +144,8 @@
                 },
                 asideFolded: false,
                 asideHover: false,
-                showMenuFooter: true
+                showMenuFooter: true,
+                projectOldFlowLength: []
             }
         },
         computed: {
@@ -179,8 +180,12 @@
             next()
         },
         watch: {
-            '$route' (to, from) {
+            async '$route' (to, from) {
                 this.setDefaultActive()
+                if (to.params.projectId !== from.params.projectId) {
+                    await this.getOldFlowList()
+                    this.setNavList()
+                }
             }
         },
         async created () {
@@ -201,7 +206,7 @@
 
                 this.projectId = parseInt(this.$route.params.projectId)
                 await this.updateProjectInfo()
-
+                await this.getOldFlowList()
                 this.setNavList()
             } catch (e) {
                 console.error(e)
@@ -230,6 +235,10 @@
                 await this.getProjectList()
                 await this.setCurrentProject()
             },
+            async getOldFlowList () {
+                const res = await this.$store.dispatch('nocode/flow/getFlowList', { project: this.projectId })
+                this.projectOldFlowLength = res.count
+            },
             setNavList () {
                 this.navList = getProjectNavList()
                 // 在 setCurrentProject 请求之后再赋值，因为 setCurrentProject 请求会给 curProject 设置 canXXXX 等操作的属性
@@ -254,8 +263,24 @@
                 if (!IAM_ENABLE) {
                     navList = navList.filter(item => item?.id !== 'authManage')
                 }
-                if (this.curProject?.framework === 'vue3') {
-                    navList = navList.filter(item => item?.id !== 'flowList')
+                if (this.curProject?.framework !== 'vue3') {
+                    const index = navList.findIndex(item => item.id === 'flowList')
+                    if (index > -1) {
+                        const childrenNav = navList[index].children.slice()
+                        if (this.projectOldFlowLength > 0) {
+                            childrenNav.unshift({
+                                title: window.i18n.t('流程设计(旧版)'),
+                                icon: 'flow',
+                                url: 'flowList',
+                                iamAction: 'develop_app',
+                                permission: false,
+                                toPath: {
+                                    name: 'flowList'
+                                }
+                            })
+                        }
+                        navList.splice(index, 1, { ...navList[index], children: childrenNav })
+                    }
                 }
                 if (!this.isSaasAvailable) {
                     navList = navList.filter(item => item?.id !== 'backendModule')
@@ -297,7 +322,9 @@
                 }
 
                 // 流程管理子页面、左侧选中流程管理
-                if (name?.startsWith('flow')) {
+                if (name?.startsWith('flowTpl')) {
+                    name = 'flowTplList'
+                } else if (name?.startsWith('flow')) {
                     name = 'flowList'
                 }
 

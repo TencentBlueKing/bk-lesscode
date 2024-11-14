@@ -10,7 +10,7 @@
 -->
 
 <script>
-    import { computed, defineComponent, reactive, toRefs, ref } from '@vue/composition-api'
+    import { computed, defineComponent, reactive, toRefs, ref } from 'vue'
     import { getFileUrl, isImageFile } from '@/components/filelib/helper'
     import FileModal from './file-modal.vue'
 

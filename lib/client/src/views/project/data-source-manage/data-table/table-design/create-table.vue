@@ -52,7 +52,7 @@
 <script lang="ts">
     import {
         defineComponent
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         useTableStatus
     } from './composables/table-info'

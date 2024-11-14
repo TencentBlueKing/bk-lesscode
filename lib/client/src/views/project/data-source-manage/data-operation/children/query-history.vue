@@ -83,7 +83,7 @@
         defineComponent,
         onBeforeMount,
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         transMs2Time
     } from 'shared/util'

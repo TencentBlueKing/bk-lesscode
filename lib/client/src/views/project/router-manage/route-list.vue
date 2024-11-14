@@ -82,7 +82,7 @@
                                     { [$style['editing']]: editState.route === route }
                                 ]">
                                     <div :class="$style['path-name']">
-                                        <span v-if="editState.route !== route" v-bk-tooltips="{ content: route.path , disabled: !( route.path && route.path.length > 26) }">{{route.path | routeShow}}</span>
+                                        <span v-if="editState.route !== route" v-bk-tooltips="{ content: route.path , disabled: !( route.path && route.path.length > 26), allowHTML: false }">{{route.path | routeShow}}</span>
                                         <div
                                             :class="[
                                                 $style['edit-form'],
@@ -135,6 +135,7 @@
                                     <div :class="$style['bind-name']" @click="handleEditBinding(route)"
                                         v-if="bindState.route !== route" v-bk-tooltips="{
                                             content: getBindDisplayValue(route),
+                                            allowHTML: false,
                                             disabled: !(getBindDisplayValue(route) && getBindDisplayValue(route).length > 29) }">
                                         {{getBindDisplayValue(route)}}
                                     </div>

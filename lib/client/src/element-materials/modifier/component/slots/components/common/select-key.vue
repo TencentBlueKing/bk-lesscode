@@ -23,7 +23,8 @@
                     content: $t(key.tips),
                     placements: ['left-start'],
                     boundary: 'window',
-                    maxWidth: 400
+                    maxWidth: 400,
+                    allowHTML: false
                 }"
             >{{ $t(key.label) }}</div>
             <bk-tag-input
@@ -47,7 +48,7 @@
         PropType,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import store from '@/store'
 
     interface IKey {

@@ -60,7 +60,7 @@
         defineComponent,
         PropType,
         toRef
-    } from '@vue/composition-api'
+    } from 'vue'
     import { ITable } from './select-table.vue'
     import SelectType from './select-type.vue'
     import SelectTableField from './select-table-field.vue'

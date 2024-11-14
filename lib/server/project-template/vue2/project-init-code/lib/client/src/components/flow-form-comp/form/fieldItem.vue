@@ -3,9 +3,9 @@
         <div
             v-if="showLabel && !['DESC','DIVIDER'].includes(field.type)"
             :class="['field-label', { required: field.validate_type === 'REQUIRE' }]">
-            <span v-if="field.desc" v-bk-tooltips="field.desc" class="label-text has-desc">{{ field.name }}</span>
+            <span v-if="field.desc" v-bk-tooltips="{ content: field.desc, allowHTML: false }" class="label-text has-desc">{{ field.name }}</span>
             <span v-else class="label-text">{{ field.name }}</span>
-            <i v-if="field.tips" v-bk-tooltips="field.tips" class="bk-icon icon-question-circle tips-icon"></i>
+            <i v-if="field.tips" v-bk-tooltips="{ content: field.tips, allowHTML: false }" class="bk-icon icon-question-circle tips-icon"></i>
         </div>
         <div class="field-form-content">
             <template v-if="fieldComp">

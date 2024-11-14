@@ -390,7 +390,7 @@
                     name: [
                         {
                             required: true,
-                            message: this.$t('节点名称为必填项'),
+                            message: this.$t('必填项'),
                             trigger: 'blur'
                         }
                     ],

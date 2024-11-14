@@ -15,22 +15,15 @@
             :show="!isReadOnly && variableSelectEnable"
             :options="variableSelectOptions"
             :value="formData"
-            :show-content="isShowProp"
             :describe="describe"
             @change="handleVariableFormatChange">
             <template v-slot:title>
                 <div class="prop-name">
-                    <section class="icon-and-name" @click="toggleShowProp">
-                        <i
-                            :class="{
-                                'bk-icon icon-angle-down': true,
-                                close: !isShowProp
-                            }"
-                        ></i>
+                    <section class="icon-and-name">
                         <span
                             :class="{ label: true }"
-                            v-bk-tooltips="introTips">
-                            {{ displayName }}
+                            v-bk-tooltips="introTips"
+                            v-html="displayName">
                         </span>
                     </section>
                 </div>
@@ -117,6 +110,7 @@
     import _ from 'lodash'
     import { mapActions } from 'vuex'
     import LC from '@/element-materials/core'
+    import DOMPurify from 'dompurify'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
@@ -247,7 +241,6 @@
                 selectValueType: '',
                 formData: {},
                 isRenderValueCom: false,
-                isShowProp: true,
                 isSyncing: false
             }
         },
@@ -371,17 +364,18 @@
              */
             displayName () {
                 // 英文版只展示英文属性名称
+                let name = this.name
                 if (this.$store.state.Language === 'en') {
-                    return this.name
+                    name = this.name
                 } else {
                     if (this.renderComponentList.length > 1) {
-                        return this.describe?.displayName || this.name
+                        name = this.describe?.displayName || this.name
                     }
                     if (!isEmpty(this.describe?.displayName)) {
-                        return `${this.describe.displayName}(${this.name})`
+                        name = `${this.describe.displayName}<span class='prop-field'>(${this.name})</span>`
                     }
-                    return this.name
                 }
+                return DOMPurify.sanitize(name)
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)
@@ -398,7 +392,7 @@
                 return {
                     placements: ['left-start'],
                     maxWidth: 300,
-                    content: this.tipsContent
+                    content: DOMPurify.sanitize(this.tipsContent)
                 }
             },
             tipsContent () {
@@ -704,10 +698,6 @@
                 }
             },
 
-            toggleShowProp () {
-                this.isShowProp = !this.isShowProp
-            },
-
             // 每个formItem中表单组件v-model的变量名替换成formModel选择的变量名
             replaceFormItemVmodelKey (formNode = {}, buildInVariableType, payload, buildInVariable) {
                 let formModelKey = `${buildInVariable}model`
@@ -734,7 +724,7 @@
         }
     }
 </script>
-<style lang="postcss">
+<style lang="postcss" scoped>
     .item-ghost {
         border: 1px dashed #3a84ff;
         background: #fff !important;
@@ -769,27 +759,30 @@
         }
     }
     .modifier-prop {
-        margin: 0 10px;
+        margin: -10px 8px 0 12px;
         .prop-name {
             font-size: 12px;
-            font-weight: bold;
-            color: #313238;
             word-break: keep-all;
             width: 100%;
             display: flex;
             align-items: center;
-            border-top: 1px solid #EAEBF0;
+            margin: 10px 0;
             cursor: pointer;
-            padding: 10px 0;
             .icon-and-name {
                 display: flex;
                 align-items: center;
                 max-width: calc(100% - 65px);
             }
             .label {
-                border-bottom: 1px dashed #313238;
+                color: #63656E;
+                border-bottom: 1px dashed #DCDEE5;
                 cursor: pointer;
-                line-height: 19px;
+                line-height: 20px;
+                /deep/ span.prop-field {
+                    margin-left: 3px;
+                    color: #C4C6CC;
+                    font-weight: 400;
+                }
             }
             span {
                 overflow: hidden;
@@ -799,16 +792,9 @@
                 text-overflow: ellipsis;
                 word-break: break-all;
             }
-            .icon-angle-down {
-                cursor: pointer;
-                font-size: 20px;
-                margin-left: -5px;
-                margin-right: 3px;
-                transition: transform 200ms;
-                &.close {
-                    transform: rotate(-90deg);
-                }
-            }
+        }
+        .title-margin {
+            margin-top: 10px;
         }
         .prop-action {
             width: 100%;

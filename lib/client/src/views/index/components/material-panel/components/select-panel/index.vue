@@ -26,6 +26,7 @@
         },
         computed: {
             ...mapGetters('ai', ['isAiAvailable']),
+            ...mapGetters('page', ['pageDetail']),
 
             panelList () {
                 const list = [
@@ -33,11 +34,6 @@
                         key: 'component',
                         tips: window.i18n.t('页面编辑器'),
                         icon: 'bk-drag-icon bk-drag-custom-comp-default'
-                    },
-                    {
-                        key: 'formEngine',
-                        tips: window.i18n.t('表单编辑器'),
-                        icon: 'bk-drag-icon bk-drag-biaodan'
                     },
                     {
                         key: 'template',
@@ -55,6 +51,14 @@
                         icon: 'bk-drag-icon bk-drag-level-down'
                     }
                 ]
+
+                if (this.pageDetail.pageType !== 'MOBILE') {
+                    list.splice(1, 0, {
+                        key: 'formEngine',
+                        tips: window.i18n.t('表单编辑器'),
+                        icon: 'bk-drag-icon bk-drag-biaodan'
+                    })
+                }
 
                 if (this.isAiAvailable) {
                     list.push({

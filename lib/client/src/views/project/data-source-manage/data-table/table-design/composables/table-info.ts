@@ -11,7 +11,7 @@
 import {
     reactive,
     ref
-} from '@vue/composition-api'
+} from 'vue'
 
 export interface IBasicInfo {
     tableName: string,

@@ -197,8 +197,15 @@
                         templateInfo: [{ templateName: formData.templateName, belongProjectId: this.projectId, versionId: this.versionId, categoryId: formData.categoryId }]
                     }
                     if (this.actionType === 'apply') {
-                        const { varList, funcList } = await this.getVarAndFuncList(this.fromTemplate)
-                        Object.assign(data, { varList, funcList })
+                        const newContent = JSON.parse(this.fromTemplate.content || {})
+                        if (newContent.vars || newContent.functions) {
+                            const { vars: varList = [], functions: funcList = [] } = newContent
+                            Object.assign(data, { varList, funcList })
+                        } else {
+                            const { varList, funcList } = await this.getVarAndFuncList(this.fromTemplate)
+                            Object.assign(data, { varList, funcList })
+                        }
+                        data['framework'] = this.fromTemplate.framework
                     }
                     const res = await this.$store.dispatch(`pageTemplate/${this.actionType}`, data)
                     if (res) {

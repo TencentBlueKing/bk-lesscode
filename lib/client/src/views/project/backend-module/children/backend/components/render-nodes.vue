@@ -27,7 +27,7 @@
 <script>
     import { Graph } from '@antv/x6'
     import { register } from '../x6-render-vue/registry.js'
-    import { ref, computed, watch, onMounted, defineComponent, nextTick } from '@vue/composition-api'
+    import { ref, computed, watch, onMounted, defineComponent, nextTick } from 'vue'
     import { useStore } from '@/store'
     import { debounce } from 'shared/util.js'
     import { finalNodeTypes, getGraphDefaultConfig, sortNodes, getLineColor, getStatusMap } from './common'

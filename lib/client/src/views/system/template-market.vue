@@ -522,12 +522,14 @@
             },
             handleDownloadTemplate (template) {
                 const targetData = []
-                targetData.push(JSON.parse(template.content))
+                const content = JSON.parse(template.content || {})
+                targetData.push(content)
+                const isHasVarFunc = content.vars || content.functions
                 this.$store.dispatch('vueCode/getPageCode', {
                     targetData,
                     projectId: template.belongProjectId,
-                    fromPageCode: template.fromPageCode
-
+                    fromPageCode: template.fromPageCode,
+                    ...(isHasVarFunc ? { varList: content.vars || [], funcList: content.functions || [] } : {})
                 }).then((res) => {
                     const downlondEl = document.createElement('a')
                     const blob = new Blob([res])
