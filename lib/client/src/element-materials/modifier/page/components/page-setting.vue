@@ -7,6 +7,9 @@
                 <style-item :name="$t('页面名称')" type="vertical">
                     <bk-input :value="pageDetail.pageName" @change="updatePageDetail('pageName', $event)" />
                 </style-item>
+                <style-item :name="$t('页面Code')" type="vertical">
+                    <bk-input :value="pageDetail.pageCode" disabled />
+                </style-item>
                 <style-item :name="$t('页面ID')" type="vertical">
                     <bk-input :value="pageDetail.id" disabled />
                 </style-item>
