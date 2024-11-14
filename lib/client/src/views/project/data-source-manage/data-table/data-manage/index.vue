@@ -100,13 +100,15 @@
     import renderHeader from '../common/header'
     import renderData from './render-data.vue'
     import renderStruct from './render-struct.vue'
+    import renderFunction from './render-function.vue'
     import renderApi from './render-api.vue'
     import layout from '@/components/ui/layout.vue'
 
     const panels = [
-        { name: 'render-data', label: window.i18n.t('数据'), count: 10 },
-        { name: 'render-struct', label: window.i18n.t('表结构'), count: 20 },
-        { name: 'render-api', label: 'API', count: 30 }
+        { name: 'render-data', label: window.i18n.t('数据') },
+        { name: 'render-struct', label: window.i18n.t('表结构') },
+        { name: 'render-function', label: window.i18n.t('函数示例') },
+        { name: 'render-api', label: 'API' }
     ]
 
     export default defineComponent({
@@ -114,6 +116,7 @@
             renderHeader,
             renderData,
             renderStruct,
+            renderFunction,
             renderApi,
             layout
         },
