@@ -250,7 +250,9 @@
                 // 仅在移动端预览时，设置swiper-container的高度
                 if (this.renderType === 'MOBILE') {
                     const swiperContainer = document.querySelector('swiper-container')
-                    swiperContainer?.style.height = `${this.mobileHeight}px`
+                    if (swiperContainer) {
+                        swiperContainer.style.setProperty('height', `${this.mobileHeight}px`)
+                    }
                 }
             }
         },
