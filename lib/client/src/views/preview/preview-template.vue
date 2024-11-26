@@ -133,7 +133,7 @@
             await this.loadFile()
         },
         mounted () {
-            this.minHeight = window.innerHeight
+            this.resizeHandler()
             window.addEventListener('resize', this.resizeHandler)
         },
         destroyed () {
@@ -244,7 +244,14 @@
                 }
             },
             resizeHandler () {
+                // 更新最小高度
                 this.minHeight = window.innerHeight
+
+                // 仅在移动端预览时，设置swiper-container的高度
+                if (this.renderType === 'MOBILE') {
+                    const swiperContainer = document.querySelector('swiper-container')
+                    swiperContainer?.style.height = `${this.mobileHeight}px`
+                }
             }
         },
         template: `<div :style="{ height: windowHeight + 'px' }" v-bkloading="{ isLoading }">
