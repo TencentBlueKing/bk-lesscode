@@ -19,7 +19,7 @@
     </section>
     <section v-else-if="authed">
         <div id="app" :class="systemCls">
-            <chrome-tips :domain="cookieDomain" />
+            <chrome-tips :domain="cookieDomain" :style="{ 'margin-bottom': showAlertNotice ? '2px' : '' }" />
             <notice-component :api-url="noticeUrl" @show-alert-change="showAlertChange" />
             <app-header></app-header>
             <div class="page-body" :style="{ height: bodyHeight }" >
@@ -88,7 +88,7 @@
         },
 
         computed: {
-            ...mapGetters(['mainContentLoading', 'bodyHeight']),
+            ...mapGetters(['mainContentLoading', 'bodyHeight', 'showAlertNotice']),
             ...mapGetters('platformConfig', ['defaultConfig', 'platformConfig']),
             emptyPage () {
                 return this.$route.name === 'preview' || this.$route.name === 'previewTemplate' || this.$route.name === 'previewMobile' || this.$route.meta?.navigation === 'empty'
