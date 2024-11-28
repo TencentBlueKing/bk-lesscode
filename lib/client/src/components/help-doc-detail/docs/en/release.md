@@ -1,0 +1,27 @@
+# Release and Deployment
+
+The release and deployment module allows applications that are dragged and dropped on the BlueKing Operations and Maintenance Development Platform (LessCode) to be quickly deployed to the BlueKing PaaS Platform - Developer Center.
+
+## Application Association
+
+- When an application is created on LessCode, a default module with the same name is created in the PaaS Platform - Developer Center.
+- When an application is created in the PaaS Platform - Developer Center with the code source selected as "BlueKing Operations and Maintenance Development Platform (LessCode)," the application is also synchronized and created on LessCode.
+
+<img src="../../../../images/help/en/release-paas.png" alt="grid" width="80%" class="help-img">
+
+## Deployment
+
+### 1. Fill in Deployment Information
+
+- Without using the version management feature, you only need to select the deployment environment, fill in the version number, and click deploy each time to deploy the latest content of the current application on LessCode to the PaaS Platform - Developer Center.
+- If the source package option is set to select a historical deployment package, you can directly select a previously successfully deployed package to the corresponding environment (e.g., if version 1.1 has been deployed to the pre-release environment for verification, you can select the historical deployment package version 1.1 to deploy to the production environment).
+
+<img src="../../../../images/help/en/release-data.png" alt="grid" width="80%" class="help-img">
+
+### 2. Display Deployment Logs
+
+<img src="../../../../images/help/en/release-log.png" alt="grid" width="80%" class="help-img">
+
+### 3. Deployment Status, Access Entry, Jump to Developer Center
+
+<img src="../../../../images/help/en/release-result.png" alt="grid" width="80%" class="help-img">
