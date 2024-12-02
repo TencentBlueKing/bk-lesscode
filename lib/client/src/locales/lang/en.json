@@ -3961,7 +3961,7 @@
   "生成失败，请优化你的提示词": "Failed to generate, please optimize your cue word",
   "灰度中，暂未全量开放": "In gray scale, not yet fully open",
   "布尔值": "Boolean",
-  "您可以键入 “/” 查看更多Prompt": "You can type “/” to see more prompts",
+  "1. 您可以键入“/”查看更多Prompt 2. 您可以输入“{”唤起组件ID列表等进行选择": "1. You can type “/” to see more Prompts 2. You can type “{” to evoke a list of component IDs, etc. to choose from",
   "小鲸": "AI Assistant",
   "AI开发助手小鲸": "AI Assistant",
   "状态设置": "Status Setting",
