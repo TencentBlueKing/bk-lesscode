@@ -42,6 +42,8 @@ In each round, you tell me commands to run, and I will tell you the result.
 
 Your respond must starts with your plan and explanation.
 
+Your explanation must be very short.
+
 Your respond must end with the commands like this:
 ```
 +cmd: <command>
