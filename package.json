@@ -172,6 +172,7 @@
     "markdown-it-container": "~2.0.0",
     "markdown-it-link-attributes": "~3.0.0",
     "markdown-it-replace-link": "~1.0.1",
+    "markdown-it-copy": "1.2.0",
     "mavon-editor": "^2.9.0",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
