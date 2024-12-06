@@ -6,7 +6,7 @@
 
 ```js
 Theory of the LessCode Platform
-Practical Application Development with LessCode
+Practical App Development with LessCode
 ```
 
 #### PPT Download: [Download Link](https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/template-imgs/latest/LessCode-1.pptx)
@@ -22,7 +22,7 @@ Practical Application Development with LessCode
 ```js
 1. Explanation of LessCode Source Code Structure
 2. Page Development Based on LessCode Source Code
-3. Building and Deploying LessCode Applications
+3. Building and Deploying LessCode Apps
 ```
 
 #### PPT Download: [Download Link](https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/template-imgs/latest/LessCode-2.pptx)

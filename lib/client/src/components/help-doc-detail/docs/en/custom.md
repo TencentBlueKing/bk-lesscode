@@ -168,9 +168,9 @@ npm run build
 
 ## Upload Custom Components
 
-#### 1. Select an Application and Enter the Application Management
+#### 1. Select an App and Enter the App Management
 
-> In the application list, select the application to edit or create a new application (the newly created application will automatically enter the application management page).
+> In the app list, select the app to edit or create a new app (the newly created app will automatically enter the app management page).
 
 <img src="../../../../images/help/en/project-list.png" alt="grid" width="80%" class="help-img" />
 
@@ -198,7 +198,7 @@ npm run build
 
 #### Specify the Page to Use the Component
 
-> Select the page to edit from the application page list, or create a new page for editing.
+> Select the page to edit from the app page list, or create a new page for editing.
 
 #### Drag and Drop the Component
 

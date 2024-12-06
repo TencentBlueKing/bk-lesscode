@@ -1,10 +1,10 @@
 # Data Operations
 
-The LessCode Operations Development Platform provides a data operations page to facilitate complex data queries. Users can write SQL directly or use query descriptions to perform data queries.
+The LessCode provides a data operations page to facilitate complex data queries. Users can write SQL directly or use query descriptions to perform data queries.
 
 ## Switch Between `Built-in Database`, `BkBase Result Table`, and `Third-party Database`
 
-On the "Application Development" -> "Data Operations" page, users can switch databases at the top of the page. Subsequent data queries will be performed in the selected database.
+On the "App Development" -> "Data Operations" page, users can switch databases at the top of the page. Subsequent data queries will be performed in the selected database.
 
 <img src="../../../../images/help/en/data-operation-01.png" alt="grid" width="80%" class="help-img">
 

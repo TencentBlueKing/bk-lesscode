@@ -1,11 +1,11 @@
 # Release and Deployment
 
-The release and deployment module allows applications that are dragged and dropped on the BlueKing Operations and Maintenance Development Platform (LessCode) to be quickly deployed to the BlueKing PaaS Platform - Developer Center.
+The release and deployment module allows apps that are dragged and dropped on the BlueKing Operations and Maintenance Development Platform (LessCode) to be quickly deployed to the BlueKing Developer Center.
 
-## Application Association
+## App Association
 
-- When an application is created on LessCode, a default module with the same name is created in the PaaS Platform - Developer Center.
-- When an application is created in the PaaS Platform - Developer Center with the code source selected as "BlueKing Operations and Maintenance Development Platform (LessCode)," the application is also synchronized and created on LessCode.
+- When an app is created on LessCode, a default module with the same name is created in the Blueking Developer Center.
+- When an app is created in the Blueking Developer Center with the code source selected as "BlueKing Operations and Maintenance Development Platform (LessCode)," the app is also synchronized and created on LessCode.
 
 <img src="../../../../images/help/en/release-paas.png" alt="grid" width="80%" class="help-img">
 
@@ -13,7 +13,7 @@ The release and deployment module allows applications that are dragged and dropp
 
 ### 1. Fill in Deployment Information
 
-- Without using the version management feature, you only need to select the deployment environment, fill in the version number, and click deploy each time to deploy the latest content of the current application on LessCode to the PaaS Platform - Developer Center.
+- Without using the version management feature, you only need to select the deployment environment, fill in the version number, and click deploy each time to deploy the latest content of the current app on LessCode to the Blueking Developer Center.
 - If the source package option is set to select a historical deployment package, you can directly select a previously successfully deployed package to the corresponding environment (e.g., if version 1.1 has been deployed to the pre-release environment for verification, you can select the historical deployment package version 1.1 to deploy to the production environment).
 
 <img src="../../../../images/help/en/release-data.png" alt="grid" width="80%" class="help-img">

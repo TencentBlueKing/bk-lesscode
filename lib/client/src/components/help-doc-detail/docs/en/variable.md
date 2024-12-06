@@ -1,10 +1,10 @@
 # Variable Management
 
-In the LessCode platform, users can create application variables and use them in page development. By using variables, the following requirements can be fulfilled:
+In the LessCode platform, users can create app variables and use them in page development. By using variables, the following requirements can be fulfilled:
 
 - **Dynamically assign values to component properties:** Bind variables to attributes, allowing functions to manipulate variables to get or modify their values, thereby affecting component properties.
 - **Dynamically assign values to component directives:** The platform currently provides Vue syntax directives. By binding variables to directives, you can control the behavior of directives via functions.
-- **Application global variables:** Define global variables in the application that can be shared and used across all pages.
+- **App global variables:** Define global variables in the app that can be shared and used across all pages.
 - **Assign initial values to variables by environment:** A variable can be configured with initial values for preview, pre-release, and production environments.
 - **Use variables in function parameters:** The "Request URL" and "Request Parameters" of remote functions can be assembled and dynamically retrieved using variables.
 
@@ -12,31 +12,31 @@ In the LessCode platform, users can create application variables and use them in
 
 ### Path to Global Variable Management Page:
 
-Application Development (Select Application) -> Variable Management
+App Development (Select App) -> Variable Management
 
 ### Instructions for Using Global Variables:
 
-- You can perform CRUD operations on global variables on the application variable management page.
+- You can perform CRUD operations on global variables on the app variable management page.
 - Variables that are already in use can be queried for reference locations and cannot be deleted.
-- The variable identifier for global variables is globally unique within the application.
+- The variable identifier for global variables is globally unique within the app.
 - Modifying the default value of a global variable will change the default value of the component properties or directives referencing that variable on all pages.
 
 ## Page Variable Management
 
 ### Path to Page Variable Management Page:
 
-Application Page Canvas -> Page Variables
+App Page Canvas -> Page Variables
 
 ### Instructions for Using Page Variables:
 
-- Application page variables display details of variables available on the current page (including global variables and page-specific variables).
+- App page variables display details of variables available on the current page (including global variables and page-specific variables).
 - You can only operate on page variables; global variables must be managed from the global variable management page.
 - Variables already in use cannot be deleted.
 - You can perform CRUD operations on page-specific variables.
 
 ## Introduction to Initial Variable Types
 
-LessCode currently offers six types of variable initialization for application development use. These types are only for initialization; variables can be modified within functions.
+LessCode currently offers six types of variable initialization for app development use. These types are only for initialization; variables can be modified within functions.
 
 - **Basic data types (String, Number, Boolean, Array, Object):** These are JavaScript data types, filtered based on data type when bound to properties.
 - **Computed variables:** These can be a combination of multiple variables or functions, returning a final value that can be applied to all properties and directives.

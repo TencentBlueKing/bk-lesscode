@@ -1,6 +1,6 @@
 # Function Usage on Canvas
 
-In front-end pages, functions are typically used for components to fetch data and handle page interactions. On the Blue Whale Operations Development Platform (LessCode), we provide functions to achieve these two capabilities based on different scenarios.
+In front-end pages, functions are typically used for components to fetch data and handle page interactions. On the Blueking LessCode (LessCode), we provide functions to achieve these two capabilities based on different scenarios.
 
 ## For Component Data Fetching
 

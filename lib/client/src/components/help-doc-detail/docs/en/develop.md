@@ -1,8 +1,8 @@
-# Application Secondary Development Guide
+# App Secondary Development Guide
 
-## Method 1: Download the Entire Application Source Code Package for Secondary Development
+## Method 1: Download the Entire App Source Code Package for Secondary Development
 
-Download the application source code, and the platform will integrate all page source code and page routing configurations into the [Blue Whale Frontend Development Framework (BKUI-CLI)](https://bk.tencent.com/docs/document/5.1/19/583). This will be available as a complete source code package for download.
+Download the app source code, and the platform will integrate all page source code and page routing configurations into the [Blueking Frontend Development Framework (BKUI-CLI)](https://bk.tencent.com/docs/document/5.1/19/583). This will be available as a complete source code package for download.
 
 <img src="../../../../images/help/en/page5.png" alt="grid" width="80%" class="help-img">
 
@@ -58,21 +58,21 @@ After downloading, you can proceed with secondary development and deployment thr
 │       ├── service/        # Backend services directory
 │       │   ......
 ├── nodemon.json            # Nodemon configuration file
-├── package.json            # Application description file
+├── package.json            # App description file
 ```
 
-2. Create an application module in the Blue Whale PaaS Platform -> Developer Center.
+2. Create an app module in the Blueking Developer Center.
 
    Note:
 
-   - For application module source code management, select "Code Repository" and bind it to the code repository created in step 1.
-   - For development language and initial template, select "Nodejs -> Blue Whale Application Frontend Development Framework".
+   - For app module source code management, select "Code Repository" and bind it to the code repository created in step 1.
+   - For development language and initial template, select "Nodejs -> Blueking App Frontend Development Framework".
 
      <img src="../../../../images/help/en/develop2.png" alt="grid" width="80%" class="help-img">
-3. Submit the secondary development code to the repository, access the deployment page of the application module in the Blue Whale PaaS Platform, and deploy.
+3. Submit the secondary development code to the repository, access the deployment page of the app module in the Blueking PaaS Platform, and deploy.
 
-## Method 2: Download Source Code of a Single Application Page for Secondary Development
+## Method 2: Download Source Code of a Single App Page for Secondary Development
 
-If you are adding a new functional page to an existing application, you can use drag-and-drop layout for a single page and directly download the independent page source code to integrate it into the existing application project.
+If you are adding a new functional page to an existing app, you can use drag-and-drop layout for a single page and directly download the independent page source code to integrate it into the existing app project.
 
 <img src="../../../../images/help/en/page6.png" alt="grid" width="80%" class="help-img">

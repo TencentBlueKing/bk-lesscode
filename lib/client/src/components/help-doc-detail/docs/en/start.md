@@ -13,7 +13,7 @@ Notes:
 3. You can specify the app type to be vue2/vue3.
 4. When creating an app, you can choose to initialize a navigation layout instance and create app pages based on the specified navigation layout instance.
 5. The platform will automatically create a demo app for users using the platform for the first time, named "Username + Demo App."
-6. Upon successful creation, a default module for the same name SaaS app will be created in the PaaS Platform - Developer Center and bound to the LessCode app. After completing the drag-and-drop operations, you can deploy directly to the bound SaaS app.
+6. Upon successful creation, a default module for the same name SaaS app will be created in the Blueking Developer Center and bound to the LessCode app. After completing the drag-and-drop operations, you can deploy directly to the bound SaaS app.
 
 ## 2. Create/Edit Pages
 
@@ -68,7 +68,7 @@ Notes:
 
 ## 5. Release and Deployment
 
-When the LessCode app was created, a corresponding app module was also created in the PaaS Platform - Developer Center. After editing the app pages, you can directly deploy them to the BlueKing PaaS Platform.
+When the LessCode app was created, a corresponding app module was also created in the Blueking Developer Center. After editing the app pages, you can directly deploy them to the BlueKing PaaS Platform.
 
 - You can directly select the environment and version to deploy.
 
@@ -80,7 +80,7 @@ If you need to perform secondary development on the pages created using drag-and
 
 ### Method 1: Download the Entire App Source Code
 
-The platform integrates the source code of all app pages and page route configurations into the BlueKing Frontend Development Framework (BKUI-CLI). The downloaded source package can be directly deployed in the PaaS Platform - Developer Center.
+The platform integrates the source code of all app pages and page route configurations into the BlueKing Frontend Development Framework (BKUI-CLI). The downloaded source package can be directly deployed in the Blueking Developer Center.
 
 <img src="../../../../images/help/en/page5.png" alt="grid" width="80%" class="help-img">
 

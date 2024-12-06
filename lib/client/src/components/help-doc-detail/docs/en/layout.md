@@ -15,12 +15,12 @@ The platform currently offers six types of layouts:
 
 ## Navigation Layout Management
 
-### 1. Add Navigation Layout When Creating a New Application
+### 1. Add Navigation Layout When Creating a New App
 
 <img src="../../../../images/help/en/layout-add1.png" width="80%" alt="layout-guide" class="help-img">
 
 - The "Blank Layout" is the system default layout, automatically selected and cannot be deselected.
-- If no other navigation layout is selected during addition, you can add it in the "Resource Management --> Navigation Layout Management" module after creating the application.
+- If no other navigation layout is selected during addition, you can add it in the "Resource Management --> Navigation Layout Management" module after creating the app.
 
 ### 2. Add Navigation Layout in Resource Management --> Navigation Layout Management
 
@@ -28,11 +28,11 @@ The platform currently offers six types of layouts:
 
 ### 3. Modify Navigation Layout Configuration in Resource Management --> Navigation Layout Management
 
-In the navigation layout management module, you can see all the navigation layouts added under the current application. You can also edit and delete navigation layout information and set the default navigation layout for PC and mobile pages.
+In the navigation layout management module, you can see all the navigation layouts added under the current app. You can also edit and delete navigation layout information and set the default navigation layout for PC and mobile pages.
 
 ### 4. Use Navigation Layout on a Page
 
-When creating a new page, you can select the navigation layout for the page type under the application and enter the page route. The final access route for the page under the layout is **"layout route/page route"**.
+When creating a new page, you can select the navigation layout for the page type under the app and enter the page route. The final access route for the page under the layout is **"layout route/page route"**.
 
 <img src="../../../../images/help/en/layout-use.png" width="80%" alt="layout-guide" class="help-img">
 

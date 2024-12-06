@@ -1,10 +1,10 @@
 # JS Function Development
 
-In the Blue Whale Operations and Maintenance Development Platform (LessCode), users can write their own functions and use them within pages. By using functions, the following requirements can be met:
+In the Blueking LessCode (LessCode), users can write their own functions and use them within pages. By using functions, the following requirements can be met:
 
 - **Writing Blank Functions**: Write code using JavaScript syntax, make AJAX requests, retrieve interface data, and then handle functional logic.
 - **Writing Remote Functions**: Make AJAX requests through backend forwarding, with the ability to carry more data through configuration.
-- **Functions with Component Events**: Execute corresponding functions when component events are triggered to complete related application features.
+- **Functions with Component Events**: Execute corresponding functions when component events are triggered to complete related app features.
 - **Functions with Page Lifecycle**: Configure functions used in the lifecycle on the page function panel to handle relevant functional logic within the functions.
 - **Functions with Directives**: In the component's directive configuration page, configure the directive variable name of the attribute, then use or modify the attribute value within the function.
 - **Binding Component Data Sources with Functions**: Set initial data by binding remote data sources in some component attributes.
@@ -14,19 +14,19 @@ In the Blue Whale Operations and Maintenance Development Platform (LessCode), us
 
 ### JS Function Development Page Path:
 
-Application Development (Select Application) -> JS Function Development
+App Development (Select App) -> JS Function Development
 
 ### Using the JS Function Development Page:
 
-- Search and select function categories. Function categories are mainly used to classify functions within an application for easy searching and management.
+- Search and select function categories. Function categories are mainly used to classify functions within an app for easy searching and management.
 - Functions can be sorted by dragging and dropping function categories for better management.
-- Add, search, modify, delete, and copy functions to manage all functions under the current application.
+- Add, search, modify, delete, and copy functions to manage all functions under the current app.
 
 ## Function Management Popup
 
 ### Opening the Function Management Popup:
 
-Application Page -> Canvas Editing -> Function Management Popup
+App Page -> Canvas Editing -> Function Management Popup
 
 ### Using the Function Management Popup:
 
@@ -35,7 +35,7 @@ Application Page -> Canvas Editing -> Function Management Popup
 
 ## Introduction to Function Types
 
-The Blue Whale Operations and Maintenance Development Platform (LessCode) currently provides two types of functions: blank functions and remote functions for application development. More function types will be added in the future, so stay tuned.
+The Blueking LessCode (LessCode) currently provides two types of functions: blank functions and remote functions for app development. More function types will be added in the future, so stay tuned.
 
 ### Blank Functions:
 
@@ -43,7 +43,7 @@ The Blue Whale Operations and Maintenance Development Platform (LessCode) curren
 - **Functions for Page Component Attributes**: The function must return a value, which will be assigned to the component attribute.
 - **Functions for Component or Page Events**: The function will be executed when the event is triggered.
 - Use "lesscode.variableIdentifier" to invoke the auto-complete feature. The corresponding variable must be selected through the editor's auto-complete feature to get or modify the variable value.
-- Use "lesscode.functionName" to invoke the auto-complete feature. The corresponding function must be selected through the editor's auto-complete feature to call other functions within the application.
+- Use "lesscode.functionName" to invoke the auto-complete feature. The corresponding function must be selected through the editor's auto-complete feature to call other functions within the app.
 - Example of calling other remote functions: `lesscode['${func:getApiData}']().then((res) => do(res))`
 - Example code when the function is used for component attributes:
 
@@ -64,9 +64,9 @@ return Promise.all([
 - **Functions for Page Component Attributes**: The function must return a value, which will be assigned to the component attribute.
 - **Functions for Component or Page Events**: An AJAX request is made when the event is triggered, executing the callback function.
 - Use "lesscode.variableIdentifier" to invoke the auto-complete feature. The corresponding variable must be selected through the editor's auto-complete feature to get or modify the variable value.
-- Use "lesscode.functionName" to invoke the auto-complete feature. The corresponding function must be selected through the editor's auto-complete feature to call other functions within the application.
+- Use "lesscode.functionName" to invoke the auto-complete feature. The corresponding function must be selected through the editor's auto-complete feature to call other functions within the app.
 - Example when API returns data and parameter `res` is used: `return res.data`
-- Remote function API requests can select application data table operation API, Blue Whale Gateway API, and self-built API. Note that if requesting the `Blue Whale Gateway API`, you need to `apply for gateway API permissions` and `select Blue Whale application authentication`.
+- Remote function API requests can select app data table operation API, Blueking Gateway API, and self-built API. Note that if requesting the `Blueking Gateway API`, you need to `apply for gateway API permissions` and `select Blueking app authentication`.
 
 ## Calling Functions within Functions
 

@@ -6,13 +6,13 @@ Page templates can either be a complete page or any fragment of a page. Users ca
 
 ### 1. Add from the Template Market:
 
-You can add suitable page templates to your application from the Template Market through the top navigation's Resource Market --> Template Market entry, the template list when creating a page, or the template market in the canvas area.
+You can add suitable page templates to your app from the Template Market through the top navigation's Resource Market --> Template Market entry, the template list when creating a page, or the template market in the canvas area.
 
 <img src="../../../../images/help/en/pagetemplate-from1.png" alt="grid" width="80%" class="help-img">
 <img src="../../../../images/help/en/pagetemplate-from2.png" alt="grid" width="80%" class="help-img">  
 <img src="../../../../images/help/en/pagetemplate-from3.png" alt="grid" width="80%" class="help-img">
 
-### 2. Save from the Canvas of the Current Application
+### 2. Save from the Canvas of the Current App
 
 During the page layout process, you can also save page content as a page template to achieve quick reuse of partial content.
 
@@ -30,7 +30,7 @@ During the page layout process, you can also save page content as a page templat
 
 ### 3. Import and Export via Template JSON:
 
-You can export a template from one application as JSON and then import it into another application to achieve cross-application template sharing.
+You can export a template from one app as JSON and then import it into another app to achieve cross-app template sharing.
 
 <img src="../../../../images/help/en/pagetemplate-import.png" width="80%">
 
@@ -51,6 +51,6 @@ When editing a page, drag an existing page template onto the canvas to make the 
 
 ## Page Template Management
 
-In the page template management module, users can perform custom classification management of templates under the application, as well as edit, delete, and export templates.
+In the page template management module, users can perform custom classification management of templates under the app, as well as edit, delete, and export templates.
 
 <img src="../../../../images/help/en/media/17168668712027/17168725738364.jpg" width="80%">

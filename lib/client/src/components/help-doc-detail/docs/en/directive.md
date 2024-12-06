@@ -2,9 +2,9 @@
 
 ---
 
-In the Blue Whale Operations Development Platform (LessCode), you can utilize [Vue directives](https://cn.vuejs.org/v2/api/#%E6%8C%87%E4%BB%A4) to enable more complex application functionalities. Directives allow you to achieve the following:
+In the Blueking LessCode (LessCode), you can utilize [Vue directives](https://cn.vuejs.org/v2/api/#%E6%8C%87%E4%BB%A4) to enable more complex app functionalities. Directives allow you to achieve the following:
 
-- By configuring property-related directives, you can dynamically modify the values of components and access these values in functions for further application development.
+- By configuring property-related directives, you can dynamically modify the values of components and access these values in functions for further app development.
 - By configuring directives in the directive panel, you can render multiple elements, control element visibility, and create two-way data bindings on form controls or components.
 
 ### Configuring Property-Related Directives
@@ -76,7 +76,7 @@ Currently, `v-if`, `v-show`, `v-for`, `v-model`, and `v-html` are supported.
 > :::info
 
 - Drag a `Card` component onto the canvas, and drag a `Paragraph` and `Image` component inside it.
-- Select the `Card` component, switch to the "Directives" tab, and bind the `v-for` directive to a variable `cardList`. (See Image 1 below) Note: The application should have a variable `cardList`, which is an array of 4 elements with `img` and `name` properties.
+- Select the `Card` component, switch to the "Directives" tab, and bind the `v-for` directive to a variable `cardList`. (See Image 1 below) Note: The app should have a variable `cardList`, which is an array of 4 elements with `img` and `name` properties.
 - The `card06fb0729Item` displayed above the `v-for` directive can assign values to the directives of the current component and its children, except for the current component's `v-if` and `v-show`.
 - Select the `Image` component, set the `src` property to the expression `card06fb0729Item.img`. (See Image 2 below) Note: The `card06fb0729Item` of `cardList` should have an `img` property.
 - Select the `Paragraph` component, set the `text content` property to the expression `card06fb0729Item.name`. (See Image 3 below) Note: The `card06fb0729Item` of `cardList` should have a `name` property.
