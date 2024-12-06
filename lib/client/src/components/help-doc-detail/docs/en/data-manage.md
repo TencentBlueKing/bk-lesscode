@@ -6,7 +6,7 @@ In the LessCode platform, users can create data tables and view data from differ
 
 ### Create a New Table
 
-Navigate to the "App Development" -> "Data Table Management" page and click the "New Table" button to enter the new table page.
+Navigate to the "APP Development" -> "Data Table Management" page and click the "New Table" button to enter the new table page.
 
 <img src="../../../../images/help/en/data-manage-01.png" alt="grid" width="80%" class="help-img">
 
@@ -30,7 +30,7 @@ Access the data management page via the `Data Management` button or the `Data Ma
 
 <img src="../../../../images/help/en/data-manage-05.png" alt="grid" width="80%" class="help-img">
 
-#### The data management page allows switching between `Preview`, `Staging`, and `Production` environments. Note that `Staging` and `Production` environments will have data only after app deployment. After selecting a table from the list, the right side of the page displays three tabs: `Data`, `Table Structure`, and `API`, showing table data, structure, and APIs, respectively.
+#### The data management page allows switching between `Preview`, `Staging`, and `Production` environments. Note that `Staging` and `Production` environments will have data only after APP deployment. After selecting a table from the list, the right side of the page displays three tabs: `Data`, `Table Structure`, and `API`, showing table data, structure, and APIs, respectively.
 
 Under the Data tab, you can perform operations such as `Import`, `Export`, `Add`, and `Edit`.
 

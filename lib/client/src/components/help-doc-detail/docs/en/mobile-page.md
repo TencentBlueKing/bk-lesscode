@@ -1,6 +1,6 @@
 # Mobile Page
 
-The BlueKing LessCode (LessCode) is a visual drag-and-drop integrated development platform that helps developers simplify and speed up the app development process. This documentation will provide a detailed introduction to the related content of LessCode mobile development, including component libraries, layout management, routing rules, and the use of responsive units.
+The BlueKing LessCode (LessCode) is a visual drag-and-drop integrated development platform that helps developers simplify and speed up the APP development process. This documentation will provide a detailed introduction to the related content of LessCode mobile development, including component libraries, layout management, routing rules, and the use of responsive units.
 
 <img src="../../../../images/help/en/mobile-1.png" width="80%" alt="layout-guide" class="help-img">
 
@@ -8,7 +8,7 @@ The BlueKing LessCode (LessCode) is a visual drag-and-drop integrated developmen
 
 ### Vant UI Component Library
 
-In mobile development, LessCode uses the [Vant UI](https://youzan.github.io/vant/#/en-US/) component library. Vant UI is specifically designed for mobile, offering a rich set of components and features to meet various mobile development needs. Additionally, LessCode encapsulates a series of advanced components, such as the **Lottery** component and the **H5 Container** component, to help users more efficiently build apps and meet business requirements. LessCode mobile provides capabilities including:
+In mobile development, LessCode uses the [Vant UI](https://youzan.github.io/vant/#/en-US/) component library. Vant UI is specifically designed for mobile, offering a rich set of components and features to meet various mobile development needs. Additionally, LessCode encapsulates a series of advanced components, such as the **Lottery** component and the **H5 Container** component, to help users more efficiently build APPs and meet business requirements. LessCode mobile provides capabilities including:
 
 - **Responsive Layout**: Supports automatic adaptation to different screen sizes.
 - **Mobile-specific Features**: Provides many features suitable for mobile use, such as gesture operations and real-time mobile rendering simulation.
@@ -20,15 +20,15 @@ In mobile development, LessCode uses the [Vant UI](https://youzan.github.io/vant
 LessCode mobile supports the following layout types:
 
 1. **Blank Layout**: No fixed layout, allowing developers to freely drag and place components.
-2. **Sidebar Layout**: Includes a sidebar, suitable for apps needing side navigation.
-3. **Bottom Navigation Layout**: Includes a bottom navigation bar, suitable for apps with multi-page switching.
+2. **Sidebar Layout**: Includes a sidebar, suitable for APPs needing side navigation.
+3. **Bottom Navigation Layout**: Includes a bottom navigation bar, suitable for APPs with multi-page switching.
 
 <img src="../../../../images/help/en/mobile-2.png" width="80%" alt="layout-guide" class="help-img">
 
 ### Adding and Managing Layouts
 
-- **Add Layout When Creating a New App**: When creating a new app, you can choose the desired layout type.
-- **Add Layout in Existing Apps**: In existing apps, you can add and manage layouts through "Resource Management" => "Navigation Layout Management".
+- **Add Layout When Creating a New APP**: When creating a new APP, you can choose the desired layout type.
+- **Add Layout in Existing APPs**: In existing APPs, you can add and manage layouts through "Resource Management" => "Navigation Layout Management".
 
 <img src="../../../../images/help/en/mobile-3.png" width="80%" alt="layout-guide" class="help-img">
 
@@ -60,7 +60,7 @@ Due to the diverse screen sizes on mobile devices, it is suggested to use `rpx` 
 
 ## Advanced Component Introduction
 
-To further enhance developer efficiency, LessCode provides a series of advanced components. These components are highly reusable in common business scenarios, enabling developers to quickly build high-quality apps.
+To further enhance developer efficiency, LessCode provides a series of advanced components. These components are highly reusable in common business scenarios, enabling developers to quickly build high-quality APPs.
 
 ### A Powerful Tool for Rapid H5 Construction: LessCode-H5 Container Component
 
@@ -112,14 +112,14 @@ Additionally, attributes related to animation effects like lottery duration and 
 
 ## Summary
 
-The LessCode mobile development platform provides developers with powerful and flexible tools, making mobile app development more efficient and convenient. This documentation has covered several key aspects:
+The LessCode mobile development platform provides developers with powerful and flexible tools, making mobile APP development more efficient and convenient. This documentation has covered several key aspects:
 
 1. **Component Library**: LessCode uses the Vant UI component library and offers a range of advanced components, such as H5 containers and lottery components, greatly enhancing development efficiency.
-2. **Layout Management**: Supports multiple layout types, including blank layout, sidebar layout, and bottom navigation layout, to meet the needs of different app scenarios.
+2. **Layout Management**: Supports multiple layout types, including blank layout, sidebar layout, and bottom navigation layout, to meet the needs of different APP scenarios.
 3. **Routing Management**: Uses the `/mobile` prefix to distinguish mobile routes, facilitating management and maintenance.
 4. **Responsive Units**: Recommends using the `rpx` unit to ensure consistent performance across different screen sizes.
 5. **Advanced Components**: Provides detailed usage of the H5 container and lottery components, enabling developers to quickly build complex functional pages.
 
-By leveraging these features and tools, developers can easily create feature-rich and excellent mobile apps on the LessCode platform. As you gain a deeper understanding and proficiency with the platform, you'll be able to efficiently meet various mobile development needs and create impressive apps.
+By leveraging these features and tools, developers can easily create feature-rich and excellent mobile APPs on the LessCode platform. As you gain a deeper understanding and proficiency with the platform, you'll be able to efficiently meet various mobile development needs and create impressive APPs.
 
-We encourage developers to fully explore all the features of the LessCode platform and continuously optimize and improve the development process based on actual project needs. If you encounter any issues or have any suggestions during use, please feel free to contact our support team. We wish you a pleasant development experience on the LessCode platform and look forward to seeing more outstanding mobile apps!
+We encourage developers to fully explore all the features of the LessCode platform and continuously optimize and improve the development process based on actual project needs. If you encounter any issues or have any suggestions during use, please feel free to contact our support team. We wish you a pleasant development experience on the LessCode platform and look forward to seeing more outstanding mobile APPs!

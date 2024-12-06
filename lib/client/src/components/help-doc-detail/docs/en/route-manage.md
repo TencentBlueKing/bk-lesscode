@@ -1,6 +1,6 @@
 # Guide to Using Route Management
 
-When a new page is created, a route for the page is typically created simultaneously. You can also maintain the entire app's routes through the "Route Management" feature. Routes are designed with two levels: the first level is the "Navigation Layout" route, and the second level is the page route.
+When a new page is created, a route for the page is typically created simultaneously. You can also maintain the entire APP's routes through the "Route Management" feature. Routes are designed with two levels: the first level is the "Navigation Layout" route, and the second level is the page route.
 
 ## Pages and Routes
 
@@ -18,9 +18,9 @@ When a new page is created, a route for the page is typically created simultaneo
 <img src="../../../../images/help/en/routemanage-modifyroute2.png" width="350px"><br>
 (2) Edit Page - Right-side "Page Configuration" panel
 
-## Managing App Routes
+## Managing APP Routes
 
-In the "**Route Management**" feature, you can manage the entire app's routes. The left side of the page lists route links, and the corresponding right side allows binding pages or redirecting routes. App routes are a two-level tree structure, with the first level being the "Navigation Layout" route and the second level being the page route.
+In the "**Route Management**" feature, you can manage the entire APP's routes. The left side of the page lists route links, and the corresponding right side allows binding pages or redirecting routes. APP routes are a two-level tree structure, with the first level being the "Navigation Layout" route and the second level being the page route.
 
 <img src="../../../../images/help/en/routemanage-entry.png" width="80%">
 

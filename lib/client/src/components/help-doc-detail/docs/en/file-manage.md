@@ -1,6 +1,6 @@
 # File Management Usage Guide
 
-File management is used to upload file resources needed in the app, such as images and documents. Once uploaded, you will receive an access link that can be used for displaying or downloading on the page.
+File management is used to upload file resources needed in the APP, such as images and documents. Once uploaded, you will receive an access link that can be used for displaying or downloading on the page.
 
 ## File Upload
 

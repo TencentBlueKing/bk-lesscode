@@ -1,6 +1,6 @@
 # Form Container and Data Management Container
 
-Some apps often require using forms to collect and manage data. For these scenarios, the platform includes two types of form editor containers: Form Container and Data Management Container. These containers simplify the complexity of form control configuration while enhancing functionality, such as default value linkage between form controls, dynamic setting of read-only, required, and hidden attributes, and data export.
+Some APPs often require using forms to collect and manage data. For these scenarios, the platform includes two types of form editor containers: Form Container and Data Management Container. These containers simplify the complexity of form control configuration while enhancing functionality, such as default value linkage between form controls, dynamic setting of read-only, required, and hidden attributes, and data export.
 
 You can find the Form Container and Data Management Container controls in the left menu bar of the canvas editing page. Simply drag the control elements onto the canvas to create the corresponding container:
 
@@ -10,7 +10,7 @@ You can find the Form Container and Data Management Container controls in the le
 
 ### Configure Form Properties
 
-Once a Form Container is created and saved, by default, the app automatically creates a database table that binds to the container. Each form item in the Form Container corresponds to a field in this data table. Additionally, Form Containers support referencing and reusing tables created by other form containers within the apps. When referencing, you can clone form fields from other tables into the current container, creating a new data table upon saving. Reusing binds the data table to the current container, allowing multiple form containers to correspond to a single table.
+Once a Form Container is created and saved, by default, the APP automatically creates a database table that binds to the container. Each form item in the Form Container corresponds to a field in this data table. Additionally, Form Containers support referencing and reusing tables created by other form containers within the APPs. When referencing, you can clone form fields from other tables into the current container, creating a new data table upon saving. Reusing binds the data table to the current container, allowing multiple form containers to correspond to a single table.
 
 <img src="../../../../images/help/en/form-data-container-03.png" alt="grid" class="help-img">
 

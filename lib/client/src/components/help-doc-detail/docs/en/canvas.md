@@ -14,7 +14,7 @@ The BlueKing LessCode (LessCode) offers three types of layouts: row layout, mult
 
 ### Basic Components
 
-According to different app types and page types, the BlueKing LessCode (LessCode) provides different basic components:
+According to different APP types and page types, the BlueKing LessCode (LessCode) provides different basic components:
 
 - Vue2 PC: BlueKing MagicBox component library, Element component library
 - Vue3 PC: BlueKing MagicBox component library
@@ -26,8 +26,8 @@ According to different app types and page types, the BlueKing LessCode (LessCode
 Sources include:
 
 - Official built-in custom components
-- Custom components from other publicly available apps
-- Custom components uploaded by the current app
+- Custom components from other publicly available APPs
+- Custom components uploaded by the current APP
 
 <img src="../../../../images/help/en/canvas-comp.png" alt="grid" width="350px" class="help-img">
 
