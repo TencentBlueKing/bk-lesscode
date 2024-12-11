@@ -8,6 +8,7 @@
             :loading="loading"
             :messages="messages"
             :prompts="prompts"
+            :enable-popup="false"
             @clear="handleClearMessage"
             @close="handleClose"
             @send="handleSend"
