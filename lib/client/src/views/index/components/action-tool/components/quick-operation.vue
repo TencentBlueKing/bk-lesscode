@@ -148,6 +148,10 @@
              * @param { Event } Event
              */
             handleParseOperation (event) {
+                // 组件属性json编辑弹框
+                if (document.querySelector('.json-setting-dialog .main-container')) {
+                    return
+                }
                 // 有 dialog 弹框遮罩不响应快捷键操作
                 const dialogMaskEl = document.querySelector('[data-bkpop-mask]')
                 if (dialogMaskEl && dialogMaskEl.classList.contains('show-active')) {

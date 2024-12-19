@@ -14,7 +14,8 @@
                                 {{link.name}}
                             </li>
                         </ul>
-                        <div class="extra">
+                        <div class="extra filter-container">
+                            <frameworkTypeSelect :type.sync="template.project.framework" @filter="handleFilter('project')" />
                             <bk-input
                                 style="width: 400px"
                                 :placeholder="$t('请输入关键词')"
@@ -22,6 +23,7 @@
                                 :right-icon="'bk-icon icon-search'"
                                 v-model="template.project.keyword"
                                 @clear="handleProjectSearchClear"
+                                @right-icon-click="handleFilter('project')"
                                 @enter="handleFilter('project')">
                             </bk-input>
                         </div>
@@ -89,7 +91,8 @@
                                 {{link.name}}
                             </li>
                         </ul>
-                        <div class="extra">
+                        <div class="extra filter-container">
+                            <frameworkTypeSelect :type.sync="template.page.framework" @filter="handleFilter('page')" />
                             <bk-input
                                 style="width: 400px"
                                 :placeholder="$t('请输入关键词')"
@@ -97,6 +100,7 @@
                                 :right-icon="'bk-icon icon-search'"
                                 v-model="template.page.keyword"
                                 @clear="handlePageSearchClear"
+                                @right-icon-click="handleFilter('page')"
                                 @enter="handleFilter('page')">
                             </bk-input>
                         </div>
@@ -224,6 +228,7 @@
     import {
         isMatchFramework
     } from 'shared/util'
+    import frameworkTypeSelect from '@/components/template/framework-type-select.vue'
 
     const PROJECT_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
     const PAGE_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PAGE_TEMPLATE_TYPE)
@@ -234,7 +239,8 @@
             CreateEmptyProjectDialog,
             DownloadDialog,
             PagePreviewThumb,
-            frameworkTag
+            frameworkTag,
+            frameworkTypeSelect
         },
         data () {
             return {
@@ -243,13 +249,15 @@
                         list: [],
                         filter: '',
                         links: [...PROJECT_TYPE_LIST],
-                        keyword: ''
+                        keyword: '',
+                        framework: 'all'
                     },
                     page: {
                         list: [],
                         filter: '',
                         keyword: '',
-                        links: [...PAGE_TYPE_LIST]
+                        links: [...PAGE_TYPE_LIST],
+                        framework: 'all'
                     }
                 },
                 projectList: [],
@@ -359,7 +367,14 @@
                         } else {
                             this.projectEmptyType = 'noData'
                         }
-                        
+
+                        if (this.template.project.framework !== 'all') {
+                            this.template.project.list = this.template.project.list.filter(item => {
+                                const framework = item.framework || 'vue2'
+                                return framework === this.template.project.framework
+                            })
+                        }
+
                         if (this.template.project.keyword !== '') {
                             this.projectEmptyType = 'search'
                             this.template.project.list = this.template.project.list.filter(item => {
@@ -379,6 +394,14 @@
                         } else {
                             this.pageEmptyType = 'noData'
                         }
+
+                        if (this.template.page.framework !== 'all') {
+                            this.template.page.list = this.template.page.list.filter(item => {
+                                const framework = item.framework || 'vue2'
+                                return framework === this.template.page.framework
+                            })
+                        }
+
                         if (this.template.page.keyword !== '') {
                             this.pageEmptyType = 'search'
                             this.template.page.list = this.template.page.list.filter(item => {
@@ -554,6 +577,10 @@
 <style lang="postcss" scoped>
     @import "@/css/mixins/ellipsis";
     @import "@/css/mixins/scroller";
+
+    .filter-container {
+        display: flex;
+    }
 
     .filter-links {
         display: flex;
