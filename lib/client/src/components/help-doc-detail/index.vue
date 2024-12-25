@@ -48,7 +48,7 @@
                 </div>
             </aside>
             <div class="main-content">
-                <div v-if="isExistDoc" :class="['container', detailBodyCls]">
+                <div v-if="isExistDoc" :class="['doc-container', detailBodyCls]">
                     <components :is="selectDoc" />
                 </div>
                 <bk-exception v-else type="empty" scene="part" ext-cls="excep-cls">
@@ -182,9 +182,9 @@
     })
 </script>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
     @import './index.css';
-    .container{
+    .doc-container{
         width: 1000px;
         margin: 0 auto;
     }
