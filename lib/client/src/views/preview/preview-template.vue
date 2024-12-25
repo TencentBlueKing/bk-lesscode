@@ -13,6 +13,7 @@
     import Vue from 'vue'
     import {
         init,
+        addGlobalProperty,
         render,
         registerComponent,
         vue3Resource,
@@ -23,6 +24,7 @@
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/reset.css'
   
+    import pureAxios from '@/api/pureAxios.js'
     import mobileHeader from '@/components/render/mobile/common/mobile-header/mobile-header'
     import { i18nConfig } from '@/locales/i18n.js'
     import { bundless } from '@blueking/bundless'
@@ -229,12 +231,13 @@
                     const store = createStore(storeConfig, Vuex)
                     // render
                     setTimeout(() => {
+                        addGlobalProperty('$http', pureAxios)
                         render({
                             component: res,
                             selector: '#preview-template',
                             i18nConfig,
                             store
-                        })
+                        })                   
                     }, 50)
                 } catch (err) {
                     this.$bkMessage({
