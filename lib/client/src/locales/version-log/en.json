@@ -479,5 +479,17 @@
   "画布: vue2组件升级到最新版本": "Canvas: Upgrade Vue2 components to the latest version",
   "画布: echarts图表提供简易配置": "Canvas: Provide simple configuration for ECharts charts",
   "平台: 源码工程里面的vue升级到2.7.x版本": "Platform: Upgrade Vue in the source project to version 2.7.x",
-  "画布: 兼容当组件的数据中，含有连字符跟驼峰格式的的相同属性": "Canvas: Compatible with components where the data contains the same properties in both hyphenated and camel case formats"
+  "画布: 兼容当组件的数据中，含有连字符跟驼峰格式的的相同属性": "Canvas: Compatible with components where the data contains the same properties in both hyphenated and camel case formats",
+  "资源市场: 内置vue3页面模板": "Resource Market: Built-in Vue3 page templates",
+  "资源市场: 模板支持vue2/vue3便捷过滤": "Resource Market: Templates support convenient filtering for Vue2/Vue3",
+  "画布: 小鲸组件优化": "Canvas: Optimization of Little Whale components",
+  "画布: vue3组件支持v-model指令设置": "Canvas: Vue3 components support setting v-model directive",
+  "画布: 增强移动端画布容器功能": "Canvas: Enhanced functionality of canvas container for mobile",
+  "画布: 流程管理容器交互优化": "Canvas: Interaction optimization for process management container",
+  "源码: 优化源码中的公共样式": "Source Code: Optimize common styles in the source code",
+  "文档: 增加英文文档": "Documentation: Add English documentation",
+  "数据源: 数据表API增加函数示例": "Data Source: Add function examples to the data table API",
+  "画布：修复vue3导航设置为二级菜单时预览页面异常问题": "Canvas: Fix the issue of abnormal preview page when setting Vue3 navigation as a secondary menu",
+  "画布：修复sideslider组件偶现zIndex异常问题": "Canvas: Fix occasional zIndex issue with sideslider component",
+  "数据源：修复导出数据时date格式数据异常问题": "Data Source: Fix the issue of abnormal date format data when exporting data"
 }
