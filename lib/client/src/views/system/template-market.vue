@@ -484,6 +484,7 @@
                     // 解析出模板targetData绑定的变量和函数
                     const { varList = [], funcList = [] } = parseFuncAndVar(templateNode, variableList, funcGroups)
                     Object.assign(data, { varList, funcList })
+                    data['framework'] = fromTemplate.framework
 
                     const res = await this.$store.dispatch('pageTemplate/apply', data)
                     if (res) {
