@@ -71,7 +71,8 @@
             const handleEnd = () => {
                 isLoading.value = false
                 
-                if (currentMessage.content?.startsWith('SELECT')) {
+                if (currentMessage.content?.includes('SELECT')) {
+                    currentMessage.content = currentMessage.content?.replace('```sql', '')?.replace('```', '')
                     currentMessage.status = 'success'
                     props.generateSql(currentMessage.content)
                 } else {
