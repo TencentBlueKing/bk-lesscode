@@ -2,7 +2,7 @@
     <section>
         <AIBlueking
             ref="aiRef"
-            :placeholder="$t('1. 您可以键入“/”查看更多Prompt  2. 您可以输入“{”唤起组件ID列表等进行选择')"
+            :placeholder="$t('1. 键入“/”查看更多Prompt 2. 输入“{”唤起组件ID、数据表、函数、变量等列表进行选择')"
             :enable-cursor-popup="false"
             :is-show="isShowAi"
             :loading="loading"
@@ -37,6 +37,7 @@
     import useDataSource from './hooks/use-data-source'
     import useMethod from './hooks/use-method'
     import usePage from './hooks/use-page'
+    import useIcon from './hooks/use-icon'
 
     import PageInfo from './children/page-info.vue'
 
@@ -234,6 +235,11 @@
                 handleUseTemplate,
                 handleGetTemplates
             } = usePage(cmdMessage)
+            // 图标
+            const {
+                handleInsertIcon,
+                handleGetIcons
+            } = useIcon(cmdMessage)
             const cmd = {
                 component: {
                     setProp: handleSetProp,
@@ -260,6 +266,10 @@
                 page: {
                     useTemplate: handleUseTemplate,
                     getTemplates: handleGetTemplates
+                },
+                icon: {
+                    insert: handleInsertIcon,
+                    get: handleGetIcons
                 },
                 done: handleDone,
                 clear: handleClear
@@ -330,3 +340,8 @@
         }
     }
 </script>
+<style>
+.ai-modal {
+    z-index: 99999 !important;
+}
+</style>

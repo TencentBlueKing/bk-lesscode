@@ -205,7 +205,8 @@
 
             const handleGenerateByAi = () => {
                 loading.value = true
-                aiHelper.chat(prompt.value)
+                const data = `当前组件ID: ${LC.getActiveNode().componentId}\n${prompt.value}`
+                aiHelper.chat(data)
             }
 
             const handleChange = () => {
