@@ -38,7 +38,7 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('所属分类')" :min-width="90" show-overflow-tooltip>
-                    {{ groupName }}
+                    {{ $t(groupName) }}
                 </bk-table-column>
                 <bk-table-column :label="$t('简介')" prop="funcSummary" :min-width="110" show-overflow-tooltip>
                     <template slot-scope="props">
@@ -66,7 +66,7 @@
                         <span class="table-btn" @click="handleEditFunction(props.row)">{{ $t('编辑') }}</span>
                         <span class="table-btn" @click="handleCopyFunction(props.row)">{{ $t('复制') }}</span>
                         <span @click="handleDeleteFunction(props.row)"
-                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400 }"
+                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400, allowHTML: false }"
                             :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
                         >{{ $t('删除') }}</span>
                     </template>

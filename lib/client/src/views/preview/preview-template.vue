@@ -13,6 +13,7 @@
     import Vue from 'vue'
     import {
         init,
+        addGlobalProperty,
         render,
         registerComponent,
         vue3Resource,
@@ -23,6 +24,7 @@
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/reset.css'
   
+    import pureAxios from '@/api/pureAxios.js'
     import mobileHeader from '@/components/render/mobile/common/mobile-header/mobile-header'
     import { i18nConfig } from '@/locales/i18n.js'
     import { bundless } from '@blueking/bundless'
@@ -34,7 +36,17 @@
     import widgetBkTable from '@/components/render/pc/widget/table/table'
     import widgetElTable from '@/components/patch/widget-el-table/index.vue'
     import widgetTableColumn from '@/components/render/pc/widget/table/table-column'
+    import BkLuckyCanvas from '@/components/render/pc/widget/bk-lucky-canvas'
+    import bkCharts from '@/components/render/pc/widget/bk-charts/bk-charts'
+    import chart from '@/components/render/pc/widget/chart/chart'
     import '@vant/touch-emulator' // PC端模拟移动端事件 用于预览
+
+    import { register } from 'swiper/element/bundle'
+    import SwiperAnimation from 'swiper-element-animation'
+    import 'animate.css'
+
+    window.SwiperAnimation = SwiperAnimation
+    window.swiperRegister = register
 
     window.previewCustomCompontensPlugin = []
     window.registerPreview = function (callback) {
@@ -85,11 +97,11 @@
                 height: 812,
                 headerHeight: 30,
                 mobileWidth: '375',
-                isCustomComponentLoading: true,
+                // isCustomComponentLoading: true,
                 detail: {},
                 pageType: 'preview',
                 comp: 'LoadingComponent',
-                isLoading: false,
+                isLoading: true,
                 targetData: [],
                 minHeight: 0,
                 renderType: 'PC'
@@ -115,40 +127,51 @@
                 return this.$route.query.type || ''
             },
             framework () {
-                return this.$route.query.framework || 'vue2'
+                return this.$route.query?.framework && this.$route.query?.framework !== 'null' ? this.$route.query?.framework : 'vue2'
             }
         },
-        created () {
-            // init
-            init(this.framework)
-            console.log('preview-template')
-            const script = document.createElement('script')
-            script.src = `/${parseInt(this.projectId)}/component/preview-register.js?v=${this.versionId}`
-            script.onload = () => {
-                window.previewCustomCompontensPlugin.forEach(callback => {
-                    const [config, source] = callback(this.framework === 'vue3' ? vue3Resource : Vue)
-                    new Promise((resolve) => source(resolve)).then((component) => {
-                        registerComponent(config.type, component)
-                    })
-                })
-                this.isCustomComponentLoading = false
-            }
-            document.body.appendChild(script)
-            // 注入全局组件
-            registerComponent('render-html', renderHtml)
-            registerComponent('widget-bk-table', widgetBkTable)
-            registerComponent('widget-el-table', widgetElTable)
-            registerComponent('widget-table-column', widgetTableColumn)
-        },
-        async mounted () {
-            this.minHeight = window.innerHeight
-            window.addEventListener('resize', this.resizeHandler)
+        async created () {
+            await this.loadResources()
             await this.loadFile()
+        },
+        mounted () {
+            this.resizeHandler()
+            window.addEventListener('resize', this.resizeHandler)
         },
         destroyed () {
             window.removeEventListener('resize', this.resizeHandler)
         },
         methods: {
+            async loadResources () {
+                return new Promise((resolve, reject) => {
+                    init(this.framework)
+                    const script = document.createElement('script')
+                    script.src = `/${parseInt(this.projectId)}/component/preview-register.js?framework=${this.framework}&v=${this.versionId}`
+                    script.onload = () => {
+                        window.previewCustomCompontensPlugin.forEach(callback => {
+                            const [config, source] = callback(this.framework === 'vue3' ? vue3Resource : Vue)
+                            new Promise((resolve) => source(resolve)).then((component) => {
+                                registerComponent(config.type, component)
+                            })
+                        })
+                        resolve()
+                        // this.isCustomComponentLoading = false
+                    }
+                    script.onerror = (err) => {
+                        reject(err.message || err || window.i18n.t('获取自定义组件失败'))
+                    }
+                    document.body.appendChild(script)
+
+                    // 注入全局组件
+                    registerComponent('render-html', renderHtml)
+                    registerComponent('widget-bk-table', widgetBkTable)
+                    registerComponent('widget-el-table', widgetElTable)
+                    registerComponent('widget-table-column', widgetTableColumn)
+                    registerComponent('bk-lucky-canvas', BkLuckyCanvas)
+                    registerComponent('bk-charts', bkCharts)
+                    registerComponent('chart', chart)
+                })
+            },
             async loadFile () {
                 this.isLoading = true
 
@@ -189,13 +212,16 @@
                             layoutType: this.detail.type
                         })
                     } else {
+                        const content = JSON.parse(this.detail.content || {})
+                        const isHasVarFunc = content.vars || content.functions
                         code = await this.$store.dispatch('vueCode/getPageCode', {
                             targetData,
                             projectId: projectId,
                             versionId: this.detail.versionId,
                             pageType: 'previewSingle',
                             fromPageCode: this.detail.fromPageCode,
-                            platform: this.detail?.templateType || this.detail?.layoutType
+                            platform: this.detail?.templateType || this.detail?.layoutType,
+                            ...(isHasVarFunc ? { varList: content.vars || [], funcList: content.functions || [] } : {})
                         })
                     }
                     this.renderType = this.detail?.templateType || this.detail?.layoutType
@@ -205,12 +231,13 @@
                     const store = createStore(storeConfig, Vuex)
                     // render
                     setTimeout(() => {
+                        addGlobalProperty('$http', pureAxios)
                         render({
                             component: res,
                             selector: '#preview-template',
                             i18nConfig,
                             store
-                        })
+                        })                   
                     }, 50)
                 } catch (err) {
                     this.$bkMessage({
@@ -220,11 +247,20 @@
                 }
             },
             resizeHandler () {
+                // 更新最小高度
                 this.minHeight = window.innerHeight
+
+                // 仅在移动端预览时，设置swiper-container的高度
+                if (this.renderType === 'MOBILE') {
+                    const swiperContainer = document.querySelector('swiper-container')
+                    if (swiperContainer) {
+                        swiperContainer.style.setProperty('height', `${this.mobileHeight}px`)
+                    }
+                }
             }
         },
         template: `<div :style="{ height: windowHeight + 'px' }" v-bkloading="{ isLoading }">
-            <div v-show="!isCustomComponentLoading" :style="{ \'min-height\': minHeight + \'px\' }">
+            <div :style="{ \'min-height\': minHeight + \'px\' }">
                 <div v-if="renderType === 'MOBILE'" class="area-wrapper">
                     <div class="simulator-wrapper" :style="{ width: mobileWidth + 'px', height: mobileHeight + 'px' }">
                         <div class="device-phone-frame">
@@ -255,7 +291,7 @@
         .simulator-preview {
             z-index: 0;
             position: absolute;
-            pointer-events: none;
+            pointer-events: auto;
             .mobile-content-wrapper {
                 height: 100%;
                 width: 100%;

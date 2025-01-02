@@ -24,7 +24,7 @@
                 if (this.projectId) {
                     return `${process.env.BK_AJAX_URL_PREFIX}/project/previewimg?id=${this.projectId}`
                 }
-                return `${process.env.BK_AJAX_URL_PREFIX}/page/previewimg?id=${this.pageId}`
+                return `${process.env.BK_AJAX_URL_PREFIX}/page/previewimg?pageId=${this.pageId}`
             }
         },
         mounted () {

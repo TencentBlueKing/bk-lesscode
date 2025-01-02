@@ -184,7 +184,7 @@
                 const cnName = pinyin(this.nodeData.name, {
                     style: pinyin.STYLE_NORMAL,
                     heteronym: false
-                }).join('_')
+                }).join('_').toLowerCase()
 
                 const formName = this.$t('{0}_表单', [this.nodeData.name])
                 const code = `${cnName}_${this.nodeData.id}_${uuid(4)}`

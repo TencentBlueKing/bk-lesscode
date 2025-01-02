@@ -114,7 +114,7 @@
                         </span>
 
                         <span @click.stop="showDeleteVariable(props.row)"
-                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400 }"
+                            v-bk-tooltips="{ content: getDeleteStatus(props.row), disabled: !getDeleteStatus(props.row), maxWidth: 400, allowHTML: false }"
                             :class="{ 'table-btn': true, disable: getDeleteStatus(props.row) }"
                             style="margin-left: 6px;"
                         >{{ $t('删除') }}</span>
@@ -445,7 +445,7 @@
             handleClear () {
                 this.$emit('on-change', {
                     code: '',
-                    renderValue: this.formData.renderValue
+                    renderValue: ''
                 })
             },
             showDeleteVariable (row) {
@@ -478,6 +478,7 @@
             },
 
             getUseInfoTips (useInfo) {
+                if (!Array.isArray(useInfo)) return []
                 const tips = [];
                 (useInfo || []).forEach((item) => {
                     const { pageCode, funcCode, type, useInfo, parentVariableId } = item

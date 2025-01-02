@@ -17,7 +17,7 @@
 <script>
     import {
         defineComponent
-    } from '@vue/composition-api'
+    } from 'vue'
     import EditResponseScheme from '@/components/api/edit-scheme/response'
     import useForm from './use-form'
 

@@ -11,7 +11,7 @@
 
 <script lang="ts">
     import dayjs from 'dayjs'
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent } from 'vue'
     import { execCopy } from '@/common/util'
     import { UPLOAD_STATUS, UploadFile, getFileUrl, formatSize } from './helper'
     import FileIcon from './file-icon.vue'

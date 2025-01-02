@@ -31,7 +31,6 @@
             ></form-group>
             <form-detail
                 :form.sync="form"
-                :variable-list="variableList"
                 :api-list="apiList"
                 :function-list="functionList"
                 :show-token="true"
@@ -45,7 +44,6 @@
                 v-bkloading="{ isLoading }"
                 :form.sync="form"
                 :function-list="functionList"
-                :variable-list="variableList"
                 class="monaco"
                 ref="monaco"
             ></form-monaco>

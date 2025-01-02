@@ -2,7 +2,7 @@
     <bk-dialog
         :title="$t('配置联动规则')"
         class="default-val-linkage-dialog"
-        width="560"
+        width="640"
         render-directive="if"
         header-position="left"
         :position="{ top: 100 }"

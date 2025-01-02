@@ -3,7 +3,8 @@
         v-bk-tooltips="{
         disabled: !tips,
         content: tips,
-        placement: 'bottom'
+        placement: 'bottom',
+        allowHTML: false
     }">
         <bk-button
             theme="primary"
@@ -284,7 +285,8 @@
                     data: {
                         layoutData: { id: this.pageLayout?.layoutId, content: JSON.stringify(templateData) },
                         projectId: this.projectId,
-                        versionId: this.versionId
+                        versionId: this.versionId,
+                        id: this.pageLayout?.layoutId
                     }
                 })
             },

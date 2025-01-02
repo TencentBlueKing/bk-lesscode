@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "basePath": "/",
     "info": {
-        "version": "1.1.9",
+        "version": "1.1.10",
         "title": "bk-lesscode",
         "description": "bk-lesscode 对外接口"
     },
@@ -21,7 +21,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -83,7 +83,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -145,7 +145,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -176,7 +176,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -207,7 +207,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -238,7 +238,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -300,7 +300,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -331,7 +331,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {
@@ -362,7 +362,7 @@
                     }
                 },
                 "x-bk-apigateway-resource": {
-                    "isPublic": true,
+                    "isPublic": false,
                     "allowApplyPermission": true,
                     "matchSubpath": false,
                     "backend": {

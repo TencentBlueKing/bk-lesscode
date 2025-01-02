@@ -54,14 +54,15 @@
                 <bk-table-column :label="$t('备注')" prop="summary" show-overflow-tooltip></bk-table-column>
                 <bk-table-column :label="$t('table_更新人')" prop="updateUser" show-overflow-tooltip></bk-table-column>
                 <bk-table-column :label="$t('table_更新时间')" prop="updateTime" width="160" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
-                <bk-table-column :label="$t('操作')" width="260">
+                <bk-table-column :label="$t('操作')" width="300">
                     <template slot-scope="props">
                         <bk-button class="mr10" theme="primary" text @click="goToDataDesign(props.row)">{{ $t('表结构设计') }}</bk-button>
                         <bk-button class="mr10" theme="primary" text @click="goToDataManage(props.row)">{{ $t('数据管理') }}</bk-button>
                         <span
                             v-bk-tooltips="{
                                 content: calcDisableInfo(props.row).tips,
-                                disabled: !calcDisableInfo(props.row).disabled
+                                disabled: !calcDisableInfo(props.row).disabled,
+                                allowHTML: false
                             }">
                             <bk-button
                                 class="mr10"
@@ -108,6 +109,9 @@
         StructJsonParser,
         StructSqlParser
     } from 'shared/data-source'
+    import {
+        encodeBase64
+    } from 'shared/util'
 
     export default {
         components: {
@@ -153,7 +157,7 @@
             },
             displayDataBaseInfos () {
                 return [
-                    { label: this.$t('数据库名称'), value: this.dataBaseInfo.dbName },
+                    { label: this.$t('数据库名'), value: this.dataBaseInfo.dbName },
                     { label: this.$t('域名'), value: this.dataBaseInfo.host },
                     { label: this.$t('端口'), value: this.dataBaseInfo.port },
                     { label: this.$t('用户名'), value: this.dataBaseInfo.username }
@@ -161,8 +165,11 @@
             }
         },
         watch: {
-            'dataBaseInfo.id' () {
-                this.getTables()
+            'dataBaseInfo.id': {
+                handler () {
+                    this.getTables()
+                },
+                immediate: true
             }
         },
         methods: {
@@ -194,7 +201,7 @@
                     const postData = {
                         ...editForm,
                         projectId: this.projectId,
-                        password: btoa(editForm.password)
+                        password: encodeBase64(editForm.password)
                     }
                     await this.updateDatabase(postData)
                     this.handleCloseForm()
@@ -240,14 +247,16 @@
                         name: 'showTable',
                         query: {
                             id: row.id,
-                            thirdPartDBId: this.dataBaseInfo.id
+                            thirdPartDBId: this.dataBaseInfo.id,
+                            tab: 'thirdPartDB'
                         }
                     })
                 } else {
                     this.$router.push({
                         name: 'createTable',
                         query: {
-                            thirdPartDBId: this.dataBaseInfo.id
+                            thirdPartDBId: this.dataBaseInfo.id,
+                            tab: 'thirdPartDB'
                         }
                     })
                 }
@@ -258,7 +267,8 @@
                     name: 'dataManage',
                     query: {
                         tableName: row?.tableName,
-                        thirdPartDBId: this.dataBaseInfo.id
+                        thirdPartDBId: this.dataBaseInfo.id,
+                        tab: 'thirdPartDB'
                     }
                 })
             },
@@ -358,7 +368,6 @@
         float: left;
         line-height: 36px;
         font-size: 12px;
-        width: 260px;
         margin-right: 10px;
         display: flex;
         width: calc(50% - 10px);
@@ -367,7 +376,7 @@
         display: inline-block;
     }
     .field-value {
-        width: calc(100% - 100px);
+        width: calc(100% - 150px);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

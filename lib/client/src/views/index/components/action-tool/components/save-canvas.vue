@@ -11,7 +11,7 @@
         ref,
         onBeforeUnmount,
         getCurrentInstance
-    } from '@vue/composition-api'
+    } from 'vue'
     import MenuItem from './menu-item'
     import useSave from './common/use-save'
     import usePreviewImg from './common/use-preview-img'

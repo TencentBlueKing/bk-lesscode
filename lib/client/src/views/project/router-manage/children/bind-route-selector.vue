@@ -12,7 +12,7 @@
                 :name="group.name"
                 :key="index">
                 <bk-option v-for="option in group.children"
-                    v-bk-tooltips="{ disabled: !option.disabled, content: option.disabledReason }"
+                    v-bk-tooltips="{ disabled: !option.disabled, content: option.disabledReason, allowHTML: false }"
                     :key="option.id"
                     :disabled="option.disabled"
                     :id="option.id"

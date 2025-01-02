@@ -8,8 +8,14 @@
     width: calc(100% - 72px) !important;
     display: inline-block;
     margin-left: -1px;
+    height: 30px;
     .choose-variable {
         vertical-align: bottom;
+    }
+    .bk-form-input {
+        height: 30px;
+        box-sizing: content-box;
+        width: 108px;
     }
 }
 .add-api-link {

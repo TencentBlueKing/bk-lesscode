@@ -5,7 +5,8 @@
             v-bk-tooltips="{
                 content: $t(data.displayName),
                 disabled: $t(data.displayName).length < 13,
-                maxWidth: 400
+                maxWidth: 400,
+                allowHTML: false
             }">
             {{ $t(data.displayName) }}
         </span>

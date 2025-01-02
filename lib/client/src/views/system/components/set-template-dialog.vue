@@ -96,14 +96,12 @@
                         fields: params
                     }
                     const res = await this.$store.dispatch('project/update', { data })
-                    if (res) {
-                        this.isShow = false
-                        this.refreshList()
-                        this.$bkMessage({
-                            theme: 'success',
-                            message: window.i18n.t('设置成功')
-                        })
-                    }
+                    this.isShow = false
+                    this.refreshList()
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: window.i18n.t('设置成功')
+                    })
                 } catch (err) {
                     this.$bkMessage({
                         theme: 'error',

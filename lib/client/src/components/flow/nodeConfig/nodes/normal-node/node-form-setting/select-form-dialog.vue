@@ -43,7 +43,7 @@
                     @click="handleSelect(item)">
                     <div class="selected-label"></div>
                     <span class="preview-btn" @click.stop="$emit('preview', JSON.parse(item.content))">{{ $t('预览') }}</span>
-                    <p class="form-name">{{ item.formName }}</p>
+                    <p v-bk-overflow-tips class="form-name">{{ `${item.formName}(${item.tableName})` }}</p>
                 </div>
                 <bk-exception
                     v-if="listData.length === 0"
@@ -89,12 +89,12 @@
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
             tips () {
                 return this.type === 'COPY_FORM'
-                    ? this.$t('引用已有表单：引用已有表单快速建表，运行时节点数据不会存入被引用的表中，字段属性可自定义')
-                    : this.$t('复用已有表单：运行时节点数据会存入被复用的表中，不支持增加和修改字段属性')
+                    ? this.$t('引用已有表单：引用已有表单快速创建新表单，可对新表单进行编辑')
+                    : this.$t('复用已有表单：系统将复用已有表单进行后续操作，不会创建新表单，不支持对复用表单进行编辑')
             },
             projectId () {
                 return this.$route.params.projectId
-            },
+            }
         },
         watch: {
             show (val) {
@@ -115,7 +115,7 @@
                 if (this.type === 'USE_FORM') {
                     const formIds = Object.values(JSON.parse(this.flowConfig.formIds || '{}'))
                     res.forEach(item => {
-                        if(formIds.includes(item.id)) {
+                        if (formIds.includes(item.id)) {
                             item.disabled = true
                         }
                     })

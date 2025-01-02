@@ -10,19 +10,51 @@
 -->
 
 <template>
-    <div v-if="hasMaterialConfig">
-        <template v-for="(item, key) in filterPropsConfig">
-            <render-prop
-                v-if="item.type !== 'hidden'"
-                :component-type="componentType"
-                :component-id="componentId"
-                :describe="item"
-                :last-value="lastProps[key]"
-                :name="key"
-                :key="key"
-                :sync-slot="syncSlot"
-                :last-data-origin="lastProps[item.dataOrigin]"
-                @on-change="handleChange" />
+    <div v-if="hasMaterialConfig" :class="{ mt10: keyword.length }">
+        <template v-for="(group, indexKey) in propGropuList">
+            <div v-if="hasGroupProp(group)" :key="indexKey">
+                <div :class="{ 'group-name': true, 'group-name-bt': group.isShow }" @click="toggleShowGroupProp(group, indexKey)">
+                    <span>{{ group.label || group.value }}</span>
+                    <i
+                        :class="{
+                            'bk-icon icon-angle-down': true,
+                            close: !group.isShow
+                        }"
+                    ></i>
+                </div>
+                <div class="group-bt">
+                    <div v-if="group.isShow" class="mt10">
+                        <template v-for="(item, key) in group.groupProps">
+                            <render-prop
+                                v-if="item.type !== 'hidden'"
+                                :component-type="componentType"
+                                :component-id="componentId"
+                                :describe="item"
+                                :last-value="lastPropVal(key)"
+                                :name="key"
+                                :key="key"
+                                :sync-slot="syncSlot"
+                                :last-data-origin="lastProps[item.dataOrigin]"
+                                @on-change="handleChange" />
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <template v-else>
+                <template v-if="keyword.length">
+                    <render-prop
+                        v-if="group.type !== 'hidden'"
+                        :component-type="componentType"
+                        :component-id="componentId"
+                        :describe="group"
+                        :last-value="lastPropVal(indexKey)"
+                        :name="indexKey"
+                        :key="indexKey"
+                        :sync-slot="syncSlot"
+                        :last-data-origin="lastProps[group.dataOrigin]"
+                        @on-change="handleChange" />
+                </template>
+            </template>
         </template>
     </div>
 </template>
@@ -34,6 +66,8 @@
     import useDatasource from '@/hooks/use-datasource'
     import { encodeRegexp } from '../../component/utils'
     import { framework } from 'bk-lesscode-render'
+    import { isEmpty } from '@/common/util'
+    import { camelCase, paramCase } from 'change-case'
 
     // 属性类型转为该变量接受的值类型
     const getPropValueType = (type) => {
@@ -85,11 +119,63 @@
             filterPropsConfig () {
                 const reg = new RegExp(encodeRegexp(this.keyword), 'i')
                 return Object.keys(this.propsConfig).filter(propName => {
-                    return reg.test(propName + (typeof this.propsConfig[propName].type === 'string' ? `(${getPropValueType(this.propsConfig[propName].type)})` : ''))
+                    return reg.test(propName + this.propsConfig[propName].displayName ?? '' + (typeof this.propsConfig[propName].type === 'string' ? `(${getPropValueType(this.propsConfig[propName].type)})` : ''))
                 }).reduce((result, key) => {
                     result[key] = this.propsConfig[key]
                     return result
                 }, {})
+            },
+            propGropuList () {
+                if (this.keyword.length) {
+                    return this.filterPropsConfig
+                } else {
+                    const groups = this.material.groups || []
+                    Object.keys(this.filterPropsConfig).reduce((pre, cur) => {
+                        if (this.filterPropsConfig[cur].type === 'hidden') {
+                            pre.push(this.filterPropsConfig[cur])
+                        } else {
+                            const groupVal = this.filterPropsConfig[cur]?.belongGroup || 'common'
+                            const groupItem = pre.find(item => item.value === groupVal)
+                            if (!pre?.length || !groupItem) {
+                                const aGroup = {
+                                    value: groupVal,
+                                    label: groupVal === 'common' ? '通用属性' : '',
+                                    isShow: true,
+                                    groupProps: {}
+                                }
+                                aGroup.groupProps[cur] = this.filterPropsConfig[cur]
+                                pre.push(aGroup)
+                            }
+                            if (groupItem) {
+                                groupItem.isShow ??= true
+                                groupItem.groupProps ??= {}
+                                groupItem.groupProps[cur] = this.filterPropsConfig[cur]
+                            }
+                        }
+                        return pre
+                    }, groups)
+                    return groups
+                }
+            },
+            hasGroupProp () {
+                return (group) => {
+                    if (isEmpty(group.groupProps)) {
+                        return false
+                    }
+                    if (!Object.keys(group.groupProps).length) {
+                        return false
+                    }
+                    return true
+                }
+            },
+            lastPropVal () {
+                return (key) => {
+                    if (!this.lastProps[key]) {
+                        // 同一个属性在原有组件和现物料组件的命名方式不一样，需要属性转成短线/驼峰 从而获取原来属性的值
+                        return this.lastProps[camelCase(key)] || this.lastProps[paramCase(key)]
+                    }
+                    return this.lastProps[key]
+                }
             }
         },
         created () {
@@ -258,8 +344,21 @@
              * 更新列配置并同步 slot
              */
             handleChange: _.throttle(function (propName, propData) {
+                let result = this.lastProps
+                if (!this.lastProps[propName]) {
+                    const camelPropName = camelCase(propName)
+                    const paramPropName = paramCase(propName)
+                    const excludeProp = this.lastProps[camelPropName] ? camelPropName : paramPropName
+                    // 同一属性在原来与现在命名不一致时，剔除原有属性
+                    result = Object.keys(this.lastProps).reduce((acc, key) => {
+                        if (key !== excludeProp) {
+                            acc[key] = this.lastProps[key]
+                        }
+                        return acc
+                    }, {})
+                }
                 this.lastProps = Object.freeze({
-                    ...this.lastProps,
+                    ...result,
                     [propName]: propData
                 })
                 
@@ -279,7 +378,41 @@
                     ...updateBkChartsRemoteOptions
                 })
                 this.syncOtherProp(propName, propData)
-            }, 60)
+            }, 60),
+
+            toggleShowGroupProp (group, index) {
+                group.isShow = !group.isShow
+                this.$forceUpdate()
+            }
         }
     }
 </script>
+<style lang='postcss' scoped>
+.group-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 8px 0 12px;
+    line-height: 40px;
+    cursor: pointer;
+    & > span:first-child{
+        font-size: 12px;
+        font-weight: 700;
+        color: #313238;
+    }
+    .icon-angle-down {
+        cursor: pointer;
+        font-size: 24px;
+        transition: transform 200ms;
+        &.close {
+            transform: rotate(-90deg);
+        }
+    }
+}
+.group-name-bt {
+    border-bottom: 1.25px solid #F5F7FA;
+}
+.group-bt {
+    border-bottom: 1.25px solid #EAEBF0;
+}
+</style>

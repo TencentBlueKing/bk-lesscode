@@ -14,7 +14,7 @@
             @change="handleChange" />
         <bk-date-picker
             v-else-if="['date', 'datetime'].includes(field.type)"
-            :type="field.type"
+            :type="dateDimension"
             :transfer="true"
             :disabled="disabled"
             :value="value"
@@ -43,7 +43,7 @@
         <rich-text-value-editor v-else-if="field.type === 'rich-text'" :value="value" :disabled="disabled" @change="handleChange" />
         <bk-input
             v-else
-            :placeholder="$t('默认值')"
+            :placeholder="placeholder"
             :disabled="disabled"
             :value="value"
             @change="handleChange">
@@ -66,6 +66,10 @@ export default {
             type: Object,
             default: () => ({})
         },
+        placeholder: {
+            type: String,
+            default: window.i18n.t('默认值')
+        },
         disabled: Boolean,
         value: [String, Array, Number, Object]
     },
@@ -79,6 +83,9 @@ export default {
     computed: {
         dataSource () {
             return this.field.configure?.dataSource || null
+        },
+        dateDimension () {
+            return this.field.configure?.dateDimension || this.field.type
         }
     },
     watch: {
@@ -87,7 +94,7 @@ export default {
                 if (config) {
                     this.dataSourceList = []
                     this.dataSourceListLoding = true
-                    this.dataSourceList = await transDataSourceValue(config, this)
+                    this.dataSourceList = await transDataSourceValue(config, this.value, this)
                     this.dataSourceListLoding = false
                 }
             },

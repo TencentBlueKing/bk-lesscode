@@ -59,18 +59,8 @@
             <router-view :key="$route.path"></router-view>
         </div>
         <footer class="footer" v-if="showFooter">
-            <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=1&key=XzgwMDgwMjAwMV80NDMwOTZfODAwODAyMDAxXzJf"
-                target="_blank"
-                class="magic-feedback"
-                :title="$t('QQ交谈')">
-                <img src="../../images/qq.png" />
-                <span>{{ $t('QQ交谈') }}</span>
-            </a>
-            <!-- <a href="wxwork://message/?username=BK-MagicBox" class="magic-feedback" title="蓝鲸MagicBox助手">
-                <img src="../../images/wx-work.png" />
-                <span>蓝鲸MagicBox助手</span>
-            </a> -->
-            Copyright &copy; 2012 Tencent BlueKing. All Rights Reserved. {{$t('腾讯蓝鲸 版权所有')}}
+            <p v-html="footerInfoHtml" ></p>
+            <p>{{footerCopyrightContent}}</p>
         </footer>
     </main>
 </template>
@@ -100,6 +90,12 @@
             },
             showFooter () {
                 return this.$route?.meta?.showFooter
+            },
+            footerInfoHtml () {
+                return this.$store.getters['platformConfig/platformConfig']?.i18n?.footerInfoHTML
+            },
+            footerCopyrightContent () {
+                return this.$store.getters['platformConfig/platformConfig']?.footerCopyrightContent || 'Copyright © 2012 Tencent BlueKing. All Rights Reserved. '
             }
         },
         methods: {
@@ -253,6 +249,7 @@
         }
 
         .footer {
+            padding-top: 6px;
             position: fixed;
             bottom: 0;
             width: 100%;
@@ -274,6 +271,13 @@
                     width: 17px;
                     vertical-align: middle;
                     margin-top: -2px;
+                }
+            }
+            
+            p {
+                line-height: 20px;
+                a {
+                    color: #3A84FF;
                 }
             }
         }

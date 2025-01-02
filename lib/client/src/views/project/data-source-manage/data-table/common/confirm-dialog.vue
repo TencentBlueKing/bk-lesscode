@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-    import { ref, defineComponent } from '@vue/composition-api'
+    import { ref, defineComponent } from 'vue'
     import monaco from '@/components/monaco.vue'
     import router from '@/router'
 

@@ -19,7 +19,7 @@
         ref,
         reactive,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import { Ai } from '@/common/ai'
     import systemPrompt from './system-sql-prompt.txt'
 

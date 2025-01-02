@@ -21,7 +21,7 @@
         defineComponent,
         ref,
         watch
-    } from '@vue/composition-api'
+    } from 'vue'
     import SelectEnable from './common/select-enable.vue'
     import SelectCondition from './common/select-condition.vue'
     import SelectWrapper from './common/select-wrapper.vue'

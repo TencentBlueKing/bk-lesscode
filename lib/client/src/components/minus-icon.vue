@@ -4,7 +4,8 @@
         v-bk-tooltips="{
             content: tips,
             disabled: !tips,
-            maxWidth: 400
+            maxWidth: 400,
+            allowHTML: false
         }"
         @click="handleClick"
     ></i>
@@ -13,7 +14,7 @@
 <script lang="ts">
     import {
         defineComponent
-    } from '@vue/composition-api'
+    } from 'vue'
 
     export default defineComponent({
         emits: ['click'],

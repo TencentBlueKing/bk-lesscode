@@ -17,6 +17,7 @@
                 class="card-list-wrapper"
                 :list="list"
                 :sort="false"
+                filter=".not-available"
                 :group="{
                     name: 'bkform-engine-material',
                     pull: 'clone',
@@ -24,7 +25,14 @@
                 }"
                 :force-fallback="false"
                 @choose="handleChoose($event)">
-                <div class="card-item" v-for="item in list" :key="item.type">
+                <div
+                    v-for="item in list"
+                    v-bk-tooltips="{
+                        disabled: !item.disabled,
+                        content: $t('流程表单暂不支持该类型控件')
+                    }"
+                    :key="item.type"
+                    :class="['card-item', { 'not-available': item.disabled }]">
                     <i :class="['card-icon', item.icon]"></i>
                     <span class="card-name">{{ $t(item.name) }}</span>
                 </div>
@@ -103,6 +111,11 @@
             cursor: move;
             &:hover {
                 color: #3a84ff;
+            }
+            &.not-available {
+                color: #c4c6cc;
+                border-color: #dcdee5;
+                cursor: not-allowed;
             }
             .card-icon {
                 font-size: 16px;

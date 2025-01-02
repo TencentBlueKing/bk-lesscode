@@ -57,7 +57,7 @@
         onBeforeMount,
         reactive,
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         messageError
     } from '@/common/bkmagic'

@@ -18,7 +18,7 @@
         ref,
         watch,
         h
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         LCGetParamsVal,
         getDefaultApiUseScheme

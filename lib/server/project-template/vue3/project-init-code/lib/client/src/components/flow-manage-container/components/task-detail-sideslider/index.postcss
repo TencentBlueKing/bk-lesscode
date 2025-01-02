@@ -1,0 +1,50 @@
+
+/* 执行详情侧滑 */
+.task-detail-header-title {
+    display: flex;
+    align-items: center;
+    .title-name {
+        flex-shrink: 0;
+    }
+    .node-name {
+        flex: 1;
+        margin-left: 8px;
+        padding-left: 8px;
+        height: 18px;
+        line-height: 18px;
+        color: #979ba5;
+        font-size: 12px;
+        border-left: 1px solid #dcdee5;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .task-status-tag {
+        margin-left: 8px;
+        padding: 0 8px;
+        height: 22px;
+        line-height: 22px;
+        font-size: 12px;
+        border-radius: 2px;
+        &.CREATED {
+            background: #F0F1F5;
+            color: #63656E;
+        }
+        &.FAILED, &.REVOKED {
+            background: #F8B4B4;
+            color: #EA3536;
+        };
+        &.FINISHED {
+            background: #E4FAF0;
+            color: #14A568;
+        }
+        &.RUNNING {
+            background: #FFF1DB;
+            color: #FE9C00;
+        }
+    }
+}
+.task-detail-content {
+    height: calc(100vh - 52px);
+}

@@ -97,7 +97,7 @@
 <script>
     import {
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         API_VALIDATE_TYPES
     } from 'shared/api'
@@ -277,6 +277,13 @@
             color: #979BA5;
             line-height: 16px;
             padding: 0 8px;
+        }
+        /deep/ .bk-checkbox {
+            line-height: 16px;
+            &:after {
+                top: 2px;
+                left: 5px;
+            }
         }
     }
     .plus-rule {

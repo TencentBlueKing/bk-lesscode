@@ -9,8 +9,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-import { defineComponent, ref, watch } from '@vue/composition-api'
-import { VNode } from 'vue'
+import { defineComponent, ref, watch, VNode } from 'vue'
 import MenuItem from '../editor/menu/index.vue'
 import { generatorMenu, generatorHelpMenu } from '../../../../../../shared/util'
 import './base-menu-template.css'

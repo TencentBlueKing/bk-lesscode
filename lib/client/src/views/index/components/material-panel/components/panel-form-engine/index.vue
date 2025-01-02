@@ -8,6 +8,7 @@
             <group-box v-show="widgetList.length > 0" group-name="容器" :list="containerMaterials">
                 <render-component :data="containerMaterials[0]" />
                 <render-component :data="containerMaterials[1]" />
+                <render-component :data="containerMaterials[2]" />
             </group-box>
             <formEngineMaterial :list="widgetList" />
         </section>
@@ -27,7 +28,7 @@
             icon: 'bk-drag-icon bk-drag-biaodan',
             name: 'form-container',
             type: 'widget-form-container',
-            displayName: '表单容器',
+            displayName: '表单编辑容器',
             order: 1,
             events: [],
             styles: [
@@ -43,6 +44,21 @@
             name: 'form-container',
             type: 'widget-data-manage-container',
             displayName: '数据管理容器',
+            order: 1,
+            events: [],
+            styles: [
+                'size',
+                'margin'
+            ],
+            renderStyles: {},
+            props: {}
+        },
+        {
+            group: '容器',
+            icon: 'bk-drag-icon bk-drag-zidingyibiaoge',
+            name: 'form-container',
+            type: 'widget-flow-manage-container',
+            displayName: '流程管理容器',
             order: 1,
             events: [],
             styles: [
@@ -67,7 +83,7 @@
                 materials,
                 searchList: [...CONTAINER_MATERIALS, ...materials],
                 widgetList: materials.slice(),
-                containerMaterials: CONTAINER_MATERIALS,
+                containerMaterials: CONTAINER_MATERIALS
             }
         },
         methods: {

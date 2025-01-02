@@ -25,7 +25,7 @@
     import {
         defineComponent,
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
 
     export default defineComponent({
         props: {

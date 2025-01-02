@@ -15,22 +15,15 @@
             :show="!isReadOnly && variableSelectEnable"
             :options="variableSelectOptions"
             :value="formData"
-            :show-content="isShowProp"
             :describe="describe"
             @change="handleVariableFormatChange">
             <template v-slot:title>
                 <div class="prop-name">
-                    <section class="icon-and-name" @click="toggleShowProp">
-                        <i
-                            :class="{
-                                'bk-icon icon-angle-down': true,
-                                close: !isShowProp
-                            }"
-                        ></i>
+                    <section class="icon-and-name">
                         <span
-                            :class="{ label: describe.tips }"
-                            v-bk-tooltips="introTips">
-                            {{ displayName }}
+                            :class="{ label: true }"
+                            v-bk-tooltips="introTips"
+                            v-html="displayName">
                         </span>
                     </section>
                 </div>
@@ -117,6 +110,7 @@
     import _ from 'lodash'
     import { mapActions } from 'vuex'
     import LC from '@/element-materials/core'
+    import DOMPurify from 'dompurify'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
@@ -247,7 +241,6 @@
                 selectValueType: '',
                 formData: {},
                 isRenderValueCom: false,
-                isShowProp: true,
                 isSyncing: false
             }
         },
@@ -370,11 +363,19 @@
              * @returns { String }
              */
             displayName () {
-                if (this.renderComponentList.length > 1) {
-                    return this.name
+                // 英文版只展示英文属性名称
+                let name = this.name
+                if (this.$store.state.Language === 'en') {
+                    name = this.name
+                } else {
+                    if (this.renderComponentList.length > 1) {
+                        name = this.describe?.displayName || this.name
+                    }
+                    if (!isEmpty(this.describe?.displayName)) {
+                        name = `${this.describe.displayName}<span class='prop-field'>(${this.name})</span>`
+                    }
                 }
-                const [editCom] = this.renderComponentList
-                return `${this.name}(${toPascal(editCom.valueType)})`
+                return DOMPurify.sanitize(name)
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)
@@ -388,20 +389,27 @@
              * @returns { Object }
              */
             introTips () {
-                const tip = transformTipsWidth(window.i18n.t(this.describe.tips))
-                const commonOptions = {
-                    disabled: !tip,
-                    interactive: false,
+                return {
                     placements: ['left-start'],
-                    boundary: 'window',
-                    maxWidth: 300
+                    maxWidth: 300,
+                    content: DOMPurify.sanitize(this.tipsContent)
                 }
-                return typeof tip === 'string'
-                    ? {
-                        ...commonOptions,
-                        content: tip
-                    }
-                    : Object.assign(tip, commonOptions)
+            },
+            tipsContent () {
+                const [editCom] = this.renderComponentList
+                
+                let tips = window.i18n.t('属性英文名：{0}', [this.name])
+                let typeTips = ''
+                if (!Array.isArray(this.describe.type)) {
+                    typeTips = window.i18n.t('类型：{0}', [toPascal(editCom.valueType)])
+                    tips += `<br>${typeTips}`
+                }
+                let descTips = ''
+                if (this.describe.tips) {
+                    descTips = window.i18n.t('使用说明：{0}', [this.describe.tips])
+                    tips += `<br>${descTips}`
+                }
+                return tips
             },
             /**
              * @desc type 支持 remote 类型的不支持配置变量
@@ -690,10 +698,6 @@
                 }
             },
 
-            toggleShowProp () {
-                this.isShowProp = !this.isShowProp
-            },
-
             // 每个formItem中表单组件v-model的变量名替换成formModel选择的变量名
             replaceFormItemVmodelKey (formNode = {}, buildInVariableType, payload, buildInVariable) {
                 let formModelKey = `${buildInVariable}model`
@@ -720,7 +724,7 @@
         }
     }
 </script>
-<style lang="postcss">
+<style lang="postcss" scoped>
     .item-ghost {
         border: 1px dashed #3a84ff;
         background: #fff !important;
@@ -755,43 +759,42 @@
         }
     }
     .modifier-prop {
-        margin: 0 10px;
+        margin: -10px 8px 0 12px;
         .prop-name {
-            height: 40px;
             font-size: 12px;
-            font-weight: bold;
-            color: #313238;
             word-break: keep-all;
             width: 100%;
             display: flex;
             align-items: center;
-            border-top: 1px solid #EAEBF0;
+            margin: 10px 0;
             cursor: pointer;
             .icon-and-name {
                 display: flex;
+                align-items: center;
                 max-width: calc(100% - 65px);
             }
             .label {
-                border-bottom: 1px dashed #313238;
+                color: #63656E;
+                border-bottom: 1px dashed #DCDEE5;
                 cursor: pointer;
-                line-height: 19px;
-                display: inline-block;
-            }
-            span {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .icon-angle-down {
-                cursor: pointer;
-                font-size: 20px;
-                margin-left: -5px;
-                margin-right: 3px;
-                transition: transform 200ms;
-                &.close {
-                    transform: rotate(-90deg);
+                line-height: 20px;
+                /deep/ span.prop-field {
+                    margin-left: 3px;
+                    color: #C4C6CC;
+                    font-weight: 400;
                 }
             }
+            span {
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                text-overflow: ellipsis;
+                word-break: break-all;
+            }
+        }
+        .title-margin {
+            margin-top: 10px;
         }
         .prop-action {
             width: 100%;

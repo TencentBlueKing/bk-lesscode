@@ -56,7 +56,7 @@
             </bk-input>
             <i
                 v-if="validateStatus.isError"
-                v-bk-tooltips="{ content: validateStatus.message, maxWidth: 400 }"
+                v-bk-tooltips="{ content: validateStatus.message, maxWidth: 400, allowHTML: false }"
                 :class="{
                     'bk-icon icon-exclamation-circle-shape tooltips-icon': true,
                     'with-alias': displayAlias
@@ -80,7 +80,7 @@
         computed,
         ref,
         onBeforeUnmount
-    } from '@vue/composition-api'
+    } from 'vue'
     import validateContainer from '../composables/validate'
     import {
         isEmpty

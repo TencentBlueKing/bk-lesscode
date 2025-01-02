@@ -74,7 +74,7 @@
     import {
         defineComponent,
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import Icon from '@/components/modifier/icon-select.vue'
     import SrcInput from '@/components/src-input/index.vue'
 

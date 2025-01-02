@@ -53,10 +53,10 @@
                     </template>
                 </bk-table-column>
             </template>
-            <bk-table-column v-if="!viewMode && !disabled" fixed="right" label="操作" width="150">
+            <bk-table-column v-if="!viewMode && !disabled" fixed="right" :label="$t('操作')" width="150">
                 <template slot-scope="props">
-                    <bk-button theme="primary" :text="true" @click="handleAddItem(props.$index)">添加</bk-button>
-                    <bk-button theme="primary" :text="true" @click="handleDelItem(props.$index)">删除</bk-button>
+                    <bk-button theme="primary" :text="true" @click="handleAddItem(props.$index)">{{ $t('添加') }}</bk-button>
+                    <bk-button theme="primary" :text="true" @click="handleDelItem(props.$index)">{{ $t('删除') }}</bk-button>
                 </template>
             </bk-table-column>
         </bk-table>

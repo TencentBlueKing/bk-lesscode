@@ -16,7 +16,7 @@
                     <bk-table-column :label="$t('部署包版本')" prop="version" :render-header="renderHeaderAddTitle" width="100" show-overflow-tooltip>
                         <template slot-scope="{ row }">
                             <div v-if="row.codeUrl" class="status-result">
-                                <a class="status-log-link" :href="row.codeUrl">{{row.version}}</a>
+                                {{row.version}}
                             </div>
                             <span v-else-if="row.isOffline">{{ row.version}} </span>
                             <span v-else v-bk-tooltips.right="$t('本次部署无版本包生成')">{{row.version}} </span>

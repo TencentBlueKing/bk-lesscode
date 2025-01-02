@@ -59,3 +59,33 @@
         cursor: pointer;
     }
 }
+:global(.bk-popper) {
+    padding: 7px 14px;
+    font-size: 12px;
+    color: #fff;
+    background: #333;
+    border-radius: 4px;
+    :global(.bk-popper-arrow) {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: inherit;
+        left: 0;
+        bottom: 0px;
+        &::before {
+            content: " ";
+            visibility: visible;
+            transform: rotate(-45deg);
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: inherit;
+        }
+    }
+}
+:global(.bk-popper.light) {
+    color: #63656e;
+    background: #fff;
+    box-shadow: #dcdee5 0 0 6px;
+}
+

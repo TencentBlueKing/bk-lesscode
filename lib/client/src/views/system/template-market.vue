@@ -14,7 +14,8 @@
                                 {{link.name}}
                             </li>
                         </ul>
-                        <div class="extra">
+                        <div class="extra filter-container">
+                            <frameworkTypeSelect :type.sync="template.project.framework" @filter="handleFilter('project')" />
                             <bk-input
                                 style="width: 400px"
                                 :placeholder="$t('请输入关键词')"
@@ -22,6 +23,7 @@
                                 :right-icon="'bk-icon icon-search'"
                                 v-model="template.project.keyword"
                                 @clear="handleProjectSearchClear"
+                                @right-icon-click="handleFilter('project')"
                                 @enter="handleFilter('project')">
                             </bk-input>
                         </div>
@@ -89,7 +91,8 @@
                                 {{link.name}}
                             </li>
                         </ul>
-                        <div class="extra">
+                        <div class="extra filter-container">
+                            <frameworkTypeSelect :type.sync="template.page.framework" @filter="handleFilter('page')" />
                             <bk-input
                                 style="width: 400px"
                                 :placeholder="$t('请输入关键词')"
@@ -97,6 +100,7 @@
                                 :right-icon="'bk-icon icon-search'"
                                 v-model="template.page.keyword"
                                 @clear="handlePageSearchClear"
+                                @right-icon-click="handleFilter('page')"
                                 @enter="handleFilter('page')">
                             </bk-input>
                         </div>
@@ -173,7 +177,8 @@
                         <bk-option v-for="option in dialog.page.projectList"
                             :key="option.id"
                             :id="option.id"
-                            :name="option.projectName">
+                            :name="option.projectName"
+                            :disabled="option.id === dialog.page.curPage.belongProjectId">
                         </bk-option>
                     </bk-select>
                 </bk-form-item>
@@ -223,6 +228,7 @@
     import {
         isMatchFramework
     } from 'shared/util'
+    import frameworkTypeSelect from '@/components/template/framework-type-select.vue'
 
     const PROJECT_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PROJECT_TEMPLATE_TYPE)
     const PAGE_TYPE_LIST = [{ id: '', name: window.i18n.t('全部') }].concat(PAGE_TEMPLATE_TYPE)
@@ -233,7 +239,8 @@
             CreateEmptyProjectDialog,
             DownloadDialog,
             PagePreviewThumb,
-            frameworkTag
+            frameworkTag,
+            frameworkTypeSelect
         },
         data () {
             return {
@@ -242,13 +249,15 @@
                         list: [],
                         filter: '',
                         links: [...PROJECT_TYPE_LIST],
-                        keyword: ''
+                        keyword: '',
+                        framework: 'all'
                     },
                     page: {
                         list: [],
                         filter: '',
                         keyword: '',
-                        links: [...PAGE_TYPE_LIST]
+                        links: [...PAGE_TYPE_LIST],
+                        framework: 'all'
                     }
                 },
                 projectList: [],
@@ -358,7 +367,14 @@
                         } else {
                             this.projectEmptyType = 'noData'
                         }
-                        
+
+                        if (this.template.project.framework !== 'all') {
+                            this.template.project.list = this.template.project.list.filter(item => {
+                                const framework = item.framework || 'vue2'
+                                return framework === this.template.project.framework
+                            })
+                        }
+
                         if (this.template.project.keyword !== '') {
                             this.projectEmptyType = 'search'
                             this.template.project.list = this.template.project.list.filter(item => {
@@ -378,6 +394,14 @@
                         } else {
                             this.pageEmptyType = 'noData'
                         }
+
+                        if (this.template.page.framework !== 'all') {
+                            this.template.page.list = this.template.page.list.filter(item => {
+                                const framework = item.framework || 'vue2'
+                                return framework === this.template.page.framework
+                            })
+                        }
+
                         if (this.template.page.keyword !== '') {
                             this.pageEmptyType = 'search'
                             this.template.page.list = this.template.page.list.filter(item => {
@@ -460,6 +484,7 @@
                     // 解析出模板targetData绑定的变量和函数
                     const { varList = [], funcList = [] } = parseFuncAndVar(templateNode, variableList, funcGroups)
                     Object.assign(data, { varList, funcList })
+                    data['framework'] = fromTemplate.framework
 
                     const res = await this.$store.dispatch('pageTemplate/apply', data)
                     if (res) {
@@ -521,12 +546,14 @@
             },
             handleDownloadTemplate (template) {
                 const targetData = []
-                targetData.push(JSON.parse(template.content))
+                const content = JSON.parse(template.content || {})
+                targetData.push(content)
+                const isHasVarFunc = content.vars || content.functions
                 this.$store.dispatch('vueCode/getPageCode', {
                     targetData,
                     projectId: template.belongProjectId,
-                    fromPageCode: template.fromPageCode
-
+                    fromPageCode: template.fromPageCode,
+                    ...(isHasVarFunc ? { varList: content.vars || [], funcList: content.functions || [] } : {})
                 }).then((res) => {
                     const downlondEl = document.createElement('a')
                     const blob = new Blob([res])
@@ -551,6 +578,10 @@
 <style lang="postcss" scoped>
     @import "@/css/mixins/ellipsis";
     @import "@/css/mixins/scroller";
+
+    .filter-container {
+        display: flex;
+    }
 
     .filter-links {
         display: flex;

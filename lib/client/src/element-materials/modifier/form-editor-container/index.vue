@@ -1,17 +1,17 @@
 <template>
-  <section class="form-editor-container-modifier">
-    <section class="panel-head">
-        <span class="element-id">{{ elementData.id }}</span>
-        <div class="actions">
-            <i v-bk-tooltips="$t('删除')" class="bk-drag-icon bk-drag-delet mr5"></i>
-            <i v-bk-tooltips="$t('复制id')" class="bk-drag-icon bk-drag-copy" @click="handleCopyId"></i>
-        </div>
+    <section class="form-editor-container-modifier">
+        <section class="panel-head">
+            <span class="element-id">{{ elementData.id }}</span>
+            <div class="actions">
+                <i v-bk-tooltips="$t('删除')" class="bk-drag-icon bk-drag-delet mr5"></i>
+                <i v-bk-tooltips="$t('复制id')" class="bk-drag-icon bk-drag-copy" @click="handleCopyId"></i>
+            </div>
+        </section>
+        <section class="panel-content">
+            <form-container-element v-if="type === 'widget-form-container'" />
+            <dataManageContainerElement v-if="['widget-flow-manage-container', 'widget-data-manage-container'].includes(type)" />
+        </section>
     </section>
-    <section class="panel-content">
-        <form-container-element v-if="type === 'widget-form-container'" />
-        <dataManageContainerElement v-if="type === 'widget-data-manage-container'" />
-    </section>
-  </section>
 </template>
 <script>
     import { execCopy } from '@/common/util'

@@ -45,7 +45,7 @@
                 prop="summary"
             ></bk-table-column>
         </bk-table>
-        <span class="function-tips">{{ $t('注：可以将请求地址复制到函数中使用，具体使用方式可以参考函数示例') }}</span>
+        <span class="function-tips">{{ $t('注：可以将请求地址复制到函数中使用，也可以在新建远程函数的时候选择数据表操作API') }}</span>
 
         <bk-dialog
             v-model="isShowDetail"
@@ -70,7 +70,7 @@
         toRef,
         computed,
         ref
-    } from '@vue/composition-api'
+    } from 'vue'
     import {
         FUNCTION_METHOD
     } from 'shared/function/'

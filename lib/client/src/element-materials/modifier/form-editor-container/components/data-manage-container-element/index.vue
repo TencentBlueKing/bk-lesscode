@@ -1,5 +1,5 @@
 <template>
-  <div class="data-manage-container-element">
+    <div class="data-manage-container-element">
         <div class="tabs-wrapper">
             <bk-tab :active.sync="activePanel" :label-height="24">
                 <bk-tab-panel
@@ -12,7 +12,7 @@
         <div class="setting-container">
             <component :is="settingComp" :element-data="elementData" @change="handleChange" />
         </div>
-  </div>
+    </div>
 </template>
 <script>
     import LC from '@/element-materials/core'
@@ -66,6 +66,11 @@
                 }
             },
             handleChange (elementData) {
+                this.componentData.type === 'widget-flow-manage-container'
+                    ? this.flowManageContainerHandleChange(elementData)
+                    : this.dataManageCOntainerHandleChange(elementData)
+            },
+            dataManageCOntainerHandleChange (elementData) {
                 const propKey = elementData.type === 'formDataButton' ? 'buttons' : 'tableRowActions'
                 const propData = cloneDeep(this.componentData.renderProps[propKey])
                 const index = propData.code.findIndex(item => item.id === elementData.id)
@@ -75,6 +80,19 @@
                     this.elementData = elementData
                     this.componentData.setProp(propKey, propData)
                 }
+            },
+            flowManageContainerHandleChange (elementData) {
+                const propKey = elementData.type === 'formDataButton' ? 'buttons' : 'tableRowActions'
+                const propData = cloneDeep(this.componentData.renderProps.nodeList)
+                propData.code.find(item => item[propKey].find((subItem, index) => {
+                    if (subItem.id === elementData.id) {
+                        item[propKey].splice(index, 1, elementData)
+                        return true
+                    }
+                }))
+                propData.renderValue = cloneDeep(propData.code)
+                this.elementData = elementData
+                this.componentData.setProp('nodeList', propData)
             }
         }
     }

@@ -7,6 +7,9 @@
                 <style-item :name="$t('页面名称')" type="vertical">
                     <bk-input :value="pageDetail.pageName" @change="updatePageDetail('pageName', $event)" />
                 </style-item>
+                <style-item :name="$t('页面Code')" type="vertical">
+                    <bk-input :value="pageDetail.pageCode" disabled />
+                </style-item>
                 <style-item :name="$t('页面ID')" type="vertical">
                     <bk-input :value="pageDetail.id" disabled />
                 </style-item>
@@ -23,7 +26,7 @@
     import StyleItem from '@/element-materials/modifier/component/styles/layout/item'
     import PageRouteSetting from './children/page-route-setting'
     import PageStyleSetting from './children/page-style-setting'
-    import { defineComponent, computed } from '@vue/composition-api'
+    import { defineComponent, computed } from 'vue'
     import store from '@/store'
     import LC from '@/element-materials/core'
 

@@ -10,7 +10,7 @@
     import SaveBtn from './save'
     import PreviewBtn from './preview'
     import PageSettingBtn from './page-setting'
-    import { defineComponent } from '@vue/composition-api'
+    import { defineComponent } from 'vue'
 
     export default defineComponent({
         components: {

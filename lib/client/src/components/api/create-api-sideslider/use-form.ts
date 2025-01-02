@@ -1,6 +1,6 @@
 import {
     ref
-} from '@vue/composition-api'
+} from 'vue'
 
 export default (emit) => {
     const editObjectRef = ref(null)

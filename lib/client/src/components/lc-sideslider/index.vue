@@ -68,3 +68,9 @@
         }
     }
 </script>
+
+<style>
+    .lc-sideslider.bk-sideslider {
+        z-index: 1000;
+    }
+</style>

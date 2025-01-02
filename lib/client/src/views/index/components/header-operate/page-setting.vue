@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import { defineComponent, computed } from '@vue/composition-api'
+    import { defineComponent, computed } from 'vue'
     import { useStore } from '@/store'
     import LC from '@/element-materials/core'
     import { bus } from '@/common/bus'
