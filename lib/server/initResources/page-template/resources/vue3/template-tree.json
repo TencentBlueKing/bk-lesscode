@@ -1,0 +1,93 @@
+{
+    "template": {
+        "id": 1360,
+        "updateTime": "2024-12-23T09:10:06.000Z",
+        "createTime": "2024-12-23T09:10:06.000Z",
+        "createUser": "",
+        "updateUser": "",
+        "deleteFlag": 0,
+        "templateName": "拓扑树使用样例",
+        "templateCode": null,
+        "templateType": "PC",
+        "fromPageCode": "topologicaltreeusingsample",
+        "content": "{\"componentId\":\"grid-5d6cf\",\"type\":\"render-grid\",\"name\":\"grid\",\"renderKey\":\"d4f20\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{},\"renderSlots\":{\"default\":[{\"componentId\":\"column-00546\",\"type\":\"render-column\",\"name\":\"column\",\"renderKey\":\"a3852\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"span\":{\"format\":\"value\",\"code\":1,\"renderValue\":1,\"valueType\":\"number\",\"payload\":{}}},\"renderSlots\":{\"default\":[{\"componentId\":\"grid-71537\",\"type\":\"render-grid\",\"name\":\"grid\",\"renderKey\":\"50aff\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"margin-horizontal\":{\"format\":\"value\",\"code\":0,\"payload\":{},\"valueType\":\"number\",\"renderValue\":0},\"margin-vertical\":{\"format\":\"value\",\"code\":0,\"payload\":{},\"valueType\":\"number\",\"renderValue\":0}},\"renderSlots\":{\"default\":[{\"componentId\":\"column-990cd\",\"type\":\"render-column\",\"name\":\"render-column\",\"renderKey\":\"a5706\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"span\":{\"format\":\"value\",\"code\":1,\"valueType\":\"number\",\"payload\":{},\"renderValue\":1}},\"renderSlots\":{\"default\":[{\"componentId\":\"tree-01861\",\"type\":\"bk-tree\",\"name\":\"tree\",\"renderKey\":\"c12a6\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{\"node-click\":{\"methodCode\":\"getTreeNodeData\",\"params\":[]}},\"renderProps\":{\"data\":{\"format\":\"value\",\"code\":[{\"name\":\"tree node1\",\"title\":\"tree node1\",\"expanded\":true,\"id\":1,\"children\":[{\"name\":\"tree node 1-1\",\"title\":\"tree node 1-1\",\"id\":2,\"parent\":\"[Circular ~.renderSlots.default.val.0.children.0.renderProps.data.val.0]\"},{\"name\":\"tree node 1-2\",\"title\":\"tree node 1-2\",\"id\":3,\"parent\":\"[Circular ~.renderSlots.default.val.0.children.0.renderProps.data.val.0]\"}],\"parent\":null},{\"name\":\"tree node2\",\"title\":\"tree node2\",\"id\":4,\"parent\":null}],\"payload\":{},\"valueType\":\"array\",\"renderValue\":[{\"name\":\"tree node1\",\"title\":\"tree node1\",\"expanded\":true,\"id\":1,\"children\":[{\"name\":\"tree node 1-1\",\"title\":\"tree node 1-1\",\"id\":2,\"parent\":\"[Circular ~.renderSlots.default.val.0.children.0.renderProps.data.val.0]\"},{\"name\":\"tree node 1-2\",\"title\":\"tree node 1-2\",\"id\":3,\"parent\":\"[Circular ~.renderSlots.default.val.0.children.0.renderProps.data.val.0]\"}],\"parent\":null},{\"name\":\"tree node2\",\"title\":\"tree node2\",\"id\":4,\"parent\":null}]},\"label\":{\"format\":\"value\",\"code\":\"name\",\"renderValue\":\"name\",\"valueType\":\"value-key-item\",\"payload\":{}},\"children\":{\"format\":\"value\",\"code\":\"children\",\"renderValue\":\"children\",\"valueType\":\"value-key-item\",\"payload\":{}},\"indent\":{\"format\":\"value\",\"code\":18,\"renderValue\":18,\"valueType\":\"number\",\"payload\":{}},\"line-height\":{\"format\":\"value\",\"code\":32,\"renderValue\":32,\"valueType\":\"number\",\"payload\":{}},\"level-line\":{\"format\":\"value\",\"code\":false,\"payload\":{},\"valueType\":\"boolean\",\"renderValue\":false},\"virtual-render\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"prefix-icon\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}},\"async\":{\"format\":\"value\",\"code\":{\"cache\":true,\"deepAutoOpen\":\"once\"},\"renderValue\":{\"cache\":true,\"deepAutoOpen\":\"once\"},\"valueType\":\"object\",\"payload\":{}},\"offset-left\":{\"format\":\"value\",\"code\":5,\"renderValue\":5,\"valueType\":\"number\",\"payload\":{}},\"search\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"boolean\",\"payload\":{}},\"empty-text\":{\"format\":\"value\",\"code\":\"暂无数据\",\"renderValue\":\"暂无数据\",\"valueType\":\"string\",\"payload\":{}},\"draggable\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"disable-drag\":{\"format\":\"value\",\"valueType\":\"function\",\"payload\":{}},\"disable-drop\":{\"format\":\"value\",\"valueType\":\"function\",\"payload\":{}},\"drag-sort\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"selectable\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}},\"disabled-folder-selectable\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"show-checkbox\":{\"format\":\"value\",\"code\":false,\"payload\":{},\"valueType\":\"boolean\",\"renderValue\":false},\"show-node-type-icon\":{\"format\":\"value\",\"code\":false,\"payload\":{},\"valueType\":\"boolean\",\"renderValue\":false},\"selected\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"object\",\"payload\":{}},\"auto-check-children\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}},\"auto-open-parent-node\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}},\"expand-all\":{\"format\":\"value\",\"code\":true,\"payload\":{},\"valueType\":\"boolean\",\"renderValue\":true},\"node-content-action\":{\"format\":\"value\",\"code\":[\"selected\",\"expand\",\"click\"],\"renderValue\":[\"selected\",\"expand\",\"click\"],\"valueType\":\"array\",\"payload\":{}},\"keepSlotData\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"intersectionObserver\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"checkStrictly\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}},\"node-key\":{\"format\":\"value\",\"code\":\"id\",\"payload\":{},\"valueType\":\"string\",\"renderValue\":\"id\"}},\"renderSlots\":{},\"renderStyles\":{\"marginTop\":\"5px\",\"marginRight\":\"5px\",\"marginBottom\":\"5px\",\"marginLeft\":\"5px\",\"verticalAlign\":\"middle\"},\"renderAlign\":{},\"renderPerms\":[]}]},\"renderStyles\":{\"paddingTop\":\"5px\",\"paddingRight\":\"5px\",\"paddingBottom\":\"5px\",\"paddingLeft\":\"5px\",\"minHeight\":\"80px\",\"width\":\"16.6667%\"},\"renderAlign\":{},\"renderPerms\":[]},{\"componentId\":\"column-7e57d\",\"type\":\"render-column\",\"name\":\"render-column\",\"renderKey\":\"6491a\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"span\":{\"format\":\"value\",\"code\":5,\"valueType\":\"number\",\"payload\":{},\"renderValue\":5}},\"renderSlots\":{\"default\":[{\"componentId\":\"grid-d16a5\",\"type\":\"render-grid\",\"name\":\"grid\",\"renderKey\":\"2528d\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"margin-horizontal\":{\"format\":\"value\",\"code\":0,\"payload\":{},\"valueType\":\"number\",\"renderValue\":0},\"margin-vertical\":{\"format\":\"value\",\"code\":0,\"payload\":{},\"valueType\":\"number\",\"renderValue\":0}},\"renderSlots\":{\"default\":[{\"componentId\":\"column-69d1e\",\"type\":\"render-column\",\"name\":\"render-column\",\"renderKey\":\"52dfb\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"span\":{\"format\":\"value\",\"code\":1,\"valueType\":\"number\",\"payload\":{},\"renderValue\":1}},\"renderSlots\":{\"default\":[{\"componentId\":\"text-d1d51\",\"type\":\"span\",\"name\":\"text\",\"renderKey\":\"03e36\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"title\":{\"format\":\"value\",\"code\":\"\",\"payload\":{},\"valueType\":\"string\",\"renderValue\":\"\"}},\"renderSlots\":{\"default\":{\"format\":\"variable\",\"component\":\"text\",\"code\":\"treeNodeData\",\"payload\":{\"variableData\":{\"val\":\"treeNodeData\",\"valType\":\"variable\"}},\"valueType\":\"text\",\"renderValue\":\"显示选中的树节点内容\"}},\"renderStyles\":{\"marginTop\":\"5px\",\"marginRight\":\"5px\",\"marginBottom\":\"5px\",\"marginLeft\":\"5px\",\"verticalAlign\":\"middle\",\"display\":\"block\",\"fontSize\":\"14px\",\"textAlign\":\"center\"},\"renderAlign\":{},\"renderPerms\":[]},{\"componentId\":\"table-f1921\",\"type\":\"widget-bk-table\",\"name\":\"table\",\"renderKey\":\"52f48\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"data\":{\"format\":\"value\",\"code\":[{\"prop1\":\"1-1\",\"prop2\":\"1-2\",\"prop3\":\"1-3\"},{\"prop1\":\"2-1\",\"prop2\":\"2-2\",\"prop3\":\"2-3\"},{\"prop1\":\"3-1\",\"prop2\":\"3-2\",\"prop3\":\"3-3\"}],\"payload\":{},\"valueType\":\"array\",\"renderValue\":[{\"prop1\":\"1-1\",\"prop2\":\"1-2\",\"prop3\":\"1-3\"},{\"prop1\":\"2-1\",\"prop2\":\"2-2\",\"prop3\":\"2-3\"},{\"prop1\":\"3-1\",\"prop2\":\"3-2\",\"prop3\":\"3-3\"}]},\"column-pick\":{\"format\":\"value\",\"code\":\"disabled\",\"renderValue\":\"disabled\",\"valueType\":\"string\",\"payload\":{}},\"pagination\":{\"format\":\"value\",\"code\":{\"current\":1,\"count\":3,\"limit\":10,\"showLimit\":false,\"show-total-count\":true},\"payload\":{\"type\":\"local\",\"val\":{\"show-total-count\":{\"format\":\"value\",\"val\":true,\"code\":\"\"},\"count\":{\"buildInVariableType\":\"SYSTEM\",\"customVariableCode\":\"\"},\"show-limit\":{\"format\":\"value\",\"val\":true,\"code\":\"\"},\"limit\":{\"format\":\"value\",\"val\":10,\"code\":\"\"},\"current\":{\"format\":\"value\",\"val\":1,\"code\":\"\"}}},\"valueType\":\"object\",\"renderValue\":{\"current\":1,\"count\":3,\"limit\":10,\"showLimit\":false,\"show-total-count\":true}},\"height\":{\"format\":\"value\",\"code\":\"\",\"payload\":{},\"valueType\":\"string\",\"renderValue\":\"\"},\"min-height\":{\"format\":\"value\",\"code\":\"auto\",\"renderValue\":\"auto\",\"valueType\":\"string\",\"payload\":{}},\"max-height\":{\"format\":\"value\",\"code\":\"\",\"payload\":{},\"valueType\":\"string\",\"renderValue\":\"\"},\"virtual-enabled\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"border\":{\"format\":\"value\",\"code\":[\"row\"],\"payload\":{},\"valueType\":\"array\",\"renderValue\":[\"row\"]},\"settings\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"row-class\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"string\",\"payload\":{}},\"row-style\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"string\",\"payload\":{}},\"cell-class\":{\"format\":\"value\",\"code\":\"\",\"renderValue\":\"\",\"valueType\":\"string\",\"payload\":{}},\"scroll-loading\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"show-overflow-tooltip\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"row-hover\":{\"format\":\"value\",\"code\":\"highlight\",\"renderValue\":\"highlight\",\"valueType\":\"string\",\"payload\":{}},\"is-row-select-enable\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}},\"resizer-way\":{\"format\":\"value\",\"code\":\"debounce\",\"renderValue\":\"debounce\",\"valueType\":\"string\",\"payload\":{}},\"show-head\":{\"format\":\"value\",\"code\":true,\"payload\":{},\"valueType\":\"boolean\",\"renderValue\":true},\"empty-text\":{\"format\":\"value\",\"code\":\"暂无数据\",\"renderValue\":\"暂无数据\",\"valueType\":\"string\",\"payload\":{}},\"stripe\":{\"format\":\"value\",\"code\":false,\"payload\":{},\"valueType\":\"boolean\",\"renderValue\":false},\"remotePagination\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"reserveExpand\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"asyncData\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"paginationHeight\":{\"format\":\"value\",\"code\":42,\"renderValue\":42,\"valueType\":\"number\",\"payload\":{}},\"colSortBehavior\":{\"format\":\"value\",\"code\":\"independent\",\"renderValue\":\"independent\",\"valueType\":\"string\",\"payload\":{}},\"shiftMultiChecked\":{\"format\":\"value\",\"code\":false,\"renderValue\":false,\"valueType\":\"boolean\",\"payload\":{}},\"scrollbar\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}}},\"renderSlots\":{\"default\":{\"format\":\"value\",\"component\":\"bk-table-column\",\"code\":[{\"label\":\"第一列\",\"prop\":\"prop1\",\"sortable\":false,\"type\":\"\"},{\"label\":\"第二列\",\"prop\":\"prop2\",\"sortable\":false,\"type\":\"\"},{\"label\":\"第三列\",\"prop\":\"prop3\",\"sortable\":false,\"type\":\"\"}],\"payload\":{},\"valueType\":\"table-list\",\"renderValue\":[{\"label\":\"第一列\",\"prop\":\"prop1\",\"sortable\":false,\"type\":\"\"},{\"label\":\"第二列\",\"prop\":\"prop2\",\"sortable\":false,\"type\":\"\"},{\"label\":\"第三列\",\"prop\":\"prop3\",\"sortable\":false,\"type\":\"\"}]}},\"renderStyles\":{\"marginTop\":\"5px\",\"marginRight\":\"5px\",\"marginBottom\":\"5px\",\"marginLeft\":\"5px\",\"verticalAlign\":\"middle\"},\"renderAlign\":{},\"renderPerms\":[]}]},\"renderStyles\":{\"paddingTop\":\"5px\",\"paddingRight\":\"5px\",\"paddingBottom\":\"5px\",\"paddingLeft\":\"5px\",\"minHeight\":\"80px\",\"width\":\"100%\"},\"renderAlign\":{},\"renderPerms\":[]}]},\"renderStyles\":{\"backgroundColor\":\"#FFFFFF\"},\"renderAlign\":{},\"renderPerms\":[]}]},\"renderStyles\":{\"paddingTop\":\"5px\",\"paddingRight\":\"5px\",\"paddingBottom\":\"5px\",\"paddingLeft\":\"5px\",\"minHeight\":\"80px\",\"width\":\"83.3333%\"},\"renderAlign\":{},\"renderPerms\":[]}]},\"renderStyles\":{\"backgroundColor\":\"#F9FAFC\"},\"renderAlign\":{},\"renderPerms\":[]}]},\"renderStyles\":{\"width\":\"100%\"},\"renderAlign\":{},\"renderPerms\":[]}]},\"renderStyles\":{},\"renderAlign\":{},\"renderPerms\":[]}",
+        "previewImg": "",
+        "isOffcial": 0,
+        "offcialType": null,
+        "categoryId": 2925,
+        "parentId": null,
+        "belongProjectId": 2935,
+        "versionId": null,
+        "framework": "vue3"
+    },
+    "functions": [
+        {
+            "id": 12566,
+            "updateTime": "2024-11-29T02:16:47.000Z",
+            "createTime": "2024-11-29T02:16:47.000Z",
+            "createUser": "",
+            "updateUser": "",
+            "deleteFlag": 0,
+            "funcName": "getTreeNodeData",
+            "funcCode": "getTreeNodeData",
+            "funcParams": [
+                "nodemsg"
+            ],
+            "remoteParams": [],
+            "funcBody": "/**\r\n* 1. 空白函数，函数内容完全由用户编写\r\n* 2. 这里编辑管理的函数，用于画布页面的属性配置和事件绑定\r\n* 3. 用于属性时：函数需要返回值，该返回值将会赋值给属性\r\n* 4. 用于事件时：函数将在事件触发时执行\r\n* 5. 可以使用 lesscode.变量标识，必须通过编辑器自动补全功能选择对应变量，来获取或者修改变量值\r\n* 6. 可以使用 lesscode.方法名，必须通过编辑器自动补全功能选择对应函数，来调用项目中的函数\r\n* 7. 用于属性时示例如下：\r\n* return Promise.all([\r\n*     this.$http.get('/api/data/getMockData'),\r\n*     this.$http.post('/api/data/postMockData', { value: 2 })\r\n* ]).then(([getDataRes, postDataRes]) => {\r\n*     return [...getDataRes.data, ...postDataRes.data]\r\n* })\r\n*/\r\nconsole.log(nodemsg.name)\r\nlesscode['${prop:treeNodeData}'] = nodemsg.name\r\n",
+            "projectId": 2935,
+            "funcGroupId": 3645,
+            "funcSummary": "",
+            "funcType": 0,
+            "funcMethod": "get",
+            "withToken": 0,
+            "funcApiData": "",
+            "publicFlag": 0,
+            "funcApiUrl": "",
+            "order": null,
+            "versionId": null,
+            "apiHeader": null,
+            "apiQuery": null,
+            "apiBody": null,
+            "apiChoosePath": null
+        }
+    ],
+    "vars": [
+        {
+            "id": 17506,
+            "updateTime": "2024-11-29T02:16:47.000Z",
+            "createTime": "2024-11-29T02:16:47.000Z",
+            "createUser": "",
+            "updateUser": "",
+            "deleteFlag": 0,
+            "variableName": "treeNodeData",
+            "variableCode": "treeNodeData",
+            "projectId": 2935,
+            "versionId": null,
+            "pageCode": "",
+            "valueType": 0,
+            "defaultValue": {
+                "all": "显示选中的树节点内容",
+                "prod": "",
+                "stag": "",
+                "preview": ""
+            },
+            "defaultValueType": 0,
+            "effectiveRange": 0,
+            "description": "",
+            "useInfo": [
+                {
+                    "pageCode": "topologicaltreeusingsample",
+                    "useInfo": [
+                        {
+                            "source": "slot",
+                            "key": "default",
+                            "code": "treeNodeData",
+                            "componentId": "text-3405ee4d"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
