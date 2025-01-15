@@ -5,6 +5,7 @@
         :width="796"
         :transfer="true"
         :title="isAdd ? $t('新增变量') : $t('编辑变量')"
+        ext-cls="variable-sideslider"
         @update:isShow="close"
     >
         <section slot="content" class="variable-form-main">
@@ -409,6 +410,9 @@
 </script>
 
 <style lang="postcss" scoped>
+    .variable-sideslider.lc-sideslider.bk-sideslider {
+        z-index: 2500;
+    }
     .variable-form-main {
         padding: 21px 34px;
     }
