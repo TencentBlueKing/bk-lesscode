@@ -266,7 +266,7 @@
                                 </bk-option>
                             </bk-select>
                         </div>
-                        <div v-if="item.type !== 'customCol' && projectDetail.framework !== 'vue3'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                        <div v-if="isAllSort(item)" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
                             <bk-checkbox :checked="item.sortable" @change="val => handleChange(val, 'sortable', index)" style="font-size: 12px;">
                                 {{$t('全局排序')}}
                                 <i
@@ -278,17 +278,32 @@
                                 ></i>
                             </bk-checkbox>
                         </div>
-                        <div v-if="item.type !== 'customCol' && projectDetail.framework !== 'vue3'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
-                            <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
-                                {{$t('全局过滤')}}
-                                <i
-                                    class="bk-icon icon-info"
-                                    v-bk-tooltips="{
-                                        content: $t('当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【filter-change】事件中处理过滤逻辑。其它情况系统会自动处理'),
-                                        maxWidth: '400'
-                                    }"
-                                ></i>
-                            </bk-checkbox>
+                        <div v-if="item.type !== 'customCol'" class="template-item" :class="(item.type === 'selection' || item.type === 'index') ? 'disabled' : ''">
+                            <template v-if="projectDetail.framework !== 'vue3'">
+                                <bk-checkbox :checked="item.filterable" @change="val => handleChange(val, 'filterable', index)" style="font-size: 12px;">
+                                    {{$t('全局过滤')}}
+                                    <i
+                                        class="bk-icon icon-info"
+                                        v-bk-tooltips="{
+                                            content: $t('当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【filter-change】事件中处理过滤逻辑。其它情况系统会自动处理'),
+                                            maxWidth: '400'
+                                        }"
+                                    ></i>
+                                </bk-checkbox>
+                            </template>
+                            <template v-else>
+                                <div class="template-item" v-if="slotConfig?.name.includes('vxe-table-column')">
+                                    <div class="label">
+                                        <span
+                                            class="g-config-subline"
+                                            v-bk-tooltips="{
+                                                content: $t('当属性【data】是【函数】，且属性【pagination】是【远程分页】时，需要用户在【filter-change】事件中处理过滤逻辑。其它情况系统会自动处理'),
+                                                maxWidth: '400' }"
+                                        >{{ $t('全局过滤') }}</span>
+                                    </div>
+                                    <TypeJson name="过滤" :default-value="item.filterable || []" type="array" :change="(name, val) => handleChange(val, 'filterable', index)" />
+                                </div>
+                            </template>
                         </div>
                     </section>
                 </section>
@@ -311,7 +326,7 @@
         watch,
         getCurrentInstance
     } from 'vue'
-
+    import TypeJson from '@/element-materials/modifier/component/props/components/strategy/json-view.vue'
     const generateColumn = (index) => ({
         label: window.i18n.t('选项{0}', { n: index }),
         prop: `prop${index}`,
@@ -366,7 +381,8 @@
         name: 'slot-table',
 
         components: {
-            EditFunctionDialog
+            EditFunctionDialog,
+            TypeJson
         },
 
         props: {
@@ -400,9 +416,18 @@
                     { id: 'status', name: window.i18n.t('状态列') }
                 ]
                 if (this.projectDetail.framework === 'vue3') {
-                    list.splice(1, 2)
+                    const addType = []
+                    if (this.slotConfig?.name.includes('vxe-table-column')) {
+                        addType.push({ id: 'seq', name: window.i18n.t('索引序号列（从 1 开始）') }, { id: 'status', name: window.i18n.t('状态列') })
+                    }
+                    list.splice(2, 2, ...addType)
                 }
                 return list
+            },
+            isAllSort () {
+                return (item) => {
+                    return item.type !== 'customCol' ? (this.projectDetail.framework !== 'vue3' ? true : !!this.slotConfig?.name.includes('vxe-table-column')) : false
+                }
             }
         },
 
