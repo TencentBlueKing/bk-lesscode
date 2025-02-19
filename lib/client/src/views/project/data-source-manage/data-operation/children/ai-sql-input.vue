@@ -74,6 +74,9 @@
                 if (currentMessage.content?.includes('SELECT')) {
                     currentMessage.content = currentMessage.content?.replace('```sql', '')?.replace('```', '')
                     currentMessage.status = 'success'
+                    if (!currentMessage.content?.endsWith(';')) {
+                        currentMessage.content = currentMessage.content + ';'
+                    }
                     props.generateSql(currentMessage.content)
                 } else {
                     currentMessage.status = 'error'
