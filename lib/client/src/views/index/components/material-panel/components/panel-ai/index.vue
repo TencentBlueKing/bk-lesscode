@@ -174,7 +174,7 @@
                     pushMessage(RoleType.Assistant, `请提供以下信息：${result.join('、')}`, '')
                     // 上下文携带完整对话
                     aiHelper.pushPrompt(userInput, 'user')
-                    aiHelper.pushPrompt(`请提供以下信息：${result.join('、')}`, 'system')
+                    aiHelper.pushPrompt(`请提供以下信息：${result.join('、')}`, 'assistant')
                 } else {
                     // 返回loading message
                     currentMessage.value = pushMessage(RoleType.Assistant, '正在努力生成中，请稍等', MessageStatus.Loading)
