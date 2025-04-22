@@ -12,11 +12,16 @@
             <form-section :title="$t('表单配置')">
                 <bk-form-item>
                     <form-binding-config
+                        :tpl-id="tplId"
+                        :node-id="nodeData.id"
                         :nodes="nodes"
                         :config="nodeData.config"
+                        :container-pages="containerPages"
+                        :is-first-and-manual-node="isFirstAndManualNode"
                         @edit="handleOpenNodeFieldsEdit"
                         @select="handleSelectBinding"
-                        @delete="handleDeleteBinding" />
+                        @delete="handleDeleteBinding"
+                        @updateContainerPages="handleUpdateContainerPages" />
                 </bk-form-item>
             </form-section>
         </bk-form>
@@ -29,12 +34,14 @@
             :form-type="nodeFieldsCanvasData.data.formType"
             :form-id="nodeFieldsCanvasData.data.formId"
             :related-id="nodeFieldsCanvasData.data.relatedId"
+            @backToFlow="emit('close')"
             @close="nodeFieldsCanvasData.show = false"
             @saved="handleFieldsCanvasFormSaved" />
     </div>
 </template>
 <script>
-    import { defineComponent, ref, getCurrentInstance } from 'vue'
+    import { inject, defineComponent, ref, onMounted, onUnmounted, getCurrentInstance } from 'vue'
+    import { difference, cloneDeep } from 'lodash'
     import FormSection from '../components/form-section.vue'
     import NodeName from '../components/node-name.vue'
     import NodeProcessor from '../components/node-processor.vue'
@@ -43,6 +50,7 @@
     import { useStore } from '@/store'
     import { useRoute } from '@/router'
     import { uuid } from '@/common/util'
+    import { createNode } from '@/element-materials/core/static/create-node'
 
     export default defineComponent({
         name: 'ManualNodeConfig',
@@ -63,9 +71,12 @@
             detail: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            isFirstAndManualNode: Boolean
         },
         setup (props, { emit }) {
+            const { register, unregister } = inject('saveContext')
+
             const store = useStore()
             const route = useRoute()
             const instance = getCurrentInstance()
@@ -82,6 +93,15 @@
 
             const nodeData = ref(JSON.parse(JSON.stringify(props.detail)))
             const basicFormRef = ref(null)
+            const relatedPages = ref({ // 关联页面原数据
+                formContainer: [],
+                dataManageContainer: []
+            })
+            const relatedPagesLoading = ref(false)
+            const containerPages = ref({ // 关联页面编辑数据
+                formContainer: [],
+                dataManageContainer: []
+            })
             const nodeFieldsCanvasData = ref({
                 show: false,
                 data: {
@@ -89,6 +109,14 @@
                     id: 0,
                     relatedId: 0
                 }
+            })
+
+            onMounted(() => {
+                getRelatedPages()
+                register(saveRelatedPages)
+            })
+            onUnmounted(() => {
+                unregister(saveRelatedPages)
             })
 
             const handleOpenNodeFieldsEdit = ({ formType, formId, relatedId }) => {
@@ -125,7 +153,7 @@
                     width: 600,
                     extCls: 'delete-page-dialog',
                     title: window.i18n.t('确认删除表单配置？'),
-                    subTitle: window.i18n.t('已生成的关联数据表及表数据将继续保留'),
+                    subTitle: window.i18n.t('已生成的关联表单页容器组件将被移除，关联数据管理页容器组件、关联数据表及表数据将继续保留'),
                     theme: 'danger',
                     confirmLoading: true,
                     confirmFn: async () => {
@@ -134,9 +162,117 @@
                         nodeData.value.config.relatedId = 0
                         nodeData.value.isDraft = true
                         updateNodeBinding(true)
+                        // 移除关联页面对应的表单容器
+                        containerPages.value.formContainer = []
+                        saveRelatedPages()
                         return true
                     }
                 })
+            }
+
+             // 获取关联页面列表
+             const getRelatedPages = async() => {
+                relatedPagesLoading.value = true
+                const res = await store.dispatch('flow/tpl/getRelatedPages', {
+                    tplId: props.tplId,
+                    params: {
+                        versionId: store.getters['projectVersion/currentVersionId'],
+                        containers: ['formContainer', 'dataManageContainer'],
+                        nodeId: nodeData.value.id
+                    }
+                })
+
+                relatedPages.value = {
+                    formContainer: (res.formContainer || []).map(item => item.id),
+                    dataManageContainer: (res.dataManageContainer || []).map(item => item.id)
+                }
+                containerPages.value = cloneDeep(relatedPages.value)
+                relatedPagesLoading.value = false
+            }
+
+            const handleUpdateContainerPages = (val) => {
+                containerPages.value = val
+            }
+
+            const getPagesDiffConfig = async () => {
+                const diff = {
+                    added: {},
+                    removed: {
+                        formContainer: [],
+                        dataManageContainer: []
+                    }
+                }
+                const { formType, formId, relatedId } = nodeData.value.config
+                const nodeFormId = formType === 'USE_FORM' ? relatedId : formId 
+
+                const formList = await store.dispatch('nocode/form/getNewFormList', {
+                    projectId: route.params.projectId,
+                    versionId: store.getters['projectVersion/currentVersionId'],
+                })
+                const formDetail = formList.find(form => form.id === formId)
+                for (let containerType in containerPages.value) {
+                    const addedIds = difference(containerPages.value[containerType], relatedPages.value[containerType])
+                    const removedIds = difference(relatedPages.value[containerType], containerPages.value[containerType])
+                    if (addedIds.length > 0) {
+
+                        addedIds.forEach(pageId => {
+                            const type = containerType === 'formContainer' ? 'widget-form-container' : 'widget-data-manage-container'
+                            const config = createNode(type, store.getters['project/projectDetail'].framework).toJSON()
+
+                            if (containerType === 'formContainer') {
+                                const dataSource = {
+                                    action: 'executeFlow',
+                                    flowTplId: props.tplId,
+                                    nodeId: nodeData.value.id,
+                                    type: "USE_FORM",
+                                    relatedId: nodeFormId,
+                                    id: '',
+                                    tableName: ''
+                                }
+                                const fields = JSON.parse(formDetail.content || '[]')
+                                config.renderProps.dataSource.code = dataSource
+                                config.renderProps.dataSource.renderValue = dataSource
+                                config.renderProps.fields.code = fields
+                                config.renderProps.fields.renderValue = fields
+                            } else {
+                                config.renderProps.flowTplId.code = props.tplId
+                                config.renderProps.flowTplId.renderValue = props.tplId
+                                config.renderProps.nodeId.code = nodeData.value.id
+                                config.renderProps.nodeId.renderValue = nodeData.value.id
+                                config.renderProps.formId.code = nodeFormId
+                                config.renderProps.formId.renderValue = nodeFormId
+                            }
+
+                            if (!diff.added[pageId]) {
+                                diff.added[pageId] = [config]
+                            } else {
+                                diff.added[pageId].push(config)
+                            }
+                        })
+                    }
+                    if (removedIds.length > 0) {
+                        diff.removed[containerType] = removedIds.map(id => ({
+                            pageId: id,
+                            nodeId: nodeData.value.id
+                        }))
+                    }
+                }
+                return diff
+            }
+
+            const saveRelatedPages = async() => {
+                const pagesDiffConfig = await getPagesDiffConfig()
+                console.log(pagesDiffConfig)
+
+                await store.dispatch('flow/tpl/updateRelatedPages', {
+                    tplId: props.tplId,
+                    params: {
+                        versionId: store.getters['projectVersion/currentVersionId'],
+                        added: pagesDiffConfig.added,
+                        removed: pagesDiffConfig.removed
+                    }
+                })
+                relatedPages.value = cloneDeep(containerPages.value)
             }
 
             // 表单画布编辑后保存
@@ -176,13 +312,17 @@
                 rules,
                 nodeData,
                 basicFormRef,
+                containerPages,
+                relatedPagesLoading,
                 nodeFieldsCanvasData,
                 handleSelectBinding,
                 handleDeleteBinding,
                 handleOpenNodeFieldsEdit,
+                handleUpdateContainerPages,
                 handleFieldsCanvasFormSaved,
                 handleChange,
-                validate
+                validate,
+                emit
             }
         }
     })

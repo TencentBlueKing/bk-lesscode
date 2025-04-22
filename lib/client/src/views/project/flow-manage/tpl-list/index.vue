@@ -54,13 +54,22 @@
                     </div>
                 </template>
             </bk-table-column>
+            <bk-table-column :label="$t('关联流程管理页')">
+                <template slot-scope="{ row }">
+                    <TagsViewer
+                        v-if="row.flowManagePages.length"
+                        :tags="row.flowManagePages.map(item => item.name)"
+                        @tagClick="handlePageClick($event, row.flowManagePages)" />
+                    <template v-else>--</template>
+                </template>
+            </bk-table-column>
             <bk-table-column :label="$t('table_创建人')" property="createUser"></bk-table-column>
             <bk-table-column :label="$t('table_创建时间')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     {{ row.createTime | timeFormatter }}
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('操作')" width="140">
+            <bk-table-column :label="$t('操作')" fixed="right" width="140">
                 <template slot-scope="{ row }">
                     <router-link
                         class="link-btn"
@@ -93,8 +102,9 @@
     import dayjs from 'dayjs'
     import { mapGetters } from 'vuex'
     import { getRouteFullPath } from 'shared/route'
-    import CreateFlowDialog from './create-flow-dialog.vue'
     import { renderHeaderAddTitle } from '@/common/util'
+    import CreateFlowDialog from './create-flow-dialog.vue'
+    import TagsViewer from '../tpl-edit/components/tags-viewer.vue'
 
     export default {
         name: 'flowList',
@@ -104,7 +114,8 @@
             }
         },
         components: {
-            CreateFlowDialog
+            CreateFlowDialog,
+            TagsViewer
         },
         data () {
             return {
@@ -213,6 +224,13 @@
             handlerClearSearch (searchName) {
                 this.keyword = searchName
                 this.getFlowList()
+            },
+            handlePageClick (val, pageList) {
+                const page = pageList.find(page => page.name === val);
+                if (page) {
+                    // 新标签页打开页面编辑画布
+                    window.open(`/project/${this.$route.params.projectId}/page/${page.id}/`, '_blank')
+                }
             },
             renderHeaderAddTitle
         }

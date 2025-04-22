@@ -13,16 +13,18 @@
                 :nodes="nodes"
                 :edges="edges"
                 :detail="detail.data"
+                :is-first-and-manual-node="isFirstAndManualNode"
+                @close="handleClose"
                 @change="handleChange"
                 @update="handleUpdate" />
             <div class="save-btn">
-                <bk-button theme="primary" @click="handleSave">{{ $t('保存') }}</bk-button>
+                <bk-button theme="primary" :loading="savePending" @click="handleSave">{{ $t('保存') }}</bk-button>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import { defineComponent, ref, computed, onMounted, getCurrentInstance } from 'vue'
+    import { defineComponent, ref, provide, computed, onMounted, getCurrentInstance } from 'vue'
     import { NODES } from '../render-graph/constants'
     import { useStore } from '@/store'
     import ManualNode from './manual-node/index.vue'
@@ -62,6 +64,8 @@
 
             const detailCopy = ref({})
             const nodeFormRef = ref(null)
+            const saveHandlers = ref(new Set()) // 子组件自定义保存处理函数集合
+            const savePending = ref(false)
 
             const nodeTypeName = computed(() => {
                 if (props.detail.data.type) {
@@ -70,6 +74,16 @@
                 }
 
                 return ''
+            })
+
+            // 是否为流程的第一个任务节点，且为人工节点类型
+            const isFirstAndManualNode = computed(() => {
+                const startNode = props.nodes.find(node => node.type === 'Start')
+                const firstEdge = props.edges.find(edge => edge.source.cell === startNode.id)
+                if (firstEdge && firstEdge.target.cell === props.detail.data.id) {
+                    return true
+                }
+                return false
             })
 
             onMounted(() => {
@@ -90,20 +104,35 @@
             }
 
             const handleSave = async () => {
-                await nodeFormRef.value.validate()
-                detailCopy.value.isDraft = false
-                await store.dispatch('flow/tpl/updateNode', { id: props.tplId, data: detailCopy.value })
-                emit('update', detailCopy.value)
-                instance.proxy.$bkMessage({
-                    theme: 'success',
-                    message: window.i18n.t('保存成功')
-                })
+                try {
+                    savePending.value = true
+                    await nodeFormRef.value.validate()
+                    detailCopy.value.isDraft = false
+                    await Promise.all(Array.from(saveHandlers.value).map(handler => handler()))
+                    await store.dispatch('flow/tpl/updateNode', { id: props.tplId, data: detailCopy.value })
+                    emit('update', detailCopy.value)
+                    instance.proxy.$bkMessage({
+                        theme: 'success',
+                        message: window.i18n.t('保存成功')
+                    })
+                } catch (e) {
+                    console.error(e.message || e)
+                } finally {
+                    savePending.value = false
+                }
             }
+
+            provide('saveContext', {
+                register: (saver) => saveHandlers.value.add(saver),
+                unregister: (saver) => saveHandlers.value.delete(saver)
+            });
 
             return {
                 nodeConfigCompMap,
                 nodeTypeName,
                 nodeFormRef,
+                savePending,
+                isFirstAndManualNode,
                 handleClose,
                 handleChange,
                 handleSave,
