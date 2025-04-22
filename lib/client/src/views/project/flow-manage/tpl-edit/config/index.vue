@@ -20,11 +20,12 @@
                             :show-word-limit="true" />
                     </bk-form-item>
                     <bk-form-item :label="$t('关联流程管理页')">
-                        <CreateRelatedPage
-                            type="widget-flow-manage-container"
-                            :value="flowContainerPages"
-                            :tpl-id="tplDetail.id"
-                            @update="flowContainerPages = $event" />
+                            <PageBoundEditor
+                                type="widget-flow-manage-container"
+                                :pages="flowContainerPages"
+                                :tpl-id="tplDetail.id"
+                                :nodes="JSON.parse(tplDetail.nodes || '[]')"
+                                @update="handleUpdateFlowContainerPages"/>
                     </bk-form-item>
                 </section>
                 <section class="form-section">
@@ -57,20 +58,19 @@
             </bk-button>
             <bk-button @click="$router.push({ name: 'flowTplList' })">{{ $t('取消') }}</bk-button>
         </div>
-        <CreateRelatedPage :show.sync="createRelatedPageShow" type="widget-flow-manage-container" :tpl-id="tplDetail.id" />
     </section>
 </template>
 <script>
     import { mapState, mapGetters } from 'vuex'
     import { createNode } from '@/element-materials/core/static/create-node'
     import NotifyTypeConfig from './notify-type-config.vue'
-    import CreateRelatedPage from '../canvas/node-detail/components/create-related-page.vue'
+    import PageBoundEditor from '../canvas/node-detail/manual-node/form-binding-config/page-bound-editor.vue'
 
     export default {
         name: 'FlowTplConfig',
         components: {
             NotifyTypeConfig,
-            CreateRelatedPage,
+            PageBoundEditor
         },
         props: {
             tplDetail: {
@@ -148,6 +148,12 @@
                 this.relatedPages = flowManageContainer.map(page => page.id)
                 this.flowContainerPages = this.relatedPages.slice()
                 this.relatedPagesLoading = false
+            },
+            handleUpdateFlowContainerPages ({ pages, refresh }) {
+                this.flowContainerPages = pages
+                if (refresh) {
+                    this.relatedPages = [...pages]
+                }
             },
             handleNotifyChange (val) {
                 this.formData.notifyConfig = val

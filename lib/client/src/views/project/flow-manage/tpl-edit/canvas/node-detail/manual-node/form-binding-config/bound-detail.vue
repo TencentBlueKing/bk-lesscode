@@ -37,6 +37,7 @@
                 <div class="content">
                     <PageBoundEditor
                         type="widget-form-container"
+                        :is-tag-view-mode="true"
                         :tpl-id="tplId"
                         :node-id="nodeId"
                         :formId="formType === 'USE_FORM' ? relatedId : formId"
@@ -50,6 +51,7 @@
                 <div class="content">
                     <PageBoundEditor
                         type="widget-data-manage-container"
+                        :is-tag-view-mode="true"
                         :tpl-id="tplId"
                         :node-id="nodeId"
                         :formId="formType === 'USE_FORM' ? relatedId : formId"
@@ -135,8 +137,11 @@
                 formListLoading.value = false
             }
 
-            const handleUpdateContainerPages = (type, val) => {
-                emit('updateContainerPages', { ...props.containerPages, [type]: val.slice() })
+            const handleUpdateContainerPages = (type, { pages, refresh }) => {
+                emit('updateContainerPages', {
+                    pages: { ...props.containerPages, [type]: pages.slice()},
+                    refresh
+                })
             }
 
             const handleBtnClick = (action) => {

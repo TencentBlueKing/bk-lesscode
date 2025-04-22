@@ -31,7 +31,10 @@
             const tagListRef = ref(null)
             const moreTagRef = ref(null)
 
-            watch(() => props.tags, () => {
+            watch(() => props.tags, async() => {
+                visibleTags.value = []
+                hiddenTags.value = props.tags.slice()
+                await nextTick()
                 calcLayout()
             })
 

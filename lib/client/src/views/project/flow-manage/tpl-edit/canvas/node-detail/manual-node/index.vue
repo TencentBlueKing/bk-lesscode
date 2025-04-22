@@ -190,8 +190,12 @@
                 relatedPagesLoading.value = false
             }
 
-            const handleUpdateContainerPages = (val) => {
-                containerPages.value = val
+            const handleUpdateContainerPages = ({ pages, refresh }) => {
+                containerPages.value = pages
+                if (refresh) {
+                    relatedPages.value = cloneDeep(containerPages.value)
+                }
+                console.log('pages: ', containerPages.value, relatedPages.value)
             }
 
             const getPagesDiffConfig = async () => {

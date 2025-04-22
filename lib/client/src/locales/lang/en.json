@@ -271,7 +271,7 @@
   "流程提单": "Create Ticket",
   "请选择流程": "Please Select Flow Template",
   "表单点击提交按钮后的后续行为。": "The subsequent actions after clicking the submit button on the form.",
-  "数据存储：将表单填写的数据存入数据表；": "Data storage: Store the data filled in the form in the data table;",
+  "数据存储：将填写的表单数据存入数据表；": "Data storage: Store the data filled in the form in the data table;",
   "流程提单：执行流程并将表单数据注入执行的上下文中。可选择的流程需要满足第一个节点为人工节点，且已配置表单。": "Process bill of lading: Execute the process and inject form data into the execution context. The selectable process needs to meet the requirement that the first node is a human node and the form has been configured.",
   "表单预览": "Form Preview",
   "当前流程节点中已绑定表单不可复用": "The bound form in the current flow node cannot be reused",
