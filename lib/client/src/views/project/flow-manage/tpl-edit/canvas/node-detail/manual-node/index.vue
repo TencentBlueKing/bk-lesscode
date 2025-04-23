@@ -195,7 +195,6 @@
                 if (refresh) {
                     relatedPages.value = cloneDeep(containerPages.value)
                 }
-                console.log('pages: ', containerPages.value, relatedPages.value)
             }
 
             const getPagesDiffConfig = async () => {
@@ -266,7 +265,6 @@
 
             const saveRelatedPages = async() => {
                 const pagesDiffConfig = await getPagesDiffConfig()
-                console.log(pagesDiffConfig)
 
                 await store.dispatch('flow/tpl/updateRelatedPages', {
                     tplId: props.tplId,
