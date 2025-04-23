@@ -1,6 +1,6 @@
 <template>
     <section>
-        <ai-sql-input v-if="isAiValid" :table-data="tableData" :generate-sql="generateAiSql" />
+        <ai-sql-input :key='JSON.stringify(tableData)' v-if="isAiValid" :table-data="tableData" :generate-sql="generateAiSql" />
         <bk-divider></bk-divider>
         <section class="sql-query">
             <monaco

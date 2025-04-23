@@ -13,6 +13,7 @@
     import Vue from 'vue'
     import {
         init,
+        addGlobalProperty,
         render,
         registerComponent,
         vue3Resource,
@@ -23,6 +24,7 @@
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/app.css'
     import '../../../../server/project-template/vue3/project-init-code/lib/client/src/css/reset.css'
   
+    import pureAxios from '@/api/pureAxios.js'
     import mobileHeader from '@/components/render/mobile/common/mobile-header/mobile-header'
     import { i18nConfig } from '@/locales/i18n.js'
     import { bundless } from '@blueking/bundless'
@@ -133,7 +135,7 @@
             await this.loadFile()
         },
         mounted () {
-            this.minHeight = window.innerHeight
+            this.resizeHandler()
             window.addEventListener('resize', this.resizeHandler)
         },
         destroyed () {
@@ -229,12 +231,13 @@
                     const store = createStore(storeConfig, Vuex)
                     // render
                     setTimeout(() => {
+                        addGlobalProperty('$http', pureAxios)
                         render({
                             component: res,
                             selector: '#preview-template',
                             i18nConfig,
                             store
-                        })
+                        })                   
                     }, 50)
                 } catch (err) {
                     this.$bkMessage({
@@ -244,7 +247,16 @@
                 }
             },
             resizeHandler () {
+                // 更新最小高度
                 this.minHeight = window.innerHeight
+
+                // 仅在移动端预览时，设置swiper-container的高度
+                if (this.renderType === 'MOBILE') {
+                    const swiperContainer = document.querySelector('swiper-container')
+                    if (swiperContainer) {
+                        swiperContainer.style.setProperty('height', `${this.mobileHeight}px`)
+                    }
+                }
             }
         },
         template: `<div :style="{ height: windowHeight + 'px' }" v-bkloading="{ isLoading }">
@@ -279,7 +291,7 @@
         .simulator-preview {
             z-index: 0;
             position: absolute;
-            pointer-events: none;
+            pointer-events: auto;
             .mobile-content-wrapper {
                 height: 100%;
                 width: 100%;

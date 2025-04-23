@@ -445,7 +445,7 @@
             handleClear () {
                 this.$emit('on-change', {
                     code: '',
-                    renderValue: this.formData.renderValue
+                    renderValue: ''
                 })
             },
             showDeleteVariable (row) {
@@ -478,6 +478,7 @@
             },
 
             getUseInfoTips (useInfo) {
+                if (!Array.isArray(useInfo)) return []
                 const tips = [];
                 (useInfo || []).forEach((item) => {
                     const { pageCode, funcCode, type, useInfo, parentVariableId } = item

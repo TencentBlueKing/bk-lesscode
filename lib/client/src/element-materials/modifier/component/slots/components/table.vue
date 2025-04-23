@@ -389,21 +389,27 @@
 
         computed: {
             ...mapGetters('functions', ['funcGroups']),
-            ...mapGetters('project', ['projectDetail'])
+            ...mapGetters('project', ['projectDetail']),
+            typeList () {
+                // normal 是因为必须有一个id，空字符串select会有重影
+                const list = [
+                    { id: 'normal', name: window.i18n.t('普通数据列') },
+                    { id: 'selection', name: window.i18n.t('多选框列') },
+                    // { id: 'expand', name: '展开按钮' },
+                    { id: 'index', name: window.i18n.t('索引序号列（从 1 开始）') },
+                    { id: 'status', name: window.i18n.t('状态列') }
+                ]
+                if (this.projectDetail.framework === 'vue3') {
+                    list.splice(1, 2)
+                }
+                return list
+            }
         },
 
         setup (props) {
             const type = props.type
             const column = ref([])
             const showMethod = ref(false)
-            // normal 是因为必须有一个id，空字符串select会有重影
-            const typeList = [
-                { id: 'normal', name: window.i18n.t('普通数据列') },
-                { id: 'selection', name: window.i18n.t('多选框列') },
-                // { id: 'expand', name: '展开按钮' },
-                { id: 'index', name: window.i18n.t('索引序号列（从 1 开始）') },
-                { id: 'status', name: window.i18n.t('状态列') }
-            ]
             const alignList = [
                 { id: 'left', name: window.i18n.t('左对齐') },
                 { id: 'center', name: window.i18n.t('居中') },
@@ -484,7 +490,6 @@
             return {
                 column,
                 showMethod,
-                typeList,
                 alignList,
                 statusList,
                 comparatorList,
