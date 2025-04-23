@@ -171,7 +171,7 @@
                 const page = pageList.value.find(page => page.pageName === val);
                 if (page) {
                     // 新标签页打开页面编辑画布
-                    window.open(`/project/${projectId.value}/page/${page.id}/`, '_blank')
+                    window.open(`/project/${projectId.value}/page/${page.pageId}/`, '_blank')
                 }
             }
 
