@@ -77,7 +77,7 @@
             const relatedPageNames = computed(() => {
                 console.log(pageList.value, props.pages)
                 return props.pages.map(item => {
-                    const page = pageList.value.find(page => page.id === item)
+                    const page = pageList.value.find(page => page.pageId === item)
                     return page ? page.pageName : item
                 })
             })
