@@ -10,7 +10,7 @@
         searchable
         @toggle="handleSelectToggle"
         @change="handleChange">
-        <bk-option v-for="option in pageList" :key="option.id" :id="option.id" :name="option.pageName" />
+        <bk-option v-for="option in pageList" :key="option.pageId" :id="option.pageId" :name="option.pageName" />
         <div slot="extension" class="selector-extension" @click="handleCreatePage">
             <i class="bk-icon icon-plus-circle"></i>
             {{ $t('新建关联') }}
@@ -75,7 +75,6 @@
             const projectId = computed(() => store.getters['project/currentProjectId'])
             const pageList = computed(() => store.state.route.layoutPageList.filter(item => item.pageType === 'PC'))
             const relatedPageNames = computed(() => {
-                console.log(pageList.value, props.pages)
                 return props.pages.map(item => {
                     const page = pageList.value.find(page => page.pageId === item)
                     return page ? page.pageName : item
@@ -101,7 +100,7 @@
 
             // 新建页面弹窗点击确定按钮后的回调，新建页面后将容器组件配置更新到页面content字段
             const onCreatePageConfirm = async () => {
-                // const pageDetail = await createPageDialogRef.value.save()
+                const pageDetail = await createPageDialogRef.value.save()
 
                 const config = createNode(props.type, store.getters['project/projectDetail'].framework).toJSON()
                 if (props.type === 'widget-flow-manage-container') {
