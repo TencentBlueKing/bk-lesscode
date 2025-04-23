@@ -158,14 +158,14 @@
                     versionId: store.getters['projectVersion/currentVersionId']
                 })
 
-                handleChange([...props.pages, pageDetail.id], true)
+                emit('update', { pages: [...props.pages, pageDetail.id], refresh: true })
 
                 const { href } = router.resolve({ name: 'new', params: { project: projectId.value, pageId: pageDetail.id } })
                 window.open(href, '_blank')
             }
 
-            const handleChange = (pages, refresh = false) => {
-                emit('update', { pages, refresh })
+            const handleChange = (pages) => {
+                emit('update', { pages, refresh: false })
             }
 
             const handlePageTagClick = (val) => {
