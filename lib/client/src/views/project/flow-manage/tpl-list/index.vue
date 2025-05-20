@@ -7,7 +7,35 @@
             :closable="true">
         </bk-alert>
         <div class="operation-area">
-            <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button>
+            <div class="btns-wrapper">
+                <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button>
+                <bk-popover
+                    ext-cls="workbench-related-popover"
+                    placement="bottom-start"
+                    width="300"
+                    theme="light"
+                    :arrow="false">
+                    <bk-button>{{ `${$t('关联流程工作台页')}（${workbenchPages.length}）` }}</bk-button>
+                    <template #content>
+                        <div class="popover-content">
+                            <div class="page-list">
+                                <bk-exception v-if="workbenchPages.length === 0" type="empty" scene="part" />
+                                <div
+                                    v-for="page in workbenchPages"
+                                    class="page-item"
+                                    :key="page.id"
+                                    @click="handleWorkbenchPageClick(page.id)">
+                                    {{ page.name }}
+                                </div>
+                            </div>
+                            <div class="create-new-btn" @click="$refs.createPageDialogRef.isShow = true">
+                                <i class="bk-icon icon-plus-circle"></i>
+                                新建关联
+                            </div>
+                        </div>
+                    </template>
+                </bk-popover>
+            </div>
             <div class="search-wrapper">
                 <bk-input
                     v-model="keyword"
@@ -96,6 +124,7 @@
             <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </bk-table>
         <create-flow-dialog :show.sync="isCreateDialogShow"></create-flow-dialog>
+        <create-page-dialog ref="createPageDialogRef" platform="PC" :use-custom-save="true" @save="handleCreateWorkbenchPageConfirm" />
     </div>
 </template>
 <script>
@@ -103,6 +132,8 @@
     import { mapGetters } from 'vuex'
     import { getRouteFullPath } from 'shared/route'
     import { renderHeaderAddTitle } from '@/common/util'
+    import { createNode } from '@/element-materials/core/static/create-node'
+    import CreatePageDialog from '@/components/project/create-page-dialog.vue'
     import CreateFlowDialog from './create-flow-dialog.vue'
     import TagsViewer from '../tpl-edit/components/tags-viewer.vue'
 
@@ -114,11 +145,14 @@
             }
         },
         components: {
+            CreatePageDialog,
             CreateFlowDialog,
-            TagsViewer
+            TagsViewer,
         },
         data () {
             return {
+                workbenchPagesLoading: false,
+                workbenchPages: [],
                 flowList: [],
                 pageRouteList: [],
                 listLoading: true,
@@ -137,6 +171,7 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('project', { projectDetail: 'projectDetail' }),
             projectId () {
                 return this.$route.params.projectId
             },
@@ -156,6 +191,7 @@
         },
         mounted () {
             this.getPageRouteList()
+            this.getWorkbenchPages()
             this.getFlowList()
         },
         methods: {
@@ -164,6 +200,11 @@
                 const res = await this.$store.dispatch('route/query', { projectId: this.projectId, versionId: this.versionId || '' })
                 this.pageRouteList = res
                 this.pageRouteListLoading = false
+            },
+            async getWorkbenchPages () {
+                this.workbenchPagesLoading = true
+                this.workbenchPages = await this.$store.dispatch('flow/tpl/getRelatedWokbenchPages')
+                this.workbenchPagesLoading = false
             },
             async getFlowList () {
                 this.listLoading = true
@@ -183,6 +224,31 @@
                 this.flowList = list
                 this.pagination.count = count
                 this.listLoading = false
+            },
+            handleWorkbenchPageClick (id) {
+                window.open(`/project/${this.projectId}/page/${id}/`, '_blank')
+            },
+            async handleCreateWorkbenchPageConfirm () {
+                // 新建页面弹窗点击确定按钮后的回调，新建页面后将容器组件配置更新到页面content字段
+                const pageDetail = await this.$refs.createPageDialogRef.save()
+                const config = createNode('widget-flow-workbench-container', this.projectDetail.framework).toJSON()
+                await this.$store.dispatch('flow/tpl/updateRelatedPageContent', {
+                    params: {
+                        pageId: pageDetail.id,
+                        content: JSON.stringify([config])
+                    }
+                })
+                this.$refs.createPageDialogRef.isShow = false
+
+                this.$store.dispatch('route/getProjectPageRoute', {
+                    projectId: this.projectId,
+                    versionId: this.versionId
+                })
+
+                this.getWorkbenchPages()
+
+                const { href } = this.$router.resolve({ name: 'new', params: { project: this.projectId, pageId: pageDetail.id } })
+                window.open(href, '_blank')
             },
             async handleArchiveConfirm () {
                 const params = {
@@ -246,6 +312,13 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 20px;
+        .btns-wrapper {
+            display: flex;
+            align-items: center;
+            .bk-button:not(:last-child) {
+                margin-right: 8px;
+            }
+        }
     }
     .search-wrapper {
         display: flex;
@@ -307,5 +380,48 @@
     .link-btn {
         color: #3a84ff;
         cursor: pointer;
+    }
+</style>
+<style lang="postcss">
+    .workbench-related-popover {
+        .tippy-tooltip {
+            padding: 0;
+        }
+        .popover-content {
+            color: #313238;
+            .page-list {
+                max-height: 320px;
+                background-color: #fff;
+                overflow-y: auto;
+                .page-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 0 8px 0 12px;
+                    height: 32px;
+                    font-size: 12px;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: #f0f5ff;
+                        color: #3a84ff;
+                    }
+                }
+            }
+            .create-new-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 40px;
+                font-size: 12px;
+                background: #fafbfd;
+                border-top: 1px solid #dcdee5;
+                cursor: pointer;
+                &:hover {
+                    color: #3a84ff;
+                }
+                i {
+                    margin-right: 4px;
+                }
+            }
+        }
     }
 </style>

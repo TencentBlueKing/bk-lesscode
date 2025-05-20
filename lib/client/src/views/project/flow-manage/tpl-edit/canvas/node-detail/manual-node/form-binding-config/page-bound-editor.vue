@@ -144,7 +144,6 @@
                 }
 
                 await store.dispatch('flow/tpl/updateRelatedPageContent', {
-                    tplId: props.tplId,
                     params: {
                         pageId: pageDetail.id,
                         content: JSON.stringify([config])
