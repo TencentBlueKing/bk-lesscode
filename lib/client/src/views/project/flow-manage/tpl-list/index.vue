@@ -14,6 +14,7 @@
                     multiple
                     searchable
                     class="workbench-related-select"
+                    :popover-width="300"
                     @toggle="handleWorkbenchSelectToggle">
                     <bk-button slot="trigger" :loading="workbenchPagesLoading">{{ `${$t('关联流程工作台页')}（${workbenchPages.length}）` }}</bk-button>
                     <bk-option v-for="option in pageListOptions" :key="option.pageId" :id="option.pageId" :name="option.pageName" />
@@ -342,6 +343,10 @@
             }
         }
     }
+    .selector-extension {
+        text-align: center;
+        cursor: pointer;
+    }
     .search-wrapper {
         display: flex;
         align-items: center;
@@ -402,48 +407,5 @@
     .link-btn {
         color: #3a84ff;
         cursor: pointer;
-    }
-</style>
-<style lang="postcss">
-    .workbench-related-popover {
-        .tippy-tooltip {
-            padding: 0;
-        }
-        .popover-content {
-            color: #313238;
-            .page-list {
-                max-height: 320px;
-                background-color: #fff;
-                overflow-y: auto;
-                .page-item {
-                    display: flex;
-                    align-items: center;
-                    padding: 0 8px 0 12px;
-                    height: 32px;
-                    font-size: 12px;
-                    cursor: pointer;
-                    &:hover {
-                        background-color: #f0f5ff;
-                        color: #3a84ff;
-                    }
-                }
-            }
-            .create-new-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 40px;
-                font-size: 12px;
-                background: #fafbfd;
-                border-top: 1px solid #dcdee5;
-                cursor: pointer;
-                &:hover {
-                    color: #3a84ff;
-                }
-                i {
-                    margin-right: 4px;
-                }
-            }
-        }
     }
 </style>
