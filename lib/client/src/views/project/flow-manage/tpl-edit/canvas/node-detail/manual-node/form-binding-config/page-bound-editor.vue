@@ -211,5 +211,6 @@
     }
     .selector-extension {
         text-align: center;
+        cursor: pointer;
     }
 </style>

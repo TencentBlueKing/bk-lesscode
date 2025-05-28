@@ -188,9 +188,9 @@
                 const pagesDiff = this.getPagesDiff()
                 if (pagesDiff.added.length || pagesDiff.removed.length) {
                     await this.$store.dispatch('flow/tpl/updateRelatedPages', {
-                        tplId: this.tplDetail.id,
                         params: {
                             versionId: this.versionId,
+                            tplId: this.tplDetail.id,
                             added: pagesDiff.added.reduce((acc, cur) => {
                                 const config = this.getFlowManageContainerConfig()
                                 if (acc[cur]) {
@@ -201,7 +201,7 @@
                                 return acc
                             }, {}),
                             removed: {
-                               flowManageContainer:  pagesDiff.removed.map(pageId => ({ pageId }))
+                               flowManageContainer: pagesDiff.removed.map(pageId => ({ pageId }))
                             }
                         }
                     })

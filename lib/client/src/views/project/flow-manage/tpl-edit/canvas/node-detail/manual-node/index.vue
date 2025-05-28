@@ -274,9 +274,9 @@
                 const pagesDiffConfig = await getPagesDiffConfig()
 
                 await store.dispatch('flow/tpl/updateRelatedPages', {
-                    tplId: props.tplId,
                     params: {
                         versionId: store.getters['projectVersion/currentVersionId'],
+                        tplId: props.tplId,
                         added: pagesDiffConfig.added,
                         removed: pagesDiffConfig.removed
                     }

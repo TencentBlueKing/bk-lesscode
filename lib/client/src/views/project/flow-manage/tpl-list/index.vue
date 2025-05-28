@@ -9,32 +9,20 @@
         <div class="operation-area">
             <div class="btns-wrapper">
                 <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button>
-                <bk-popover
-                    ext-cls="workbench-related-popover"
-                    placement="bottom-start"
-                    width="300"
-                    theme="light"
-                    :arrow="false">
-                    <bk-button>{{ `${$t('关联流程工作台页')}（${workbenchPages.length}）` }}</bk-button>
-                    <template #content>
-                        <div class="popover-content">
-                            <div class="page-list">
-                                <bk-exception v-if="workbenchPages.length === 0" type="empty" scene="part" />
-                                <div
-                                    v-for="page in workbenchPages"
-                                    class="page-item"
-                                    :key="page.id"
-                                    @click="handleWorkbenchPageClick(page.id)">
-                                    {{ page.name }}
-                                </div>
-                            </div>
-                            <div class="create-new-btn" @click="$refs.createPageDialogRef.isShow = true">
-                                <i class="bk-icon icon-plus-circle"></i>
-                                新建关联
-                            </div>
-                        </div>
-                    </template>
-                </bk-popover>
+                <bk-select
+                    v-model="workbenchRelatedIds"
+                    multiple
+                    searchable
+                    class="workbench-related-select"
+                    :popover-width="300"
+                    @toggle="handleWorkbenchSelectToggle">
+                    <bk-button slot="trigger" :loading="workbenchPagesLoading">{{ `${$t('关联流程工作台页')}（${workbenchPages.length}）` }}</bk-button>
+                    <bk-option v-for="option in pageListOptions" :key="option.pageId" :id="option.pageId" :name="option.pageName" />
+                    <div slot="extension" class="selector-extension" @click="$refs.createPageDialogRef.isShow = true">
+                        <i class="bk-icon icon-plus-circle"></i>
+                        {{ $t('新建关联') }}
+                    </div>
+                </bk-select>
             </div>
             <div class="search-wrapper">
                 <bk-input
@@ -153,6 +141,7 @@
             return {
                 workbenchPagesLoading: false,
                 workbenchPages: [],
+                workbenchRelatedIds: [],
                 flowList: [],
                 pageRouteList: [],
                 listLoading: true,
@@ -175,36 +164,38 @@
             projectId () {
                 return this.$route.params.projectId
             },
-            routeMap () {
-                const routeMap = {}
-                this.pageRouteList.forEach((route) => {
-                    const { id, pageId, layoutId } = route
-                    routeMap[pageId] = {
-                        id,
-                        pageId,
-                        layoutId,
-                        fullPath: id ? getRouteFullPath(route) : null
+            pageListOptions () {
+                const pageList = this.pageRouteList.slice()
+                const pinToTopPages = []
+                this.workbenchPages.forEach((page) => {
+                    const index = pageList.findIndex(item => page.id === item.id)
+                    if (index > -1) {
+                        const page = pageList.splice(index, 1)[0]
+                        pinToTopPages.push(page)
                     }
                 })
-                return routeMap
+                return [...pinToTopPages, ...pageList]
             }
         },
         mounted () {
-            this.getPageRouteList()
-            this.getWorkbenchPages()
-            this.getFlowList()
+            this.initData()
         },
         methods: {
-            async getPageRouteList () {
-                this.pageRouteListLoading = true
-                const res = await this.$store.dispatch('route/query', { projectId: this.projectId, versionId: this.versionId || '' })
-                this.pageRouteList = res
-                this.pageRouteListLoading = false
+            async initData () {
+                await this.getWorkbenchPages()
+                this.getPageRouteList()
+                this.getFlowList()
             },
             async getWorkbenchPages () {
                 this.workbenchPagesLoading = true
                 this.workbenchPages = await this.$store.dispatch('flow/tpl/getRelatedWokbenchPages')
+                this.workbenchRelatedIds = this.workbenchPages.map(page => page.id)
                 this.workbenchPagesLoading = false
+            },
+            async getPageRouteList () {
+                this.pageRouteListLoading = true
+                this.pageRouteList = await this.$store.dispatch('route/query', { projectId: this.projectId, versionId: this.versionId || '' })
+                this.pageRouteListLoading = false
             },
             async getFlowList () {
                 this.listLoading = true
@@ -227,6 +218,41 @@
             },
             handleWorkbenchPageClick (id) {
                 window.open(`/project/${this.projectId}/page/${id}/`, '_blank')
+            },
+            async handleWorkbenchSelectToggle (val) {
+                if (!val) {
+                    const setA = new Set(this.workbenchPages.map(page => page.id));
+                    const setB = new Set(this.workbenchRelatedIds);
+                    const addedIds = Array.from(setB).filter(x => !setA.has(x));
+                    const removedIds = Array.from(setA).filter(x => !setB.has(x));
+
+                    if (addedIds.length === 0 && removedIds.length === 0) {
+                        return
+                    }
+
+                    await this.$store.dispatch('flow/tpl/updateRelatedPages', {
+                        params: {
+                            versionId: this.versionId,
+                            added: addedIds.reduce((acc, cur) => {
+                                const config = createNode('widget-flow-workbench-container', this.projectDetail.framework).toJSON()
+                                if (acc[cur]) {
+                                    acc[cur].push(config)
+                                } else {
+                                    acc[cur] = [config]
+                                }
+                                return acc
+                            }, {}),
+                            removed: {
+                                flowWorkbenchContainer: removedIds.map(pageId => ({ pageId })),
+                            }
+                        }
+                    })
+                    this.getWorkbenchPages()
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: this.$t('更新成功')
+                    })
+                }
             },
             async handleCreateWorkbenchPageConfirm () {
                 // 新建页面弹窗点击确定按钮后的回调，新建页面后将容器组件配置更新到页面content字段
@@ -281,12 +307,6 @@
                 this.pagination.current = 1
                 this.getFlowList()
             },
-            handlePreviewPage (pageId, pageCode) {
-                const route = this.routeMap[pageId]
-                const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
-                const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${pageCode}`
-                window.open(routerUrl, '_blank')
-            },
             handlerClearSearch (searchName) {
                 this.keyword = searchName
                 this.getFlowList()
@@ -318,7 +338,14 @@
             .bk-button:not(:last-child) {
                 margin-right: 8px;
             }
+            .workbench-related-select {
+                border: none;
+            }
         }
+    }
+    .selector-extension {
+        text-align: center;
+        cursor: pointer;
     }
     .search-wrapper {
         display: flex;
@@ -380,48 +407,5 @@
     .link-btn {
         color: #3a84ff;
         cursor: pointer;
-    }
-</style>
-<style lang="postcss">
-    .workbench-related-popover {
-        .tippy-tooltip {
-            padding: 0;
-        }
-        .popover-content {
-            color: #313238;
-            .page-list {
-                max-height: 320px;
-                background-color: #fff;
-                overflow-y: auto;
-                .page-item {
-                    display: flex;
-                    align-items: center;
-                    padding: 0 8px 0 12px;
-                    height: 32px;
-                    font-size: 12px;
-                    cursor: pointer;
-                    &:hover {
-                        background-color: #f0f5ff;
-                        color: #3a84ff;
-                    }
-                }
-            }
-            .create-new-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 40px;
-                font-size: 12px;
-                background: #fafbfd;
-                border-top: 1px solid #dcdee5;
-                cursor: pointer;
-                &:hover {
-                    color: #3a84ff;
-                }
-                i {
-                    margin-right: 4px;
-                }
-            }
-        }
     }
 </style>
