@@ -10,7 +10,7 @@
         searchable
         @toggle="handleSelectToggle"
         @change="handleChange">
-        <bk-option v-for="option in pageList" :key="option.id" :id="option.id" :name="option.pageName" />
+        <bk-option v-for="option in pageList" :key="option.pageId" :id="option.pageId" :name="option.pageName" />
         <div slot="extension" class="selector-extension" @click="handleCreatePage">
             <i class="bk-icon icon-plus-circle"></i>
             {{ $t('新建关联') }}
@@ -75,9 +75,8 @@
             const projectId = computed(() => store.getters['project/currentProjectId'])
             const pageList = computed(() => store.state.route.layoutPageList.filter(item => item.pageType === 'PC'))
             const relatedPageNames = computed(() => {
-                console.log(pageList.value, props.pages)
                 return props.pages.map(item => {
-                    const page = pageList.value.find(page => page.id === item)
+                    const page = pageList.value.find(page => page.pageId === item)
                     return page ? page.pageName : item
                 })
             })
@@ -101,7 +100,7 @@
 
             // 新建页面弹窗点击确定按钮后的回调，新建页面后将容器组件配置更新到页面content字段
             const onCreatePageConfirm = async () => {
-                // const pageDetail = await createPageDialogRef.value.save()
+                const pageDetail = await createPageDialogRef.value.save()
 
                 const config = createNode(props.type, store.getters['project/projectDetail'].framework).toJSON()
                 if (props.type === 'widget-flow-manage-container') {
@@ -145,7 +144,6 @@
                 }
 
                 await store.dispatch('flow/tpl/updateRelatedPageContent', {
-                    tplId: props.tplId,
                     params: {
                         pageId: pageDetail.id,
                         content: JSON.stringify([config])
@@ -158,21 +156,21 @@
                     versionId: store.getters['projectVersion/currentVersionId']
                 })
 
-                handleChange([...props.pages, pageDetail.id], true)
+                emit('update', { pages: [...props.pages, pageDetail.id], refresh: true })
 
                 const { href } = router.resolve({ name: 'new', params: { project: projectId.value, pageId: pageDetail.id } })
                 window.open(href, '_blank')
             }
 
-            const handleChange = (pages, refresh = false) => {
-                emit('update', { pages, refresh })
+            const handleChange = (pages) => {
+                emit('update', { pages, refresh: false })
             }
 
             const handlePageTagClick = (val) => {
                 const page = pageList.value.find(page => page.pageName === val);
                 if (page) {
                     // 新标签页打开页面编辑画布
-                    window.open(`/project/${projectId.value}/page/${page.id}/`, '_blank')
+                    window.open(`/project/${projectId.value}/page/${page.pageId}/`, '_blank')
                 }
             }
 
@@ -213,5 +211,6 @@
     }
     .selector-extension {
         text-align: center;
+        cursor: pointer;
     }
 </style>

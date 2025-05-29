@@ -10,7 +10,7 @@
                 <node-processor :processor="nodeData.config.processor" @change="handleChange('processor', $event)" />
             </form-section>
             <form-section :title="$t('表单配置')">
-                <bk-form-item>
+                <bk-form-item property="formType" error-display-type="normal">
                     <form-binding-config
                         :tpl-id="tplId"
                         :node-id="nodeData.id"
@@ -86,6 +86,13 @@
                     {
                         required: true,
                         message: window.i18n.t('必填项'),
+                        trigger: 'blur'
+                    }
+                ],
+                formType: [
+                    {
+                        required: true,
+                        message: window.i18n.t('人工节点表单配置不能为空'),
                         trigger: 'blur'
                     }
                 ]
@@ -267,9 +274,9 @@
                 const pagesDiffConfig = await getPagesDiffConfig()
 
                 await store.dispatch('flow/tpl/updateRelatedPages', {
-                    tplId: props.tplId,
                     params: {
                         versionId: store.getters['projectVersion/currentVersionId'],
+                        tplId: props.tplId,
                         added: pagesDiffConfig.added,
                         removed: pagesDiffConfig.removed
                     }

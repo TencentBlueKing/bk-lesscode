@@ -7,7 +7,23 @@
             :closable="true">
         </bk-alert>
         <div class="operation-area">
-            <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button>
+            <div class="btns-wrapper">
+                <bk-button theme="primary" @click="isCreateDialogShow = true">{{ $t('新建') }}</bk-button>
+                <bk-select
+                    v-model="workbenchRelatedIds"
+                    multiple
+                    searchable
+                    class="workbench-related-select"
+                    :popover-width="300"
+                    @toggle="handleWorkbenchSelectToggle">
+                    <bk-button slot="trigger" :loading="workbenchPagesLoading">{{ `${$t('关联流程工作台页')}（${workbenchPages.length}）` }}</bk-button>
+                    <bk-option v-for="option in pageListOptions" :key="option.pageId" :id="option.pageId" :name="option.pageName" />
+                    <div slot="extension" class="selector-extension" @click="$refs.createPageDialogRef.isShow = true">
+                        <i class="bk-icon icon-plus-circle"></i>
+                        {{ $t('新建关联') }}
+                    </div>
+                </bk-select>
+            </div>
             <div class="search-wrapper">
                 <bk-input
                     v-model="keyword"
@@ -96,6 +112,7 @@
             <empty-status slot="empty" :type="emptyType" @clearSearch="handlerClearSearch"></empty-status>
         </bk-table>
         <create-flow-dialog :show.sync="isCreateDialogShow"></create-flow-dialog>
+        <create-page-dialog ref="createPageDialogRef" platform="PC" :use-custom-save="true" @save="handleCreateWorkbenchPageConfirm" />
     </div>
 </template>
 <script>
@@ -103,6 +120,8 @@
     import { mapGetters } from 'vuex'
     import { getRouteFullPath } from 'shared/route'
     import { renderHeaderAddTitle } from '@/common/util'
+    import { createNode } from '@/element-materials/core/static/create-node'
+    import CreatePageDialog from '@/components/project/create-page-dialog.vue'
     import CreateFlowDialog from './create-flow-dialog.vue'
     import TagsViewer from '../tpl-edit/components/tags-viewer.vue'
 
@@ -114,11 +133,15 @@
             }
         },
         components: {
+            CreatePageDialog,
             CreateFlowDialog,
-            TagsViewer
+            TagsViewer,
         },
         data () {
             return {
+                workbenchPagesLoading: false,
+                workbenchPages: [],
+                workbenchRelatedIds: [],
                 flowList: [],
                 pageRouteList: [],
                 listLoading: true,
@@ -137,32 +160,41 @@
         },
         computed: {
             ...mapGetters('projectVersion', { versionId: 'currentVersionId' }),
+            ...mapGetters('project', { projectDetail: 'projectDetail' }),
             projectId () {
                 return this.$route.params.projectId
             },
-            routeMap () {
-                const routeMap = {}
-                this.pageRouteList.forEach((route) => {
-                    const { id, pageId, layoutId } = route
-                    routeMap[pageId] = {
-                        id,
-                        pageId,
-                        layoutId,
-                        fullPath: id ? getRouteFullPath(route) : null
+            pageListOptions () {
+                const pageList = this.pageRouteList.slice()
+                const pinToTopPages = []
+                this.workbenchPages.forEach((page) => {
+                    const index = pageList.findIndex(item => page.id === item.id)
+                    if (index > -1) {
+                        const page = pageList.splice(index, 1)[0]
+                        pinToTopPages.push(page)
                     }
                 })
-                return routeMap
+                return [...pinToTopPages, ...pageList]
             }
         },
         mounted () {
-            this.getPageRouteList()
-            this.getFlowList()
+            this.initData()
         },
         methods: {
+            async initData () {
+                await this.getWorkbenchPages()
+                this.getPageRouteList()
+                this.getFlowList()
+            },
+            async getWorkbenchPages () {
+                this.workbenchPagesLoading = true
+                this.workbenchPages = await this.$store.dispatch('flow/tpl/getRelatedWokbenchPages')
+                this.workbenchRelatedIds = this.workbenchPages.map(page => page.id)
+                this.workbenchPagesLoading = false
+            },
             async getPageRouteList () {
                 this.pageRouteListLoading = true
-                const res = await this.$store.dispatch('route/query', { projectId: this.projectId, versionId: this.versionId || '' })
-                this.pageRouteList = res
+                this.pageRouteList = await this.$store.dispatch('route/query', { projectId: this.projectId, versionId: this.versionId || '' })
                 this.pageRouteListLoading = false
             },
             async getFlowList () {
@@ -183,6 +215,66 @@
                 this.flowList = list
                 this.pagination.count = count
                 this.listLoading = false
+            },
+            handleWorkbenchPageClick (id) {
+                window.open(`/project/${this.projectId}/page/${id}/`, '_blank')
+            },
+            async handleWorkbenchSelectToggle (val) {
+                if (!val) {
+                    const setA = new Set(this.workbenchPages.map(page => page.id));
+                    const setB = new Set(this.workbenchRelatedIds);
+                    const addedIds = Array.from(setB).filter(x => !setA.has(x));
+                    const removedIds = Array.from(setA).filter(x => !setB.has(x));
+
+                    if (addedIds.length === 0 && removedIds.length === 0) {
+                        return
+                    }
+
+                    await this.$store.dispatch('flow/tpl/updateRelatedPages', {
+                        params: {
+                            versionId: this.versionId,
+                            added: addedIds.reduce((acc, cur) => {
+                                const config = createNode('widget-flow-workbench-container', this.projectDetail.framework).toJSON()
+                                if (acc[cur]) {
+                                    acc[cur].push(config)
+                                } else {
+                                    acc[cur] = [config]
+                                }
+                                return acc
+                            }, {}),
+                            removed: {
+                                flowWorkbenchContainer: removedIds.map(pageId => ({ pageId })),
+                            }
+                        }
+                    })
+                    this.getWorkbenchPages()
+                    this.$bkMessage({
+                        theme: 'success',
+                        message: this.$t('更新成功')
+                    })
+                }
+            },
+            async handleCreateWorkbenchPageConfirm () {
+                // 新建页面弹窗点击确定按钮后的回调，新建页面后将容器组件配置更新到页面content字段
+                const pageDetail = await this.$refs.createPageDialogRef.save()
+                const config = createNode('widget-flow-workbench-container', this.projectDetail.framework).toJSON()
+                await this.$store.dispatch('flow/tpl/updateRelatedPageContent', {
+                    params: {
+                        pageId: pageDetail.id,
+                        content: JSON.stringify([config])
+                    }
+                })
+                this.$refs.createPageDialogRef.isShow = false
+
+                this.$store.dispatch('route/getProjectPageRoute', {
+                    projectId: this.projectId,
+                    versionId: this.versionId
+                })
+
+                this.getWorkbenchPages()
+
+                const { href } = this.$router.resolve({ name: 'new', params: { project: this.projectId, pageId: pageDetail.id } })
+                window.open(href, '_blank')
             },
             async handleArchiveConfirm () {
                 const params = {
@@ -215,12 +307,6 @@
                 this.pagination.current = 1
                 this.getFlowList()
             },
-            handlePreviewPage (pageId, pageCode) {
-                const route = this.routeMap[pageId]
-                const versionPath = `${this.versionId ? `/version/${this.versionId}` : ''}`
-                const routerUrl = `/preview/project/${this.projectId}${versionPath}${route.fullPath}?pageCode=${pageCode}`
-                window.open(routerUrl, '_blank')
-            },
             handlerClearSearch (searchName) {
                 this.keyword = searchName
                 this.getFlowList()
@@ -246,6 +332,20 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 20px;
+        .btns-wrapper {
+            display: flex;
+            align-items: center;
+            .bk-button:not(:last-child) {
+                margin-right: 8px;
+            }
+            .workbench-related-select {
+                border: none;
+            }
+        }
+    }
+    .selector-extension {
+        text-align: center;
+        cursor: pointer;
     }
     .search-wrapper {
         display: flex;
