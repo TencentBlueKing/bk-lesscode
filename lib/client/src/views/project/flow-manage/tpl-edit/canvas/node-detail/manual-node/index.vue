@@ -213,13 +213,14 @@
                     }
                 }
                 const { formType, formId, relatedId } = nodeData.value.config
-                const nodeFormId = formType === 'USE_FORM' ? relatedId : formId 
+                const nodeFormId = formType === 'USE_FORM' ? relatedId : formId
 
                 const formList = await store.dispatch('nocode/form/getNewFormList', {
                     projectId: route.params.projectId,
                     versionId: store.getters['projectVersion/currentVersionId'],
                 })
-                const formDetail = formList.find(form => form.id === formId)
+                const formDetail = formList.find(form => form.id === nodeFormId)
+
                 for (let containerType in containerPages.value) {
                     const addedIds = difference(containerPages.value[containerType], relatedPages.value[containerType])
                     const removedIds = difference(relatedPages.value[containerType], containerPages.value[containerType])
