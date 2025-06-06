@@ -291,7 +291,8 @@
                         'folding-table',
                         'search-table',
                         'widget-bk-table',
-                        'widget-el-table'
+                        'widget-el-table',
+                        'widget-blueking-table'
                     ].includes(this.componentType)) {
                     // 默认同步 第一个 slot
                     const slotName = Object.keys(this.material.slots)[0]

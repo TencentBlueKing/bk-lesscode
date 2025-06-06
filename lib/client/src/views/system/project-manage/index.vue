@@ -59,6 +59,7 @@
                         @clear="handleSearchClear"
                         @enter="handleSearchEnter">
                     </bk-input>
+                    <frameworkTypeSelect class="framework-type-container" :type.sync="frameworkType" @filter="handleFrameworkFilter" />
                     <icon-button-toggle
                         v-if="filter !== 'archive'"
                         :icons="displayTypeIcons"
@@ -180,6 +181,7 @@
     import ListCard from './children/list-card.vue'
     import ListTable from './children/list-table.vue'
     import SetTemplateDialog from '../components/set-template-dialog.vue'
+    import frameworkTypeSelect from '@/components/template/framework-type-select.vue'
     import dayjs from '@/common/dayjs'
     
     export default {
@@ -192,6 +194,7 @@
             SetTemplateDialog,
             IconButtonToggle,
             SortSelect,
+            frameworkTypeSelect,
             [ListCard.name]: ListCard,
             [ListTable.name]: ListTable
         },
@@ -255,6 +258,7 @@
                 ],
                 listComponent: ListCard.name,
                 sort: 'createTime', // 应用的默认排序为id相当于创建时间
+                frameworkType: 'all',
                 projectListDefaultSort: [],
                 iamEnable: IAM_ENABLE
             }
@@ -321,6 +325,10 @@
                     // 当前非默认排序才需要执行一次排序
                     if (this.sort !== 'createTime') {
                         this.handleSortChange(this.sort)
+                    }
+
+                    if (this.frameworkType !== 'all') {
+                        this.handleFrameworkFilter()
                     }
                 } catch (e) {
                     console.error(e)
@@ -464,7 +472,7 @@
                 })
             },
             async handleReset (projectId) {
-                await  this.toggleArchive(projectId, 0)
+                await this.toggleArchive(projectId, 0)
             },
             async toggleArchive (projectId, isArchive) {
                 const action = isArchive === 1 ? '归档' : '恢复'
@@ -588,6 +596,16 @@
             },
             handlerClearSearch (searchEmpty) {
                 this.keyword = searchEmpty
+            },
+            handleFrameworkFilter () {
+                if (this.frameworkType !== 'all') {
+                    this.projectList = this.projectList.filter((item) => {
+                        const framework = item.framework || 'vue2'
+                        return framework === this.frameworkType
+                    })
+                } else {
+                    this.projectList = this.projectListDefaultSort.slice()
+                }
             }
         }
     }
@@ -643,6 +661,10 @@
                     font-style: normal;
                     margin: 0 .1em;
                 }
+            }
+            .framework-type-container {
+                margin-left: 8px;
+                margin-right: 0;
             }
 
             .archived-icon {
