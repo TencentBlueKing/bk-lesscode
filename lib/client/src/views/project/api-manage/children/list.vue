@@ -142,7 +142,11 @@
                     prop="updateUser"
                     sortable
                     show-overflow-tooltip
-                ></bk-table-column>
+                >
+                    <template slot-scope="{ row }">
+                        <display-name :value="row.updateUser" />
+                    </template>
+                </bk-table-column>
                 <bk-table-column
                     v-if="tableSetting.selectedFields.find((selectedField) => selectedField.id === 'updateTime')"
                     :label="$t('table_更新时间')"

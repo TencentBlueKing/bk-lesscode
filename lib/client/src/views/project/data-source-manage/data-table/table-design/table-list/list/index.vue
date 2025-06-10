@@ -42,7 +42,11 @@
             <bk-table-column :label="$t('table_存储引擎')" min-width="100">InnoDB</bk-table-column>
             <bk-table-column :label="$t('table_字符集')" min-width="100">utf8mb4</bk-table-column>
             <bk-table-column :label="$t('备注')" prop="summary" show-overflow-tooltip></bk-table-column>
-            <bk-table-column :label="$t('table_更新人')" prop="updateUser" show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_更新人')" show-overflow-tooltip>
+                <template slot-scope="{ row }">
+                    <display-name :value="row.updateUser" />
+                </template>
+            </bk-table-column>
             <bk-table-column :label="$t('table_更新时间')" prop="updateTime" width="160" :formatter="timeFormatter" show-overflow-tooltip></bk-table-column>
             <bk-table-column :label="$t('操作')" width="260">
                 <template slot-scope="props">

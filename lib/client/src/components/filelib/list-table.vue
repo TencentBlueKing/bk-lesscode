@@ -98,7 +98,11 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('table_创建人')" prop="createUser" min-width="110" sortable show-overflow-tooltip></bk-table-column>
+            <bk-table-column :label="$t('table_创建人')" min-width="120" sortable show-overflow-tooltip>
+                <template slot-scope="{ row }">
+                    <display-name :value="row.createUser" />
+                </template>
+            </bk-table-column>
             <bk-table-column :label="$t('table_创建时间')" prop="createTime" min-width="200" sortable show-overflow-tooltip>
                 <template v-slot="{ row }">
                     <span>{{row.createTime | time}}</span>

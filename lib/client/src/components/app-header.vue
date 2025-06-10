@@ -144,7 +144,7 @@
             const iamNoResourcesPerm = computed(() => store.getters['iamNoResourcesPerm'])
             
             const user = computed(() => store.getters['user'])
-            const userName = computed(() => user.value?.username ?? '')
+            const userName = computed(() => user.value?.display_name || user.value?.username)
             const showAlertNotice = computed(() => store.getters['showAlertNotice'])
 
             const logoUrl = computed(() => {

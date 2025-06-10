@@ -66,7 +66,11 @@
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('table_更新时间')" prop="updateTime" align="left" width="160" :formatter="timeFormatter" show-overflow-tooltip />
-                <bk-table-column :label="$t('table_更新人')" prop="updateUser" align="left" width="120" show-overflow-tooltip />
+                <bk-table-column :label="$t('table_更新人')" min-width="120" show-overflow-tooltip>
+                    <template slot-scope="{ row }">
+                        <display-name :value="row.updateUser" />
+                    </template>
+                </bk-table-column>
                 <bk-table-column :label="$t('操作')" prop="statusText" align="left" width="200">
                     <template slot-scope="{ row }">
                         <bk-button v-if="row.status === 0" text @click="handleUpdate(row)">{{ $t('更新') }}</bk-button>

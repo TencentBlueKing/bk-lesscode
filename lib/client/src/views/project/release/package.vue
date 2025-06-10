@@ -6,7 +6,11 @@
                     <bk-table-column :label="$t('table_版本号')" prop="version" show-overflow-tooltip></bk-table-column>
                     <bk-table-column :label="$t('table_创建时间')" prop="createTime" :formatter="timeFormatter" show-overflow-tooltip>
                     </bk-table-column>
-                    <bk-table-column :label="$t('table_创建人')" prop="createUser" show-overflow-tooltip></bk-table-column>
+                    <bk-table-column :label="$t('table_创建人')" show-overflow-tooltip>
+                        <template slot-scope="{ row }">
+                            <display-name :value="row.createUser" />
+                        </template>
+                    </bk-table-column>
                     <bk-table-column :label="$t('操作')">
                         <template slot-scope="{ row }">
                             <a class="download-link" :href="row.codeUrl">{{ $t('下载') }}</a>

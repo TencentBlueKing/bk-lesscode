@@ -66,7 +66,11 @@
                     </div>
                 </template>
             </bk-table-column>
-            <bk-table-column :label="$t('table_创建人')" property="createUser"></bk-table-column>
+            <bk-table-column :label="$t('table_创建人')" show-overflow-tooltip>
+                <template slot-scope="{ row }">
+                    <display-name :value="row.createUser" />
+                </template>
+            </bk-table-column>
             <bk-table-column :label="$t('table_创建时间')" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                     {{ row.createTime | timeFormatter }}
