@@ -31,13 +31,21 @@
                         </div>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="120" show-overflow-tooltip></bk-table-column>
+                <bk-table-column :label="$t('table_更新人')" min-width="120" show-overflow-tooltip>
+                    <template slot-scope="{ row }">
+                        <display-name :value="row.updateUser" />
+                    </template>
+                </bk-table-column>
                 <bk-table-column :label="$t('table_更新日期')" prop="updateTime" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{ row.updateTime | time }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('table_创建人')" prop="createUser" min-width="120" show-overflow-tooltip />
+                <bk-table-column :label="$t('table_创建人')" min-width="120" show-overflow-tooltip>
+                    <template slot-scope="{ row }">
+                        <display-name :value="row.createUser" />
+                    </template>
+                </bk-table-column>
                 <bk-table-column :label="$t('table_创建日期') " prop="operateDesc" min-width="150" show-overflow-tooltip>
                     <template slot-scope="{ row }">
                         <span>{{ row.createTime | time }}</span>

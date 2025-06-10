@@ -39,7 +39,9 @@
                                     </span>
                                     <div class="name" v-tooltips="template.templateName">{{template.templateName}}</div>
                                 </div>
-                                <div class="stat">{{ template.updateUser || template.createUser }}</div>
+                                <div class="stat">
+                                    <display-name :value="template.updateUser || template.createUser" />
+                                </div>
                             </div>
                             <div class="col">
                                 <bk-dropdown-menu :ref="`moreActionDropdown${template.id}`">

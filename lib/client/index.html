@@ -27,6 +27,10 @@
         <div id="app"></div>
         <script>
             var BK_STATIC_URL = '<%= process.env.BK_STATIC_URL %>'
+            // 当前这套蓝鲸环境是否是多租户环境
+            var BK_ENV_ENABLE_TENANT = '<%= process.env.BK_ENV_ENABLE_TENANT %>'
+            // lesscode是否开启多租户
+            var BK_LESSCODE_ENABLE_TENANT = '<%= process.env.BK_LESSCODE_ENABLE_TENANT %>'
             var BKPAAS_ENVIRONMENT = '<%= process.env.BK_PAAS_ENVIRONMENT %>'
             var BK_COMPONENT_API_URL = '<%= process.env.BK_COMPONENT_API_URL  %>'
             var BKPAAS_BK_DOMAIN = '<%= process.env.BKPAAS_BK_DOMAIN  %>'

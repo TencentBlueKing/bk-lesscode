@@ -143,7 +143,7 @@
             <template v-if="filter !== 'archive'">
                 <bk-table-column :label="$t('table_更新人')" prop="updateUser" min-width="90" show-overflow-tooltip>
                     <template v-slot="{ row }">
-                        {{getUpdateInfo(row).updateUser}}
+                        <display-name :value="getUpdateInfo(row).updateUser" />
                     </template>
                 </bk-table-column>
                 <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="200" show-overflow-tooltip>

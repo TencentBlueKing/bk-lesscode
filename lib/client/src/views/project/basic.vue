@@ -16,7 +16,7 @@
                     {{projectDetail.projectDesc}}
                 </bk-form-item>
                 <bk-form-item :label="$t('form_创建人：')">
-                    {{projectDetail.createUser}}
+                    <display-name :value="projectDetail.createUser" />
                 </bk-form-item>
                 <bk-form-item :label="$t('form_创建时间：')">
                     {{projectDetail.createTime | time}}

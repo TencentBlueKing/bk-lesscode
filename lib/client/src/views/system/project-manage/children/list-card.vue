@@ -46,7 +46,10 @@
                                 disabled: !(project.projectName && project.projectName.length > 20)
                             }">
                                 {{project.projectName}}</h3>
-                            <div class="stat">{{getUpdateInfoMessage(project)}}</div>
+                            <div class="stat" v-if="getUpdateInfo(project)?.updateUser">
+                                <display-name :value="getUpdateInfo(project)?.updateUser" />
+                                <span>{{getUpdateInfo(project)?.updateTimeFromNow}}</span>
+                            </div>
                         </div>
                         <div class="col">
                             <bk-dropdown-menu :ref="`moreActionDropdown${project.id}`">
@@ -165,7 +168,7 @@
                 default: ''
             }
         },
-        inject: ['getUpdateInfoMessage'],
+        inject: ['getUpdateInfo'],
         computed: {
             ...mapGetters(['iamNoResourcesPerm'])
         },

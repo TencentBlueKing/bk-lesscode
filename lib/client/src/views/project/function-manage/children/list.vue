@@ -45,7 +45,11 @@
                         <span>{{ $t(props.row.funcSummary) || '--' }}</span>
                     </template>
                 </bk-table-column>
-                <bk-table-column :label="$t('table_更新人')" prop="updateUser"></bk-table-column>
+                <bk-table-column :label="$t('table_更新人')" show-overflow-tooltip>
+                    <template slot-scope="{ row }">
+                        <display-name :value="row.updateUser" />
+                    </template>
+                </bk-table-column>
                 <bk-table-column :label="$t('table_更新时间')" prop="updateTime" min-width="125px" :formatter="timeFormatter" show-overflow-tooltip sortable></bk-table-column>
                 <bk-table-column :label="$t('引用')" show-overflow-tooltip>
                     <template slot-scope="props">
