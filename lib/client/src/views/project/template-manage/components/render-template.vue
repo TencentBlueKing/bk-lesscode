@@ -72,6 +72,7 @@
     import templateImportDialog from './template-import-dialog'
     import templateMixin from './template-mixin'
     import typeSelect from '@/components/project/type-select'
+    import { filterImgSrc } from '@/common/util'
 
     export default {
         components: {
@@ -257,7 +258,7 @@
             },
             getPreviewImg (previewImg) {
                 if (previewImg && previewImg.length > 30) {
-                    return previewImg
+                    return filterImgSrc(previewImg)
                 }
                 return preivewErrImg
             },

@@ -98,7 +98,8 @@
                             break
                         case 'array':
                         case 'object':
-                            renderVal = getValueFromString(val)
+                            // renderVal = getValueFromString(val)
+                            renderVal = val
                             break
                         case 'number':
                             renderVal = Number(val)

@@ -223,6 +223,7 @@
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import { PROJECT_TEMPLATE_TYPE, PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import { parseFuncAndVar } from '@/common/parse-function-var'
+    import { filterImgSrc } from '@/common/util'
     import LC from '@/element-materials/core'
     import frameworkTag from '@/components/framework-tag.vue'
     import {
@@ -433,7 +434,7 @@
             },
             getPreviewImg (previewImg) {
                 if (previewImg && previewImg.length > 20) {
-                    return previewImg
+                    return filterImgSrc(previewImg)
                 }
                 return preivewErrImg
             },
