@@ -108,7 +108,6 @@
 </template>
 <script>
     import { mapGetters } from 'vuex'
-    import tnpmVersionValid from '@/common/tnpm-version-valid'
     import { leaveConfirm } from '@/common/leave-confirm'
 
     const generatorData = (data = {}) => ({
@@ -227,7 +226,7 @@
                     { required: true, message: window.i18n.t('组件版本不能为空'), trigger: 'blur' },
                     {
                         validator: value => {
-                            return /^\d/.test(value) && tnpmVersionValid.re[tnpmVersionValid.t.FULL].test(value)
+                            return this.checkIsValidVersion(value)
                         },
                         message: window.i18n.t('版本号格式') + '：0.x.x',
                         trigger: 'blur'
@@ -248,6 +247,10 @@
             }
         },
         methods: {
+            checkIsValidVersion (val) {
+                const reg = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+                return reg.test(val)
+            },
             async fetchCategoryList () {
                 this.categoryList = await this.$store.dispatch('components/categoryList', {
                     belongProjectId: parseInt(this.$route.params.projectId)
