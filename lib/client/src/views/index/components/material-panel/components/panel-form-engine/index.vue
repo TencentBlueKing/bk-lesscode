@@ -6,9 +6,7 @@
             @on-change="handleSearch" />
         <section class="materials-container">
             <group-box v-show="widgetList.length > 0" group-name="容器" :list="containerMaterials">
-                <render-component :data="containerMaterials[0]" />
-                <render-component :data="containerMaterials[1]" />
-                <render-component :data="containerMaterials[2]" />
+                <render-component v-for="material in containerMaterials" :key="material.type" :data="material" />
             </group-box>
             <formEngineMaterial :list="widgetList" />
         </section>
@@ -55,10 +53,25 @@
         },
         {
             group: '容器',
-            icon: 'bk-drag-icon bk-drag-zidingyibiaoge',
+            icon: 'bk-drag-icon bk-drag-rongqi',
             name: 'form-container',
             type: 'widget-flow-manage-container',
             displayName: '流程管理容器',
+            order: 1,
+            events: [],
+            styles: [
+                'size',
+                'margin'
+            ],
+            renderStyles: {},
+            props: {}
+        },
+        {
+            group: '容器',
+            icon: 'bk-drag-icon bk-drag-flow',
+            name: 'flow-workbench-container',
+            type: 'widget-flow-workbench-container',
+            displayName: '流程工作台容器',
             order: 1,
             events: [],
             styles: [

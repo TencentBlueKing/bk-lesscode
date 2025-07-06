@@ -39,7 +39,7 @@
                         }"
                         :key="templateIndex">
                         <div class="item-img">
-                            <img :src="template.previewImg" />
+                            <img :src="filterImg(template.previewImg)" />
                             <div
                                 v-if="type === 'market' && !template.hasInstall"
                                 class="mask">
@@ -77,6 +77,7 @@
     import SearchBox from '../common/search-box'
     import SelectTab from '../common/select-tab'
     import { mapGetters } from 'vuex'
+    import { filterImgSrc } from '@/common/util'
 
     export default {
         name: 'template-panel',
@@ -208,6 +209,9 @@
             },
             createFallback (list, index) {
                 return LC.parseTemplate(JSON.parse(list[index].content))
+            },
+            filterImg (src) {
+                return filterImgSrc(src)
             },
             /**
              * @desc tab 切换

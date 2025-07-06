@@ -73,6 +73,7 @@
     import PreivewErrImg from '@/images/preview-error.png'
     import { PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import TemplateEditDialog from '@/views/project/template-manage/components/template-edit-dialog'
+    import { filterImgSrc } from '@/common/util'
 
     export default {
         name: 'page-from-template',
@@ -160,7 +161,7 @@
             },
             getPreviewImg (previewImg) {
                 if (previewImg && previewImg.length > 20) {
-                    return previewImg
+                    return filterImgSrc(previewImg)
                 }
                 return PreivewErrImg
             },

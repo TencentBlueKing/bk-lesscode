@@ -1,6 +1,6 @@
 {
   "name": "lesscode",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -74,7 +74,7 @@
     "@babel/plugin-proposal-class-properties": "7.18.6",
     "@babel/plugin-proposal-private-methods": "7.18.6",
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
-    "@bkui/apigateway-nodejs-sdk": "0.0.1-beta.52",
+    "@bkui/apigateway-nodejs-sdk": "0.0.2",
     "@blueking/ai-blueking": "^0.3.18",
     "@blueking/babel-preset-bk": "^2.1.0-beta.10",
     "@blueking/bkcharts": "^2.0.11-alpha.5",
@@ -113,7 +113,7 @@
     "caniuse-lite": "~1.0.30000974",
     "chalk": "~2.4.2",
     "change-case": "~4.1.1",
-    "cheerio": "~1.0.0-rc.2",
+    "cheerio": "1.0.0-rc.2",
     "co-views": "~2.1.0",
     "compressing": "^1.6.3",
     "continuation-local-storage": "~3.2.1",
@@ -210,6 +210,7 @@
     "typescript": "^4.4.3",
     "unzipper": "~0.10.11",
     "vant": "^2.12.39",
+    "vm-browserify": "^1.1.2",
     "vue": "~2.7.14",
     "vue-content-loader": "~0.2.3",
     "vue-echarts": "^5.0.0-beta.0",

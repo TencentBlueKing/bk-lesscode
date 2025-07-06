@@ -19,6 +19,14 @@
                             :placeholder="$t('请输入流程模板名称')"
                             :show-word-limit="true" />
                     </bk-form-item>
+                    <bk-form-item :label="$t('关联流程管理页')">
+                            <PageBoundEditor
+                                type="widget-flow-manage-container"
+                                :pages="flowContainerPages"
+                                :tpl-id="tplDetail.id"
+                                :nodes="JSON.parse(tplDetail.nodes || '[]')"
+                                @update="handleUpdateFlowContainerPages"/>
+                    </bk-form-item>
                 </section>
                 <section class="form-section">
                     <h4>
@@ -53,12 +61,16 @@
     </section>
 </template>
 <script>
+    import { mapState, mapGetters } from 'vuex'
+    import { createNode } from '@/element-materials/core/static/create-node'
     import NotifyTypeConfig from './notify-type-config.vue'
+    import PageBoundEditor from '../canvas/node-detail/manual-node/form-binding-config/page-bound-editor.vue'
 
     export default {
         name: 'FlowTplConfig',
         components: {
-            NotifyTypeConfig
+            NotifyTypeConfig,
+            PageBoundEditor
         },
         props: {
             tplDetail: {
@@ -79,6 +91,10 @@
                     },
                     summary: ''
                 },
+                relatedPages: [],
+                relatedPagesLoading: false,
+                flowContainerPages: [],
+                createRelatedPageShow: false,
                 pending: false,
                 rules: {
                     name: [
@@ -90,6 +106,18 @@
                     ]
                 }
             }
+        },
+        computed: {
+            ...mapState({
+                pageList: state => state.route.layoutPageList.filter(item => item.pageType === 'PC')
+                
+            }),
+            ...mapGetters('projectVersion', {
+                versionId: 'currentVersionId'
+            }),
+            ...mapGetters('project', {
+                projectDetail: 'projectDetail'
+            })
         },
         watch: {
             tplDetail: {
@@ -104,9 +132,46 @@
                 immediate: true
             }
         },
+        mounted () {
+            this.getRelatedPages()
+        },
         methods: {
+            async getRelatedPages () {
+                this.relatedPagesLoading = true
+                const { flowManageContainer } = await this.$store.dispatch('flow/tpl/getRelatedPages', {
+                    tplId: this.tplDetail.id,
+                    params: {
+                        versionId: this.versionId,
+                        containers: ['flowManageContainer'],
+                    }
+                })
+                this.relatedPages = flowManageContainer.map(page => page.id)
+                this.flowContainerPages = this.relatedPages.slice()
+                this.relatedPagesLoading = false
+            },
+            handleUpdateFlowContainerPages ({ pages, refresh }) {
+                this.flowContainerPages = pages
+                if (refresh) {
+                    this.relatedPages = [...pages]
+                }
+            },
             handleNotifyChange (val) {
                 this.formData.notifyConfig = val
+            },
+            getPagesDiff () {
+                const setA = new Set(this.relatedPages);
+                const setB = new Set(this.flowContainerPages);
+
+                const added = Array.from(setB).filter(x => !setA.has(x));
+                const removed = Array.from(setA).filter(x => !setB.has(x));
+
+                return { added, removed };
+            },
+            getFlowManageContainerConfig () {
+                const config = createNode('widget-flow-manage-container', this.projectDetail.framework).toJSON()
+                config.renderProps.id.code = this.tplDetail.id
+                config.renderProps.id.renderValue = this.tplDetail.id
+                return config
             },
             async handleSave () {
                 await this.$refs.configForm.validate()
@@ -117,7 +182,31 @@
                     summary,
                     notifyConfig: JSON.stringify(notifyConfig)
                 }
-                this.$store.dispatch('flow/tpl/updateFlowTpl', data)
+                await this.$store.dispatch('flow/tpl/updateFlowTpl', data)
+
+                // 更新关联页面
+                const pagesDiff = this.getPagesDiff()
+                if (pagesDiff.added.length || pagesDiff.removed.length) {
+                    await this.$store.dispatch('flow/tpl/updateRelatedPages', {
+                        params: {
+                            versionId: this.versionId,
+                            tplId: this.tplDetail.id,
+                            added: pagesDiff.added.reduce((acc, cur) => {
+                                const config = this.getFlowManageContainerConfig()
+                                if (acc[cur]) {
+                                    acc[cur].push(config)
+                                } else {
+                                    acc[cur] = [config]
+                                }
+                                return acc
+                            }, {}),
+                            removed: {
+                               flowManageContainer: pagesDiff.removed.map(pageId => ({ pageId }))
+                            }
+                        }
+                    })
+                    this.relatedPages = this.flowContainerPages.slice()
+                }
                 this.$bkMessage({
                     theme: 'success',
                     message: '保存成功'

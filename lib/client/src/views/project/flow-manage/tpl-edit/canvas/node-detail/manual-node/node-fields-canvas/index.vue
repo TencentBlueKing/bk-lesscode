@@ -10,7 +10,9 @@
                         :node-name="nodeName"
                         :form-name="formName"
                         :editable="editable"
-                        @change="formName = $event" />
+                        @change="formName = $event"
+                        @backToFlow="handleBack(true)"
+                        @backToNode="handleBack" />
                 </div>
                 <div class="operate-btns">
                     <save-btn
@@ -120,13 +122,17 @@
                 loading.value = false
             }
 
-            const handleBack = () => {
+            const handleBack = (isBackToFlow = false) => {
                 instance.proxy.$bkInfo({
                     title: window.i18n.t('确认离开'),
                     okText: window.i18n.t('离开'),
                     subTitle: window.i18n.t('您将离开画布编辑页面，请确认相应修改已保存'),
                     confirmFn: async () => {
-                        emit('close')
+                        if (isBackToFlow) {
+                            emit('backToFlow')
+                        } else {
+                            emit('close')
+                        }
                     }
                 })
             }

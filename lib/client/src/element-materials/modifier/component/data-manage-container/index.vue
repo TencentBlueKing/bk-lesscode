@@ -96,6 +96,29 @@
                 this.loading = false
             },
             handleDataManageSelectForm (val) {
+                const regex = /^flow-tpl-(?<tplId>\d+)-(?<nodeId>[a-z0-9]+)$/;
+                const form = this.formList.find(formItem => formItem.id === val)
+                if (form) {
+                    const match = form.componentId.match(regex);
+                    if (match && match.groups.tplId && match.groups.nodeId) {
+                        const tplId = Number(match.groups.tplId)
+                        this.activeNode.setProp('flowTplId', {
+                            ...this.activeNode.renderProps.flowTplId,
+                            code: tplId,
+                            renderValue: tplId
+                        })
+                        this.activeNode.setProp('nodeId', {
+                            ...this.activeNode.renderProps.nodeId,
+                            code: match.groups.nodeId,
+                            renderValue: match.groups.nodeId
+                        })
+                    }
+                }
+                this.activeNode.setProp('tableName', {
+                    ...this.activeNode.renderProps.tableName,
+                    code: form.tableName,
+                    renderValue: form.tableName
+                })
                 this.activeNode.setProp('formId', {
                     ...this.activeNode.renderProps.formId,
                     code: val,

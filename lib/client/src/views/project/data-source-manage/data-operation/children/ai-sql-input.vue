@@ -73,6 +73,10 @@
                 
                 if (currentMessage.content?.includes('SELECT')) {
                     currentMessage.content = currentMessage.content?.replace('```sql', '')?.replace('```', '')
+                    currentMessage.content = currentMessage.content?.trim()
+                    if (!currentMessage.content?.endsWith(';')) {
+                        currentMessage.content = currentMessage.content + ';'
+                    }
                     currentMessage.status = 'success'
                     props.generateSql(currentMessage.content)
                 } else {
@@ -105,29 +109,20 @@
 
             const getTableInfoPrompt = () => {
                 let sysPromt = ''
-                sysPromt += getTableStructure()
-                sysPromt += '\n - If you can generate the sql, return the sql only, otherwise, you should return explanation in Chinese'
-                return sysPromt
-            }
-
-            const addSqlPrompt = () => {
                 const tables = props.tableData || []
                 if (tables.length === 0) {
-                    const noDataPrompt = 'There are no data tables in the database， you should return "数据库中没有任何的数据表, 请先创建" now'
-                    aiHelper.pushPrompt(noDataPrompt, 'system')
+                    sysPromt = 'There are no data tables in the database， you should return "数据库中没有任何的数据表, 请先创建" now'
                 } else {
                     let tablePrompt = ''
                     tablePrompt += getTableStructure()
                     tablePrompt += '\n - If you can generate the sql, return the sql only, otherwise, you should return explanation in Chinese'
-                    aiHelper.pushPrompt(tablePrompt, 'system')
+                    sysPromt = tablePrompt
                 }
+                return sysPromt
             }
 
             const handleUserInput = () => {
                 if (isLoading.value || !content.value) return
-
-                // 根据数据库中的数据，动态添加prompt
-                addSqlPrompt()
 
                 // 记录输入的数据
                 const userInput = content.value
@@ -142,12 +137,15 @@
                 aiHelper.chat(`help me solve this task:\n ${userInput}`)
             }
 
+            // 只能发送一条systemprompt
+            const tableInfoPrompt = getTableInfoPrompt()
+
             const aiHelper = new Ai({
                 handlerStart,
                 handleEnd,
                 handleMessage,
                 handleApiError,
-                systemPrompt,
+                systemPrompt: systemPrompt + tableInfoPrompt,
                 type: 'sql'
             })
             return {

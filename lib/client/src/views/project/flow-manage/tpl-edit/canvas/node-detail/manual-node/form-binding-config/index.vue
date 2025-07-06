@@ -8,9 +8,14 @@
             @selected="emit('select', $event)" />
         <bound-detail
             v-else
+            :tpl-id="tplId"
+            :node-id="nodeId"
             :form-type="config.formType"
             :form-id="config.formId"
             :related-id="config.relatedId"
+            :container-pages="containerPages"
+            :is-first-and-manual-node="isFirstAndManualNode"
+            @updateContainerPages="emit('updateContainerPages', $event)"
             @preview="handleOpenPreview"
             @edit="handleOpenEdit"
             @delete="emit('delete')" />
@@ -31,17 +36,26 @@
             PreviewFormDialog,
         },
         props: {
+            tplId: Number,
+            nodeId: String,
             nodes: {
                 type: Array,
                 default: () => []
             },
+            containerPages: {
+                type: Object,
+                default: () => ({
+                    formContainer: [],
+                    dataManageContainer: []
+                })
+            },
             config: {
                 type: Object,
                 default: () => ({})
-            }
+            },
+            isFirstAndManualNode: Boolean
         },
         setup (props, { emit }) {
-
             const previewDialogData = ref({
                 show: false,
                 fields: []

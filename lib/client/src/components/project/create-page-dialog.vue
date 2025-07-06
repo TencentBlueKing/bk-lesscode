@@ -112,6 +112,10 @@
                 type: String,
                 default: ''
             },
+            useCustomSave: {
+                type: Boolean,
+                default: false
+            },
             // form和flow的数据管理页需要填写默认的pageCode和pageName，带上formId或flowId
             initPageData: {
                 type: Object,
@@ -249,7 +253,7 @@
             },
             handleConfirmClick () {
                 // 判断是不是流程页面或流程管理页面
-                if (['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
+                if (this.useCustomSave || ['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                     this.$emit('save')
                 } else {
                     this.save()
@@ -284,12 +288,7 @@
                         content.push(JSON.parse(template.content))
                         templateFormData = { previewImg: template.previewImg, content: JSON.stringify(content) }
                     }
-                    
-                    const formData = {
-                        pageName: this.formData.pageName,
-                        pageCode: this.formData.pageCode
-                    }
-                    
+
                     const payload = {
                         data: {
                             pageData: Object.assign({}, this.formData, templateFormData),
@@ -307,7 +306,7 @@
                     const res = await this.$store.dispatch('page/create', payload)
                     if (res) {
                         // 页面不是流程页面或流程管理页面
-                        if (!['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
+                        if (!this.useCustomSave && !['FLOW', 'FLOW_MANAGE'].includes(this.nocodeType)) {
                             this.$bkMessage({
                                 theme: 'success',
                                 message: this.$t('新建页面成功')
