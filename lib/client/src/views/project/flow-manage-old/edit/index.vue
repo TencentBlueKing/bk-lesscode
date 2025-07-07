@@ -82,7 +82,6 @@
         },
         watch: {
             '$route.params.flowId' (val, oldVal) {
-                console.log(val, oldVal)
                 if (val !== oldVal) {
                     this.flowId = val
                     this.getflowConfig()
