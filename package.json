@@ -176,6 +176,8 @@
     "markdown-it-code-copy": "0.2.1",
     "mavon-editor": "^2.9.0",
     "md5": "^2.3.0",
+    "monaco-editor": "^0.52.2",
+    "monaco-editor-webpack-plugin":"^7.1.0",
     "moment": "^2.29.1",
     "mysql2": "~2.3.3",
     "node-request-context": "~1.0.5",

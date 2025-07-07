@@ -21,6 +21,7 @@
 </template>
 
 <script>
+    import * as monaco from 'monaco-editor';
     export default {
         props: {
             value: String,
