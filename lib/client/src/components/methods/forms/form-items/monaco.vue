@@ -75,6 +75,7 @@
     import variableMixins from './variable-mixins'
     import { mapActions, mapGetters } from 'vuex'
     import LC from '@/element-materials/core'
+    import * as monacoEditor from 'monaco-editor';
     import {
         FUNCTION_TIPS,
         FUNCTION_TYPE,
@@ -298,14 +299,14 @@
                             if (isChart) {
                                 this.proposals.push({
                                     label: `lesscode.${node.componentId}.${propKey}`,
-                                    kind: window.monaco.languages.CompletionItemKind.Property,
+                                    kind: monacoEditor.languages.CompletionItemKind.Property,
                                     documentation: this.$t('组件【{0}】的【{1}】属性的内置变量', [node.componentId, propKey]),
                                     insertText: `this.${perVariableName}`
                                 })
                             } else {
                                 this.proposals.push({
                                     label: `lesscode.${node.componentId}.${propKey}`,
-                                    kind: window.monaco.languages.CompletionItemKind.Property,
+                                    kind: monacoEditor.languages.CompletionItemKind.Property,
                                     documentation: this.$t('组件【{0}】的【{1}】属性的内置变量', [node.componentId, propKey]),
                                     insertText: `this.${perVariableName}${camelCase(propKey, { transform: camelCaseTransformMerge })}`
                                 })
@@ -317,7 +318,7 @@
                         ) {
                             this.proposals.push({
                                 label: `lesscode.${node.componentId}.${propKey}.count`,
-                                kind: window.monaco.languages.CompletionItemKind.Property,
+                                kind: monacoEditor.languages.CompletionItemKind.Property,
                                 documentation: this.$t('组件【{0}】的【{1}.count】属性的内置变量', [node.componentId, propKey]),
                                 insertText: `this.${perVariableName}paginationCount`
                             })
@@ -332,7 +333,7 @@
                         if (needShowInnerVariable && renderSlot.buildInVariableType !== BUILDIN_VARIABLE_TYPE_LIST[1].VAL) {
                             this.proposals.push({
                                 label: `lesscode.${node.componentId}.${config.displayName}`,
-                                kind: window.monaco.languages.CompletionItemKind.Property,
+                                kind: monacoEditor.languages.CompletionItemKind.Property,
                                 documentation: this.$t('组件【{0}】的【{1}】的内置变量', [node.componentId, config.displayName]),
                                 insertText: `this.${perVariableName}Slot${slotKey}`
                             })
@@ -363,7 +364,7 @@
                     }
                     this.proposals.push({
                         label: `lesscode.${functionData.funcName}`,
-                        kind: window.monaco.languages.CompletionItemKind.Function,
+                        kind: monacoEditor.languages.CompletionItemKind.Function,
                         documentation,
                         insertText: `lesscode['\${func:${functionData.funcCode}}'](${(functionData.funcParams || []).join(', ')})`
                     })
@@ -384,7 +385,7 @@
                     }
                     this.proposals.push({
                         label: `lesscode.${variableData.variableCode}`,
-                        kind: window.monaco.languages.CompletionItemKind.Property,
+                        kind: monacoEditor.languages.CompletionItemKind.Property,
                         documentation,
                         insertText: `lesscode['\$\{prop:${variableData.variableCode}\}']`
                     })
