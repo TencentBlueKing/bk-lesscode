@@ -1,11 +1,13 @@
 
 // 获取唯一随机数
 function uuid () {
-    let id = ''
-    const randomNum = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+    const cryptoObj = window.crypto
+    const array = new Uint32Array(4)
+    cryptoObj.getRandomValues(array)
 
-    for (let i = 0; i < 7; i++) {
-        id += randomNum
+    let id = ''
+    for (let i = 0; i < array.length; i++) {
+        id += array[i].toString(16).padStart(8, '0')
     }
     return id
 }
@@ -124,7 +126,7 @@ function uuid () {
                 document.body.style.overflow = 'hidden'
             },
             hideModalMask: function () {
-                this.dialogMask.setAttribute('style', `display: none;`)
+                this.dialogMask.setAttribute('style', 'display: none;')
                 document.body.style.overflow = ''
             },
             __hideInstance: function (instance) {

@@ -46,8 +46,7 @@ module.exports = {
                     VueI18n: path.resolve(__dirname, './node_modules/vue-i18n')
                 },
                 fallback: {
-                    buffer: require.resolve('buffer'),
-                    vm: require.resolve('vm-browserify')
+                    buffer: require.resolve('buffer')
                 }
             },
             devServer: {

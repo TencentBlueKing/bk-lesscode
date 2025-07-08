@@ -1,6 +1,6 @@
 /**
  * Tencent is pleased to support the open source community by making 蓝鲸智云PaaS平台社区版 (BlueKing PaaS Community Edition) available.
- * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ * Copyright (C) 2025 Tencent. All rights reserved.
  * Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * http://opensource.org/licenses/MIT
@@ -58,19 +58,18 @@ export default defineComponent({
          * value: error tips text
          */
         const errorMap = reactive({})
-        let renderColumns = ref<IColumnItem[]>([])
+        const renderColumns = ref<IColumnItem[]>([])
         /**
          * 生成随机ID
          * @param {String} prefix 统一前缀
          * @param {Int} idLength 随机ID长度
          */
         const generateId = (prefix = '', length = 6) => {
-            let d = new Date().getTime()
-            const uuid = new Array(length).fill('x').join('').replace(/[xy]/g, c => {
-                const r = (d + Math.random() * 16) % 16 | 0
-                d = Math.floor(d / 16)
-                return (c === 'x' ? r : (r & 0x7) | 0x8).toString(16)
-            })
+            const cryptoObj = window.crypto
+            const array = new Uint8Array(length)
+            cryptoObj.getRandomValues(array)
+
+            const uuid = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
             return `${prefix}${uuid}`
         }
         watch(
