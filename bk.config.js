@@ -1,5 +1,6 @@
 
 const mdLoaderOption = require('./scripts/mark-dowm/md-loader-option')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 
@@ -45,8 +46,7 @@ module.exports = {
                     VueI18n: path.resolve(__dirname, './node_modules/vue-i18n')
                 },
                 fallback: {
-                    buffer: require.resolve('buffer'),
-                    vm: require.resolve('vm-browserify')
+                    buffer: require.resolve('buffer')
                 }
             },
             devServer: {
@@ -118,6 +118,13 @@ module.exports = {
                             chunks: 'all',
                             reuseExistingChunk: true
                         },
+                        monaco: {
+                            name: 'monaco-editor',
+                            test: /monaco-editor/,
+                            priority: 1,
+                            chunks: 'all',
+                            reuseExistingChunk: true
+                        },
                         xlsxTypeormMoment: {
                             name: 'xlsx-typeorm-moment',
                             test: /(xlsx)|(typeorm)|(moment)/,
@@ -152,6 +159,14 @@ module.exports = {
                     Buffer: ['buffer', 'Buffer']
                 }]
             )
+        config.plugin('monaco-editor')
+            .use(MonacoWebpackPlugin, [
+                {
+                    // 配置需要的语言和功能
+                    languages: ['javascript', 'css', 'html', 'typescript', 'sql'],
+                    features: ['!gotoSymbol'] // 禁用某些功能
+                }
+            ])
         return config
     }
 }

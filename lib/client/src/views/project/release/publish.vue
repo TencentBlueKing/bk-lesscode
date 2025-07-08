@@ -395,7 +395,7 @@
                 const version = this.versionForm.releaseVersion
                 if (!version) {
                     tips = window.i18n.t('部署版本号必填')
-                } else if (!/^[A-za-z0-9\-\.\_]{1,40}$/.test(version)) {
+                } else if (!/^[A-Za-z0-9\-\.\_]{1,40}$/.test(version)) {
                     tips = window.i18n.t('仅支持英文、数字、下划线、中划线和英文句号')
                 }
                 return tips
