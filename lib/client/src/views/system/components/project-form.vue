@@ -5,7 +5,7 @@
             </bk-input>
         </bk-form-item>
         <bk-form-item v-if="type === 'importProject'" :label="$t('form_应用JSON文件')" required error-display-type="normal">
-            <bk-upload with-credentials :multiple="false" :url="uploadUrl" :limit="1" accept=".json"
+            <bk-upload with-credentials :multiple="false" :url="uploadUrl" :limit="1" :size="15" accept=".json"
                 :desc="$t('应用JSON可通过“导出”已有应用获得')" @on-success="handleUploadSuccess" @on-error="handleUploadReset"
                 @on-delete="handleUploadReset"></bk-upload>
         </bk-form-item>
