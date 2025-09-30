@@ -449,7 +449,8 @@
                     'folding-table',
                     'search-table',
                     'widget-bk-table',
-                    'widget-el-table'
+                    'widget-el-table',
+                    'widget-blueking-table'
                 ].includes(this.componentType)
             }
         },

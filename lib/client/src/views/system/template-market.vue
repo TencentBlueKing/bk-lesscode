@@ -480,12 +480,13 @@
                         templateInfo
                     }
                     const { variableList, funcGroups } = await this.getProjectFuncAndVar({ projectId: fromTemplate.belongProjectId, versionId: fromTemplate.versionId, pageCode: fromTemplate.fromPageCode })
-
+                    const frameworkType = fromTemplate.framework
+                    LC.setFramework(frameworkType)
                     const templateNode = LC.parseTemplate(JSON.parse(fromTemplate.content || {}))
                     // 解析出模板targetData绑定的变量和函数
                     const { varList = [], funcList = [] } = parseFuncAndVar(templateNode, variableList, funcGroups)
                     Object.assign(data, { varList, funcList })
-                    data['framework'] = fromTemplate.framework
+                    data['framework'] = frameworkType
 
                     const res = await this.$store.dispatch('pageTemplate/apply', data)
                     if (res) {

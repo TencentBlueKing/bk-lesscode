@@ -1,0 +1,25 @@
+{
+    "template": {
+        "id": 1302,
+        "updateTime": "2024-11-29T02:12:26.000Z",
+        "createTime": "2024-11-29T02:12:26.000Z",
+        "createUser": "",
+        "updateUser": "",
+        "deleteFlag": 0,
+        "templateName": "banner模板",
+        "templateCode": null,
+        "templateType": null,
+        "fromPageCode": "",
+        "content": "{\"componentId\":\"swiper-4075f\",\"type\":\"bk-swiper\",\"name\":\"swiper\",\"complex\":false,\"custom\":false,\"interactive\":false,\"renderDirectives\":[],\"renderEvents\":{},\"renderProps\":{\"is-loop\":{\"format\":\"value\",\"code\":true,\"renderValue\":true,\"valueType\":\"boolean\",\"payload\":{}},\"loop-time\":{\"format\":\"value\",\"code\":8000,\"renderValue\":8000,\"valueType\":\"number\",\"payload\":{}},\"pics\":{\"format\":\"value\",\"code\":[{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/firstswiper.jpg\"},{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/secondswiper.jpg\"},{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/0892e39f550550a2922f3072cc389331.jpg\",\"link\":\"\"},{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/file-lib/8ff923fc7491f9374c0a6256d93f1ba7.png\",\"link\":\"\"}],\"valueType\":\"array\",\"renderValue\":[{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/firstswiper.jpg\"},{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/secondswiper.jpg\"},{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/0892e39f550550a2922f3072cc389331.jpg\",\"link\":\"\"},{\"url\":\"https://staticfile.qq.com/lesscode/p9508f3d3cfba4809b2e1a3cba58cdd20/vue3-template-imgs/latest/8ff923fc7491f9374c0a6256d93f1ba7.png\",\"link\":\"\"}],\"payload\":{},\"modifiers\":[]},\"width\":{\"format\":\"value\",\"code\":600,\"valueType\":\"number\",\"renderValue\":600,\"payload\":{}},\"height\":{\"format\":\"value\",\"code\":300,\"valueType\":\"number\",\"renderValue\":300,\"payload\":{}}},\"renderSlots\":{},\"renderStyles\":{\"width\":\"100%\",\"height\":\"300px\",\"marginTop\":\"8px\",\"marginRight\":0,\"marginLeft\":\"0\"},\"renderAlign\":{}}",
+        "previewImg": "",
+        "isOffcial": 0,
+        "offcialType": "",
+        "categoryId": 2925,
+        "parentId": 0,
+        "belongProjectId": 2935,
+        "versionId": null,
+        "framework": "vue3"
+    },
+    "functions": [],
+    "vars": []
+}
