@@ -19,29 +19,13 @@
             },
             waterMark: {
                 type: String
-            },
-            isFullScroll: {
-                type: Boolean,
-                default: true
-            },
-            isShowTools: {
-                type: Boolean,
-                default: true
-            },
-            isShowRefresh: {
-                type: Boolean,
-                default: true
-            },
-            isShowTimeRange: {
-                type: Boolean,
-                default: true
             }
         },
         data () {
             return {
-                // app: {},
+                visionApp: {},
                 apiPrefix: `${process.env.BK_AJAX_URL_PREFIX}/bkvision/`,
-                cdnPrefix: 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/latest/'
+                cdnPrefix: 'https://staticfile.qq.com/bkvision/pbb9b207ba200407982a9bd3d3f2895d4/latest/'
             }
         },
         created () {
@@ -58,11 +42,9 @@
         methods: {
             async loadSdk () {
                 const link = document.createElement('link')
-                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/3c3de519287048dcb4c5a03d47ebf33f/main.css'
+                link.href = 'https://staticfile.qq.com/bkvision/pbb9b207ba200407982a9bd3d3f2895d4/3c3de519287048dcb4c5a03d47ebf33f/main.css'
                 link.rel = 'stylesheet'
                 document.body.append(link)
-                await this.loadScript('chunk-vendors.js')
-                await this.loadScript('chunk-bk-magic-vue.js')
                 await this.loadScript('main.js')
                 this.initPanel()
             },
@@ -73,25 +55,26 @@
                     script.src = url
                     document.body.append(script)
                     script.onload = () => {
-                        console.log('sdk load', file)
                         resolve()
                     }
                 })
             },
-            initPanel () {
+            async initPanel () {
                 if (window.BkVisionSDK) {
-                    console.log('init bk-vision')
-                    this.app = this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, {
+                    try {
+                        if (this.visionApp && Object.keys(this.visionApp).length) {
+                            this.visionApp?.unmount()
+                        }
+                    } catch (error) {
+                        console.error(error?.message || error, 'unmount bk-vision error')
+                    }
+                        
+                    this.visionApp = this.uid && await window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, {
                         apiPrefix: this.apiPrefix
-                        // waterMark: { content: this.watchWark },
-                        // isFullScroll: this.isFullScroll,
-                        // isShowTools: this.isShowTools,
-                        // isShowRefresh: this.isShowRefresh,
-                        // isShowTimeRange: this.isShowTimeRange
                     })
-                    console.log(this.app, 'app inst')
+                    console.log(this.visionApp, 'after init', this.uid)
                 } else {
-                    console.error(this.$t('sdk 加载异常'))
+                    console.error('sdk 加载异常')
                 }
             }
         }
