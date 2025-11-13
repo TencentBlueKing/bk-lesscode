@@ -90,6 +90,7 @@
     "@blueking/platform-config": "1.0.5",
     "@blueking/chrome-tips": "0.0.3-beta.3",
     "@blueking/bkui-library": "0.0.0-beta.4",
+    "@blueking/xss-filter": "^0.0.10",
     "@icon-cool/bk-icon-vue-drag-vis": "^0.2.12",
     "@toast-ui/editor": "3.1.8",
     "@toast-ui/vue-editor": "3.1.8",

@@ -223,7 +223,7 @@
     import PagePreviewThumb from '@/components/project/page-preview-thumb.vue'
     import { PROJECT_TEMPLATE_TYPE, PAGE_TEMPLATE_TYPE } from '@/common/constant'
     import { parseFuncAndVar } from '@/common/parse-function-var'
-    import { filterImgSrc } from '@/common/util'
+    import { filterImgSrc, downloadFile } from '@/common/util'
     import LC from '@/element-materials/core'
     import frameworkTag from '@/components/framework-tag.vue'
     import {
@@ -556,14 +556,7 @@
                     fromPageCode: template.fromPageCode,
                     ...(isHasVarFunc ? { varList: content.vars || [], funcList: content.functions || [] } : {})
                 }).then((res) => {
-                    const downlondEl = document.createElement('a')
-                    const blob = new Blob([res])
-                    downlondEl.download = `bklesscode-template-${template.templateName}.vue`
-                    downlondEl.href = URL.createObjectURL(blob)
-                    downlondEl.style.display = 'none'
-                    document.body.appendChild(downlondEl)
-                    downlondEl.click()
-                    document.body.removeChild(downlondEl)
+                    downloadFile(res, `bklesscode-template-${template.templateName}.vue`)
                 })
             },
             handlerClearSearchProject (searchName) {

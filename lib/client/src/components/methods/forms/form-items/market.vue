@@ -31,6 +31,7 @@
     import { transformTipsWidth } from '@/common/util'
     import mixins from './form-item-mixins'
     import { mapActions } from 'vuex'
+    import { filterXss } from '@blueking/xss-filter'
 
     export default {
         mixins: [mixins],
@@ -59,7 +60,10 @@
                         ...tips
                     }
                 }
-                return tipObj
+                return {
+                    ...tipObj,
+                    content: filterXss(tipObj.content)
+                }
             },
 
             getMarketFuncs (isExpand) {

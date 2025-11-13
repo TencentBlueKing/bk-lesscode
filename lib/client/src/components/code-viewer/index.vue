@@ -46,6 +46,7 @@
     import screenfull from 'screenfull'
     import monaco from '@/components/monaco'
     import { mapGetters } from 'vuex'
+    import { downloadFile } from '@/common/util'
 
     export default {
         components: {
@@ -108,14 +109,7 @@
                 this.$emit('show-edit-data')
             },
             handleDownloadFile () {
-                const downlondEl = document.createElement('a')
-                const blob = new Blob([this.code])
-                downlondEl.download = this.filename
-                downlondEl.href = URL.createObjectURL(blob)
-                downlondEl.style.display = 'none'
-                document.body.appendChild(downlondEl)
-                downlondEl.click()
-                document.body.removeChild(downlondEl)
+                downloadFile(this.code, this.filename)
             },
             handleScreenfull () {
                 const el = document.querySelector(`.${this.$style['code-viewer']}`)

@@ -55,6 +55,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import templateMixin from './template-mixin'
+    import { sanitizeObject } from 'shared/security/property-injection-guard'
 
     export default {
         name: 'template-import-dialog',
@@ -129,7 +130,7 @@
         methods: {
             handleUploadSuccess (res) {
                 this.dialog.formData.jsonStr = res.responseData.data
-                this.templateJson = JSON.parse(res.responseData.data)
+                this.templateJson = sanitizeObject(JSON.parse(res.responseData.data), true)
                 if (typeof this.templateJson.template !== 'object' || typeof this.templateJson.vars !== 'object' || typeof this.templateJson.functions !== 'object') {
                     this.$bkMessage({
                         theme: 'error',
