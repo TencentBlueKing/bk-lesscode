@@ -23,7 +23,7 @@
                         <span
                             :class="{ label: true }"
                             v-bk-tooltips="introTips"
-                            v-html="displayName">
+                            v-bk-xss-html="displayName">
                         </span>
                     </section>
                 </div>
@@ -110,7 +110,7 @@
     import _ from 'lodash'
     import { mapActions } from 'vuex'
     import LC from '@/element-materials/core'
-    import DOMPurify from 'dompurify'
+    import { filterXss } from '@blueking/xss-filter'
     import { camelCase, camelCaseTransformMerge } from 'change-case'
     import { transformTipsWidth } from '@/common/util'
     import safeStringify from '@/common/json-safe-stringify'
@@ -375,7 +375,7 @@
                         name = `${this.describe.displayName}<span class='prop-field'>(${this.name})</span>`
                     }
                 }
-                return DOMPurify.sanitize(name)
+                return name
             },
             /**
              * @desc 不支持的变量切换类型(variable、expression)
@@ -392,7 +392,7 @@
                 return {
                     placements: ['left-start'],
                     maxWidth: 300,
-                    content: DOMPurify.sanitize(this.tipsContent)
+                    content: filterXss(this.tipsContent)
                 }
             },
             tipsContent () {

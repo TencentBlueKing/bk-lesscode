@@ -72,7 +72,7 @@
     import templateImportDialog from './template-import-dialog'
     import templateMixin from './template-mixin'
     import typeSelect from '@/components/project/type-select'
-    import { filterImgSrc } from '@/common/util'
+    import { filterImgSrc, downloadFile } from '@/common/util'
 
     export default {
         components: {
@@ -160,14 +160,7 @@
                     versionId,
                     fromPageCode
                 }).then((res) => {
-                    const downlondEl = document.createElement('a')
-                    const blob = new Blob([res])
-                    downlondEl.download = `bklesscode-template-${templateName}.vue`
-                    downlondEl.href = URL.createObjectURL(blob)
-                    downlondEl.style.display = 'none'
-                    document.body.appendChild(downlondEl)
-                    downlondEl.click()
-                    document.body.removeChild(downlondEl)
+                    downloadFile(res, `bklesscode-template-${templateName}.vue`)
                 })
             },
             async handleEdit (template) {
@@ -244,14 +237,7 @@
                 Object.assign(templateJson, { functions, vars }, { template: newTemplate })
 
                 const jsonStr = JSON.stringify(templateJson)
-                const downlondEl = document.createElement('a')
-                const blob = new Blob([jsonStr])
-                downlondEl.download = `bklesscode-template-${template.id}.json`
-                downlondEl.href = URL.createObjectURL(blob)
-                downlondEl.style.display = 'none'
-                document.body.appendChild(downlondEl)
-                downlondEl.click()
-                document.body.removeChild(downlondEl)
+                downloadFile(jsonStr, `bklesscode-template-${template.id}.json`)
             },
             hideDropdownMenu (pageId) {
                 this.$refs[`moreActionDropdown${pageId}`][0].hide()
