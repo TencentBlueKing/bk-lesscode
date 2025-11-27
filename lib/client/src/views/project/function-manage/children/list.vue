@@ -168,7 +168,7 @@
 
             computedFunctionList () {
                 const searchReg = new RegExp(this.searchFunStr, 'i')
-                return this.functionList.filter((func) => searchReg.test(func.funcName))
+                return this.functionList.filter((func) => searchReg.test(func.funcName) || searchReg.test(func.funcCode))
             },
             emptyType () {
                 if (this.searchFunStr.length > 0) {

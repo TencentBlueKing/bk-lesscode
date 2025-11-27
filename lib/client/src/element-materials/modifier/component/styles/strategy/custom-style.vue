@@ -67,6 +67,7 @@
     import StyleItem from '../layout/item'
     import Monaco from '@/components/monaco'
     import { camelCase } from 'change-case'
+    import { isSafePropertyKey } from '../../../../../../../shared/security/property-injection-guard'
 
     export default {
         components: {
@@ -143,7 +144,11 @@
                         if (item) {
                             const itemArr = item.split(':')
                             if (itemArr.length === 2 && itemArr[0].trim() && itemArr[1].trim()) {
-                                Object.assign(customMap, { [itemArr[0].trim()]: itemArr[1].trim() })
+                                const cssProperty = itemArr[0].trim()
+                                // 验证CSS属性名是否安全，防止属性注入攻击
+                                if (isSafePropertyKey(cssProperty)) {
+                                    customMap[cssProperty] = itemArr[1].trim()
+                                }
                             }
                         }
                     })

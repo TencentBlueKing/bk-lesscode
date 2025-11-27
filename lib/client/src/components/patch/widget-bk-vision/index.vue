@@ -19,41 +19,21 @@
             },
             waterMark: {
                 type: String
-            },
-            isFullScroll: {
-                type: Boolean,
-                default: true
-            },
-            isShowTools: {
-                type: Boolean,
-                default: true
-            },
-            isShowRefresh: {
-                type: Boolean,
-                default: true
-            },
-            isShowTimeRange: {
-                type: Boolean,
-                default: true
             }
         },
         data () {
             return {
-                // visionApp: {},
+                visionApp: {},
                 renderId: '',
                 apiPrefix: '/api/bkvision/',
-                cdnPrefix: 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/latest/'
+                cdnPrefix: 'https://staticfile.qq.com/bkvision/pbb9b207ba200407982a9bd3d3f2895d4/latest/'
             }
         },
         computed: {
             dataInfo () {
                 return {
-                    apiPrefix: '/api/bkvision/'
-                    // waterMark: { content: this.watchMark || 'bk-lesscode' },
-                    // isFullScroll: this.isFullScroll,
-                    // isShowTools: this.isShowTools,
-                    // isShowRefresh: this.isShowRefresh,
-                    // isShowTimeRange: this.isShowTimeRange
+                    apiPrefix: '/api/bkvision/',
+                    waterMark: { content: this.watchMark || 'bk-lesscode' },
                 }
             }
 
@@ -63,15 +43,6 @@
                 this.debounceInit()
             },
             waterMark () {
-                this.debounceRender()
-            },
-            isShowTools () {
-                this.debounceRender()
-            },
-            isShowRefresh () {
-                this.debounceRender()
-            },
-            isShowTimeRange () {
                 this.debounceRender()
             }
         },
@@ -91,11 +62,9 @@
         methods: {
             async loadSdk () {
                 const link = document.createElement('link')
-                link.href = 'https://staticfile.qq.com/bkvision/p8e3a7f52d95c45d795cb6f90955f2800/3c3de519287048dcb4c5a03d47ebf33f/main.css'
+                link.href = 'https://staticfile.qq.com/bkvision/pbb9b207ba200407982a9bd3d3f2895d4/3c3de519287048dcb4c5a03d47ebf33f/main.css'
                 link.rel = 'stylesheet'
                 document.body.append(link)
-                await this.loadScript('chunk-vendors.js')
-                await this.loadScript('chunk-bk-magic-vue.js')
                 await this.loadScript('main.js')
                 this.initPanel()
             },
@@ -112,8 +81,18 @@
                 })
             },
             async initPanel () {
+                console.log('init panel')
                 if (window.BkVisionSDK) {
-                    this.visionApp = this.uid && window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, this.dataInfo)
+                    try {
+                        if (this.visionApp && Object.keys(this.visionApp).length) {
+                            this.visionApp?.unmount()
+                        } 
+                    } catch (error) {
+                        console.error(error?.message || error, 'unmount bk-vision error')
+                    }
+                    
+                    this.visionApp = this.uid && await window.BkVisionSDK.init(`#dashboard-${this.renderId}`, this.uid, this.dataInfo)
+                    console.log(this.visionApp, 'after init')
                 } else {
                     console.error('sdk 加载异常')
                 }

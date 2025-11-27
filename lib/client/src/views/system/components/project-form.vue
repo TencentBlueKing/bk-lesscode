@@ -5,7 +5,7 @@
             </bk-input>
         </bk-form-item>
         <bk-form-item v-if="type === 'importProject'" :label="$t('form_应用JSON文件')" required error-display-type="normal">
-            <bk-upload with-credentials :multiple="false" :url="uploadUrl" :limit="1" accept=".json"
+            <bk-upload with-credentials :multiple="false" :url="uploadUrl" :limit="1" :size="15" accept=".json"
                 :desc="$t('应用JSON可通过“导出”已有应用获得')" @on-success="handleUploadSuccess" @on-error="handleUploadReset"
                 @on-delete="handleUploadReset"></bk-upload>
         </bk-form-item>
@@ -51,6 +51,7 @@
 
 <script>
     import LayoutThumbList from '@/components/project/layout-thumb-list'
+    import { sanitizeObject } from 'shared/security/property-injection-guard'
 
     const defaultFormData = {
         projectCode: '',
@@ -81,7 +82,7 @@
                 default: () => ([])
             }
         },
-        data() {
+        data () {
             return {
                 formData: {},
                 formRules: {
@@ -122,25 +123,25 @@
             }
         },
         computed: {
-            uploadUrl() {
+            uploadUrl () {
                 return `${process.env.BK_AJAX_URL_PREFIX}/page/importJson`
             }
         },
         watch: {
             'propsFormData.framework': {
-                handler(val) {
+                handler (val) {
                     this.formData.framework = val || 'vue2'
                 },
                 immediate: true
             }
         },
-        created() {
+        created () {
             this.formData = Object.assign({}, defaultFormData, this.propsFormData)
             this.formLayoutList = this.defaultLayoutList
             this.importProjectData = []
         },
         methods: {
-            async checkName() {
+            async checkName () {
                 const res = await this.$store.dispatch('project/checkname', {
                     data: {
                         name: this.formData.projectName,
@@ -150,7 +151,7 @@
                 // 接口返回true， 代表重复
                 return res.data !== true
             },
-            async checkCode() {
+            async checkCode () {
                 const res = await this.$store.dispatch('project/checkname', {
                     data: {
                         projectCode: this.formData.projectCode,
@@ -160,24 +161,24 @@
                 // 接口返回true， 代表重复
                 return res.data !== true
             },
-            async validate() {
+            async validate () {
                 const res = await this.$refs.infoForm.validate()
                 return res
             },
-            handleLayoutChecked(layout) {
+            handleLayoutChecked (layout) {
                 layout.checked = !layout.checked
                 if (!layout.checked && layout.isDefault) {
                     layout.isDefault = 0
                     this.formLayoutList.filter(item => item.checked)[0].isDefault = 1
                 }
             },
-            handleLayoutDefault(layout) {
+            handleLayoutDefault (layout) {
                 this.formLayoutList.forEach(item => (item.isDefault = 0))
                 layout.isDefault = 1
             },
-            handleUploadSuccess(res) {
+            handleUploadSuccess (res) {
                 const dataStr = res.responseData?.data
-                this.importProjectData = JSON.parse(dataStr)
+                this.importProjectData = sanitizeObject(JSON.parse(dataStr), true)
                 if (typeof this.importProjectData?.route !== 'object' || typeof this.importProjectData?.func !== 'object' || typeof this.importProjectData?.page !== 'object') {
                     this.$bkMessage({
                         theme: 'error',
@@ -188,7 +189,7 @@
                 const projectData = this.importProjectData?.project || {}
                 Object.assign(this.formData, projectData)
             },
-            handleUploadReset() {
+            handleUploadReset () {
                 this.importProjectData = {}
             }
         }

@@ -30,6 +30,7 @@
 <script>
     import { NOCODE_TYPE_MAP } from '@/common/constant'
     import formManagePage from './form-manage-page.vue'
+    import { downloadFile } from '@/common/util'
 
     export default {
         components: {
@@ -91,14 +92,7 @@
                     styleSetting: page.styleSetting,
                     from: 'download_page'
                 }).then((res) => {
-                    const downlondEl = document.createElement('a')
-                    const blob = new Blob([res])
-                    downlondEl.download = `bklesscode-page-${page.pageCode}.vue`
-                    downlondEl.href = URL.createObjectURL(blob)
-                    downlondEl.style.display = 'none'
-                    document.body.appendChild(downlondEl)
-                    downlondEl.click()
-                    document.body.removeChild(downlondEl)
+                    downloadFile(res, `bklesscode-page-${page.pageCode}.vue`)
                 })
             },
             handleDelete (page) {
