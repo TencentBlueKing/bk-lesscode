@@ -26,7 +26,7 @@
                     </div>
                     <div class="deploy-container" v-if="content">
                         <bk-alert style="margin: 0px; border-radius: 0;" type="warning" :title="$t('仅展示准备阶段、构建阶段日志')"></bk-alert>
-                        <pre class="log-detail" v-html="content"></pre>
+                        <pre class="log-detail" v-bk-xss-html="content"></pre>
                     </div>
                 <!-- <pre v-if="content" class="log-detail" v-html="content"></pre> -->
                 </div>

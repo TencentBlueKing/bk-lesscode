@@ -97,7 +97,7 @@
                 <section :class="$style['release-form-info']" v-if="!publishCom">
                     <bk-alert v-if="latestInfo.id" :type="latestInfo.status === 'successful' ? 'success' : (latestInfo.status === 'failed' ? 'error' : 'info')" :class="$style['last-version-tips']">
                         <div slot="title">
-                            <span :class="$style['tips-content']">{{ $t('最近{0}版本：', [typeMap[latestInfo.isOffline]]) }}<span v-html="getInfoTips(latestInfo, 'last')"></span></span>
+                            <span :class="$style['tips-content']">{{ $t('最近{0}版本：', [typeMap[latestInfo.isOffline]]) }}<span v-bk-xss-html="getInfoTips(latestInfo, 'last')"></span></span>
                             <span v-if="!latestInfo.isOffline" :class="$style['latest-log-link']" @click="showLog(latestInfo)">，{{ latestInfo.status === 'successful' ? $t('查看成功日志') : (latestInfo.status === 'failed' ? $t('查看失败日志') : $t('查看日志'))}}</span>
                         </div>
                     </bk-alert>

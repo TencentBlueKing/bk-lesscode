@@ -50,6 +50,8 @@
     </div>
 </template>
 <script>
+    import { escapeHtml } from 'shared/security/xss-protection'
+    
     const encodeRegexp = (paramStr) => {
         const regexpKeyword = [
             '\\', '.', '*', '-', '{', '}', '[', ']', '^', '(', ')', '$', '+', '?', '|'
@@ -71,9 +73,13 @@
             const textClass = 'text'
             const { node, query } = ctx.props
             const searchName = node.displayName ? `${node.name} ${node.displayName}` : node.name
+            
+            const escapedSearchName = escapeHtml(searchName)
+            const escapedQuery = query ? escapeHtml(query) : ''
+            
             return (
                 <span title={searchName} domPropsInnerHTML={
-                    query ? searchName.replace(new RegExp(`(${query})`, 'i'), '<em style="font-style: normal;color: #3a84ff;">$1</em>') : searchName
+                    query ? escapedSearchName.replace(new RegExp(`(${escapedQuery})`, 'i'), '<em style="font-style: normal;color: #3a84ff;">$1</em>') : escapedSearchName
                 } class={textClass}></span>
             )
         }

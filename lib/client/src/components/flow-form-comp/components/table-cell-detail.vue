@@ -42,7 +42,7 @@
                             {{ $t('点击下载') }} </bk-button>
                         <span v-else>--</span>
                     </span>
-                    <span v-else-if="field.type === 'TEXT'" v-html="textTrans(value[field.key])">
+                    <span v-else-if="field.type === 'TEXT'" v-bk-xss-html="textTrans(value[field.key])">
                     </span>
                     <span v-else>{{ value[field.key] || '--' }}</span>
                 </bk-form-item>

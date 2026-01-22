@@ -6,7 +6,7 @@
             <div class="deploy-about-operate">
                 <div class="deploy-type-info">
                     <p class="mr20">
-                        <span v-html="getInfoTips(latestInfo,'running')"></span>
+                        <span v-bk-xss-html="getInfoTips(latestInfo,'running')"></span>
                     </p>
                     <p class="mr20">
                         <span>{{ $t('已耗时:') }}</span>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="deploy-container" v-if="content">
                     <deploying-type :deploying-info="lastStepSateInfo" :content="content" screenfull-class-name=".log-detail"></deploying-type>
-                    <pre class="log-detail" v-html="content"></pre>
+                    <pre class="log-detail" v-bk-xss-html="content"></pre>
                     <div class="deploy-error-tips" v-if="latestInfo.errorMsg">
                         <p class="error-title">
                             <i class="bk-drag-icon bk-drag-close-circle-fill icon-error"></i>
