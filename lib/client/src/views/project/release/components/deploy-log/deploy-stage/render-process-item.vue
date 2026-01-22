@@ -35,8 +35,8 @@
             </div>
             <div class="dialog-log-content" ref="dialogContent">
                 <p v-for="(item, index) in logs" :key="index" class="log-item">
-                    <span v-html="item.timestamp"></span>
-                    <span v-html="item.message" style="margin-left: 25px;"></span>
+                    <span v-bk-xss-html="item.timestamp"></span>
+                    <span v-bk-xss-html="item.message" style="margin-left: 25px;"></span>
                 </p>
             </div>
         </bk-dialog>

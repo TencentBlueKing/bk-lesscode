@@ -11,7 +11,7 @@
             <div class="deploy-about-operate">
                 <div :class="['deploy-type-info', { 'deploy-type-line': deployStatus !== 'running' }]">
                     <p class="mr20">
-                        <span v-html="getInfoTips(latestInfo, 'running')"></span>
+                        <span v-bk-xss-html="getInfoTips(latestInfo, 'running')"></span>
                     </p>
                     <p class="mr20">
                         <span>{{$t('已耗时:')}}</span>

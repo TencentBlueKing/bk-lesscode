@@ -59,7 +59,7 @@
             <router-view :key="$route.path"></router-view>
         </div>
         <footer class="footer" v-if="showFooter">
-            <p v-html="footerInfoHtml" ></p>
+            <p v-bk-xss-html="footerInfoHtml" ></p>
             <p>{{footerCopyrightContent}}</p>
         </footer>
     </main>

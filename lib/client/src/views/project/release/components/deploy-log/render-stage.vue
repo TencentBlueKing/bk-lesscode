@@ -3,7 +3,7 @@
         <label class="title" v-if="isShowTitle">{{ title }}</label>
         <section class="content-wrapper">
             <section class="content" ref="content">
-                <pre v-for="(item, index) in data" :key="index" v-html="item" class="log-item"></pre>
+                <pre v-for="(item, index) in data" :key="index" v-bk-xss-html="item" class="log-item"></pre>
             </section>
             <div class="screen-wrapper" v-if="isShowFullScreen" @click.stop="handleFullScreen">
             </div>
@@ -18,7 +18,7 @@
             <div class="screen-icon-wrapper" @click="fullDialogVisiable = false">
             </div>
             <div class="dialog-log-content" ref="dialogContent">
-                <pre v-for="(item, index) in data" :key="index" v-html="item" class="log-item"></pre>
+                <pre v-for="(item, index) in data" :key="index" v-bk-xss-html="item" class="log-item"></pre>
             </div>
         </bk-dialog>
     </div>

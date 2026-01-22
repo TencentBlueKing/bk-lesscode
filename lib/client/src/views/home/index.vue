@@ -94,7 +94,7 @@
                     <div class="frame-name" @click="handlerToWeb(item)">{{item.name}}</div>
                 </div>
             </div>
-            <p v-html="footerInfoHtml" ></p>
+            <p v-bk-xss-html="footerInfoHtml" ></p>
             <p>{{footerCopyrightContent}}</p>
         </div>
     </div>
