@@ -37,7 +37,7 @@
                                         <i v-if="template.templateType === 'MOBILE'" class="bk-drag-icon bk-drag-mobilephone"> </i>
                                         <i v-else class="bk-drag-icon bk-drag-pc"> </i>
                                     </span>
-                                    <div class="name" v-tooltips="template.templateName">{{template.templateName}}</div>
+                                    <div class="name" v-bk-overflow-tips="{ content: template.templateName }">{{template.templateName}}</div>
                                 </div>
                                 <div class="stat">{{ template.updateUser || template.createUser }}</div>
                             </div>
