@@ -51,7 +51,7 @@
 
 <script>
     import LayoutThumbList from '@/components/project/layout-thumb-list'
-    import { sanitizeObject } from 'shared/security/property-injection-guard'
+    import { deepClone } from 'shared/security/property-injection-guard'
 
     const defaultFormData = {
         projectCode: '',
@@ -178,7 +178,7 @@
             },
             handleUploadSuccess (res) {
                 const dataStr = res.responseData?.data
-                this.importProjectData = sanitizeObject(JSON.parse(dataStr), true)
+                this.importProjectData = deepClone(JSON.parse(dataStr), true)
                 if (typeof this.importProjectData?.route !== 'object' || typeof this.importProjectData?.func !== 'object' || typeof this.importProjectData?.page !== 'object') {
                     this.$bkMessage({
                         theme: 'error',
