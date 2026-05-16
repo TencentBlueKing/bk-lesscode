@@ -23,7 +23,7 @@
     </section>
 </template>
 <script>
-    import * as XLSX from 'xlsx'
+    import { downloadXlsxFromAoa } from 'shared/excel'
 
     export default {
         name: 'CustomButtons',
@@ -99,10 +99,7 @@
                         body.push(row)
                     })
 
-                    const wb = XLSX.utils.book_new()
-                    const ws = XLSX.utils.aoa_to_sheet([header, ...body])
-                    XLSX.utils.book_append_sheet(wb, ws)
-                    XLSX.writeFile(wb, `${this.nodeName || this.tableName}.xlsx`)
+                    await downloadXlsxFromAoa(`${this.nodeName || this.tableName}.xlsx`, 'Sheet1', [header, ...body])
                 } catch (e) {
                     console.log(e.message || e)
                 } finally {

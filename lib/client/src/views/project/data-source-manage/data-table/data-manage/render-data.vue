@@ -571,7 +571,7 @@
                 window.open(`/api/data-source/exportDatas/projectId/${projectId}/fileType/${fileType}/tableName/${activeTable.value.tableName}/environment/${environment.value.key}?x-timezone-offset=${new Date().getTimezoneOffset()}`)
             }
 
-            const exportSelectDatas = (fileType) => {
+            const exportSelectDatas = async (fileType) => {
                 // 生产 sql 语法不需要id
                 const datas = [{
                     tableName: activeTable.value.tableName,
@@ -588,7 +588,7 @@
                     transferTimezone(datas[0].list)
                 }
                 const fileName = fileType === DATA_FILE_TYPE.SQL ? `bklesscode-data-${projectId}.sql` : ''
-                const files = generateExportDatas(datas, fileType, fileName)
+                const files = await generateExportDatas(datas, fileType, fileName)
                 files.forEach(({ name, content }) => {
                     downloadFile(content, name)
                 })
@@ -607,22 +607,16 @@
             }
 
             // 解析导入的数据
-            const parseImport = ({ data, type }) => {
-                return new Promise((resolve, reject) => {
-                    try {
-                        const [list] = handleImportData(
-                            [data],
-                            type,
-                            activeTable.value.columns.map(column => column.name)
-                        )
-                        resolve({
-                            data: list,
-                            message: type === DATA_FILE_TYPE.XLSX ? window.i18n.t('解析到【{0}】条数据，点击导入后插入到数据库', [list.length]) : ''
-                        })
-                    } catch (error) {
-                        reject(error)
-                    }
-                })
+            const parseImport = async ({ data, type }) => {
+                const [list] = await handleImportData(
+                    [data],
+                    type,
+                    activeTable.value.columns.map(column => column.name)
+                )
+                return {
+                    data: list,
+                    message: type === DATA_FILE_TYPE.XLSX ? window.i18n.t('解析到【{0}】条数据，点击导入后插入到数据库', [list.length]) : ''
+                }
             }
 
             // 执行导入

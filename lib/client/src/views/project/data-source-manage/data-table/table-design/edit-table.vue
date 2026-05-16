@@ -235,23 +235,16 @@
                 })
             }
             // 解析导入的表结构
-            const parseImport = ({ data, type }) => {
-                return new Promise((resolve, reject) => {
-                    try {
-                        const [tableInfo] = handleImportStruct([data], type)
-                        const columns = [
-                            ...BASE_COLUMNS(),
-                            ...tableInfo.columns.filter(column => !BASE_COLUMNS().find(baseColumn => baseColumn.name === column.name))
-                        ]
-                        // 过滤掉基础字段设置，使用系统内置
-                        resolve({
-                            data: columns,
-                            message: window.i18n.t('解析到【{0}】个字段，请点击导入后修改字段配置', [columns.length])
-                        })
-                    } catch (error) {
-                        reject(error)
-                    }
-                })
+            const parseImport = async ({ data, type }) => {
+                const [tableInfo] = await handleImportStruct([data], type)
+                const columns = [
+                    ...BASE_COLUMNS(),
+                    ...tableInfo.columns.filter(column => !BASE_COLUMNS().find(baseColumn => baseColumn.name === column.name))
+                ]
+                return {
+                    data: columns,
+                    message: window.i18n.t('解析到【{0}】个字段，请点击导入后修改字段配置', [columns.length])
+                }
             }
             // 执行导入
             const handleImport = (data) => {

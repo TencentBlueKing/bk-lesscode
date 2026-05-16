@@ -110,18 +110,18 @@ const demoTable = [{
 }]
 
 // 下载表结构示例
-export const downloadStructTemplate = (type) => {
+export const downloadStructTemplate = async (type) => {
     const fileName = type === 'sql' ? 'bklesscode-struct-demo.sql' : ''
-    const files = generateExportStruct(demoTable, type, fileName)
+    const files = await generateExportStruct(demoTable, type, fileName)
     files.forEach(({ name, content }) => {
         downloadFile(content, name)
     })
 }
 
 // 下载数据示例
-export const downloadDataTemplate = (type, demoData) => {
+export const downloadDataTemplate = async (type, demoData) => {
     const fileName = type === 'sql' ? 'bklesscode-data-demo.sql' : ''
-    const files = generateExportDatas(demoData, type, fileName)
+    const files = await generateExportDatas(demoData, type, fileName)
     files.forEach(({ name, content }) => {
         downloadFile(content, name)
     })

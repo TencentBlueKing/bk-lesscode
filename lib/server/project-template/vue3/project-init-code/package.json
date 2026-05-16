@@ -155,7 +155,7 @@
     "node-request-context": "~1.0.5",
     "nodemon": "~1.19.3",
     "ora": "~4.0.2",
-    "path-to-regexp": "^8.3.0",
+    "path-to-regexp": "^8.4.2",
     "postcss": "~8.4.31",
     "postcss-import": "^15.0.0",
     "postcss-mixins": "^9.0.4",
@@ -178,7 +178,7 @@
     "vue-json-viewer": "^2.2.22",
     "vue-router": "~4.1.6",
     "vuex": "^4.1.0",
-    "xlsx": "^0.18.5",
+    "exceljs": "^4.4.0",
     "less": "^4.2.0"
   },
   "overrides": {

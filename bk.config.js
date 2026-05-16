@@ -125,9 +125,16 @@ module.exports = {
                             chunks: 'all',
                             reuseExistingChunk: true
                         },
-                        xlsxTypeormMoment: {
-                            name: 'xlsx-typeorm-moment',
-                            test: /(xlsx)|(typeorm)|(moment)/,
+                        exceljs: {
+                            name: 'exceljs',
+                            test: /[\\/]node_modules[\\/]exceljs[\\/]/,
+                            priority: 2,
+                            chunks: 'all',
+                            reuseExistingChunk: true
+                        },
+                        typeormMoment: {
+                            name: 'typeorm-moment',
+                            test: /[\\/]node_modules[\\/](typeorm|moment)[\\/]/,
                             priority: 1,
                             chunks: 'all',
                             reuseExistingChunk: true

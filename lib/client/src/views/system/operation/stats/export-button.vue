@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import * as XLSX from 'xlsx'
+    import { downloadXlsxFromAoa } from 'shared/excel'
 
     export default {
         props: {
@@ -89,9 +89,9 @@
                 })
 
                 const data = [header, ...body]
-                this.generateXlsx(`lesscode-stats-${this.name}.xlsx`, data, this.tableSheetName)
+                await this.generateXlsx(`lesscode-stats-${this.name}.xlsx`, data, this.tableSheetName)
             },
-            handleCommonTimeDimExport () {
+            async handleCommonTimeDimExport () {
                 const blocks = []
                 const max = this.list.length
                 this.list.forEach((block, index) => {
@@ -114,13 +114,10 @@
                         blocks.push([])
                     }
                 })
-                this.generateXlsx(`lesscode-stats-${this.name}-${this.dim}.xlsx`, blocks, window.i18n.t('按时间'))
+                await this.generateXlsx(`lesscode-stats-${this.name}-${this.dim}.xlsx`, blocks, window.i18n.t('按时间'))
             },
             generateXlsx (fileName, data, sheetName) {
-                const wb = XLSX.utils.book_new()
-                const ws = XLSX.utils.aoa_to_sheet(data)
-                XLSX.utils.book_append_sheet(wb, ws, sheetName)
-                XLSX.writeFile(wb, fileName)
+                return downloadXlsxFromAoa(fileName, sheetName, data)
             },
             fistLetterUpper (str) {
                 return str.charAt(0).toUpperCase() + str.slice(1)

@@ -242,9 +242,9 @@
                 window.open(`/api/data-source/exportStruct/projectId/${projectId}/fileType/${fileType}`)
             }
 
-            const exportSelectTables = (fileType) => {
+            const exportSelectTables = async (fileType) => {
                 const fileName = fileType === 'sql' ? `bklesscode-struct-${projectId}.sql` : ''
-                const files = generateExportStruct(listStatus.selectRows, fileType, fileName)
+                const files = await generateExportStruct(listStatus.selectRows, fileType, fileName)
                 files.forEach(({ name, content }) => {
                     downloadFile(content, name)
                 })

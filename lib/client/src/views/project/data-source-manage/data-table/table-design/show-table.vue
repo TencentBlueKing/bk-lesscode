@@ -115,13 +115,13 @@
                 })
             }
 
-            const exportTables = (fileType) => {
+            const exportTables = async (fileType) => {
                 const tables = [{
                     ...tableStatus.basicInfo,
                     columns: tableStatus.data
                 }]
                 const fileName = fileType === 'sql' ? `bklesscode-struct-${tableStatus.basicInfo.tableName}.sql` : ''
-                const files = generateExportStruct(tables, fileType, fileName)
+                const files = await generateExportStruct(tables, fileType, fileName)
                 files.forEach(({ name, content }) => {
                     downloadFile(content, name)
                 })
